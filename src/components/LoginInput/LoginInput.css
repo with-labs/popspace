@@ -10,6 +10,10 @@
   border-radius: 8px;
 }
 
+.LoginInput:focus-within {
+  border: 1px solid white;
+}
+
 .LoginInput-img {
   padding-left: 16px;
   padding-right: 16px;

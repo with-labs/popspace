@@ -9,9 +9,9 @@ import key from './images/key.svg';
 import person from './images/person.svg';
 
 const Login = () => {
-  const [roomName, setRoomName] = useState();
-  const [password, setPassword] = useState();
-  const [screenName, setScreenName] = useState();
+  const [roomName, setRoomName] = useState('');
+  const [password, setPassword] = useState('');
+  const [screenName, setScreenName] = useState('');
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

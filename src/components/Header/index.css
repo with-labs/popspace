@@ -1,0 +1,27 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  height: 80px;
+  align-items: center;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.Header-text {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  color: white;
+}
+
+.Header-controls {
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Header-controlSpace {
+  margin-right: 20px;
+}

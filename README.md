@@ -1,3 +1,14 @@
+# Departure Notes
+
+## Dev Notes
+* we are going to deviate from the structure of the forked twilio app.
+** going to have a /pages dir where our main pages will live instead of having pages live in the components dir
+** components we write will live in the /components dir
+* Since we have 2 weeks, dont use material ui right in new code since it will take time to learn and we are quicker falling back to our old way of doing thing.
+* Split the css into a seperate file and follow BEM / suit standards. this will allow us to future proof our code
+* Dont worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship 
+* the main focus is having a good and presentable app, we can fix our code when we move off of twilio
+
 # Twilio Video React App
 
 [![CircleCI](https://circleci.com/gh/twilio/twilio-video-app-react.svg?style=svg)](https://circleci.com/gh/twilio/twilio-video-app-react)

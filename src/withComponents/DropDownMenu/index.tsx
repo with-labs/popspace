@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import clsx from 'clsx';
 import './index.css';
 
 // todo: update types
@@ -16,10 +17,7 @@ const DropDownMenu = (props: DropDownMenuProps) => {
 
   useEffect(() => {
     function handleClickOutside(event: any) {
-      debugger;
       if (dropDownMenuRef && dropDownMenuRef.current) {
-        console.log(event.target);
-        console.log(dropDownMenuRef.current.contains(event.target));
         if (!dropDownMenuRef.current.contains(event.target)) {
           // clicking outside of the dropdown menu so close it
           setIsActive(false);
@@ -35,17 +33,15 @@ const DropDownMenu = (props: DropDownMenuProps) => {
   }, [dropDownMenuRef]);
 
   const onButtonClick = () => {
-    debugger;
-    console.log('buttonClick');
     setIsActive(!isActive);
   };
 
   return (
-    <div ref={dropDownMenuRef} className={`DropDownMenu${classNames ? ' ' + classNames : ''}`}>
+    <div ref={dropDownMenuRef} className={clsx('DropDownMenu', classNames)}>
       <div className="DropDownMenu-button" onClick={onButtonClick}>
         <img src={buttonSrc} alt={buttonAltText} />
       </div>
-      <div className={`DropDownMenu-menu${!isActive ? ' DropDownMenu-menu--inActive' : ''}`}>{children}</div>
+      <div className={clsx('DropDownMenu-menu', { 'DropDownMenu-menu--inactive': !isActive })}>{children}</div>
     </div>
   );
 };

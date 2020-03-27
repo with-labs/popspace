@@ -9,7 +9,6 @@
 }
 
 .AppMenuItem-nameText {
-  font-family: Poppins;
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -18,7 +17,6 @@
 }
 
 .AppMenuItem-descText {
-  font-family: Poppins;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;

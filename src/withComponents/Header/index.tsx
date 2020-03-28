@@ -1,32 +1,21 @@
 import React from 'react';
+import clsx from 'clsx';
 import './index.css';
 
-import DropDownMenu from '../DropDownMenu';
-import AppMenuItem from '../AppMenuItem';
-
-import WithLogo from './images/withLogo.svg';
-import GearIcon from './images/gear.svg';
-import PlusIcon from './images/plus.svg';
+import AnglesLogo from './images/AnglesLogo.svg';
 
 type HeaderProps = {
   isLocked?: boolean;
   roomName?: string;
+  classNames?: string;
 };
 
-const Header = ({ isLocked, roomName }: HeaderProps) => {
+const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
   return (
-    <header className="Header">
+    <header className={clsx('Header', classNames)}>
       <div>
-        <img src={WithLogo} />
-        <div className="Header-text">dummy text</div>
-      </div>
-      <div className="Header-controls">
-        <DropDownMenu buttonSrc={PlusIcon} buttonAltText={'plus button'} classNames="Header-controlSpace">
-          <div>
-            <AppMenuItem name="test" desc="test desc" />
-          </div>
-        </DropDownMenu>
-        <DropDownMenu buttonSrc={GearIcon} buttonAltText={'gear button'}></DropDownMenu>
+        <img className="Header-logo" src={AnglesLogo} />
+        <div className="Header-text">{roomName ? roomName : ''}</div>
       </div>
     </header>
   );

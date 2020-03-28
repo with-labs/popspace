@@ -1,25 +1,19 @@
-.LoginInput {
-  width: 100%;
+.FormInput {
+  width: 500px;
   height: 60px;
   display: flex;
   align-items: center;
-
-  width: 500px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 3px;
   box-sizing: border-box;
-  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(160, 160, 160, 0.12), 0px 6px 32px rgba(160, 160, 160, 0.25);
 }
 
-.LoginInput:focus-within {
-  border: 1px solid white;
-}
-
-.LoginInput-img {
+.FormInput-img {
   padding-left: 16px;
   padding-right: 16px;
 }
 
-.LoginInput-input {
+.FormInput-input {
   font-family: Poppins;
   font-style: normal;
   font-weight: normal;
@@ -34,9 +28,9 @@
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  color: white;
+  color: black;
 }
 
-.LoginInput-input:focus {
+.FormInput-input:focus {
   outline: none;
 }

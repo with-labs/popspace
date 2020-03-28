@@ -1,0 +1,70 @@
+.JoinRoom {
+  height: 100vh;
+  background-color: rgba(249, 250, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.JoinRoom-titleText {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+  padding-top: 15px;
+  padding-bottom: 55px;
+}
+
+.JoinRoom-videoPreview {
+  border-radius: 50%;
+  object-fit: cover !important;
+  height: 250px !important;
+  width: 250px !important;
+  border: 3px solid #ffffff;
+}
+
+.JoinRoom-joinTitle {
+  color: black;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 45px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.JoinRoom-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.JoinRoom-formInputOffset {
+  margin-bottom: 20px;
+}
+
+.JoinRoom-button {
+  margin-top: 60px;
+  width: 100%;
+  height: 60px;
+  border-radius: 3px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+
+  background-color: #b9c5ff;
+  box-shadow: 0px 2px 6px rgba(160, 160, 160, 0.12), 0px 6px 32px rgba(160, 160, 160, 0.25);
+}
+
+.JoinRoom-button--inactive {
+  background-color: #b9c5ff;
+  color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+}
+
+.JoinRoom-button:focus {
+  outline: none;
+}

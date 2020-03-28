@@ -15,7 +15,9 @@ import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
-import Login from './pages/Login/Login';
+import JoinRoom from './withComponents/JoinRoom';
+import Header from './withComponents/Header';
+import Footer from './withComponents/Footer';
 
 import './with.css';
 
@@ -49,6 +51,21 @@ const VideoApp = () => {
   );
 };
 
+const DevApp = () => {
+  const { error, setError } = useAppState();
+
+  return (
+    <VideoProvider options={connectionOptions} onError={setError}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      <div className="u-positionRelative">
+        <Header classNames="u-positionAbsolute" roomName="devroom" />
+        <JoinRoom roomName="devroom" />
+        <Footer classNames="u-positionAbsolute" />
+      </div>
+    </VideoProvider>
+  );
+};
+
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
@@ -61,8 +78,8 @@ ReactDOM.render(
           <PrivateRoute path="/room/:URLRoomName">
             <VideoApp />
           </PrivateRoute>
-          <Route path="/login">
-            <Login />
+          <Route path="/devroom">
+            <DevApp />
           </Route>
           <Redirect to="/" />
         </Switch>

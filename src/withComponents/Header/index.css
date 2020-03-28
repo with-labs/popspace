@@ -3,8 +3,11 @@
   flex-direction: row;
   height: 80px;
   align-items: center;
-  padding-left: 25px;
-  padding-right: 25px;
+  padding: 20px;
+}
+
+.Header-logo {
+  height: 35px;
 }
 
 .Header-text {
@@ -12,7 +15,8 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 24px;
-  color: white;
+  color: black;
+  margin-left: 40px;
 }
 
 .Header-controls {

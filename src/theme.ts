@@ -15,7 +15,7 @@ export default createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#rgba(249, 250, 255, 0.6)',
+      main: 'rgba(249, 250, 255, 0.6)',
     },
     background: {
       default: 'rgba(249, 250, 255, 0.6)',

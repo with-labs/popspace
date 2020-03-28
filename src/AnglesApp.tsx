@@ -2,10 +2,17 @@
 // code separate
 
 import React from 'react';
+
 import { styled } from '@material-ui/core/styles';
 
+import JoinRoom from './withComponents/JoinRoom';
+import Header from './withComponents/Header';
+import Footer from './withComponents/Footer';
+
+import { useAppState } from './state';
+import useVideoContext from './hooks/useVideoContext/useVideoContext';
+
 import Controls from './components/Controls/Controls';
-import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 import Room from './components/Room/Room';
 
@@ -22,16 +29,32 @@ const Main = styled('main')({
   position: 'relative',
 });
 
-export default function App() {
+type AnglesAppProps = {
+  roomName: string;
+};
+
+export default function AnglesApp(props: AnglesAppProps) {
+  const { roomName } = props;
   const roomState = useRoomState();
+  const { user, getToken, isFetching } = useAppState();
+  const { isConnecting, connect } = useVideoContext();
+
+  const onJoinSubmitHandler = (screenName: string, password: string) => {
+    getToken(screenName, roomName).then(token => connect(token));
+  };
 
   return (
     <Container>
       <Main>
-        {roomState === 'disconnected' ? <LocalVideoPreview /> : <Room />}
-        <Controls />
+        <Header classNames="u-positionAbsolute" roomName={roomName} />
+        {roomState === 'disconnected' ? (
+          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
+        ) : (
+          <Room />
+        )}
+        <ReconnectingNotification />
+        <Footer classNames="u-positionAbsolute" />
       </Main>
-      <ReconnectingNotification />
     </Container>
   );
 }

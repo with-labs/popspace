@@ -10,9 +10,10 @@ import passwordImg from './images/password.svg';
 
 type JoinRoomProps = {
   roomName: string;
+  onJoinSubmitHandler: (userName: string, password: string) => void;
 };
 
-const JoinRoom = ({ roomName }: JoinRoomProps) => {
+const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
   const [screenName, setScreenName] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,6 +21,7 @@ const JoinRoom = ({ roomName }: JoinRoomProps) => {
     event.preventDefault();
     //TODO input validation and add stuff here
     if (screenName.length > 0) {
+      onJoinSubmitHandler(screenName, password);
     }
   };
 

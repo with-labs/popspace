@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './index.css';
 
-import LoginInput from '../../components/LoginInput/LoginInput';
+import LoginInput from '../../withComponents/LoginInput/LoginInput';
 
 import withLogo from './images/with.svg';
 import hashTag from './images/hashTag.svg';
@@ -17,6 +17,7 @@ const Login = () => {
     event.preventDefault();
     //TODO input validation and add stuff here
   };
+
   return (
     <div className="Login">
       <img src={withLogo} />

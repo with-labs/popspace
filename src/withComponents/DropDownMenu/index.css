@@ -1,0 +1,23 @@
+.DropDownMenu {
+  position: relative;
+}
+
+.DropDownMenu-button {
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+
+.DropDownMenu-menu {
+  position: absolute;
+  width: 410px;
+  top: 50px;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  z-index: 500;
+}
+
+.DropDownMenu-menu--inactive {
+  display: none;
+}

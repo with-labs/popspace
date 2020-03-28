@@ -1,0 +1,26 @@
+.AppMenuItem {
+  display: flex;
+  flex-direction: row;
+}
+
+.AppMenuItem-logo {
+  height: 80px;
+  width: 80px;
+}
+
+.AppMenuItem-nameText {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 27px;
+  color: #000000;
+}
+
+.AppMenuItem-descText {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 21px;
+
+  color: #000000;
+}

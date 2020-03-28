@@ -15,8 +15,14 @@ export default createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#F22F46',
+      main: '#343A40',
     },
+    background: {
+      default: '#343A40',
+    },
+  },
+  typography: {
+    fontFamily: 'Poppins',
   },
   sidebarWidth: 260,
 });

@@ -15,10 +15,10 @@ export default createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#343A40',
+      main: 'rgba(249, 250, 255, 0.6)',
     },
     background: {
-      default: '#343A40',
+      default: 'rgba(249, 250, 255, 0.6)',
     },
   },
   typography: {

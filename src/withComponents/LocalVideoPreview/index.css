@@ -1,0 +1,15 @@
+.LocalVideo {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.LocalVideo-placeHolder {
+  background-color: #f3f3f3;
+  display: flex;
+  justify-content: center;
+}
+
+.LocalVideo-video {
+  position: absolute;
+  top: 0;
+}

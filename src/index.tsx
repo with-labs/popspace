@@ -9,14 +9,12 @@ import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { ConnectOptions } from 'twilio-video';
 import ErrorDialog from './components/ErrorDialog/ErrorDialog';
-import LoginPage from './components/LoginPage/LoginPage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
-import Login from './pages/Login/Login';
-
+import AnglesApp from './AnglesApp';
 import './with.css';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
@@ -49,6 +47,24 @@ const VideoApp = () => {
   );
 };
 
+// -------- here is the where we set up the angles application
+type AnglesAppProps = {
+  roomName: string;
+};
+
+const AnglesMainApp = ({ roomName }: AnglesAppProps) => {
+  const { error, setError } = useAppState();
+
+  return (
+    <VideoProvider options={connectionOptions} onError={setError}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      <AnglesApp roomName={roomName} />
+    </VideoProvider>
+  );
+};
+
+// -----------
+
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
@@ -61,8 +77,8 @@ ReactDOM.render(
           <PrivateRoute path="/room/:URLRoomName">
             <VideoApp />
           </PrivateRoute>
-          <Route path="/login">
-            <Login />
+          <Route path="/devroom">
+            <AnglesMainApp roomName="devroom" />
           </Route>
           <Redirect to="/" />
         </Switch>

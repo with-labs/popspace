@@ -6,7 +6,7 @@
 ** components we write will live in the /components dir
 * Since we have 2 weeks, dont use material ui right in new code since it will take time to learn and we are quicker falling back to our old way of doing thing.
 * Split the css into a seperate file and follow BEM / suit standards. this will allow us to future proof our code
-* Dont worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship 
+* Don't worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship
 * the main focus is having a good and presentable app, we can fix our code when we move off of twilio
 
 # Twilio Video React App
@@ -38,26 +38,43 @@ The app is deployed to Twilio using the Twilio CLI. Install twilio-cli with
 
     $ npm install -g twilio-cli
 
-It requires an additional plugin. Install the CLI plugin with:
+### Install the forked Twilio CLI plugin for local development
 
-    $ twilio plugins:install @twilio-labs/plugin-rtc
+The following step will install the plugin from a local directory. This is
+necessary because we are using a forked and modified version of the Twilio
+plugin-rtc (@twilio-labs/plugin-rtc).
+
+```sh-session
+$ git clone git@github.com:brentwalter/plugin-rtc.git
+$ twilio plugins:link /path/to/plugin-rtc
+```
 
 ## Deploy the app to Twilio
 
+### Deploy the app to Twilio, DEVELOPMENT environment
+
 The app is deployed to Twilio with a single command:
 
-    $ npm run deploy:twilio-cli
+    $ npm run deploy:dev
 
 This performs the following steps:
 
 * Builds the React app in the `src` directory
-* Generates a random code used to access the Video app
-* Deploys the React app and token server function as a Twilio Serverless service.
-* Prints the URL for the app and the passcode.
+* Deploys the React app and token server function as a Twilio Serverless service in the "dev" environment.
+* Prints the URL for the app.
 
-**The passcode will expire after one week**. To generate a new passcode, redeploy the app:
+To redeploy the app and override an existing deployment use:
 
-    $ npm run deploy:twilio-cli -- --override
+    $ npm run deploy:dev -- --override
+
+### Deploy the app to Twilio, PRODUCTION environment
+
+    $ npm run deploy:prod -- --override
+
+This performs the following steps:
+
+* Builds the React app in the `src` directory
+* Deploys the React app and token server function as a Twilio Serverless service in the "prod" environment.
 
 ## View app details
 
@@ -121,18 +138,28 @@ You will also see any linting errors in the console. Start the token server loca
 
     $ npm run server
 
-The token server runs on port 8081 and expects a `GET` request at the `/token` route with the following query parameters:
+The token server runs on port 8081 and expects a `POST` request at the `/token` route with the following JSON body:
 
 ```
-identity: string,  // the user's identity
-roomName: string   // the room name
+{
+  "user_identity": string,  // the user's identity
+  "room_name": string   // the room name
+  "passcode": string // the passcode that corresponds to the room_name
+}
 ```
 
 The response will be a token that can be used to connect to a room.
 
 Try it out with this sample `curl` command:
 
-`curl 'localhost:8081/token?identity=TestName&roomName=TestRoom'`
+```
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"user_identity":"xyz","passcode":"abc", "room_name":"dev"}' \
+  http://localhost:8081/token
+```
+
+*The local token server does not have a room_name white list nor passcode verification. So, you can use any room name and any passcode*
 
 ### Multiple Participants in a Room
 
@@ -211,7 +238,7 @@ This application dynamically changes the priority of remote video tracks to prov
 
 ### Google Authentication using Firebase (optional)
 
-This application can be configured to authenticate users before they use the app. Once users have signed into the app with their Google credentials, their Firebase ID Token will be included in the Authorization header of the HTTP request that is used to obtain an access token. The Firebase ID Token can then be [verified](https://firebase.google.com/docs/auth/admin/verify-id-tokens) by the server that dispenses access tokens for connecting to a room. 
+This application can be configured to authenticate users before they use the app. Once users have signed into the app with their Google credentials, their Firebase ID Token will be included in the Authorization header of the HTTP request that is used to obtain an access token. The Firebase ID Token can then be [verified](https://firebase.google.com/docs/auth/admin/verify-id-tokens) by the server that dispenses access tokens for connecting to a room.
 
 See [.env.example](.env.example) for an explanation of the environment variables that must be set to enable Google authentication.
 

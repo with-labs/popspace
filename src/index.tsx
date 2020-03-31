@@ -6,10 +6,9 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import App from './App';
 import AppStateProvider, { useAppState } from './state';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
-import { ConnectOptions } from 'twilio-video';
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { ConnectOptions, TwilioError } from 'twilio-video';
 import ErrorDialog from './components/ErrorDialog/ErrorDialog';
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
@@ -36,6 +35,12 @@ const connectionOptions: ConnectOptions = {
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
 };
 
+// A custom hook that builds on useLocation to parse
+// the query string for you.
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 const VideoApp = () => {
   const { error, setError } = useAppState();
 
@@ -48,17 +53,25 @@ const VideoApp = () => {
 };
 
 // -------- here is the where we set up the angles application
-type AnglesAppProps = {
-  roomName: string;
-};
 
-const AnglesMainApp = ({ roomName }: AnglesAppProps) => {
+const AnglesMainApp = () => {
   const { error, setError } = useAppState();
+  const query = useQuery();
+  const room: string | null = query.get('r');
 
   return (
     <VideoProvider options={connectionOptions} onError={setError}>
-      <ErrorDialog dismissError={() => setError(null)} error={error} />
-      <AnglesApp roomName={roomName} />
+      {room ? (
+        <div>
+          <ErrorDialog dismissError={() => setError(null)} error={error} />
+          <AnglesApp roomName={room} />
+        </div>
+      ) : (
+        <ErrorDialog
+          dismissError={() => setError(null)}
+          error={new Error('A room name is required to access the application.') as TwilioError}
+        />
+      )}
     </VideoProvider>
   );
 };
@@ -71,14 +84,8 @@ ReactDOM.render(
     <Router>
       <AppStateProvider>
         <Switch>
-          <PrivateRoute exact path="/">
-            <VideoApp />
-          </PrivateRoute>
-          <PrivateRoute path="/room/:URLRoomName">
-            <VideoApp />
-          </PrivateRoute>
-          <Route path="/devroom">
-            <AnglesMainApp roomName="devroom" />
+          <Route exact path="/">
+            <AnglesMainApp />
           </Route>
           <Redirect to="/" />
         </Switch>

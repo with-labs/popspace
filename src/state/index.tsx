@@ -59,10 +59,10 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     };
   }
 
-  const getToken: StateContextType['getToken'] = (name, room) => {
+  const getToken: StateContextType['getToken'] = (name, room, passcode) => {
     setIsFetching(true);
     return contextValue
-      .getToken(name, room)
+      .getToken(name, room, passcode)
       .then(res => {
         setIsFetching(false);
         return res;

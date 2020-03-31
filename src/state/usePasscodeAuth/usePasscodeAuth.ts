@@ -13,7 +13,7 @@ export function fetchToken(name: string, room: string, passcode?: string) {
     headers: {
       'content-type': 'application/json',
     },
-    body: JSON.stringify({ user_identity: name, room_name: room, passcode }),
+    body: JSON.stringify({ user_identity: name, room_name: room, passcode: passcode }),
   });
 }
 
@@ -60,8 +60,8 @@ export default function usePasscodeAuth() {
   // this allows us to jsut click on the app link and use without
   // their app password since this is just demo code not prod
   const getToken = useCallback(
-    (name: string, room: string) => {
-      return fetchToken(name, room)
+    (name: string, room: string, passcode?: string) => {
+      return fetchToken(name, room, passcode)
         .then(res => res.json())
         .then(res => res.token as string);
     },

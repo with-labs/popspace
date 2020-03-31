@@ -39,8 +39,8 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { user, getToken, isFetching } = useAppState();
   const { isConnecting, connect } = useVideoContext();
 
-  const onJoinSubmitHandler = (screenName: string, password: string) => {
-    getToken(screenName, roomName).then(token => connect(token));
+  const onJoinSubmitHandler = (screenName: string, passcode: string) => {
+    getToken(screenName, roomName, passcode).then(token => connect(token));
   };
 
   return (

@@ -2,13 +2,21 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import useLocalTracks from './useLocalTracks';
 import Video from 'twilio-video';
 import { EventEmitter } from 'events';
+import * as TV from 'twilio-video';
+
+// WARNING, this is a big no-no, BUT LocalDataTrack is undefined in the unit testing env for some unknown reason.
+// The only way I could get the tests working was to monkey patch LocalDataTrack back into the module.
+class LDT {}
+// @ts-ignore
+TV.LocalDataTrack = LDT;
 
 describe('the useLocalTracks hook', () => {
   it('should return an array of tracks and two functions', async () => {
     const { result, waitForNextUpdate } = renderHook(useLocalTracks);
-    expect(result.current.localTracks).toEqual([]);
+    // LocalDataTrack is always present.
+    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
     await waitForNextUpdate();
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter)]);
+    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
     expect(result.current.getLocalVideoTrack).toEqual(expect.any(Function));
   });
 
@@ -27,11 +35,12 @@ describe('the useLocalTracks hook', () => {
   it('should respond to "stopped" events from the local video track', async () => {
     const { result, waitForNextUpdate } = renderHook(useLocalTracks);
     await waitForNextUpdate();
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter)]);
+    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
     act(() => {
       result.current.localTracks[0].emit('stopped');
       result.current.localTracks[1].emit('stopped');
     });
-    expect(result.current.localTracks).toEqual([]);
+    // LocalDataTrack is always present and cannot be stopped.
+    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
   });
 });

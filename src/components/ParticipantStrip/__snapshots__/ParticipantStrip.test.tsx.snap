@@ -8,6 +8,7 @@ exports[`the ParticipantStrip component should correctly render ParticipantInfo 
     participant="localParticipant"
   />
   <Participant
+    disableAudio={false}
     isSelected={false}
     key="0"
     onClick={[Function]}
@@ -18,6 +19,7 @@ exports[`the ParticipantStrip component should correctly render ParticipantInfo 
     }
   />
   <Participant
+    disableAudio={false}
     isSelected={false}
     key="1"
     onClick={[Function]}

@@ -27,6 +27,7 @@ const Container = styled('div')({
 const Main = styled('main')({
   height: '100%',
   position: 'relative',
+  color: '#000',
 });
 
 type AnglesAppProps = {
@@ -53,6 +54,7 @@ export default function AnglesApp(props: AnglesAppProps) {
           <Room />
         )}
         <ReconnectingNotification />
+        <Controls />
         <Footer classNames="u-positionAbsolute" />
       </Main>
     </Container>

@@ -4,18 +4,30 @@ import ParticipantStrip from './ParticipantStrip';
 import { shallow } from 'enzyme';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext';
 
 jest.mock('../../hooks/useVideoContext/useVideoContext');
 jest.mock('../VideoProvider/useSelectedParticipant/useSelectedParticipant');
+jest.mock('../../withHooks/useHuddleContext/useHuddleContext');
 const mockedVideoContext = useVideoContext as jest.Mock<any>;
 const mockUseSelectedParticipant = useSelectedParticipant as jest.Mock<any>;
+const mockUseHuddleContext = useHuddleContext as jest.Mock<any>;
 
 describe('the ParticipantStrip component', () => {
   mockUseSelectedParticipant.mockImplementation(() => [null, () => {}]);
+  mockUseHuddleContext.mockImplementation(() => ({
+    huddles: {},
+    inviteToHuddle: () => {},
+    removeFromHuddle: () => {},
+    leaveHuddle: () => {},
+  }));
 
   it('should correctly render ParticipantInfo components', () => {
     const mockRoom: any = new EventEmitter();
-    mockRoom.participants = new Map([[0, { sid: 0 }], [1, { sid: 1 }]]);
+    mockRoom.participants = new Map([
+      [0, { sid: 0 }],
+      [1, { sid: 1 }],
+    ]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
     const wrapper = shallow(<ParticipantStrip />);
@@ -25,7 +37,10 @@ describe('the ParticipantStrip component', () => {
   it('should add the isSelected prop to the local participant when it is selected', () => {
     mockUseSelectedParticipant.mockImplementation(() => ['localParticipant', () => {}]);
     const mockRoom: any = new EventEmitter();
-    mockRoom.participants = new Map([[0, { sid: 0 }], [1, { sid: 1 }]]);
+    mockRoom.participants = new Map([
+      [0, { sid: 0 }],
+      [1, { sid: 1 }],
+    ]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
     const wrapper = shallow(<ParticipantStrip />);
@@ -41,7 +56,10 @@ describe('the ParticipantStrip component', () => {
     const mockParticipant = { sid: 0 };
     mockUseSelectedParticipant.mockImplementation(() => [mockParticipant, () => {}]);
     const mockRoom: any = new EventEmitter();
-    mockRoom.participants = new Map([[0, mockParticipant], [1, { sid: 1 }]]);
+    mockRoom.participants = new Map([
+      [0, mockParticipant],
+      [1, { sid: 1 }],
+    ]);
     mockRoom.localParticipant = 'localParticipant';
     mockedVideoContext.mockImplementation(() => ({ room: mockRoom }));
     const wrapper = shallow(<ParticipantStrip />);

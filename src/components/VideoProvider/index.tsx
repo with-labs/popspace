@@ -1,5 +1,12 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * Add HuddleProvider inside the VideoContext.
+ * `localTracks` context property can now include LocalDataTracks.
+ */
+
 import React, { createContext, ReactNode } from 'react';
-import { ConnectOptions, Room, TwilioError, LocalAudioTrack, LocalVideoTrack } from 'twilio-video';
+import { ConnectOptions, Room, TwilioError, LocalAudioTrack, LocalVideoTrack, LocalDataTrack } from 'twilio-video';
 import { Callback, ErrorCallback } from '../../types';
 import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
 
@@ -8,6 +15,8 @@ import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
+
+import { HuddleProvider } from '../../withComponents/HuddleProvider/HuddleProvider';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -18,7 +27,7 @@ import useRoom from './useRoom/useRoom';
 
 export interface IVideoContext {
   room: Room;
-  localTracks: (LocalAudioTrack | LocalVideoTrack)[];
+  localTracks: (LocalAudioTrack | LocalVideoTrack | LocalDataTrack)[];
   isConnecting: boolean;
   connect: (token: string) => Promise<void>;
   onError: ErrorCallback;
@@ -61,7 +70,9 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         connect,
       }}
     >
-      <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+      <HuddleProvider>
+        <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+      </HuddleProvider>
     </VideoContext.Provider>
   );
 }

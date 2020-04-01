@@ -1,3 +1,10 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * Have to guard track stoppage to make sure DataTracks aren't "stopped" because that's not part of their API. See
+ * the `handleSignOut` handler.
+ */
+
 import React, { useState, useRef, useCallback } from 'react';
 import AboutDialog from '../AboutDialog/AboutDialog';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,7 +27,8 @@ export default function Menu() {
 
   const handleSignOut = useCallback(() => {
     room.disconnect?.();
-    localTracks.forEach(track => track.stop());
+    // How TF do you kill a local data track?
+    localTracks.forEach(track => track.kind !== 'data' && track.stop());
     signOut?.();
   }, [room.disconnect, localTracks, signOut]);
 

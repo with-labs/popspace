@@ -20,7 +20,6 @@ const Footer = ({ classNames }: FooterProps) => {
   const [isAddAppOpen, setIsAddAppOpen] = useState(false)
 
   const onUrlSubmitHandler = (url:string) => {
-    console.log('HERE: ' + url)
     setIsAddAppOpen(false)
   }
 

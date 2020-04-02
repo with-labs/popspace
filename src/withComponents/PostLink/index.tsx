@@ -31,7 +31,6 @@ const PostLink = (props: PostLinkProps) => {
         <form onSubmit={onSubmitHandler}>
           <FormInput
             placeholderText={'Url'}
-            classNames={'JoinRo'}
             value={linkUrl}
             setValue={setLinkUrl}
           />

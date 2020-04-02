@@ -22,10 +22,12 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
   }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setToastActive(false)
-    }, 3000);
-    return () => clearTimeout(timer);
+    if (!toastActive) {
+      const timer = setTimeout(() => {
+        setToastActive(false)
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
   }, [toastActive]);
 
   return (

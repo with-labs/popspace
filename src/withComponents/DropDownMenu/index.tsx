@@ -8,19 +8,31 @@ type DropDownMenuProps = {
   buttonAltText: string;
   classNames?: string;
   children?: React.ReactNode;
+  onButtonClickHandler?: Function;
+  isOpenDirectionDown?: boolean;
+  isActive: boolean
 };
 
 const DropDownMenu = (props: DropDownMenuProps) => {
-  const { buttonSrc, buttonAltText, classNames, children } = props;
-  const [isActive, setIsActive] = useState(false);
+  const {
+    buttonSrc,
+    buttonAltText,
+    classNames,
+    children,
+    onButtonClickHandler,
+    isOpenDirectionDown,
+    isActive
+  } = props;
+
   const dropDownMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (dropDownMenuRef && dropDownMenuRef.current) {
         if (!dropDownMenuRef.current.contains(event.target)) {
-          // clicking outside of the dropdown menu so close it
-          setIsActive(false);
+          if (onButtonClickHandler && isActive) {
+            onButtonClickHandler();
+          }
         }
       }
     }
@@ -30,10 +42,12 @@ const DropDownMenu = (props: DropDownMenuProps) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropDownMenuRef]);
+  }, [dropDownMenuRef, onButtonClickHandler]);
 
   const onButtonClick = () => {
-    setIsActive(!isActive);
+    if (onButtonClickHandler) {
+      onButtonClickHandler();
+    }
   };
 
   return (
@@ -41,7 +55,14 @@ const DropDownMenu = (props: DropDownMenuProps) => {
       <div className="DropDownMenu-button" onClick={onButtonClick}>
         <img src={buttonSrc} alt={buttonAltText} />
       </div>
-      <div className={clsx('DropDownMenu-menu', { 'DropDownMenu-menu--inactive': !isActive })}>{children}</div>
+      <div className={clsx('DropDownMenu-menu', {
+        'is-active': isActive,
+        'DropDownMenu-menu--bottomOffset' : !isOpenDirectionDown,
+        'DropDownMenu-menu--topOffset': isOpenDirectionDown
+        })}
+      >
+        { children }
+      </div>
     </div>
   );
 };

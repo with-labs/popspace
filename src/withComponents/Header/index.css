@@ -4,6 +4,11 @@
   height: 80px;
   align-items: center;
   padding: 20px;
+
+  width: 100%;
+  top:0;
+  position:fixed;
+  z-index:150;
 }
 
 .Header-logo {
@@ -29,3 +34,77 @@
 .Header-controlSpace {
   margin-right: 20px;
 }
+
+.Header-btn {
+  outline: none;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  width: 140px;
+  height: 60px;
+  background: #DFECFF;
+  border: 2px solid #FFFFFF;
+  box-sizing: border-box;
+  border-radius: 30px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  color: #3586FF;
+
+  text-shadow: 0px 0px 8px #FFFFFF;
+}
+
+.Header-btn:active {
+  background-color: #b9c5ff;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.Header-toast {
+    color: #000;
+    line-height: 1.5;
+    margin-bottom: 1em;
+    padding: 1.25em;
+    position: absolute;
+    right: 20px;
+    top: 100px;
+    width: 325px;
+    border-radius: 15px;
+
+    background-color: #DFECFF;;
+    color: #3586FF;
+
+    transition: visibility 0s linear 0.33s, opacity 0.33s linear;
+    visibility: hidden;
+    opacity: 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+    user-select: none;
+}
+
+.Header-toast.is-active {
+  visibility: visible;
+  opacity: 1;      
+  transition-delay: 0s;
+}
+
+.Header-toastClose {
+  cursor: pointer;
+  float: right;
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-left: 1em;
+  opacity: .8;
+}
+
+.Header-currentUrl {
+  display: none;
+}
+
+

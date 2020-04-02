@@ -1,5 +1,5 @@
 .FormInput {
-  width: 500px;
+  width: 100%;
   height: 60px;
   display: flex;
   align-items: center;
@@ -29,6 +29,10 @@
   -moz-box-shadow: none;
   box-shadow: none;
   color: black;
+}
+
+.FormInput-input--imgOffset {
+  margin-left: 16px;
 }
 
 .FormInput-input:focus {

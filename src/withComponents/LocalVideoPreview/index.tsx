@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { LocalVideoTrack } from 'twilio-video';
-import VideoTrack from '../VideoTrack/VideoTrack';
+import VideoTrack from '../../components/VideoTrack/VideoTrack';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import clsx from 'clsx';
 import './index.css';

@@ -1,0 +1,54 @@
+.ParticipantCircle {
+  position: relative;
+  /* height: 250px;
+  width: 250px; */
+  height: 100%;
+  width: 100%;
+  /* padding-bottom: 0%; */
+  cursor: pointer;
+}
+
+.ParticipantCircle-participant {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ParticipantCircle-videoCircle {
+  border-radius: 50%;
+  object-fit: cover !important;
+  /* height: 250px !important;
+  width: 250px !important; */
+  height: 100%;
+  width: 100%;
+  border: 3px solid #ffffff;
+}
+
+.ParticipantCircle-infoOverlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(204, 204, 204, 0.5);
+  z-index: 1;
+  border-radius: 50%;
+  display: none;
+}
+
+.ParticipantCircle-infoOverlay.is-hovering {
+  display: flex;
+}
+
+.ParticipantCircle-overLayText {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 25px;
+  line-height: 24px;
+  user-select: none;
+}

@@ -16,6 +16,8 @@ import Controls from './components/Controls/Controls';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 import Room from './components/Room/Room';
 
+import CircleRoom from './withComponents/CircleRoom';
+
 import useRoomState from './hooks/useRoomState/useRoomState';
 
 const Container = styled('div')({
@@ -38,7 +40,11 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { roomName } = props;
   const roomState = useRoomState();
   const { user, getToken, isFetching } = useAppState();
-  const { isConnecting, connect } = useVideoContext();
+  const {
+    isConnecting,
+    connect,
+    room: { localParticipant },
+  } = useVideoContext();
 
   const onJoinSubmitHandler = (screenName: string, passcode: string) => {
     getToken(screenName, roomName, passcode).then(token => connect(token));
@@ -47,11 +53,15 @@ export default function AnglesApp(props: AnglesAppProps) {
   return (
     <Container>
       <Main>
-        <Header classNames="u-positionAbsolute" roomName={roomName} />
+        <Header
+          classNames="u-positionAbsolute"
+          roomName={roomName}
+          participantName={localParticipant && localParticipant.identity}
+        />
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
         ) : (
-          <Room />
+          <CircleRoom />
         )}
         <ReconnectingNotification />
         <Controls />

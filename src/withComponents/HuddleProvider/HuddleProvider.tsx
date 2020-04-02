@@ -170,12 +170,15 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
       // Send a ping to the other remotes when you see another remote data track published. This will sync the local
       // huddles state to the newly joined remote participant.
       if (pub.kind === 'data') {
-        localDT.send(
-          JSON.stringify({
-            type: 'HUDDLE_PING',
-            payload: { huddles, recipient: participant.sid, sender: room.localParticipant.sid },
-          })
-        );
+        // TODO hackfix to delay the ping for a moment while the remote client subscribes to data tracks.
+        setTimeout(() => {
+          localDT.send(
+            JSON.stringify({
+              type: 'HUDDLE_PING',
+              payload: { huddles, recipient: participant.sid, sender: room.localParticipant.sid },
+            })
+          );
+        }, 1000);
       }
     },
     [room, huddles, localDT]

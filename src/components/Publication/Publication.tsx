@@ -1,3 +1,10 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * Adding in classNames param
+ */
+
+
 import React from 'react';
 import useTrack from '../../hooks/useTrack/useTrack';
 import AudioTrack from '../AudioTrack/AudioTrack';
@@ -18,9 +25,10 @@ interface PublicationProps {
   isLocal: boolean;
   disableAudio?: boolean;
   videoPriority?: Track.Priority;
+  classNames?: string
 }
 
-export default function Publication({ publication, isLocal, disableAudio, videoPriority }: PublicationProps) {
+export default function Publication({ publication, isLocal, disableAudio, videoPriority, classNames }: PublicationProps) {
   const track = useTrack(publication);
 
   if (!track) return null;
@@ -32,6 +40,7 @@ export default function Publication({ publication, isLocal, disableAudio, videoP
           track={track as IVideoTrack}
           priority={videoPriority}
           isLocal={track.name === 'camera' && isLocal}
+          classNames={ classNames }
         />
       );
     case 'audio':

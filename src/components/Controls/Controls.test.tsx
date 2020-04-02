@@ -31,8 +31,9 @@ describe('the Controls component', () => {
     it('should render the ToggleScreenShare and EndCall buttons when connected to a room', () => {
       mockUseRoomState.mockImplementation(() => 'connected');
       const wrapper = shallow(<Controls />);
-      expect(wrapper.find('ToggleScreenShareButton').exists()).toBe(true);
-      expect(wrapper.find('EndCallButton').exists()).toBe(true);
+      // NOTE: our app doesn't have these, so sommenting out the assertions.
+      // expect(wrapper.find('ToggleScreenShareButton').exists()).toBe(true);
+      // expect(wrapper.find('EndCallButton').exists()).toBe(true);
     });
 
     it('should disable the ToggleAudio, ToggleVideo, and ToggleScreenShare buttons when reconnecting to a room', () => {
@@ -40,7 +41,8 @@ describe('the Controls component', () => {
       const wrapper = shallow(<Controls />);
       expect(wrapper.find('ToggleAudioButton').prop('disabled')).toBe(true);
       expect(wrapper.find('ToggleVideoButton').prop('disabled')).toBe(true);
-      expect(wrapper.find('ToggleScreenShareButton').prop('disabled')).toBe(true);
+      // NOTE: our app doesn't have this, so sommenting out the assertions.
+      // expect(wrapper.find('ToggleScreenShareButton').prop('disabled')).toBe(true);
     });
   });
 

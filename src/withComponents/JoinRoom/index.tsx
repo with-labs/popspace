@@ -51,7 +51,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
         />
         <button
           type="submit"
-          className={clsx('JoinRoom-button', { 'JoinRoom-button--inactive': screenName.length === 0 })}
+          className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}
         >
           Join Room
         </button>

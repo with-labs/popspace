@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import './index.css';
 
 type FormInputProps = {
-  imgSrc: any;
-  imgAltText: string;
+  imgSrc?: any;
+  imgAltText?: string;
   placeholderText: string;
   classNames?: string;
   value: any;
@@ -13,12 +13,14 @@ type FormInputProps = {
 };
 
 const FormInput = ({ imgSrc, imgAltText, placeholderText, classNames, value, setValue, type }: FormInputProps) => {
+  const inputIcon = imgSrc ? <img className="FormInput-img" src={imgSrc} alt={imgAltText} /> : null
+
   return (
     <div className={clsx('FormInput', classNames)}>
-      <img className="FormInput-img" src={imgSrc} alt={imgAltText} />
+      { inputIcon }
       <input
         type={type ? type : 'text'}
-        className="FormInput-input"
+        className={ clsx('FormInput-input', {'FormInput-input--imgOffset' : !imgSrc }) }
         placeholder={placeholderText}
         value={value}
         onChange={e => {

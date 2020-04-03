@@ -1,2 +1,18 @@
 .Footer {
+  display: flex;
+  flex-direction: row;
+  height: 80px;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  bottom:0;
+  position:fixed;
+  z-index:150;
+}
+
+.Footer-btn {
+  margin-left: auto;
+  cursor: pointer;
+  height: 60px;
+  width: 60px;
 }

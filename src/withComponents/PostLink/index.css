@@ -1,0 +1,53 @@
+.PostLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 60px;
+  margin-bottom: 30px;
+}
+
+.PostLink-img {
+  height: 60px;
+  width: 60px;
+}
+
+.PostLink-text {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 27px;
+  text-align: center;
+  color: #303030;
+}
+
+.PostLink-form {
+  width: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 30px;
+}
+
+.PostLink-button {
+  cursor: pointer;
+  margin-top: 60px;
+  width: 100%;
+  height: 60px;
+  border-radius: 3px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+
+  background-color: #b9c5ff;
+  box-shadow: 0px 2px 6px rgba(160, 160, 160, 0.12), 0px 6px 32px rgba(160, 160, 160, 0.25);
+}
+
+.PostLink-button.is-inactive {
+  cursor: default;
+  background-color: #b9c5ff;
+  color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+}

@@ -18,7 +18,23 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
   const [toastActive, setToastActive] = useState(false)
 
   const onCopyLinkClicked = () => {
+    // work around limitiation of copy to clipboard
+    // we create an element, then add it to the dom
+    var input = document.createElement("input");
+    document.body.appendChild(input);
+    // set the current window location to its value
+    input.value = window.location.href;
+    // selected it
+    input.select();
+    // fire off the copy exec command
+    document.execCommand("copy");
+    // remove the input from the dom
+    document.body.removeChild(input);
+    
+    // if we dont have a toast open, set one active
+    if (!toastActive) {
       setToastActive(true)
+    }
   }
 
   useEffect(() => {
@@ -33,7 +49,7 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
   return (
     <header className={clsx('Header', classNames)}>
       <div>
-        <img className='Header-logo' src={AnglesLogo} />
+        <img className='Header-logo' alt='header-logo' src={AnglesLogo} />
         <div className='Header-text'>{roomName ? roomName : ''}</div>
       </div>
       {roomState === 'disconnected' ? null : (

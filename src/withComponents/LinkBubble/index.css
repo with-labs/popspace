@@ -1,0 +1,11 @@
+.LinkBubble {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.LinkBubble-img {
+  height: 30px;
+  width: 30px;
+}

@@ -8,7 +8,7 @@ export function getPasscode() {
 }
 
 export function fetchToken(name: string, room: string, passcode?: string) {
-  return fetch(`/token`, {
+  return fetch(`/.netlify/functions/token`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',

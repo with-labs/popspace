@@ -147,7 +147,9 @@ describe('the verifyPasscode function', () => {
 
   it('should return the correct response when the passcode is invalid', async () => {
     // @ts-ignore
-    window.fetch = jest.fn(() => Promise.resolve({ status: 401, json: () => ({ error: {message:'errorMessage' }}) }));
+    window.fetch = jest.fn(() =>
+      Promise.resolve({ status: 401, json: () => ({ error: { message: 'errorMessage' } }) })
+    );
 
     const result = await verifyPasscode('123456');
     expect(result).toEqual({ isValid: false, error: 'errorMessage' });
@@ -155,7 +157,7 @@ describe('the verifyPasscode function', () => {
 
   it('should call the API with the correct parameters', async () => {
     await verifyPasscode('123456');
-    expect(window.fetch).toHaveBeenLastCalledWith('/token', {
+    expect(window.fetch).toHaveBeenLastCalledWith('/.netlify/functions/token', {
       body: '{"user_identity":"temp-name","room_name":"temp-room","passcode":"123456"}',
       headers: { 'content-type': 'application/json' },
       method: 'POST',

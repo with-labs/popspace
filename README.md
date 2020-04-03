@@ -9,21 +9,12 @@
 * Don't worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship
 * the main focus is having a good and presentable app, we can fix our code when we move off of twilio
 
-# Twilio Video React App
-
-[![CircleCI](https://circleci.com/gh/twilio/twilio-video-app-react.svg?style=svg)](https://circleci.com/gh/twilio/twilio-video-app-react)
+# With React App
+Hacked version of the Twilio Sample Video Application that now is deployed to Netlify and uses Netlify's serverless functions.
 
 ## What is it
 
 This application demonstrates a multi-party video application built with [twilio-video.js](https://github.com/twilio/twilio-video.js) and [Create React App](https://github.com/facebook/create-react-app).
-
-* Deploy to [Twilio Serverless](https://www.twilio.com/docs/runtime/functions-assets-api) in just a few minutes
-* No other infrastructure is required
-* No code changes are required before your first deploy
-* There is no cost associated with deploying the app
-* When using the app, you will be charged [$0.01 / video participant minute](https://www.twilio.com/video/pricing).
-
-![App Preview](https://user-images.githubusercontent.com/12685223/76361972-c035b700-62e5-11ea-8f9d-0bb24bd73fd4.png)
 
 ## Pre-requisites
 
@@ -31,91 +22,58 @@ You must have the following installed:
 
 * [Node.js v10+](https://nodejs.org/en/download/)
 * NPM v6+ (comes installed with newer Node versions)
+* Netlify CLI - [docs](https://docs.netlify.com/cli/get-started/)
+  * Install the CLI (see below)
+  * Authenticate with Netlify (see below)
+  * Connect your local repo (see below)
 
-## Install Twilio CLI
+## Installation and setup details
 
-The app is deployed to Twilio using the Twilio CLI. Install twilio-cli with
+### NPM Install the project
 
-    $ npm install -g twilio-cli
+From the root of the project, run `npm install`.
 
-### Install the forked Twilio CLI plugin for local development
+### Install Netlify CLI
 
-The following step will install the plugin from a local directory. This is
-necessary because we are using a forked and modified version of the Twilio
-plugin-rtc (@twilio-labs/plugin-rtc).
+The app is deployed to Netlify using the Netlify CLI. Install netlify-cli with
 
-```sh-session
-$ git clone git@github.com:brentwalter/plugin-rtc.git
-$ twilio plugins:link /path/to/plugin-rtc
-```
+    $ npm install -g netlify-cli
 
-## Deploy the app to Twilio
+### Authenticate with our Netlify Account
 
-### Deploy the app to Twilio, DEVELOPMENT environment
+Contact Brent to get an invite into our team. That will enable you to [login to Netlify via the CLI](https://docs.netlify.com/cli/get-started/#authentication):
 
-The app is deployed to Twilio with a single command:
+`netlify login`
 
-    $ npm run deploy:dev
+### Connect your local repo to Netlify
 
-This performs the following steps:
+You'll need to [connect your local code to our app that is registered inside Netlify](https://docs.netlify.com/cli/get-started/#automated-setup). Here's the command:
 
-* Builds the React app in the `src` directory
-* Deploys the React app and token server function as a Twilio Serverless service in the "dev" environment.
-* Prints the URL for the app.
+`netlify init`
 
-To redeploy the app and override an existing deployment use:
+### Development locally
 
-    $ npm run deploy:dev -- --override
+With Netlify CLI installed globally, you only need to run two commands. The first is to build the React app. The second is to activate the Netlify development environment, which will run a server to host the React app with hot-reload, PLUS server the token server.
 
-### Deploy the app to Twilio, PRODUCTION environment
+*There is a convenience npm script to do both at once: `npm run dev`*
 
-    $ npm run deploy:prod -- --override
+1) Build the React app: `npm run build`
+2) Activate Netlify dev environment: `netlify dev`
 
-This performs the following steps:
+### Deploy the app and token serverless function to Netlify
 
-* Builds the React app in the `src` directory
-* Deploys the React app and token server function as a Twilio Serverless service in the "prod" environment.
+There is no need to do manual deploys to Netlify. When code is merged into the `dev` or `master` branches, Netlify will make a build and deploy to the associated branch's environment (dev->dev, master->production).
 
-## View app details
-
-View the URL and passcode for the Video app with
-
-     $ twilio rtc:apps:video:view
-
-## Delete the app
-
-Delete the app with
-
-    $ twilio rtc:apps:video:delete
-
-This removes the Serverless app from Twilio. This will ensure that no further cost are incurred by the app.
-
-## Features
-
-The Video app has the following features:
-
-- [x] Video conferencing with real-time video and audio
-- [x] Enable/disable camera
-- [x] Mute/unmute mic
-- [x] Screen sharing
-- [x] [Dominant speaker](https://www.twilio.com/docs/video/detecting-dominant-speaker) indicator
-- [x] [Network quality](https://www.twilio.com/docs/video/using-network-quality-api) indicator
-- [x] [Bandwidth Profile API](https://www.twilio.com/docs/video/tutorials/using-bandwidth-profile-api)
-
-## Browser Support
-
-See browser support table for [twilio-video.js SDK](https://github.com/twilio/twilio-video.js/tree/master/#browser-support).
+You can do manual deploys directly from your local repo without merging code to a branch. Do so at your own risk. Here are the [docs](https://docs.netlify.com/cli/get-started/#manual-deploys).
 
 ## Deeper dive
 
-### Running a local token server
+### Running a local token serverless function
 
-This application requires an access token to connect to a Room. The included local token [server](server.js) provides the application with access tokens. Perform the following steps to setup the local token server:
+This application requires a Twilio access token to connect to a Twilio Video Room. The included local token [server](functions/token.js) provides the application with access tokens from Twilio. By default, the Netlify CLI will use the Twilio keys that stored inside the Netlify admin panel's environment variables tool. However, you can override those Twilio API keys and use others if you like. See details below:
 
-- Create an account in the [Twilio Console](https://www.twilio.com/console).
-- Click on 'Settings' and take note of your Account SID.
-- Create a new API Key in the [API Keys Section](https://www.twilio.com/console/video/project/api-keys) under Programmable Video Tools in the Twilio Console. Take note of the SID and Secret of the new API key.
 - Store your Account SID, API Key SID, and API Key Secret in a new file called `.env` in the root level of the application (example below).
+- When Netlify boots up its development environment, it will use your local keys instead of the ones inside our Netlify admin panel.
 
 ```
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -123,22 +81,25 @@ TWILIO_API_KEY_SID=SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 TWILIO_API_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-Now the local token server (see [server.js](server.js)) can dispense Access Tokens to connect to a Room.
-
 ### Running the App locally
 
 Run the app locally with
 
-    $ npm start
+    $ npm run dev
 
-This will start the local token server and run the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to see the application in the browser.
+This will build the React app and start the local token serverless function. The React app is hosted at [http://localhost:3000](http://localhost:3000), and the token serverless function is available at [http://localhost:8888](http://localhost:8888). You should access the appliation at [http://localhost:8888](http://localhost:8888), because the Netlify development environment will proxy requests for the React app from port `8888` to `3000`.
+
+*Please remember that you need to use the `?r=roomName` query param*
+So the correct URL to visit the app locally is:
+
+`http://localhost:8888?r=roomName`
+
+You can find the passcodes for the whitelisted room names here: [/functions/token.js](/functions/tokens.js). Look for the constant `ROOM_WHITELIST_PASSCODES`.
 
 The page will reload if you make changes to the source code in `src/`.
-You will also see any linting errors in the console. Start the token server locally with
+You will also see any linting errors in the console.
 
-    $ npm run server
-
-The token server runs on port 8081 and expects a `POST` request at the `/token` route with the following JSON body:
+The token server runs on port 8888 and expects a `POST` request at the `/.netlify/functions/token` route with the following JSON body:
 
 ```
 {
@@ -155,15 +116,15 @@ Try it out with this sample `curl` command:
 ```
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"user_identity":"xyz","passcode":"abc", "room_name":"dev"}' \
-  http://localhost:8081/token
+  --data '{"user_identity":"xyz","passcode":"92cd6c0cdd0b323ab88329e9f12cb17c", "room_name":"dev"}' \
+  http://localhost:8888/.netlify/functions/token
 ```
 
-*The local token server does not have a room_name white list nor passcode verification. So, you can use any room name and any passcode*
+*The local token serverless function uses a room_name white list and passcode verification. So, you must use a whitelisted room name and associated passcode.*
 
 ### Multiple Participants in a Room
 
-If you want to see how the application behaves with multiple participants, you can simply open `localhost:3000` in multiple tabs in your browser and connect to the same room using different user names.
+If you want to see how the application behaves with multiple participants, you can simply open `localhost:8888` in multiple tabs in your browser and connect to the same room using different user names.
 
 Additionally, if you would like to invite other participants to a room, each participant would need to have their own installation of this application and use the same room name and Account SID (the API Key and Secret can be different).
 

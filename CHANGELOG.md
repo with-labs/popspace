@@ -1,3 +1,12 @@
+## 1.0.0
+
+This release includes the changes to migrate off of Twilio's serverless Functions to Netlify's global CDN and serverless functions. It required all new tooling for local builds, local development and deployments. The README was updated to reflect the latest workflows.
+
+- Update all local dev and build tools to use Netlify CLI
+- Modify request routing from `/token` to `/.netlify/functions/token`
+- Add configuration files to support Netlify, namely netlify.toml
+- Write a new token server to work with Netlilfy. It still talks to Twilio to get the auth tokens
+
 ## 0.4.0
 
 Post demo tweaks.

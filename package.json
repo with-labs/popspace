@@ -1,6 +1,6 @@
 {
-  "name": "twilio-video-app-react",
-  "version": "0.1.0",
+  "name": "with-app",
+  "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
@@ -62,13 +62,12 @@
     ]
   },
   "scripts": {
-    "start": "cross-env REACT_APP_SET_AUTH=passcode concurrently npm:server npm:dev",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "cross-env REACT_APP_SET_AUTH=passcode react-scripts start",
+    "build": "cross-env REACT_APP_SET_AUTH=passcode react-scripts build",
+    "dev": "npm run build && netlify dev",
     "test": "jest",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx}",
-    "server": "node server.js",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser chrome",

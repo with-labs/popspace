@@ -1,3 +1,7 @@
+## 1.1.0
+
+Updating static HTML to show better summary description when link is shared.
+
 ## 1.0.0
 
 This release includes the changes to migrate off of Twilio's serverless Functions to Netlify's global CDN and serverless functions. It required all new tooling for local builds, local development and deployments. The README was updated to reflect the latest workflows.

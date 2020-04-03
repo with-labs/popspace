@@ -1,0 +1,42 @@
+/* dissolve control is 60px circle positioned in the middle of the huddle circle */
+.dissolveControl {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #57d8ff;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  font-size: 32px;
+}
+
+/*
+  Participant bubble is a circle with grayish background. Sizes etc... are set directly in the CirleRoom component.
+*/
+.participantBubble {
+  border-radius: 50%;
+  background-color: gainsboro;
+  overflow: hidden;
+}
+
+/*
+  Huddle participant bubble needs absolute positioning.
+  The size of the circle and the transforms to put in the correct position in the huddle circle are set as
+  properties on the component in the CircleRoom component.
+*/
+.huddleParticipantBubble {
+  position: absolute;
+}
+
+/*
+  Huddle bubble is a bubble with participant bubbles absolutely positioned in a circluar pattern inside it. The size
+  of the huddle bubble is set directly onto the React component in the CircleRoom component.
+*/
+.huddleBubble {
+  position: relative;
+  border-radius: 50%;
+  background-color: grey;
+}

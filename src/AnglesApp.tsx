@@ -14,7 +14,6 @@ import useVideoContext from './hooks/useVideoContext/useVideoContext';
 
 import Controls from './components/Controls/Controls';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-import Room from './components/Room/Room';
 
 import CircleRoom from './withComponents/CircleRoom';
 
@@ -39,9 +38,8 @@ type AnglesAppProps = {
 export default function AnglesApp(props: AnglesAppProps) {
   const { roomName } = props;
   const roomState = useRoomState();
-  const { user, getToken, isFetching } = useAppState();
+  const { getToken } = useAppState();
   const {
-    isConnecting,
     connect,
     room: { localParticipant },
   } = useVideoContext();

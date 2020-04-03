@@ -1,3 +1,27 @@
+## 0.4.0
+
+Post demo tweaks.
+
+- Remove the dominant speaker shuffling from the `useParticipants` custom hook. This will make the ordering of bubbles stable.
+- Make the local participant's bubble first in the list of non-huddle participants.
+- Make the local participant's huddle first in the list of huddles.
+- Change huddle circle participant rotation angle to put local participant closer to the left side of circle.
+- Increase difference in size between local participant bubble and other floaters.
+- Increase difference in size between local huddle and other huddles.
+- Tweaked some of the bubble size. Still needs a lot of thought put into it.
+- Update HuddleProvider#inviteToHuddle to allow a participant to hop from one huddle to another.
+- Update HuddleProvider to include functionality to dissolve a huddle.
+- Include control in huddle cicles to dissolve the huddle if local participant is in the huddle
+- Center the CircleRoom inside AnglesApp and give it a max width.
+
+## 0.3.0
+
+WIP: Demo UI for huddles and participants.
+
+- CircleRoom component to sort room participants into huddle groups and a list of non-huddling participants.
+- Circle layout grouping for participants in a huddle.
+- Most of the styling included in this release needs love. Will revisit at a later date.
+
 ## 0.2.0
 
 This release includes the addition of "huddles" to a room.

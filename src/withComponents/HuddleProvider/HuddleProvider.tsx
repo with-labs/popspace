@@ -28,6 +28,7 @@ export interface IHuddlesContext {
   leaveHuddle: () => void;
   removeFromHuddle: (huddleId: string, remoteSid: string) => void;
   inviteToHuddle: (inviteeSid: string) => void;
+  dissolveHuddle: (huddleId: string) => void;
 }
 
 export const HuddleContext = createContext<IHuddlesContext>(null!);
@@ -97,7 +98,15 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
           case 'HUDDLE_INVITE': {
             // New huddles mapping updated with current pts in the huddle
             const newHuddles = { ...huddles };
-            payload.with.forEach((pt: string) => (newHuddles[pt] = payload.huddleId));
+            payload.with.forEach((pt: string) => {
+              newHuddles[pt] = payload.huddleId;
+
+              // If the invited participant was already in a huddle, make sure that their previous huddle
+              // still has at least two participants.
+              if (huddles[pt]) {
+                ensureHuddleMembership(huddles[pt], newHuddles);
+              }
+            });
 
             // Set the huddles state
             setHuddles(newHuddles);
@@ -115,6 +124,18 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
             ensureHuddleMembership(payload.huddleId, newHuddles);
 
             // Set the huddles state
+            setHuddles(newHuddles);
+            break;
+          }
+
+          case 'HUDDLE_DISSOLVE': {
+            const newHuddles = { ...huddles };
+            Object.keys(huddles).forEach(sid => {
+              if (huddles[sid]) {
+                delete newHuddles[sid];
+              }
+            });
+
             setHuddles(newHuddles);
             break;
           }
@@ -264,22 +285,29 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
   const inviteToHuddle = (inviteeSid: string) => {
     // Can't invite yourself to a huddle. No-op if that is attempted.
     if (inviteeSid !== room.localParticipant.sid) {
-      // Three cases:
+      // Four cases:
       // 1. Local is in a huddle and wants to add a remote pt to that huddle
       // 2. Remote pt is in a huddle and the local wants to drop in on that huddle
       // 3. Neither local nor remote are in huddle and they are starting a new huddle
+      // 4. Local pt is hopping from huddle to huddle
       const newHuddles = { ...huddles };
       let huddleId = '';
       if (huddles[room.localParticipant.sid] && !huddles[inviteeSid]) {
         huddleId = huddles[room.localParticipant.sid];
-        newHuddles[inviteeSid] = huddles[room.localParticipant.sid];
+        newHuddles[inviteeSid] = huddleId;
       } else if (huddles[inviteeSid] && !huddles[room.localParticipant.sid]) {
         huddleId = huddles[inviteeSid];
-        newHuddles[room.localParticipant.sid] = huddles[inviteeSid];
+        newHuddles[room.localParticipant.sid] = huddleId;
       } else if (!huddles[room.localParticipant.sid] && !huddles[inviteeSid]) {
         huddleId = uuid();
         newHuddles[room.localParticipant.sid] = huddleId;
         newHuddles[inviteeSid] = huddleId;
+      } else if (huddles[room.localParticipant.sid] && huddles[inviteeSid]) {
+        huddleId = huddles[inviteeSid];
+        newHuddles[room.localParticipant.sid] = huddleId;
+
+        // Since the local pt is hopping between huddles, make sure their previous huddle has 2+ pts.
+        ensureHuddleMembership(huddles[room.localParticipant.sid], newHuddles);
       }
 
       // Presence of a huddle id means that there are things to update
@@ -298,8 +326,26 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
     }
   };
 
+  const dissolveHuddle = (huddleId: string) => {
+    // Can only dissolve a huddle you are part of.
+    if (huddleId === huddles[room.localParticipant.sid]) {
+      const newHuddles = { ...huddles };
+      Object.keys(huddles).forEach(sid => {
+        if (huddles[sid] === huddleId) {
+          delete newHuddles[sid];
+        }
+      });
+
+      // Update huddles state.
+      setHuddles(newHuddles);
+
+      // Broadcast message to remotes to tell them which huddle was dissolved.
+      localDT.send(JSON.stringify({ type: 'HUDDLE_DISSOLVE', payload: huddleId }));
+    }
+  };
+
   return (
-    <HuddleContext.Provider value={{ huddles, leaveHuddle, removeFromHuddle, inviteToHuddle }}>
+    <HuddleContext.Provider value={{ huddles, leaveHuddle, removeFromHuddle, inviteToHuddle, dissolveHuddle }}>
       {children}
     </HuddleContext.Provider>
   );

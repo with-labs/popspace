@@ -15,3 +15,11 @@
 .u-flexWrap {
   flex-wrap: wrap;
 }
+
+.u-flexJustifyAround {
+  justify-content: space-around;
+}
+
+.u-flexJustifyCenter {
+  justify-content: center;
+}

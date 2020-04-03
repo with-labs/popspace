@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import clsx from 'clsx';
 import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 
@@ -7,10 +7,11 @@ import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext'
 
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useAudioTrackBlacklist from '../../withHooks/useAudioTrackBlacklist/useAudioTrackBlacklist';
+import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import ParticipantCircle from '../ParticipantCircle';
 
-import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import styles from './CircleRoom.module.css';
 
 const CircleRoom = () => {
   const {
@@ -23,7 +24,7 @@ const CircleRoom = () => {
   const disabledAudioSids = useAudioTrackBlacklist();
 
   // Need the sid: huddle map and huddle mutators.
-  const { huddles: hudMap, inviteToHuddle, removeFromHuddle, leaveHuddle } = useHuddleContext();
+  const { huddles: hudMap, inviteToHuddle, removeFromHuddle, leaveHuddle, dissolveHuddle } = useHuddleContext();
 
   // Get the local participant's huddle, if they are in one.
   const localHuddle = hudMap[localParticipant.sid];
@@ -53,26 +54,27 @@ const CircleRoom = () => {
   if (localHuddle && huddleGroups[localHuddle]) {
     huddleGroups[localHuddle].push(localParticipant);
   } else {
-    floaters.push(localParticipant);
+    // Make sure the local participant is first in the list of floaters.
+    floaters.unshift(localParticipant);
   }
 
-  const [width, height] = useWindowSize();
-
+  // TODO revisit how to figure out how big a bubble should be.
   // Note that we have to add 1 to the length of the participant list to account for the local participant.
-  // This could use some work to decide how big bubbles should be. This method makes the bubbles a bit small once
-  // there are more than 3 or 4 bubbles.
-  const bubbleAreaSize = Math.min(width, height) / (participantList.length + 1);
+  const [width, height] = useWindowSize();
+  const bubbleAreaSize = Math.min(width / 5, height);
 
   // The `bubbleSize` differs from `bubbleAreaSize` in that the bubbleAreaSize is the portion of the screen allocated
   // for a bubble, while bubbleSize is the size of the bubble inside that allocated space.
   const bubbleSize = bubbleAreaSize * 0.75;
 
   // Iterate through the huddle groups to build up the UI components for each huddle.
-  const huddleBubbles = Object.keys(huddleGroups).map(huddleId => {
+  const huddleBubbles: ReactNode[] = [];
+  Object.keys(huddleGroups).forEach(huddleId => {
     const huddle = huddleGroups[huddleId];
+    const isLocalHuddle = huddleId === localHuddle;
 
     // If this huddle contains the local participant, make the bubbles bigger
-    const huddlePtBubbleSize = huddleId === localHuddle ? bubbleSize * 1.25 : bubbleSize;
+    const huddlePtBubbleSize = huddleId === localHuddle ? bubbleSize * 1.5 : bubbleSize;
 
     // `angleOffset` is for rotate transform below that arrages participant bubbles in a circle.
     const angleOffset = 360 / huddle.length;
@@ -84,18 +86,16 @@ const CircleRoom = () => {
 
     // Iterate over the huddle participants and build up the array participant bubbles.
     const ptBubbles = huddle.map((pt, idx) => {
-      // `ptRotate` is how far to rotate the bubble inside the huddle circle.
-      const ptRotate = angleOffset * idx;
+      // `ptRotate` is how far to rotate the bubble inside the huddle circle. This is equal to the angle offset for
+      // each child bubble + 270 degrees. Adding 270 puts the local participant closer to the left hand side of the
+      // bubble.
+      const ptRotate = angleOffset * idx + 270;
       const bubStyle = {
         transform: `rotate(${ptRotate}deg) translate(0, ${huddleRadius}px) rotate(-${ptRotate}deg)`,
         top: huddleRadius,
         left: huddleRadius,
         height: huddlePtBubbleSize,
         width: huddlePtBubbleSize,
-        borderRadius: '50%',
-        backgroundColor: 'blue',
-        position: 'absolute',
-        overflow: 'hidden',
       };
 
       return (
@@ -103,7 +103,7 @@ const CircleRoom = () => {
           key={pt.sid}
           // @ts-ignore
           style={bubStyle}
-          className={clsx({ blur: localHuddle !== huddleId })}
+          className={clsx(styles.huddleParticipantBubble, styles.participantBubble, { blur: localHuddle !== huddleId })}
           onClick={() => {
             pt.sid === localParticipant.sid ? leaveHuddle() : removeFromHuddle(huddleId, pt.sid);
           }}
@@ -118,22 +118,35 @@ const CircleRoom = () => {
       );
     });
 
-    // Put the participant bubbles inside the huddle circle area.
-    return (
+    // For local huddles, we will include a control to dissolve the huddle.
+    const dissolveControl = isLocalHuddle ? (
+      <button onClick={() => dissolveHuddle(huddleId)} className={styles.dissolveControl}>
+        &times;
+      </button>
+    ) : null;
+
+    // Huddle bubble.
+    const huddleBubble = (
       <div
         key={huddleId}
-        className="HuddleBubble"
+        className={styles.huddleBubble}
         style={{
-          position: 'relative',
           height: huddleAreaSize,
           width: huddleAreaSize,
-          borderRadius: '50%',
-          backgroundColor: 'grey',
         }}
       >
         {ptBubbles}
+        {dissolveControl}
       </div>
     );
+
+    // Put the participant bubbles inside the huddle circle area and add the huddle bubble to the list of huddles.
+    // If it's a huddle including the local participant, make it first in the list of huddles.
+    if (isLocalHuddle) {
+      huddleBubbles.unshift(huddleBubble);
+    } else {
+      huddleBubbles.push(huddleBubble);
+    }
   });
 
   // `topPadding` is the amount of padding to add to the top of a participant bubble. Participant bubbles on odd
@@ -141,27 +154,26 @@ const CircleRoom = () => {
   const topPadding = bubbleAreaSize - bubbleSize;
   // Iterate through the floaters to build up a list of participant bubbles to render below the huddles.
   const floaterBubbles = floaters.map((pt, idx) => {
-    // If local participant is not in a huddle, we want to make the bubble a little bigger.
-    const adjustedBubbleSize = pt.sid === localParticipant.sid && !localHuddle ? bubbleSize * 1.25 : bubbleSize;
+    // If local participant, we want to make the bubble a little bigger.
+    const isLocal = pt.sid === localParticipant.sid;
+    const adjustedBubbleSize = isLocal ? bubbleSize * 1.25 : bubbleSize;
+    const adjustedBubbleAreaSize = isLocal ? adjustedBubbleSize * 1.15 : bubbleAreaSize;
     return (
       <div
         key={pt.sid}
         style={{
-          height: bubbleAreaSize,
-          width: bubbleAreaSize,
+          height: adjustedBubbleAreaSize,
+          width: adjustedBubbleAreaSize - topPadding / 2,
           // Tried to get fancy with it, but there just wasn't enough variation in bubble placement.
-          // paddingTop: Math.pow(Math.random(), floaters.length) * basePadding,
-          paddingTop: idx % 2 === 0 && participantList.length > 0 ? topPadding : 0,
+          // paddingTop: Math.pow(Math.random(), floaters.length) * topPadding,
+          paddingTop: idx % 2 !== 0 && participantList.length > 0 ? topPadding : 0,
         }}
       >
         <div
-          className={clsx({ blur: localHuddle })}
+          className={clsx(styles.participantBubble, { blur: localHuddle })}
           style={{
             height: adjustedBubbleSize,
             width: adjustedBubbleSize,
-            borderRadius: '50%',
-            backgroundColor: 'blue',
-            overflow: 'hidden',
           }}
         >
           <ParticipantCircle
@@ -175,9 +187,12 @@ const CircleRoom = () => {
   });
 
   return (
-    <div style={{ height: '100%', width: '100%', marginTop: '100px' }}>
-      <div className="u-flex u-flexWrap">{huddleBubbles}</div>
-      <div className="u-flex u-flexWrap">{floaterBubbles}</div>
+    <div
+      className="u-flex u-flexWrap u-flexJustifyCenter"
+      style={{ marginTop: '100px', maxWidth: '100vw', maxHeight: '100vh' }}
+    >
+      <div className="u-flex u-flexWrap u-flexJustifyAround">{huddleBubbles}</div>
+      <div className="u-flex u-flexWrap u-flexJustifyAround">{floaterBubbles}</div>
     </div>
   );
 };

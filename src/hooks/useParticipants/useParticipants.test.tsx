@@ -1,3 +1,9 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * Removed tests for dominant speaker shuffling, since that got removed from `useParticipants`
+ */
+
 import { act, renderHook } from '@testing-library/react-hooks';
 import EventEmitter from 'events';
 import useDominantSpeaker from '../useDominantSpeaker/useDominantSpeaker';
@@ -43,25 +49,6 @@ describe('the useParticipants hook', () => {
       mockRoom.emit('participantDisconnected', 'participant1');
     });
     expect(result.current).toEqual(['participant2']);
-  });
-
-  it('should reorder participants when the dominant speaker changes', () => {
-    mockRoom.participants = new Map([
-      [0, 'participant1'],
-      [1, 'participant2'],
-      [2, 'participant3'],
-    ]);
-    const { result, rerender } = renderHook(useParticipants);
-    expect(result.current).toEqual(['participant1', 'participant2', 'participant3']);
-    mockUseDominantSpeaker.mockImplementation(() => 'participant2');
-    rerender();
-    expect(result.current).toEqual(['participant2', 'participant1', 'participant3']);
-    mockUseDominantSpeaker.mockImplementation(() => 'participant3');
-    rerender();
-    expect(result.current).toEqual(['participant3', 'participant2', 'participant1']);
-    mockUseDominantSpeaker.mockImplementation(() => null);
-    rerender();
-    expect(result.current).toEqual(['participant3', 'participant2', 'participant1']);
   });
 
   it('should clean up listeners on unmount', () => {

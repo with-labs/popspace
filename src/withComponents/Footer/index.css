@@ -8,10 +8,10 @@
   bottom:0;
   position:fixed;
   z-index:150;
+  justify-content: flex-end;
 }
 
 .Footer-btn {
-  margin-left: auto;
   cursor: pointer;
   height: 60px;
   width: 60px;

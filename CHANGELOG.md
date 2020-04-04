@@ -1,3 +1,6 @@
+## 1.2.0
+fixing footer to allow user to click on the on user controls
+
 ## 1.1.0
 
 Updating static HTML to show better summary description when link is shared.

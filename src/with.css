@@ -23,3 +23,7 @@
 .u-flexJustifyCenter {
   justify-content: center;
 }
+
+.u-flexAlignCenter {
+  align-items: center;
+}

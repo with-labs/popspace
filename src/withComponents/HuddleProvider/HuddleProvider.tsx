@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback, createContext, ReactNode } from 'react';
-import { LocalDataTrack } from 'twilio-video';
 import { v4 as uuid } from 'uuid';
 
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+
+import { useLocalDataTrack } from '../../withHooks/useLocalDataTrack/useLocalDataTrack';
 
 /**
  * Type to define the huddle state maintained in the huddle context by the HuddleProvider.
@@ -77,10 +78,10 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
   // Grab the `room` and `localTracks` properties of the video context.
   // `room` is necessary to set up listeners for room events and to get info about the local participant.
   // `localTracks` is necessary to get a reference to data tracks used to sync huddle state across clients.
-  const { room, localTracks } = useVideoContext();
+  const { room } = useVideoContext();
 
   // For now, assume that we always have a data track, since the `useLocalTracks` hook creates one automatically.
-  const localDT = localTracks.filter(track => track.kind === 'data')[0] as LocalDataTrack;
+  const localDT = useLocalDataTrack();
 
   // huddles state to maintain mapping of { participantSid: huddleId }
   const [huddles, setHuddles] = useState<HuddlesState>({});
@@ -188,9 +189,12 @@ export function HuddleProvider({ children }: IHuddleProviderProps) {
       // When a track is published, reconcile audio again
       // reconcileAudio(room, huddles);
 
+      // Only want to ping the remote participants if there are huddles to share.
+      const hasHuddles = Object.keys(huddles).length;
+
       // Send a ping to the other remotes when you see another remote data track published. This will sync the local
       // huddles state to the newly joined remote participant.
-      if (pub.kind === 'data') {
+      if (hasHuddles && pub.kind === 'data') {
         // TODO hackfix to delay the ping for a moment while the remote client subscribes to data tracks.
         setTimeout(() => {
           localDT.send(

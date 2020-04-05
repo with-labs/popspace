@@ -1,4 +1,14 @@
+## 1.3.0
+
+Hyperlink widget.
+
+- WidgetProvider and WidgetContext for widget state and syncing widget state updates to remote participants.
+- Widget bubbles in CirleRoom component.
+- Plumb the `addWidget` mutator function into the Footer component "post link" form.
+- Custom hook to get the local participant's data track.
+
 ## 1.2.0
+
 fixing footer to allow user to click on the on user controls
 
 ## 1.1.0

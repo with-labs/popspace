@@ -1,3 +1,8 @@
+## 1.4.0
+
+- `usePasscodeAuth#getToken` now rejects when the /token endpoint responds with a 401.
+- `AnglesApp#onJoinSubmitHandler` now catches rejections and sets the error in the room state.
+
 ## 1.3.0
 
 Hyperlink widget.

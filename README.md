@@ -53,18 +53,25 @@ You'll need to [connect your local code to our app that is registered inside Net
 
 ### Development locally
 
-With Netlify CLI installed globally, you only need to run two commands. The first is to build the React app. The second is to activate the Netlify development environment, which will run a server to host the React app with hot-reload, PLUS server the token server.
+With Netlify CLI installed globally, you only need to run one command to develop locally. It will activate the Netlify development environment, which will run a server to host the React app with hot-reload, PLUS a server for token serverless function.
 
-*There is a convenience npm script to do both at once: `npm run dev`*
+1) Activate Netlify dev environment: `netlify dev`
 
-1) Build the React app: `npm run build`
-2) Activate Netlify dev environment: `netlify dev`
+*There is a convenience npm script as well: `npm run dev`*
+
 
 ### Deploy the app and token serverless function to Netlify
 
-There is no need to do manual deploys to Netlify. When code is merged into the `dev` or `master` branches, Netlify will make a build and deploy to the associated branch's environment (dev->dev, master->production).
+There is no need to do manual deploys to Netlify. When code is merged into the `dev` or `master` branches. Netlify will make a build and deploy to the associated branch's environment (dev->dev, master->production).
 
-You can do manual deploys directly from your local repo without merging code to a branch. Do so at your own risk. Here are the [docs](https://docs.netlify.com/cli/get-started/#manual-deploys).
+- Production: https://app.with.so
+- Development: https://dev.app.with.so
+
+You can do manual deploys directly from your local repo without merging code to a remote branch. The command below will create a "draft" URL. That means that is a testable, shareable, non-production deploy.
+
+`netlify deploy`
+
+Here are the [docs](https://docs.netlify.com/cli/get-started/#manual-deploys).
 
 ## Deeper dive
 

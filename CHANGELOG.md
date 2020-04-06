@@ -1,3 +1,10 @@
+## 1.6.0
+
+Heap analytics
+
+- Added the Heap analytics code to index.html in React app with conditional logic based on environmental variable, REACT_APP_ANALYTICS_ENV.
+- Added another set of Twilio API keys to avoid room name collisions with production. Development or production keys are used based on Netlify's build context, which is set as an environment variable.
+
 ## 1.5.0
 
 - Adding in new logo

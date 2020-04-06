@@ -1,3 +1,8 @@
+## 1.5.0
+
+- Adding in new logo
+- Adding in new favicon
+
 ## 1.4.0
 
 - `usePasscodeAuth#getToken` now rejects when the /token endpoint responds with a 401.

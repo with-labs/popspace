@@ -40,3 +40,38 @@
   border-radius: 50%;
   background-color: grey;
 }
+
+/*
+  Widget area. Relative positioning so that we can center the bubble in this area and position the remove control.
+*/
+.widget {
+  position: relative;
+}
+
+/*
+  Widget link. Must make display: block so that it will grow to the bubble's size.
+*/
+.widgetLink {
+  display: block;
+}
+
+/*
+  Widget bubble. Round, grayish background, hide overflow to prevent things spilling out of the bubble.
+*/
+.widgetBubble {
+  border-radius: 50%;
+  background-color: gainsboro;
+  overflow: hidden;
+}
+
+/*
+  Widget removal control. Round, bluish circle in the top right of the widget.
+*/
+.widgetRemove {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  background-color: #57d8ff;
+  border-radius: 50%;
+}

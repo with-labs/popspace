@@ -3,17 +3,20 @@ import clsx from 'clsx';
 import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext';
-
 import useParticipants from '../../hooks/useParticipants/useParticipants';
+
+import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext';
 import useAudioTrackBlacklist from '../../withHooks/useAudioTrackBlacklist/useAudioTrackBlacklist';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 
 import ParticipantCircle from '../ParticipantCircle';
 
 import styles from './CircleRoom.module.css';
 
 const CircleRoom = () => {
+  const { widgets, removeWidget } = useWidgetContext();
+
   const {
     room: { localParticipant },
   } = useVideoContext();
@@ -186,6 +189,37 @@ const CircleRoom = () => {
     );
   });
 
+  const widgetBubbles = Object.keys(widgets).map(widgetId => {
+    const widget = widgets[widgetId];
+
+    // Approximation of size for the "remove" control on a widget bubble. Should probably be a fixed size, but
+    // making it proportional to the size of the bubble ensured that it would intersect the bubble a little.
+    const removeSize = bubbleSize / Math.sqrt(2) / 2;
+
+    return (
+      <div key={widgetId} className={styles.widget} style={{ height: bubbleSize, width: bubbleSize }}>
+        <a href={widget.hyperlink} className={styles.widgetLink} target="_blank" rel="noopener noreferrer">
+          <div
+            className={clsx(styles.widgetBubble, 'u-flex u-flexAlignCenter u-flexJustifyCenter')}
+            style={{ height: bubbleSize, width: bubbleSize }}
+          >
+            {widget.hyperlink}
+          </div>
+        </a>
+        <div
+          onClick={() => removeWidget(widgetId)}
+          className={clsx(styles.widgetRemove, 'u-flex u-flexAlignCenter u-flexJustifyCenter')}
+          style={{
+            width: removeSize,
+            height: removeSize,
+          }}
+        >
+          <div>&times;</div>
+        </div>
+      </div>
+    );
+  });
+
   return (
     <div
       className="u-flex u-flexWrap u-flexJustifyCenter"
@@ -193,6 +227,7 @@ const CircleRoom = () => {
     >
       <div className="u-flex u-flexWrap u-flexJustifyAround">{huddleBubbles}</div>
       <div className="u-flex u-flexWrap u-flexJustifyAround">{floaterBubbles}</div>
+      <div className="u-flex u-flexWrap u-flexJustifyAround">{widgetBubbles}</div>
     </div>
   );
 };

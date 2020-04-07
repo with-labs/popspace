@@ -1,3 +1,33 @@
+## 1.6.0
+
+Heap analytics
+
+- Added the Heap analytics code to index.html in React app with conditional logic based on environmental variable, REACT_APP_ANALYTICS_ENV.
+- Added another set of Twilio API keys to avoid room name collisions with production. Development or production keys are used based on Netlify's build context, which is set as an environment variable.
+
+## 1.5.0
+
+- Adding in new logo
+- Adding in new favicon
+
+## 1.4.0
+
+- `usePasscodeAuth#getToken` now rejects when the /token endpoint responds with a 401.
+- `AnglesApp#onJoinSubmitHandler` now catches rejections and sets the error in the room state.
+
+## 1.3.0
+
+Hyperlink widget.
+
+- WidgetProvider and WidgetContext for widget state and syncing widget state updates to remote participants.
+- Widget bubbles in CirleRoom component.
+- Plumb the `addWidget` mutator function into the Footer component "post link" form.
+- Custom hook to get the local participant's data track.
+
+## 1.2.0
+
+fixing footer to allow user to click on the on user controls
+
 ## 1.1.0
 
 Updating static HTML to show better summary description when link is shared.

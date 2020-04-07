@@ -38,14 +38,16 @@ type AnglesAppProps = {
 export default function AnglesApp(props: AnglesAppProps) {
   const { roomName } = props;
   const roomState = useRoomState();
-  const { getToken } = useAppState();
+  const { getToken, setError } = useAppState();
   const {
     connect,
     room: { localParticipant },
   } = useVideoContext();
 
   const onJoinSubmitHandler = (screenName: string, passcode: string) => {
-    getToken(screenName, roomName, passcode).then(token => connect(token));
+    getToken(screenName, roomName, passcode)
+      .then(token => connect(token))
+      .catch(err => setError(err));
   };
 
   return (

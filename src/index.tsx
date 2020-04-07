@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
-import App from './App';
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { ConnectOptions, TwilioError } from 'twilio-video';
@@ -40,17 +39,6 @@ const connectionOptions: ConnectOptions = {
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
-
-const VideoApp = () => {
-  const { error, setError } = useAppState();
-
-  return (
-    <VideoProvider options={connectionOptions} onError={setError}>
-      <ErrorDialog dismissError={() => setError(null)} error={error} />
-      <App />
-    </VideoProvider>
-  );
-};
 
 // -------- here is the where we set up the angles application
 

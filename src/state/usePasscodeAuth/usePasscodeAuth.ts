@@ -47,26 +47,19 @@ export default function usePasscodeAuth() {
   const [user, setUser] = useState<{ displayName: undefined; photoURL: undefined; passcode: string } | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
 
-  // const getToken = useCallback(
-  //   (name: string, room: string) => {
-  //     return fetchToken(name, room, user!.passcode)
-  //       .then(res => res.json())
-  //       .then(res => res.token as string);
-  //   },
-  //   [user]
-  // );
+  const getToken = useCallback((name: string, room: string, passcode?: string) => {
+    return fetchToken(name, room, passcode).then(async res => {
+      // Parse the response
+      const body = await res.json();
 
-  // This is so we have a no twilio password check.
-  // this allows us to jsut click on the app link and use without
-  // their app password since this is just demo code not prod
-  const getToken = useCallback(
-    (name: string, room: string, passcode?: string) => {
-      return fetchToken(name, room, passcode)
-        .then(res => res.json())
-        .then(res => res.token as string);
-    },
-    [user]
-  );
+      // If 401, then there was a token error. Reject with the proper message.
+      if (res.status === 401) {
+        throw new Error(getErrorMessage(body.error?.message));
+      }
+
+      return body.token as string;
+    });
+  }, []);
 
   useEffect(() => {
     const passcode = getPasscode();

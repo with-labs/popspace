@@ -62,9 +62,9 @@
     ]
   },
   "scripts": {
-    "start": "cross-env REACT_APP_SET_AUTH=passcode react-scripts start",
+    "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
     "build": "cross-env REACT_APP_SET_AUTH=passcode react-scripts build",
-    "dev": "npm run build && netlify dev",
+    "dev": "netlify dev",
     "test": "jest",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx}",

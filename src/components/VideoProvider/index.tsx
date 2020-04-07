@@ -2,6 +2,7 @@
  * #ANGLES_EDIT
  *
  * Add HuddleProvider inside the VideoContext.
+ * Add WidgetProvider inside the VideoContext.
  * `localTracks` context property can now include LocalDataTracks.
  */
 
@@ -17,6 +18,7 @@ import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
 
 import { HuddleProvider } from '../../withComponents/HuddleProvider/HuddleProvider';
+import { WidgetProvider } from '../../withComponents/WidgetProvider/WidgetProvider';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -71,7 +73,9 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
       }}
     >
       <HuddleProvider>
-        <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+        <WidgetProvider>
+          <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+        </WidgetProvider>
       </HuddleProvider>
     </VideoContext.Provider>
   );

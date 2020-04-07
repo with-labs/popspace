@@ -2,3 +2,15 @@
   command = "npm run build"
   publish = "build"
   functions = "functions"
+
+[context.production.environment]
+  REACT_APP_ANALYTICS_ENV = "production"
+  TWILIO_API_KEYS_ENV = "production"
+
+[context.deploy-preview.environment]
+  REACT_APP_ANALYTICS_ENV = "development"
+  TWILIO_API_KEYS_ENV = "development"
+
+[context.branch-deploy.environment]
+  REACT_APP_ANALYTICS_ENV = "development"
+  TWILIO_API_KEYS_ENV = "development"

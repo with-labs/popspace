@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import './index.css';
 
@@ -10,19 +10,11 @@ type DropDownMenuProps = {
   children?: React.ReactNode;
   onButtonClickHandler?: Function;
   isOpenDirectionDown?: boolean;
-  isActive: boolean
+  isActive: boolean;
 };
 
 const DropDownMenu = (props: DropDownMenuProps) => {
-  const {
-    buttonSrc,
-    buttonAltText,
-    classNames,
-    children,
-    onButtonClickHandler,
-    isOpenDirectionDown,
-    isActive
-  } = props;
+  const { buttonSrc, buttonAltText, classNames, children, onButtonClickHandler, isOpenDirectionDown, isActive } = props;
 
   const dropDownMenuRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +34,7 @@ const DropDownMenu = (props: DropDownMenuProps) => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [dropDownMenuRef, onButtonClickHandler]);
+  }, [dropDownMenuRef, onButtonClickHandler, isActive]);
 
   const onButtonClick = () => {
     if (onButtonClickHandler) {
@@ -55,13 +47,14 @@ const DropDownMenu = (props: DropDownMenuProps) => {
       <div className="DropDownMenu-button" onClick={onButtonClick}>
         <img src={buttonSrc} alt={buttonAltText} />
       </div>
-      <div className={clsx('DropDownMenu-menu', {
-        'is-active': isActive,
-        'DropDownMenu-menu--bottomOffset' : !isOpenDirectionDown,
-        'DropDownMenu-menu--topOffset': isOpenDirectionDown
+      <div
+        className={clsx('DropDownMenu-menu', {
+          'is-active': isActive,
+          'DropDownMenu-menu--bottomOffset': !isOpenDirectionDown,
+          'DropDownMenu-menu--topOffset': isOpenDirectionDown,
         })}
       >
-        { children }
+        {children}
       </div>
     </div>
   );

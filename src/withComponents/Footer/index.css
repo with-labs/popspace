@@ -5,9 +5,9 @@
   align-items: center;
   padding: 20px;
   width: 100%;
-  bottom:0;
-  position:fixed;
-  z-index:150;
+  bottom: 0;
+  position: fixed;
+  z-index: 150;
   justify-content: flex-end;
 }
 
@@ -15,4 +15,29 @@
   cursor: pointer;
   height: 60px;
   width: 60px;
+}
+
+.Footer-addAppList {
+  margin-top: 50px;
+  margin-bottom: 25px;
+}
+
+.Footer-menuTitle {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 45px;
+  color: #303030;
+  margin-bottom: 20px;
+  margin-left: 25px;
+}
+
+.Footer-menuBackBtn {
+  margin-top: 25px;
+  margin-left: 25px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 45px;
+  cursor: pointer;
 }

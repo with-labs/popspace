@@ -1,0 +1,36 @@
+.BackgroundPicker {
+  margin-left: 25px;
+  margin-right: 25px;
+  margin-top: 25px;
+}
+.BackgroundPicker-title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 45px;
+  margin-bottom: 20px;
+}
+
+.BackgroundPicker-defaultContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.BackgroundPicker-defaultBg {
+}
+
+.BackgroundPicker-defaultBgImg {
+  height: 60px;
+  width: 60px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.BackgroundPicker-defaultBgImg.is-selected {
+  border: 2px solid #000000;
+  border-radius: 20px;
+}
+
+.BackgroundPicker-form {
+  margin-top: 20px;
+}

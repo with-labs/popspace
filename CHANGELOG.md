@@ -1,3 +1,8 @@
+## 1.8.0
+
+- Adding in the ui for choosing a background image
+- Updating footer menu to multiple pages
+
 ## 1.7.0
 
 This allows us to keep room events and data track messaging contained in one place: `RoomStateProvider`. As seen with `HuddleProvider`, a **ton** of code was able to be removed, which is doubly good because that code was basically duplicated in `WidgetProvider`.

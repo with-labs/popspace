@@ -1,3 +1,18 @@
+## 1.7.0
+
+This allows us to keep room events and data track messaging contained in one place: `RoomStateProvider`. As seen with `HuddleProvider`, a **ton** of code was able to be removed, which is doubly good because that code was basically duplicated in `WidgetProvider`.
+
+- `RoomStateProvider` will house the centralized state of the room.
+- `RoomStateProvider` behaves like redux. It has a state object that is updated when "actions" take place. It exposes a `dispatch` function to its children so that they may trigger "actions".
+- `RoomStateProvider`'s `dispatch` function updates the state of the room, as well as sends a data message to the remote participants denoting what action just took place.
+- `RoomStateProvider` listens for data messages from remote participants and updates the local room state according to the action contained in the data message.
+- `HuddleProvider` now has an accompanying "reducer" to define state updates. This is basically a regular ole redux reducer.
+- `HuddleProvider` no longer interacts directly with data tracks or room events. This is handled in the `RoomStateProvider`
+- `HuddleProvider` uses the `dispatch` function provided by `RoomStateProvider` to trigger "actions" that will update the state of the room.
+- `WidgetProvider` now has an accompanying "reducer" to define state updates. This is basically a regular ole redux reducer.
+- `WidgetProvider` no longer interacts directly with data tracks or room events. This is handled in the `RoomStateProvider`
+- `WidgetProvider` uses the `dispatch` function provided by `RoomStateProvider` to trigger "actions" that will update the state of the room.
+
 ## 1.6.0
 
 Heap analytics

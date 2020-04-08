@@ -18,6 +18,8 @@ import ReconnectingNotification from './components/ReconnectingNotification/Reco
 import CircleRoom from './withComponents/CircleRoom';
 
 import useRoomState from './hooks/useRoomState/useRoomState';
+import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
+import { Background } from './withComponents/BackgroundPicker';
 
 const Container = styled('div')({
   display: 'flex',
@@ -38,6 +40,7 @@ type AnglesAppProps = {
 export default function AnglesApp(props: AnglesAppProps) {
   const { roomName } = props;
   const roomState = useRoomState();
+  const { properties } = useRoomMetaContext();
   const { getToken, setError } = useAppState();
   const {
     connect,
@@ -50,22 +53,40 @@ export default function AnglesApp(props: AnglesAppProps) {
       .catch(err => setError(err));
   };
 
+  const bgStyle: { [key: string]: string } = {
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+  };
+  if (properties.bg) {
+    if (properties.bg === Background.BG_CUSTOM && properties.customBG) {
+      bgStyle.backgroundImage = `url("${properties.customBG})`;
+    } else if (properties.bg === Background.BG_1) {
+      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper1.jpg)`;
+    } else if (properties.bg === Background.BG_2) {
+      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper2.jpg)`;
+    } else if (properties.bg === Background.BG_3) {
+      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper3.jpg)`;
+    }
+  }
+
   return (
     <Container>
-      <Main>
-        <Header
-          classNames="u-positionAbsolute"
-          roomName={roomName}
-          participantName={localParticipant && localParticipant.identity}
-        />
-        {roomState === 'disconnected' ? (
-          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
-        ) : (
-          <CircleRoom />
-        )}
-        <ReconnectingNotification />
-        <Controls />
-        <Footer classNames="u-positionAbsolute" />
+      <Main style={bgStyle}>
+        <div>
+          <Header
+            classNames="u-positionAbsolute"
+            roomName={roomName}
+            participantName={localParticipant && localParticipant.identity}
+          />
+          {roomState === 'disconnected' ? (
+            <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
+          ) : (
+            <CircleRoom />
+          )}
+          <ReconnectingNotification />
+          <Controls />
+          <Footer classNames="u-positionAbsolute" />
+        </div>
       </Main>
     </Container>
   );

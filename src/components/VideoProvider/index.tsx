@@ -17,11 +17,13 @@ import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/u
 import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
 
+import { RoomStateProvider } from '../../withComponents/RoomState/RoomStateProvider';
 import { HuddleProvider } from '../../withComponents/HuddleProvider/HuddleProvider';
 import { WidgetProvider } from '../../withComponents/WidgetProvider/WidgetProvider';
-import { RoomStateProvider } from '../../withComponents/RoomState/RoomStateProvider';
+import { RoomMetaProvider } from '../../withComponents/RoomMetaProvider/RoomMetaProvider';
 import huddles from '../../withComponents/HuddleProvider/huddleReducer';
 import widgets from '../../withComponents/WidgetProvider/widgetReducer';
+import properties from '../../withComponents/RoomMetaProvider/roomMetaReducer';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -75,12 +77,14 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         connect,
       }}
     >
-      <RoomStateProvider reducers={{ huddles, widgets }}>
-        <HuddleProvider>
-          <WidgetProvider>
-            <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
-          </WidgetProvider>
-        </HuddleProvider>
+      <RoomStateProvider reducers={{ huddles, widgets, properties }}>
+        <RoomMetaProvider>
+          <HuddleProvider>
+            <WidgetProvider>
+              <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+            </WidgetProvider>
+          </HuddleProvider>
+        </RoomMetaProvider>
       </RoomStateProvider>
     </VideoContext.Provider>
   );

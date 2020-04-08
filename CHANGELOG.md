@@ -1,3 +1,14 @@
+## 1.9.0
+
+Room meta provider and custom backgrounds.
+
+- Update the example env file to show the appropriate \_DEV keys to override.
+- "room meta" provider to provide a place that we can store some arbitrary data about the room.
+- RoomMeta is intended to be a collection of key/value pairs to store random info.
+- RoomMetaProvider and roomMetaReducer plumbed in the same fashion as Huddles and Widgets.
+- Background form is hooked up to the RoomMetaContext.
+- `AnglesApp` component reads room meta properties to set up the background image.
+
 ## 1.8.0
 
 - Adding in the ui for choosing a background image

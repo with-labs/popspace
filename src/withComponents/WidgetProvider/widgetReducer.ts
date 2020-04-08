@@ -20,14 +20,14 @@ export default function reducer(state: IWidgetState = {}, action: Action) {
   const { type, payload } = action;
 
   switch (type) {
-    case 'WIDGET_ADD': {
+    case Actions.WidgetAdd: {
       const newWidgets = { ...state };
       newWidgets[payload.id] = payload;
 
       return newWidgets;
     }
 
-    case 'WIDGET_REMOVE': {
+    case Actions.WidgetRemove: {
       const newWidgets = { ...state };
       delete newWidgets[payload];
 

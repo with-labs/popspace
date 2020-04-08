@@ -64,7 +64,12 @@ const BackgroundPicker = () => {
         </div>
       </div>
       <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
-        <FormInput placeholderText={'URL to an image (jpg, png, gif)'} value={customBg} setValue={setCustomBg} />
+        <FormInput
+          placeholderText={'URL to an image (jpg, png, gif)'}
+          value={customBg}
+          setValue={setCustomBg}
+          classNames={clsx('BackgroundPicker-customBgImg', { 'is-selected': properties.bg === Background.BG_CUSTOM })}
+        />
       </form>
     </div>
   );

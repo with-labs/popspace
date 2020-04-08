@@ -16,9 +16,6 @@
   flex-direction: row;
 }
 
-.BackgroundPicker-defaultBg {
-}
-
 .BackgroundPicker-defaultBgImg {
   height: 60px;
   width: 60px;
@@ -29,6 +26,11 @@
 .BackgroundPicker-defaultBgImg.is-selected {
   border: 2px solid #000000;
   border-radius: 20px;
+}
+
+.BackgroundPicker-customBgImg.is-selected {
+  border: 2px solid #000000;
+  border-radius: 10px;
 }
 
 .BackgroundPicker-form {

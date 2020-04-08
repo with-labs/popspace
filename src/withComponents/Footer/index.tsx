@@ -79,6 +79,10 @@ const Footer = ({ classNames }: FooterProps) => {
           buttonAltText={isAddAppOpen ? 'addImg' : 'cancelImg'}
           onButtonClickHandler={() => {
             setIsAddAppOpen(!isAddAppOpen);
+          }}
+          onMenuDisappear={() => {
+            // reset the menu when the dropdown menu area
+            // becomes invisible
             setMenuState(Menu.MENU_ROOT);
           }}
           classNames="Footer-btn"

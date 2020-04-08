@@ -1,3 +1,10 @@
+## 1.10.0
+
+General UI fixes
+
+- added selected state around custom bg input
+- fixed weird closing behavior where the dropdown menu would reset before the menu finished going invisible
+
 ## 1.9.0
 
 Room meta provider and custom backgrounds.

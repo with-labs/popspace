@@ -6,7 +6,7 @@ import AddAppItem from '../AddAppItem';
 import Suggestion from '../Suggestion';
 
 import addImg from './images/emoji_ADD.svg';
-import cancelImg from './images/emoji_OUT.svg';
+import cancelImg from '../../images/emoji_OUT.svg';
 import ideaImg from './images/idea.svg';
 import linkImg from './images/links.svg';
 import spotifyImg from './images/spotify.svg';

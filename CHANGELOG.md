@@ -1,3 +1,7 @@
+## 1.14.0
+
+Update huddle UI and huddle dissolve button UI
+
 ## 1.13.0
 
 Add product analytics tracking disclaimer to JoinRoom form.

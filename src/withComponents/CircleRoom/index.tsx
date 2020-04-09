@@ -123,9 +123,7 @@ const CircleRoom = () => {
 
     // For local huddles, we will include a control to dissolve the huddle.
     const dissolveControl = isLocalHuddle ? (
-      <button onClick={() => dissolveHuddle(huddleId)} className={styles.dissolveControl}>
-        &times;
-      </button>
+      <button onClick={() => dissolveHuddle(huddleId)} className={styles.dissolveControl}></button>
     ) : null;
 
     // Huddle bubble.

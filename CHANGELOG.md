@@ -1,3 +1,8 @@
+## 1.15.0
+
+- Update and polish LinkBubble component
+- Update Header to use white logo when custom bg is used
+
 ## 1.14.0
 
 Update huddle UI and huddle dissolve button UI

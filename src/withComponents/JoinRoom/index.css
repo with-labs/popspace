@@ -71,3 +71,9 @@
 .JoinRoom-button:focus {
   outline: none;
 }
+
+.JoinRoom-analyticsNotice {
+  font-size: 12px;
+  color: #b3b3b3;
+  text-align: justify;
+}

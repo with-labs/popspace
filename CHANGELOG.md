@@ -1,3 +1,7 @@
+## 1.13.0
+
+Add product analytics tracking disclaimer to JoinRoom form.
+
 ## 1.12.0
 
 Ensure all user identities are unique

@@ -5,6 +5,7 @@ interface IWidgetProperties {
   type: string;
   id: string;
   hyperlink: string;
+  participantSid: string;
 }
 // `IWidgetState` is the state maintained by this context provider representing the widgets present in the room.
 export interface IWidgetState {

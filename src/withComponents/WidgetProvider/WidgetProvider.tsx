@@ -16,7 +16,7 @@ import { IWidgetState, widgetAdd, widgetRemove } from './widgetReducer';
  */
 export interface IWidgetsContext {
   widgets: IWidgetState;
-  addWidget: (hyperlink: string) => void;
+  addWidget: (participantSid: string, hyperlink: string) => void;
   removeWidget: (widgetId: string) => void;
 }
 
@@ -38,8 +38,13 @@ export function WidgetProvider({ children }: IWidgetProviderProps) {
   const widgets = state.widgets as IWidgetState;
 
   // Mutator to add a widget.
-  const addWidget = (hyperlink: string) => {
-    const widget = { id: uuid(), type: 'LINK', hyperlink };
+  const addWidget = (participantSid: string, hyperlink: string) => {
+    const widget = {
+      id: uuid(),
+      type: 'LINK',
+      hyperlink,
+      participantSid,
+    };
 
     dispatch(widgetAdd(widget));
   };

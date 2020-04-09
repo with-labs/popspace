@@ -1,3 +1,8 @@
+## 1.16.0
+
+- Remove the room name from the Header
+- Enable new link bubble
+
 ## 1.15.0
 
 - Update and polish LinkBubble component

@@ -32,6 +32,11 @@
   margin-left: 25px;
 }
 
+.Footer-appItemScroll {
+  max-height: 33vh;
+  overflow-y: scroll;
+}
+
 .Footer-menuBackBtn {
   margin-top: 25px;
   margin-left: 25px;

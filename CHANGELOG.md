@@ -1,3 +1,10 @@
+## 1.11.0
+
+Enable users to email feedback to the With team
+
+- Added a feedback link in the "Add Apps" panel
+- Added a feedback link in the Room, bottom left corner
+
 ## 1.10.0
 
 General UI fixes

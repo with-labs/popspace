@@ -57,7 +57,9 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
             Share
           </button>
           <div className={clsx('Header-toast', { 'is-active': toastActive })}>
-            Url copied to clipboard.
+            {window.location.href}
+            <br />
+            copied to clipboard.
             <span
               className="Header-toastClose"
               onClick={() => {

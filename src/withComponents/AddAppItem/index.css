@@ -1,10 +1,14 @@
 .AddAppItem {
   display: flex;
   flex-direction: row;
-  margin-left: 25px;
-  margin-right: 25px;
+  margin: 20px 25px;
   align-items: center;
   cursor: pointer;
+}
+
+.AddAppItem.is-disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .AddAppItem-imgContainer {
@@ -22,6 +26,11 @@
   font-size: 18px;
   line-height: 27px;
   color: #303030;
+}
+
+.AddAppItem-title-disabledText {
+  font-weight: normal;
+  font-size: 12px;
 }
 
 .AddAppItem-desc {

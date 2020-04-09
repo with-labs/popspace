@@ -1,3 +1,11 @@
+## 1.12.0
+
+Ensure all user identities are unique
+
+- Update component ParticipantCircle to use useParticipantDisplayIdentity hook
+- Create useParticipantDisplayIdentity hook
+- Update token.js server to append UUIDv4 to submitted user name with "#!"
+
 ## 1.11.0
 
 Enable users to email feedback to the With team

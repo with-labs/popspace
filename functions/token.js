@@ -1,5 +1,6 @@
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+const uuidv4 = require('uuid').v4;
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 
@@ -123,7 +124,7 @@ module.exports.handler = (event, context, callback) => {
   }
 
   // A user_identity a.k.a. user's name must be supplied to join room
-  if (!user_identity) {
+  if (!user_identity || !user_identity.length) {
     const body = JSON.stringify({
       error: {
         message: 'missing user_identity',
@@ -138,10 +139,11 @@ module.exports.handler = (event, context, callback) => {
     return;
   }
 
+  const userUuid4 = uuidv4();
   const token = new AccessToken(TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, {
     ttl: MAX_ALLOWED_SESSION_DURATION,
   });
-  token.identity = user_identity;
+  token.identity = `${user_identity}#!${userUuid4}`;
   const videoGrant = new VideoGrant({ room: room_name });
   token.addGrant(videoGrant);
   const body = JSON.stringify({token: token.toJwt()});

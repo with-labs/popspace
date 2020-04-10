@@ -6,22 +6,13 @@
   padding: 20px;
 
   width: 100%;
-  top:0;
-  position:fixed;
-  z-index:150;
+  top: 0;
+  position: fixed;
+  z-index: 150;
 }
 
 .Header-logo {
   height: 35px;
-}
-
-.Header-text {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 24px;
-  color: black;
-  margin-left: 40px;
 }
 
 .Header-controls {
@@ -44,8 +35,8 @@
   cursor: pointer;
   width: 140px;
   height: 60px;
-  background: #DFECFF;
-  border: 2px solid #FFFFFF;
+  background: #dfecff;
+  border: 2px solid #ffffff;
   box-sizing: border-box;
   border-radius: 30px;
 
@@ -57,9 +48,9 @@
   align-items: center;
   text-align: center;
 
-  color: #3586FF;
+  color: #3586ff;
 
-  text-shadow: 0px 0px 8px #FFFFFF;
+  text-shadow: 0px 0px 8px #ffffff;
 }
 
 .Header-btn:active {
@@ -78,8 +69,8 @@
   width: 325px;
   border-radius: 15px;
 
-  background-color: #DFECFF;;
-  color: #3586FF;
+  background-color: #dfecff;
+  color: #3586ff;
 
   transition: visibility 0s linear 0.33s, opacity 0.33s linear;
   visibility: hidden;
@@ -90,7 +81,7 @@
 
 .Header-toast.is-active {
   visibility: visible;
-  opacity: 1;      
+  opacity: 1;
   transition-delay: 0s;
 }
 
@@ -100,11 +91,9 @@
   font-size: 1.25rem;
   line-height: 1;
   margin-left: 1em;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .Header-currentUrl {
   display: none;
 }
-
-

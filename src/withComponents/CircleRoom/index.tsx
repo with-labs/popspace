@@ -11,6 +11,7 @@ import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 
 import ParticipantCircle from '../ParticipantCircle';
+import LinkBubble from '../LinkBubble';
 
 import styles from './CircleRoom.module.css';
 
@@ -190,31 +191,22 @@ const CircleRoom = () => {
   const widgetBubbles = Object.keys(widgets).map(widgetId => {
     const widget = widgets[widgetId];
 
-    // Approximation of size for the "remove" control on a widget bubble. Should probably be a fixed size, but
-    // making it proportional to the size of the bubble ensured that it would intersect the bubble a little.
-    const removeSize = bubbleSize / Math.sqrt(2) / 2;
+    // participantList only includes RemoteParticipant memebers
+    // Therefore, we need to check if the participant whom created the widget
+    // is the current user before finding the participant in the list of
+    // RemoteParticipant memebers (participantList)
+    const participant =
+      widget.participantSid === localParticipant.sid
+        ? localParticipant
+        : participantList.find(pt => pt.sid === widget.participantSid);
 
     return (
-      <div key={widgetId} className={styles.widget} style={{ height: bubbleSize, width: bubbleSize }}>
-        <a href={widget.hyperlink} className={styles.widgetLink} target="_blank" rel="noopener noreferrer">
-          <div
-            className={clsx(styles.widgetBubble, 'u-flex u-flexAlignCenter u-flexJustifyCenter')}
-            style={{ height: bubbleSize, width: bubbleSize }}
-          >
-            {widget.hyperlink}
-          </div>
-        </a>
-        <div
-          onClick={() => removeWidget(widgetId)}
-          className={clsx(styles.widgetRemove, 'u-flex u-flexAlignCenter u-flexJustifyCenter')}
-          style={{
-            width: removeSize,
-            height: removeSize,
-          }}
-        >
-          <div>&times;</div>
-        </div>
-      </div>
+      <LinkBubble
+        url={widget.hyperlink}
+        participant={participant}
+        onCloseHandler={() => removeWidget(widgetId)}
+        key={widgetId}
+      />
     );
   });
 

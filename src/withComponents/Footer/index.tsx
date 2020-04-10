@@ -15,6 +15,7 @@ import calendarImg from './images/calendar.svg';
 
 import PostLink from '../PostLink';
 
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import './index.css';
@@ -34,11 +35,14 @@ const Footer = ({ classNames }: FooterProps) => {
   const [menuState, setMenuState] = useState(Menu.MENU_ROOT);
   const roomState = useRoomState();
   const { addWidget } = useWidgetContext();
+  const {
+    room: { localParticipant },
+  } = useVideoContext();
 
   const [isAddAppOpen, setIsAddAppOpen] = useState(false);
 
   const onUrlSubmitHandler = (url: string) => {
-    addWidget(url);
+    addWidget(localParticipant.sid, url);
     setIsAddAppOpen(false);
   };
 

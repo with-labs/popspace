@@ -58,7 +58,6 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
           alt="header-logo"
           src={properties.bg === Background.BG_CUSTOM ? WithLogoCustom : WithLogo}
         />
-        <div className="Header-text">{roomName ? roomName : ''}</div>
       </div>
       {roomState === 'disconnected' ? null : (
         <>

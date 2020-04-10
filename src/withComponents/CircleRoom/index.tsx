@@ -191,17 +191,14 @@ const CircleRoom = () => {
   const widgetBubbles = Object.keys(widgets).map(widgetId => {
     const widget = widgets[widgetId];
 
-    // lookup participant based on widget.participantSid
-    // then get the participantDisplayIdentity from participant.identity
-
+    // participantList only includes RemoteParticipant memebers
+    // Therefore, we need to check if the participant whom created the widget
+    // is the current user before finding the participant in the list of
+    // RemoteParticipant memebers (participantList)
     const participant =
       widget.participantSid === localParticipant.sid
         ? localParticipant
         : participantList.find(pt => pt.sid === widget.participantSid);
-
-    // Approximation of size for the "remove" control on a widget bubble. Should probably be a fixed size, but
-    // making it proportional to the size of the bubble ensured that it would intersect the bubble a little.
-    const removeSize = bubbleSize / Math.sqrt(2) / 2;
 
     return (
       <LinkBubble

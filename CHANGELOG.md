@@ -1,3 +1,7 @@
+## 1.17.0
+
+Add new set of room names and passcodes.
+
 ## 1.16.0
 
 - Remove the room name from the Header

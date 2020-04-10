@@ -3,7 +3,10 @@ import clsx from 'clsx';
 import './index.css';
 
 import WithLogo from './images/withLogo.svg';
+import WithLogoCustom from './images/WithLogoWhite.png';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
+import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
+import { Background } from '../BackgroundPicker';
 
 type HeaderProps = {
   isLocked?: boolean;
@@ -13,6 +16,8 @@ type HeaderProps = {
 };
 
 const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
+  const { properties } = useRoomMetaContext();
+
   const roomState = useRoomState();
   const [toastActive, setToastActive] = useState(false);
 
@@ -48,8 +53,11 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
   return (
     <header className={clsx('Header', classNames)}>
       <div>
-        <img className="Header-logo" alt="header-logo" src={WithLogo} />
-        <div className="Header-text">{roomName ? roomName : ''}</div>
+        <img
+          className="Header-logo"
+          alt="header-logo"
+          src={properties.bg === Background.BG_CUSTOM ? WithLogoCustom : WithLogo}
+        />
       </div>
       {roomState === 'disconnected' ? null : (
         <>
@@ -57,7 +65,9 @@ const Header = ({ isLocked, roomName, classNames }: HeaderProps) => {
             Share
           </button>
           <div className={clsx('Header-toast', { 'is-active': toastActive })}>
-            Url copied to clipboard.
+            {window.location.href}
+            <br />
+            copied to clipboard.
             <span
               className="Header-toastClose"
               onClick={() => {

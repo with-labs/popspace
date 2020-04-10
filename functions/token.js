@@ -1,5 +1,6 @@
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
+const uuidv4 = require('uuid').v4;
 
 const MAX_ALLOWED_SESSION_DURATION = 14400;
 
@@ -16,6 +17,9 @@ const ROOM_WHITELIST_PASSCODES = {
   julia: '47ed9e60bbe845283bc2fe37aa55bf45',
   elle: '33167f62cc63e2f2dd08d97f2baaf052',
 };
+
+// When developing locally (npm run dev), don't enforce passcode
+const DISABLE_LOCAL_DEV_AUTH = process.env.DISABLE_LOCAL_DEV_AUTH === 'true';
 
 const headers = {
   'Content-Type': 'application/json'
@@ -103,8 +107,8 @@ module.exports.handler = (event, context, callback) => {
     return;
   }
 
-  // The passcode for each room_name must be correct
-  if (!passcode || !passcode.length || ROOM_WHITELIST_PASSCODES[room_name] !== passcode) {
+  // The passcode for each room_name must be correct if not running in local dev mode
+  if (!DISABLE_LOCAL_DEV_AUTH && (!passcode || !passcode.length || ROOM_WHITELIST_PASSCODES[room_name] !== passcode)) {
     const body = JSON.stringify({
       error: {
         message: 'passcode incorrect',
@@ -120,7 +124,7 @@ module.exports.handler = (event, context, callback) => {
   }
 
   // A user_identity a.k.a. user's name must be supplied to join room
-  if (!user_identity) {
+  if (!user_identity || !user_identity.length) {
     const body = JSON.stringify({
       error: {
         message: 'missing user_identity',
@@ -135,10 +139,11 @@ module.exports.handler = (event, context, callback) => {
     return;
   }
 
+  const userUuid4 = uuidv4();
   const token = new AccessToken(TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, {
     ttl: MAX_ALLOWED_SESSION_DURATION,
   });
-  token.identity = user_identity;
+  token.identity = `${user_identity}#!${userUuid4}`;
   const videoGrant = new VideoGrant({ room: room_name });
   token.addGrant(videoGrant);
   const body = JSON.stringify({token: token.toJwt()});

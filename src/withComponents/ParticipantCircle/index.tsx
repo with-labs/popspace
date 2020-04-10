@@ -5,6 +5,7 @@ import './index.css';
 import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 
@@ -23,6 +24,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
 
   const { room } = useVideoContext();
   const publications = usePublications(participant);
+  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const isLocal = participant === room.localParticipant;
 
   let filteredPublications;
@@ -54,7 +56,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         </div>
       ))}
       <div className={clsx('ParticipantCircle-infoOverlay', { 'is-hovering': isHovering || disableAudio })}>
-        <div className="ParticipantCircle-overLayText">{participant.identity}</div>
+        <div className="ParticipantCircle-overLayText">{participantDisplayIdentity}</div>
       </div>
     </div>
   );

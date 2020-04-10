@@ -49,12 +49,14 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           setValue={setPassword}
           type="password"
         />
-        <button
-          type="submit"
-          className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}
-        >
+        <button type="submit" className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}>
           Join Room
         </button>
+        <p className="JoinRoom-analyticsNotice">
+          We wanted you to know, we're using product analytics software to track how you use our app. We use that info
+          to guide our decisions about how to make the With App better. If you don't want us tracking how you use our
+          app, feel free to come back later. We plan on making tracking optional in the future.
+        </p>
       </form>
     </div>
   );

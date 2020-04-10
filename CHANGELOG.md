@@ -1,3 +1,74 @@
+## 1.16.0
+
+- Remove the room name from the Header
+- Enable new link bubble
+
+## 1.15.0
+
+- Update and polish LinkBubble component
+- Update Header to use white logo when custom bg is used
+
+## 1.14.0
+
+Update huddle UI and huddle dissolve button UI
+
+## 1.13.0
+
+Add product analytics tracking disclaimer to JoinRoom form.
+
+## 1.12.0
+
+Ensure all user identities are unique
+
+- Update component ParticipantCircle to use useParticipantDisplayIdentity hook
+- Create useParticipantDisplayIdentity hook
+- Update token.js server to append UUIDv4 to submitted user name with "#!"
+
+## 1.11.0
+
+Enable users to email feedback to the With team
+
+- Added a feedback link in the "Add Apps" panel
+- Added a feedback link in the Room, bottom left corner
+
+## 1.10.0
+
+General UI fixes
+
+- added selected state around custom bg input
+- fixed weird closing behavior where the dropdown menu would reset before the menu finished going invisible
+
+## 1.9.0
+
+Room meta provider and custom backgrounds.
+
+- Update the example env file to show the appropriate \_DEV keys to override.
+- "room meta" provider to provide a place that we can store some arbitrary data about the room.
+- RoomMeta is intended to be a collection of key/value pairs to store random info.
+- RoomMetaProvider and roomMetaReducer plumbed in the same fashion as Huddles and Widgets.
+- Background form is hooked up to the RoomMetaContext.
+- `AnglesApp` component reads room meta properties to set up the background image.
+
+## 1.8.0
+
+- Adding in the ui for choosing a background image
+- Updating footer menu to multiple pages
+
+## 1.7.0
+
+This allows us to keep room events and data track messaging contained in one place: `RoomStateProvider`. As seen with `HuddleProvider`, a **ton** of code was able to be removed, which is doubly good because that code was basically duplicated in `WidgetProvider`.
+
+- `RoomStateProvider` will house the centralized state of the room.
+- `RoomStateProvider` behaves like redux. It has a state object that is updated when "actions" take place. It exposes a `dispatch` function to its children so that they may trigger "actions".
+- `RoomStateProvider`'s `dispatch` function updates the state of the room, as well as sends a data message to the remote participants denoting what action just took place.
+- `RoomStateProvider` listens for data messages from remote participants and updates the local room state according to the action contained in the data message.
+- `HuddleProvider` now has an accompanying "reducer" to define state updates. This is basically a regular ole redux reducer.
+- `HuddleProvider` no longer interacts directly with data tracks or room events. This is handled in the `RoomStateProvider`
+- `HuddleProvider` uses the `dispatch` function provided by `RoomStateProvider` to trigger "actions" that will update the state of the room.
+- `WidgetProvider` now has an accompanying "reducer" to define state updates. This is basically a regular ole redux reducer.
+- `WidgetProvider` no longer interacts directly with data tracks or room events. This is handled in the `RoomStateProvider`
+- `WidgetProvider` uses the `dispatch` function provided by `RoomStateProvider` to trigger "actions" that will update the state of the room.
+
 ## 1.6.0
 
 Heap analytics

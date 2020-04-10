@@ -1,15 +1,17 @@
 # Departure Notes
 
 ## Dev Notes
-* we are going to deviate from the structure of the forked twilio app.
-** going to have a /pages dir where our main pages will live instead of having pages live in the components dir
-** components we write will live in the /components dir
-* Since we have 2 weeks, dont use material ui right in new code since it will take time to learn and we are quicker falling back to our old way of doing thing.
-* Split the css into a seperate file and follow BEM / suit standards. this will allow us to future proof our code
-* Don't worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship
-* the main focus is having a good and presentable app, we can fix our code when we move off of twilio
+
+- we are going to deviate from the structure of the forked twilio app.
+  ** going to have a /pages dir where our main pages will live instead of having pages live in the components dir
+  ** components we write will live in the /components dir
+- Since we have 2 weeks, dont use material ui right in new code since it will take time to learn and we are quicker falling back to our old way of doing thing.
+- Split the css into a seperate file and follow BEM / suit standards. this will allow us to future proof our code
+- Don't worry about css utility classes for right now, just put things where they are needed now. we can make things better when we get some sponsorship
+- the main focus is having a good and presentable app, we can fix our code when we move off of twilio
 
 # With React App
+
 Hacked version of the Twilio Sample Video Application that now is deployed to Netlify and uses Netlify's serverless functions.
 
 ## What is it
@@ -20,12 +22,12 @@ This application demonstrates a multi-party video application built with [twilio
 
 You must have the following installed:
 
-* [Node.js v10+](https://nodejs.org/en/download/)
-* NPM v6+ (comes installed with newer Node versions)
-* Netlify CLI - [docs](https://docs.netlify.com/cli/get-started/)
-  * Install the CLI (see below)
-  * Authenticate with Netlify (see below)
-  * Connect your local repo (see below)
+- [Node.js v10+](https://nodejs.org/en/download/)
+- NPM v6+ (comes installed with newer Node versions)
+- Netlify CLI - [docs](https://docs.netlify.com/cli/get-started/)
+  - Install the CLI (see below)
+  - Authenticate with Netlify (see below)
+  - Connect your local repo (see below)
 
 ## Installation and setup details
 
@@ -55,10 +57,9 @@ You'll need to [connect your local code to our app that is registered inside Net
 
 With Netlify CLI installed globally, you only need to run one command to develop locally. It will activate the Netlify development environment, which will run a server to host the React app with hot-reload, PLUS a server for token serverless function.
 
-1) Activate Netlify dev environment: `netlify dev`
+1. Activate Netlify dev environment: `netlify dev`
 
-*There is a convenience npm script as well: `npm run dev`*
-
+_There is a convenience npm script as well: `npm run dev`_
 
 ### Deploy the app and token serverless function to Netlify
 
@@ -96,7 +97,7 @@ Run the app locally with
 
 This will build the React app and start the local token serverless function. The React app is hosted at [http://localhost:3000](http://localhost:3000), and the token serverless function is available at [http://localhost:8888](http://localhost:8888). You should access the appliation at [http://localhost:8888](http://localhost:8888), because the Netlify development environment will proxy requests for the React app from port `8888` to `3000`.
 
-*Please remember that you need to use the `?r=roomName` query param*
+_Please remember that you need to use the `?r=roomName` query param_
 So the correct URL to visit the app locally is:
 
 `http://localhost:8888?r=roomName`
@@ -127,7 +128,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8888/.netlify/functions/token
 ```
 
-*The local token serverless function uses a room_name white list and passcode verification. So, you must use a whitelisted room name and associated passcode.*
+_The local token serverless function uses a room_name white list and passcode verification. So, you must use a whitelisted room name and associated passcode._
 
 ### Multiple Participants in a Room
 

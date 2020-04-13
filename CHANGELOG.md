@@ -1,3 +1,7 @@
+## 1.18.0
+
+Add new room name and passcode for Akash Kuttappa
+
 ## 1.17.0
 
 Add new set of room names and passcodes.

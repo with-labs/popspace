@@ -85,7 +85,7 @@ export function RoomStateProvider({ children, reducers }: IRoomStateProviderProp
       return state;
     }, {});
     setMasterState(newState);
-  }, []);
+  }, [reducers]);
 
   // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
   // state to a newly joined remote participant.

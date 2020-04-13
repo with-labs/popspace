@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import DropDownMenu from '../DropDownMenu';
 import BackgroundPicker from '../BackgroundPicker';

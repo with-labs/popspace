@@ -1,3 +1,7 @@
+## 1.19.0
+
+Add new room name and passcode for Jessie Char
+
 ## 1.18.0
 
 Add new room name and passcode for Akash Kuttappa

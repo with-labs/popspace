@@ -53,13 +53,25 @@ const DropDownMenu = (props: DropDownMenuProps) => {
     dropDownMenuAreaRef.current &&
       dropDownMenuAreaRef.current.addEventListener('transitionend', handleMenuTransitionEnd);
 
+    /* eslint-disable react-hooks/exhaustive-deps */
+    /* esling igoring rule because linter compalins:
+     *The ref value 'dropDownMenuAreaRef.current' will likely have changed by
+     * the time this effect cleanup function runs. If this ref points to a node
+     * rendered by React, copy 'dropDownMenuAreaRef.current' to a variable
+     * inside the effect, and use that variable in the cleanup function
+     * react-hooks/exhaustive-deps.
+     *
+     * However, dropDownMenuAreaRef.current has nothing to clean up. It is only
+     * being used to indetify its child compoenent. Therefore, ignoring.
+     */
     return () => {
       // Unbind the event listener on clean up
       document.removeEventListener('mousedown', handleClickOutside);
       dropDownMenuAreaRef.current &&
         dropDownMenuAreaRef.current.removeEventListener('transitionend', handleMenuTransitionEnd);
     };
-  }, [dropDownMenuRef, onButtonClickHandler, isActive, dropDownMenuAreaRef]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [dropDownMenuRef, onMenuDisappear, onButtonClickHandler, isActive, dropDownMenuAreaRef]);
 
   const onButtonClick = () => {
     if (onButtonClickHandler) {

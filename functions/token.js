@@ -24,7 +24,8 @@ const ROOM_WHITELIST_PASSCODES = {
   kerrybookclub: '2cdfbc912a2d5c2481717ab0378a35db',
   lagunagames: '96b45c9f05213a9d4a101e9793956843',
   picsofkai: '14f25a33a69fba294015d941a8074e24',
-  scapic: '2cddca35aefd840ecf5e67fc872f3f02', 
+  scapic: '2cddca35aefd840ecf5e67fc872f3f02',
+  jessietime: '02b76312cfa166272e93d06e4923e111',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -1,3 +1,7 @@
+## 1.20.0
+
+New room for Jessie Char
+
 ## 1.19.0
 
 Add new room name and passcode for Jessie Char

@@ -1,3 +1,8 @@
+## 1.22.0
+
+- Remove share buttons from header
+- fix login page to be more mobile friendly 
+
 ## 1.21.0
 
 Draggable participant bubbles.

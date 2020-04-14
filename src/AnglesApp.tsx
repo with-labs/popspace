@@ -76,7 +76,6 @@ export default function AnglesApp(props: AnglesAppProps) {
       <Main style={bgStyle}>
         <Header
           classNames="u-positionAbsolute"
-          roomName={roomName}
           participantName={localParticipant && localParticipant.identity}
         />
         {roomState === 'disconnected' ? (

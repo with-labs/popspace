@@ -26,6 +26,7 @@ const ROOM_WHITELIST_PASSCODES = {
   picsofkai: '14f25a33a69fba294015d941a8074e24',
   scapic: '2cddca35aefd840ecf5e67fc872f3f02',
   jessietime: '02b76312cfa166272e93d06e4923e111',
+  jessiestime: 'moonsnake',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

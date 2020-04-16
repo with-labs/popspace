@@ -1,0 +1,10 @@
+/*
+  Participant bubble is a circle with grayish background. Sizes etc... are set directly in the CirleRoom component.
+*/
+.participantBubble {
+  border-radius: 50%;
+  background-color: gainsboro;
+  overflow: hidden;
+  width: 240px;
+  height: 240px;
+}

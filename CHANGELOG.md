@@ -1,3 +1,14 @@
+## 1.21.0
+
+Draggable participant bubbles.
+
+- CircleRoom component replaced with withComponents/Room component.
+- HuddleBubble component.
+- ParticipantMeta context/reducer/provider/hook to track location state of each participant.
+- Installed react-dnd for draggability.
+- Huddles are not draggable.
+- The local participant may only drag their bubble.
+
 ## 1.20.0
 
 New room for Jessie Char

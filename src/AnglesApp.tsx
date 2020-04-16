@@ -15,11 +15,13 @@ import useVideoContext from './hooks/useVideoContext/useVideoContext';
 import Controls from './components/Controls/Controls';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 
-import CircleRoom from './withComponents/CircleRoom';
-
 import useRoomState from './hooks/useRoomState/useRoomState';
 import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
 import { Background } from './withComponents/BackgroundPicker';
+
+import { Room } from './withComponents/Room/Room';
+import { DndProvider } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
 
 const Container = styled('div')({
   display: 'flex',
@@ -72,21 +74,21 @@ export default function AnglesApp(props: AnglesAppProps) {
   return (
     <Container>
       <Main style={bgStyle}>
-        <div>
-          <Header
-            classNames="u-positionAbsolute"
-            roomName={roomName}
-            participantName={localParticipant && localParticipant.identity}
-          />
-          {roomState === 'disconnected' ? (
-            <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
-          ) : (
-            <CircleRoom />
-          )}
-          <ReconnectingNotification />
-          <Controls />
-          <Footer classNames="u-positionAbsolute" />
-        </div>
+        <Header
+          classNames="u-positionAbsolute"
+          roomName={roomName}
+          participantName={localParticipant && localParticipant.identity}
+        />
+        {roomState === 'disconnected' ? (
+          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
+        ) : (
+          <DndProvider backend={Backend}>
+            <Room />
+          </DndProvider>
+        )}
+        <ReconnectingNotification />
+        <Controls />
+        <Footer classNames="u-positionAbsolute" />
       </Main>
     </Container>
   );

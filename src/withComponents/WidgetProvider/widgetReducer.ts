@@ -1,7 +1,7 @@
 import { Action } from '../RoomState/RoomStateProvider';
 
 // `IWidgetProperties` defines the properties that a widget must have.
-interface IWidgetProperties {
+export interface IWidgetProperties {
   type: string;
   id: string;
   hyperlink: string;

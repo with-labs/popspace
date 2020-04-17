@@ -70,7 +70,7 @@ export function Room() {
   // Fn to convert top/left px coordintates to a LocationTuple.
   const pxToLocation = useCallback(
     (left: number, top: number) => {
-      return [left / windowWidth, top / windowHeight] as LocationTuple;
+      return [windowWidth && left / windowWidth, windowHeight && top / windowHeight] as LocationTuple;
     },
     [windowWidth, windowHeight]
   );
@@ -100,11 +100,17 @@ export function Room() {
   // Update the local participant's position in the participant meta map. Only do this on first render and when
   // the window dimensions change.
   useEffect(() => {
-    const [left, top] =
-      participantMeta[localParticipant.sid] && participantMeta[localParticipant.sid].location
-        ? locationToPx(participantMeta[localParticipant.sid].location)
-        : initialPositionSeed();
-    updateLocation(localParticipant.sid, pxToLocation(left, top));
+    if (
+      participantMeta[localParticipant.sid] &&
+      participantMeta[localParticipant.sid].location &&
+      participantMeta[localParticipant.sid].location[0] &&
+      participantMeta[localParticipant.sid].location[1]
+    ) {
+      updateLocation(localParticipant.sid, participantMeta[localParticipant.sid].location);
+    } else {
+      const [left, top] = initialPositionSeed();
+      updateLocation(localParticipant.sid, pxToLocation(left, top));
+    }
   }, [windowWidth, windowHeight]); // Only update the local participants position if window size changes.
 
   // When the floater list or participant meta changes, update the bubbles positions.

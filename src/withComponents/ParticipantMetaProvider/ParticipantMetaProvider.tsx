@@ -3,6 +3,7 @@
  */
 
 import React, { createContext, ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
@@ -28,8 +29,9 @@ interface IParticipantMetaProviderProps {
  * @param props
  */
 export function ParticipantMetaProvider({ children }: IParticipantMetaProviderProps) {
-  const { dispatch, state } = useRoomStateContext();
-  const participantMeta = state.participantMeta as IParticipantMetaState;
+  // @ts-ignore
+  const participantMeta = useSelector(state => state.participantMeta);
+  const { dispatch } = useRoomStateContext();
 
   const updateLocation = (sid: string, location: LocationTuple) => {
     dispatch(locationUpdate(sid, location));

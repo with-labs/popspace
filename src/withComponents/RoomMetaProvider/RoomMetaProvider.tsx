@@ -4,6 +4,7 @@
  */
 
 import React, { createContext, ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
@@ -34,8 +35,9 @@ interface IRoomMetaProviderProps {
  * @param props
  */
 export function RoomMetaProvider({ children }: IRoomMetaProviderProps) {
-  const { dispatch, state } = useRoomStateContext();
-  const properties = (state.properties || {}) as IRoomMetaState;
+  // @ts-ignore
+  const properties = useSelector(state => state.properties);
+  const { dispatch } = useRoomStateContext();
 
   // Mutator to set a property
   const setProperty = (key: string, value: string) => {

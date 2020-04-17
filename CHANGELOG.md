@@ -1,7 +1,18 @@
+## 1.23.0
+
+Ditch the home grown redux-like state management in favor of actual redux. This buys us stability and good developer tools.
+
+- Install redux and react-redux.
+- Create the store for the room state, enabling redux devtools extension integration.
+- RoomStateProvider will house the redux store object and redux store Provider for the rest of the app.
+- Have the huddle/widget/room meta/participant meta providers get their state values using react-redux's `useSelector` hook.
+- Continuing to use the custom `dispatch` function to enable the data track message sending on local action dispatches.
+- Move the inclusion of the huddle/widget/room meta/participant meta providers to RoomStateProvider from VideoContext.
+
 ## 1.22.0
 
 - Remove share buttons from header
-- fix login page to be more mobile friendly 
+- fix login page to be more mobile friendly
 
 ## 1.21.0
 

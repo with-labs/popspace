@@ -61,7 +61,7 @@ export default function AnglesApp(props: AnglesAppProps) {
   };
   if (properties.bg) {
     if (properties.bg === Background.BG_CUSTOM && properties.customBG) {
-      bgStyle.backgroundImage = `url("${properties.customBG})`;
+      bgStyle.backgroundImage = `url(${properties.customBG})`;
     } else if (properties.bg === Background.BG_1) {
       bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper1.jpg)`;
     } else if (properties.bg === Background.BG_2) {

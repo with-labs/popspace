@@ -9,6 +9,7 @@ import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext'
 import useAudioTrackBlacklist from '../../withHooks/useAudioTrackBlacklist/useAudioTrackBlacklist';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
+import Controls from '../../components/Controls/Controls';
 
 import ParticipantCircle from '../ParticipantCircle';
 import LinkBubble from '../LinkBubble';
@@ -218,6 +219,7 @@ const CircleRoom = () => {
       <div className="u-flex u-flexWrap u-flexJustifyAround">{huddleBubbles}</div>
       <div className="u-flex u-flexWrap u-flexJustifyAround">{floaterBubbles}</div>
       <div className="u-flex u-flexWrap u-flexJustifyAround">{widgetBubbles}</div>
+      <Controls />
     </div>
   );
 };

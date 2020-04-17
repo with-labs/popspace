@@ -1,3 +1,39 @@
+## 1.24.0
+
+Move link bubbles to upper right corner.
+
+- Put LinkBubble components into a container floated to the right in the Room component.
+- LinkBubble area is 40% of the Room width, to keep the bubbles from taking over the entire space.
+- LinkBubbles will wrap in their area.
+- Give the room 80px top margin to compensate for header.
+
+## 1.23.0
+
+Ditch the home grown redux-like state management in favor of actual redux. This buys us stability and good developer tools.
+
+- Install redux and react-redux.
+- Create the store for the room state, enabling redux devtools extension integration.
+- RoomStateProvider will house the redux store object and redux store Provider for the rest of the app.
+- Have the huddle/widget/room meta/participant meta providers get their state values using react-redux's `useSelector` hook.
+- Continuing to use the custom `dispatch` function to enable the data track message sending on local action dispatches.
+- Move the inclusion of the huddle/widget/room meta/participant meta providers to RoomStateProvider from VideoContext.
+
+## 1.22.0
+
+- Remove share buttons from header
+- fix login page to be more mobile friendly
+
+## 1.21.0
+
+Draggable participant bubbles.
+
+- CircleRoom component replaced with withComponents/Room component.
+- HuddleBubble component.
+- ParticipantMeta context/reducer/provider/hook to track location state of each participant.
+- Installed react-dnd for draggability.
+- Huddles are not draggable.
+- The local participant may only drag their bubble.
+
 ## 1.20.0
 
 New room for Jessie Char

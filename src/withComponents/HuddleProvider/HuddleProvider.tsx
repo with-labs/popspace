@@ -6,6 +6,8 @@
 import React, { createContext, ReactNode } from 'react';
 import { v4 as uuid } from 'uuid';
 
+import { useSelector } from 'react-redux';
+
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
@@ -37,14 +39,14 @@ interface IHuddleProviderProps {
  * @param props
  */
 export function HuddleProvider({ children }: IHuddleProviderProps) {
-  const { dispatch, state } = useRoomStateContext();
+  const { dispatch } = useRoomStateContext();
+  // @ts-ignore
+  const huddles = useSelector(state => state.huddles);
 
   // Grab the `localParticipant` of the room.
   const {
     room: { localParticipant },
   } = useVideoContext();
-
-  const huddles = state.huddles as IHuddleState;
 
   // Function to expose to allow a local participant to leave their current huddle
   const leaveHuddle = () => {

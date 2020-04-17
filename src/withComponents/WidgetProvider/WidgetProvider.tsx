@@ -5,6 +5,7 @@
 
 import React, { createContext, ReactNode } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
@@ -34,8 +35,9 @@ interface IWidgetProviderProps {
  * @param props
  */
 export function WidgetProvider({ children }: IWidgetProviderProps) {
-  const { dispatch, state } = useRoomStateContext();
-  const widgets = state.widgets as IWidgetState;
+  // @ts-ignore
+  const widgets = useSelector(state => state.widgets);
+  const { dispatch } = useRoomStateContext();
 
   // Mutator to add a widget.
   const addWidget = (participantSid: string, hyperlink: string) => {

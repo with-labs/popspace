@@ -1,13 +1,19 @@
-import React, { createContext, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useEffect } from 'react';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useLocalDataTrack } from '../../withHooks/useLocalDataTrack/useLocalDataTrack';
 
+import { Provider } from 'react-redux';
+
+import store from './store';
+import { RoomMetaProvider } from '../RoomMetaProvider/RoomMetaProvider';
+import { ParticipantMetaProvider } from '../ParticipantMetaProvider/ParticipantMetaProvider';
+import { HuddleProvider } from '../HuddleProvider/HuddleProvider';
+import { WidgetProvider } from '../WidgetProvider/WidgetProvider';
+
 type cbFn = (...args: any[]) => void;
-type State = { [key: string]: { [key: string]: any } };
 
 interface IRoomStateContext {
   dispatch: (action: Action) => void;
-  state: State;
 }
 export const RoomStateContext = createContext<IRoomStateContext>(null!);
 
@@ -15,60 +21,46 @@ export type Action = { type: string; payload: any };
 
 interface IRoomStateProviderProps {
   children: ReactNode;
-  reducers: { [key: string]: cbFn };
 }
 
-export function RoomStateProvider({ children, reducers }: IRoomStateProviderProps) {
-  const [masterState, setMasterState] = useState<State>({});
-
+export function RoomStateProvider({ children }: IRoomStateProviderProps) {
   const { room } = useVideoContext();
   const localDT = useLocalDataTrack();
 
-  // Function to expose that will update the master state, as well as send a data track message to the remote
-  // participants with the action that was just performed.
+  // This is what we will use in place of the normal `dispatch` function in the redux store. This is necessary to
+  // enable us to send data track messages to the remote participants with the action that was just performed.
   const dispatch = useCallback(
     (action: Action) => {
-      // Here, cruise through the reducers
-      const newState = Object.keys(reducers).reduce((state: { [key: string]: any }, sliceKey) => {
-        state[sliceKey] = reducers[sliceKey](masterState[sliceKey], action);
-        return state;
-      }, {});
-      setMasterState(newState);
+      store.dispatch(action);
 
       // Then do the remote data track message
       localDT.send(JSON.stringify(action));
     },
-    [reducers, setMasterState, masterState, localDT]
+    [localDT]
   );
 
-  // Handler called on `trackMessage` events from the room. Will parse the track message as JSON and then update
-  // the master state object as appropriate.
+  // Handler called on `trackMessage` events from the room. Will parse the track message as JSON then dispatch it
+  // as an action to the redux store.
   const dataMessageHandler = useCallback(
     (rawMsg: string) => {
       try {
         const action = JSON.parse(rawMsg);
 
         // If we encounter a PING message targetting the local participant, then set the master state wholesale.
-        if (
-          action.type === 'PING' &&
-          action.payload &&
-          action.payload.state &&
-          action.payload.recipient === room.localParticipant.sid
-        ) {
-          setMasterState(action.payload.state);
+        // The store object will handle the store state replacement. This condition is just to gate the dispatch of
+        // a PING action based on the PING's recipient value equalling the local participant's sid.
+        if (action.type === 'PING') {
+          if (action.payload && action.payload.state && action.payload.recipient === room.localParticipant.sid) {
+            store.dispatch(action);
+          }
         } else {
-          // TODO find a nicer way to do this, or at least share some code with the `dispatch` function above.
-          const newState = Object.keys(reducers).reduce((state: { [key: string]: any }, sliceKey) => {
-            state[sliceKey] = reducers[sliceKey](masterState[sliceKey], action);
-            return state;
-          }, {});
-          setMasterState(newState);
+          store.dispatch(action);
         }
       } catch (err) {
         // Assume JSON parse error. Ignore.
       }
     },
-    [masterState, reducers, room]
+    [room]
   );
 
   useEffect(() => {
@@ -77,15 +69,6 @@ export function RoomStateProvider({ children, reducers }: IRoomStateProviderProp
       room.off('trackMessage', dataMessageHandler);
     };
   }, [room, dataMessageHandler]);
-
-  // Initial state population. Only do this once.
-  useEffect(() => {
-    const newState = Object.keys(reducers).reduce((state: { [key: string]: any }, sliceKey) => {
-      state[sliceKey] = reducers[sliceKey](state[sliceKey], { type: 'INIT' });
-      return state;
-    }, {});
-    setMasterState(newState);
-  }, [reducers]);
 
   // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
   // state to a newly joined remote participant.
@@ -100,7 +83,7 @@ export function RoomStateProvider({ children, reducers }: IRoomStateProviderProp
             JSON.stringify({
               type: 'PING',
               payload: {
-                state: masterState,
+                state: store.getState(),
                 recipient: pt.sid,
               },
             })
@@ -108,7 +91,7 @@ export function RoomStateProvider({ children, reducers }: IRoomStateProviderProp
         }, 1000);
       }
     },
-    [masterState, localDT]
+    [localDT]
   );
 
   useEffect(() => {
@@ -118,5 +101,17 @@ export function RoomStateProvider({ children, reducers }: IRoomStateProviderProp
     };
   });
 
-  return <RoomStateContext.Provider value={{ dispatch, state: masterState }}>{children}</RoomStateContext.Provider>;
+  return (
+    <Provider store={store}>
+      <RoomStateContext.Provider value={{ dispatch }}>
+        <RoomMetaProvider>
+          <ParticipantMetaProvider>
+            <HuddleProvider>
+              <WidgetProvider>{children}</WidgetProvider>
+            </HuddleProvider>
+          </ParticipantMetaProvider>
+        </RoomMetaProvider>
+      </RoomStateContext.Provider>
+    </Provider>
+  );
 }

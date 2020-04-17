@@ -15,11 +15,13 @@ import useVideoContext from './hooks/useVideoContext/useVideoContext';
 import Controls from './components/Controls/Controls';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 
-import CircleRoom from './withComponents/CircleRoom';
-
 import useRoomState from './hooks/useRoomState/useRoomState';
 import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
 import { Background } from './withComponents/BackgroundPicker';
+
+import { Room } from './withComponents/Room/Room';
+import { DndProvider } from 'react-dnd';
+import Backend from 'react-dnd-html5-backend';
 
 const Container = styled('div')({
   display: 'flex',
@@ -59,7 +61,7 @@ export default function AnglesApp(props: AnglesAppProps) {
   };
   if (properties.bg) {
     if (properties.bg === Background.BG_CUSTOM && properties.customBG) {
-      bgStyle.backgroundImage = `url("${properties.customBG})`;
+      bgStyle.backgroundImage = `url(${properties.customBG})`;
     } else if (properties.bg === Background.BG_1) {
       bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper1.jpg)`;
     } else if (properties.bg === Background.BG_2) {
@@ -71,22 +73,20 @@ export default function AnglesApp(props: AnglesAppProps) {
 
   return (
     <Container>
-      <Main style={bgStyle}>
-        <div>
-          <Header
-            classNames="u-positionAbsolute"
-            roomName={roomName}
-            participantName={localParticipant && localParticipant.identity}
-          />
-          {roomState === 'disconnected' ? (
-            <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
-          ) : (
-            <CircleRoom />
-          )}
-          <ReconnectingNotification />
-          <Controls />
-          <Footer classNames="u-positionAbsolute" />
-        </div>
+      <Main style={bgStyle} className="u-flex u-flexCol">
+        <Header classNames="u-positionAbsolute u-flexNone" />
+        {roomState === 'disconnected' ? (
+          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
+        ) : (
+          <DndProvider backend={Backend}>
+            <div className="u-flexGrow1" style={{ marginTop: 80 }}>
+              <Room />
+              <ReconnectingNotification />
+              <Controls />
+            </div>
+          </DndProvider>
+        )}
+        <Footer classNames="u-positionAbsolute" />
       </Main>
     </Container>
   );

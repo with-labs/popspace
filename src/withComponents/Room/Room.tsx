@@ -30,11 +30,6 @@ export interface DragItem {
   left: number;
 }
 
-const styles: React.CSSProperties = {
-  position: 'relative',
-  height: '100%',
-};
-
 export function Room() {
   const { huddles, floaters, widgets, localHuddle } = useRoomParties();
   const { inviteToHuddle } = useHuddleContext();
@@ -149,22 +144,25 @@ export function Room() {
   }, [floaters, participantMeta]); // Only want to update the bubble memberships when floaters change. If bubs included, will enter infinite render loop.
 
   return (
-    <div ref={drop} style={styles}>
+    <div ref={drop} className="u-positionRelative u-height100Percent">
       {Object.keys(huddles).map(huddleId => (
         <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
       ))}
-      {widgets.map(widget => (
-        <LinkBubble
-          url={widget.hyperlink}
-          onCloseHandler={() => removeWidget(widget.id)}
-          key={widget.id}
-          participant={
-            widget.participantSid === localParticipant.sid
-              ? localParticipant
-              : remoteParticipants.find(pt => pt.sid === widget.participantSid)
-          }
-        />
-      ))}
+      <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
+        {widgets.map(widget => (
+          <div key={widget.id} style={{ margin: 10 }}>
+            <LinkBubble
+              url={widget.hyperlink}
+              onCloseHandler={() => removeWidget(widget.id)}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+            />
+          </div>
+        ))}
+      </div>
       {Object.keys(bubs).map(key => {
         const { pt, top, left } = bubs[key];
 

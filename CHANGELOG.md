@@ -1,3 +1,12 @@
+## 1.24.0
+
+Move link bubbles to upper right corner.
+
+- Put LinkBubble components into a container floated to the right in the Room component.
+- LinkBubble area is 40% of the Room width, to keep the bubbles from taking over the entire space.
+- LinkBubbles will wrap in their area.
+- Give the room 80px top margin to compensate for header.
+
 ## 1.23.0
 
 Ditch the home grown redux-like state management in favor of actual redux. This buys us stability and good developer tools.

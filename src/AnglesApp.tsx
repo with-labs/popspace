@@ -73,20 +73,19 @@ export default function AnglesApp(props: AnglesAppProps) {
 
   return (
     <Container>
-      <Main style={bgStyle}>
-        <Header
-          classNames="u-positionAbsolute"
-          participantName={localParticipant && localParticipant.identity}
-        />
+      <Main style={bgStyle} className="u-flex u-flexCol">
+        <Header classNames="u-positionAbsolute u-flexNone" />
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
         ) : (
           <DndProvider backend={Backend}>
-            <Room />
+            <div className="u-flexGrow1" style={{ marginTop: 80 }}>
+              <Room />
+              <ReconnectingNotification />
+              <Controls />
+            </div>
           </DndProvider>
         )}
-        <ReconnectingNotification />
-        <Controls />
         <Footer classNames="u-positionAbsolute" />
       </Main>
     </Container>

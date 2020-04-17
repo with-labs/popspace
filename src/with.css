@@ -9,21 +9,49 @@
 }
 
 .u-flex {
-  display: flex;
+  display: flex !important;
+}
+
+.u-flexCol {
+  flex-direction: column !important;
 }
 
 .u-flexWrap {
-  flex-wrap: wrap;
+  flex-wrap: wrap !important;
 }
 
 .u-flexJustifyAround {
-  justify-content: space-around;
+  justify-content: space-around !important;
 }
 
 .u-flexJustifyCenter {
-  justify-content: center;
+  justify-content: center !important;
 }
 
 .u-flexAlignCenter {
-  align-items: center;
+  align-items: center !important;
+}
+
+.u-flexNone {
+  flex: none !important;
+}
+
+.u-flexGrow1 {
+  flex: 1 !important;
+}
+
+.u-flexAlignEnd {
+  align-items: flex-end !important;
+}
+
+.u-flexJustifyEnd {
+  justify-content: flex-end !important;
+}
+
+.u-height100Percent {
+  height: 100% !important;
+}
+
+.u-floatRight {
+  float: right !important;
 }

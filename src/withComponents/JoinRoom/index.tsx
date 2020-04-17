@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import './index.css';
 import LocalVideoPreview from '../LocalVideoPreview';
+import Controls from '../../components/Controls/Controls';
 
 import FormInput from '../FormInput';
 
@@ -27,7 +28,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
 
   return (
     <div className="JoinRoom">
-      <div className="JoinRoom-imgUpload">
+      <div className="JoinRoom-videoPreviewContainer">
         <LocalVideoPreview classNames={'JoinRoom-videoPreview'} />
       </div>
       <div className="JoinRoom-joinTitle">Joining {roomName}</div>
@@ -58,6 +59,9 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           app, feel free to come back later. We plan on making tracking optional in the future.
         </p>
       </form>
+      <div className="JoinRoom-controls">
+        <Controls />
+      </div>
     </div>
   );
 };

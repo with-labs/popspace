@@ -1,3 +1,9 @@
+## 1.25.0
+
+- Add default background image to room
+- Add hint text about how to use postimages.org to host custom background image
+- Add itsagooddeck room and update picsofkai passcode
+
 ## 1.24.0
 
 Move link bubbles to upper right corner.

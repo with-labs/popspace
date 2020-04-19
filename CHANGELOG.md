@@ -1,3 +1,7 @@
+## 1.26.0
+
+- updating logo and favicon
+
 ## 1.25.0
 
 - Add default background image to room

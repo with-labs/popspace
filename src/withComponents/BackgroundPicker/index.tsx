@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 import FormInput from '../FormInput';
@@ -20,6 +20,11 @@ export enum Background {
 const BackgroundPicker = () => {
   const { properties, setProperties } = useRoomMetaContext();
   const [customBg, setCustomBg] = useState('');
+
+  // only run once, to set default bg color
+  useEffect(() => {
+    setProperties({ bg: Background.BG_1 });
+  }, []);
 
   const onCustomBackgoundHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,6 +75,13 @@ const BackgroundPicker = () => {
           setValue={setCustomBg}
           classNames={clsx('BackgroundPicker-customBgImg', { 'is-selected': properties.bg === Background.BG_CUSTOM })}
         />
+        <p>
+          To use your own, custom background image, upload it to{' '}
+          <a href="https://postimages.org/" target="_blank">
+            postimages.org
+          </a>
+          , copy the "Direct link", paste it above, then press "enter".
+        </p>
       </form>
     </div>
   );

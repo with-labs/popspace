@@ -1,3 +1,17 @@
+## 1.27.0
+
+Add new rooms:
+  - mspennskindergarten
+  - churchillbuildingcompany
+  - auraframes
+  - chrisbecherer
+  - jonwinny
+  - hankheyming
+  - jmow
+  - virtualkitchen
+  - mdes
+  - karenbourdon
+
 ## 1.26.0
 
 - updating logo and favicon

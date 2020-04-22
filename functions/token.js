@@ -28,6 +28,16 @@ const ROOM_WHITELIST_PASSCODES = {
   jessietime: '02b76312cfa166272e93d06e4923e111',
   jessiestime: 'moonsnake',
   itsagooddeck: 'playfaster',
+  mspennskindergarten: 'Classroom34',
+  churchillbuildingcompany: '20CBCroom',
+  auraframes: 'b25b0',
+  chrisbecherer: 'a28cf',
+  jonwinny: '31f4e',
+  hankheyming: 'f2040',
+  jmow: 'e1d12',
+  virtualkitchen: 'c9df3',
+  mdes: 'designorama',
+  karenbourdon: 'karenannarbor',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
 
+.u-blur {
+  filter: blur(4px) !important;
+}
+
 .u-positionAbsolute {
   position: absolute !important;
 }
@@ -54,4 +58,13 @@
 
 .u-floatRight {
   float: right !important;
+}
+
+/* Mouse cursor styles */
+.u-cursorPointer {
+  cursor: pointer !important;
+}
+
+.u-opacity1 {
+  opacity: 1 !important;
 }

@@ -1,0 +1,119 @@
+.SettingsModal {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 2;
+}
+
+.SettingsModal-content {
+  background: white;
+  color: #000;
+  overflow: auto;
+  outline: none;
+  border-radius: 4px;
+  width: 75%;
+  position: relative;
+  max-width: 700px;
+  margin: 50px auto 0px auto;
+  overflow: visible;
+  height: 44%;
+  min-height: 450px;
+  padding: 50px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+}
+
+.SettingsModal-title {
+  margin-top: 30px;
+}
+
+.SettingsModal-close {
+  font-size: 30px;
+  background-image: url(../../images/emoji_OUT.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  color: #f59288;
+  position: absolute;
+  outline: none;
+  left: -25px;
+  top: -25px;
+  font-weight: bold;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.4);
+  border: 2px solid white;
+  text-indent: -1000000px;
+}
+
+.SettingsModal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 10px 20px;
+  margin-top: 40px;
+  place-items: center center;
+}
+
+.SettingsModal-grid-colA {
+  justify-self: end;
+}
+
+.SettingsModal-grid-colB {
+  justify-self: stretch;
+}
+
+.SettingsModal-toggle {
+  border: 2px solid #dcd9d9;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+}
+
+.SettingsModal-toggle-item {
+  border-radius: 5px;
+  cursor: pointer;
+  width: 37%;
+  min-width: 60px;
+  text-align: center;
+  display: inline-block;
+  height: 100%;
+  line-height: 30px;
+}
+
+.SettingsModal-toggle-item--clearable:before {
+  content: 'CLEAR';
+  margin-right: 10px;
+  color: gray;
+}
+
+.SettingsModal-toggle-item.is-selected {
+  background-color: #7acccc;
+  cursor: default;
+}
+
+/* This is some terrible hackery to make the <Emoji /> component play nice */
+.SettingsModal-toggle-item .emoji-mart-emoji span {
+  position: relative;
+  top: 2px;
+  margin-bottom: -5px;
+  display: flex !important;
+}
+
+/* Transition applied to default react-modal class names */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}

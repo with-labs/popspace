@@ -3,8 +3,7 @@
 */
 .participantBubble {
   border-radius: 50%;
-  background-color: gainsboro;
-  overflow: hidden;
+  background-color: #7acccc;
   width: 240px;
   height: 240px;
 }

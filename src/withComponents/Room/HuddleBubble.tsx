@@ -22,7 +22,7 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
     room: { localParticipant },
   } = useVideoContext();
 
-  const { leaveHuddle, removeFromHuddle, dissolveHuddle } = useHuddleContext();
+  const { leaveHuddle, removeFromHuddle, dissolveHuddle, inviteToHuddle } = useHuddleContext();
   const disabledAudioSids = useAudioTrackBlacklist();
 
   const isLocalHuddle = !!participants.find(pt => pt.sid === localParticipant.sid);
@@ -52,14 +52,24 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
       width: huddlePtBubbleSize,
     };
 
+    const ptClickHandler = () => {
+      if (isLocalHuddle) {
+        if (pt.sid === localParticipant.sid) {
+          leaveHuddle();
+        } else {
+          removeFromHuddle(huddleId, pt.sid);
+        }
+      } else {
+        inviteToHuddle(pt.sid);
+      }
+    };
+
     return (
       <div
         key={pt.sid}
         style={bubStyle}
         className={clsx(styles.huddleParticipantBubble, styles.participantBubble, { 'u-blur': !isLocalHuddle })}
-        onClick={() => {
-          pt.sid === localParticipant.sid ? leaveHuddle() : removeFromHuddle(huddleId, pt.sid);
-        }}
+        onClick={ptClickHandler}
       >
         <ParticipantCircle
           key={pt.sid}

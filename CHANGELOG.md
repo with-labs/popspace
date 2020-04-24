@@ -1,3 +1,9 @@
+## 1.29.0
+
+Fix ability to join an existing huddle.
+
+- HuddleBubble needed to use the `inviteToHuddle` handler rather than `removeFromHuddle` in the click handler on a huddle's participant bubbles.
+
 ## 1.28.0
 
 Create participant admin model
@@ -11,16 +17,17 @@ Create participant admin model
 ## 1.27.0
 
 Add new rooms:
-  - mspennskindergarten
-  - churchillbuildingcompany
-  - auraframes
-  - chrisbecherer
-  - jonwinny
-  - hankheyming
-  - jmow
-  - virtualkitchen
-  - mdes
-  - karenbourdon
+
+- mspennskindergarten
+- churchillbuildingcompany
+- auraframes
+- chrisbecherer
+- jonwinny
+- hankheyming
+- jmow
+- virtualkitchen
+- mdes
+- karenbourdon
 
 ## 1.26.0
 

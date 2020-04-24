@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
-import { IParticipantMetaState, LocationTuple, locationUpdate, presenceUpdate } from './participantMetaReducer';
+import { IParticipantMetaState, LocationTuple, EmojiData, locationUpdate, emojiUpdate } from './participantMetaReducer';
 
 /**
  *
@@ -15,7 +15,7 @@ import { IParticipantMetaState, LocationTuple, locationUpdate, presenceUpdate } 
 export interface IParticipantMetaContext {
   participantMeta: IParticipantMetaState;
   updateLocation: (sid: string, location: LocationTuple) => void;
-  updatePresence: (sid: string, presence: string) => void;
+  updateEmoji: (sid: string, emoji: EmojiData) => void;
 }
 
 export const ParticipantMetaContext = createContext<IParticipantMetaContext>(null!);
@@ -37,13 +37,13 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
     dispatch(locationUpdate(sid, location));
   };
 
-  const updatePresence = (sid: string, presence: string) => {
-    dispatch(presenceUpdate(sid, presence));
+  const updateEmoji = (sid: string, emoji: EmojiData) => {
+    dispatch(emojiUpdate(sid, emoji));
   };
 
   // Return the context.
   return (
-    <ParticipantMetaContext.Provider value={{ participantMeta, updateLocation, updatePresence }}>
+    <ParticipantMetaContext.Provider value={{ participantMeta, updateLocation, updateEmoji }}>
       {children}
     </ParticipantMetaContext.Provider>
   );

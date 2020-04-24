@@ -77,7 +77,7 @@ const BackgroundPicker = () => {
         />
         <p>
           To use your own, custom background image, upload it to{' '}
-          <a href="https://postimages.org/" target="_blank">
+          <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer">
             postimages.org
           </a>
           , copy the "Direct link", paste it above, then press "enter".

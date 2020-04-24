@@ -1,19 +1,22 @@
 import { Action } from '../RoomState/RoomStateProvider';
+import { EmojiData as ED } from 'emoji-mart';
 
 export type LocationTuple = [number, number];
+export type EmojiData = ED | null | string;
 
 export interface IParticipantMeta {
   location: LocationTuple;
-  presence: string; // Placeholder for when we implement an emoji "status" thing.
+  emoji: EmojiData;
 }
 
+// The key is a participant's sid
 export interface IParticipantMetaState {
   [key: string]: IParticipantMeta;
 }
 
 enum Actions {
   UpdateLocation = 'UPDATE_LOCATION',
-  UpdatePresence = 'UPDATE_PRESENCE',
+  UpdateEmoji = 'UPDATE_EMOJI',
 }
 
 export default function reducer(state: IParticipantMetaState = {}, action: Action) {
@@ -26,8 +29,8 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
       return newPts;
     }
 
-    case Actions.UpdatePresence: {
-      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], presence: payload.presence } };
+    case Actions.UpdateEmoji: {
+      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], emoji: payload.emoji } };
 
       return newPts;
     }
@@ -41,7 +44,7 @@ export const locationUpdate = (sid: string, location: LocationTuple) => ({
   payload: { sid, location },
 });
 
-export const presenceUpdate = (sid: string, presence: string) => ({
-  type: Actions.UpdatePresence,
-  payload: { sid, presence },
+export const emojiUpdate = (sid: string, emoji: EmojiData) => ({
+  type: Actions.UpdateEmoji,
+  payload: { sid, emoji },
 });

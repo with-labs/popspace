@@ -80,5 +80,9 @@ ReactDOM.render(
       </AppStateProvider>
     </Router>
   </MuiThemeProvider>,
+  // The Modal componenet requires being bound to root element of app.
+  // If this root element ever changes, the Modal's root must also be updated
+  // You can find the Modal at src/withComponents/SettingsModal/SettingsModal.tsx
+  // Modal.setAppElement('#root');
   document.getElementById('root')
 );

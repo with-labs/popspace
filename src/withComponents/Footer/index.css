@@ -7,7 +7,6 @@
   width: 100%;
   bottom: 0;
   position: fixed;
-  z-index: 150;
   justify-content: flex-end;
 }
 

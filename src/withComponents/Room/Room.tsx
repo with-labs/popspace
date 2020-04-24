@@ -168,7 +168,7 @@ export function Room() {
 
         return (
           <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
-            <div className={clsx(style.participantBubble, { blur: localHuddle })} key={pt.sid}>
+            <div className={clsx(style.participantBubble, { 'u-blur': localHuddle })} key={pt.sid}>
               <ParticipantCircle
                 participant={pt}
                 onClick={() => inviteToHuddle(pt.sid)}

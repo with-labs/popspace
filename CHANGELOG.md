@@ -1,3 +1,13 @@
+## 1.28.0
+
+Create participant admin model
+
+- Move A/V muting into admin panel, remove from room
+- Create emoji picker, and sync emoji state over webrtc
+- Create local participant heads up display (HUD) for quick A/V muting, unmuting
+- Show participant name always
+- Add room for johnpalmer
+
 ## 1.27.0
 
 Add new rooms:

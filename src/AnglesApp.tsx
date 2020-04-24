@@ -12,7 +12,6 @@ import Footer from './withComponents/Footer';
 import { useAppState } from './state';
 import useVideoContext from './hooks/useVideoContext/useVideoContext';
 
-import Controls from './components/Controls/Controls';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 
 import useRoomState from './hooks/useRoomState/useRoomState';
@@ -44,10 +43,7 @@ export default function AnglesApp(props: AnglesAppProps) {
   const roomState = useRoomState();
   const { properties } = useRoomMetaContext();
   const { getToken, setError } = useAppState();
-  const {
-    connect,
-    room: { localParticipant },
-  } = useVideoContext();
+  const { connect } = useVideoContext();
 
   const onJoinSubmitHandler = (screenName: string, passcode: string) => {
     getToken(screenName, roomName, passcode)
@@ -82,7 +78,6 @@ export default function AnglesApp(props: AnglesAppProps) {
             <div className="u-flexGrow1" style={{ marginTop: 80 }}>
               <Room />
               <ReconnectingNotification />
-              <Controls />
             </div>
           </DndProvider>
         )}

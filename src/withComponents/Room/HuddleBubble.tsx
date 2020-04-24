@@ -56,7 +56,7 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
       <div
         key={pt.sid}
         style={bubStyle}
-        className={clsx(styles.huddleParticipantBubble, styles.participantBubble, { blur: !isLocalHuddle })}
+        className={clsx(styles.huddleParticipantBubble, styles.participantBubble, { 'u-blur': !isLocalHuddle })}
         onClick={() => {
           pt.sid === localParticipant.sid ? leaveHuddle() : removeFromHuddle(huddleId, pt.sid);
         }}

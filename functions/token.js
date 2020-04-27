@@ -39,6 +39,7 @@ const ROOM_WHITELIST_PASSCODES = {
   mdes: 'designorama',
   karenbourdon: 'karenannarbor',
   johnpalmer: 'f9e8e',
+  leah: 'V!rtual338',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

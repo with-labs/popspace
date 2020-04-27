@@ -1,3 +1,7 @@
+## 1.30.0
+
+Add room for leah
+
 ## 1.29.0
 
 Fix ability to join an existing huddle.

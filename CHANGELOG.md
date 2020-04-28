@@ -1,3 +1,7 @@
+## 1.31.0
+
+New rooms: moxon, fanafan
+
 ## 1.30.0
 
 Add room for leah

@@ -1,3 +1,7 @@
+## 1.32.0
+
+Play ping audio when a user is pulled into a huddle
+
 ## 1.31.0
 
 New rooms: moxon, fanafan

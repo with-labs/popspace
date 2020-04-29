@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 
 import { LocalParticipant, RemoteParticipant } from 'twilio-video';
@@ -80,6 +80,15 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
       </div>
     );
   });
+
+  // play the huddle ping for a user when they are added into a huddle
+  useEffect(() => {
+    if (isLocalHuddle) {
+      // get the audio ping to play when the local user is brought into a huddle
+      const huddlePingAudio = new Audio(`${process.env.PUBLIC_URL}/audio/huddlePing.mp3`);
+      huddlePingAudio.play();
+    }
+  }, [isLocalHuddle]);
 
   // For local huddles, we will include a control to dissolve the huddle.
   const dissolveControl = isLocalHuddle ? (

@@ -1,3 +1,12 @@
+## 1.33.0
+
+New rooms:
+- charlesgivre
+- seanlutjens
+- mindsense
+- louis
+- crivello
+
 ## 1.32.0
 
 Play ping audio when a user is pulled into a huddle

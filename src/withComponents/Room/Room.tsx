@@ -30,18 +30,28 @@ export interface DragItem {
   left: number;
 }
 
-export function Room() {
+interface IRoomProps {
+  initialAvatar: string;
+}
+
+export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const { huddles, floaters, widgets, localHuddle } = useRoomParties();
   const { inviteToHuddle } = useHuddleContext();
   const { removeWidget } = useWidgetContext();
   const disabledAudioSids = useAudioTrackBlacklist();
   const [windowWidth, windowHeight] = useWindowSize();
   const remoteParticipants = useParticipants();
-  const { updateLocation, participantMeta } = useParticipantMetaContext();
+  const { updateLocation, participantMeta, updateAvatar } = useParticipantMetaContext();
 
   const {
     room: { localParticipant },
   } = useVideoContext();
+
+  useEffect(() => {
+    if (initialAvatar) {
+      updateAvatar(localParticipant.sid, initialAvatar);
+    }
+  }, [initialAvatar]);
 
   const [bubs, setBubs] = useState<{
     [key: string]: {
@@ -180,4 +190,4 @@ export function Room() {
       })}
     </div>
   );
-}
+};

@@ -1,11 +1,11 @@
 // copy of the initial twilio code, changed a few things and wanted to keep the
 // code separate
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { styled } from '@material-ui/core/styles';
 
-import JoinRoom from './withComponents/JoinRoom';
+import JoinRoom from './withComponents/JoinRoom/JoinRoom';
 import Header from './withComponents/Header';
 import Footer from './withComponents/Footer';
 
@@ -45,9 +45,14 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { getToken, setError } = useAppState();
   const { connect } = useVideoContext();
 
-  const onJoinSubmitHandler = (screenName: string, passcode: string) => {
+  const [initialAvatar, setInitialAvatar] = useState('');
+
+  const onJoinSubmitHandler = (screenName: string, passcode: string, avatar: string = '') => {
     getToken(screenName, roomName, passcode)
-      .then(token => connect(token))
+      .then(token => {
+        setInitialAvatar(avatar);
+        connect(token);
+      })
       .catch(err => setError(err));
   };
 
@@ -69,14 +74,14 @@ export default function AnglesApp(props: AnglesAppProps) {
 
   return (
     <Container>
-      <Main style={bgStyle} className="u-flex u-flexCol">
-        <Header classNames="u-positionAbsolute u-flexNone" />
+      <Main style={bgStyle} className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignCenter">
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
         ) : (
           <DndProvider backend={Backend}>
-            <div className="u-flexGrow1" style={{ marginTop: 80 }}>
-              <Room />
+            <Header classNames="u-positionAbsolute u-flexNone" />
+            <div className="u-flexGrow1 u-width100Percent u-height100Percent">
+              <Room initialAvatar={initialAvatar} />
               <ReconnectingNotification />
             </div>
           </DndProvider>

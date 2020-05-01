@@ -3,6 +3,7 @@
   height: 100%;
   width: 100%;
   cursor: pointer;
+  border-radius: 50%;
 }
 .ParticipantCircle.is-localParticipant {
   cursor: move;
@@ -63,6 +64,8 @@
   position: absolute;
   top: 0;
   left: 0;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .ParticipantCircle-videoCircle {

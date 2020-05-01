@@ -1,6 +1,19 @@
+## 1.34.0
+
+Laying the groundwork for avatars (tokens).
+
+- Turn video off by default.
+- Allow the user to select an avatar in the lobby page.
+- When the Room mounts, dispatch an action to set the user's avatar.
+- Queue redux actions until a PING is received. Then re-dispatch them. (See extensive comment in RoomStateProvider.tsx)
+- Use participant avatar meta property as the background for ParticipantCircle.
+- New avatar images.
+- First pass at the new lobby page in JoinRoom.
+
 ## 1.33.0
 
 New rooms:
+
 - charlesgivre
 - seanlutjens
 - mindsense

@@ -1,16 +1,27 @@
 .JoinRoom {
-  height: 100%;
+  max-width: 640px;
+  max-height: 460px;
   background-color: rgba(249, 250, 255, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   position: relative;
+  padding: 70px;
+  border-radius: 10px;
 }
 
-.JoinRoom-controls {
-  position: sticky;
-  bottom: 10px;
+.JoinRoom-heading {
+  position: absolute;
+  top: 38px;
+  left: 48px;
+}
+
+.JoinRoom-heading-logo {
+  height: 22px;
+}
+
+.JoinRoom-avControls {
+  margin-right: 56px;
 }
 
 .JoinRoom-titleText {
@@ -32,14 +43,18 @@
 }
 
 .JoinRoom-formInputOffset {
-  margin-bottom: 20px;
+  margin-bottom: 8px;
+}
+
+.JoinRoom-formInputOffset:last-of-type {
+  margin-bottom: 16px;
 }
 
 .JoinRoom-button {
   cursor: pointer;
   width: 100%;
-  height: 60px;
-  border-radius: 3px;
+  height: 40px;
+  border-radius: 8px;
 
   font-style: normal;
   font-weight: bold;
@@ -66,32 +81,70 @@
   font-size: 12px;
   color: #b3b3b3;
   text-align: justify;
-  padding-bottom: 100px;
+  margin-top: 16px;
 }
 
 .JoinRoom-videoPreviewContainer {
-  margin-top: 72px;
+  height: 128px;
+  width: 128px;
+  margin-top: 82px; /* Adding this margin will push the video/avatar preview down to match the position of the avatar preview in the avatar picker */
+}
+
+.JoinRoom-endLogo {
+  display: none;
+  height: 20px;
 }
 
 @media (max-width: 640px) {
+  .JoinRoom {
+    padding: 40px;
+  }
+
+  /* Reset the position and top/left to make the "Joining roomname" text show up below the av controls */
+  .JoinRoom-heading {
+    position: relative;
+    top: initial;
+    left: initial;
+    margin-bottom: 16px;
+  }
+
+  .JoinRoom-heading-logo {
+    display: none;
+  }
+
+  .JoinRoom-endLogo {
+    display: inherit;
+  }
+
+  .JoinRoom-login {
+    flex-direction: column;
+  }
+
+  /* Reset the right margin on the av controls to get rid of the right margin and add bottom margin to space it from the "Join roomname text" */
+  .JoinRoom-avControls {
+    margin-right: 0;
+    margin-bottom: 48px;
+  }
+
   .JoinRoom-videoPreview {
     border-radius: 50%;
     object-fit: cover !important;
-    height: 150px !important;
-    width: 150px !important;
     border: 3px solid #ffffff;
+  }
+
+  /* Reset the top margin on the video preview container */
+  .JoinRoom-videoPreviewContainer {
+    margin-top: 0;
   }
 
   .JoinRoom-form {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
   }
 
   .JoinRoom-button {
-    margin-top: 20px;
+    margin-top: 16px;
   }
 
   .JoinRoom-joinTitle {
@@ -103,15 +156,13 @@
   .JoinRoom-videoPreview {
     border-radius: 50%;
     object-fit: cover !important;
-    height: 250px !important;
-    width: 250px !important;
     border: 3px solid #ffffff;
   }
 
   .JoinRoom-form {
     display: flex;
     flex-direction: column;
-    width: 500px;
+    width: 300px;
   }
 
   .JoinRoom-controls {
@@ -121,9 +172,5 @@
 
   .JoinRoom-joinTitle {
     margin-bottom: 40px;
-  }
-
-  .JoinRoom-button {
-    margin-top: 60px;
   }
 }

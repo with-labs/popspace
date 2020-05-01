@@ -19,15 +19,15 @@ const LocalVideoPreview = ({ classNames }: LocalVideoPreviewProps) => {
 
   const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
   const placeHolderVideo = (
-    <div className={clsx('LocalVideo-placeHolder', classNames)}>
+    <div className={clsx('LocalVideo-placeHolder u-height100Percent', classNames)}>
       <img src={camera} alt="camera_icon" />
     </div>
   );
   const video = videoTrack ? <VideoTrack track={videoTrack} isLocal classNames={classNames} /> : null;
   return (
-    <div className="LocalVideo">
+    <div className="LocalVideo u-height100Percent">
       {placeHolderVideo}
-      <div className="LocalVideo-video">{video} </div>
+      <div className="LocalVideo-video u-height100Percent">{video} </div>
     </div>
   );
 };

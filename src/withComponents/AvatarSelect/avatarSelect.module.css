@@ -1,0 +1,58 @@
+.leaveControl {
+  position: absolute;
+  top: 38px;
+  left: 48px;
+}
+
+.radio {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.optionGrid {
+  width: 300px;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.option {
+  background-size: cover;
+  height: 48px;
+  width: 48px;
+  border-radius: 50%;
+  position: relative;
+  margin: 10px;
+}
+
+.option--selected {
+  border: 5px solid #b9c5ff;
+}
+
+.avatarPreview {
+  height: 128px;
+  width: 128px;
+  margin-right: 56px;
+}
+
+@media (max-width: 640px) {
+  .AvatarSelect {
+    flex-direction: column;
+  }
+
+  .leaveControl {
+    position: relative;
+    top: initial;
+    left: initial;
+    margin-left: 48px;
+  }
+
+  .avatarPreview {
+    margin-right: 0;
+  }
+
+  .optionGrid {
+    max-height: initial;
+    overflow-y: auto;
+  }
+}

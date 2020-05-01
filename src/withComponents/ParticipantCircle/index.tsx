@@ -19,6 +19,10 @@ import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoTo
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
+import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+
+import { options as avatarOptions } from '../AvatarSelect/options';
+import { Avatar } from '../Avatar/Avatar';
 
 interface ParticipantCircleProps {
   participant: LocalParticipant | RemoteParticipant;
@@ -31,16 +35,19 @@ interface ParticipantCircleProps {
 
 const ParticipantCircle = (props: ParticipantCircleProps) => {
   const { participant, disableAudio, enableScreenShare, videoPriority, styles, onClick } = props;
+  const meta = useParticipantMeta(participant);
   const [isHovering, setIsHovering] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const { updateEmoji, participantMeta } = useParticipantMetaContext();
-  const emoji = participantMeta[participant.sid].emoji;
+  const { updateEmoji } = useParticipantMetaContext();
   const { room } = useVideoContext();
   const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const publications = usePublications(participant);
-  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const isLocal = participant === room.localParticipant;
+
+  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
+  const emoji = meta.emoji;
+  const avatar = meta.avatar;
 
   let filteredPublications;
 
@@ -86,6 +93,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         onMouseLeave={() => setIsHovering(false)}
         onClick={() => onClick()}
       >
+        {isLocal && isVideoEnabled ? null : <Avatar name={avatar} />}
         {settings}
         {isLocal ? (
           <div className="ParticipantCircle-hud">

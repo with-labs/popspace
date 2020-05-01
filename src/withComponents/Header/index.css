@@ -1,15 +1,15 @@
 .Header {
-  display: flex;
-  flex-direction: row;
   height: 80px;
-  align-items: center;
-  padding: 20px;
-
   width: 100%;
-  top: 0;
-  position: fixed;
 }
 
 .Header-logo {
   height: 35px;
+}
+
+.Header-text {
+  margin-left: 10px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #444444;
 }

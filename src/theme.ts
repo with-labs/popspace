@@ -1,5 +1,13 @@
 import { createMuiTheme } from '@material-ui/core';
 
+const geomanist = {
+  fontFamily: 'Geomanist',
+  src: `
+    url("/fonts/Geomanist-Regular-webfont.woff2") format("woff2"),
+    url("/fonts/Geomanist-Regular-webfont.woff") format("woff")
+  `,
+};
+
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
     sidebarWidth: number;
@@ -22,7 +30,14 @@ export default createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Geomanist',
+  },
+  overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        '@font-face': [geomanist],
+      },
+    },
   },
   sidebarWidth: 260,
 });

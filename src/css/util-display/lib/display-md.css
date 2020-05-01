@@ -1,0 +1,5 @@
+@media (min-width: 640px) and (max-width: 959px) {
+  .u-md-displayNone {
+    display: none;
+  }
+}

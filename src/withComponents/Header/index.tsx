@@ -3,27 +3,19 @@ import clsx from 'clsx';
 import './index.css';
 
 import WithLogo from '../../images/withLogo.svg';
-import WithLogoCustom from '../../images/WithLogoWhite.png';
-import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
-import { Background } from '../BackgroundPicker';
 
 type HeaderProps = {
   classNames?: string;
-  participantName?: string;
+  roomName?: string;
 };
 
-const Header = ({ classNames }: HeaderProps) => {
-  const { properties } = useRoomMetaContext();
-
+const Header = ({ classNames, roomName }: HeaderProps) => {
   return (
-    <header className={clsx('Header', classNames)}>
+    <header className={clsx('Header u-flex u-flexRow u-flexAlignItemsCenter', classNames)}>
       <div>
-        <img
-          className="Header-logo"
-          alt="header-logo"
-          src={properties.bg === Background.BG_CUSTOM ? WithLogoCustom : WithLogo}
-        />
+        <img className="Header-logo" alt="header-logo" src={WithLogo} />
       </div>
+      <div className="Header-text u-flex u-flexAlignItemsCenter">Joining {roomName}</div>
     </header>
   );
 };

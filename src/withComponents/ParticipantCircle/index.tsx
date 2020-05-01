@@ -21,7 +21,6 @@ import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 
-import { options as avatarOptions } from '../AvatarSelect/options';
 import { Avatar } from '../Avatar/Avatar';
 
 interface ParticipantCircleProps {
@@ -84,6 +83,27 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     setIsSettingsModalOpen(false);
   }
 
+  // `hasVideoPublication` can be used to change the circle's appearance. Below, if there is no video publication
+  // an Avatar is rendered.
+  let hasVideoPublication = false;
+  const pubs = filteredPublications.map(publication => {
+    if (publication.kind === 'video') {
+      hasVideoPublication = true;
+    }
+    return (
+      <div key={publication.kind} className="ParticipantCircle-participant">
+        <Publication
+          publication={publication}
+          participant={participant}
+          isLocal={isLocal}
+          disableAudio={disableAudio}
+          videoPriority={videoPriority}
+          classNames={'ParticipantCircle-videoCircle'}
+        />
+      </div>
+    );
+  });
+
   return (
     <>
       <div
@@ -93,7 +113,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         onMouseLeave={() => setIsHovering(false)}
         onClick={() => onClick()}
       >
-        {isLocal && isVideoEnabled ? null : <Avatar name={avatar} />}
+        {hasVideoPublication ? null : <Avatar name={avatar} />}
         {settings}
         {isLocal ? (
           <div className="ParticipantCircle-hud">
@@ -117,29 +137,20 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             </span>
           </div>
         ) : null}
-        {filteredPublications.map(publication => (
-          <div key={publication.kind} className="ParticipantCircle-participant">
-            <Publication
-              publication={publication}
-              participant={participant}
-              isLocal={isLocal}
-              disableAudio={disableAudio}
-              videoPriority={videoPriority}
-              classNames={'ParticipantCircle-videoCircle'}
-            />
-          </div>
-        ))}
+        {pubs}
         <div className={clsx('ParticipantCircle-infoOverlay', { 'is-hovering': isHovering || disableAudio })}>
           <div className="ParticipantCircle-overLayText">{participantDisplayIdentity}</div>
         </div>
       </div>
-      <SettingsModal
-        isSettingsModalOpen={isSettingsModalOpen}
-        closeSettingsModal={closeSettingsModal}
-        updateEmoji={updateEmoji}
-        emoji={emoji}
-        participant={participant}
-      />
+      {isLocal ? (
+        <SettingsModal
+          isSettingsModalOpen={isSettingsModalOpen}
+          closeSettingsModal={closeSettingsModal}
+          updateEmoji={updateEmoji}
+          emoji={emoji}
+          participant={participant}
+        />
+      ) : null}
     </>
   );
 };

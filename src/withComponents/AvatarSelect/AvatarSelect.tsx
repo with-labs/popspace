@@ -5,6 +5,8 @@ import { options } from './options';
 
 import styles from './avatarSelect.module.css';
 
+import { Avatar } from '../Avatar/Avatar';
+
 interface IAvatarSelectProps {
   defaultAvatar?: string;
   onAvatarChange: (src: string) => void;
@@ -27,9 +29,13 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
   return (
     <div className={clsx(styles.AvatarSelect, 'u-flex u-width100Percent u-flexAlignCenter u-flexJustifyBetween')}>
       <div className="u-flex u-flexAlignCenter u-flexJustifyCenter u-height100Percent">
-        {selectedAvatar ? <img src={selectedAvatar.image} className={styles.avatarPreview} /> : null}
+        {selectedAvatar ? (
+          <div className={styles.avatarPreview}>
+            <Avatar name={selectedAvatar.name} />
+          </div>
+        ) : null}
       </div>
-      <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-width100Percent')}>
+      <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-width100Percent u-cursorPointer')}>
         &lt; Pick an avatar
       </div>
       <div className={clsx(styles.optionGrid, 'u-flex u-flexWrap u-flexJustifyCenter')}>
@@ -37,10 +43,13 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
           return (
             <div
               key={idx}
-              style={{ backgroundImage: `url(${av.image})` }}
-              className={clsx(styles.option, { [styles['option--selected']]: av.name === selectedAvatarName })}
+              className={clsx(styles.option, 'u-cursorPointer', {
+                [styles['option--selected']]: av.name === selectedAvatarName,
+              })}
               onClick={() => setSelectedAvatarName(av.name)}
-            ></div>
+            >
+              <Avatar name={av.name} />
+            </div>
           );
         })}
       </div>

@@ -1,3 +1,13 @@
+## 1.35.0
+
+Blinking avatars.
+
+- Using a combination of background image and image element in Avatar to toggle appearance of blinking.
+- Random timout up to 5000ms for non-blinking, 100ms for blinking.
+- Now using the Avatar component in AvatarSelect.
+- Removing console.logs from AudioTrack.
+- Making Participant bubbles smaller on small screens.
+
 ## 1.34.0
 
 Laying the groundwork for avatars (tokens).

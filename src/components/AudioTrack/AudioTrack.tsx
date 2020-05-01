@@ -7,8 +7,6 @@ interface AudioTrackProps {
 
 export default function AudioTrack({ track }: AudioTrackProps) {
   const ref = useRef<HTMLAudioElement>(null!);
-  console.log('Volume: ', ref.current && ref.current.volume);
-  console.log('Track: ', track);
 
   useEffect(() => {
     const el = ref.current;

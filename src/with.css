@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
 
+.u-displayNone {
+  display: none !important;
+}
+
 .u-blur {
   filter: blur(4px) !important;
 }

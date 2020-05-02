@@ -1,3 +1,10 @@
+## 1.36.0
+
+Double pane box component. This looks like it's going to be a common UI thing, so I made a component for it.
+
+- DoublePaneBox component.
+- Experimenting with transitions between the login area and the avatar selector in the lobby.
+
 ## 1.35.0
 
 Blinking avatars.

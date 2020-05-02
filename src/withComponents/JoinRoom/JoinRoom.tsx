@@ -10,6 +10,8 @@ import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
 import { Avatar } from '../Avatar/Avatar';
 
+import { DoublePaneBox } from '../DoublePaneBox/DoublePaneBox';
+
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 import ToggleVideoButton from '../../components/Controls/ToggleVideoButton/ToggleVideoButton';
@@ -36,64 +38,69 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
     }
   };
 
+  const login = (
+    <DoublePaneBox
+      header={
+        <div>
+          <img src={WithLogo} className="JoinRoom-heading-logo" /> Joining <strong>{roomName}</strong>
+        </div>
+      }
+      leftPane={
+        <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignCenter">
+          <div className="JoinRoom-videoPreviewContainer">
+            {isVideoEnabled ? (
+              <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
+            ) : (
+              <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
+            )}
+          </div>
+          <div>
+            <ToggleVideoButton />
+            <ToggleAudioButton />
+          </div>
+        </div>
+      }
+      rightPane={
+        <form className="JoinRoom-form" onSubmit={onSubmitHandler}>
+          <FormInput
+            imgAltText={'person image'}
+            placeholderText={'Desired screen name'}
+            classNames={'JoinRoom-formInputOffset'}
+            value={screenName}
+            setValue={setScreenName}
+          />
+          <FormInput
+            imgAltText={'password image'}
+            placeholderText={'Room password'}
+            classNames={'JoinRoom-formInputOffset'}
+            value={password}
+            setValue={setPassword}
+            type="password"
+          />
+          <button type="submit" className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}>
+            Join Room
+          </button>
+          <p className="JoinRoom-analyticsNotice">
+            We wanted you to know, we're using product analytics software to track how you use our app. We use that info
+            to guide our decisions about how to make the With App better. If you don't want us tracking how you use our
+            app, feel free to come back later. We plan on making tracking optional in the future.
+          </p>
+        </form>
+      }
+      footer={<img src={WithLogo} className="JoinRoom-endLogo" alt="With logo" />}
+    />
+  );
+
   return (
     <div className="JoinRoom">
-      {isSelectingAvatar ? (
+      <div className={clsx('JoinRoom-login', { 'is-open': !isSelectingAvatar })}>{login}</div>
+      <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
         <AvatarSelect
           onAvatarChange={src => setInitialAvatarSrc(src)}
           defaultAvatar={initialAvatarSrc}
           handleClose={() => toggleIsSelectingAvatar(false)}
         />
-      ) : (
-        <div className="JoinRoom-login u-flex u-flexJustifyBetween">
-          <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignCenter">
-            <div className="JoinRoom-videoPreviewContainer">
-              {isVideoEnabled ? (
-                <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
-              ) : (
-                <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
-              )}
-            </div>
-            <div>
-              <ToggleVideoButton />
-              <ToggleAudioButton />
-            </div>
-          </div>
-          {/*
-            The heading goes here because it is aboslutely positioned on desktop to the upper right corner and on
-            mobile it will be relatively positioned between the av controls and the login form
-          */}
-          <div className="JoinRoom-heading">
-            <img src={WithLogo} className="JoinRoom-heading-logo" /> Joining <strong>{roomName}</strong>
-          </div>
-          <form className="JoinRoom-form" onSubmit={onSubmitHandler}>
-            <FormInput
-              imgAltText={'person image'}
-              placeholderText={'Desired screen name'}
-              classNames={'JoinRoom-formInputOffset'}
-              value={screenName}
-              setValue={setScreenName}
-            />
-            <FormInput
-              imgAltText={'password image'}
-              placeholderText={'Room password'}
-              classNames={'JoinRoom-formInputOffset'}
-              value={password}
-              setValue={setPassword}
-              type="password"
-            />
-            <button type="submit" className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}>
-              Join Room
-            </button>
-            <p className="JoinRoom-analyticsNotice">
-              We wanted you to know, we're using product analytics software to track how you use our app. We use that
-              info to guide our decisions about how to make the With App better. If you don't want us tracking how you
-              use our app, feel free to come back later. We plan on making tracking optional in the future.
-            </p>
-          </form>
-          <img src={WithLogo} className="JoinRoom-endLogo" />
-        </div>
-      )}
+      </div>
     </div>
   );
 };

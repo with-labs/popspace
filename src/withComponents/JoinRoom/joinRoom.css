@@ -1,13 +1,13 @@
 .JoinRoom {
-  max-width: 640px;
-  max-height: 460px;
   background-color: rgba(249, 250, 255, 0.6);
+  max-width: 640px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 70px;
+  padding: 50px;
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .JoinRoom-heading {
@@ -22,6 +22,30 @@
 
 .JoinRoom-avControls {
   margin-right: 56px;
+}
+
+/* The login area should fade in/out when the avatar selector is closed/opened */
+.JoinRoom-login {
+  opacity: 0; /* Hidden */
+  transition: all 0.5s ease;
+}
+
+.JoinRoom-login.is-open {
+  opacity: 1; /* Shown */
+}
+
+/* The avatar selector should fade in/out and slide in from the right when opened/closed */
+.JoinRoom-avatarSelect {
+  position: absolute; /* So that we can transition in over top of the login area */
+  top: 50px; /* To match the padding of JoinRoom */
+  left: 641px; /* Position just outside JoinRoom */
+  opacity: 0; /* Hidden */
+  transition: all 0.75s ease;
+}
+
+.JoinRoom-avatarSelect.is-open {
+  left: 50px; /* To match the padding of JoinRoom */
+  opacity: 1; /* Shown */
 }
 
 .JoinRoom-titleText {
@@ -87,7 +111,6 @@
 .JoinRoom-videoPreviewContainer {
   height: 128px;
   width: 128px;
-  margin-top: 82px; /* Adding this margin will push the video/avatar preview down to match the position of the avatar preview in the avatar picker */
 }
 
 .JoinRoom-endLogo {
@@ -114,10 +137,12 @@
 
   .JoinRoom-endLogo {
     display: inherit;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .JoinRoom-login {
-    flex-direction: column;
+  .JoinRoom-avatarSelect.is-open {
+    left: 40px; /* To match the small screen JoinRoom padding when avatar selector is open */
   }
 
   /* Reset the right margin on the av controls to get rid of the right margin and add bottom margin to space it from the "Join roomname text" */
@@ -130,11 +155,6 @@
     border-radius: 50%;
     object-fit: cover !important;
     border: 3px solid #ffffff;
-  }
-
-  /* Reset the top margin on the video preview container */
-  .JoinRoom-videoPreviewContainer {
-    margin-top: 0;
   }
 
   .JoinRoom-form {

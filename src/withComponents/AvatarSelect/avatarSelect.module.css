@@ -1,9 +1,3 @@
-.leaveControl {
-  position: absolute;
-  top: 38px;
-  left: 48px;
-}
-
 .radio {
   position: absolute;
   right: 0;
@@ -33,6 +27,7 @@
   height: 128px;
   width: 128px;
   margin-right: 56px;
+  margin-bottom: 60px; /* push the avatar preview up a little */
 }
 
 @media (max-width: 640px) {
@@ -40,15 +35,9 @@
     flex-direction: column;
   }
 
-  .leaveControl {
-    position: relative;
-    top: initial;
-    left: initial;
-    margin-left: 48px;
-  }
-
   .avatarPreview {
     margin-right: 0;
+    margin-bottom: 8px;
   }
 
   .optionGrid {

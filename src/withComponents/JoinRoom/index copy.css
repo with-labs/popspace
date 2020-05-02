@@ -1,0 +1,30 @@
+.JoinRoom {
+  height: 100%;
+}
+
+.JoinRoom-container {
+  background: #ffffff;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.JoinRoom-videoPreview {
+  border-radius: 50%;
+  object-fit: cover !important;
+  height: 128px !important;
+  width: 128px !important;
+  border: 3px solid #ffffff;
+}
+
+.JoinRoom-controls {
+  position: sticky;
+  bottom: 10px;
+}
+
+.JoinRoom-analyticsNotice {
+  font-size: 12px;
+  color: #b3b3b3;
+  text-align: justify;
+  padding-bottom: 100px;
+}

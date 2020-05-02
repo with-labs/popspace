@@ -7,6 +7,7 @@
 
 .FormButton.is-inactive {
   cursor: default;
+  opacity: 0.3;
 }
 
 .FormButton-text {

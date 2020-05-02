@@ -6,7 +6,7 @@ import WithLogo from '../../images/withLogo.svg';
 import './joinRoom.css';
 
 import FormInputV2 from '../FormInputV2';
-import FormButton from '../FormButton';
+import FormButton from '../FormButton/FormButton';
 
 import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
@@ -31,7 +31,10 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO input validation and add stuff here
-    if (screenName.length > 0) {
+    // We currently dont allow people into a room without a password and dont have
+    // any error messaging really hooked up, so only allow them in if username and password
+    // are filled out
+    if (screenName.length > 0 && password.length > 0) {
       onJoinSubmitHandler(screenName, password, initialAvatarSrc);
     }
   };
@@ -67,7 +70,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
         onChangeHandler={setPassword}
         type="password"
       />
-      <FormButton text="Join Room" btnType={'submit'} />
+      <FormButton text="Join Room" btnType={'submit'} isActive={screenName.length > 0 && password.length > 0} />
       <div className="u-marginTop16 u-marginBottom16">
         We use analytics software to improve With. Please feel free to come back later, when we made it optional.
       </div>

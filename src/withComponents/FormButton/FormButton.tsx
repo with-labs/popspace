@@ -1,6 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
-import './index.css';
+import './formButton.css';
 
 export type FormButtonTypes = 'button' | 'submit' | 'reset';
 

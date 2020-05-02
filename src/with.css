@@ -1,10 +1,7 @@
 @import './css/util-size/index.css';
 @import './css//util-flex/index.css';
 @import './css/util-display/index.css';
-
-.u-displayNone {
-  display: none !important;
-}
+@import './css/util-margin/index.css';
 
 .u-blur {
   filter: blur(4px) !important;

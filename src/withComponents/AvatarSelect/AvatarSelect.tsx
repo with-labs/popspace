@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-
 import { options } from './options';
-
 import styles from './avatarSelect.module.css';
 
 import { Avatar } from '../Avatar/Avatar';
-import { DoublePaneBox } from '../DoublePaneBox/DoublePaneBox';
 
 interface IAvatarSelectProps {
   defaultAvatar?: string;
@@ -20,31 +17,31 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
   handleClose,
 }) => {
   const [selectedAvatarName, setSelectedAvatarName] = useState(defaultAvatar);
-
   useEffect(() => {
     selectedAvatarName && onAvatarChange(selectedAvatarName);
   }, [selectedAvatarName]);
 
   const selectedAvatar = options.find(opt => opt.name === selectedAvatarName);
 
+  const headerControls = (
+    <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer')}>
+      &lt; Pick an avatar
+    </div>
+  );
+
   return (
-    <DoublePaneBox
-      header={
-        <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer')}>
-          &lt; Pick an avatar
-        </div>
-      }
-      leftPane={
-        <div className="u-flex u-flexAlignCenter u-flexJustifyCenter u-height100Percent">
+    <div className="u-height100Percent">
+      <div className="u-sm-displayNone">{headerControls}</div>
+      <div className="u-flex u-flexRow u-sm-flexCol">
+        <div className="u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-size1of2 u-sm-sizeFull">
           {selectedAvatar ? (
             <div className={styles.avatarPreview}>
               <Avatar name={selectedAvatar.name} />
             </div>
           ) : null}
         </div>
-      }
-      rightPane={
-        <div className={clsx(styles.optionGrid, 'u-flex u-flexWrap u-flexJustifyCenter')}>
+        <div className="u-md-displayNone u-lg-displayNone u-sm-flex">{headerControls}</div>
+        <div className={clsx(styles.optionGrid, 'u-flex u-flexWrap u-flexJustifyCenter  u-size1of2 u-sm-sizeFull')}>
           {options.map((av, idx) => {
             return (
               <div
@@ -59,7 +56,7 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
             );
           })}
         </div>
-      }
-    />
+      </div>
+    </div>
   );
 };

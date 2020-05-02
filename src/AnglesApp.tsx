@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 
 import JoinRoom from './withComponents/JoinRoom/JoinRoom';
-import Header from './withComponents/Header';
 import Footer from './withComponents/Footer';
 
 import { useAppState } from './state';
@@ -74,12 +73,11 @@ export default function AnglesApp(props: AnglesAppProps) {
 
   return (
     <Container>
-      <Main style={bgStyle} className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignCenter">
+      <Main style={bgStyle} className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter">
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
         ) : (
           <DndProvider backend={Backend}>
-            <Header classNames="u-positionAbsolute u-flexNone" />
             <div className="u-flexGrow1 u-width100Percent u-height100Percent">
               <Room initialAvatar={initialAvatar} />
               <ReconnectingNotification />

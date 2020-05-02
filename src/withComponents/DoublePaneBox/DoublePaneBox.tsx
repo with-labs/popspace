@@ -14,7 +14,7 @@ export const DoublePaneBox: React.FC<IDoublePaneBoxProps> = ({ header, leftPane,
   return (
     <div className="DoublePaneBox">
       {header ? <div className={styles.header}>{header}</div> : null}
-      <div className={clsx(styles.panes, 'u-flex u-flexJustifyBetween u-flexAlignCenter')}>
+      <div className={clsx(styles.panes, 'u-flex u-flexJustifyBetween u-flexAlignItemsCenter')}>
         <div className={clsx(styles.leftPane, 'u-flexGrow1')}>{leftPane}</div>
         <div className={clsx(styles.rightPane, 'u-flexGrow1')}>{rightPane}</div>
       </div>

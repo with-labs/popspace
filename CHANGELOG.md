@@ -1,6 +1,36 @@
+## 1.36.0
+
+Double pane box component. This looks like it's going to be a common UI thing, so I made a component for it.
+
+- DoublePaneBox component.
+- Experimenting with transitions between the login area and the avatar selector in the lobby.
+
+## 1.35.0
+
+Blinking avatars.
+
+- Using a combination of background image and image element in Avatar to toggle appearance of blinking.
+- Random timout up to 5000ms for non-blinking, 100ms for blinking.
+- Now using the Avatar component in AvatarSelect.
+- Removing console.logs from AudioTrack.
+- Making Participant bubbles smaller on small screens.
+
+## 1.34.0
+
+Laying the groundwork for avatars (tokens).
+
+- Turn video off by default.
+- Allow the user to select an avatar in the lobby page.
+- When the Room mounts, dispatch an action to set the user's avatar.
+- Queue redux actions until a PING is received. Then re-dispatch them. (See extensive comment in RoomStateProvider.tsx)
+- Use participant avatar meta property as the background for ParticipantCircle.
+- New avatar images.
+- First pass at the new lobby page in JoinRoom.
+
 ## 1.33.0
 
 New rooms:
+
 - charlesgivre
 - seanlutjens
 - mindsense

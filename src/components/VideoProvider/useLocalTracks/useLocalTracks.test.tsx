@@ -16,14 +16,18 @@ describe('the useLocalTracks hook', () => {
     // LocalDataTrack is always present.
     expect(result.current.localTracks).toEqual([expect.any(LDT)]);
     await waitForNextUpdate();
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
+    // Video is off by default, so only one track
+    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(LDT)]);
     expect(result.current.getLocalVideoTrack).toEqual(expect.any(Function));
   });
 
   it('should be called with the correct arguments', async () => {
-    const { waitForNextUpdate } = renderHook(useLocalTracks);
+    const { result, waitForNextUpdate } = renderHook(useLocalTracks);
     await waitForNextUpdate();
     expect(Video.createLocalAudioTrack).toHaveBeenCalled();
+
+    // Since video is off by default, must call getLocalVideoTrack to test the args sent to the Twilio Video obj.
+    result.current.getLocalVideoTrack();
     expect(Video.createLocalVideoTrack).toHaveBeenCalledWith({
       frameRate: 24,
       height: 720,
@@ -34,6 +38,10 @@ describe('the useLocalTracks hook', () => {
 
   it('should respond to "stopped" events from the local video track', async () => {
     const { result, waitForNextUpdate } = renderHook(useLocalTracks);
+
+    // Must enable video to be able to test the 'stopped' event on video
+    result.current.getLocalVideoTrack();
+
     await waitForNextUpdate();
     expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
     act(() => {

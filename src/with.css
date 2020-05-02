@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
 
+.u-displayNone {
+  display: none !important;
+}
+
 .u-blur {
   filter: blur(4px) !important;
 }
@@ -28,6 +32,10 @@
   justify-content: space-around !important;
 }
 
+.u-flexJustifyBetween {
+  justify-content: space-between !important;
+}
+
 .u-flexJustifyCenter {
   justify-content: center !important;
 }
@@ -54,6 +62,10 @@
 
 .u-height100Percent {
   height: 100% !important;
+}
+
+.u-width100Percent {
+  width: 100% !important;
 }
 
 .u-floatRight {

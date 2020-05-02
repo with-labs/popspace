@@ -3,6 +3,7 @@
   height: 100%;
   width: 100%;
   cursor: pointer;
+  border-radius: 50%;
 }
 .ParticipantCircle.is-localParticipant {
   cursor: move;
@@ -63,6 +64,8 @@
   position: absolute;
   top: 0;
   left: 0;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .ParticipantCircle-videoCircle {
@@ -96,4 +99,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px 10px;
+}
+
+@media (max-width: 640px) {
+  /*
+    Move the settings gear out a little to put it on the edge of the circle. The circles are smaller on small screens
+    but the settings gear stays the same size, so it needs to move out a tiny bit.
+  */
+  .ParticipantCircle-settings {
+    top: -10px;
+    left: -10px;
+  }
 }

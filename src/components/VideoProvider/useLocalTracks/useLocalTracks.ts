@@ -1,8 +1,10 @@
 /**
  * #ANGLES_EDIT
  *
- * Now creates a LocalDataTrack for the local participant in addition to audio and video tracks.
+ * 3/1/2020 WQP: Now creates a LocalDataTrack for the local participant in addition to audio and video tracks.
  * The created LocalDataTrack is included in the `localTracks` property returned.
+ *
+ * 4/23/2020 WQP: Removed the useEffect call that automatically creates a video track when the app loads.
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -61,10 +63,11 @@ export function useLocalVideoTrack() {
     []
   );
 
-  useEffect(() => {
-    // We get a new local video track when the app loads.
-    getLocalVideoTrack();
-  }, [getLocalVideoTrack]);
+  // Uncomment this to re-enable video-on by default.
+  // useEffect(() => {
+  //   // We get a new local video track when the app loads.
+  //   getLocalVideoTrack();
+  // }, [getLocalVideoTrack]);
 
   useEffect(() => {
     const handleStopped = () => setTrack(undefined);

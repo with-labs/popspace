@@ -7,3 +7,10 @@
   width: 240px;
   height: 240px;
 }
+
+@media (max-width: 640px) {
+  .participantBubble {
+    width: 128px;
+    height: 128px;
+  }
+}

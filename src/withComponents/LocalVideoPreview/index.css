@@ -1,6 +1,5 @@
 .LocalVideo {
   position: relative;
-  margin-bottom: 40px;
 }
 
 .LocalVideo-placeHolder {
@@ -12,4 +11,6 @@
 .LocalVideo-video {
   position: absolute;
   top: 0;
+  border-radius: 50%;
+  overflow: hidden;
 }

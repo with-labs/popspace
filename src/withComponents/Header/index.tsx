@@ -2,8 +2,8 @@ import React from 'react';
 import clsx from 'clsx';
 import './index.css';
 
-import WithLogo from './images/withLogo.svg';
-import WithLogoCustom from './images/WithLogoWhite.png';
+import WithLogo from '../../images/withLogo.svg';
+import WithLogoCustom from '../../images/WithLogoWhite.png';
 import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
 import { Background } from '../BackgroundPicker';
 

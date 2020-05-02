@@ -19,6 +19,9 @@ import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoTo
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
+import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+
+import { Avatar } from '../Avatar/Avatar';
 
 interface ParticipantCircleProps {
   participant: LocalParticipant | RemoteParticipant;
@@ -31,16 +34,19 @@ interface ParticipantCircleProps {
 
 const ParticipantCircle = (props: ParticipantCircleProps) => {
   const { participant, disableAudio, enableScreenShare, videoPriority, styles, onClick } = props;
+  const meta = useParticipantMeta(participant);
   const [isHovering, setIsHovering] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const { updateEmoji, participantMeta } = useParticipantMetaContext();
-  const emoji = participantMeta[participant.sid].emoji;
+  const { updateEmoji } = useParticipantMetaContext();
   const { room } = useVideoContext();
   const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const publications = usePublications(participant);
-  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const isLocal = participant === room.localParticipant;
+
+  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
+  const emoji = meta.emoji;
+  const avatar = meta.avatar;
 
   let filteredPublications;
 
@@ -77,6 +83,27 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     setIsSettingsModalOpen(false);
   }
 
+  // `hasVideoPublication` can be used to change the circle's appearance. Below, if there is no video publication
+  // an Avatar is rendered.
+  let hasVideoPublication = false;
+  const pubs = filteredPublications.map(publication => {
+    if (publication.kind === 'video') {
+      hasVideoPublication = true;
+    }
+    return (
+      <div key={publication.kind} className="ParticipantCircle-participant">
+        <Publication
+          publication={publication}
+          participant={participant}
+          isLocal={isLocal}
+          disableAudio={disableAudio}
+          videoPriority={videoPriority}
+          classNames={'ParticipantCircle-videoCircle'}
+        />
+      </div>
+    );
+  });
+
   return (
     <>
       <div
@@ -86,6 +113,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         onMouseLeave={() => setIsHovering(false)}
         onClick={() => onClick()}
       >
+        {hasVideoPublication ? null : <Avatar name={avatar} />}
         {settings}
         {isLocal ? (
           <div className="ParticipantCircle-hud">
@@ -109,29 +137,20 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             </span>
           </div>
         ) : null}
-        {filteredPublications.map(publication => (
-          <div key={publication.kind} className="ParticipantCircle-participant">
-            <Publication
-              publication={publication}
-              participant={participant}
-              isLocal={isLocal}
-              disableAudio={disableAudio}
-              videoPriority={videoPriority}
-              classNames={'ParticipantCircle-videoCircle'}
-            />
-          </div>
-        ))}
+        {pubs}
         <div className={clsx('ParticipantCircle-infoOverlay', { 'is-hovering': isHovering || disableAudio })}>
           <div className="ParticipantCircle-overLayText">{participantDisplayIdentity}</div>
         </div>
       </div>
-      <SettingsModal
-        isSettingsModalOpen={isSettingsModalOpen}
-        closeSettingsModal={closeSettingsModal}
-        updateEmoji={updateEmoji}
-        emoji={emoji}
-        participant={participant}
-      />
+      {isLocal ? (
+        <SettingsModal
+          isSettingsModalOpen={isSettingsModalOpen}
+          closeSettingsModal={closeSettingsModal}
+          updateEmoji={updateEmoji}
+          emoji={emoji}
+          participant={participant}
+        />
+      ) : null}
     </>
   );
 };

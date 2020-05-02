@@ -7,6 +7,7 @@ export type EmojiData = ED | null | string;
 export interface IParticipantMeta {
   location: LocationTuple;
   emoji: EmojiData;
+  avatar: string;
 }
 
 // The key is a participant's sid
@@ -14,9 +15,10 @@ export interface IParticipantMetaState {
   [key: string]: IParticipantMeta;
 }
 
-enum Actions {
+export enum Actions {
   UpdateLocation = 'UPDATE_LOCATION',
   UpdateEmoji = 'UPDATE_EMOJI',
+  UpdateAvatar = 'UPDATE_AVATAR',
 }
 
 export default function reducer(state: IParticipantMetaState = {}, action: Action) {
@@ -34,6 +36,12 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
 
       return newPts;
     }
+
+    case Actions.UpdateAvatar: {
+      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], avatar: payload.avatar } };
+
+      return newPts;
+    }
   }
 
   return state;
@@ -47,4 +55,9 @@ export const locationUpdate = (sid: string, location: LocationTuple) => ({
 export const emojiUpdate = (sid: string, emoji: EmojiData) => ({
   type: Actions.UpdateEmoji,
   payload: { sid, emoji },
+});
+
+export const avatarUpdate = (sid: string, avatar: string) => ({
+  type: Actions.UpdateAvatar,
+  payload: { sid, avatar },
 });

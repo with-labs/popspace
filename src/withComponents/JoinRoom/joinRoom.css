@@ -1,0 +1,196 @@
+.JoinRoom {
+  background-color: rgba(249, 250, 255, 0.6);
+  max-width: 640px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.JoinRoom-heading {
+  position: absolute;
+  top: 38px;
+  left: 48px;
+}
+
+.JoinRoom-heading-logo {
+  height: 22px;
+}
+
+.JoinRoom-avControls {
+  margin-right: 56px;
+}
+
+/* The login area should fade in/out when the avatar selector is closed/opened */
+.JoinRoom-login {
+  opacity: 0; /* Hidden */
+  transition: all 0.5s ease;
+}
+
+.JoinRoom-login.is-open {
+  opacity: 1; /* Shown */
+}
+
+/* The avatar selector should fade in/out and slide in from the right when opened/closed */
+.JoinRoom-avatarSelect {
+  position: absolute; /* So that we can transition in over top of the login area */
+  top: 50px; /* To match the padding of JoinRoom */
+  left: 641px; /* Position just outside JoinRoom */
+  opacity: 0; /* Hidden */
+  transition: all 0.75s ease;
+}
+
+.JoinRoom-avatarSelect.is-open {
+  left: 50px; /* To match the padding of JoinRoom */
+  opacity: 1; /* Shown */
+}
+
+.JoinRoom-titleText {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+  padding-top: 15px;
+  padding-bottom: 55px;
+}
+
+.JoinRoom-joinTitle {
+  color: black;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 45px;
+  text-align: center;
+}
+
+.JoinRoom-formInputOffset {
+  margin-bottom: 8px;
+}
+
+.JoinRoom-formInputOffset:last-of-type {
+  margin-bottom: 16px;
+}
+
+.JoinRoom-button {
+  cursor: pointer;
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 24px;
+
+  background-color: #b9c5ff;
+  box-shadow: 0px 2px 6px rgba(160, 160, 160, 0.12), 0px 6px 32px rgba(160, 160, 160, 0.25);
+}
+
+.JoinRoom-button.is-inactive {
+  cursor: default;
+  background-color: #b9c5ff;
+  color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-sizing: border-box;
+}
+
+.JoinRoom-button:focus {
+  outline: none;
+}
+
+.JoinRoom-analyticsNotice {
+  font-size: 12px;
+  color: #b3b3b3;
+  text-align: justify;
+  margin-top: 16px;
+}
+
+.JoinRoom-videoPreviewContainer {
+  height: 128px;
+  width: 128px;
+}
+
+.JoinRoom-endLogo {
+  display: none;
+  height: 20px;
+}
+
+@media (max-width: 640px) {
+  .JoinRoom {
+    padding: 40px;
+  }
+
+  /* Reset the position and top/left to make the "Joining roomname" text show up below the av controls */
+  .JoinRoom-heading {
+    position: relative;
+    top: initial;
+    left: initial;
+    margin-bottom: 16px;
+  }
+
+  .JoinRoom-heading-logo {
+    display: none;
+  }
+
+  .JoinRoom-endLogo {
+    display: inherit;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .JoinRoom-avatarSelect.is-open {
+    left: 40px; /* To match the small screen JoinRoom padding when avatar selector is open */
+  }
+
+  /* Reset the right margin on the av controls to get rid of the right margin and add bottom margin to space it from the "Join roomname text" */
+  .JoinRoom-avControls {
+    margin-right: 0;
+    margin-bottom: 48px;
+  }
+
+  .JoinRoom-videoPreview {
+    border-radius: 50%;
+    object-fit: cover !important;
+    border: 3px solid #ffffff;
+  }
+
+  .JoinRoom-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .JoinRoom-button {
+    margin-top: 16px;
+  }
+
+  .JoinRoom-joinTitle {
+    margin-bottom: 20px;
+  }
+}
+
+@media (min-width: 640px) {
+  .JoinRoom-videoPreview {
+    border-radius: 50%;
+    object-fit: cover !important;
+    border: 3px solid #ffffff;
+  }
+
+  .JoinRoom-form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+  }
+
+  .JoinRoom-controls {
+    position: absolute;
+    bottom: 10px;
+  }
+
+  .JoinRoom-joinTitle {
+    margin-bottom: 40px;
+  }
+}

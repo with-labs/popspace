@@ -50,15 +50,15 @@
   position: absolute;
   transform: translate(150%, 0px);
   transition: all 0.75s ease;
-  top: 70px;
+  top: 30px;
   left: 0px;
-  padding: 0 40px; /* match the padding of the join bubble */
+  padding: 40px; /* match the padding of the join bubble */
 }
 
 .JoinRoom-avatarSelect.is-open {
   transform: translate(0%, 0px);
   transition: all 0.75s ease;
-  top: 70px; /* match where the logo is */
+  top: 30px; /* match where the logo is */
   background-color: white;
 }
 
@@ -76,4 +76,23 @@
   font-size: 14px;
   line-height: 18px;
   color: #444444;
+}
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .JoinRoom-avatarSelect {
+    z-index: 10;
+    position: absolute;
+    transform: translate(150%, 0px);
+    transition: all 0.75s ease;
+    top: 0px;
+    left: 0px;
+    padding: 40px; /* match the padding of the join bubble */
+  }
+
+  .JoinRoom-avatarSelect.is-open {
+    transform: translate(0%, 0px);
+    transition: all 0.75s ease;
+    top: 0px; /* match where the logo is */
+    background-color: white;
+  }
 }

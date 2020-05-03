@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import Header from '../Header';
 import LocalVideoPreview from '../LocalVideoPreview';
-import WithLogo from '../../images/withLogo.svg';
+import WithLogo from './images/logo_extrasmall.svg';
 import './joinRoom.css';
 
 import FormInputV2 from '../FormInputV2';
@@ -38,6 +37,17 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
       onJoinSubmitHandler(screenName, password, initialAvatarSrc);
     }
   };
+
+  const joiningRoomText = <div className="JoinRoom-text u-flex u-flexAlignItemsCenter">Joining {roomName}</div>;
+
+  const header = (
+    <div className="u-flex u-flexRow u-flexAlignItemsCenter">
+      <div>
+        <img className="JoinRoom-logo" alt="With Logo" src={WithLogo} />
+      </div>
+      {joiningRoomText}
+    </div>
+  );
 
   const userAvatarCameraSelect = (
     <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignItemsCenter">
@@ -85,11 +95,11 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
             'is-open': !isSelectingAvatar,
           })}
         >
-          <Header roomName={roomName} />
+          {header}
         </div>
         <div className={clsx('JoinRoom-userInfo u-flex u-flexRow u-sm-flexCol', { 'is-open': !isSelectingAvatar })}>
           <div className="JointRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
-            Joining {roomName}
+            {joiningRoomText}
           </div>
           <div className="joinRoom-videoPreviewContainer u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
             {userAvatarCameraSelect}

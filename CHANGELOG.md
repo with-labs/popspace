@@ -4,6 +4,8 @@
 - reworking join page to be responsive and match designs
 - adding in new font
 - reworking avatar picker to use css utils
+- updating logos
+- adding in default wallpaper
 
 ## 1.36.0
 

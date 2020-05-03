@@ -1,5 +1,7 @@
 .JoinRoom {
   height: 100%;
+  background: url('/backgrounds/Wallpaper03.jpg');
+  background-size: cover;
 }
 
 .JoinRoom-container {
@@ -63,4 +65,20 @@
   transition: all 0.75s ease;
   top: 70px; /* match where the logo is */
   background-color: white;
+}
+
+.JoinRoom-header {
+  height: 80px;
+  width: 100%;
+}
+
+.JoinRoom-logo {
+  height: 35px;
+}
+
+.JoinRoom-text {
+  margin-left: 10px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #444444;
 }

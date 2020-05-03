@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins&display=swap');
-
-.u-displayNone {
-  display: none !important;
-}
+@import './css/util-size/index.css';
+@import './css//util-flex/index.css';
+@import './css/util-display/index.css';
+@import './css/util-margin/index.css';
 
 .u-blur {
   filter: blur(4px) !important;
@@ -14,50 +13,6 @@
 
 .u-positionRelative {
   position: relative !important;
-}
-
-.u-flex {
-  display: flex !important;
-}
-
-.u-flexCol {
-  flex-direction: column !important;
-}
-
-.u-flexWrap {
-  flex-wrap: wrap !important;
-}
-
-.u-flexJustifyAround {
-  justify-content: space-around !important;
-}
-
-.u-flexJustifyBetween {
-  justify-content: space-between !important;
-}
-
-.u-flexJustifyCenter {
-  justify-content: center !important;
-}
-
-.u-flexAlignCenter {
-  align-items: center !important;
-}
-
-.u-flexNone {
-  flex: none !important;
-}
-
-.u-flexGrow1 {
-  flex: 1 !important;
-}
-
-.u-flexAlignEnd {
-  align-items: flex-end !important;
-}
-
-.u-flexJustifyEnd {
-  justify-content: flex-end !important;
 }
 
 .u-height100Percent {

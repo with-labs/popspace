@@ -1,3 +1,12 @@
+## 1.37.0
+
+- Adding in css utils
+- reworking join page to be responsive and match designs
+- adding in new font
+- reworking avatar picker to use css utils
+- updating logos
+- adding in default wallpaper
+
 ## 1.36.0
 
 Double pane box component. This looks like it's going to be a common UI thing, so I made a component for it.

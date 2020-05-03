@@ -4,8 +4,8 @@ import LocalVideoPreview from '../LocalVideoPreview';
 import WithLogo from './images/logo_extrasmall.svg';
 import './joinRoom.css';
 
-import FormInputV2 from '../FormInputV2';
-import FormButton from '../FormButton/FormButton';
+import { FormInputV2 } from '../FormInputV2/FormInputV2';
+import { FormButton } from '../FormButton/FormButton';
 
 import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';

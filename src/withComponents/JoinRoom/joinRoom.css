@@ -21,11 +21,6 @@
   border: 3px solid #ffffff;
 }
 
-.JoinRoom-controls {
-  position: sticky;
-  bottom: 10px;
-}
-
 .JoinRoom-analyticsNotice {
   font-size: 12px;
   color: #b3b3b3;

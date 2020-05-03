@@ -1,16 +1,22 @@
 import React from 'react';
 import clsx from 'clsx';
-import './index.css';
+import './formInputV2.css';
 
-type FormInputProps = {
-  placeholderText: string;
+interface IFormInputV2Props {
+  placeholderText?: string;
   classNames?: string;
   value: any;
   onChangeHandler: any;
   type?: string;
-};
+}
 
-const FormInputV2 = ({ placeholderText, classNames, value, onChangeHandler, type }: FormInputProps) => {
+export const FormInputV2: React.FC<IFormInputV2Props> = ({
+  placeholderText,
+  classNames,
+  value,
+  onChangeHandler,
+  type,
+}) => {
   return (
     <div className={clsx('FormInputV2 u-flex  u-flexAlignItemsCenter', classNames)}>
       <input
@@ -25,5 +31,3 @@ const FormInputV2 = ({ placeholderText, classNames, value, onChangeHandler, type
     </div>
   );
 };
-
-export default FormInputV2;

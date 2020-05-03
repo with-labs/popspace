@@ -4,7 +4,7 @@ import './formButton.css';
 
 export type FormButtonTypes = 'button' | 'submit' | 'reset';
 
-type FormButtonProps = {
+interface IFormButtonProps {
   imgSrc?: any;
   imgAltText?: string;
   classNames?: string;
@@ -12,9 +12,9 @@ type FormButtonProps = {
   btnType?: FormButtonTypes;
   text: string;
   isActive?: boolean;
-};
+}
 
-const FormButton = ({
+export const FormButton: React.FC<IFormButtonProps> = ({
   imgSrc,
   imgAltText,
   classNames,
@@ -22,7 +22,7 @@ const FormButton = ({
   btnType = 'button',
   text,
   isActive = true,
-}: FormButtonProps) => {
+}) => {
   const buttonIcon = imgSrc ? <img className="FormButton-img" src={imgSrc} alt={imgAltText} /> : null;
 
   return (
@@ -32,5 +32,3 @@ const FormButton = ({
     </button>
   );
 };
-
-export default FormButton;

@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
-
-import WithLogo from '../../images/withLogo.svg';
+import WithLogo from './images/logo_extrasmall.svg';
 import './joinRoom.css';
 
-import FormInput from '../FormInput';
+import { FormInputV2 } from '../FormInputV2/FormInputV2';
+import { FormButton } from '../FormButton/FormButton';
+
 import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
 import { Avatar } from '../Avatar/Avatar';
 
-import { DoublePaneBox } from '../DoublePaneBox/DoublePaneBox';
-
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-
 import ToggleVideoButton from '../../components/Controls/ToggleVideoButton/ToggleVideoButton';
 import ToggleAudioButton from '../../components/Controls/ToggleAudioButton/ToggleAudioButton';
 
@@ -27,79 +25,97 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
   const [password, setPassword] = useState('');
   const [initialAvatarSrc, setInitialAvatarSrc] = useState(randomAvatar().name);
   const [isVideoEnabled] = useLocalVideoToggle();
-
   const [isSelectingAvatar, toggleIsSelectingAvatar] = useState(false);
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    //TODO input validation and add stuff here
-    if (screenName.length > 0) {
+    // TODO input validation and add stuff here
+    // We currently dont allow people into a room without a password and dont have
+    // any error messaging really hooked up, so only allow them in if username and password
+    // are filled out
+    if (screenName.length > 0 && password.length > 0) {
       onJoinSubmitHandler(screenName, password, initialAvatarSrc);
     }
   };
 
-  const login = (
-    <DoublePaneBox
-      header={
-        <div>
-          <img src={WithLogo} className="JoinRoom-heading-logo" /> Joining <strong>{roomName}</strong>
-        </div>
-      }
-      leftPane={
-        <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignCenter">
-          <div className="JoinRoom-videoPreviewContainer">
-            {isVideoEnabled ? (
-              <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
-            ) : (
-              <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
-            )}
-          </div>
-          <div>
-            <ToggleVideoButton />
-            <ToggleAudioButton />
-          </div>
-        </div>
-      }
-      rightPane={
-        <form className="JoinRoom-form" onSubmit={onSubmitHandler}>
-          <FormInput
-            imgAltText={'person image'}
-            placeholderText={'Desired screen name'}
-            classNames={'JoinRoom-formInputOffset'}
-            value={screenName}
-            setValue={setScreenName}
-          />
-          <FormInput
-            imgAltText={'password image'}
-            placeholderText={'Room password'}
-            classNames={'JoinRoom-formInputOffset'}
-            value={password}
-            setValue={setPassword}
-            type="password"
-          />
-          <button type="submit" className={clsx('JoinRoom-button', { 'is-inactive': screenName.length === 0 })}>
-            Join Room
-          </button>
-          <p className="JoinRoom-analyticsNotice">
-            We wanted you to know, we're using product analytics software to track how you use our app. We use that info
-            to guide our decisions about how to make the With App better. If you don't want us tracking how you use our
-            app, feel free to come back later. We plan on making tracking optional in the future.
-          </p>
-        </form>
-      }
-      footer={<img src={WithLogo} className="JoinRoom-endLogo" alt="With logo" />}
-    />
+  const joiningRoomText = <div className="JoinRoom-text u-flex u-flexAlignItemsCenter">Joining {roomName}</div>;
+
+  const header = (
+    <div className="u-flex u-flexRow u-flexAlignItemsCenter">
+      <div>
+        <img className="JoinRoom-logo" alt="With Logo" src={WithLogo} />
+      </div>
+      {joiningRoomText}
+    </div>
+  );
+
+  const userAvatarCameraSelect = (
+    <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignItemsCenter">
+      <div className="JoinRoom-videoPreviewContainer">
+        {isVideoEnabled ? (
+          <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
+        ) : (
+          <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
+        )}
+      </div>
+      <div>
+        <ToggleVideoButton />
+        <ToggleAudioButton />
+      </div>
+    </div>
+  );
+
+  const userLoginForm = (
+    <form className="JoinRoom-form u-flex u-flexCol" onSubmit={onSubmitHandler}>
+      <FormInputV2
+        placeholderText={'Desired screen name'}
+        classNames={'JoinRoom-formInputOffset u-marginBottom8'}
+        value={screenName}
+        onChangeHandler={setScreenName}
+      />
+      <FormInputV2
+        placeholderText={'Room password'}
+        classNames={'JoinRoom-formInputOffset u-marginBottom16'}
+        value={password}
+        onChangeHandler={setPassword}
+        type="password"
+      />
+      <FormButton text="Join Room" btnType={'submit'} isActive={screenName.length > 0 && password.length > 0} />
+      <div className="u-marginTop16 u-marginBottom16">
+        We use analytics software to improve With. Please feel free to come back later, when we made it optional.
+      </div>
+    </form>
   );
 
   return (
-    <div className="JoinRoom">
-      <div className={clsx('JoinRoom-login', { 'is-open': !isSelectingAvatar })}>{login}</div>
-      <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
-        <AvatarSelect
-          onAvatarChange={src => setInitialAvatarSrc(src)}
-          defaultAvatar={initialAvatarSrc}
-          handleClose={() => toggleIsSelectingAvatar(false)}
-        />
+    <div className="JoinRoom u-width100Percent u-flex u-flexJustifyCenter u-flexAlignItemsCenter">
+      <div className="JoinRoom-container u-positionRelative u-size8of10 u-sm-sizeFull u-margin8">
+        <div
+          className={clsx('JoinRoom-header u-flex u-sm-displayNone u-marginBottom24', {
+            'is-open': !isSelectingAvatar,
+          })}
+        >
+          {header}
+        </div>
+        <div className={clsx('JoinRoom-userInfo u-flex u-flexRow u-sm-flexCol', { 'is-open': !isSelectingAvatar })}>
+          <div className="JointRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
+            {joiningRoomText}
+          </div>
+          <div className="joinRoom-videoPreviewContainer u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
+            {userAvatarCameraSelect}
+          </div>
+          <div className="joinRoom-formContainer u-size1of2 u-sm-sizeFull">{userLoginForm}</div>
+        </div>
+        <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
+          <AvatarSelect
+            onAvatarChange={src => setInitialAvatarSrc(src)}
+            defaultAvatar={initialAvatarSrc}
+            handleClose={() => toggleIsSelectingAvatar(false)}
+          />
+        </div>
+        <div className="u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
+          <img className="JoinRoom-logo" alt="header-logo" src={WithLogo} />
+        </div>
       </div>
     </div>
   );

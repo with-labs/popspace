@@ -1,0 +1,19 @@
+.FormButton {
+  cursor: pointer;
+  background: #636c8b;
+  border-radius: 6px;
+  height: 40px;
+}
+
+.FormButton.is-inactive {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.FormButton-text {
+  color: white;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 14px;
+}

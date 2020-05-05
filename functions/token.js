@@ -37,7 +37,7 @@ const ROOM_WHITELIST_PASSCODES = {
   jmow: 'e1d12',
   virtualkitchen: 'c9df3',
   mdes: 'designorama',
-  karenbourdon: 'karenannarbor',
+  chezkerry: 'karenannarbor',
   johnpalmer: 'f9e8e',
   leah: 'V!rtual338',
   moxon: '2f6e8',
@@ -47,6 +47,9 @@ const ROOM_WHITELIST_PASSCODES = {
   mindsense: '2011',
   louis: '4d3n3',
   crivello: '2ac2f5',
+  viksit: '912d8',
+  partytime: 'party',
+  maddie: 'adcec',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -3,9 +3,10 @@ import { AudioTrack as IAudioTrack } from 'twilio-video';
 
 interface AudioTrackProps {
   track: IAudioTrack;
+  volume: number;
 }
 
-export default function AudioTrack({ track }: AudioTrackProps) {
+export default function AudioTrack({ track, volume }: AudioTrackProps) {
   const ref = useRef<HTMLAudioElement>(null!);
 
   useEffect(() => {
@@ -15,6 +16,10 @@ export default function AudioTrack({ track }: AudioTrackProps) {
       track.detach(el);
     };
   }, [track]);
+
+  useEffect(() => {
+    ref.current.volume = volume;
+  }, [volume]);
 
   return <audio ref={ref} />;
 }

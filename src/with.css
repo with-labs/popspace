@@ -35,3 +35,7 @@
 .u-opacity1 {
   opacity: 1 !important;
 }
+
+.u-overflowHidden {
+  overflow: hidden !important;
+}

@@ -1,3 +1,9 @@
+## 1.38.0
+
+- Add audio presence based on users location and huddle status
+- Update room name to chezkerry
+- New rooms: viksit, partytime, maddie
+
 ## 1.37.0
 
 - Adding in css utils

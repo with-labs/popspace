@@ -2,9 +2,19 @@ import React from 'react';
 import Publication from './Publication';
 import { shallow } from 'enzyme';
 import useTrack from '../../hooks/useTrack/useTrack';
+import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
+import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
+
+jest.mock('../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta');
+const mockUseParticipantLocationDelta = useParticipantLocationDelta as jest.Mock<any>;
+mockUseParticipantLocationDelta.mockImplementation(() => ({ distance: 1 }));
+
+jest.mock('../../withHooks/useRoomParties/useRoomParties');
+const mockUseRoomParties = useRoomParties as jest.Mock<any>;
+mockUseRoomParties.mockImplementation(() => ({ huddles: [], localHuddle: undefined }));
 
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {

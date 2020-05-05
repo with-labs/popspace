@@ -37,7 +37,7 @@ const ROOM_WHITELIST_PASSCODES = {
   jmow: 'e1d12',
   virtualkitchen: 'c9df3',
   mdes: 'designorama',
-  chezkerry: 'karenannarbor',
+  chezkerry: '2ac2f5',
   johnpalmer: 'f9e8e',
   leah: 'V!rtual338',
   moxon: '2f6e8',
@@ -50,6 +50,7 @@ const ROOM_WHITELIST_PASSCODES = {
   viksit: '912d8',
   partytime: 'party',
   maddie: 'adcec',
+  meetwith: 'meetwith2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -1,3 +1,8 @@
+## 1.39.0
+
+- New room: meetwith
+- Update pw for chezkerry 
+
 ## 1.38.0
 
 - Add audio presence based on users location and huddle status

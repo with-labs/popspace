@@ -44,18 +44,16 @@
 
 .ParticipantCircle-hud {
   z-index: 1;
-  position: absolute;
-  bottom: 0;
-  left: 95px;
   cursor: pointer;
+  bottom: -32px; /* Push the hud down to intersect the bubble a little */
 }
 
 .ParticipantCircle-hud-item {
   opacity: 0;
 }
 
-.ParticipantCircle-hud svg {
-  fill: #fff;
+.ParticipantCircle-hud-item:last-of-type {
+  margin-left: 8px;
 }
 
 .ParticipantCircle-participant {

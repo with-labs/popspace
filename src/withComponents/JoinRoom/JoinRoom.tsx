@@ -11,9 +11,10 @@ import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
 import { Avatar } from '../Avatar/Avatar';
 
+import { AudioToggle } from '../AudioToggle/AudioToggle';
+import { VideoToggle } from '../VideoToggle/VideoToggle';
+
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-import ToggleVideoButton from '../../components/Controls/ToggleVideoButton/ToggleVideoButton';
-import ToggleAudioButton from '../../components/Controls/ToggleAudioButton/ToggleAudioButton';
 
 type JoinRoomProps = {
   roomName: string;
@@ -58,9 +59,13 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
         )}
       </div>
-      <div>
-        <ToggleVideoButton />
-        <ToggleAudioButton />
+      <div className="u-flex">
+        <div className="JoinRoom-avControls-item">
+          <VideoToggle />
+        </div>
+        <div className="JoinRoom-avControls-item">
+          <AudioToggle />
+        </div>
       </div>
     </div>
   );

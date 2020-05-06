@@ -28,6 +28,10 @@
   padding-bottom: 100px;
 }
 
+.JoinRoom-avControls-item:last-of-type {
+  margin-left: 8px;
+}
+
 /* The login area should fade in/out when the avatar selector is closed/opened */
 .JoinRoom-userInfo,
 .JoinRoom-header {
@@ -43,6 +47,7 @@
 .JoinRoom-videoPreviewContainer {
   height: 128px;
   width: 128px;
+  margin-bottom: 24px;
 }
 
 .JoinRoom-avatarSelect {

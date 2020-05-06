@@ -1,7 +1,15 @@
+## 1.40.0
+
+New AV toggle controls.
+
+- AudioToggle and VideoToggle components.
+- Plumbed new toggles into Join/lobby page.
+- Plumbed new toggles into ParticipantCircle.
+
 ## 1.39.0
 
 - New room: meetwith
-- Update pw for chezkerry 
+- Update pw for chezkerry
 
 ## 1.38.0
 

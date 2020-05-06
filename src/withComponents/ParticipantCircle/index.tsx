@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Emoji } from 'emoji-mart';
 import './index.css';
-import MicOff from '@material-ui/icons/MicOff';
-import Mic from '@material-ui/icons/Mic';
-import Videocam from '@material-ui/icons/Videocam';
-import VideocamOff from '@material-ui/icons/VideocamOff';
+
+import { AudioToggle } from '../AudioToggle/AudioToggle';
+import { VideoToggle } from '../VideoToggle/VideoToggle';
 
 import SettingsModal from '../SettingsModal/SettingsModal';
 
@@ -39,8 +38,6 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const { updateEmoji } = useParticipantMetaContext();
   const { room } = useVideoContext();
-  const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
-  const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const publications = usePublications(participant);
   const isLocal = participant === room.localParticipant;
 
@@ -115,32 +112,20 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
       >
         {hasVideoPublication ? null : <Avatar name={avatar} />}
         {settings}
-        {isLocal ? (
-          <div className="ParticipantCircle-hud">
-            <span
-              className={clsx('ParticipantCircle-hud-item', { 'u-opacity1': !isAudioEnabled })}
-              onClick={e => {
-                e.stopPropagation();
-                toggleAudioEnabled();
-              }}
-            >
-              {isAudioEnabled ? <Mic /> : <MicOff />}
-            </span>
-            <span
-              className="ParticipantCircle-hud-item"
-              onClick={e => {
-                e.stopPropagation();
-                toggleVideoEnabled();
-              }}
-            >
-              {isVideoEnabled ? <Videocam /> : <VideocamOff />}
-            </span>
-          </div>
-        ) : null}
         {pubs}
         <div className={clsx('ParticipantCircle-infoOverlay', { 'is-hovering': isHovering || disableAudio })}>
           <div className="ParticipantCircle-overLayText">{participantDisplayIdentity}</div>
         </div>
+        {isLocal ? (
+          <div className="ParticipantCircle-hud u-flex u-flexJustifyCenter u-positionAbsolute u-width100Percent">
+            <div className="ParticipantCircle-hud-item">
+              <VideoToggle compact={true} border={false} />
+            </div>
+            <div className="ParticipantCircle-hud-item">
+              <AudioToggle border={false} />
+            </div>
+          </div>
+        ) : null}
       </div>
       {isLocal ? (
         <SettingsModal

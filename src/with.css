@@ -39,3 +39,7 @@
 .u-overflowHidden {
   overflow: hidden !important;
 }
+
+.u-round {
+  border-radius: 50% !important;
+}

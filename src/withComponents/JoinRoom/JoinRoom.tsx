@@ -24,7 +24,7 @@ type JoinRoomProps = {
 const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
   const [screenName, setScreenName] = useState('');
   const [password, setPassword] = useState('');
-  const [initialAvatarSrc, setInitialAvatarSrc] = useState(randomAvatar().name);
+  const [initialAvatar, setInitialAvatar] = useState(randomAvatar());
   const [isVideoEnabled] = useLocalVideoToggle();
   const [isSelectingAvatar, toggleIsSelectingAvatar] = useState(false);
 
@@ -35,7 +35,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
     // any error messaging really hooked up, so only allow them in if username and password
     // are filled out
     if (screenName.length > 0 && password.length > 0) {
-      onJoinSubmitHandler(screenName, password, initialAvatarSrc);
+      onJoinSubmitHandler(screenName, password, initialAvatar.name);
     }
   };
 
@@ -52,11 +52,14 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
 
   const userAvatarCameraSelect = (
     <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignItemsCenter">
-      <div className="JoinRoom-videoPreviewContainer">
+      <div
+        className="JoinRoom-videoPreviewContainer u-round"
+        style={{ backgroundColor: initialAvatar.backgroundColor }}
+      >
         {isVideoEnabled ? (
           <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
         ) : (
-          <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
+          <Avatar name={initialAvatar.name} onClick={() => toggleIsSelectingAvatar(true)} />
         )}
       </div>
       <div className="u-flex">
@@ -103,18 +106,18 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           {header}
         </div>
         <div className={clsx('JoinRoom-userInfo u-flex u-flexRow u-sm-flexCol', { 'is-open': !isSelectingAvatar })}>
-          <div className="JointRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
+          <div className="JoinRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
             {joiningRoomText}
           </div>
-          <div className="joinRoom-videoPreviewContainer u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
+          <div className="u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
             {userAvatarCameraSelect}
           </div>
           <div className="joinRoom-formContainer u-size1of2 u-sm-sizeFull">{userLoginForm}</div>
         </div>
         <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
           <AvatarSelect
-            onAvatarChange={src => setInitialAvatarSrc(src)}
-            defaultAvatar={initialAvatarSrc}
+            onAvatarChange={av => setInitialAvatar(av)}
+            defaultAvatar={initialAvatar}
             handleClose={() => toggleIsSelectingAvatar(false)}
           />
         </div>

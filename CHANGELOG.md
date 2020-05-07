@@ -1,3 +1,16 @@
+## 1.41.0
+
+Avatar background colors.
+
+- Added backgroundColor property to avatar data objects.
+- Plumbed avatar background color into AvatarSelect.
+- Plumbed avatar background color to avatar preview on Join page.
+- Plumbed avatar background color to ParticipantCircle.
+- New settings icon on ParticipantCircle.
+- Avatar smaller in ParticipantCircle and toggling participant name color with camera enable.
+- Increase huddle bubble radius for small huddles to reduce bubble overlap.
+- Add white circle to huddle to show continuity between participants.
+
 ## 1.40.0
 
 New AV toggle controls.

@@ -183,6 +183,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
                 participant={pt}
                 onClick={() => inviteToHuddle(pt.sid)}
                 disableAudio={disabledAudioSids.includes(pt.sid)}
+                style={{ backgroundColor: '#fff' }}
               />
             </div>
           </DraggableItem>

@@ -100,4 +100,12 @@
     top: 0px; /* match where the logo is */
     background-color: white;
   }
+
+  .JoinRoom-avControls {
+    margin-bottom: 24px;
+  }
+
+  .JoinRoom-title {
+    margin-bottom: 8px;
+  }
 }

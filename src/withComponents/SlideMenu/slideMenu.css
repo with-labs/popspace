@@ -6,7 +6,6 @@
   overflow: hidden;
   cursor: pointer;
   position: absolute;
-  z-index: 15;
   right: 0px;
   transition: all 0.64s;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
@@ -27,7 +26,6 @@
   background: white;
   border-radius: 30px;
   padding: 20px;
-  z-index: 10;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
   transition: all 0.6s;
   transform: translate(150%, 0px);
@@ -49,7 +47,6 @@
   bottom: 0px; /* need to offset the same size as the button size*/
   background: white;
   border-radius: 30px 30px 0 0;
-  z-index: 15;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
   transition: all 0.6s;
   transform: translate(0px, 150%);

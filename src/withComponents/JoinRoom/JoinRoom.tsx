@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
+
 import WithLogo from './images/logo_extrasmall.svg';
+import { ReactComponent as EditIcon } from '../../images/icons/edit.svg';
+
 import './joinRoom.css';
 
 import { FormInputV2 } from '../FormInputV2/FormInputV2';
@@ -50,6 +53,16 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
     </div>
   );
 
+  const [isHoveringAvatar, setIsHoveringAvatar] = useState(false);
+
+  const onAvatarHover = () => {
+    setIsHoveringAvatar(true);
+  };
+
+  const onAvatarUnHover = () => {
+    setIsHoveringAvatar(false);
+  };
+
   const userAvatarCameraSelect = (
     <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignItemsCenter">
       <div
@@ -59,7 +72,27 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
         {isVideoEnabled ? (
           <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
         ) : (
-          <Avatar name={initialAvatar.name} onClick={() => toggleIsSelectingAvatar(true)} />
+          <div
+            className={clsx(
+              'JoinRoom-videoPreviewContainer-avatar u-height100Percent u-width100Percent u-positionRelative',
+              {
+                'is-hovering': isHoveringAvatar,
+              }
+            )}
+            onMouseEnter={onAvatarHover}
+            onMouseLeave={onAvatarUnHover}
+          >
+            <div
+              className={clsx(
+                'JoinRoom-videoPreviewContainer-avatar-overlay u-positionAbsolute u-width100Percent u-height100Percent u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-cursorPointer',
+                { 'u-displayNone': !isHoveringAvatar }
+              )}
+              onClick={() => toggleIsSelectingAvatar(true)}
+            >
+              <EditIcon />
+            </div>
+            <Avatar name={initialAvatar.name} />
+          </div>
         )}
       </div>
       <div className="u-flex">
@@ -114,7 +147,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           </div>
           <div className="joinRoom-formContainer u-size1of2 u-sm-sizeFull">{userLoginForm}</div>
         </div>
-        <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
+        <div className={clsx('JoinRoom-avatarSelect u-layerSurfaceBeta', { 'is-open': isSelectingAvatar })}>
           <AvatarSelect
             onAvatarChange={av => setInitialAvatar(av)}
             defaultAvatar={initialAvatar}

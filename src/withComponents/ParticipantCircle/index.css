@@ -33,7 +33,6 @@
   font-size: 30px;
   color: white;
   opacity: 0;
-  z-index: 1;
   border: 2px solid white;
 }
 
@@ -48,7 +47,6 @@
 }
 
 .ParticipantCircle-hud {
-  z-index: 1;
   cursor: pointer;
   bottom: -32px; /* Push the hud down to intersect the bubble a little */
 }

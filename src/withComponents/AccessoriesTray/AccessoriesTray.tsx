@@ -65,7 +65,7 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
   };
 
   return (
-    <div className="AccessoriesTray u-positionFixed">
+    <div className="AccessoriesTray u-positionFixed u-layerControlsAlpha">
       {roomState === 'disconnected' ? null : (
         <SlideMenu
           buttonSrc={!isAccessoriesTrayOpen ? '' : ''}

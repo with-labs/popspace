@@ -1,3 +1,11 @@
+## 1.43.0
+
+- Set font on FormInputV2.
+- Fix custom background url string in useRoomMetaContextBackground hook.
+- Set correct modal overlay color.
+- CSS utilities for z-index.
+- Add edit state for JoinRoom avatar preview.
+
 ## 1.42.0
 
 Background wallpaper selection modal and Accessories tray.

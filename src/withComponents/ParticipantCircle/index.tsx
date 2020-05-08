@@ -61,9 +61,12 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   if (isLocal || emoji) {
     settings = (
       <div
-        className={clsx('ParticipantCircle-settings u-flex u-flexAlignItemsCenter u-flexJustifyCenter', {
-          'is-set': emoji,
-        })}
+        className={clsx(
+          'ParticipantCircle-settings u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter',
+          {
+            'is-set': emoji,
+          }
+        )}
         onClick={e => {
           e.stopPropagation();
           openSettingsModal();
@@ -139,7 +142,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         </div>
         {isLocal ? (
           <div
-            className="ParticipantCircle-hud u-flex u-flexJustifyCenter u-positionAbsolute u-width100Percent"
+            className="ParticipantCircle-hud u-layerSurfaceAlpha u-flex u-flexJustifyCenter u-positionAbsolute u-width100Percent"
             onClick={e => {
               e.stopPropagation();
             }}

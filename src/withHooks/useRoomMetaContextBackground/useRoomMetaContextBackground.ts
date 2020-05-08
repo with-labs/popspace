@@ -6,7 +6,7 @@ export function useRoomMetaContextBackground(properties: IRoomMetaState): string
 
   if (properties.bg) {
     if (properties.bg === BackgroundName.Custom && properties.customBG) {
-      backgroundImage = properties.customBG;
+      backgroundImage = `url(${properties.customBG})`;
     } else {
       const bg = wallpaperByName(properties.bg);
       if (bg) {

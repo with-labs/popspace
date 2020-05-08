@@ -1,7 +1,8 @@
 @import './css/util-size/index.css';
-@import './css//util-flex/index.css';
+@import './css/util-flex/index.css';
 @import './css/util-display/index.css';
 @import './css/util-margin/index.css';
+@import './css/util-zindex/index.css';
 
 /* apply a natural box layout model to all elements, but allowing components to change */
 html {
@@ -15,7 +16,8 @@ html {
 
 /* Set the z-index of the modal overlay to ensure it's above everything else */
 .ReactModal__Overlay {
-  z-index: 10;
+  z-index: var(--layerControlsAlpha);
+  background-color: rgb(99, 108, 139, 0.4) !important;
 }
 
 .u-blur {
@@ -61,4 +63,5 @@ html {
 
 .u-round {
   border-radius: 50% !important;
+  overflow: hidden !important;
 }

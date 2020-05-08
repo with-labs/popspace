@@ -50,8 +50,17 @@
   margin-bottom: 24px;
 }
 
+.JoinRoom-videoPreviewContainer-avatar-overlay {
+  background-color: rgb(99, 108, 139, 0.4) !important;
+  top: 0;
+  left: 0;
+}
+
+.JoinRoom-videoPreviewContainer-avatar-overlay svg {
+  fill: #fff;
+}
+
 .JoinRoom-avatarSelect {
-  z-index: 10;
   position: absolute;
   transform: translate(150%, 0px);
   transition: all 0.75s ease;
@@ -85,7 +94,6 @@
 
 @media (min-width: 0px) and (max-width: 639px) {
   .JoinRoom-avatarSelect {
-    z-index: 10;
     position: absolute;
     transform: translate(150%, 0px);
     transition: all 0.75s ease;

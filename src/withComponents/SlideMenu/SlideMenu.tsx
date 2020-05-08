@@ -82,7 +82,7 @@ export const SlideMenu: React.FC<SlideMenuProps> = props => {
   const slideRightMenu = (
     <div className="u-sm-displayNone u-md-flex u-lg-flex">
       <div
-        className={clsx('SlideMenu-button', {
+        className={clsx('SlideMenu-button u-layerControlsBeta', {
           'is-open': isActive,
         })}
         onClick={onButtonClick}
@@ -107,11 +107,11 @@ export const SlideMenu: React.FC<SlideMenuProps> = props => {
         })}
         onClick={() => onButtonClickHandler && onButtonClickHandler()}
       />
-      <div className={clsx('SlideMenu-button')} onClick={onButtonClick}>
+      <div className={clsx('SlideMenu-button u-layerControlsBeta')} onClick={onButtonClick}>
         <Add />
       </div>
       <div
-        className={clsx('SlideMenu-menuMobile ', mobileMenuClassNames, {
+        className={clsx('SlideMenu-menuMobile u-layerControlsGamma', mobileMenuClassNames, {
           'is-open': isActive,
         })}
       >

@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import './index.css';
 
 import linkImg from './images/link.svg';
-import FormInput from '../FormInput';
+import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
 
 type PostLinkProps = {
   onSubmitHandler: Function;
@@ -34,7 +34,7 @@ const PostLink = (props: PostLinkProps) => {
       <div className="PostLink-text">Add a link</div>
       <div className="PostLink-form">
         <form onSubmit={onSubmitHandler}>
-          <FormInput placeholderText={'Url'} value={linkUrl} setValue={setLinkUrl} />
+          <FormInput placeholderText={'Url'} value={linkUrl} onChangeHandler={setLinkUrl} />
           <div className="PostLink-error">{formError}</div>
           <button type="submit" className={clsx('PostLink-button', { 'is-inactive': linkUrl.length === 0 })}>
             Post Link

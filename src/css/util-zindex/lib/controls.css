@@ -1,0 +1,23 @@
+/*
+  Utilities for setting z-index on the "controls" layer, which should sit above the "surface layer"
+
+  z-index values from 100-199 reserved for "controls".
+*/
+
+:root {
+  --layerControlsAlpha: 100;
+  --layerControlsBeta: 110;
+  --layerControlsGamma: 120;
+}
+
+.u-layerControlsAlpha {
+  z-index: var(--layerControlsAlpha);
+}
+
+.u-layerControlsBeta {
+  z-index: var(--layerControlsBeta);
+}
+
+.u-layerControlsGamma {
+  z-index: var(--layerControlsGamma);
+}

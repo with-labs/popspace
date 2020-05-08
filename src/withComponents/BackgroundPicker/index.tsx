@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 
-import FormInput from '../FormInput';
+import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
 import './index.css';
 
 import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
@@ -34,12 +34,12 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
         <div onClick={onExit} className="u-cursorPointer BackgroundPicker-exit">
           &lt; Change Wallpaper
         </div>
-        <div>
+        <div className="u-size1of2">
           <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
             <FormInput
               placeholderText={'URL to an image (jpg, png, gif)'}
               value={customBg}
-              setValue={setCustomBg}
+              onChangeHandler={setCustomBg}
               classNames={clsx('BackgroundPicker-customBgImg', {
                 'is-selected': properties.bg === BackgroundName.Custom,
               })}

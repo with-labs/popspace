@@ -1,3 +1,15 @@
+## 1.42.0
+
+Background wallpaper selection modal and Accessories tray.
+
+- Update UI of BackgroundPicker.
+- Put BackgroundPicker in a Modal in the footer.
+- Use an options object similar to avatar options for wallpapers.
+- Set default wallpaper in the room meta reducer.
+- Adding in new slideMenu with animations and mobile state
+- Add in AccessoriesTray component
+- Removing Footer and Feedback Component
+
 ## 1.41.0
 
 Avatar background colors.

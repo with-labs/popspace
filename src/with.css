@@ -3,6 +3,21 @@
 @import './css/util-display/index.css';
 @import './css/util-margin/index.css';
 
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+/* Set the z-index of the modal overlay to ensure it's above everything else */
+.ReactModal__Overlay {
+  z-index: 10;
+}
+
 .u-blur {
   filter: blur(4px) !important;
 }
@@ -13,6 +28,10 @@
 
 .u-positionRelative {
   position: relative !important;
+}
+
+.u-positionFixed {
+  position: fixed !important;
 }
 
 .u-height100Percent {

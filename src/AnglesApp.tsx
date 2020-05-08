@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import { styled } from '@material-ui/core/styles';
 
 import JoinRoom from './withComponents/JoinRoom/JoinRoom';
-import Footer from './withComponents/Footer';
 
 import { useAppState } from './state';
 import useVideoContext from './hooks/useVideoContext/useVideoContext';
@@ -15,11 +14,13 @@ import ReconnectingNotification from './components/ReconnectingNotification/Reco
 
 import useRoomState from './hooks/useRoomState/useRoomState';
 import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
-import { Background } from './withComponents/BackgroundPicker';
+import { useRoomMetaContextBackground } from './withHooks/useRoomMetaContextBackground/useRoomMetaContextBackground';
 
 import { Room } from './withComponents/Room/Room';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
+
+import { AccessoriesTray } from './withComponents/AccessoriesTray/AccessoriesTray';
 
 const Container = styled('div')({
   display: 'flex',
@@ -41,6 +42,7 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { roomName } = props;
   const roomState = useRoomState();
   const { properties } = useRoomMetaContext();
+  const bgImage = useRoomMetaContextBackground(properties);
   const { getToken, setError } = useAppState();
   const { connect } = useVideoContext();
 
@@ -58,22 +60,15 @@ export default function AnglesApp(props: AnglesAppProps) {
   const bgStyle: { [key: string]: string } = {
     backgroundPosition: 'center',
     backgroundSize: 'cover',
+    backgroundImage: bgImage,
   };
-  if (properties.bg) {
-    if (properties.bg === Background.BG_CUSTOM && properties.customBG) {
-      bgStyle.backgroundImage = `url(${properties.customBG})`;
-    } else if (properties.bg === Background.BG_1) {
-      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper1.jpg)`;
-    } else if (properties.bg === Background.BG_2) {
-      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper2.jpg)`;
-    } else if (properties.bg === Background.BG_3) {
-      bgStyle.backgroundImage = `url(${process.env.PUBLIC_URL}/wallpaper3.jpg)`;
-    }
-  }
 
   return (
     <Container>
-      <Main style={bgStyle} className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter">
+      <Main
+        style={bgStyle}
+        className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
+      >
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} />
         ) : (
@@ -81,10 +76,10 @@ export default function AnglesApp(props: AnglesAppProps) {
             <div className="u-flexGrow1 u-width100Percent u-height100Percent">
               <Room initialAvatar={initialAvatar} />
               <ReconnectingNotification />
+              <AccessoriesTray />
             </div>
           </DndProvider>
         )}
-        <Footer classNames="u-positionAbsolute" />
       </Main>
     </Container>
   );

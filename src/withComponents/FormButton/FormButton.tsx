@@ -26,7 +26,11 @@ export const FormButton: React.FC<IFormButtonProps> = ({
   const buttonIcon = imgSrc ? <img className="FormButton-img" src={imgSrc} alt={imgAltText} /> : null;
 
   return (
-    <button type={btnType} className={clsx('FormButton', { 'is-inactive': !isActive })}>
+    <button
+      type={btnType}
+      className={clsx('FormButton', classNames, { 'is-inactive': !isActive })}
+      onClick={onClickHandler}
+    >
       {buttonIcon}
       <span className="FormButton-text">{text}</span>
     </button>

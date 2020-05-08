@@ -1,5 +1,7 @@
 import { Action } from '../RoomState/RoomStateProvider';
 
+import { BackgroundName } from '../BackgroundPicker/options';
+
 // `IWidgetState` is the state maintained by this context provider representing the widgets present in the room.
 export interface IRoomMetaState {
   [key: string]: string;
@@ -11,7 +13,7 @@ enum Actions {
   PropertyUnset = 'PROPERTY_UNSET',
 }
 
-export default function reducer(state: IRoomMetaState = {}, action: Action) {
+export default function reducer(state: IRoomMetaState = { bg: BackgroundName.Bg3 }, action: Action) {
   const { type, payload } = action;
 
   switch (type) {

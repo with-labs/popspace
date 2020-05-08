@@ -1,40 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 
 import FormInput from '../FormInput';
 import './index.css';
 
-import bgThumb1 from '../../images/wallpaper1_thumb.jpg';
-import bgThumb2 from '../../images/wallpaper2_thumb.jpg';
-import bgThumb3 from '../../images/wallpaper3_thumb.jpg';
-
 import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
 
-export enum Background {
-  BG_1 = 'BG_1',
-  BG_2 = 'BG_2',
-  BG_3 = 'BG_3',
-  BG_CUSTOM = 'BG_CUSTOM',
-}
+import { options, BackgroundName } from './options';
 
-const BackgroundPicker = () => {
+export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) => {
   const { properties, setProperties } = useRoomMetaContext();
   const [customBg, setCustomBg] = useState('');
-
-  // only run once, to set default bg color
-  useEffect(() => {
-    setProperties({ bg: Background.BG_1 });
-  }, []);
 
   const onCustomBackgoundHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setProperties({
-      bg: Background.BG_CUSTOM,
+      bg: BackgroundName.Custom,
       customBG: customBg,
     });
   };
 
-  const onDefaultBgPressed = (bg: Background) => {
+  const selectBackground = (bg: BackgroundName) => {
     setProperties({
       bg,
       customBG: '',
@@ -43,48 +29,44 @@ const BackgroundPicker = () => {
   };
 
   return (
-    <div className="BackgroundPicker">
-      <div className="BackgroundPicker-title">Background</div>
-      <div className="BackgroundPicker-defaultContainer">
-        <div className="BackgroundPicker-defaultBg" onClick={() => onDefaultBgPressed(Background.BG_1)}>
-          <img
-            src={bgThumb1}
-            alt="background 1"
-            className={clsx('BackgroundPicker-defaultBgImg', { 'is-selected': properties.bg === Background.BG_1 })}
-          />
+    <div className="BackgroundPicker u-flex u-flexAlignItemsCenter u-flexCol">
+      <div className="u-flex u-flexJustifyBetween u-flexAlignItemsCenter u-width100Percent">
+        <div onClick={onExit} className="u-cursorPointer BackgroundPicker-exit">
+          &lt; Change Wallpaper
         </div>
-        <div className="BackgroundPicker-defaultBg" onClick={() => onDefaultBgPressed(Background.BG_2)}>
-          <img
-            src={bgThumb2}
-            alt="background 2"
-            className={clsx('BackgroundPicker-defaultBgImg', { 'is-selected': properties.bg === Background.BG_2 })}
-          />
-        </div>
-        <div className="BackgroundPicker-defaultBg" onClick={() => onDefaultBgPressed(Background.BG_3)}>
-          <img
-            src={bgThumb3}
-            alt="background 3"
-            className={clsx('BackgroundPicker-defaultBgImg', { 'is-selected': properties.bg === Background.BG_3 })}
-          />
+        <div>
+          <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
+            <FormInput
+              placeholderText={'URL to an image (jpg, png, gif)'}
+              value={customBg}
+              setValue={setCustomBg}
+              classNames={clsx('BackgroundPicker-customBgImg', {
+                'is-selected': properties.bg === BackgroundName.Custom,
+              })}
+            />
+          </form>
         </div>
       </div>
-      <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
-        <FormInput
-          placeholderText={'URL to an image (jpg, png, gif)'}
-          value={customBg}
-          setValue={setCustomBg}
-          classNames={clsx('BackgroundPicker-customBgImg', { 'is-selected': properties.bg === Background.BG_CUSTOM })}
-        />
-        <p>
-          To use your own, custom background image, upload it to{' '}
-          <a href="https://postimages.org/" target="_blank" rel="noopener noreferrer">
-            postimages.org
-          </a>
-          , copy the "Direct link", paste it above, then press "enter".
-        </p>
-      </form>
+      <div className="BackgroundPicker-defaultContainer u-flex u-flexJustifyCenter">
+        <div className="u-flex u-flexWrap">
+          {options.map(opt => (
+            <div
+              key={opt.name}
+              className="BackgroundPicker-defaultBg u-size1of4 u-sm-size1of2"
+              onClick={() => selectBackground(opt.name)}
+            >
+              <img
+                src={opt.image}
+                alt={`background ${opt.name}`}
+                className={clsx('BackgroundPicker-defaultBgImg u-width100Percent', {
+                  'is-selected': properties.bg === opt.name,
+                })}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div></div>
     </div>
   );
 };
-
-export default BackgroundPicker;

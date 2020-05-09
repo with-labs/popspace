@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { options } from '../AvatarSelect/options';
+import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 interface IAvatarProps {
   name: string;
@@ -9,7 +9,7 @@ interface IAvatarProps {
 }
 
 export const Avatar: React.FC<IAvatarProps> = ({ name, onClick }) => {
-  const avatar = options.find(opt => opt.name === name);
+  const avatar = useAvatar(name);
 
   // State dictating whether the avatar is in a blinking state.
   const [isBlinking, setIsBlinking] = useState(false);

@@ -70,31 +70,38 @@ import swampy_blink from '../../images/avatars/swampy_blink.png';
 import whitebat from '../../images/avatars/whitebat.png';
 import whitebat_blink from '../../images/avatars/whitebat_blink.png';
 
-const options = [
-  { name: 'alienbot', image: alienbot, blink: alienbot_blink },
-  { name: 'beetle', image: beetle, blink: beetle_blink },
-  { name: 'bluebird', image: bluebird, blink: bluebird_blink },
-  { name: 'bluepup', image: bluepup, blink: bluepup_blink },
-  { name: 'bubbles', image: bubbles, blink: bubbles_blink },
-  { name: 'cloud', image: cloud, blink: cloud_blink },
-  { name: 'fishy', image: fishy, blink: fishy_blink },
-  { name: 'fox', image: fox, blink: fox_blink },
-  { name: 'jackal', image: jackal, blink: jackal_blink },
-  { name: 'kitty', image: kitty, blink: kitty_blink },
-  { name: 'leaf', image: leaf, blink: leaf_blink },
-  { name: 'mantis', image: mantis, blink: mantis_blink },
-  { name: 'monkey', image: monkey, blink: monkey_blink },
-  { name: 'orc', image: orc, blink: orc_blink },
-  { name: 'pinkbaar', image: pinkbaar, blink: pinkbaar_blink },
-  { name: 'puppy', image: puppy, blink: puppy_blink },
-  { name: 'redbot', image: redbot, blink: redbot_blink },
-  { name: 'redpup', image: redpup, blink: redpup_blink },
-  { name: 'ruff', image: ruff, blink: ruff_blink },
-  { name: 'seal', image: seal, blink: seal_blink },
-  { name: 'shaggydog', image: shaggydog, blink: shaggydog_blink },
-  { name: 'snake', image: snake, blink: snake_blink },
-  { name: 'swampy', image: swampy, blink: swampy_blink },
-  { name: 'whitebat', image: whitebat, blink: whitebat_blink },
+export interface IAvatar {
+  name: string;
+  image: string;
+  blink: string;
+  backgroundColor: string;
+}
+
+const options: IAvatar[] = [
+  { name: 'alienbot', image: alienbot, blink: alienbot_blink, backgroundColor: '#fbeefb' },
+  { name: 'beetle', image: beetle, blink: beetle_blink, backgroundColor: '#f0eef1' },
+  { name: 'bluebird', image: bluebird, blink: bluebird_blink, backgroundColor: '#e1f3fe' },
+  { name: 'bluepup', image: bluepup, blink: bluepup_blink, backgroundColor: '#e1f3fe' },
+  { name: 'bubbles', image: bubbles, blink: bubbles_blink, backgroundColor: '#fce3e9' },
+  { name: 'cloud', image: cloud, blink: cloud_blink, backgroundColor: '#ecf3ef' },
+  { name: 'fishy', image: fishy, blink: fishy_blink, backgroundColor: '#edf9e6' },
+  { name: 'fox', image: fox, blink: fox_blink, backgroundColor: '#fffae0' },
+  { name: 'jackal', image: jackal, blink: jackal_blink, backgroundColor: '#fbeee4' },
+  { name: 'kitty', image: kitty, blink: kitty_blink, backgroundColor: '#f9fae5' },
+  { name: 'leaf', image: leaf, blink: leaf_blink, backgroundColor: '#edf9e6' },
+  { name: 'mantis', image: mantis, blink: mantis_blink, backgroundColor: '#f7fae6' },
+  { name: 'monkey', image: monkey, blink: monkey_blink, backgroundColor: '#f8e8ec' },
+  { name: 'orc', image: orc, blink: orc_blink, backgroundColor: '#eaecf5' },
+  { name: 'pinkbaar', image: pinkbaar, blink: pinkbaar_blink, backgroundColor: '#feebe2' },
+  { name: 'puppy', image: puppy, blink: puppy_blink, backgroundColor: '#fef3e1' },
+  { name: 'redbot', image: redbot, blink: redbot_blink, backgroundColor: '#fef7e1' },
+  { name: 'redpup', image: redpup, blink: redpup_blink, backgroundColor: '#e8f8f6' },
+  { name: 'ruff', image: ruff, blink: ruff_blink, backgroundColor: '#fbeee4' },
+  { name: 'seal', image: seal, blink: seal_blink, backgroundColor: '#e1f3fe' },
+  { name: 'shaggydog', image: shaggydog, blink: shaggydog_blink, backgroundColor: '#f7eae8' },
+  { name: 'snake', image: snake, blink: snake_blink, backgroundColor: '#f7fae6' },
+  { name: 'swampy', image: swampy, blink: swampy_blink, backgroundColor: '#feffe1' },
+  { name: 'whitebat', image: whitebat, blink: whitebat_blink, backgroundColor: '#fee8e2' },
 ];
 
 const randomAvatar = () => {

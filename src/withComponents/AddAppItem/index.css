@@ -1,7 +1,6 @@
 .AddAppItem {
   display: flex;
   flex-direction: row;
-  margin: 20px 25px;
   align-items: center;
   cursor: pointer;
 }
@@ -12,20 +11,20 @@
 }
 
 .AddAppItem-imgContainer {
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .AddAppItem-img {
-  height: 60px;
-  width: 60px;
+  height: 40px;
+  width: 40px;
 }
 
 .AddAppItem-title {
+  font-family: Geomanist;
   font-style: normal;
   font-weight: bold;
-  font-size: 18px;
-  line-height: 27px;
-  color: #303030;
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .AddAppItem-title-disabledText {
@@ -34,9 +33,9 @@
 }
 
 .AddAppItem-desc {
+  font-family: Geomanist;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 21px;
-  color: #303030;
+  font-size: 12px;
+  line-height: 18px;
 }

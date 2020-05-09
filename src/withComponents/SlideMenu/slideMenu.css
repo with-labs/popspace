@@ -1,0 +1,75 @@
+.SlideMenu-button {
+  height: 52px;
+  width: 52px;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  position: absolute;
+  right: 0px;
+  transition: all 0.64s;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+}
+
+.SlideMenu-button.is-open {
+  border-radius: 50px;
+  transform: translate3d(-265px, 0, 0);
+  animation-timing-function: 0.64s ease;
+}
+
+.SlideMenu-menu {
+  cursor: default;
+  position: absolute;
+  width: 280px;
+  right: 0;
+  bottom: 0px; /* need to offset the same size as the button size*/
+  background: white;
+  border-radius: 30px;
+  padding: 20px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.6s;
+  transform: translate(150%, 0px);
+}
+
+.SlideMenu-menu.is-open {
+  transform: translate3d(0px, 0, 0);
+  animation-timing-function: 1s ease;
+}
+
+.SlideMenu-menuMobile {
+  padding: 20px;
+  overflow-y: scroll;
+  height: 460px;
+  cursor: default;
+  position: absolute;
+  width: 100vw;
+  right: 0;
+  bottom: 0px; /* need to offset the same size as the button size*/
+  background: white;
+  border-radius: 30px 30px 0 0;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+  transition: all 0.6s;
+  transform: translate(0px, 150%);
+}
+
+.SlideMenu-menuMobile.is-open {
+  transform: translate3d(0px, 0px, 0);
+  animation-timing-function: 1s ease;
+}
+
+.SlideMenu-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #636c8b;
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.SlideMenu-overlay.is-open {
+  opacity: 0.4;
+  visibility: visible;
+}

@@ -33,7 +33,9 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
   // `angleOffset` is for rotate transform below that arrages participant bubbles in a circle.
   const angleOffset = 360 / participants.length;
   // `huddleRadius` is used to determine the size of the huddle element, as well in the translate transform.
-  const huddleRadius = (participants.length * huddlePtBubbleSize) / (2 * Math.PI);
+  let huddleRadius = (participants.length * huddlePtBubbleSize) / (2 * Math.PI);
+  // Completely arbitrary thing here, but increase the huddle radius for small huddles to prevent major overlap amongst participant bubbles.
+  if (participants.length < 10) huddleRadius += huddlePtBubbleSize / participants.length;
   // `huddleAreaSize` is derived as the diameter of the huddle + huddle participant bubble size to account for the
   // huddle participant bubbles to fit inside the huddle element.
   const huddleAreaSize = huddleRadius * 2 + huddlePtBubbleSize;
@@ -105,8 +107,12 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
         width: huddleAreaSize,
       }}
     >
-      {ptBubbles}
+      <div
+        className={clsx(styles.backdrop, 'u-round')}
+        style={{ height: huddleRadius * 1.5, width: huddleRadius * 1.5 }}
+      ></div>
       {dissolveControl}
+      {ptBubbles}
     </div>
   );
 

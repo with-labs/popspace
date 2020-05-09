@@ -1,0 +1,85 @@
+.root {
+  /* module variables */
+  --borderRadius: 6px;
+
+  background-size: contain;
+  border-radius: var(--borderRadius);
+  font-family: Geomanist;
+  margin: 10px 0px;
+  padding: 15px;
+}
+
+.title {
+  color: #444;
+  font-family: inherit;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 26px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.button {
+  background: #fff;
+  border: none;
+  border-radius: var(--borderRadius);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: bold;
+  height: 40px;
+  line-height: 14px;
+  padding-left: 40px;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+
+.button--wallpaper:before,
+.button--copyLink:before {
+  content: ' ';
+  height: 40px;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  width: 40px;
+}
+
+.button--wallpaper:before {
+  background-image: url('./images/Wallpaper_colored.svg');
+}
+
+.button--copyLink:before {
+  background-image: url('./images/Copy_colored.svg');
+}
+
+.button + .button {
+  margin-top: 8px;
+}
+
+.bgPicker {
+  width: 75%;
+  max-width: 640px;
+
+  background: white;
+  color: #000;
+  overflow: auto;
+  outline: none;
+  border-radius: 8px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
+  overflow: visible;
+  padding: 20px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
+}
+
+.copyInput {
+  height: 0;
+  opacity: 0;
+}

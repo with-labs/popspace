@@ -1,0 +1,18 @@
+/*
+  Utilities for setting z-index on the "surface" layer, which should sit below the "controls layer"
+
+  z-index values from 1-99 reserved for "surface".
+*/
+
+:root {
+  --layerSurfaceAlpha: 1;
+  --layerSurfaceBeta: 10;
+}
+
+.u-layerSurfaceAlpha {
+  z-index: var(--layerSurfaceAlpha);
+}
+
+.u-layerSurfaceBeta {
+  z-index: var(--layerSurfaceBeta);
+}

@@ -1,0 +1,27 @@
+.toggleButton {
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+}
+
+.toggleButton svg {
+  fill: #c4c4c4;
+}
+
+.toggleButtonOn {
+  background-color: #66b7af;
+}
+
+.toggleButtonOn svg {
+  fill: #fff;
+}
+
+.toggleButtonBackdrop {
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.toggleButtonBackdrop-border {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}

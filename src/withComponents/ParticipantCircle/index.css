@@ -25,16 +25,14 @@
   cursor: pointer;
   top: 10px;
   left: 10px;
-  height: 60px;
-  width: 60px;
+  height: 40px;
+  width: 40px;
   background: #fff;
   border-radius: 50%;
   text-align: center;
-  line-height: 62px;
   font-size: 30px;
   color: white;
   opacity: 0;
-  z-index: 1;
   border: 2px solid white;
 }
 
@@ -42,20 +40,23 @@
   opacity: 1;
 }
 
+.ParticipantCircle-avatar {
+  height: 62%;
+  width: 62%;
+  margin-top: 10%;
+}
+
 .ParticipantCircle-hud {
-  z-index: 1;
-  position: absolute;
-  bottom: 0;
-  left: 95px;
   cursor: pointer;
+  bottom: -32px; /* Push the hud down to intersect the bubble a little */
 }
 
 .ParticipantCircle-hud-item {
   opacity: 0;
 }
 
-.ParticipantCircle-hud svg {
-  fill: #fff;
+.ParticipantCircle-hud-item:last-of-type {
+  margin-left: 8px;
 }
 
 .ParticipantCircle-participant {
@@ -91,14 +92,17 @@
   font-size: 20px;
   -webkit-user-select: none;
   user-select: none;
-  color: white;
-  text-shadow: 0px 0px 11px rgba(0, 0, 0, 0.5);
   max-width: 170px;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0px 10px;
+}
+
+.is-light {
+  color: white;
+  text-shadow: 0px 0px 11px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 640px) {
@@ -109,5 +113,10 @@
   .ParticipantCircle-settings {
     top: -10px;
     left: -10px;
+  }
+
+  /* Override the `bottom` offset for the info overlay to avoid collisions with the avatar on small screens. */
+  .ParticipantCircle-infoOverlay {
+    bottom: 10px;
   }
 }

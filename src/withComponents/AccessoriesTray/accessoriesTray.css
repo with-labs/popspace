@@ -1,0 +1,23 @@
+.AccessoriesTray {
+  height: 52px;
+  width: 52px;
+  bottom: 40px;
+  right: 40px;
+}
+
+.AccessoriesTray-mobileOffset {
+  bottom: -40px; /* need to match the position offset to recenter popup */
+  right: -40px;
+}
+
+.AccessoriesTray-appItems-title {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.AccessoriesTray-appItem {
+  margin-bottom: 20px;
+}

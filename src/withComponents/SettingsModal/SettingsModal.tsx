@@ -69,7 +69,7 @@ const SettingsModal = (props: SettingsModalProps) => {
       <Modal
         isOpen={isSettingsModalOpen}
         onRequestClose={closeSettingsModal}
-        overlayClassName="SettingsModal"
+        overlayClassName=""
         className="SettingsModal-content"
         closeTimeoutMS={200}
       >

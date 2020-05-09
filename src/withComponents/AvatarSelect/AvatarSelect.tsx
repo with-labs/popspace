@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { options } from './options';
-import styles from './avatarSelect.module.css';
+
+import { IAvatar, options } from './options';
 
 import { Avatar } from '../Avatar/Avatar';
 
+import styles from './avatarSelect.module.css';
+
 interface IAvatarSelectProps {
-  defaultAvatar?: string;
-  onAvatarChange: (src: string) => void;
+  defaultAvatar?: IAvatar;
+  onAvatarChange: (avatar: IAvatar) => void;
   handleClose?: () => void;
 }
 
 export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
-  defaultAvatar = options[0].name,
+  defaultAvatar = options[0],
   onAvatarChange,
   handleClose,
 }) => {
-  const [selectedAvatarName, setSelectedAvatarName] = useState(defaultAvatar);
-  useEffect(() => {
-    selectedAvatarName && onAvatarChange(selectedAvatarName);
-  }, [selectedAvatarName]);
+  const [selectedAvatar, setSelectedAvatar] = useState(defaultAvatar);
 
-  const selectedAvatar = options.find(opt => opt.name === selectedAvatarName);
+  useEffect(() => {
+    selectedAvatar && onAvatarChange(selectedAvatar);
+  }, [selectedAvatar]);
 
   const headerControls = (
     <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer')}>
@@ -35,7 +36,10 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
       <div className="u-flex u-flexRow u-sm-flexCol">
         <div className="u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-size1of2 u-sm-sizeFull">
           {selectedAvatar ? (
-            <div className={styles.avatarPreview}>
+            <div
+              className={clsx(styles.avatarPreview, 'u-round')}
+              style={{ backgroundColor: selectedAvatar.backgroundColor }}
+            >
               <Avatar name={selectedAvatar.name} />
             </div>
           ) : null}
@@ -46,10 +50,11 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
             return (
               <div
                 key={idx}
-                className={clsx(styles.option, 'u-cursorPointer', {
-                  [styles['option--selected']]: av.name === selectedAvatarName,
+                className={clsx(styles.option, 'u-cursorPointer u-round', {
+                  [styles['option--selected']]: av.name === selectedAvatar.name,
                 })}
-                onClick={() => setSelectedAvatarName(av.name)}
+                onClick={() => setSelectedAvatar(av)}
+                style={{ backgroundColor: av.backgroundColor }}
               >
                 <Avatar name={av.name} />
               </div>

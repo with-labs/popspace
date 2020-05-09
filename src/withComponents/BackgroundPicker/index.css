@@ -2,6 +2,7 @@
   margin-left: 25px;
   margin-right: 25px;
   margin-top: 25px;
+  color: #000;
 }
 .BackgroundPicker-title {
   font-style: normal;
@@ -11,28 +12,35 @@
   margin-bottom: 20px;
 }
 
-.BackgroundPicker-defaultContainer {
-  display: flex;
-  flex-direction: row;
+.BackgroundPicker-exit {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
 }
 
-.BackgroundPicker-defaultBgImg {
-  height: 60px;
-  width: 60px;
-  margin-right: 15px;
+.BackgroundPicker-defaultContainer {
+  margin-top: 16px;
+}
+
+.BackgroundPicker-defaultBg {
+  padding: 4px;
   cursor: pointer;
 }
 
+.BackgroundPicker-defaultBgImg:after {
+  content: '';
+  display: block;
+  padding-bottom: 100%;
+}
+
 .BackgroundPicker-defaultBgImg.is-selected {
-  border: 2px solid #000000;
+  border: 3px solid #66b7af;
   border-radius: 20px;
 }
 
 .BackgroundPicker-customBgImg.is-selected {
-  border: 2px solid #000000;
+  border: 3px solid #66b7af;
   border-radius: 10px;
-}
-
-.BackgroundPicker-form {
-  margin-top: 20px;
 }

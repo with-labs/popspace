@@ -1,0 +1,36 @@
+.toggleOption {
+  border-radius: 20px;
+  width: 36px;
+  height: 36px;
+}
+
+.compactOption {
+  width: 10px;
+  color: #c4c4c4;
+}
+
+.toggleOption svg {
+  fill: #c4c4c4;
+}
+
+.toggleOptionSelected {
+  background-color: #66b7af;
+}
+
+.toggleOptionSelected svg {
+  fill: #fff;
+}
+
+.camOff {
+  margin-right: 2px;
+}
+
+.toggleButtonBackdrop {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 2px;
+}
+
+.toggleButtonBackdrop-border {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}

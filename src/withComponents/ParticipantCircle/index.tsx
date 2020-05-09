@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Emoji } from 'emoji-mart';
+
 import './index.css';
-import MicOff from '@material-ui/icons/MicOff';
-import Mic from '@material-ui/icons/Mic';
-import Videocam from '@material-ui/icons/Videocam';
-import VideocamOff from '@material-ui/icons/VideocamOff';
+
+import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
+
+import { AudioToggle } from '../AudioToggle/AudioToggle';
+import { VideoToggle } from '../VideoToggle/VideoToggle';
 
 import SettingsModal from '../SettingsModal/SettingsModal';
 
@@ -13,13 +15,12 @@ import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import useLocalAudioToggle from '../../hooks/useLocalAudioToggle/useLocalAudioToggle';
-import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 import { Avatar } from '../Avatar/Avatar';
 
@@ -28,25 +29,24 @@ interface ParticipantCircleProps {
   disableAudio?: boolean;
   enableScreenShare?: boolean;
   videoPriority?: Track.Priority;
-  styles?: object;
   onClick: () => void;
+  style?: { [key: string]: string | number };
 }
 
 const ParticipantCircle = (props: ParticipantCircleProps) => {
-  const { participant, disableAudio, enableScreenShare, videoPriority, styles, onClick } = props;
+  const { participant, disableAudio, enableScreenShare, videoPriority, onClick, style = {} } = props;
   const meta = useParticipantMeta(participant);
   const [isHovering, setIsHovering] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const { updateEmoji } = useParticipantMetaContext();
   const { room } = useVideoContext();
-  const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
-  const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const publications = usePublications(participant);
   const isLocal = participant === room.localParticipant;
 
   const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const emoji = meta.emoji;
-  const avatar = meta.avatar;
+  const avatarName = meta.avatar;
+  const avatar = useAvatar(avatarName);
 
   let filteredPublications;
 
@@ -61,13 +61,18 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   if (isLocal || emoji) {
     settings = (
       <div
-        className={clsx('ParticipantCircle-settings', { 'is-set': emoji })}
+        className={clsx(
+          'ParticipantCircle-settings u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter',
+          {
+            'is-set': emoji,
+          }
+        )}
         onClick={e => {
           e.stopPropagation();
           openSettingsModal();
         }}
       >
-        <Emoji emoji={emoji ? emoji : 'gear'} size={24} />
+        {emoji ? <Emoji emoji={emoji} size={24} /> : <SettingsIcon />}
       </div>
     );
   }
@@ -104,43 +109,52 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     );
   });
 
+  const styles = {
+    backgroundColor: avatar?.backgroundColor,
+    ...style,
+  };
+
   return (
     <>
       <div
-        className={clsx('ParticipantCircle', { 'is-localParticipant': isLocal })}
+        className={clsx('ParticipantCircle u-flex u-flexJustifyCenter', { 'is-localParticipant': isLocal })}
         style={styles}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={() => onClick()}
       >
-        {hasVideoPublication ? null : <Avatar name={avatar} />}
+        {hasVideoPublication ? null : (
+          <div className="ParticipantCircle-avatar">
+            <Avatar name={avatarName} />
+          </div>
+        )}
         {settings}
+        {pubs}
+        <div
+          className={clsx('ParticipantCircle-infoOverlay', {
+            'is-hovering': isHovering || disableAudio,
+            'is-light': hasVideoPublication,
+          })}
+        >
+          <div className={clsx('ParticipantCircle-overLayText', { 'is-light': hasVideoPublication })}>
+            {participantDisplayIdentity}
+          </div>
+        </div>
         {isLocal ? (
-          <div className="ParticipantCircle-hud">
-            <span
-              className={clsx('ParticipantCircle-hud-item', { 'u-opacity1': !isAudioEnabled })}
-              onClick={e => {
-                e.stopPropagation();
-                toggleAudioEnabled();
-              }}
-            >
-              {isAudioEnabled ? <Mic /> : <MicOff />}
-            </span>
-            <span
-              className="ParticipantCircle-hud-item"
-              onClick={e => {
-                e.stopPropagation();
-                toggleVideoEnabled();
-              }}
-            >
-              {isVideoEnabled ? <Videocam /> : <VideocamOff />}
-            </span>
+          <div
+            className="ParticipantCircle-hud u-layerSurfaceAlpha u-flex u-flexJustifyCenter u-positionAbsolute u-width100Percent"
+            onClick={e => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="ParticipantCircle-hud-item">
+              <VideoToggle compact={true} border={false} />
+            </div>
+            <div className="ParticipantCircle-hud-item">
+              <AudioToggle border={false} />
+            </div>
           </div>
         ) : null}
-        {pubs}
-        <div className={clsx('ParticipantCircle-infoOverlay', { 'is-hovering': isHovering || disableAudio })}>
-          <div className="ParticipantCircle-overLayText">{participantDisplayIdentity}</div>
-        </div>
       </div>
       {isLocal ? (
         <SettingsModal

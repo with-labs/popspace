@@ -1,23 +1,14 @@
-.SettingsModal {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  background-color: rgba(255, 255, 255, 0.75);
-  z-index: 2;
-}
-
 .SettingsModal-content {
   background: white;
   color: #000;
-  overflow: auto;
   outline: none;
   border-radius: 4px;
   width: 75%;
   position: relative;
   max-width: 700px;
-  margin: 50px auto 0px auto;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: auto;
   overflow: visible;
   height: 44%;
   min-height: 450px;

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
+
 import WithLogo from './images/logo_extrasmall.svg';
+import { ReactComponent as EditIcon } from '../../images/icons/edit.svg';
+
 import './joinRoom.css';
 
 import { FormInputV2 } from '../FormInputV2/FormInputV2';
@@ -11,9 +14,10 @@ import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
 import { Avatar } from '../Avatar/Avatar';
 
+import { AudioToggle } from '../AudioToggle/AudioToggle';
+import { VideoToggle } from '../VideoToggle/VideoToggle';
+
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-import ToggleVideoButton from '../../components/Controls/ToggleVideoButton/ToggleVideoButton';
-import ToggleAudioButton from '../../components/Controls/ToggleAudioButton/ToggleAudioButton';
 
 type JoinRoomProps = {
   roomName: string;
@@ -23,7 +27,7 @@ type JoinRoomProps = {
 const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
   const [screenName, setScreenName] = useState('');
   const [password, setPassword] = useState('');
-  const [initialAvatarSrc, setInitialAvatarSrc] = useState(randomAvatar().name);
+  const [initialAvatar, setInitialAvatar] = useState(randomAvatar());
   const [isVideoEnabled] = useLocalVideoToggle();
   const [isSelectingAvatar, toggleIsSelectingAvatar] = useState(false);
 
@@ -34,7 +38,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
     // any error messaging really hooked up, so only allow them in if username and password
     // are filled out
     if (screenName.length > 0 && password.length > 0) {
-      onJoinSubmitHandler(screenName, password, initialAvatarSrc);
+      onJoinSubmitHandler(screenName, password, initialAvatar.name);
     }
   };
 
@@ -49,18 +53,55 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
     </div>
   );
 
+  const [isHoveringAvatar, setIsHoveringAvatar] = useState(false);
+
+  const onAvatarHover = () => {
+    setIsHoveringAvatar(true);
+  };
+
+  const onAvatarUnHover = () => {
+    setIsHoveringAvatar(false);
+  };
+
   const userAvatarCameraSelect = (
     <div className="JoinRoom-avControls u-flex u-flexCol u-flexAlignItemsCenter">
-      <div className="JoinRoom-videoPreviewContainer">
+      <div
+        className="JoinRoom-videoPreviewContainer u-round"
+        style={{ backgroundColor: initialAvatar.backgroundColor }}
+      >
         {isVideoEnabled ? (
           <LocalVideoPreview classNames="JoinRoom-videoPreview u-height100Percent" />
         ) : (
-          <Avatar name={initialAvatarSrc} onClick={() => toggleIsSelectingAvatar(true)} />
+          <div
+            className={clsx(
+              'JoinRoom-videoPreviewContainer-avatar u-height100Percent u-width100Percent u-positionRelative',
+              {
+                'is-hovering': isHoveringAvatar,
+              }
+            )}
+            onMouseEnter={onAvatarHover}
+            onMouseLeave={onAvatarUnHover}
+          >
+            <div
+              className={clsx(
+                'JoinRoom-videoPreviewContainer-avatar-overlay u-positionAbsolute u-width100Percent u-height100Percent u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-cursorPointer',
+                { 'u-displayNone': !isHoveringAvatar }
+              )}
+              onClick={() => toggleIsSelectingAvatar(true)}
+            >
+              <EditIcon />
+            </div>
+            <Avatar name={initialAvatar.name} />
+          </div>
         )}
       </div>
-      <div>
-        <ToggleVideoButton />
-        <ToggleAudioButton />
+      <div className="u-flex">
+        <div className="JoinRoom-avControls-item">
+          <VideoToggle />
+        </div>
+        <div className="JoinRoom-avControls-item">
+          <AudioToggle />
+        </div>
       </div>
     </div>
   );
@@ -98,18 +139,18 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
           {header}
         </div>
         <div className={clsx('JoinRoom-userInfo u-flex u-flexRow u-sm-flexCol', { 'is-open': !isSelectingAvatar })}>
-          <div className="JointRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
+          <div className="JoinRoom-title u-sm-flex u-md-displayNone u-lg-displayNone u-flexJustifyCenter u-flexAlignItemsCenter">
             {joiningRoomText}
           </div>
-          <div className="joinRoom-videoPreviewContainer u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
+          <div className="u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter">
             {userAvatarCameraSelect}
           </div>
           <div className="joinRoom-formContainer u-size1of2 u-sm-sizeFull">{userLoginForm}</div>
         </div>
-        <div className={clsx('JoinRoom-avatarSelect', { 'is-open': isSelectingAvatar })}>
+        <div className={clsx('JoinRoom-avatarSelect u-layerSurfaceBeta', { 'is-open': isSelectingAvatar })}>
           <AvatarSelect
-            onAvatarChange={src => setInitialAvatarSrc(src)}
-            defaultAvatar={initialAvatarSrc}
+            onAvatarChange={av => setInitialAvatar(av)}
+            defaultAvatar={initialAvatar}
             handleClose={() => toggleIsSelectingAvatar(false)}
           />
         </div>

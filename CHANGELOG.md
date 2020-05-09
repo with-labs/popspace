@@ -1,7 +1,48 @@
+## 1.43.0
+
+- Set font on FormInputV2.
+- Fix custom background url string in useRoomMetaContextBackground hook.
+- Set correct modal overlay color.
+- CSS utilities for z-index.
+- Add edit state for JoinRoom avatar preview.
+
+## 1.42.0
+
+Background wallpaper selection modal and Accessories tray.
+
+- Update UI of BackgroundPicker.
+- Put BackgroundPicker in a Modal in the footer.
+- Use an options object similar to avatar options for wallpapers.
+- Set default wallpaper in the room meta reducer.
+- Adding in new slideMenu with animations and mobile state
+- Add in AccessoriesTray component
+- Removing Footer and Feedback Component
+
+## 1.41.0
+
+Avatar background colors.
+
+- Added backgroundColor property to avatar data objects.
+- Plumbed avatar background color into AvatarSelect.
+- Plumbed avatar background color to avatar preview on Join page.
+- Plumbed avatar background color to ParticipantCircle.
+- New settings icon on ParticipantCircle.
+- Avatar smaller in ParticipantCircle and toggling participant name color with camera enable.
+- Increase huddle bubble radius for small huddles to reduce bubble overlap.
+- Add white circle to huddle to show continuity between participants.
+
+## 1.40.0
+
+New AV toggle controls.
+
+- AudioToggle and VideoToggle components.
+- Plumbed new toggles into Join/lobby page.
+- Plumbed new toggles into ParticipantCircle.
+
 ## 1.39.0
 
 - New room: meetwith
-- Update pw for chezkerry 
+- Update pw for chezkerry
 
 ## 1.38.0
 

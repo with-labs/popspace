@@ -116,11 +116,12 @@ export const SlideMenu: React.FC<SlideMenuProps> = props => {
       <motion.div
         initial={false}
         variants={{
-          closed: { x: 0, rotate: 0 },
-          open: { x: -265, rotate: 135 },
+          closed: { x: 0, rotate: 0, borderRadius: 10 },
+          open: { x: -265, rotate: 135, borderRadius: 50 },
         }}
+        transition={{ type: 'spring', damping: 15, stiffness: 75 }}
         className={clsx('SlideMenu-button u-layerControlsBeta u-positionRelative', {
-          'is-open': isActive,
+          'is-opentest': isActive,
         })}
         onClick={onButtonClick}
       >
@@ -147,6 +148,7 @@ export const SlideMenu: React.FC<SlideMenuProps> = props => {
       </motion.div>
       <motion.div
         className="SlideMenu-menu"
+        transition={{ type: 'spring', damping: 15, stiffness: 75 }}
         variants={{
           open: {
             x: 0,

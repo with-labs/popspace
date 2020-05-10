@@ -27,13 +27,13 @@
   border-radius: 30px;
   padding: 20px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
-  transition: all 0.6s;
-  transform: translate(150%, 0px);
+  /* transition: all 0.6s;
+  transform: translate(150%, 0px); */
 }
 
 .SlideMenu-menu.is-open {
-  transform: translate3d(0px, 0, 0);
-  animation-timing-function: 1s ease;
+  /* transform: translate3d(0px, 0, 0);
+  animation-timing-function: 1s ease; */
 }
 
 .SlideMenu-menuMobile {

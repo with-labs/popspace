@@ -11,8 +11,6 @@ import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetCont
 
 import './accessoriesTray.css';
 
-import addImg from './images/emoji_ADD.svg';
-import cancelImg from '../../images/emoji_OUT.svg';
 import ideaImg from './images/idea.svg';
 import linkImg from './images/links.svg';
 import spotifyImg from './images/spotify.svg';
@@ -68,8 +66,6 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     <div className="AccessoriesTray u-positionFixed u-layerControlsAlpha">
       {roomState === 'disconnected' ? null : (
         <SlideMenu
-          buttonSrc={!isAccessoriesTrayOpen ? '' : ''}
-          buttonAltText={isAccessoriesTrayOpen ? 'addImg' : 'cancelImg'}
           onButtonClickHandler={() => {
             setIsAccessoriesTrayOpen(!isAccessoriesTrayOpen);
           }}

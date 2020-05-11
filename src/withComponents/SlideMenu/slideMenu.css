@@ -52,18 +52,6 @@
   visibility: visible;
 }
 
-.SlideMenu-btnIcon {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-}
-
-.SlideMenu-btnIcon.isActive {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-}
-
 .SlideMenu-btnIcon--cherry {
   background-color: #f4675a;
 }

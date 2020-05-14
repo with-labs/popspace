@@ -1,3 +1,9 @@
+## 1.45.0
+
+- Add room karenbourdon
+- Add logging for input device debugging
+- Disable spatial audio
+
 ## 1.44.0
 
 - Pulling framer-motion package

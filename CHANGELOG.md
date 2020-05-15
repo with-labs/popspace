@@ -1,3 +1,7 @@
+## 1.46.0
+
+- Animate toggle switch
+
 ## 1.45.0
 
 - Add room karenbourdon

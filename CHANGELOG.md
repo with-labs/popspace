@@ -1,3 +1,7 @@
+## 1.47.0
+
+- Add room spark
+
 ## 1.46.0
 
 - Animate toggle switch

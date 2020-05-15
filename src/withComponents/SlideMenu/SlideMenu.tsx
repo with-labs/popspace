@@ -1,15 +1,21 @@
 import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import clsx from 'clsx';
 
-import { ReactComponent as Add } from '../../images/icons/add.svg';
-import { ReactComponent as AddRotated } from '../../images/icons/add_rotated.svg';
+import {
+  slideBtnSageVariants,
+  slideBtnCherryVariants,
+  slideBtnTangerineVariants,
+  slideBtnBlueberryVariants,
+  slideBtnVariants,
+  slideTransition,
+  slideMenuVariants,
+  slideMenuMobileVariants,
+} from './SlideMenu-animation';
 
 import './slideMenu.css';
 
-// todo: update types
 interface SlideMenuProps {
-  buttonSrc: any;
-  buttonAltText: string;
   classNames?: string;
   children?: React.ReactNode;
   onButtonClickHandler?: Function;
@@ -19,16 +25,7 @@ interface SlideMenuProps {
 }
 
 export const SlideMenu: React.FC<SlideMenuProps> = props => {
-  const {
-    buttonSrc,
-    buttonAltText,
-    classNames,
-    children,
-    onButtonClickHandler,
-    isActive,
-    onMenuDisappear,
-    mobileMenuClassNames,
-  } = props;
+  const { classNames, children, onButtonClickHandler, isActive, onMenuDisappear, mobileMenuClassNames } = props;
 
   const dropDownMenuRef = useRef<HTMLDivElement>(null);
 
@@ -79,45 +76,68 @@ export const SlideMenu: React.FC<SlideMenuProps> = props => {
     }
   };
 
+  const slideMenuBtn = (
+    <motion.div
+      initial={false}
+      variants={slideBtnVariants}
+      transition={slideTransition}
+      className="SlideMenu-button u-layerControlsBeta u-positionRelative"
+      onClick={onButtonClick}
+    >
+      <motion.div
+        initial={false}
+        className="SlideMenu-btnIcon--cherry u-positionAbsolute"
+        variants={slideBtnCherryVariants}
+      />
+      <motion.div
+        initial={false}
+        className="SlideMenu-btnIcon--sage u-positionAbsolute"
+        variants={slideBtnSageVariants}
+      />
+      <motion.div
+        initial={false}
+        className="SlideMenu-btnIcon--tangerine u-positionAbsolute"
+        variants={slideBtnTangerineVariants}
+      />
+      <motion.div
+        initial={false}
+        className="SlideMenu-btnIcon--blueberry u-positionAbsolute"
+        variants={slideBtnBlueberryVariants}
+      />
+    </motion.div>
+  );
+
+  // TODO: accessability check, work for post funding.
   const slideRightMenu = (
-    <div className="u-sm-displayNone u-md-flex u-lg-flex">
-      <div
-        className={clsx('SlideMenu-button u-layerControlsBeta', {
-          'is-open': isActive,
-        })}
-        onClick={onButtonClick}
-      >
-        <Add />
-      </div>
-      <div
-        className={clsx('SlideMenu-menu', {
-          'is-open': isActive,
-        })}
-      >
+    <motion.div className="u-sm-displayNone u-md-flex u-lg-flex" animate={isActive ? 'open' : 'closed'} initial={false}>
+      {slideMenuBtn}
+      <motion.div className="SlideMenu-menu" transition={slideTransition} variants={slideMenuVariants}>
         {children}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   const mobileSlideMenu = (
-    <div className="u-sm-flex u-md-displayNone u-lg-displayNone">
+    <motion.div
+      className="u-sm-flex u-md-displayNone u-lg-displayNone"
+      animate={isActive ? 'open' : 'closed'}
+      initial={false}
+    >
       <div
         className={clsx('SlideMenu-overlay', {
           'is-open': isActive,
         })}
         onClick={() => onButtonClickHandler && onButtonClickHandler()}
       />
-      <div className={clsx('SlideMenu-button u-layerControlsBeta')} onClick={onButtonClick}>
-        <Add />
-      </div>
-      <div
-        className={clsx('SlideMenu-menuMobile u-layerControlsGamma', mobileMenuClassNames, {
-          'is-open': isActive,
-        })}
+      <motion.div animate="closed">{slideMenuBtn}</motion.div>
+      <motion.div
+        className={clsx('SlideMenu-menuMobile u-layerControlsGamma', mobileMenuClassNames)}
+        transition={slideTransition}
+        variants={slideMenuMobileVariants}
       >
         {children}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   return (

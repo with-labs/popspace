@@ -1,3 +1,18 @@
+## 1.46.0
+
+- Animate toggle switch
+
+## 1.45.0
+
+- Add room karenbourdon
+- Add logging for input device debugging
+- Disable spatial audio
+
+## 1.44.0
+
+- Pulling framer-motion package
+- upgrade slideMenu to have all animations handled via framer-motion
+
 ## 1.43.0
 
 - Set font on FormInputV2.

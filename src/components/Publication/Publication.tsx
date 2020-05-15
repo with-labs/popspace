@@ -43,6 +43,11 @@ export default function Publication({
   const distance = useParticipantLocationDelta(participant);
   const { huddles, localHuddle } = useRoomParties();
 
+  // Help Laurent debug his audio issues
+  // TODO: Remove when input selection feature lands
+  // @ts-ignore
+  console.log('track.mediaStreamTrack: ', track && track.mediaStreamTrack);
+
   // The math for calculating the volume of a participant
   // is based on positioning of elements from top, left with a relative
   // range from 0 - 1, then multiplied by the screen width and height. There is
@@ -73,6 +78,10 @@ export default function Publication({
     // curve generated (desmos.com link).
     volume = Math.cos(6 * dist - 1) / 2 + 0.5;
   }
+
+  // This is a temporary override to disable spatial audio.
+  // We will add in some kind of user, selected room option soon.
+  volume = 1;
 
   if (!track) return null;
 

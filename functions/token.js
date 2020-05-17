@@ -53,6 +53,8 @@ const ROOM_WHITELIST_PASSCODES = {
   meetwith: 'meetwith2020',
   karenbourdon: 'karenannarbor',
   spark: 'Spark2020',
+  coatue: 'coatue2020',
+  kpcb: 'kpcb2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

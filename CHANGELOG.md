@@ -1,3 +1,7 @@
+## 1.48.0
+
+- add rooms: coatue, kpcb
+
 ## 1.47.0
 
 - Add room spark

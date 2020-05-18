@@ -42,8 +42,8 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     setMenuState(Menu.MENU_ROOT);
   };
 
-  const onUrlSubmitHandler = (url: string) => {
-    addWidget(localParticipant.sid, url);
+  const onUrlSubmitHandler = (url: string, title: string) => {
+    addWidget(localParticipant.sid, url, title);
     closeTray();
   };
 

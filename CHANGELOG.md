@@ -1,3 +1,11 @@
+## 1.49.0
+
+- add in new Widget base component
+- add in new LinkWidget
+- add in ability for user to add a title to the link they post
+- add in font css utils
+- remove CircleRoom component (unused legacy code)
+
 ## 1.48.0
 
 - add rooms: coatue, kpcb

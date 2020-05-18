@@ -1,0 +1,40 @@
+/* Font utils */
+.u-fontH1 {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.u-fontH2 {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.u-fontP1 {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.u-fontP2 {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.u-fontB1 {
+  font-family: Geomanist;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 14px;
+}

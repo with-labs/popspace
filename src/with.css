@@ -3,6 +3,7 @@
 @import './css/util-display/index.css';
 @import './css/util-margin/index.css';
 @import './css/util-zindex/index.css';
+@import './css/util-font/index.css';
 
 /* apply a natural box layout model to all elements, but allowing components to change */
 html {
@@ -51,6 +52,14 @@ html {
 /* Mouse cursor styles */
 .u-cursorPointer {
   cursor: pointer !important;
+}
+
+.u-cursorDefault {
+  cursor: default !important;
+}
+
+.u-cursorNone {
+  cursor: none !important;
 }
 
 .u-opacity1 {

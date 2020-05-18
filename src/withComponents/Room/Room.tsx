@@ -15,7 +15,7 @@ import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext'
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import style from './Room.module.css';
-import LinkBubble from '../LinkBubble';
+import { LinkWidget } from '../LinkWidget/LinkWidget';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
@@ -161,7 +161,8 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
       <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
         {widgets.map(widget => (
           <div key={widget.id} style={{ margin: 10 }}>
-            <LinkBubble
+            <LinkWidget
+              title={widget.title}
               url={widget.hyperlink}
               onCloseHandler={() => removeWidget(widget.id)}
               participant={

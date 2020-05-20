@@ -1,0 +1,25 @@
+.linkWidget {
+  max-width: 200px;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.addedByText {
+  color: #636c8b;
+}
+
+.link {
+  position: relative;
+  display: inline-block;
+  color: #444444;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}

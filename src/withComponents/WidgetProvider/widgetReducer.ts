@@ -1,11 +1,12 @@
 import { Action } from '../RoomState/RoomStateProvider';
+import { WidgetTypes } from './widgetTypes';
 
 // `IWidgetProperties` defines the properties that a widget must have.
 export interface IWidgetProperties {
-  type: string;
+  type: WidgetTypes;
   id: string;
-  hyperlink: string;
   participantSid: string;
+  data: any;
 }
 // `IWidgetState` is the state maintained by this context provider representing the widgets present in the room.
 export interface IWidgetState {

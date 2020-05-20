@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 
+import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
+
 import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
 import './index.css';
 
@@ -31,8 +33,8 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
   return (
     <div className="BackgroundPicker u-flex u-flexAlignItemsCenter u-flexCol">
       <div className="u-flex u-flexJustifyBetween u-flexAlignItemsCenter u-width100Percent">
-        <div onClick={onExit} className="u-cursorPointer BackgroundPicker-exit">
-          &lt; Change Wallpaper
+        <div onClick={onExit} className="u-cursorPointer BackgroundPicker-exit u-flex u-flexAlignItemsCenter">
+          <BackGlyph /> Change Wallpaper
         </div>
         <div className="u-size1of2">
           <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>

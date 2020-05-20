@@ -7,6 +7,7 @@
 :root {
   --layerSurfaceAlpha: 1;
   --layerSurfaceBeta: 10;
+  --layerSurfaceDelta: 20;
 }
 
 .u-layerSurfaceAlpha {
@@ -15,4 +16,8 @@
 
 .u-layerSurfaceBeta {
   z-index: var(--layerSurfaceBeta);
+}
+
+.u-layerSurfaceDelta {
+  z-index: var(--layerSurfaceDelta);
 }

@@ -2,51 +2,24 @@
   background: white;
   color: #000;
   outline: none;
-  border-radius: 4px;
+  border-radius: 16px;
   width: 75%;
   position: relative;
   max-width: 700px;
+  min-height: 450px;
   top: 50%;
   transform: translateY(-50%);
   margin: auto;
   overflow: visible;
-  height: 44%;
-  min-height: 450px;
-  padding: 50px;
+  padding: 38px 48px 48px;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06), 0px 6px 32px rgba(0, 0, 0, 0.12);
-}
-
-.SettingsModal-title {
-  margin-top: 30px;
-}
-
-.SettingsModal-close {
-  font-size: 30px;
-  background-image: url(../../images/emoji_OUT.svg);
-  background-repeat: no-repeat;
-  background-position: center;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 60px;
-  height: 60px;
-  text-align: center;
-  color: #f59288;
-  position: absolute;
-  outline: none;
-  left: -25px;
-  top: -25px;
-  font-weight: bold;
-  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.4);
-  border: 2px solid white;
-  text-indent: -1000000px;
 }
 
 .SettingsModal-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 3fr;
   grid-template-rows: auto;
   gap: 10px 20px;
-  margin-top: 40px;
   place-items: center center;
 }
 
@@ -58,11 +31,13 @@
   justify-self: stretch;
 }
 
+.SettingsModal-title {
+  font-weight: normal;
+}
+
 .SettingsModal-toggle {
-  border: 2px solid #dcd9d9;
   border-radius: 5px;
   padding: 5px;
-  text-align: center;
 }
 
 .SettingsModal-toggle-item {
@@ -76,6 +51,35 @@
   line-height: 30px;
 }
 
+.SettingsModal-select {
+  display: block;
+  font-size: inherit;
+  font-weight: 400;
+  color: inherit;
+  line-height: 1.3;
+  padding: 1em 1.4em 0.9em 0.8em;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  border: 1px solid #d8d6d6;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+  border-radius: 0.5em;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.SettingsModal-select::-ms-expand {
+  display: none;
+}
+
+.SettingsModal-select option {
+  font-weight: normal;
+}
+
 .SettingsModal-toggle-item--clearable:before {
   content: 'CLEAR';
   margin-right: 10px;
@@ -87,6 +91,18 @@
   cursor: default;
 }
 
+.SettingsModal-videoPreview {
+  border-radius: 50%;
+  object-fit: cover !important;
+  height: 128px !important;
+  width: 128px !important;
+  border: 3px solid #ffffff;
+}
+
+.SettingsModal-avControls-item:last-of-type {
+  margin-left: 8px;
+}
+
 /* This is some terrible hackery to make the <Emoji /> component play nice */
 .SettingsModal-toggle-item .emoji-mart-emoji span {
   position: relative;
@@ -95,16 +111,9 @@
   display: flex !important;
 }
 
-/* Transition applied to default react-modal class names */
-.ReactModal__Overlay {
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
-}
-
-.ReactModal__Overlay--after-open {
-  opacity: 1;
-}
-
-.ReactModal__Overlay--before-close {
-  opacity: 0;
+@media (max-width: 640px) {
+  .SettingsModal-content {
+    padding: 16px;
+    height: 100%;
+  }
 }

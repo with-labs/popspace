@@ -1,6 +1,14 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * 5/18/2020 WQP: Use activeCameraId from participant meta to pass a camera device id to the video track pub.
+ */
+
 import { LocalVideoTrack } from 'twilio-video';
 import { useCallback } from 'react';
 import useVideoContext from '../useVideoContext/useVideoContext';
+
+import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 
 export default function useLocalVideoToggle() {
   const {
@@ -9,6 +17,7 @@ export default function useLocalVideoToggle() {
     getLocalVideoTrack,
   } = useVideoContext();
   const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
+  const { activeCameraId } = useParticipantMeta(localParticipant);
 
   const toggleVideoEnabled = useCallback(() => {
     if (videoTrack) {
@@ -19,13 +28,13 @@ export default function useLocalVideoToggle() {
       }
       videoTrack.stop();
     } else {
-      getLocalVideoTrack().then((track: LocalVideoTrack) => {
+      getLocalVideoTrack(activeCameraId || '').then((track: LocalVideoTrack) => {
         if (localParticipant) {
           localParticipant.publishTrack(track);
         }
       });
     }
-  }, [videoTrack, localParticipant, getLocalVideoTrack]);
+  }, [videoTrack, localParticipant, getLocalVideoTrack, activeCameraId]);
 
   return [!!videoTrack, toggleVideoEnabled] as const;
 }

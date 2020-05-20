@@ -1,3 +1,43 @@
+## 1.52.0
+
+- Fix hover over emoji to be settings icon
+- Fix listed video input default
+- Style select elements
+- Fix modal height w/ emoji picker
+- Adjust location and width of user name on participant bubble
+- Adjust fonts on admin panel
+- Persist mute/unmute button when muted
+- Update video disable/enable tooltip to use "avatar" language
+
+## 1.51.0
+
+- Add functions to the useLocalAudioToggle and useLocalVideoToggle hooks that will allow the app to change the AV sources.
+- AV source changing functions will unpublish existing tracks of the same type and publish new tracks with the specified source.
+- useLocalAudioToggle now behaves similarly to useLocalVideoToggle in that it publishes/unpublishes the audio track for enabling/disabling rather than calling enable/disable methods on the audio track. This is necessary to be able to set the device for the audio input upon re-enabling audio.
+- useLocalTracks and useVideoContext now expose a `getLocalAudioTrack` function used when enabling audio or switching audio inputs.
+- useHandleDeviceChange hook that will update audio/video track publications based on passed in device ids.
+- Start the new local participant admin UI.
+- TODO: polish on the local participant admin UI.
+- TODO: speaker output selection.
+- TODO: add event listeners to reset the audio/video input sources on device change detected.
+
+## 1.50.0
+
+- Add Whiteboard widget
+- Refactor widget data model to make generic, extensible for more widget types
+- When adding link widget, make title the URL if no title provided
+- Polish dropshadows on some items
+- Add rooms: uif, mayfield, floodgate, Early Access Rooms Batch 1
+Admin panel revamp and AV input source selection.
+
+## 1.49.0
+
+- add in new Widget base component
+- add in new LinkWidget
+- add in ability for user to add a title to the link they post
+- add in font css utils
+- remove CircleRoom component (unused legacy code)
+
 ## 1.48.0
 
 - add rooms: coatue, kpcb

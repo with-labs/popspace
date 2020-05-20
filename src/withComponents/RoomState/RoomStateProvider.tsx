@@ -11,6 +11,7 @@ import { HuddleProvider } from '../HuddleProvider/HuddleProvider';
 import { WidgetProvider } from '../WidgetProvider/WidgetProvider';
 
 import { Actions as PtMetaActionTypes } from '../ParticipantMetaProvider/participantMetaReducer';
+import { AVSourcesProvider } from '../AVSourcesProvider/AVSourcesProvider';
 
 interface IRoomStateContext {
   dispatch: (action: Action) => void;
@@ -90,8 +91,12 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
     (action: Action) => {
       store.dispatch(action);
 
-      // Then do the remote data track message
-      localDT.send(JSON.stringify(action));
+      // If this action is a "local" action, do not send it to the remote participants.
+      // @ts-ignore
+      if (!(action.meta && action.local)) {
+        // Then do the remote data track message
+        localDT.send(JSON.stringify(action));
+      }
 
       if (shouldQueueParticipantMetaActions.current && action.type !== 'PING') {
         if (
@@ -195,9 +200,11 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
       <RoomStateContext.Provider value={{ dispatch }}>
         <RoomMetaProvider>
           <ParticipantMetaProvider>
-            <HuddleProvider>
-              <WidgetProvider>{children}</WidgetProvider>
-            </HuddleProvider>
+            <AVSourcesProvider>
+              <HuddleProvider>
+                <WidgetProvider>{children}</WidgetProvider>
+              </HuddleProvider>
+            </AVSourcesProvider>
           </ParticipantMetaProvider>
         </RoomMetaProvider>
       </RoomStateContext.Provider>

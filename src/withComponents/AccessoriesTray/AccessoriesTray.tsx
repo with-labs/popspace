@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, MouseEvent } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { SlideMenu } from '../SlideMenu/SlideMenu';
 import { RoomAdmin } from '../RoomAdmin/RoomAdmin';
@@ -8,6 +9,8 @@ import PostLink from '../PostLink';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
+import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
+import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
 
 import './accessoriesTray.css';
 
@@ -16,6 +19,7 @@ import linkImg from './images/links.svg';
 import spotifyImg from './images/spotify.svg';
 import timerImg from './images/timer.svg';
 import calendarImg from './images/calendar.svg';
+import whitebordImg from './images/whiteboard.png';
 
 interface AccessoriesTrayProps {
   classNames?: string;
@@ -31,8 +35,14 @@ enum Menu {
 export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
   const roomState = useRoomState();
   const [isAccessoriesTrayOpen, setIsAccessoriesTrayOpen] = useState(false);
+  const defaultWhiteboardText = {
+    title: 'Whiteboard',
+    descText: 'Draw on a shared whiteboard.',
+  };
+  const [whiteboardText, setWhiteboardText] = useState(defaultWhiteboardText);
   const [menuState, setMenuState] = useState(Menu.MENU_ROOT);
   const { addWidget } = useWidgetContext();
+  const { widgets } = useRoomParties();
   const {
     room: { localParticipant },
   } = useVideoContext();
@@ -42,8 +52,9 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     setMenuState(Menu.MENU_ROOT);
   };
 
-  const onUrlSubmitHandler = (url: string) => {
-    addWidget(localParticipant.sid, url);
+  const onUrlSubmitHandler = (url: string, title: string) => {
+    if (!title.length) title = url;
+    addWidget(WidgetTypes.Link, localParticipant.sid, { url, title });
     closeTray();
   };
 
@@ -60,6 +71,24 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     const subject = 'Suggest an app';
     const body = `I would love it if you made an app that...`;
     window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+  };
+
+  const onAddWhiteboardClick = (e: MouseEvent) => {
+    // Only add a whiteboard if there are no other whiteboards in the room
+    const isWhiteboardAlreadyInRoom = widgets.some(el => el.type === WidgetTypes.Whiteboard);
+    if (!isWhiteboardAlreadyInRoom) {
+      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, { whiteboardId: uuidv4() });
+      closeTray();
+    } else {
+      // show an error message or something
+      setWhiteboardText({
+        title: "Can't add whiteboard",
+        descText: 'Only one whiteboard at a time',
+      });
+      setTimeout(() => {
+        setWhiteboardText(defaultWhiteboardText);
+      }, 4000);
+    }
   };
 
   return (
@@ -96,6 +125,15 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                       title="Suggest an app"
                       descText="Let us know in an email which app you'd like us to add."
                       onClickHandler={onSuggestAppClick}
+                    />
+                  </div>
+                  <div key="whiteboard" className="AccessoriesTray-appItem">
+                    <AddAppItem
+                      imgSrc={whitebordImg}
+                      imgAltText="Whiteboard"
+                      title={whiteboardText.title}
+                      descText={whiteboardText.descText}
+                      onClickHandler={onAddWhiteboardClick}
                     />
                   </div>
                   <div key="spotify" className="AccessoriesTray-appItem">

@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
+import { WidgetTypes } from './widgetTypes';
 import { IWidgetState, widgetAdd, widgetRemove } from './widgetReducer';
 
 /**
@@ -17,7 +18,7 @@ import { IWidgetState, widgetAdd, widgetRemove } from './widgetReducer';
  */
 export interface IWidgetsContext {
   widgets: IWidgetState;
-  addWidget: (participantSid: string, hyperlink: string) => void;
+  addWidget: (type: WidgetTypes, participantSid: string, data: object) => void;
   removeWidget: (widgetId: string) => void;
 }
 
@@ -40,12 +41,13 @@ export function WidgetProvider({ children }: IWidgetProviderProps) {
   const { dispatch } = useRoomStateContext();
 
   // Mutator to add a widget.
-  const addWidget = (participantSid: string, hyperlink: string) => {
+  const addWidget = (type: WidgetTypes, participantSid: string, data: any) => {
     const widget = {
       id: uuid(),
-      type: 'LINK',
-      hyperlink,
+      type,
       participantSid,
+      // data holds the specific data needed for each type of widget
+      data,
     };
 
     dispatch(widgetAdd(widget));

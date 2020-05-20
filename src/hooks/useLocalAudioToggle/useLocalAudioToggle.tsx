@@ -1,18 +1,39 @@
+/**
+ * #ANGLES_EDIT
+ *
+ * 5/18/2020 WQP: Base audio track enabledment on presence/publication of an audio track.
+ */
+
 import { LocalAudioTrack } from 'twilio-video';
 import { useCallback } from 'react';
-import useIsTrackEnabled from '../useIsTrackEnabled/useIsTrackEnabled';
 import useVideoContext from '../useVideoContext/useVideoContext';
+import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 
 export default function useLocalAudioToggle() {
-  const { localTracks } = useVideoContext();
+  const {
+    localTracks,
+    getLocalAudioTrack,
+    room: { localParticipant },
+  } = useVideoContext();
   const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
-  const isEnabled = useIsTrackEnabled(audioTrack);
+  const { activeMicId } = useParticipantMeta(localParticipant);
 
   const toggleAudioEnabled = useCallback(() => {
     if (audioTrack) {
-      audioTrack.isEnabled ? audioTrack.disable() : audioTrack.enable();
+      if (localParticipant) {
+        const localTrackPublication = localParticipant.unpublishTrack(audioTrack);
+        // TODO: remove when SDK implements this event. See: https://issues.corp.twilio.com/browse/JSDK-2592
+        localParticipant.emit('trackUnpublished', localTrackPublication);
+      }
+      audioTrack.stop();
+    } else {
+      getLocalAudioTrack(activeMicId || '').then((track: LocalAudioTrack) => {
+        if (localParticipant) {
+          localParticipant.publishTrack(track);
+        }
+      });
     }
-  }, [audioTrack]);
+  }, [audioTrack, activeMicId, localParticipant, getLocalAudioTrack]);
 
-  return [isEnabled, toggleAudioEnabled] as const;
+  return [!!audioTrack, toggleAudioEnabled] as const;
 }

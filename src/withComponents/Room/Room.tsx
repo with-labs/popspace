@@ -15,8 +15,10 @@ import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext'
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import style from './Room.module.css';
-import LinkBubble from '../LinkBubble';
+import { LinkWidget } from '../LinkWidget/LinkWidget';
+import Whiteboard from '../Whiteboard/Whiteboard';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
+import { WidgetTypes } from '../WidgetProvider/widgetTypes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
@@ -47,9 +49,13 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
     room: { localParticipant },
   } = useVideoContext();
 
+  const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
+  // safe to assume only one whiteboard ever
+  const [widgetWhiteboard] = widgets.filter(widget => widget.type === WidgetTypes.Whiteboard);
+
   useEffect(() => {
     if (initialAvatar) {
-      updateAvatar(localParticipant.sid, initialAvatar);
+      updateAvatar(initialAvatar);
     }
   }, [initialAvatar]);
 
@@ -159,10 +165,11 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
       ))}
       <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
-        {widgets.map(widget => (
+        {widgetLinks.map(widget => (
           <div key={widget.id} style={{ margin: 10 }}>
-            <LinkBubble
-              url={widget.hyperlink}
+            <LinkWidget
+              title={widget.data.title}
+              url={widget.data.url}
               onCloseHandler={() => removeWidget(widget.id)}
               participant={
                 widget.participantSid === localParticipant.sid
@@ -173,12 +180,23 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
           </div>
         ))}
       </div>
+      <div>
+        {widgetWhiteboard ? (
+          <Whiteboard
+            onCloseHandler={() => removeWidget(widgetWhiteboard.id)}
+            whiteboardId={widgetWhiteboard.data.whiteboardId}
+          />
+        ) : null}
+      </div>
       {Object.keys(bubs).map(key => {
         const { pt, top, left } = bubs[key];
 
         return (
           <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
-            <div className={clsx(style.participantBubble, { 'u-blur': localHuddle })} key={pt.sid}>
+            <div
+              className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
+              key={pt.sid}
+            >
               <ParticipantCircle
                 participant={pt}
                 onClick={() => inviteToHuddle(pt.sid)}

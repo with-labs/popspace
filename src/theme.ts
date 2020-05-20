@@ -3,8 +3,8 @@ import { createMuiTheme } from '@material-ui/core';
 const geomanist = {
   fontFamily: 'Geomanist',
   src: `
-    url("/fonts/Geomanist-Regular-webfont.woff2") format("woff2"),
-    url("/fonts/Geomanist-Regular-webfont.woff") format("woff")
+    url("/fonts/geomanist-Regular-webfont.woff2") format("woff2"),
+    url("/fonts/geomanist-Regular-webfont.woff") format("woff")
   `,
 };
 

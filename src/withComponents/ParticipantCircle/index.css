@@ -4,6 +4,7 @@
   width: 100%;
   cursor: pointer;
   border-radius: 50%;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
 }
 .ParticipantCircle.is-localParticipant {
   cursor: move;
@@ -55,6 +56,10 @@
   opacity: 0;
 }
 
+.ParticipantCircle-hud-item.is-shown {
+  opacity: 1;
+}
+
 .ParticipantCircle-hud-item:last-of-type {
   margin-left: 8px;
 }
@@ -81,7 +86,7 @@
 
 .ParticipantCircle-infoOverlay {
   position: absolute;
-  bottom: 26px;
+  bottom: 20px;
   left: 0;
   width: 100%;
   height: 30px;
@@ -92,7 +97,7 @@
   font-size: 20px;
   -webkit-user-select: none;
   user-select: none;
-  max-width: 170px;
+  max-width: 145px;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;

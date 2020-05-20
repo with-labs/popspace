@@ -4,6 +4,11 @@ import useVideoContext from '../useVideoContext/useVideoContext';
 import { EventEmitter } from 'events';
 import { LocalParticipant } from 'twilio-video';
 
+import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+jest.mock('../../withHooks/useParticipantMeta/useParticipantMeta');
+const mockUseParticipantMeta = useParticipantMeta as jest.Mock<any>;
+mockUseParticipantMeta.mockImplementation(() => ({}));
+
 jest.mock('../useVideoContext/useVideoContext');
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 

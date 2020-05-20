@@ -14,7 +14,10 @@ import {
   locationUpdate,
   avatarUpdate,
   emojiUpdate,
+  activeCameraUpdate,
+  activeMicUpdate,
 } from './participantMetaReducer';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 /**
  *
@@ -22,8 +25,10 @@ import {
 export interface IParticipantMetaContext {
   participantMeta: IParticipantMetaState;
   updateLocation: (sid: string, location: LocationTuple) => void;
-  updateEmoji: (sid: string, emoji: EmojiData) => void;
-  updateAvatar: (sid: string, avatar: string) => void;
+  updateEmoji: (emoji: EmojiData) => void;
+  updateAvatar: (avatar: string) => void;
+  updateActiveCamera: (cameraId: string) => void;
+  updateActiveMic: (cameraId: string) => void;
 }
 
 export const ParticipantMetaContext = createContext<IParticipantMetaContext>(null!);
@@ -41,21 +46,35 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
   const participantMeta = useSelector(state => state.participantMeta);
   const { dispatch } = useRoomStateContext();
 
+  const {
+    room: { localParticipant },
+  } = useVideoContext();
+
   const updateLocation = (sid: string, location: LocationTuple) => {
     dispatch(locationUpdate(sid, location));
   };
 
-  const updateEmoji = (sid: string, emoji: EmojiData) => {
-    dispatch(emojiUpdate(sid, emoji));
+  const updateEmoji = (emoji: EmojiData) => {
+    dispatch(emojiUpdate(localParticipant.sid, emoji));
   };
 
-  const updateAvatar = (sid: string, avatar: string) => {
-    dispatch(avatarUpdate(sid, avatar));
+  const updateAvatar = (avatar: string) => {
+    dispatch(avatarUpdate(localParticipant.sid, avatar));
+  };
+
+  const updateActiveCamera = (cameraId: string) => {
+    dispatch(activeCameraUpdate(localParticipant.sid, cameraId));
+  };
+
+  const updateActiveMic = (micId: string) => {
+    dispatch(activeMicUpdate(localParticipant.sid, micId));
   };
 
   // Return the context.
   return (
-    <ParticipantMetaContext.Provider value={{ participantMeta, updateLocation, updateEmoji, updateAvatar }}>
+    <ParticipantMetaContext.Provider
+      value={{ participantMeta, updateLocation, updateEmoji, updateAvatar, updateActiveCamera, updateActiveMic }}
+    >
       {children}
     </ParticipantMetaContext.Provider>
   );

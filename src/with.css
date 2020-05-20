@@ -21,6 +21,21 @@ html {
   background-color: rgb(99, 108, 139, 0.4) !important;
 }
 
+/* Transition applied to default react-modal class names */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+/* Misc. utilities */
 .u-blur {
   filter: blur(4px) !important;
 }
@@ -68,6 +83,10 @@ html {
 
 .u-overflowHidden {
   overflow: hidden !important;
+}
+
+.u-overflowYScrollable {
+  overflow-y: scroll !important;
 }
 
 .u-round {

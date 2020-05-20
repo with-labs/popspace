@@ -55,7 +55,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
 
   useEffect(() => {
     if (initialAvatar) {
-      updateAvatar(localParticipant.sid, initialAvatar);
+      updateAvatar(initialAvatar);
     }
   }, [initialAvatar]);
 

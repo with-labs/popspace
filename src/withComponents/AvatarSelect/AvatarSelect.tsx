@@ -3,6 +3,8 @@ import clsx from 'clsx';
 
 import { IAvatar, options } from './options';
 
+import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
+
 import { Avatar } from '../Avatar/Avatar';
 
 import styles from './avatarSelect.module.css';
@@ -25,8 +27,8 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
   }, [selectedAvatar]);
 
   const headerControls = (
-    <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer')}>
-      &lt; Pick an avatar
+    <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer u-flex u-flexAlignItemsCenter')}>
+      <BackGlyph /> Pick an avatar
     </div>
   );
 

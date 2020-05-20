@@ -96,7 +96,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
       hasVideoPublication = true;
     }
     return (
-      <div key={publication.kind} className="ParticipantCircle-participant">
+      <div key={publication.kind + publication.trackSid} className="ParticipantCircle-participant">
         <Publication
           publication={publication}
           participant={participant}

@@ -9,5 +9,5 @@ import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 export function useParticipantMeta(participant: LocalParticipant | RemoteParticipant) {
   const { participantMeta } = useParticipantMetaContext();
 
-  return participantMeta[participant.sid] || {};
+  return (participant && participantMeta[participant.sid]) || {};
 }

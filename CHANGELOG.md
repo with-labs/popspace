@@ -1,3 +1,11 @@
+## 1.50.0
+
+- Add Whiteboard widget
+- Refactor widget data model to make generic, extensible for more widget types
+- When adding link widget, make title the URL if no title provided
+- Polish dropshadows on some items
+- Add rooms: uif, mayfield, floodgate, Early Access Rooms Batch 1
+
 ## 1.49.0
 
 - add in new Widget base component

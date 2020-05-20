@@ -55,6 +55,21 @@ const ROOM_WHITELIST_PASSCODES = {
   spark: 'Spark2020',
   coatue: 'coatue2020',
   kpcb: 'kpcb2020',
+  uif: 'UIF2020',
+  mayfield: 'mayfield2020',
+  floodgate: 'floodgate2020',
+  anywayfm: '660129',
+  nanossegundo: '208864',
+  gregmcmullen: '038007',
+  catherio: '995644',
+  windowledge: '488325',
+  grammarlydesign: '308428',
+  ufo: '965904',
+  avhq: '645078',
+  bsk: '943552',
+  bochum: '879110',
+  gettingstuffdone: '912935',
+  basement: '644455',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

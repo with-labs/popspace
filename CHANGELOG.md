@@ -1,3 +1,14 @@
+## 1.52.0
+
+- Fix hover over emoji to be settings icon
+- Fix listed video input default
+- Style select elements
+- Fix modal height w/ emoji picker
+- Adjust location and width of user name on participant bubble
+- Adjust fonts on admin panel
+- Persist mute/unmute button when muted
+- Update video disable/enable tooltip to use "avatar" language
+
 ## 1.51.0
 
 - Add functions to the useLocalAudioToggle and useLocalVideoToggle hooks that will allow the app to change the AV sources.

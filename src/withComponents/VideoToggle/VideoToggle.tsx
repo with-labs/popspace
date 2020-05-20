@@ -22,7 +22,7 @@ export const VideoToggle: React.FC<IVideoToggleProps> = ({ compact = false, bord
 
   return (
     <Tooltip
-      title={isVideoEnabled ? 'Stop Video' : 'Start Video'}
+      title={isVideoEnabled ? 'Use Avatar' : 'Use Video'}
       placement="bottom"
       PopperProps={{ disablePortal: true }}
     >

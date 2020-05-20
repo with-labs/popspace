@@ -14,6 +14,7 @@ import SettingsModal from '../SettingsModal/SettingsModal';
 import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useLocalAudioToggle from '../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
@@ -36,7 +37,9 @@ interface ParticipantCircleProps {
 const ParticipantCircle = (props: ParticipantCircleProps) => {
   const { participant, disableAudio, enableScreenShare, videoPriority, onClick, style = {} } = props;
   const meta = useParticipantMeta(participant);
+  const [isAudioEnabled] = useLocalAudioToggle();
   const [isHovering, setIsHovering] = useState(false);
+  const [isHoveringOverSettings, setIsHoveringOverSettings] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const { updateEmoji } = useParticipantMetaContext();
   const { room } = useVideoContext();
@@ -71,8 +74,10 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
           e.stopPropagation();
           openSettingsModal();
         }}
+        onMouseEnter={() => setIsHoveringOverSettings(true)}
+        onMouseLeave={() => setIsHoveringOverSettings(false)}
       >
-        {emoji ? <Emoji emoji={emoji} size={24} /> : <SettingsIcon />}
+        {emoji ? isHoveringOverSettings ? <SettingsIcon /> : <Emoji emoji={emoji} size={24} /> : <SettingsIcon />}
       </div>
     );
   }
@@ -150,7 +155,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             <div className="ParticipantCircle-hud-item">
               <VideoToggle compact={true} border={false} />
             </div>
-            <div className="ParticipantCircle-hud-item">
+            <div className={clsx('ParticipantCircle-hud-item', { 'is-shown': !isAudioEnabled })}>
               <AudioToggle border={false} />
             </div>
           </div>

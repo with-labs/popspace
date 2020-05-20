@@ -103,7 +103,7 @@ const SettingsModal = (props: SettingsModalProps) => {
       >
         <div>
           <h2
-            className="SettingsModal-title u-flex u-flexAlignItemsCenter u-marginBottom24 u-cursorPointer"
+            className="SettingsModal-title u-flex u-flexAlignItemsCenter u-marginBottom40 u-cursorPointer"
             onClick={closeSettingsModal}
           >
             <BackGlyph />
@@ -163,11 +163,10 @@ const SettingsModal = (props: SettingsModalProps) => {
               <div className="SettingsModal-grid-colB">
                 <div className="SettingsModal-toggle">
                   <select
-                    className="u-width100Percent"
+                    className="SettingsModal-select u-width100Percent"
                     onChange={opt => updateActiveMic(opt.target.value)}
                     value={activeMicId || 'default'}
                   >
-                    <option value="" key="default"></option>
                     {deviceInfo.mics.map(mic => {
                       return (
                         <option key={mic.deviceId} value={mic.deviceId}>
@@ -202,11 +201,10 @@ const SettingsModal = (props: SettingsModalProps) => {
               <div className="SettingsModal-grid-colB">
                 <div className="SettingsModal-toggle">
                   <select
-                    className="u-width100Percent"
+                    className="SettingsModal-select u-width100Percent"
                     onChange={opt => updateActiveCamera(opt.target.value)}
                     value={activeCameraId || 'default'}
                   >
-                    <option key="default" value=""></option>
                     {deviceInfo.cameras.map(camera => {
                       return (
                         <option key={camera.deviceId} value={camera.deviceId}>

@@ -24,6 +24,7 @@ import LocalVideoPreview from '../LocalVideoPreview';
 import { Avatar } from '../Avatar/Avatar';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
 import { AudioToggle } from '../AudioToggle/AudioToggle';
+import { useAVSourcesContext } from '../AVSourcesProvider/useAVSourcesContext';
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement('#root');
 
@@ -49,19 +50,9 @@ const SettingsModal = (props: SettingsModalProps) => {
   const { updateActiveCamera, updateActiveMic } = useParticipantMetaContext();
   const { activeCameraId, activeMicId, avatar } = useParticipantMeta(participant);
 
+  const { cameras, mics } = useAVSourcesContext();
+
   const ptAvatar = useAvatar(avatar);
-
-  const [deviceInfo, setDeviceInfo] = useState<{
-    cameras: MediaDeviceInfo[];
-    mics: MediaDeviceInfo[];
-    speakers: MediaDeviceInfo[];
-  }>({ cameras: [], mics: [], speakers: [] });
-
-  useEffect(() => {
-    getMediaDevices().then(devices => {
-      setDeviceInfo(devices);
-    });
-  }, [isSettingsModalOpen]); // Update the devices when the modal opens/closes
 
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
@@ -167,7 +158,7 @@ const SettingsModal = (props: SettingsModalProps) => {
                     onChange={opt => updateActiveMic(opt.target.value)}
                     value={activeMicId || 'default'}
                   >
-                    {deviceInfo.mics.map(mic => {
+                    {mics.map(mic => {
                       return (
                         <option key={mic.deviceId} value={mic.deviceId}>
                           {mic.label}
@@ -177,26 +168,6 @@ const SettingsModal = (props: SettingsModalProps) => {
                   </select>
                 </div>
               </div>
-              {/* TODO speaker output selection is not implemented yet.
-              <div className="SettingsModal-grid-colA">Speakers</div>
-              <div className="SettingsModal-grid-colB">
-                <div className="SettingsModal-toggle">
-                  <select
-                    className="u-width100Percent"
-                    onChange={opt => updateActiveSpeakers(participant.sid, deviceId)}
-                    value={activeSpeakersId || 'default'}
-                  >
-                    <option value="" key="default"></option>
-                    {deviceInfo.speakers.map(speaker => {
-                      return (
-                        <option key={speaker.deviceId} value={speaker.deviceId}>
-                          {speaker.label}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              </div> */}
               <div className="SettingsModal-grid-colA">Camera</div>
               <div className="SettingsModal-grid-colB">
                 <div className="SettingsModal-toggle">
@@ -205,7 +176,7 @@ const SettingsModal = (props: SettingsModalProps) => {
                     onChange={opt => updateActiveCamera(opt.target.value)}
                     value={activeCameraId || 'default'}
                   >
-                    {deviceInfo.cameras.map(camera => {
+                    {cameras.map(camera => {
                       return (
                         <option key={camera.deviceId} value={camera.deviceId}>
                           {camera.label}

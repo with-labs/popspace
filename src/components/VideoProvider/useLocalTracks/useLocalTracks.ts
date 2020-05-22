@@ -77,6 +77,7 @@ export function useLocalVideoTrack() {
     if (deviceId) {
       trackOpts.deviceId = { exact: deviceId };
     }
+
     return Video.createLocalVideoTrack(trackOpts).then(newTrack => {
       setTrack(newTrack);
       return newTrack;

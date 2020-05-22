@@ -6,19 +6,21 @@
 
 import { useCallback, useEffect } from 'react';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
+import { useParticipantMetaContext } from '../../withComponents/ParticipantMetaProvider/useParticipantMetaContext';
+import { useAVSourcesContext } from '../../withComponents/AVSourcesProvider/useAVSourcesContext';
 
 export function useHandleDeviceChange(activeCameraId: string, activeMicId: string) {
   const {
     room: { localParticipant },
-    localTracks,
     getLocalVideoTrack,
     getLocalAudioTrack,
   } = useVideoContext();
 
-  const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
-  const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+  const devices = useAVSourcesContext();
 
+  const { updateActiveCamera, updateActiveMic } = useParticipantMetaContext();
+
+  // Callback to unpublish/publish video tracks to achieve a change in the video source device.
   const changeActiveCamera = useCallback(
     (deviceId: string) => {
       if (localParticipant) {
@@ -33,14 +35,27 @@ export function useHandleDeviceChange(activeCameraId: string, activeMicId: strin
           pub.track.stop();
         });
 
-        getLocalVideoTrack(deviceId || activeCameraId || '').then(track => {
+        getLocalVideoTrack(deviceId).then(track => {
           localParticipant.publishTrack(track);
         });
       }
     },
-    [activeCameraId, getLocalVideoTrack, localParticipant]
+    [getLocalVideoTrack, localParticipant]
   );
 
+  // Effect to unpublish/publish video tracks when the specified active camera id changes.
+  useEffect(() => {
+    // Have to base the presence of video on the videoTracks property of the localParticipant, rather than the
+    // `localTracks` property of the videoContext. For some reason while swapping camera video tracks,
+    // videoContext.localTracks doesn't contain any video tracks. Seems that localParticipant.videoTracks may be a
+    // better source of truth? This could be a happy accident that makes camera swapping work. More research may be
+    // necessary to decide if this is the correct approach.
+    if (localParticipant && localParticipant.videoTracks.size) {
+      changeActiveCamera(activeCameraId);
+    }
+  }, [activeCameraId, localParticipant, changeActiveCamera]);
+
+  // Callback to unpublish/publish audio tracks to achieve a change in the audio source device.
   const changeActiveMic = useCallback(
     (deviceId: string) => {
       if (localParticipant) {
@@ -55,38 +70,32 @@ export function useHandleDeviceChange(activeCameraId: string, activeMicId: strin
           pub.track.stop();
         });
 
-        getLocalAudioTrack(deviceId || activeMicId || '').then(track => {
+        getLocalAudioTrack(deviceId).then(track => {
           localParticipant.publishTrack(track);
         });
       }
     },
-    [activeMicId, localParticipant, getLocalAudioTrack]
+    [localParticipant, getLocalAudioTrack]
   );
 
+  // Effect to unpublish/publish audio tracks when the specified active mic id changes.
   useEffect(() => {
-    if (audioTrack) {
+    if (localParticipant && localParticipant.audioTracks.size) {
       changeActiveMic(activeMicId);
     }
-  }, [activeMicId]); // Only run this effect when the active mic id changes.
+  }, [activeMicId, changeActiveMic, localParticipant]);
 
+  // Effect to update the active camera when the available cameras change.
   useEffect(() => {
-    if (videoTrack) {
-      changeActiveCamera(activeCameraId);
+    if (localParticipant && !devices.cameras.find(cam => cam.deviceId === activeCameraId)) {
+      updateActiveCamera(devices.cameras[0]?.deviceId || '');
     }
-  }, [activeCameraId]); // Only run this effect when the active camera id changes.
+  }, [localParticipant, devices.cameras, activeCameraId, updateActiveCamera]);
 
-  // TODO Still figuring out the proper way to reconcile changes in devices. Almost worked, but for some reason
-  // localParticipant is null when the devicechange event happens.
-  // useEffect(() => {
-  //   navigator.mediaDevices.ondevicechange = () => {
-  //     if (localParticipant) {
-  //       console.log('devices changed');
-  //       // updateDevices();
-  //       getMediaDevices().then(({ cameras, mics, speakers }) => {
-  //         updateActiveCamera(cameras[0]?.deviceId || '');
-  //         updateActiveMic(mics[0]?.deviceId || '');
-  //       });
-  //     }
-  //   };
-  // }, [localParticipant]);
+  // Effect to update the active mic when the available mics change.
+  useEffect(() => {
+    if (localParticipant && !devices.mics.find(mic => mic.deviceId === activeMicId)) {
+      updateActiveMic(devices.mics[0]?.deviceId || '');
+    }
+  }, [localParticipant, devices.mics, activeMicId, updateActiveMic]);
 }

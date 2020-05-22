@@ -50,7 +50,13 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
     }
 
     case Actions.UpdateActiveCamera: {
-      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], activeCameraId: payload.cameraId } };
+      const newPts = {
+        ...state,
+        [payload.sid]: {
+          ...state[payload.sid],
+          activeCameraId: payload.cameraId,
+        },
+      };
 
       return newPts;
     }

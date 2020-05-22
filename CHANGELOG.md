@@ -1,3 +1,11 @@
+## 1.53.0
+
+AV source robustness.
+
+- Adding hook and provider (AVSourcesProvider) for media source device lists.
+- Consume the media device lists from AVSourcesProvider in SettingsModal and useHandleDeviceChange.
+- useAVSources hook to query the browser APIs for available sources and update those lists on navigator.mediaDevices.ondevicechange.
+
 ## 1.52.0
 
 - Fix hover over emoji to be settings icon
@@ -28,7 +36,7 @@
 - When adding link widget, make title the URL if no title provided
 - Polish dropshadows on some items
 - Add rooms: uif, mayfield, floodgate, Early Access Rooms Batch 1
-Admin panel revamp and AV input source selection.
+- Admin panel revamp and AV input source selection.
 
 ## 1.49.0
 

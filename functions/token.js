@@ -46,7 +46,6 @@ const ROOM_WHITELIST_PASSCODES = {
   seanlutjens: '34sltns',
   mindsense: '2011',
   louis: '4d3n3',
-  crivello: '2ac2f5',
   viksit: '912d8',
   partytime: 'party',
   maddie: 'adcec',
@@ -70,6 +69,8 @@ const ROOM_WHITELIST_PASSCODES = {
   bochum: '879110',
   gettingstuffdone: '912935',
   basement: '644455',
+  mvvc17red: 'gomvvc',
+  scrumvc: 'scrum2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

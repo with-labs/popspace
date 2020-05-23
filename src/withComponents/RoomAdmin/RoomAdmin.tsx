@@ -15,7 +15,7 @@ type RoomAdminProps = {
 };
 
 const RoomAdmin = ({ onClickChangeWallpaper }: RoomAdminProps) => {
-  const { properties } = useRoomMetaContext();
+  const { properties, setProperty } = useRoomMetaContext();
   const image: string = useRoomMetaContextBackground(properties);
   const { room } = useVideoContext();
 
@@ -27,6 +27,12 @@ const RoomAdmin = ({ onClickChangeWallpaper }: RoomAdminProps) => {
     if (copyInput.current) {
       copyInput.current.select();
       document.execCommand('copy');
+    }
+  }
+
+  function setSpatialAudio(mode: string) {
+    if (properties.spatialAudio !== mode) {
+      setProperty('spatialAudio', mode);
     }
   }
 
@@ -44,6 +50,28 @@ const RoomAdmin = ({ onClickChangeWallpaper }: RoomAdminProps) => {
       <button className={clsx(style.button, style['button--copyLink'])} onClick={onClickCopyLink}>
         Copy link to clipboard
       </button>
+      <div className={clsx('u-marginTop8', style.spatialToggles)}>
+        <button
+          className={clsx(style.spatialToggle, { [style['is-selected']]: properties.spatialAudio === 'on' })}
+          onClick={() => setSpatialAudio('on')}
+        >
+          <div className={clsx('u-round', style.nightsky12)}></div>
+          <div className={clsx('u-round', style.turquise18)}></div>
+          <div className={clsx('u-round', style.mandarin8)}></div>
+          <div className={clsx('u-round', style.cherry6)}></div>
+          <div className={clsx('u-fontB2', style['spatialToggle-title'])}>Spatial audio</div>
+        </button>
+        <button
+          className={clsx(style.spatialToggle, { [style['is-selected']]: properties.spatialAudio === 'off' })}
+          onClick={() => setSpatialAudio('off')}
+        >
+          <div className={clsx('u-round', style.nightsky12)}></div>
+          <div className={clsx('u-round', style.turquise12)}></div>
+          <div className={clsx('u-round', style.mandarin12)}></div>
+          <div className={clsx('u-round', style.cherry12)}></div>
+          <div className={clsx('u-fontB2', style['spatialToggle-title'])}>Global audio</div>
+        </button>
+      </div>
       <Modal
         isOpen={isBgPickerOpen}
         onRequestClose={() => setIsBgPickerOpen(false)}

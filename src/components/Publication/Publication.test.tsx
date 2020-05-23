@@ -4,6 +4,7 @@ import { shallow } from 'enzyme';
 import useTrack from '../../hooks/useTrack/useTrack';
 import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
 import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
+import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
@@ -15,6 +16,10 @@ mockUseParticipantLocationDelta.mockImplementation(() => ({ distance: 1 }));
 jest.mock('../../withHooks/useRoomParties/useRoomParties');
 const mockUseRoomParties = useRoomParties as jest.Mock<any>;
 mockUseRoomParties.mockImplementation(() => ({ huddles: [], localHuddle: undefined }));
+
+jest.mock('../../withHooks/useRoomMetaContext/useRoomMetaContext');
+const mockUseRoomMetaContext = useRoomMetaContext as jest.Mock<any>;
+mockUseRoomMetaContext.mockImplementation(() => ({ properties: { spatialAudio: 'off' } }));
 
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {

@@ -11,6 +11,7 @@ import VideoTrack from '../VideoTrack/VideoTrack';
 import useTrack from '../../hooks/useTrack/useTrack';
 import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
 import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
+import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
 
 import { IVideoTrack } from '../../types';
 import {
@@ -42,6 +43,7 @@ export default function Publication({
   const track = useTrack(publication);
   const distance = useParticipantLocationDelta(participant);
   const { huddles, localHuddle } = useRoomParties();
+  const { properties } = useRoomMetaContext();
 
   // The math for calculating the volume of a participant
   // is based on positioning of elements from top, left with a relative
@@ -56,8 +58,12 @@ export default function Publication({
   // The below limits and calculation derived from cosine curve, linked here
   // https://www.desmos.com/calculator/jobehh1xex
   let volume;
-  // if localParticipant is in a huddle with participant, participant volume should be max
-  if (localHuddle && huddles[localHuddle].some(el => el.sid === participant.sid)) {
+
+  // If spatial audio is turned off for the room, volume is always max
+  if (properties.spatialAudio === 'off') {
+    volume = 1;
+    // if localParticipant is in a huddle with participant, participant volume should be max
+  } else if (localHuddle && huddles[localHuddle].some(el => el.sid === participant.sid)) {
     volume = 1;
     // If distance reaches the trough or below of the cosine curve, volume muted
   } else if (dist > 0.69) {
@@ -73,10 +79,6 @@ export default function Publication({
     // curve generated (desmos.com link).
     volume = Math.cos(6 * dist - 1) / 2 + 0.5;
   }
-
-  // This is a temporary override to disable spatial audio.
-  // We will add in some kind of user, selected room option soon.
-  volume = 1;
 
   if (!track) return null;
 

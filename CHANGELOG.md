@@ -1,3 +1,7 @@
+## 1.56.0
+
+- Add ability for user to toggle on/off spatial audio feature
+
 ## 1.55.0
 
 - Modify dissolve huddle button to only remove localParticipant

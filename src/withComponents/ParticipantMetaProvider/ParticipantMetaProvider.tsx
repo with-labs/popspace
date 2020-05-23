@@ -2,7 +2,7 @@
  * This context provider is intended to be the "glue" between the participant meta state in the room and the UI.
  */
 
-import React, { createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
@@ -50,25 +50,40 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
     room: { localParticipant },
   } = useVideoContext();
 
-  const updateLocation = (sid: string, location: LocationTuple) => {
-    dispatch(locationUpdate(sid, location));
-  };
+  const updateLocation = useCallback(
+    (sid: string, location: LocationTuple) => {
+      dispatch(locationUpdate(sid, location));
+    },
+    [dispatch]
+  );
 
-  const updateEmoji = (emoji: EmojiData) => {
-    dispatch(emojiUpdate(localParticipant.sid, emoji));
-  };
+  const updateEmoji = useCallback(
+    (emoji: EmojiData) => {
+      dispatch(emojiUpdate(localParticipant.sid, emoji));
+    },
+    [localParticipant, dispatch]
+  );
 
-  const updateAvatar = (avatar: string) => {
-    dispatch(avatarUpdate(localParticipant.sid, avatar));
-  };
+  const updateAvatar = useCallback(
+    (avatar: string) => {
+      dispatch(avatarUpdate(localParticipant.sid, avatar));
+    },
+    [localParticipant, dispatch]
+  );
 
-  const updateActiveCamera = (cameraId: string) => {
-    dispatch(activeCameraUpdate(localParticipant.sid, cameraId));
-  };
+  const updateActiveCamera = useCallback(
+    (cameraId: string) => {
+      dispatch(activeCameraUpdate(localParticipant.sid, cameraId));
+    },
+    [localParticipant, dispatch]
+  );
 
-  const updateActiveMic = (micId: string) => {
-    dispatch(activeMicUpdate(localParticipant.sid, micId));
-  };
+  const updateActiveMic = useCallback(
+    (micId: string) => {
+      dispatch(activeMicUpdate(localParticipant.sid, micId));
+    },
+    [localParticipant, dispatch]
+  );
 
   // Return the context.
   return (

@@ -13,7 +13,10 @@ enum Actions {
   PropertyUnset = 'PROPERTY_UNSET',
 }
 
-export default function reducer(state: IRoomMetaState = { bg: BackgroundName.Bg3 }, action: Action) {
+export default function reducer(
+  state: IRoomMetaState = { bg: BackgroundName.Bg3, spatialAudio: 'off' },
+  action: Action
+) {
   const { type, payload } = action;
 
   switch (type) {

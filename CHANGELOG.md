@@ -1,8 +1,11 @@
+## 1.55.0
+
+- Modify dissolve huddle button to only remove localParticipant
+
 ## 1.54.0
 
 - Remove room: crivello
 - Add room: mvvc17red, scrumvc
-
 
 ## 1.53.0
 

@@ -22,7 +22,7 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
     room: { localParticipant },
   } = useVideoContext();
 
-  const { leaveHuddle, removeFromHuddle, dissolveHuddle, inviteToHuddle } = useHuddleContext();
+  const { leaveHuddle, removeFromHuddle, inviteToHuddle } = useHuddleContext();
   const disabledAudioSids = useAudioTrackBlacklist();
 
   const isLocalHuddle = !!participants.find(pt => pt.sid === localParticipant.sid);
@@ -94,7 +94,7 @@ export function HuddleBubble({ huddleId, participants }: IHuddleBubbleProps) {
 
   // For local huddles, we will include a control to dissolve the huddle.
   const dissolveControl = isLocalHuddle ? (
-    <button onClick={() => dissolveHuddle(huddleId)} className={styles.dissolveControl}></button>
+    <button onClick={() => leaveHuddle()} className={styles.dissolveControl}></button>
   ) : null;
 
   // Huddle bubble.

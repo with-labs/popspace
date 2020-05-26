@@ -5,18 +5,12 @@ import 'emoji-mart/css/emoji-mart.css';
 import { Picker, Emoji } from 'emoji-mart';
 import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 
-import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
 import { ReactComponent as EmojiGlyph } from '../../images/glyphs/emoji.svg';
 
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-
-import { getMediaDevices } from '../../utils/mediaSources';
-
 import { EmojiData } from '../ParticipantMetaProvider/participantMetaReducer';
 
-import './SettingsModal.css';
-
-import Modal from 'react-modal';
+import { WithModal } from '../WithModal/WithModal';
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
@@ -25,8 +19,7 @@ import { Avatar } from '../Avatar/Avatar';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
 import { AudioToggle } from '../AudioToggle/AudioToggle';
 import { useAVSourcesContext } from '../AVSourcesProvider/useAVSourcesContext';
-// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-Modal.setAppElement('#root');
+import './SettingsModal.css';
 
 interface SettingsModalProps {
   isSettingsModalOpen: boolean;
@@ -85,21 +78,8 @@ const SettingsModal = (props: SettingsModalProps) => {
 
   return (
     <div onClick={e => e.stopPropagation()}>
-      <Modal
-        isOpen={isSettingsModalOpen}
-        onRequestClose={closeSettingsModal}
-        overlayClassName=""
-        className="SettingsModal-content u-overflowYScrollable u-sm-sizeFull"
-        closeTimeoutMS={200}
-      >
+      <WithModal isOpen={isSettingsModalOpen} onCloseHandler={closeSettingsModal} title="Settings">
         <div>
-          <h2
-            className="SettingsModal-title u-flex u-flexAlignItemsCenter u-marginBottom40 u-cursorPointer"
-            onClick={closeSettingsModal}
-          >
-            <BackGlyph />
-            Settings
-          </h2>
           <div className="u-flex u-sm-flexCol">
             <div className="u-size1of2 u-sm-sizeFull u-flex u-flexCol u-flexAlignItemsCenter u-marginBottom24">
               <div
@@ -190,7 +170,7 @@ const SettingsModal = (props: SettingsModalProps) => {
           </div>
           {children}
         </div>
-      </Modal>
+      </WithModal>
     </div>
   );
 };

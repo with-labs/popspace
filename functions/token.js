@@ -71,6 +71,19 @@ const ROOM_WHITELIST_PASSCODES = {
   basement: '644455',
   mvvc17red: 'gomvvc',
   scrumvc: 'scrum2020',
+  creativelounge: '430266',
+  mobelux: '852112',
+  saamyverse: '669737',
+  farmstead: '141547',
+  cryptocastle: '830056',
+  thelibrary: '932191',
+  herskoland: '651023',
+  astro: '497240',
+  commoncode: '376255',
+  danb: '323388',
+  caro: '940666',
+  theloop: '278578',
+  vgs: '907324'
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -83,7 +83,7 @@ const ROOM_WHITELIST_PASSCODES = {
   danb: '323388',
   caro: '940666',
   theloop: '278578',
-  vgs: '907324'
+  vgs: '907324',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

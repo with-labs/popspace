@@ -1,3 +1,7 @@
+## 1.58.0
+
+- add rooms: vgs, theloop, caro, danb, commoncode, astro, herskoland, thelibrary, cryptocastle, farmstead, saamyverse, mobelux, creativelounge,
+
 ## 1.57.0
 
 - Add in common modal component

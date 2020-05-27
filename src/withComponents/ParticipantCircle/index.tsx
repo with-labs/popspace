@@ -5,6 +5,7 @@ import { Emoji } from 'emoji-mart';
 import './index.css';
 
 import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
+import { ReactComponent as ScreenShareIcon } from '../../images/icons/ScreenShare.svg';
 
 import { AudioToggle } from '../AudioToggle/AudioToggle';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
@@ -24,6 +25,8 @@ import { useParticipantMeta } from '../../withHooks/useParticipantMeta/usePartic
 import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 import { Avatar } from '../Avatar/Avatar';
+
+import { ShareScreenWidget } from '../ShareScreenWidget/ShareScreenWidget';
 
 interface ParticipantCircleProps {
   participant: LocalParticipant | RemoteParticipant;
@@ -51,6 +54,8 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const avatarName = meta.avatar;
   const avatar = useAvatar(avatarName);
 
+  const [isScreenShareOpen, setIsScreenShareOpen] = useState(false);
+
   let filteredPublications;
 
   if (enableScreenShare && publications.some(p => p.trackName === 'screen')) {
@@ -65,7 +70,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     settings = (
       <div
         className={clsx(
-          'ParticipantCircle-settings u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter',
+          'ParticipantCircle-settings u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem ',
           {
             'is-set': emoji,
           }
@@ -81,6 +86,25 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
       </div>
     );
   }
+
+  // only let local participant see the screenShareButton, unless its active
+  // if its active and local, then show the close button
+  // if its active and not local, then show the mini-screen
+  let screenShare = null;
+  // ---------- TODO: Feature is in progress, just commenting it out for now
+  // if(isLocal) {
+  //   screenShare = (
+  //     <div
+  //       className='ParticipantCircle-screenShare u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem'
+  //       onClick={e => {
+  //         e.stopPropagation();
+  //         setIsScreenShareOpen(true);
+  //       }}
+  //     >
+  //       <ScreenShareIcon />
+  //     </div>
+  //   );
+  // }
 
   function openSettingsModal() {
     // only the local participant can open their settings
@@ -134,6 +158,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
           </div>
         )}
         {settings}
+        {screenShare}
         {pubs}
         <div
           className={clsx('ParticipantCircle-infoOverlay', {
@@ -152,10 +177,12 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
               e.stopPropagation();
             }}
           >
-            <div className="ParticipantCircle-hud-item">
+            <div className="ParticipantCircle-hud-item ParticipantCircle-menuItem">
               <VideoToggle compact={true} border={false} />
             </div>
-            <div className={clsx('ParticipantCircle-hud-item', { 'is-shown': !isAudioEnabled })}>
+            <div
+              className={clsx('ParticipantCircle-hud-item ParticipantCircle-menuItem', { 'is-shown': !isAudioEnabled })}
+            >
               <AudioToggle border={false} />
             </div>
           </div>
@@ -170,6 +197,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
           participant={participant}
         />
       ) : null}
+      <ShareScreenWidget isOpen={isScreenShareOpen} onCloseHandler={() => setIsScreenShareOpen(false)} />
     </>
   );
 };

@@ -1,3 +1,13 @@
+## 1.58.0
+
+- add rooms: vgs, theloop, caro, danb, commoncode, astro, herskoland, thelibrary, cryptocastle, farmstead, saamyverse, mobelux, creativelounge,
+
+## 1.57.0
+
+- Add in common modal component
+- Add in initial work for share screen ui
+- Fixing up SettingModal to use common modal
+
 ## 1.56.0
 
 - Add ability for user to toggle on/off spatial audio feature

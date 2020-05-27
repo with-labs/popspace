@@ -10,14 +10,9 @@
   cursor: move;
 }
 
-.ParticipantCircle:hover .ParticipantCircle-settings,
-.ParticipantCircle:hover .ParticipantCircle-hud-item {
-  opacity: 1;
-}
-
-.ParticipantCircle-settings,
-.ParticipantCircle-hud-item {
+.ParticipantCircle:hover .ParticipantCircle-menuItem {
   transition: opacity 100ms ease-in-out;
+  opacity: 1;
 }
 
 .ParticipantCircle-settings {
@@ -38,6 +33,23 @@
 }
 
 .ParticipantCircle-settings.is-set {
+  opacity: 1;
+}
+
+.ParticipantCircle-screenShare {
+  opacity: 0;
+  background: #ffffff;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  position: absolute;
+  cursor: pointer;
+  left: -25px;
+  top: 80px;
+  height: 40px;
+  width: 50px;
+}
+
+.ParticipantCircle-screenShare.is-active {
   opacity: 1;
 }
 

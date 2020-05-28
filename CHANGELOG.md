@@ -1,3 +1,7 @@
+## 1.59.0
+
+- add rooms: ritomoni, collabbrain, woork, rupie, littlespoon, whoville, dalsden615, woot, room126, steve, youngscience, happyhour, decalab, sevenbridges, happyhours, rb, virvie, fridaydinnerparty, oatcity, jacksroom, beings, yamatomachi, magugz, bletchleypark, work, kabes, lhgraphiste, irina, ken
+
 ## 1.58.0
 
 - add rooms: vgs, theloop, caro, danb, commoncode, astro, herskoland, thelibrary, cryptocastle, farmstead, saamyverse, mobelux, creativelounge,

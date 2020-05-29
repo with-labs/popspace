@@ -1,3 +1,8 @@
+## 1.64.0
+
+- Replace the default wallpaper asset in rooms with a tutorial wallpaper
+- Replace the background image in joinRoom to use a specific asset so we can keep it separate from default room wallpaper
+
 ## 1.63.0
 
 - Add meta description and keywords for SEO purpose.

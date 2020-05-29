@@ -1,3 +1,11 @@
+## 1.63.0
+
+- Add meta description and keywords for SEO purpose.
+- Add Opengraph tags so it looks good when people paste an app.with.so url.
+- Add more favicon formats so it looks good in more browsers.
+- Add Fathom analytics to get basic location, browser, and referral data.
+- Changed theme color in meta from black to #F4675A
+
 ## 1.62.0
 
 - Add scrumvc, vorga, firstround, sequoia, apronanalytics, wongfam

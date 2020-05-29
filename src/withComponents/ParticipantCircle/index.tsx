@@ -6,6 +6,7 @@ import './index.css';
 
 import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
 import { ReactComponent as ScreenShareIcon } from '../../images/icons/ScreenShare.svg';
+import { ReactComponent as ScreenUnshareIcon } from '../../images/icons/screen_share_stop.svg';
 
 import { AudioToggle } from '../AudioToggle/AudioToggle';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
@@ -27,6 +28,7 @@ import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 import { Avatar } from '../Avatar/Avatar';
 
 import { ShareScreenWidget } from '../ShareScreenWidget/ShareScreenWidget';
+import useScreenShareToggle from '../../hooks/useScreenShareToggle/useScreenShareToggle';
 
 interface ParticipantCircleProps {
   participant: LocalParticipant | RemoteParticipant;
@@ -44,7 +46,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const [isHovering, setIsHovering] = useState(false);
   const [isHoveringOverSettings, setIsHoveringOverSettings] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const { updateEmoji } = useParticipantMetaContext();
+  const { updateEmoji, updateScreenViewSid } = useParticipantMetaContext();
   const { room } = useVideoContext();
   const publications = usePublications(participant);
   const isLocal = participant === room.localParticipant;
@@ -87,24 +89,38 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     );
   }
 
-  // only let local participant see the screenShareButton, unless its active
-  // if its active and local, then show the close button
-  // if its active and not local, then show the mini-screen
+  const [, toggleIsSharing] = useScreenShareToggle();
+  const screenShareTrack = publications.find(pub => pub.trackName === 'screen');
+
   let screenShare = null;
-  // ---------- TODO: Feature is in progress, just commenting it out for now
-  // if(isLocal) {
-  //   screenShare = (
-  //     <div
-  //       className='ParticipantCircle-screenShare u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem'
-  //       onClick={e => {
-  //         e.stopPropagation();
-  //         setIsScreenShareOpen(true);
-  //       }}
-  //     >
-  //       <ScreenShareIcon />
-  //     </div>
-  //   );
-  // }
+  if (isLocal) {
+    screenShare = (
+      <div
+        className={clsx(
+          'ParticipantCircle-screenShare u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem',
+          { 'is-active': !!screenShareTrack }
+        )}
+        onClick={e => {
+          e.stopPropagation();
+          toggleIsSharing();
+        }}
+      >
+        {!!screenShareTrack ? <ScreenUnshareIcon /> : <ScreenShareIcon />}
+      </div>
+    );
+  } else if (screenShareTrack) {
+    screenShare = (
+      <div
+        className="ParticipantCircle-screenSharePreview u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter"
+        onClick={e => {
+          e.stopPropagation();
+          updateScreenViewSid(participant.sid);
+        }}
+      >
+        <Publication publication={screenShareTrack} participant={participant} isLocal={isLocal} />
+      </div>
+    );
+  }
 
   function openSettingsModal() {
     // only the local participant can open their settings

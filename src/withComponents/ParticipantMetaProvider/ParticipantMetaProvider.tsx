@@ -16,6 +16,7 @@ import {
   emojiUpdate,
   activeCameraUpdate,
   activeMicUpdate,
+  viewScreenSidUpdate,
 } from './participantMetaReducer';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
@@ -29,6 +30,7 @@ export interface IParticipantMetaContext {
   updateAvatar: (avatar: string) => void;
   updateActiveCamera: (cameraId: string) => void;
   updateActiveMic: (cameraId: string) => void;
+  updateScreenViewSid: (screenViewSid: string) => void;
 }
 
 export const ParticipantMetaContext = createContext<IParticipantMetaContext>(null!);
@@ -85,10 +87,25 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
     [localParticipant, dispatch]
   );
 
+  const updateScreenViewSid = useCallback(
+    (screenViewSid: string) => {
+      dispatch(viewScreenSidUpdate(localParticipant.sid, screenViewSid));
+    },
+    [localParticipant, dispatch]
+  );
+
   // Return the context.
   return (
     <ParticipantMetaContext.Provider
-      value={{ participantMeta, updateLocation, updateEmoji, updateAvatar, updateActiveCamera, updateActiveMic }}
+      value={{
+        participantMeta,
+        updateLocation,
+        updateEmoji,
+        updateAvatar,
+        updateActiveCamera,
+        updateActiveMic,
+        updateScreenViewSid,
+      }}
     >
       {children}
     </ParticipantMetaContext.Provider>

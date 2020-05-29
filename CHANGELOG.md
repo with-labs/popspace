@@ -1,3 +1,13 @@
+## 1.60.0
+
+Screen sharing plumbing.
+
+- SharedScreenViewer component to show the video stream of a participant's screen share in a large modal.
+- Add SharedScreenView to Room.
+- Updates to the participant meta reducer and provider to track whose screen the local participant is viewing.
+- Add className prop to WithModal.
+- Based shared-ness off the local participant's publications.
+
 ## 1.59.0
 
 - add rooms: ritomoni, collabbrain, woork, rupie, littlespoon, whoville, dalsden615, woot, room126, steve, youngscience, happyhour, decalab, sevenbridges, happyhours, rb, virvie, fridaydinnerparty, oatcity, jacksroom, beings, yamatomachi, magugz, bletchleypark, work, kabes, lhgraphiste, irina, ken

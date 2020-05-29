@@ -12,16 +12,17 @@ interface IWithModal {
   children?: ReactNode;
   isOpen: boolean;
   onCloseHandler: (e: MouseEvent) => void;
+  className?: string;
 }
 
-export const WithModal: React.FC<IWithModal> = ({ title, children, isOpen, onCloseHandler }) => {
+export const WithModal: React.FC<IWithModal> = ({ title, children, isOpen, onCloseHandler, className }) => {
   return (
     <div onClick={e => e.stopPropagation()}>
       <Modal
         isOpen={isOpen}
         onRequestClose={onCloseHandler}
         overlayClassName=""
-        className={clsx(styles.content, 'u-overflowYScrollable u-sm-sizeFull')}
+        className={clsx(styles.content, 'u-overflowYScrollable u-sm-sizeFull u-flex u-flexCol', className)}
         closeTimeoutMS={200}
       >
         <h2
@@ -31,7 +32,7 @@ export const WithModal: React.FC<IWithModal> = ({ title, children, isOpen, onClo
           <BackGlyph />
           {title}
         </h2>
-        <div>{children}</div>
+        {children}
       </Modal>
     </div>
   );

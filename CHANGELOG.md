@@ -1,3 +1,7 @@
+## 1.62.0
+
+- Add scrumvc, vorga, firstround, sequoia, apronanalytics, wongfam
+
 ## 1.61.0
 
 - Change cat room's password

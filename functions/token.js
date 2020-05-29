@@ -11,7 +11,7 @@ const ROOM_WHITELIST_PASSCODES = {
   jesse: 'a500fb1d401a0de1e10a238249e9620a',
   wyatt: '1b4764c939a00359a88c22c35809e640',
   brent: 'eb3ed78b2bb6a0ca2491df488f4cd632',
-  lolo: 'cb685cf0b9c635cf2e49cc0ab96bb8c0',
+  lolo: 'itstime',
   chris: 'ccc6d607f1adbab4adb59efe047a2f4e',
   darren: 'fc8b7ba4645dedbd5a118e56525bc648',
   julia: '47ed9e60bbe845283bc2fe37aa55bf45',
@@ -113,6 +113,12 @@ const ROOM_WHITELIST_PASSCODES = {
   lhgraphiste: '394760',
   irina: '395678',
   ken: '111881',
+  wongfam: 'wongfam2020',
+  scrumvc: 'scrum2020',
+  vorga: 'vorga2020',
+  firstround: 'firstround2020',
+  sequoia: 'sequoia2020',
+  apronanalytics: 'apron2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

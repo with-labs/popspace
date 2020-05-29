@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
 
@@ -22,9 +22,10 @@ import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoTo
 type JoinRoomProps = {
   roomName: string;
   onJoinSubmitHandler: (userName: string, password: string, initialAvatar: string) => void;
+  isJoining: boolean;
 };
 
-const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
+const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) => {
   const [screenName, setScreenName] = useState('');
   const [password, setPassword] = useState('');
   const [initialAvatar, setInitialAvatar] = useState(randomAvatar());
@@ -121,7 +122,11 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler }: JoinRoomProps) => {
         onChangeHandler={setPassword}
         type="password"
       />
-      <FormButton text="Join Room" btnType={'submit'} isActive={screenName.length > 0 && password.length > 0} />
+      <FormButton
+        text="Join Room"
+        btnType={'submit'}
+        isActive={!isJoining && screenName.length > 0 && password.length > 0}
+      />
       <div className="u-marginTop16 u-marginBottom16">
         We use analytics software to improve With. Please feel free to come back later, when we made it optional.
       </div>

@@ -1,3 +1,7 @@
+## 1.65.0
+
+- add in doubleClick protection on join page.
+
 ## 1.64.0
 
 - Replace the default wallpaper asset in rooms with a tutorial wallpaper

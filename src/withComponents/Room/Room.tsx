@@ -9,6 +9,7 @@ import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
 import { DraggableItem } from './DraggableItem';
 import ParticipantCircle from '../ParticipantCircle';
 import { HuddleBubble } from './HuddleBubble';
+import { SharedScreenViewer } from '../SharedScreenViewer/SharedScreenViewer';
 
 import useAudioTrackBlacklist from '../../withHooks/useAudioTrackBlacklist/useAudioTrackBlacklist';
 import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext';
@@ -207,6 +208,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
           </DraggableItem>
         );
       })}
+      <SharedScreenViewer />
     </div>
   );
 };

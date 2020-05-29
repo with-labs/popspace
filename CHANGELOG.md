@@ -1,3 +1,38 @@
+## 1.65.0
+
+- add in doubleClick protection on join page.
+
+## 1.64.0
+
+- Replace the default wallpaper asset in rooms with a tutorial wallpaper
+- Replace the background image in joinRoom to use a specific asset so we can keep it separate from default room wallpaper
+
+## 1.63.0
+
+- Add meta description and keywords for SEO purpose.
+- Add Opengraph tags so it looks good when people paste an app.with.so url.
+- Add more favicon formats so it looks good in more browsers.
+- Add Fathom analytics to get basic location, browser, and referral data.
+- Changed theme color in meta from black to #F4675A
+
+## 1.62.0
+
+- Add scrumvc, vorga, firstround, sequoia, apronanalytics, wongfam
+
+## 1.61.0
+
+- Change cat room's password
+
+## 1.60.0
+
+Screen sharing plumbing.
+
+- SharedScreenViewer component to show the video stream of a participant's screen share in a large modal.
+- Add SharedScreenView to Room.
+- Updates to the participant meta reducer and provider to track whose screen the local participant is viewing.
+- Add className prop to WithModal.
+- Based shared-ness off the local participant's publications.
+
 ## 1.59.0
 
 - add rooms: ritomoni, collabbrain, woork, rupie, littlespoon, whoville, dalsden615, woot, room126, steve, youngscience, happyhour, decalab, sevenbridges, happyhours, rb, virvie, fridaydinnerparty, oatcity, jacksroom, beings, yamatomachi, magugz, bletchleypark, work, kabes, lhgraphiste, irina, ken

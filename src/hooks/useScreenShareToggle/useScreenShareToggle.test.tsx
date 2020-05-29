@@ -7,8 +7,15 @@ jest.mock('../useVideoContext/useVideoContext');
 const mockedVideoContext = useVideoContext as jest.Mock<any>;
 
 const mockLocalParticipant = new EventEmitter() as any;
-mockLocalParticipant.publishTrack = jest.fn(() => Promise.resolve('mockPublication'));
-mockLocalParticipant.unpublishTrack = jest.fn();
+mockLocalParticipant.publishTrack = jest.fn(track => {
+  mockLocalParticipant.tracks.set('abc123', mockPub);
+  return Promise.resolve(mockPub);
+});
+mockLocalParticipant.unpublishTrack = jest.fn(track => {
+  mockLocalParticipant.tracks.clear();
+  return mockPub;
+});
+mockLocalParticipant.tracks = new Map();
 
 mockedVideoContext.mockImplementation(() => ({
   room: {
@@ -17,6 +24,8 @@ mockedVideoContext.mockImplementation(() => ({
 }));
 
 const mockTrack: any = { stop: jest.fn() };
+
+const mockPub: any = { trackName: 'screen', track: mockTrack };
 
 const mockMediaDevices = {
   value: {
@@ -34,6 +43,7 @@ describe('the useScreenShareToggle hook', () => {
   beforeEach(() => {
     delete mockTrack.onended;
     jest.clearAllMocks();
+    mockLocalParticipant.tracks.clear();
   });
 
   it('should return a default value of false', () => {
@@ -62,7 +72,7 @@ describe('the useScreenShareToggle hook', () => {
         result.current[1]();
       });
       expect(mockLocalParticipant.unpublishTrack).toHaveBeenCalledWith(mockTrack);
-      expect(localParticipantSpy).toHaveBeenCalledWith('trackUnpublished', 'mockPublication');
+      expect(localParticipantSpy).toHaveBeenCalledWith('trackUnpublished', mockPub);
       expect(mockTrack.stop).toHaveBeenCalled();
       expect(result.current[0]).toEqual(false);
     });
@@ -79,7 +89,7 @@ describe('the useScreenShareToggle hook', () => {
           mockTrack.onended();
         });
         expect(mockLocalParticipant.unpublishTrack).toHaveBeenCalledWith(mockTrack);
-        expect(localParticipantSpy).toHaveBeenCalledWith('trackUnpublished', 'mockPublication');
+        expect(localParticipantSpy).toHaveBeenCalledWith('trackUnpublished', mockPub);
         expect(mockTrack.stop).toHaveBeenCalled();
         expect(result.current[0]).toEqual(false);
       });

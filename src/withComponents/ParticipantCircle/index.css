@@ -49,6 +49,16 @@
   width: 50px;
 }
 
+.ParticipantCircle-screenSharePreview {
+  opacity: 1;
+  position: absolute;
+  cursor: pointer;
+  left: -25px;
+  top: 80px;
+  height: 40px;
+  width: 50px;
+}
+
 .ParticipantCircle-screenShare.is-active {
   opacity: 1;
 }

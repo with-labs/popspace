@@ -1,3 +1,7 @@
+## 1.61.0
+
+- Change cat room's password
+
 ## 1.60.0
 
 Screen sharing plumbing.

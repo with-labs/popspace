@@ -1,3 +1,7 @@
+## 1.66.0
+
+- Add LiveChat on the page to easily talk to early access users
+
 ## 1.65.0
 
 - add in doubleClick protection on join page.

@@ -93,3 +93,7 @@ html {
   border-radius: 50% !important;
   overflow: hidden !important;
 }
+
+.u-visibilityHidden {
+  visibility: hidden !important;
+}

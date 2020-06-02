@@ -30,19 +30,24 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, onClick }) => {
   }, [isBlinking, avatar]);
 
   if (avatar) {
-    const avStyle = {
-      backgroundImage: `url(${avatar.image})`,
-      backgroundSize: 'cover',
-    };
-
-    // Using the background + toggling visibility of img to avoid flashes while the image assets are fetched by the
-    // browser. Conditional rendering did not work as well because the browser would have to re-fetch image assets on
-    // each blink state change.
+    // Use two img tags and toggle visibility on them so that both images are fetched and cached by the browser
+    // Using visibility:hidden on avatar images will cause the browser to fetch the blink image before it's needed,
+    // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
+    // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div onClick={onClick} className="u-width100Percent u-height100Percent" style={avStyle}>
+      <div onClick={onClick} className="u-width100Percent u-height100Percent u-positionRelative">
         <img
-          className={clsx('u-height100Percent u-width100Percent', { 'u-displayNone': !isBlinking })}
+          className={clsx('u-height100Percent u-width100Percent u-positionAbsolute', {
+            'u-visibilityHidden': !isBlinking,
+          })}
           src={avatar.blink}
+          alt="avatar-blink"
+        />
+        <img
+          className={clsx('u-height100Percent u-width100Percent u-positionAbsolute', {
+            'u-visibilityHidden': isBlinking,
+          })}
+          src={avatar.image}
           alt="avatar"
         />
       </div>

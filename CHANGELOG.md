@@ -1,3 +1,10 @@
+## 1.67.0
+
+- Add 13 new animated avatars
+- Remove the snake avatar
+- Avatar component to toggle visibility:hidden + absolute positioning of blink/non-blink image rather than using a background + image. This enables designers to create avatar images that make use of transparency and shadows with doubling up shadows during the blink state.
+- Using visibility:hidden on avatar images will cause the browser to fetch the blink image before it's needed, thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some browsers will still not fetch an image until it is rendered (Firefox, at least.)
+
 ## 1.66.0
 
 - Add LiveChat on the page to easily talk to early access users

@@ -1,3 +1,5 @@
+// Original avatars from David Lanham
+
 import alienbot from '../../images/avatars/alienbot.png';
 import alienbot_blink from '../../images/avatars/alienbot_blink.png';
 
@@ -61,14 +63,55 @@ import seal_blink from '../../images/avatars/seal_blink.png';
 import shaggydog from '../../images/avatars/shaggydog.png';
 import shaggydog_blink from '../../images/avatars/shaggydog_blink.png';
 
-import snake from '../../images/avatars/snake.png';
-import snake_blink from '../../images/avatars/snake_blink.png';
+// import snake from '../../images/avatars/snake.png';
+// import snake_blink from '../../images/avatars/snake_blink.png';
 
 import swampy from '../../images/avatars/swampy.png';
 import swampy_blink from '../../images/avatars/swampy_blink.png';
 
 import whitebat from '../../images/avatars/whitebat.png';
 import whitebat_blink from '../../images/avatars/whitebat_blink.png';
+
+// New avatars from Laurent
+
+import cactus from '../../images/avatars/cactus.png';
+import cactus_blink from '../../images/avatars/cactus_blink.png';
+
+import cow from '../../images/avatars/cow.png';
+import cow_blink from '../../images/avatars/cow_blink.png';
+
+import cup from '../../images/avatars/cup.png';
+import cup_blink from '../../images/avatars/cup_blink.png';
+
+import neutral from '../../images/avatars/neutral.png';
+import neutral_blink from '../../images/avatars/neutral_blink.png';
+
+import pig from '../../images/avatars/pig.png';
+import pig_blink from '../../images/avatars/pig_blink.png';
+
+import poo from '../../images/avatars/poo.png';
+import poo_blink from '../../images/avatars/poo_blink.png';
+
+import robot01 from '../../images/avatars/robot01.png';
+import robot01_blink from '../../images/avatars/robot01_blink.png';
+
+import robot02 from '../../images/avatars/robot02.png';
+import robot02_blink from '../../images/avatars/robot02_blink.png';
+
+import robot03 from '../../images/avatars/robot03.png';
+import robot03_blink from '../../images/avatars/robot03_blink.png';
+
+import smile from '../../images/avatars/smile.png';
+import smile_blink from '../../images/avatars/smile_blink.png';
+
+import star from '../../images/avatars/star.png';
+import star_blink from '../../images/avatars/star_blink.png';
+
+import sun from '../../images/avatars/sun.png';
+import sun_blink from '../../images/avatars/sun_blink.png';
+
+import whale from '../../images/avatars/whale.png';
+import whale_blink from '../../images/avatars/whale_blink.png';
 
 export interface IAvatar {
   name: string;
@@ -99,9 +142,21 @@ const options: IAvatar[] = [
   { name: 'ruff', image: ruff, blink: ruff_blink, backgroundColor: '#fbeee4' },
   { name: 'seal', image: seal, blink: seal_blink, backgroundColor: '#e1f3fe' },
   { name: 'shaggydog', image: shaggydog, blink: shaggydog_blink, backgroundColor: '#f7eae8' },
-  { name: 'snake', image: snake, blink: snake_blink, backgroundColor: '#f7fae6' },
   { name: 'swampy', image: swampy, blink: swampy_blink, backgroundColor: '#feffe1' },
   { name: 'whitebat', image: whitebat, blink: whitebat_blink, backgroundColor: '#fee8e2' },
+  { name: 'cactus', image: cactus, blink: cactus_blink, backgroundColor: '#EBF9E1' },
+  { name: 'cow', image: cow, blink: cow_blink, backgroundColor: '#FEF1F6' },
+  { name: 'cup', image: cup, blink: cup_blink, backgroundColor: '#F3F9FC' },
+  { name: 'neutral', image: neutral, blink: neutral_blink, backgroundColor: '#FCF9DC' },
+  { name: 'pig', image: pig, blink: pig_blink, backgroundColor: '#FEF1F6' },
+  { name: 'poo', image: poo, blink: poo_blink, backgroundColor: '#F9EFE7' },
+  { name: 'robot01', image: robot01, blink: robot01_blink, backgroundColor: '#FFF4F2' },
+  { name: 'robot02', image: robot02, blink: robot02_blink, backgroundColor: '#F6FDFC' },
+  { name: 'robot03', image: robot03, blink: robot03_blink, backgroundColor: '#F6F9FD' },
+  { name: 'smile', image: smile, blink: smile_blink, backgroundColor: '#FCF9DC' },
+  { name: 'star', image: star, blink: star_blink, backgroundColor: '#FCFADE' },
+  { name: 'sun', image: sun, blink: sun_blink, backgroundColor: '#FCFADE' },
+  { name: 'whale', image: whale, blink: whale_blink, backgroundColor: '#F1FAFE' },
 ];
 
 const randomAvatar = () => {

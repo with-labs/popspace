@@ -85,7 +85,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) =
           >
             <div
               className={clsx(
-                'JoinRoom-videoPreviewContainer-avatar-overlay u-positionAbsolute u-width100Percent u-height100Percent u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-cursorPointer',
+                'JoinRoom-videoPreviewContainer-avatar-overlay u-positionAbsolute u-width100Percent u-height100Percent u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-cursorPointer u-layerSurfaceAlpha',
                 { 'u-displayNone': !isHoveringAvatar }
               )}
               onClick={() => toggleIsSelectingAvatar(true)}

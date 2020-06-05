@@ -1,3 +1,7 @@
+## 1.67.1
+
+- Remove 1 animated avatar
+
 ## 1.67.0
 
 - Add 13 new animated avatars

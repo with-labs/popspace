@@ -89,9 +89,6 @@ import neutral_blink from '../../images/avatars/neutral_blink.png';
 import pig from '../../images/avatars/pig.png';
 import pig_blink from '../../images/avatars/pig_blink.png';
 
-import poo from '../../images/avatars/poo.png';
-import poo_blink from '../../images/avatars/poo_blink.png';
-
 import robot01 from '../../images/avatars/robot01.png';
 import robot01_blink from '../../images/avatars/robot01_blink.png';
 
@@ -149,7 +146,6 @@ const options: IAvatar[] = [
   { name: 'cup', image: cup, blink: cup_blink, backgroundColor: '#F3F9FC' },
   { name: 'neutral', image: neutral, blink: neutral_blink, backgroundColor: '#FCF9DC' },
   { name: 'pig', image: pig, blink: pig_blink, backgroundColor: '#FEF1F6' },
-  { name: 'poo', image: poo, blink: poo_blink, backgroundColor: '#F9EFE7' },
   { name: 'robot01', image: robot01, blink: robot01_blink, backgroundColor: '#FFF4F2' },
   { name: 'robot02', image: robot02, blink: robot02_blink, backgroundColor: '#F6FDFC' },
   { name: 'robot03', image: robot03, blink: robot03_blink, backgroundColor: '#F6F9FD' },

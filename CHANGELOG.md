@@ -1,3 +1,9 @@
+## 1.68.0
+
+- Updated participantCircle to be smaller; readjusted buttons to match smaller size.
+- fixing logo on join page to have the correct resolution.
+- fixing accessories tray from showing drop shadow when closed.
+
 ## 1.67.2
 
 - Fix bug: when hovering over another participant's emoji, don't see admin icon

@@ -17,7 +17,7 @@ export const slideMenuVariants = {
     x: 0,
   },
   closed: {
-    x: 320,
+    x: 340,
   },
 };
 

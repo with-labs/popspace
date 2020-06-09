@@ -1,3 +1,7 @@
+## 1.67.2
+
+- Fix bug: when hovering over another participant's emoji, don't see admin icon
+
 ## 1.67.1
 
 - Remove 1 animated avatar

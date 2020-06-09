@@ -84,7 +84,15 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
         onMouseEnter={() => setIsHoveringOverSettings(true)}
         onMouseLeave={() => setIsHoveringOverSettings(false)}
       >
-        {emoji ? isHoveringOverSettings ? <SettingsIcon /> : <Emoji emoji={emoji} size={24} /> : <SettingsIcon />}
+        {emoji ? (
+          isHoveringOverSettings && isLocal ? (
+            <SettingsIcon />
+          ) : (
+            <Emoji emoji={emoji} size={24} />
+          )
+        ) : (
+          <SettingsIcon />
+        )}
       </div>
     );
   }

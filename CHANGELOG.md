@@ -1,3 +1,7 @@
+## 1.69.0
+
+- Add room saad
+
 ## 1.68.0
 
 - Updated participantCircle to be smaller; readjusted buttons to match smaller size.

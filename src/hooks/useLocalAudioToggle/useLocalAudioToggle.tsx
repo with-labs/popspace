@@ -4,10 +4,11 @@
  * 5/18/2020 WQP: Base audio track enabledment on presence/publication of an audio track.
  */
 
-import { LocalAudioTrack } from 'twilio-video';
+import { LocalAudioTrack, TwilioError } from 'twilio-video';
 import { useCallback } from 'react';
 import useVideoContext from '../useVideoContext/useVideoContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+import { useAppState } from '../../state';
 
 export default function useLocalAudioToggle() {
   const {
@@ -15,6 +16,7 @@ export default function useLocalAudioToggle() {
     getLocalAudioTrack,
     room: { localParticipant },
   } = useVideoContext();
+  const { setError } = useAppState();
   const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
   const { activeMicId } = useParticipantMeta(localParticipant);
 
@@ -27,11 +29,19 @@ export default function useLocalAudioToggle() {
       }
       audioTrack.stop();
     } else {
-      getLocalAudioTrack(activeMicId || '').then((track: LocalAudioTrack) => {
-        if (localParticipant) {
-          localParticipant.publishTrack(track);
-        }
-      });
+      getLocalAudioTrack(activeMicId || '')
+        .then((track: LocalAudioTrack) => {
+          if (localParticipant) {
+            localParticipant.publishTrack(track);
+          }
+        })
+        .catch(err => {
+          if (err?.message === 'Permission denied') {
+            setError(
+              new Error('To use your microphone, please grant this application microphone access.') as TwilioError
+            );
+          }
+        });
     }
   }, [audioTrack, activeMicId, localParticipant, getLocalAudioTrack]);
 

@@ -1,3 +1,10 @@
+## 1.70.0
+
+Requery AV devices listings when local tracks change. This covers the case where the a user enters the Room before they have granted access to a microphone and/or camera. This way, once they grant permission for whatever resource it is, the change in the local tracks will trigger a device listing requery and populate the AV devices select menus in the user settings menu.
+
+- Add effect to use useAVSources hook to update device listings when local tracks change.
+- Add error handling to the useLocalAudioToggle and useLocalVideoToggle hooks that can capture a "Permission denied" exception and set an appropriate error message in the app state.
+
 ## 1.69.0
 
 - Add room saad

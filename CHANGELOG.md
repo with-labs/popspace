@@ -1,3 +1,7 @@
+## 1.71.0
+
+- Add rooms: nabeel, roguevc
+
 ## 1.70.0
 
 Requery AV devices listings when local tracks change. This covers the case where the a user enters the Room before they have granted access to a microphone and/or camera. This way, once they grant permission for whatever resource it is, the change in the local tracks will trigger a device listing requery and populate the AV devices select menus in the user settings menu.

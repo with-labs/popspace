@@ -1,3 +1,43 @@
+## 1.71.0
+
+- Add rooms: nabeel, roguevc
+
+## 1.70.0
+
+Requery AV devices listings when local tracks change. This covers the case where the a user enters the Room before they have granted access to a microphone and/or camera. This way, once they grant permission for whatever resource it is, the change in the local tracks will trigger a device listing requery and populate the AV devices select menus in the user settings menu.
+
+- Add effect to use useAVSources hook to update device listings when local tracks change.
+- Add error handling to the useLocalAudioToggle and useLocalVideoToggle hooks that can capture a "Permission denied" exception and set an appropriate error message in the app state.
+
+## 1.69.0
+
+- Add room saad
+
+## 1.68.0
+
+- Updated participantCircle to be smaller; readjusted buttons to match smaller size.
+- fixing logo on join page to have the correct resolution.
+- fixing accessories tray from showing drop shadow when closed.
+
+## 1.67.2
+
+- Fix bug: when hovering over another participant's emoji, don't see admin icon
+
+## 1.67.1
+
+- Remove 1 animated avatar
+
+## 1.67.0
+
+- Add 13 new animated avatars
+- Remove the snake avatar
+- Avatar component to toggle visibility:hidden + absolute positioning of blink/non-blink image rather than using a background + image. This enables designers to create avatar images that make use of transparency and shadows with doubling up shadows during the blink state.
+- Using visibility:hidden on avatar images will cause the browser to fetch the blink image before it's needed, thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some browsers will still not fetch an image until it is rendered (Firefox, at least.)
+
+## 1.66.0
+
+- Add LiveChat on the page to easily talk to early access users
+
 ## 1.65.0
 
 - add in doubleClick protection on join page.

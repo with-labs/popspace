@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useLocalAudioToggle from './useLocalAudioToggle';
 import useVideoContext from '../useVideoContext/useVideoContext';
+import { useAppState } from '../../state';
 
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
-import { act } from 'react-dom/test-utils';
 jest.mock('../../withHooks/useParticipantMeta/useParticipantMeta');
 const mockUseParticipantMeta = useParticipantMeta as jest.Mock<any>;
 mockUseParticipantMeta.mockImplementation(() => ({}));
@@ -12,6 +12,11 @@ jest.mock('../useVideoContext/useVideoContext');
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
 
 jest.mock('../useIsTrackEnabled/useIsTrackEnabled', () => () => true);
+
+// Mock the app state context because this hook can set an error in the app state.
+jest.mock('../../state');
+const mockUseAppState = useAppState as jest.Mock<any>;
+mockUseAppState.mockImplementation(() => ({ setError: () => ({}) }));
 
 describe('the useLocalAudioToggle hook', () => {
   it('should return the value from the useIsTrackEnabled hook', () => {

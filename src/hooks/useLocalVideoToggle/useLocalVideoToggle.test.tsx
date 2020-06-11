@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import useLocalVideoToggle from './useLocalVideoToggle';
 import useVideoContext from '../useVideoContext/useVideoContext';
+import { useAppState } from '../../state';
 import { EventEmitter } from 'events';
 import { LocalParticipant } from 'twilio-video';
 
@@ -11,6 +12,11 @@ mockUseParticipantMeta.mockImplementation(() => ({}));
 
 jest.mock('../useVideoContext/useVideoContext');
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
+
+// Mock the app state context because this hook can set an error in the app state.
+jest.mock('../../state');
+const mockUseAppState = useAppState as jest.Mock<any>;
+mockUseAppState.mockImplementation(() => ({ setError: () => ({}) }));
 
 describe('the useLocalVideoToggle hook', () => {
   it('should return true when a localVideoTrack exists', () => {

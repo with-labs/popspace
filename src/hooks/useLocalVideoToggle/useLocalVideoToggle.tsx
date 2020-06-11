@@ -4,11 +4,12 @@
  * 5/18/2020 WQP: Use activeCameraId from participant meta to pass a camera device id to the video track pub.
  */
 
-import { LocalVideoTrack } from 'twilio-video';
+import { LocalVideoTrack, TwilioError } from 'twilio-video';
 import { useCallback } from 'react';
 import useVideoContext from '../useVideoContext/useVideoContext';
 
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
+import { useAppState } from '../../state';
 
 export default function useLocalVideoToggle() {
   const {
@@ -16,6 +17,7 @@ export default function useLocalVideoToggle() {
     localTracks,
     getLocalVideoTrack,
   } = useVideoContext();
+  const { setError } = useAppState();
   const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
   const { activeCameraId } = useParticipantMeta(localParticipant);
 
@@ -28,11 +30,17 @@ export default function useLocalVideoToggle() {
       }
       videoTrack.stop();
     } else {
-      getLocalVideoTrack(activeCameraId || '').then((track: LocalVideoTrack) => {
-        if (localParticipant) {
-          localParticipant.publishTrack(track);
-        }
-      });
+      getLocalVideoTrack(activeCameraId || '')
+        .then((track: LocalVideoTrack) => {
+          if (localParticipant) {
+            localParticipant.publishTrack(track);
+          }
+        })
+        .catch(err => {
+          if (err?.message === 'Permission denied') {
+            setError(new Error('To use your camera, please grant this application camera access.') as TwilioError);
+          }
+        });
     }
   }, [videoTrack, localParticipant, getLocalVideoTrack, activeCameraId]);
 

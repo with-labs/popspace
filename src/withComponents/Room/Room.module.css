@@ -4,14 +4,7 @@
 .participantBubble {
   border-radius: 50%;
   background-color: #7acccc;
-  width: 200px;
-  height: 200px;
+  width: 128px;
+  height: 128px;
   position: absolute;
-}
-
-@media (max-width: 640px) {
-  .participantBubble {
-    width: 128px;
-    height: 128px;
-  }
 }

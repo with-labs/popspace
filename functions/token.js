@@ -119,6 +119,9 @@ const ROOM_WHITELIST_PASSCODES = {
   firstround: 'firstround2020',
   sequoia: 'sequoia2020',
   apronanalytics: 'apron2020',
+  saad: 'saad2020',
+  roguevc: 'roguevc2020',
+  nabeel: 'nabeel2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

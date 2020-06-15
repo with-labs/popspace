@@ -1,3 +1,9 @@
+## 1.72.0
+
+- Add rooms: pomona, odf
+- Remove LiveChat
+
+
 ## 1.71.0
 
 - Add rooms: nabeel, roguevc

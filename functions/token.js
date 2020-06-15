@@ -122,7 +122,6 @@ const ROOM_WHITELIST_PASSCODES = {
   saad: 'saad2020',
   roguevc: 'roguevc2020',
   nabeel: 'nabeel2020',
-  nabeel: 'nabeel2020',
   pomona: 'brunch',
   odf: 'OnDeckCommunity2020',
 };

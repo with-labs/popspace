@@ -123,7 +123,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) =
         type="password"
       />
       <FormButton
-        text="Join Room"
+        text={isJoining ? 'Joining...' : 'Join Room'}
         btnType={'submit'}
         isActive={!isJoining && screenName.length > 0 && password.length > 0}
       />

@@ -1,3 +1,10 @@
+## 1.73.0
+
+- updating accessory try icon images
+- fixing accessory try item spacing
+- updating accessory tray item to new standards
+- updating join room button to show 'joining...' when joining a room
+
 ## 1.72.0
 
 - Add rooms: pomona, odf

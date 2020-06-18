@@ -124,6 +124,7 @@ const ROOM_WHITELIST_PASSCODES = {
   nabeel: 'nabeel2020',
   pomona: 'brunch',
   odf: 'OnDeckCommunity2020',
+  stonna: 'stonna2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

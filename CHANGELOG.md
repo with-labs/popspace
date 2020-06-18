@@ -1,3 +1,7 @@
+## 1.75.0
+
+- add room stonna
+
 ## 1.74.0
 
 - Enable spatial audio by default

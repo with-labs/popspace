@@ -25,8 +25,6 @@ const ROOM_WHITELIST_PASSCODES = {
   lagunagames: '96b45c9f05213a9d4a101e9793956843',
   picsofkai: 'Cornwall224',
   scapic: '2cddca35aefd840ecf5e67fc872f3f02',
-  jessietime: '02b76312cfa166272e93d06e4923e111',
-  jessiestime: 'moonsnake',
   itsagooddeck: 'playfaster',
   mspennskindergarten: 'Classroom34',
   churchillbuildingcompany: '20CBCroom',
@@ -125,6 +123,7 @@ const ROOM_WHITELIST_PASSCODES = {
   pomona: 'brunch',
   odf: 'OnDeckCommunity2020',
   stonna: 'stonna2020',
+  advancit: 'advancit2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

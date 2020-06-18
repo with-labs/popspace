@@ -1,3 +1,8 @@
+## 1.76.0
+
+- add room advancit
+- remove Jessie's rooms (jessietime, jessiestime)
+
 ## 1.75.0
 
 - add room stonna

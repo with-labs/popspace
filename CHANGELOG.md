@@ -1,3 +1,9 @@
+## 1.74.0
+
+- Enable spatial audio by default
+- Disable click to huddle
+
+
 ## 1.73.0
 
 - updating accessory try icon images

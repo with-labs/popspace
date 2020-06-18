@@ -200,7 +200,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
             >
               <ParticipantCircle
                 participant={pt}
-                onClick={() => inviteToHuddle(pt.sid)}
+                onClick={() => null}
                 disableAudio={disabledAudioSids.includes(pt.sid)}
                 style={{ backgroundColor: '#fff' }}
               />

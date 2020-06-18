@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { SlideMenu } from '../SlideMenu/SlideMenu';
 import { RoomAdmin } from '../RoomAdmin/RoomAdmin';
-import AddAppItem from '../AddAppItem';
+import { AddAppItem } from '../AddAppItem/AddAppItem';
 import PostLink from '../PostLink';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
@@ -14,12 +14,11 @@ import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
 
 import './accessoriesTray.css';
 
-import ideaImg from './images/idea.svg';
-import linkImg from './images/links.svg';
-import spotifyImg from './images/spotify.svg';
+import linkImg from './images/link.svg';
+import musicImg from './images/music.svg';
 import timerImg from './images/timer.svg';
-import calendarImg from './images/calendar.svg';
-import whitebordImg from './images/whiteboard.png';
+import calendarImg from './images/meetings.svg';
+import whitebordImg from './images/whiteboard.svg';
 
 interface AccessoriesTrayProps {
   classNames?: string;
@@ -118,15 +117,6 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                       onClickHandler={onAddLinkClick}
                     />
                   </div>
-                  <div key="suggest" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={ideaImg}
-                      imgAltText="suggest an app"
-                      title="Suggest an app"
-                      descText="Let us know in an email which app you'd like us to add."
-                      onClickHandler={onSuggestAppClick}
-                    />
-                  </div>
                   <div key="whiteboard" className="AccessoriesTray-appItem">
                     <AddAppItem
                       imgSrc={whitebordImg}
@@ -136,11 +126,11 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                       onClickHandler={onAddWhiteboardClick}
                     />
                   </div>
-                  <div key="spotify" className="AccessoriesTray-appItem">
+                  <div key="music" className="AccessoriesTray-appItem">
                     <AddAppItem
-                      imgSrc={spotifyImg}
-                      imgAltText="Spotify app"
-                      title="Spotify"
+                      imgSrc={musicImg}
+                      imgAltText="Music app"
+                      title="Music"
                       descText="Play music along with the people in the room."
                       isDisabled={true}
                     />

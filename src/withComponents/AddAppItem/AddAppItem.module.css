@@ -5,21 +5,22 @@
   cursor: pointer;
 }
 
-.AddAppItem.is-disabled {
+.isDisabled {
   opacity: 0.4;
   cursor: default;
 }
 
-.AddAppItem-imgContainer {
+.imgContainer {
   margin-right: 10px;
+  margin-bottom: 5px;
 }
 
-.AddAppItem-img {
+.img {
   height: 40px;
   width: 40px;
 }
 
-.AddAppItem-title {
+.title {
   font-family: Geomanist;
   font-style: normal;
   font-weight: bold;
@@ -27,12 +28,16 @@
   line-height: 18px;
 }
 
-.AddAppItem-title-disabledText {
+.titleDisabledText {
   font-weight: normal;
   font-size: 12px;
 }
 
-.AddAppItem-desc {
+.textContainer {
+  min-height: 50px;
+}
+
+.desc {
   font-family: Geomanist;
   font-style: normal;
   font-weight: normal;

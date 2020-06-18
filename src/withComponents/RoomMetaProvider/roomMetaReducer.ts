@@ -14,7 +14,7 @@ enum Actions {
 }
 
 export default function reducer(
-  state: IRoomMetaState = { bg: BackgroundName.Bg3, spatialAudio: 'off' },
+  state: IRoomMetaState = { bg: BackgroundName.Bg3, spatialAudio: 'on' },
   action: Action
 ) {
   const { type, payload } = action;

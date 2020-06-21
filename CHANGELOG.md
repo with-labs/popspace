@@ -1,3 +1,7 @@
+## 1.77.0
+
+- Cleaning up shared screen modal (non-animated version)
+
 ## 1.76.0
 
 - add room advancit

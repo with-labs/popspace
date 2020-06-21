@@ -8,6 +8,7 @@
   --layerControlsAlpha: 100;
   --layerControlsBeta: 110;
   --layerControlsGamma: 120;
+  --layerControlsDelta: 130;
 }
 
 .u-layerControlsAlpha {
@@ -20,4 +21,8 @@
 
 .u-layerControlsGamma {
   z-index: var(--layerControlsGamma);
+}
+
+.u-layerControlsDelta {
+  z-index: var(--layerControlsDelta);
 }

@@ -53,9 +53,10 @@
   position: absolute;
   cursor: pointer;
   left: -25px;
-  top: 80px;
+  top: 55px;
   height: 40px;
   width: 50px;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
 }
 
 .ParticipantCircle-screenShare.is-active {

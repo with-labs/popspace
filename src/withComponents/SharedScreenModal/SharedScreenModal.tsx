@@ -45,7 +45,7 @@ export const SharedScreenModal: React.FC<SharedScreenModalProps> = ({ close, chi
         transition={{ duration: 0.2 }}
         className={`u-layerControlsBeta ${styles.modalShade}`}
       />
-      <motion.div layoutId="shareScreen" className={`u-layerControlsGamma ${styles.modalContainer}`}>
+      <motion.div className={`u-layerControlsGamma ${styles.modalContainer}`}>
         {closeBtnContainer}
         <motion.div transition={ExpandTransition} className={`${styles.modalContent}`}>
           {children}

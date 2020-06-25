@@ -1,3 +1,11 @@
+## 1.78.0
+
+- Fix positioning of participant's name inside smaller participant circles
+
+## 1.77.0
+
+- Cleaning up shared screen modal (non-animated version)
+
 ## 1.76.0
 
 - add room advancit

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
 import { Emoji } from 'emoji-mart';
 
@@ -27,7 +27,6 @@ import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 import { Avatar } from '../Avatar/Avatar';
 
-import { ShareScreenWidget } from '../ShareScreenWidget/ShareScreenWidget';
 import useScreenShareToggle from '../../hooks/useScreenShareToggle/useScreenShareToggle';
 
 interface ParticipantCircleProps {
@@ -40,6 +39,7 @@ interface ParticipantCircleProps {
 }
 
 const ParticipantCircle = (props: ParticipantCircleProps) => {
+  const sharedScreenBtnRef = useRef<HTMLDivElement>(null);
   const { participant, disableAudio, enableScreenShare, videoPriority, onClick, style = {} } = props;
   const meta = useParticipantMeta(participant);
   const [isAudioEnabled] = useLocalAudioToggle();
@@ -55,8 +55,6 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const emoji = meta.emoji;
   const avatarName = meta.avatar;
   const avatar = useAvatar(avatarName);
-
-  const [isScreenShareOpen, setIsScreenShareOpen] = useState(false);
 
   let filteredPublications;
 
@@ -101,6 +99,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const screenShareTrack = publications.find(pub => pub.trackName === 'screen');
 
   let screenShare = null;
+
   if (isLocal) {
     screenShare = (
       <div
@@ -119,6 +118,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   } else if (screenShareTrack) {
     screenShare = (
       <div
+        ref={sharedScreenBtnRef}
         className="ParticipantCircle-screenSharePreview u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter"
         onClick={e => {
           e.stopPropagation();
@@ -221,7 +221,6 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
           participant={participant}
         />
       ) : null}
-      <ShareScreenWidget isOpen={isScreenShareOpen} onCloseHandler={() => setIsScreenShareOpen(false)} />
     </>
   );
 };

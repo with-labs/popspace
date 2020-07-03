@@ -1,3 +1,7 @@
+## 1.79.0
+
+- Add room afore
+
 ## 1.78.0
 
 - Fix positioning of participant's name inside smaller participant circles

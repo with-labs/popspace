@@ -1,7 +1,7 @@
 import { Action } from '../RoomState/RoomStateProvider';
 import { EmojiData as ED } from 'emoji-mart';
+import { LocationTuple } from '../../types';
 
-export type LocationTuple = [number, number];
 export type EmojiData = ED | null | string;
 
 export interface IParticipantMeta {

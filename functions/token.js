@@ -13,7 +13,7 @@ const ROOM_WHITELIST_PASSCODES = {
   brent: 'eb3ed78b2bb6a0ca2491df488f4cd632',
   lolo: 'itstime',
   chris: 'ccc6d607f1adbab4adb59efe047a2f4e',
-  darren: 'fc8b7ba4645dedbd5a118e56525bc648',
+  darren: '2020wfh!',
   julia: '47ed9e60bbe845283bc2fe37aa55bf45',
   elle: '33167f62cc63e2f2dd08d97f2baaf052',
   catch: 'd16a501f0206ecdac5353c0a82c1434f',
@@ -124,6 +124,8 @@ const ROOM_WHITELIST_PASSCODES = {
   odf: 'OnDeckCommunity2020',
   stonna: 'stonna2020',
   advancit: 'advancit2020',
+  afore: 'afore2020',
+  footnote: 'trivia2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

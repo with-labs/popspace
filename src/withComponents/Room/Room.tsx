@@ -58,7 +58,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
   // safe to assume only one whiteboard ever
   const [widgetWhiteboard] = widgets.filter(widget => widget.type === WidgetTypes.Whiteboard);
-  console.log(widgetWhiteboard);
+
   useEffect(() => {
     if (initialAvatar) {
       updateAvatar(initialAvatar);

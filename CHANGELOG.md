@@ -1,3 +1,8 @@
+## 1.80.0
+
+- Change darren room password
+- Add room footnote
+
 ## 1.79.0
 
 - Add room afore

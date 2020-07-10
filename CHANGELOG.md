@@ -1,3 +1,7 @@
+## 1.81.0
+
+- Change default wallpaper to explain spatial audio and remove huddle
+
 ## 1.80.0
 
 - Change darren room password

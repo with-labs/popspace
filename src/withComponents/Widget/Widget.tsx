@@ -85,10 +85,10 @@ export const Widget: React.FC<IWidgetProps> = props => {
       dragMomentum={false}
       dragConstraints={dragConstraints}
       onDragEnd={onDragEndHandler}
-      className={clsx('u-flex u-flexCol', styles.widget, classNames)}
+      className={clsx('u-flex u-flexCol', styles.widget, styles.grabbable, classNames)}
     >
       <div className="u-flex u-flexRow">
-        <div className={clsx('u-fontH2 u-cursorDefault u-flexGrow1', styles.title, titleClassNames)}>{title}</div>
+        <div className={clsx('u-fontH2 u-flexGrow1', styles.title, styles.grabbable, titleClassNames)}>{title}</div>
         {addButton}
         <div className="u-cursorPointer u-height100Percent" onClick={() => onCloseHandler()}>
           <CloseBtn />

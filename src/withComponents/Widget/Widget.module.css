@@ -16,3 +16,11 @@
   height: 100%;
   position: relative;
 }
+
+.grabbable {
+  cursor: grab;
+}
+
+.grabbable:active {
+  cursor: grabbing;
+}

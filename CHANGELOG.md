@@ -1,3 +1,8 @@
+## 1.82.0
+
+- Change Participant bubble size.
+- Adjust spacing of controls.
+
 ## 1.81.0
 
 - Change default wallpaper to explain spatial audio and remove huddle

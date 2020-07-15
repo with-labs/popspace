@@ -1,3 +1,7 @@
+## 1.83.0
+
+- Add 34 new rooms
+
 ## 1.82.0
 
 - Change Participant bubble size.

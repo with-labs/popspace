@@ -2,6 +2,7 @@
 enum WidgetTypes {
   Link = 'LINK',
   Whiteboard = 'WHITEBOARD',
+  StickyNote = 'STICKY_NOTE',
 }
 
 export { WidgetTypes };

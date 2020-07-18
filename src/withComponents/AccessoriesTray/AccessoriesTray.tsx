@@ -90,6 +90,11 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     }
   };
 
+  const onAddStickyNoteClick = (e: MouseEvent) => {
+    addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '' });
+    closeTray();
+  };
+
   return (
     <div className="AccessoriesTray u-positionFixed u-layerControlsAlpha">
       {roomState === 'disconnected' ? null : (
@@ -124,6 +129,15 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                       title={whiteboardText.title}
                       descText={whiteboardText.descText}
                       onClickHandler={onAddWhiteboardClick}
+                    />
+                  </div>
+                  <div key="stickyNote" className="AccessoriesTray-appItem">
+                    <AddAppItem
+                      imgSrc={whitebordImg}
+                      imgAltText="StickyNote"
+                      title="Add a sticky note"
+                      descText="desc text goes here"
+                      onClickHandler={onAddStickyNoteClick}
                     />
                   </div>
                   <div key="music" className="AccessoriesTray-appItem">

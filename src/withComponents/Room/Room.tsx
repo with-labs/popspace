@@ -27,6 +27,7 @@ import { useParticipantMetaContext } from '../ParticipantMetaProvider/usePartici
 import { LocationTuple } from '../../types';
 import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
 import { motion } from 'framer-motion';
+import { StickyNoteWidget } from '../StickyNoteWidget/StickyNoteWidget';
 
 export interface DragItem {
   type: string;
@@ -55,7 +56,9 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
 
   useLocalVolumeDetection();
 
+  // get the widgets to display in the room
   const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
+  const widgetStickyNote = widgets.filter(widget => widget.type === WidgetTypes.StickyNote);
   // safe to assume only one whiteboard ever
   const [widgetWhiteboard] = widgets.filter(widget => widget.type === WidgetTypes.Whiteboard);
 
@@ -200,6 +203,28 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               classNames={widget.location ? 'u-positionAbsolute' : 'u-positionRelative'}
             />
           ))}
+        </div>
+        <div>
+          {widgetStickyNote.map(widget => {
+            let retWidget = null;
+            // if the note is published or if the sid is the same as the person who added it
+            if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
+              retWidget = (
+                <StickyNoteWidget
+                  text={widget.data.text}
+                  participant={
+                    widget.participantSid === localParticipant.sid
+                      ? localParticipant
+                      : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+                  }
+                  onCloseHandler={() => removeWidget(widget.id)}
+                  onPublishHandler={() => {}}
+                  onAddHandler={() => {}}
+                />
+              );
+            }
+            return retWidget;
+          })}
         </div>
         {Object.keys(bubs).map(key => {
           const { pt, top, left } = bubs[key];

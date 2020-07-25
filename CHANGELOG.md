@@ -1,3 +1,7 @@
+## 1.84.0
+
+- add in 5 new rooms
+
 ## 1.83.0
 
 - Add 34 new rooms

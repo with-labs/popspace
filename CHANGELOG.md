@@ -1,3 +1,9 @@
+## 1.85.0
+
+- useLocalVolumeDetection hook to analyze mic input data
+- Dispatch action from useLocalVolumeDetection to indicate that the local user is/isn't speaking.
+- ParticipantMeta property per participant to indicate that they are/aren't speaking.
+
 ## 1.84.0
 
 - add in 5 new rooms
@@ -45,7 +51,6 @@
 
 - Enable spatial audio by default
 - Disable click to huddle
-
 
 ## 1.73.0
 

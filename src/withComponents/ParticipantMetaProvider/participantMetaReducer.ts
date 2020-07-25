@@ -12,6 +12,7 @@ export interface IParticipantMeta {
   activeMicId: string;
   activeSpeakersId: string; // TODO selecting active speakers output not implemented yet, but is the placeholder.
   viewingScreenSid: string;
+  isSpeaking: boolean;
 }
 
 // The key is a participant's sid
@@ -27,6 +28,7 @@ export enum Actions {
   UpdateActiveMic = 'UPDATE_ACTIVE_MIC',
   UpdateActiveSpeakers = 'UPDATE_ACTIVE_SPEAKERS',
   UpdateScreenViewSid = 'UPDATE_SCREEN_VIEW_SID',
+  UpdateIsSpeaking = 'UPDATE_IS_SPEAKING',
 }
 
 export default function reducer(state: IParticipantMetaState = {}, action: Action) {
@@ -80,6 +82,12 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
 
       return newPts;
     }
+
+    case Actions.UpdateIsSpeaking: {
+      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], isSpeaking: payload.isSpeaking } };
+
+      return newPts;
+    }
   }
 
   return state;
@@ -127,4 +135,9 @@ export const activeSpeakersUpdate = (sid: string, speakersId: string) => ({
 export const viewScreenSidUpdate = (sid: string, viewingScreenSid: string) => ({
   type: Actions.UpdateScreenViewSid,
   payload: { sid, viewingScreenSid },
+});
+
+export const isSpeakingUpdate = (sid: string, isSpeaking: boolean) => ({
+  type: Actions.UpdateIsSpeaking,
+  payload: { sid, isSpeaking },
 });

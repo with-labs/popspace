@@ -52,8 +52,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const isLocal = participant === room.localParticipant;
 
   const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
-  const emoji = meta.emoji;
-  const avatarName = meta.avatar;
+  const { emoji, avatar: avatarName, isSpeaking } = meta;
   const avatar = useAvatar(avatarName);
 
   let filteredPublications;
@@ -164,13 +163,17 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
 
   const styles = {
     backgroundColor: avatar?.backgroundColor,
+    borderColor: isSpeaking ? '#b9c5ff' : avatar?.backgroundColor,
     ...style,
   };
 
   return (
     <>
       <div
-        className={clsx('ParticipantCircle u-flex u-flexJustifyCenter', { 'is-localParticipant': isLocal })}
+        className={clsx('ParticipantCircle u-flex u-flexJustifyCenter', {
+          'is-localParticipant': isLocal,
+          'is-speaking': isSpeaking,
+        })}
         style={styles}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}

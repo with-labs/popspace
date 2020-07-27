@@ -25,6 +25,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { LocationTuple } from '../ParticipantMetaProvider/participantMetaReducer';
+import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
 
 export interface DragItem {
   type: string;
@@ -49,6 +50,8 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const {
     room: { localParticipant },
   } = useVideoContext();
+
+  useLocalVolumeDetection();
 
   const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
   // safe to assume only one whiteboard ever
@@ -202,7 +205,6 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
                 participant={pt}
                 onClick={() => null}
                 disableAudio={disabledAudioSids.includes(pt.sid)}
-                style={{ backgroundColor: '#fff' }}
               />
             </div>
           </DraggableItem>

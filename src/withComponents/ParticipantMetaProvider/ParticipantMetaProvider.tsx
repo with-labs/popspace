@@ -17,6 +17,7 @@ import {
   activeCameraUpdate,
   activeMicUpdate,
   viewScreenSidUpdate,
+  isSpeakingUpdate,
 } from './participantMetaReducer';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
@@ -31,6 +32,7 @@ export interface IParticipantMetaContext {
   updateActiveCamera: (cameraId: string) => void;
   updateActiveMic: (cameraId: string) => void;
   updateScreenViewSid: (screenViewSid: string) => void;
+  updateIsSpeaking: (isSpeaking: boolean) => void;
 }
 
 export const ParticipantMetaContext = createContext<IParticipantMetaContext>(null!);
@@ -94,6 +96,13 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
     [localParticipant, dispatch]
   );
 
+  const updateIsSpeaking = useCallback(
+    (isSpeaking: boolean) => {
+      dispatch(isSpeakingUpdate(localParticipant.sid, isSpeaking));
+    },
+    [dispatch, localParticipant]
+  );
+
   // Return the context.
   return (
     <ParticipantMetaContext.Provider
@@ -105,6 +114,7 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
         updateActiveCamera,
         updateActiveMic,
         updateScreenViewSid,
+        updateIsSpeaking,
       }}
     >
       {children}

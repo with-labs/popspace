@@ -160,6 +160,11 @@ const ROOM_WHITELIST_PASSCODES = {
   core_ar: '423881',
   practice: '757071',
   studio: '128522',
+  supernodevc: '857487',
+  producthunt: '269170',
+  framer: '995771', 
+  figma: '547569',
+  githubocto:'201974'
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -7,12 +7,13 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { ConnectOptions, TwilioError } from 'twilio-video';
-import ErrorDialog from './components/ErrorDialog/ErrorDialog';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
-import AnglesApp from './AnglesApp';
+import Room from './room';
+import Landing from './landing';
+
 import './with.css';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
@@ -49,17 +50,7 @@ const AnglesMainApp = () => {
 
   return (
     <VideoProvider options={connectionOptions} onError={setError}>
-      {room ? (
-        <div>
-          <ErrorDialog dismissError={() => setError(null)} error={error} />
-          <AnglesApp roomName={room} />
-        </div>
-      ) : (
-        <ErrorDialog
-          dismissError={() => setError(null)}
-          error={new Error('A room name is required to access the application.') as TwilioError}
-        />
-      )}
+      {room ? <Room name={room} error={error} setError={setError} /> : <Landing />}
     </VideoProvider>
   );
 };

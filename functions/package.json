@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "db": "file:db"
+    "db": "file:db",
+    "utils": "file:utils"
   }
 }

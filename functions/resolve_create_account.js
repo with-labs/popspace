@@ -1,27 +1,61 @@
-require("dotenv").config()
+require("dotenv").config();
+const db = require("db");
+const utils = require("utils");
 
 const headers = {
   'Content-Type': 'application/json'
 };
 
-const isValidOtp = async (email, otp) => {
-  // TODO: check redis
-  return true
+const accountRedis = new db.redis.AccountsRedis();
+
+const isValidOtp = (request) => {
+  if(!request) return false;
+  return true;
 }
 
-const createAccount = async (email) => {
-  // TODO: fetch account params from redis
+const isExpired = (request) => {
+  return parseInt(request.expireTimestamp) - Date.now() < 0
 }
 
-module.exports.handler = (event, context, callback) => {
-  const params = event.queryStringParameters
+const alreadyRegistered = (request) => {
+  return !!request.resolvedAt;
+}
 
-  const otp = params.otp
-  const email = params.email
+const createAccount = async (request) => {
+  console.log("Creating account");
+  await accountRedis.resolveAccountCreateRequest(request);
+}
 
-  callback(null, {
-    statusCode: 200,
-    headers,
-    body: JSON.stringify({otp: otp, email: email, test: process.env.test || 1})
-  })
+const sendRegistrationAttemptEmail = async (request) => {
+  console.log("Email already registered. Sending email with OTP.");
+}
+
+module.exports.handler = async (event, context, callback) => {
+  const params = event.queryStringParameters;
+
+  const otp = params.otp;
+  const email = params.email;
+
+  const request = await accountRedis.getAccountCreateRequest(params.email);
+
+  if(!request) {
+    return utils.http.fail(callback, "Unknown email")
+  }
+
+  if(alreadyRegistered(request)) {
+    await sendRegistrationAttemptEmail(request);
+    return utils.http.fail(callback, "An account with that email already exists.");
+  }
+
+  if(isValidOtp(request)) {
+    if(isExpired(request)) {
+      utils.http.fail(callback, "Your code has expired. Please sign up again.");
+    } else {
+      await createAccount(request);
+      utils.http.succeed(callback, {otp: otp, email: email});
+    }
+  } else {
+    utils.http.fail(callback, "Invalid OTP/email");
+  }
+
 }

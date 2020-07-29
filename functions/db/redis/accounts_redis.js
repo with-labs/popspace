@@ -10,15 +10,26 @@ module.exports = class extends RedisBase {
     params.otp = otp;
     params.expireTimestamp = Date.now() + expiry * 1000;
     const value = JSON.stringify(params);
+
     return new Promise((resolve, reject) => {
-      this.client.hset("with_acct_request", params.email, value, 'EX', expiry, this.onComplete(resolve, reject));
+      this.client.hset("with_acct_request", params.email, value, this.onComplete(resolve, reject));
+      this.client.expire("with_acct_request", expiry)
     });
   }
 
   async getAccountCreateRequest(email) {
-    const value = await this.client.hget("with_acct_request", email);
+    let value = await this.hget("with_acct_request", email);
+    if(!value) {
+      value = await this.hget("with_resolved_acct_requests", email);
+    }
     if(!value) return null;
     return JSON.parse(value);
+  }
+
+  async resolveAccountCreateRequest(request) {
+    request.resolvedAt = Date.now()
+    await this.hset("with_resolved_acct_requests", request.email, JSON.stringify(request))
+    return await this.hdel("with_acct_request", request.email)
   }
 }
 

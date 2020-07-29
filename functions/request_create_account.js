@@ -1,6 +1,7 @@
 require("dotenv").config()
 const cryptoRandomString = require('crypto-random-string');
 const db = require("db");
+const utils = require("utils");
 
 
 /*
@@ -19,17 +20,13 @@ Sign up flow
 const headers = {
   'Content-Type': 'application/json'
 };
+const accountRedis = new db.redis.AccountsRedis();
 
 
 const newUserCreateRequest = async (params)  => {
   const otp = cryptoRandomString({length: 64, type: 'url-safe'})
-  // TODO: store params in redis once it's spun up; key by email, add OTPs
-  const accountRedis = new db.redis.AccountsRedis();
-  const alreadyRequested = await accountRedis.getAccountCreateRequest(params.email);
-  if(alreadyRequested) return null;
-
+  // If this email already requested an account create, inavlidate the old request
   await accountRedis.writeAccountCreateRequest(params, otp)
-
   return otp
 }
 
@@ -40,22 +37,12 @@ const sendOtpEmail = async (params, otp) => {
 
 module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
-  if(event.httpMethod !== 'POST' || !event.body) {
-    callback(null, {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({success: false, message: "Must provide POST body"})
-    });
-  }
+  if(utils.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
   const otp = await newUserCreateRequest(params)
   if(!otp) {
-    return callback(null, {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({success: false})
-    })
+    return utils.http.fail(callback, "Email already registered. Check your email for a verification link.")
   }
   await sendOtpEmail(params, otp)
 

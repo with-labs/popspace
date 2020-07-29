@@ -20,6 +20,12 @@ module.exports = class {
     })
   }
 
+  hdel(redisKey, hKey) {
+    return new Promise((resolve, reject) => {
+      this.client.hdel(redisKey, hKey, this.onComplete(resolve, reject));
+    })
+  }
+
   set(key, value) {
     return new Promise((resolve, reject) => {
       this.client.set(key, value, this.onComplete(resolve, reject));

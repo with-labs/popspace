@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "redis": "^3.0.2"
+  },
+  "main": "index.js"
+}

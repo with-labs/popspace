@@ -2,7 +2,7 @@ class Api {
   constructor() {}
 
   async signup(data: any) {
-    return await this.post('/create_account', data);
+    return await this.post('/request_create_account', data);
   }
 
   async post(endpoint: string, data: any) {

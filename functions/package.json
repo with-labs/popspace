@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "db": "file:db"
+  }
+}

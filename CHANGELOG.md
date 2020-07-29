@@ -1,3 +1,7 @@
+## 1.86.0
+
+- Make ParticipantCircle bubble background color always white.
+
 ## 1.85.0
 
 - useLocalVolumeDetection hook to analyze mic input data

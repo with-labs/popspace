@@ -19,11 +19,14 @@ export default function Landing() {
   const logIn = () => {
     console.log('logging in');
   };
+  const signUp = () => {
+    window.location.href = '/signup';
+  };
 
   return (
     <Main>
       <Auth onClick={logIn}> Log in </Auth>
-      <Auth> Sign up </Auth>
+      <Auth onClick={signUp}> Sign up </Auth>
     </Main>
   );
 }

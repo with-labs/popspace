@@ -1,6 +1,6 @@
 import React from 'react';
-import AnglesApp from './AnglesApp';
-import ErrorDialog from './components/ErrorDialog/ErrorDialog';
+import AnglesApp from '../AnglesApp';
+import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
 
 type RoomProps = {
   name: string;

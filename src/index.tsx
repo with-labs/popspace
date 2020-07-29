@@ -11,8 +11,9 @@ import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
-import Room from './room';
-import Landing from './landing';
+import Room from './pages/room';
+import Landing from './pages/landing';
+import Signup from './pages/signup';
 
 import './with.css';
 
@@ -65,6 +66,9 @@ ReactDOM.render(
         <Switch>
           <Route exact path="/">
             <AnglesMainApp />
+          </Route>
+          <Route path="/signup">
+            <Signup />}
           </Route>
           <Redirect to="/" />
         </Switch>

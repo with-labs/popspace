@@ -1,3 +1,5 @@
+const cryptoRandomString = require('crypto-random-string');
+
 const headers = {
   'Content-Type': 'application/json'
 };
@@ -15,6 +17,6 @@ module.exports.handler = (event, context, callback) => {
   callback(null, {
     statusCode: 200,
     headers,
-    body: JSON.stringify({success: true})
+    body: JSON.stringify({success: true, otp: cryptoRandomString({length: 64, type: 'url-safe'})})
   })
 }

@@ -23,13 +23,13 @@ const alreadyRegistered = (request) => {
 
 const createAccount = async (request) => {
   const pg = await db.pg.init()
-  await pg.users.create({
-    first_name: request.first_name,
-    last_name: request.last_name,
-    display_name: `${request.first_name} ${request.last_name}`,
+  await pg.users.insert({
+    first_name: request.firstName,
+    last_name: request.lastName,
+    display_name: `${request.firstName} ${request.lastName}`,
     email: request.email
   })
-  await accountRedis.resolveAccountCreateRequest(request);
+  // await accountRedis.resolveAccountCreateRequest(request);
 }
 
 const sendRegistrationAttemptEmail = async (request) => {

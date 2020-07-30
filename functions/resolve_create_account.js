@@ -29,7 +29,7 @@ const createAccount = async (request) => {
     display_name: `${request.firstName} ${request.lastName}`,
     email: request.email
   })
-  // await accountRedis.resolveAccountCreateRequest(request);
+  await accountRedis.resolveAccountCreateRequest(request);
 }
 
 const sendRegistrationAttemptEmail = async (request) => {

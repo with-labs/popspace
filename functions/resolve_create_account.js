@@ -22,7 +22,13 @@ const alreadyRegistered = (request) => {
 }
 
 const createAccount = async (request) => {
-  console.log("Creating account");
+  const pg = await db.pg.init()
+  await pg.users.create({
+    first_name: request.first_name,
+    last_name: request.last_name,
+    display_name: `${request.first_name} ${request.last_name}`,
+    email: request.email
+  })
   await accountRedis.resolveAccountCreateRequest(request);
 }
 

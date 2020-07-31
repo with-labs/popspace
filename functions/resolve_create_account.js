@@ -27,13 +27,13 @@ const alreadyRegistered = (request) => {
 }
 
 const createAccount = async (request) => {
+  await accountRedis.resolveAccountCreateRequest(request);
   const user = await pg.users.insert({
     first_name: request.firstName,
     last_name: request.lastName,
     display_name: `${request.firstName} ${request.lastName}`,
     email: request.email
   })
-  // await accountRedis.resolveAccountCreateRequest(request);
   const token = await utils.session.beginSession(user.id, accountRedis);
   return token;
 }
@@ -66,8 +66,12 @@ module.exports.handler = async (event, context, callback) => {
     if(isExpired(request)) {
       utils.http.fail(callback, "Your code has expired. Please sign up again.");
     } else {
-      const token = await createAccount(request);
-      utils.http.succeed(callback, {success: true, token: JSON.stringify(token)});
+      try {
+        const token = await createAccount(request);
+        utils.http.succeed(callback, {token: JSON.stringify(token)});
+      } catch(e) {
+        utils.http.fail(callback, e.message);
+      }
     }
   } else {
     utils.http.fail(callback, "Invalid OTP/email");

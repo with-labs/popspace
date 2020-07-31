@@ -16,8 +16,12 @@ class Api {
     return new Promise((resolve, reject) => {
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
-          console.log(xhr.response);
-          resolve(JSON.parse(xhr.response));
+          try {
+            const jsonResponse = JSON.parse(xhr.response);
+            resolve(jsonResponse);
+          } catch {
+            resolve({ success: false, message: xhr.response });
+          }
         }
       };
       xhr.send(JSON.stringify(data));

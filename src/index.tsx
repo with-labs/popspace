@@ -14,6 +14,7 @@ import { VideoProvider } from './components/VideoProvider';
 import Room from './pages/room';
 import Landing from './pages/landing';
 import Signup from './pages/signup';
+import VerifyEmail from './pages/verify_email';
 
 import './with.css';
 
@@ -67,9 +68,15 @@ ReactDOM.render(
           <Route exact path="/">
             <AnglesMainApp />
           </Route>
+
           <Route path="/signup">
             <Signup />}
           </Route>
+
+          <Route path="/complete_signup">
+            <VerifyEmail />}
+          </Route>
+
           <Redirect to="/" />
         </Switch>
       </AppStateProvider>

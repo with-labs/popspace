@@ -31,5 +31,21 @@ module.exports = class extends RedisBase {
     await this.hset("with_resolved_acct_requests", request.email, JSON.stringify(request))
     return await this.hdel("with_acct_request", request.email)
   }
+
+  async storeSession(sessionId, userId, expireInMillis=null) {
+    let expireAtTimestamp = null;
+    if(expireInMillis) {
+      expireAtTimestamp = Date.now() + expireInMillis;
+    }
+    const session = {
+      expireAtTimestamp: expireAtTimestamp,
+      createdAt: Date.now()
+      // We don't need to store the userId/sessionId,
+      // Since we have them as keys
+    }
+    const redisKey = `with:sss:${userId}`
+    const hKey = sessionId
+    await this.hset(redisKey, hKey, JSON.stringify(session))
+  }
 }
 

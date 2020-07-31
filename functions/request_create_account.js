@@ -3,7 +3,6 @@ const cryptoRandomString = require('crypto-random-string');
 const db = require("db");
 const utils = require("utils");
 
-
 /*
 Sign up flow
 
@@ -15,8 +14,6 @@ Sign up flow
 6. Endpoints requiring authorization can check JWT
 */
 
-
-
 const headers = {
   'Content-Type': 'application/json'
 };
@@ -26,13 +23,15 @@ const accountRedis = new db.redis.AccountsRedis();
 const newUserCreateRequest = async (params)  => {
   const otp = cryptoRandomString({length: 64, type: 'url-safe'})
   // If this email already requested an account create, inavlidate the old request
+  // const signupUrl = `${process.env.APP_HOST}/.netlify/functions/resolve_create_account?otp=${otp}&email=${params.email}`
+  const signupUrl = `${process.env.APP_HOST}/complete_signup?otp=${otp}&email=${params.email}`
   await accountRedis.writeAccountCreateRequest(params, otp)
-  return otp
+  return signupUrl
 }
 
-const sendOtpEmail = async (params, otp) => {
-  // TODO: send email
-  console.log(`Sending ${otp} to email: ${params.email}`)
+const sendOtpEmail = async (params, signupUrl) => {
+  // TODO: generate URL, send email
+  console.log(`Sending ${signupUrl} to email: ${params.email}`)
 }
 
 module.exports.handler = async (event, context, callback) => {
@@ -40,15 +39,16 @@ module.exports.handler = async (event, context, callback) => {
   if(utils.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  const otp = await newUserCreateRequest(params)
-  if(!otp) {
+  const signupUrl = await newUserCreateRequest(params)
+  if(!signupUrl) {
     return utils.http.fail(callback, "Email already registered. Check your email for a verification link.")
   }
-  await sendOtpEmail(params, otp)
+  await sendOtpEmail(params, signupUrl)
 
   callback(null, {
     statusCode: 200,
     headers,
-    body: JSON.stringify({success: true})
+    // TODO: remove signupUrl, it should only be sent via email
+    body: JSON.stringify({success: true, signupUrl: signupUrl})
   })
 }

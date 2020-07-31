@@ -8,7 +8,7 @@ exports.up = pgm => {
     first_name: { type: 'text' },
     last_name: { type: 'text' },
     display_name: { type: 'text' },
-    email: { type:  'text', notNull: true},
+    email: { type:  'text', notNull: true, unique: true},
     created_at: {
       type: 'timestamp',
       notNull: true,

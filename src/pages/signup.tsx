@@ -46,7 +46,10 @@ export default function Signup(props: any) {
     const input = getInput();
     const validation = checkInput(input);
     if (validation.valid) {
-      const result = await Api.signup(input);
+      const result: any = await Api.signup(input);
+      const temp: any = document.getElementById('temp') || {};
+      const signupUrl = (result || {}).signupUrl;
+      temp['innerHTML'] = `Complete signup: <a href=${signupUrl}> ${signupUrl} </a>`;
       console.log(result);
     } else {
       console.log(validation);
@@ -74,6 +77,9 @@ export default function Signup(props: any) {
   };
 
   const checkInput = (input: { [key: string]: any }) => {
+    // In principle all string input is vulnerable to XSS
+    // E.g. the name could be <script>sendLocalStorageContentsToMyServer()</script>
+    // TODO: input validation should prevent XSS, e.g. disallow < and >
     const invalidFields: any = {};
     // TODO: we can hook up some npm package for field validation
     if (!input['firstName']) invalidFields['first_name'] = true;
@@ -117,6 +123,7 @@ export default function Signup(props: any) {
         />
       </div>
       <button onClick={finishSignup}> Sign up </button>
+      <div id="temp"></div>
     </Main>
   );
 }

@@ -7,6 +7,11 @@ const headers = {
 };
 
 const accountRedis = new db.redis.AccountsRedis();
+let pg = null
+
+const initPg = async () => {
+  pg = await db.pg.init();
+}
 
 const isValidOtp = (request) => {
   if(!request) return false;
@@ -22,14 +27,15 @@ const alreadyRegistered = (request) => {
 }
 
 const createAccount = async (request) => {
-  const pg = await db.pg.init()
-  await pg.users.insert({
+  const user = await pg.users.insert({
     first_name: request.firstName,
     last_name: request.lastName,
     display_name: `${request.firstName} ${request.lastName}`,
     email: request.email
   })
-  await accountRedis.resolveAccountCreateRequest(request);
+  // await accountRedis.resolveAccountCreateRequest(request);
+  const token = await utils.session.beginSession(user.id, accountRedis);
+  return token;
 }
 
 const sendRegistrationAttemptEmail = async (request) => {
@@ -37,7 +43,10 @@ const sendRegistrationAttemptEmail = async (request) => {
 }
 
 module.exports.handler = async (event, context, callback) => {
-  const params = event.queryStringParameters;
+  if(utils.http.failUnlessPost(event, callback)) return;
+
+  const params = JSON.parse(event.body)
+  await initPg()
 
   const otp = params.otp;
   const email = params.email;
@@ -57,8 +66,8 @@ module.exports.handler = async (event, context, callback) => {
     if(isExpired(request)) {
       utils.http.fail(callback, "Your code has expired. Please sign up again.");
     } else {
-      await createAccount(request);
-      utils.http.succeed(callback, {otp: otp, email: email});
+      const token = await createAccount(request);
+      utils.http.succeed(callback, {success: true, token: JSON.stringify(token)});
     }
   } else {
     utils.http.fail(callback, "Invalid OTP/email");

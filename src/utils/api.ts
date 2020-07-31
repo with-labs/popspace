@@ -5,6 +5,10 @@ class Api {
     return await this.post('/request_create_account', data);
   }
 
+  async completeSignup(otp: string, email: string) {
+    return await this.post('/resolve_create_account', { otp: otp, email: email });
+  }
+
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

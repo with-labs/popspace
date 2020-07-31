@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
+import Api from '../../utils/api';
 
 const Main = styled('main')({
   height: '100%',
@@ -15,8 +16,18 @@ const Auth = styled('button')({
   cursor: 'pointer',
 });
 
-const logIn = () => {
-  console.log('logging in');
+const Email = styled('input')({
+  fontSize: '24px',
+});
+
+const logIn = async () => {
+  const emailInput: any = document.getElementById('email') || {};
+  const email = emailInput.value;
+  const loginRequest: any = await Api.requestLoginOtp(email);
+  if (loginRequest.success) {
+    const output: any = document.getElementById('tmp') || {};
+    output.innerHTML = `<div> An email been sent with this link (not yet!): </div> <a href="${loginRequest.logInUrl}"> ${loginRequest.logInUrl} </a>`;
+  }
 };
 const signUp = () => {
   window.location.href = '/signup';
@@ -30,8 +41,11 @@ export default class Landing extends React.Component<any, any> {
   render() {
     return (
       <Main>
+        <Email id="email" placeholder="email" />
         <Auth onClick={logIn}> Log in </Auth>
+        <div />
         <Auth onClick={signUp}> Sign up </Auth>
+        <div id="tmp" />
       </Main>
     );
   }

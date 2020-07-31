@@ -15,6 +15,7 @@ import Room from './pages/room';
 import Landing from './pages/landing';
 import Signup from './pages/signup';
 import VerifyEmail from './pages/verify_email';
+import Login from './pages/login';
 
 import './with.css';
 
@@ -75,6 +76,10 @@ ReactDOM.render(
 
           <Route path="/complete_signup">
             <VerifyEmail />}
+          </Route>
+
+          <Route path="/login">
+            <Login />
           </Route>
 
           <Redirect to="/" />

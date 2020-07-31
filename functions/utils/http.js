@@ -11,11 +11,12 @@ const http = {
     return false;
   },
 
-  fail: (callback, message) => {
+  fail: (callback, message, data={}) => {
+    data.message = data.message || "Unknown error"
     return callback(null, {
       statusCode: 200,
       headers,
-      body: JSON.stringify({success: false, message: message})
+      body: JSON.stringify(Object.assign(data, {message: message, success: false}))
     });
   },
 

@@ -13,7 +13,7 @@ export default function VerifyEmail() {
     alert(result.message);
   };
 
-  Api.completeSignup(otp, email).then((result: any) => {
+  Api.logIn(otp, email).then((result: any) => {
     if (result.success) {
       window.localStorage.setItem('__session_token', result.token);
       window.location.href = '/';
@@ -24,7 +24,7 @@ export default function VerifyEmail() {
 
   return (
     <div>
-      <div id="output"> Finishing account setup... </div>
+      <div id="output"> Logging in... </div>
     </div>
   );
 }

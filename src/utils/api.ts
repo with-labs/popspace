@@ -9,6 +9,14 @@ class Api {
     return await this.post('/resolve_create_account', { otp: otp, email: email });
   }
 
+  async requestLoginOtp(email: string) {
+    return await this.post('/request_init_session', { email: email });
+  }
+
+  async logIn(otp: string, email: string) {
+    return await this.post('/resolve_init_session', { otp: otp, email: email });
+  }
+
   async getProfile(token: any) {
     return await this.post('/user_profile', { token: token });
   }

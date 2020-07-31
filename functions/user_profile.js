@@ -6,12 +6,8 @@ const utils = require("utils")
 const accountRedis = new db.redis.AccountsRedis()
 let pg = null
 
-const initPg = async () => {
-  pg = await db.pg.init();
-}
-
 const getProfile = async (token) => {
-  await initPg()
+  pg = await db.pg.init();
   const user = await pg.users.find({id: token.userId})
   return {
     user: user[0]

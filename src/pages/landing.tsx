@@ -12,6 +12,10 @@ const Main = styled('main')({
   textAlign: 'center',
 });
 
+const sessionTokenExists = (sessionToken: any) => {
+  return !!sessionToken && sessionToken !== 'undefined' && sessionToken !== 'null';
+};
+
 export default class Landing extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -19,16 +23,19 @@ export default class Landing extends React.Component<any, any> {
     const sessionToken = localStorage.getItem('__session_token');
 
     this.state = {
-      loading: !!sessionToken,
+      loading: sessionTokenExists(sessionToken),
       profile: null,
       error: null,
     };
 
-    if (sessionToken) {
+    if (sessionTokenExists(sessionToken)) {
       Api.getProfile(sessionToken).then((result: any) => {
         if (result.success) {
           this.setState({ profile: result.profile, loading: false });
         } else {
+          // Perhaps we don't always want to remove the sessionToken
+          // e.g. we could have an error when there's no iternet
+          // localStorage.removeItem("__session_token");
           this.setState({ error: result.message, loading: false });
         }
       });
@@ -36,7 +43,6 @@ export default class Landing extends React.Component<any, any> {
   }
 
   render() {
-    console.log(this.state);
     if (this.state.loading) {
       return this.renderLoading();
     } else if (this.state.error) {
@@ -53,7 +59,14 @@ export default class Landing extends React.Component<any, any> {
   }
 
   renderError() {
-    return <Main>{this.state.error}</Main>;
+    // If something went wrong with authenticating,
+    // we should just render the logged out view
+    return (
+      <Main>
+        <HomeLoggedOut />
+        {this.state.error}
+      </Main>
+    );
   }
 
   renderLoggedIn() {

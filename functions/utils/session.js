@@ -11,24 +11,23 @@ const isValid = (session) => {
   return !!session;
 }
 
-const session = {
+const sessionTools = {
   createSessionId: (userId) => {
     return crypto.randomBytes(64).toString('base64');
   },
 
   beginSession: async (userId, sessionStore) => {
-    const sessionId = session.createSessionId(userId);
-    await sessionStore.storeSession(sessionId, userId);
+    const sessionId = sessionTools.createSessionId(userId);
 
-    const session = {
+    const redisKey = sessionKey(userId);
+    const hKey = sessionId;
+    const sessionInfo = {
       expireAtTimestamp: null,
       createdAt: Date.now()
       // We don't need to store the userId/sessionId,
       // Since we have them as keys
     }
-    const redisKey = sessionKey(userId);
-    const hKey = sessionId;
-    await sessionStore.hset(redisKey, hKey, JSON.stringify(session));
+    await sessionStore.hset(redisKey, hKey, JSON.stringify(sessionInfo));
 
     const token = {sessionId: sessionId, userId: userId};
     return token;
@@ -39,9 +38,9 @@ const session = {
     const sessionId = token.sessionId;
     const redisKey = sessionKey(userId);
     const hKey = sessionId;
-    const session = await sessionStore.hget(redisKey, hKey);
-    return isValid(session);
+    const sessionInfo = await sessionStore.hget(redisKey, hKey);
+    return isValid(sessionInfo);
   }
 };
 
-module.exports = session;
+module.exports = sessionTools;

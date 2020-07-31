@@ -2,21 +2,11 @@ require("dotenv").config();
 const db = require("db");
 const utils = require("utils");
 
-const headers = {
-  'Content-Type': 'application/json'
-};
-
 const accountRedis = new db.redis.AccountsRedis();
 let pg = null
 
-const initPg = async () => {
-  pg = await db.pg.init();
-}
-
-
-const isValidOtp = (request) => {
-  if(!request) return false;
-  return true;
+const isValidOtp = (request, otp) => {
+  return request.otp == otp
 }
 
 const isExpired = (request) => {
@@ -47,7 +37,7 @@ module.exports.handler = async (event, context, callback) => {
   if(utils.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  await initPg()
+  pg = await db.pg.init();
 
   const otp = params.otp;
   const email = params.email;
@@ -63,7 +53,7 @@ module.exports.handler = async (event, context, callback) => {
     return utils.http.fail(callback, "An account with that email already exists.");
   }
 
-  if(isValidOtp(request)) {
+  if(isValidOtp(request, otp)) {
     if(isExpired(request)) {
       utils.http.fail(callback, "Your code has expired. Please sign up again.");
     } else {
@@ -75,7 +65,7 @@ module.exports.handler = async (event, context, callback) => {
       }
     }
   } else {
-    utils.http.fail(callback, "Invalid OTP/email");
+    utils.http.fail(callback, "Invalid OTP");
   }
 
 }

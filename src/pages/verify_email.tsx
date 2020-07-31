@@ -16,12 +16,13 @@ export default function VerifyEmail() {
   const renderError = (result: any) => {
     const output: any = document.getElementById('output') || {};
     output['innerHTML'] = result.message;
+    alert(result.message);
   };
 
   Api.completeSignup(otp, email).then((result: any) => {
-    console.log(result);
     if (result.success) {
       window.localStorage.setItem('__session_token', result.token);
+      window.location.href = '/';
     } else {
       renderError(result);
     }

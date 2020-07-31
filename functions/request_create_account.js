@@ -14,11 +14,7 @@ Sign up flow
 6. Endpoints requiring authorization can check JWT
 */
 
-const headers = {
-  'Content-Type': 'application/json'
-};
 const accountRedis = new db.redis.AccountsRedis();
-
 
 const newUserCreateRequest = async (params)  => {
   const otp = cryptoRandomString({length: 64, type: 'url-safe'})
@@ -45,10 +41,5 @@ module.exports.handler = async (event, context, callback) => {
   }
   await sendOtpEmail(params, signupUrl)
 
-  callback(null, {
-    statusCode: 200,
-    headers,
-    // TODO: remove signupUrl, it should only be sent via email
-    body: JSON.stringify({success: true, signupUrl: signupUrl})
-  })
+  utils.http.succeed(callback, {signupUrl: signupUrl});
 }

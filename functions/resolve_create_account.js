@@ -13,6 +13,7 @@ const initPg = async () => {
   pg = await db.pg.init();
 }
 
+
 const isValidOtp = (request) => {
   if(!request) return false;
   return true;

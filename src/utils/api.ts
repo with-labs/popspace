@@ -9,6 +9,10 @@ class Api {
     return await this.post('/resolve_create_account', { otp: otp, email: email });
   }
 
+  async getProfile(token: any) {
+    return await this.post('/user_profile', { token: token });
+  }
+
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

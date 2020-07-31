@@ -1,3 +1,7 @@
+## 1.88.0
+
+- Fixing duplicate ParticipantCircle circle dragging due to merge conflict that made it in
+
 ## 1.87.0
 
 - Adding in the ability to drag widgets using framer-motion

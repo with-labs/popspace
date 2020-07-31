@@ -214,7 +214,6 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
                   participant={pt}
                   onClick={() => null}
                   disableAudio={disabledAudioSids.includes(pt.sid)}
-                  style={{ backgroundColor: '#fff' }}
                 />
               </div>
             </DraggableItem>
@@ -222,25 +221,6 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         })}
         <SharedScreenViewer />
       </div>
-      {Object.keys(bubs).map(key => {
-        const { pt, top, left } = bubs[key];
-
-        return (
-          <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
-            <div
-              className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
-              key={pt.sid}
-            >
-              <ParticipantCircle
-                participant={pt}
-                onClick={() => null}
-                disableAudio={disabledAudioSids.includes(pt.sid)}
-              />
-            </div>
-          </DraggableItem>
-        );
-      })}
-      <SharedScreenViewer />
     </motion.div>
   );
 };

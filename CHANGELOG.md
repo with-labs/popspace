@@ -1,3 +1,9 @@
+## 1.87.0
+
+- Adding in the ability to drag widgets using framer-motion
+- updating look and feel of whiteboard widget
+- refinement of widget components to track position
+
 ## 1.86.0
 
 - Make ParticipantCircle bubble background color always white.

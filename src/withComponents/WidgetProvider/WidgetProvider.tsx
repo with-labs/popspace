@@ -3,14 +3,15 @@
  * widgets state, as well as the action creators that will precipitate updates to the widgets state.
  */
 
-import React, { createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useSelector } from 'react-redux';
+import { LocationTuple } from '../../types';
 
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
 import { WidgetTypes } from './widgetTypes';
-import { IWidgetState, widgetAdd, widgetRemove } from './widgetReducer';
+import { IWidgetState, widgetAdd, widgetRemove, widgetLocationUpdate } from './widgetReducer';
 
 /**
  * React context structure for the widgets context. This will expose the widgets state, as well as functions to
@@ -20,6 +21,7 @@ export interface IWidgetsContext {
   widgets: IWidgetState;
   addWidget: (type: WidgetTypes, participantSid: string, data: object) => void;
   removeWidget: (widgetId: string) => void;
+  updateWidgetLocation: (id: string, location: LocationTuple) => void;
 }
 
 // The React context for widgets.
@@ -41,23 +43,48 @@ export function WidgetProvider({ children }: IWidgetProviderProps) {
   const { dispatch } = useRoomStateContext();
 
   // Mutator to add a widget.
-  const addWidget = (type: WidgetTypes, participantSid: string, data: any) => {
-    const widget = {
-      id: uuid(),
-      type,
-      participantSid,
-      // data holds the specific data needed for each type of widget
-      data,
-    };
+  const addWidget = useCallback(
+    (type: WidgetTypes, participantSid: string, data: any) => {
+      const widget = {
+        id: uuid(),
+        type,
+        participantSid,
+        // data holds the specific data needed for each type of widget
+        data,
+      };
 
-    dispatch(widgetAdd(widget));
-  };
+      dispatch(widgetAdd(widget));
+    },
+    [dispatch]
+  );
 
   // Mutator to remove a widget.
-  const removeWidget = (widgetId: string) => {
-    dispatch(widgetRemove(widgetId));
-  };
+  const removeWidget = useCallback(
+    (widgetId: string) => {
+      dispatch(widgetRemove(widgetId));
+    },
+    [dispatch]
+  );
+
+  // update the location of a widget
+  const updateWidgetLocation = useCallback(
+    (id: string, location: LocationTuple) => {
+      dispatch(widgetLocationUpdate(id, location));
+    },
+    [dispatch]
+  );
 
   // Return the context.
-  return <WidgetContext.Provider value={{ widgets, addWidget, removeWidget }}>{children}</WidgetContext.Provider>;
+  return (
+    <WidgetContext.Provider
+      value={{
+        widgets,
+        addWidget,
+        removeWidget,
+        updateWidgetLocation,
+      }}
+    >
+      {children}
+    </WidgetContext.Provider>
+  );
 }

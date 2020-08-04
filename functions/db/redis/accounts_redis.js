@@ -10,6 +10,7 @@ module.exports = class extends RedisBase {
     params.otp = otp
     params.expireDuration = expiry * 1000
     params.requestedAt = Date.now()
+    params.type = "acct_create"
     const value = JSON.stringify(params)
     return await this.hset("with_acct_request", params.email, value)
   }
@@ -35,7 +36,8 @@ module.exports = class extends RedisBase {
       email: email,
       otp: otp,
       expireDuration: expiry * 1000,
-      requestedAt: Date.now()
+      requestedAt: Date.now(),
+      type: "log_in"
     }
     const value = JSON.stringify(params)
     return await this.hset("with_login_request", email, value)

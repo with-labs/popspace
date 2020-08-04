@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
 import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 
@@ -24,8 +24,9 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
-import { LocationTuple } from '../ParticipantMetaProvider/participantMetaReducer';
+import { LocationTuple } from '../../types';
 import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
+import { motion } from 'framer-motion';
 
 export interface DragItem {
   type: string;
@@ -46,6 +47,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const [windowWidth, windowHeight] = useWindowSize();
   const remoteParticipants = useParticipants();
   const { updateLocation, participantMeta, updateAvatar } = useParticipantMetaContext();
+  const dragableArea = useRef(null);
 
   const {
     room: { localParticipant },
@@ -164,14 +166,28 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   }, [floaters, participantMeta]); // Only want to update the bubble memberships when floaters change. If bubs included, will enter infinite render loop.
 
   return (
-    <div ref={drop} className="u-positionRelative u-height100Percent">
-      {Object.keys(huddles).map(huddleId => (
-        <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
-      ))}
-      <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
-        {widgetLinks.map(widget => (
-          <div key={widget.id} style={{ margin: 10 }}>
+    <motion.div ref={dragableArea} className="u-height100Percent u-width100Percent">
+      <div ref={drop} className="u-positionRelative u-height100Percent">
+        {Object.keys(huddles).map(huddleId => (
+          <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
+        ))}
+        <div>
+          {widgetWhiteboard ? (
+            <Whiteboard
+              widgetId={widgetWhiteboard.id}
+              onCloseHandler={() => removeWidget(widgetWhiteboard.id)}
+              whiteboardId={widgetWhiteboard.data.whiteboardId}
+              dragConstraints={dragableArea}
+              position={widgetWhiteboard.location}
+            />
+          ) : null}
+        </div>
+        <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
+          {widgetLinks.map(widget => (
             <LinkWidget
+              key={widget.id}
+              id={widget.id}
+              position={widget.location}
               title={widget.data.title}
               url={widget.data.url}
               onCloseHandler={() => removeWidget(widget.id)}
@@ -180,37 +196,31 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
                   ? localParticipant
                   : remoteParticipants.find(pt => pt.sid === widget.participantSid)
               }
+              dragConstraints={dragableArea}
+              classNames={widget.location ? 'u-positionAbsolute' : 'u-positionRelative'}
             />
-          </div>
-        ))}
-      </div>
-      <div>
-        {widgetWhiteboard ? (
-          <Whiteboard
-            onCloseHandler={() => removeWidget(widgetWhiteboard.id)}
-            whiteboardId={widgetWhiteboard.data.whiteboardId}
-          />
-        ) : null}
-      </div>
-      {Object.keys(bubs).map(key => {
-        const { pt, top, left } = bubs[key];
+          ))}
+        </div>
+        {Object.keys(bubs).map(key => {
+          const { pt, top, left } = bubs[key];
 
-        return (
-          <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
-            <div
-              className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
-              key={pt.sid}
-            >
-              <ParticipantCircle
-                participant={pt}
-                onClick={() => null}
-                disableAudio={disabledAudioSids.includes(pt.sid)}
-              />
-            </div>
-          </DraggableItem>
-        );
-      })}
-      <SharedScreenViewer />
-    </div>
+          return (
+            <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
+              <div
+                className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
+                key={pt.sid}
+              >
+                <ParticipantCircle
+                  participant={pt}
+                  onClick={() => null}
+                  disableAudio={disabledAudioSids.includes(pt.sid)}
+                />
+              </div>
+            </DraggableItem>
+          );
+        })}
+        <SharedScreenViewer />
+      </div>
+    </motion.div>
   );
 };

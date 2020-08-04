@@ -1,3 +1,17 @@
+## 1.88.0
+
+- Fixing duplicate ParticipantCircle circle dragging due to merge conflict that made it in
+
+## 1.87.0
+
+- Adding in the ability to drag widgets using framer-motion
+- updating look and feel of whiteboard widget
+- refinement of widget components to track position
+
+## 1.86.0
+
+- Make ParticipantCircle bubble background color always white.
+
 ## 1.85.0
 
 - useLocalVolumeDetection hook to analyze mic input data

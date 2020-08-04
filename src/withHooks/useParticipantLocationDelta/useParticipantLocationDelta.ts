@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useParticipantMeta } from '../useParticipantMeta/useParticipantMeta';
-import { LocationTuple } from '../../withComponents/ParticipantMetaProvider/participantMetaReducer';
+import { LocationTuple } from '../../types';
 
 /*
  * Compare the location of a given remote participant against the local participant

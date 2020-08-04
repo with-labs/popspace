@@ -1,23 +1,43 @@
-import React from 'react';
+import React, { RefObject, MouseEvent } from 'react';
 import clsx from 'clsx';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Widget } from '../Widget/Widget';
 import { RemoteParticipant, LocalParticipant } from 'twilio-video';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-
+import { LocationTuple } from '../../types';
 import styles from './LinkWidget.module.css';
 
 interface ILinkWidget {
+  id: string;
   title: string;
   url: string;
   participant?: LocalParticipant | RemoteParticipant;
-  onCloseHandler: Function;
+  onCloseHandler: (event: MouseEvent) => void;
+  dragConstraints: RefObject<Element>;
+  position?: LocationTuple;
+  classNames?: string;
 }
 
-export const LinkWidget: React.FC<ILinkWidget> = ({ url, participant, onCloseHandler, title }) => {
+export const LinkWidget: React.FC<ILinkWidget> = ({
+  id,
+  url,
+  participant,
+  onCloseHandler,
+  title,
+  dragConstraints,
+  position,
+  classNames,
+}) => {
   const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   return (
-    <Widget title="Link" classNames={styles.linkWidget} onCloseHandler={() => onCloseHandler()}>
+    <Widget
+      id={id}
+      title="Link"
+      classNames={clsx(styles.linkWidget, classNames)}
+      onCloseHandler={onCloseHandler}
+      dragConstraints={dragConstraints}
+      position={position}
+    >
       <div>
         <div className="u-fontP1">
           <Tooltip title={url} placement="bottom" PopperProps={{ disablePortal: true }}>

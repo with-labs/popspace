@@ -8,7 +8,8 @@ module.exports = class extends RedisBase {
   async writeAccountCreateRequest(params, otp) {
     const expiry = 60 * 15 // 15 minutes
     params.otp = otp
-    params.expireTimestamp = Date.now() + expiry * 1000
+    params.expireDuration = expiry * 1000
+    params.requestedAt = Date.now()
     const value = JSON.stringify(params)
     return await this.hset("with_acct_request", params.email, value)
   }
@@ -33,7 +34,8 @@ module.exports = class extends RedisBase {
     const params = {
       email: email,
       otp: otp,
-      expireTimestamp: Date.now() + expiry * 1000
+      expireDuration: expiry * 1000,
+      requestedAt: Date.now()
     }
     const value = JSON.stringify(params)
     return await this.hset("with_login_request", email, value)

@@ -10,7 +10,12 @@ const isValidOtp = (request, otp) => {
 }
 
 const isExpired = (request) => {
-  return !!request.resolvedAt || (parseInt(request.expireTimestamp) - Date.now() < 0)
+  if(!!request.resolvedAt) return true;
+  const expireDuration = request.expireDuration
+  if(!expireDuration) return false;
+  const expiresAt = parseInt(request.requestedAt) + parseInt(expireDuration)
+  console.log(expireDuration, expiresAt, Date.now(), expiresAt - Date.now())
+  return !!request.resolvedAt || (expiresAt - Date.now() < 0)
 }
 
 const logIn = async (request) => {

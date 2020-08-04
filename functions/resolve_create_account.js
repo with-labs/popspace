@@ -10,7 +10,11 @@ const isValidOtp = (request, otp) => {
 }
 
 const isExpired = (request) => {
-  return parseInt(request.expireTimestamp) - Date.now() < 0
+  if(!!request.resolvedAt) return true;
+  const expireDuration = request.expireDuration
+  if(!expireDuration) return false;
+  const expiresAt = parseInt(request.requestedAt) + parseInt(expireDuration)
+  return !!request.resolvedAt || (expiresAt - Date.now() < 0)
 }
 
 const alreadyRegistered = (request) => {

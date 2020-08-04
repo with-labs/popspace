@@ -27,6 +27,8 @@ const logIn = async () => {
   if (loginRequest.success) {
     const output: any = document.getElementById('tmp') || {};
     output.innerHTML = `<div> An email been sent with this link (not yet!): </div> <a href="${loginRequest.logInUrl}"> ${loginRequest.logInUrl} </a>`;
+  } else {
+    alert(loginRequest.message);
   }
 };
 const signUp = () => {

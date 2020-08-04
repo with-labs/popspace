@@ -77,7 +77,7 @@
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build",
-    "postinstall": "cd functions && npm install",
+    "postinstall": "cd functions && npm run build:dependencies",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
     "test": "jest",
     "eject": "react-scripts eject",

@@ -11,7 +11,6 @@ Sign up flow
 3. Send email with OTP link
 4. If OTP link is opened, a resolve_create_account endpoint is called with the email+OTP parsed out of the link
 5. Create/store session in redis/localStorage
-
 */
 
 const accountRedis = new db.redis.AccountsRedis();

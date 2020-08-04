@@ -2,5 +2,8 @@
   "dependencies": {
     "db": "file:db",
     "utils": "file:utils"
+  },
+  "scripts": {
+    "build:dependencies": "npm install && cd db && npm install"
   }
 }

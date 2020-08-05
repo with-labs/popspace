@@ -1,8 +1,46 @@
 const RedisBase = require("./redis_base");
 
+const ENV_CREDENTIALS = {
+  local: {
+    host: process.env.REDIS_ACCOUNTS_HOST,
+    port: process.env.REDIS_ACCOUNTS_PORT
+  },
+  production: {
+    host: process.env.PRODUCTION_REDIS_ACCOUNTS_HOST,
+    port: process.env.PRODUCTION_REDIS_ACCOUNTS_PORT,
+    auth_pass: process.env.PRODUCTION_REDIS_ACCOUNTS_AUTH_PASS
+  },
+  staging: {
+    host: process.env.STAGING_REDIS_ACCOUNTS_HOST,
+    port: process.env.STAGING_REDIS_ACCOUNTS_PORT,
+    auth_pass: process.env.STAGING_REDIS_ACCOUNTS_AUTH_PASS
+  }
+}
+
+let CREDENTIALS = null
+const getCredentias = () => {
+  switch(process.env.NODE_ENV) {
+    case "production":
+      return ENV_CREDENTIALS.production
+    case "development" || "local":
+      return ENV_CREDENTIALS.local
+    case "preview":
+      return ENV_CREDENTIALS.staging
+    case "staging":
+      return ENV_CREDENTIALS.staging
+    case "branch-deploy":
+      return ENV_CREDENTIALS.staging
+    default:
+      throw `unrecognized environemt #{process.env.NODE_ENV}`
+  }
+}
+
+
+
+
 module.exports = class extends RedisBase {
   constructor() {
-    super(`redis://${process.env.REDIS_ACCOUNTS_ENDPOINT}:${process.env.REDIS_ACCOUNTS_PORT}`);
+    super(getCredentias());
   }
 
   async writeAccountCreateRequest(params, otp) {

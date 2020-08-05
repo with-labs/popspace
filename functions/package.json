@@ -4,6 +4,6 @@
     "utils": "file:utils"
   },
   "scripts": {
-    "build:dependencies": "npm install && cd db && npm install"
+    "build:setup": "npm install && cd db && npm install && npm run db:migrate"
   }
 }

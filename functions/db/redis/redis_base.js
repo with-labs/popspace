@@ -3,9 +3,8 @@ const redis = require('redis')
 // TODO: can promisify redis with bluebird https://www.npmjs.com/package/redis
 
 module.exports = class {
-  constructor(url) {
-    this.url = url
-    this.client = redis.createClient({url: url});
+  constructor(credentials) {
+    this.client = redis.createClient(credentials);
   }
 
   hset(redisKey, hKey, hValue) {

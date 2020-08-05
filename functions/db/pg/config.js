@@ -38,7 +38,7 @@ const getCredentials = () => {
       return STAGING_CREDENTIALS
     case "branch-deploy":
       return STAGING_CREDENTIALS
-    case "ci-test":
+    case "test":
       return STAGING_CREDENTIALS
     default:
       throw `unrecognized environemt ${process.env.NODE_ENV}`

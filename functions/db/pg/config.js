@@ -59,6 +59,9 @@ const getCredentials = () => {
 
 const credentials = getCredentials()
 console.log("================================")
+console.log("dev:", LOCAL_CREDENTIALS)
+console.log("prod:", PROD_CREDENTIALS)
+console.log("staging: ", STAGING_CREDENTIALS)
 console.log(credentials)
 console.log(process.env.STAGING_PG_HOST)
 console.log(process.env.NODE_ENV)

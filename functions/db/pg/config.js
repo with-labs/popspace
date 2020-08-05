@@ -26,7 +26,8 @@ const STAGING_CREDENTIALS = {
   "host": process.env.STAGING_PG_HOST,
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
-  "ssl": true
+  "ssl": true,
+  "rejectUnauthorized": false
 }
 
 const getCredentials = () => {

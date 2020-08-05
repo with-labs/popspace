@@ -30,7 +30,7 @@ const STAGING_CREDENTIALS = {
   "driver": "pg",
   "user": process.env.STAGING_PG_USER,
   "password": process.env.STAGING_PG_PASSWORD,
-  "host": process.env.STAGING_PG_HOST,
+  "host": 'with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com',
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
   "ssl": true,

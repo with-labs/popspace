@@ -1,19 +1,10 @@
-// const LOCAL_CREDENTIALS = {
-//   "driver": "pg",
-//   "user": "withso",
-//   "password": "withso",
-//   "host": "localhost",
-//   "database": "withso",
-//   "port": "5433"
-// }
-
 const LOCAL_CREDENTIALS = {
   "driver": "pg",
-  "user": "staging_with",
-  "password": "withsostaging",
-  "host": "with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com",
-  "database": "staging_with",
-  "port": "5432"
+  "user": "withso",
+  "password": "withso",
+  "host": "localhost",
+  "database": "withso",
+  "port": "5433"
 }
 
 const PROD_CREDENTIALS = {
@@ -48,7 +39,7 @@ const getCredentials = () => {
     case "branch-deploy":
       return STAGING_CREDENTIALS
     default:
-      throw `unrecognized environemt #{process.env.NODE_ENV}`
+      throw `unrecognized environemt ${process.env.NODE_ENV}`
   }
 }
 

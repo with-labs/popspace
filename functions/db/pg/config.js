@@ -60,5 +60,7 @@ const getCredentials = () => {
 const credentials = getCredentials()
 console.log("================================")
 console.log(credentials)
+console.log(process.env.STAGING_PG_HOST)
+console.log(process.env.NODE_ENV)
 console.log("================================")
 module.exports = credentials

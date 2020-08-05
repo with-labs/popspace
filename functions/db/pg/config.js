@@ -33,7 +33,9 @@ const STAGING_CREDENTIALS = {
   "host": 'with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com',
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
-  "ssl": true,
+  // "ssl": {
+  //   rejectUnauthorized: false,
+  // }
   // "rejectUnauthorized": false,
   // "requestCert": true,
   // // https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
@@ -65,5 +67,6 @@ console.log("staging: ", STAGING_CREDENTIALS)
 console.log(credentials)
 console.log(process.env.STAGING_PG_HOST)
 console.log(process.env.NODE_ENV)
+console.log("with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com")
 console.log("================================")
 module.exports = credentials

@@ -19,6 +19,8 @@ enum Actions {
   WidgetAdd = 'WIDGET_ADD',
   WidgetRemove = 'WIDGET_REMOVE',
   WidgetLocationUpdate = 'WIDGET_LOCATION_UPDATE',
+  WidgetUpdateData = 'WIDGET_DATA_UPDATE',
+  WidgetDataFieldUpdate = 'WIDGET_DATA_FIELD_UPDATE',
 }
 
 export default function reducer(state: IWidgetState = {}, action: Action) {
@@ -42,13 +44,42 @@ export default function reducer(state: IWidgetState = {}, action: Action) {
     case Actions.WidgetLocationUpdate: {
       const newWidgets = {
         ...state,
-        [payload.id]: {
-          ...state[payload.id],
+        [payload.widgetId]: {
+          ...state[payload.widgetId],
           location: payload.location,
         },
       };
 
       return newWidgets;
+    }
+
+    case Actions.WidgetUpdateData: {
+      // this action just re-writes the entire widgetData
+      const updatedWidgets = {
+        ...state,
+        [payload.widgetId]: {
+          ...state[payload.widgetId],
+          data: payload.data,
+        },
+      };
+
+      return updatedWidgets;
+    }
+
+    case Actions.WidgetDataFieldUpdate: {
+      const { widgetId, field, value } = payload;
+      const updatedWidgets = {
+        ...state,
+        [widgetId]: {
+          ...state[widgetId],
+          data: {
+            ...state[widgetId].data,
+            [field]: value,
+          },
+        },
+      };
+
+      return updatedWidgets;
     }
   }
 
@@ -65,7 +96,17 @@ export const widgetRemove = (widgetId: string) => ({
   payload: widgetId,
 });
 
-export const widgetLocationUpdate = (id: string, location: LocationTuple) => ({
+export const widgetLocationUpdate = (widgetId: string, location: LocationTuple) => ({
   type: Actions.WidgetLocationUpdate,
-  payload: { id, location },
+  payload: { widgetId, location },
+});
+
+export const widgetDataUpdate = (widgetId: string, data: object) => ({
+  type: Actions.WidgetUpdateData,
+  payload: { widgetId, data },
+});
+
+export const widgetDataFieldUpdate = (widgetId: string, field: string, value: any) => ({
+  type: Actions.WidgetDataFieldUpdate,
+  payload: { widgetId, field, value },
 });

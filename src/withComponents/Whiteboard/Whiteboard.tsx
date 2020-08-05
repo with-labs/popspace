@@ -2,6 +2,7 @@ import React, { RefObject, useRef, MouseEvent } from 'react';
 import { Widget } from '../Widget/Widget';
 import { LocationTuple } from '../../types';
 import clsx from 'clsx';
+import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 
 import styles from './whiteboard.module.css';
 
@@ -11,9 +12,17 @@ type WhiteboardProps = {
   dragConstraints: RefObject<Element>;
   position?: LocationTuple;
   widgetId: string;
+  initialOffset?: number;
 };
 
-const Whiteboard = ({ widgetId, whiteboardId, onCloseHandler, dragConstraints, position }: WhiteboardProps) => {
+const Whiteboard = ({
+  widgetId,
+  whiteboardId,
+  onCloseHandler,
+  dragConstraints,
+  position,
+  initialOffset = 0,
+}: WhiteboardProps) => {
   const iframeRef = useRef(null);
   const witeboardIdRef = useRef(whiteboardId);
 
@@ -25,6 +34,8 @@ const Whiteboard = ({ widgetId, whiteboardId, onCloseHandler, dragConstraints, p
       onCloseHandler={onCloseHandler}
       dragConstraints={dragConstraints}
       classNames={styles.root}
+      initialOffset={initialOffset}
+      type={WidgetTypes.Whiteboard}
     >
       <div className={styles.frame}>
         <div className={styles.matte}>

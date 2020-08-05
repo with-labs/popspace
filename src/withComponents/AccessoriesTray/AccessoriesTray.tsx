@@ -1,16 +1,18 @@
-import React, { useState, MouseEvent } from 'react';
+import React, { useState, useCallback, MouseEvent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { SlideMenu } from '../SlideMenu/SlideMenu';
 import { RoomAdmin } from '../RoomAdmin/RoomAdmin';
 import { AddAppItem } from '../AddAppItem/AddAppItem';
-import PostLink from '../PostLink';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
+import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import { LocationTuple } from '../../types';
+import * as widgetOffsets from '../../constants/widgetInitialOffsets';
 
 import './accessoriesTray.css';
 
@@ -28,11 +30,11 @@ const SUGGESTION_EMAIL_ADDRESS = 'withsuggestions@gmail.com';
 
 enum Menu {
   MENU_ROOT,
-  MENU_ADD_LINK,
 }
 
 export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
   const roomState = useRoomState();
+  const [windowWidth, windowHeight] = useWindowSize();
   const [isAccessoriesTrayOpen, setIsAccessoriesTrayOpen] = useState(false);
   const defaultWhiteboardText = {
     title: 'Whiteboard',
@@ -51,18 +53,17 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     setMenuState(Menu.MENU_ROOT);
   };
 
-  const onUrlSubmitHandler = (url: string, title: string) => {
-    if (!title.length) title = url;
-    addWidget(WidgetTypes.Link, localParticipant.sid, { url, title });
-    closeTray();
+  const onBackBtnClick = () => {
+    setMenuState(Menu.MENU_ROOT);
   };
 
   const onAddLinkClick = () => {
-    setMenuState(Menu.MENU_ADD_LINK);
-  };
-
-  const onBackBtnClick = () => {
-    setMenuState(Menu.MENU_ROOT);
+    addWidget(WidgetTypes.Link, localParticipant.sid, {
+      url: '',
+      title: '',
+      initialOffset: widgetOffsets.WIDGET_LINK_INIT_OFFSET,
+    });
+    closeTray();
   };
 
   const onSuggestAppClick = () => {
@@ -76,7 +77,10 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     // Only add a whiteboard if there are no other whiteboards in the room
     const isWhiteboardAlreadyInRoom = widgets.some(el => el.type === WidgetTypes.Whiteboard);
     if (!isWhiteboardAlreadyInRoom) {
-      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, { whiteboardId: uuidv4() });
+      // whiteboard size if based on the size of the window, so we have to do some calculation
+      // to ge the initial offset
+      const initialOffset = Math.round(window.innerWidth / (100 / widgetOffsets.WIDGET_WHITEBOARD_INIT_OFFSET)) / 2;
+      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, { whiteboardId: uuidv4(), initialOffset });
       closeTray();
     } else {
       // show an error message or something
@@ -91,7 +95,11 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
   };
 
   const onAddStickyNoteClick = (e: MouseEvent) => {
-    addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '' });
+    addWidget(WidgetTypes.StickyNote, localParticipant.sid, {
+      isPublished: false,
+      text: '',
+      initialOffset: widgetOffsets.WIDGET_STICKY_NOTE_INIT_OFFSET,
+    });
     closeTray();
   };
 
@@ -170,12 +178,6 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                 </div>
               </div>
             </>
-          ) : null}
-          {menuState === Menu.MENU_ADD_LINK ? (
-            <div>
-              <div onClick={onBackBtnClick}>&lt; Add a link</div>
-              <PostLink onSubmitHandler={onUrlSubmitHandler} />
-            </div>
           ) : null}
         </SlideMenu>
       )}

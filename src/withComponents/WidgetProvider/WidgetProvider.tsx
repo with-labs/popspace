@@ -11,7 +11,14 @@ import { LocationTuple } from '../../types';
 import { useRoomStateContext } from '../../withHooks/useRoomStateContext/useRoomStateContext';
 
 import { WidgetTypes } from './widgetTypes';
-import { IWidgetState, widgetAdd, widgetRemove, widgetLocationUpdate } from './widgetReducer';
+import {
+  IWidgetState,
+  widgetAdd,
+  widgetRemove,
+  widgetLocationUpdate,
+  widgetDataUpdate,
+  widgetDataFieldUpdate,
+} from './widgetReducer';
 
 /**
  * React context structure for the widgets context. This will expose the widgets state, as well as functions to
@@ -21,7 +28,9 @@ export interface IWidgetsContext {
   widgets: IWidgetState;
   addWidget: (type: WidgetTypes, participantSid: string, data: object) => void;
   removeWidget: (widgetId: string) => void;
-  updateWidgetLocation: (id: string, location: LocationTuple) => void;
+  updateWidgetLocation: (widgetId: string, location: LocationTuple) => void;
+  updateWidgetData: (widgetId: string, data: object) => void;
+  updateWidgetDataField: (widgetId: string, field: string, value: any) => void;
 }
 
 // The React context for widgets.
@@ -68,8 +77,22 @@ export function WidgetProvider({ children }: IWidgetProviderProps) {
 
   // update the location of a widget
   const updateWidgetLocation = useCallback(
-    (id: string, location: LocationTuple) => {
-      dispatch(widgetLocationUpdate(id, location));
+    (widgetId: string, location: LocationTuple) => {
+      dispatch(widgetLocationUpdate(widgetId, location));
+    },
+    [dispatch]
+  );
+
+  const updateWidgetData = useCallback(
+    (widgetId: string, data: object) => {
+      dispatch(widgetDataUpdate(widgetId, data));
+    },
+    [dispatch]
+  );
+
+  const updateWidgetDataField = useCallback(
+    (widgetId: string, field: string, value: any) => {
+      dispatch(widgetDataFieldUpdate(widgetId, field, value));
     },
     [dispatch]
   );
@@ -82,6 +105,8 @@ export function WidgetProvider({ children }: IWidgetProviderProps) {
         addWidget,
         removeWidget,
         updateWidgetLocation,
+        updateWidgetData,
+        updateWidgetDataField,
       }}
     >
       {children}

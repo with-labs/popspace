@@ -182,44 +182,54 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               whiteboardId={widgetWhiteboard.data.whiteboardId}
               dragConstraints={dragableArea}
               position={widgetWhiteboard.location}
+              initialOffset={widgetWhiteboard.data.initialOffset}
             />
           ) : null}
         </div>
-        <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
-          {widgetLinks.map(widget => (
-            <LinkWidget
-              key={widget.id}
-              id={widget.id}
-              position={widget.location}
-              title={widget.data.title}
-              url={widget.data.url}
-              onCloseHandler={() => removeWidget(widget.id)}
-              participant={
-                widget.participantSid === localParticipant.sid
-                  ? localParticipant
-                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
-              }
-              dragConstraints={dragableArea}
-              classNames={widget.location ? 'u-positionAbsolute' : 'u-positionRelative'}
-            />
-          ))}
-        </div>
-        <div>
+        <div key="widgies">
+          {widgetLinks.map(widget => {
+            let retWidget = null;
+            if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
+              retWidget = (
+                <LinkWidget
+                  key={widget.id}
+                  id={widget.id}
+                  isPublished={widget.data.isPublished}
+                  position={widget.location}
+                  title={widget.data.title}
+                  url={widget.data.url}
+                  onCloseHandler={() => removeWidget(widget.id)}
+                  participant={
+                    widget.participantSid === localParticipant.sid
+                      ? localParticipant
+                      : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+                  }
+                  dragConstraints={dragableArea}
+                  initialOffset={widget.data.initialOffset}
+                />
+              );
+            }
+            return retWidget;
+          })}
           {widgetStickyNote.map(widget => {
             let retWidget = null;
             // if the note is published or if the sid is the same as the person who added it
             if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
               retWidget = (
                 <StickyNoteWidget
+                  key={widget.id}
+                  id={widget.id}
+                  position={widget.location}
                   text={widget.data.text}
+                  isPublished={widget.data.isPublished}
                   participant={
                     widget.participantSid === localParticipant.sid
                       ? localParticipant
                       : remoteParticipants.find(pt => pt.sid === widget.participantSid)
                   }
                   onCloseHandler={() => removeWidget(widget.id)}
-                  onPublishHandler={() => {}}
-                  onAddHandler={() => {}}
+                  dragConstraints={dragableArea}
+                  initialOffset={widget.data.initialOffset}
                 />
               );
             }

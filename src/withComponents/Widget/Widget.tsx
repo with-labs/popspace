@@ -6,6 +6,8 @@ import { ReactComponent as AddBtn } from './images/Plus.svg';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
+
 import styles from './Widget.module.css';
 
 interface IWidgetProps {
@@ -17,6 +19,8 @@ interface IWidgetProps {
   onCloseHandler: Function;
   onAddHandler?: Function;
   dragConstraints: RefObject<Element>;
+  initialOffset?: number;
+  type: string;
 }
 
 export const Widget: React.FC<IWidgetProps> = props => {
@@ -30,6 +34,8 @@ export const Widget: React.FC<IWidgetProps> = props => {
     children,
     title,
     dragConstraints,
+    initialOffset = 0,
+    type,
   } = props;
   const { updateWidgetLocation } = useWidgetContext();
   const [windowWidth, windowHeight] = useWindowSize();
@@ -80,12 +86,17 @@ export const Widget: React.FC<IWidgetProps> = props => {
 
   return (
     <motion.div
+      initial={false}
       animate={widgetAnimateLocation}
       drag
       dragMomentum={false}
       dragConstraints={dragConstraints}
       onDragEnd={onDragEndHandler}
       className={clsx('u-flex u-flexCol', styles.widget, styles.grabbable, classNames)}
+      style={{
+        top: `calc(50% - ${type === WidgetTypes.Whiteboard ? initialOffset / 2 : initialOffset}px)`,
+        left: `calc((50% - ${initialOffset}px)`,
+      }}
     >
       <div className="u-flex u-flexRow">
         <div className={clsx('u-fontH2 u-flexGrow1', styles.title, styles.grabbable, titleClassNames)}>{title}</div>

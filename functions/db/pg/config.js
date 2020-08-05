@@ -1,12 +1,19 @@
-
+// const LOCAL_CREDENTIALS = {
+//   "driver": "pg",
+//   "user": "withso",
+//   "password": "withso",
+//   "host": "localhost",
+//   "database": "withso",
+//   "port": "5433"
+// }
 
 const LOCAL_CREDENTIALS = {
   "driver": "pg",
-  "user": "withso",
-  "password": "withso",
-  "host": "localhost",
-  "database": "withso",
-  "port": "5433"
+  "user": "staging_with",
+  "password": "withsostaging",
+  "host": "with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com",
+  "database": "staging_with",
+  "port": "5432"
 }
 
 const PROD_CREDENTIALS = {
@@ -27,10 +34,10 @@ const STAGING_CREDENTIALS = {
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
   "ssl": true,
-  "rejectUnauthorized": false,
-  "requestCert": true,
-  // https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
-  "agent": false
+  // "rejectUnauthorized": false,
+  // "requestCert": true,
+  // // https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
+  // "agent": false
 }
 
 const getCredentials = () => {
@@ -50,4 +57,8 @@ const getCredentials = () => {
   }
 }
 
-module.exports = getCredentials()
+const credentials = getCredentials()
+console.log("================================")
+console.log(credentials)
+console.log("================================")
+module.exports = credentials

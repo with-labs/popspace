@@ -27,7 +27,10 @@ const STAGING_CREDENTIALS = {
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
   "ssl": true,
-  "rejectUnauthorized": false
+  "rejectUnauthorized": false,
+  "requestCert": true,
+  // https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
+  "agent": false
 }
 
 const getCredentials = () => {

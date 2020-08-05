@@ -30,16 +30,9 @@ const STAGING_CREDENTIALS = {
   "driver": "pg",
   "user": process.env.STAGING_PG_USER,
   "password": process.env.STAGING_PG_PASSWORD,
-  "host": 'with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com',
+  "host": process.env.STAGING_PG_HOST,
   "database": process.env.STAGING_PG_DATABASE,
   "port": process.env.STAGING_PG_PORT,
-  // "ssl": {
-  //   rejectUnauthorized: false,
-  // }
-  // "rejectUnauthorized": false,
-  // "requestCert": true,
-  // // https://stackoverflow.com/questions/10888610/ignore-invalid-self-signed-ssl-certificate-in-node-js-with-https-request
-  // "agent": false
 }
 
 const getCredentials = () => {
@@ -59,14 +52,4 @@ const getCredentials = () => {
   }
 }
 
-const credentials = getCredentials()
-console.log("================================")
-console.log("dev:", LOCAL_CREDENTIALS)
-console.log("prod:", PROD_CREDENTIALS)
-console.log("staging: ", STAGING_CREDENTIALS)
-console.log(credentials)
-console.log(process.env.STAGING_PG_HOST)
-console.log(process.env.NODE_ENV)
-console.log("with-staging.cfptdtmcott3.us-east-2.rds.amazonaws.com")
-console.log("================================")
-module.exports = credentials
+module.exports = getCredentials()

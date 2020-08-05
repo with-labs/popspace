@@ -31,7 +31,7 @@ const getCredentias = () => {
     case "branch-deploy":
       return ENV_CREDENTIALS.staging
     default:
-      throw `unrecognized environemt #{process.env.NODE_ENV}`
+      throw `unrecognized environemt ${process.env.NODE_ENV}`
   }
 }
 

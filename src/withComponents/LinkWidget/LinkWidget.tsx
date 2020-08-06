@@ -80,7 +80,7 @@ export const LinkWidget: React.FC<ILinkWidget> = ({
         />
         <FormInput placeholderText={'Url'} value={urlText} onChangeHandler={setUrlText} />
         <div className={styles.error}>{formError}</div>
-        <button type="submit" className={clsx('u-fontP2', styles.createLinkButton)}>
+        <button type="submit" className={clsx('u-fontB1', styles.createLinkButton)}>
           Add a link
         </button>
       </form>

@@ -55,12 +55,12 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({
   ) : (
     <div>
       <textarea
-        className={styles.textInput}
+        className={clsx('u-fontP1', styles.textInput)}
         value={inputText}
         onChange={handleTextChange}
         placeholder="Type your note"
       />
-      <button className={styles.createNoteButton} onClick={handlePublish}>
+      <button className={clsx('u-fontB1', styles.createNoteButton)} onClick={handlePublish}>
         Create Note
       </button>
     </div>

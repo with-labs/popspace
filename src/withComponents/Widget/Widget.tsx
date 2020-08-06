@@ -57,7 +57,7 @@ export const Widget: React.FC<IWidgetProps> = props => {
   );
 
   const addButton = onAddHandler ? (
-    <div className="u-cursorPointer u-height100Percent" onClick={() => onAddHandler()}>
+    <div className={clsx(styles.addButton, 'u-cursorPointer u-height100Percent')} onClick={() => onAddHandler()}>
       <AddBtn />
     </div>
   ) : null;

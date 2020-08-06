@@ -24,3 +24,7 @@
 .grabbable:active {
   cursor: grabbing;
 }
+
+.addButton {
+  margin-right: 12px;
+}

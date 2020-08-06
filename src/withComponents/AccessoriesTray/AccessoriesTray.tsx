@@ -17,10 +17,8 @@ import * as widgetOffsets from '../../constants/widgetInitialOffsets';
 import './accessoriesTray.css';
 
 import linkImg from './images/link.svg';
-import musicImg from './images/music.svg';
-import timerImg from './images/timer.svg';
-import calendarImg from './images/meetings.svg';
-import whitebordImg from './images/whiteboard.svg';
+import whiteboardImg from './images/whiteboard.svg';
+import stickyNoteImg from './images/app_stickies.svg';
 
 interface AccessoriesTrayProps {
   classNames?: string;
@@ -125,14 +123,14 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                     <AddAppItem
                       imgSrc={linkImg}
                       imgAltText="link img icon"
-                      title="Add a link"
+                      title="Link"
                       descText="Post links visible to everybody in the room."
                       onClickHandler={onAddLinkClick}
                     />
                   </div>
                   <div key="whiteboard" className="AccessoriesTray-appItem">
                     <AddAppItem
-                      imgSrc={whitebordImg}
+                      imgSrc={whiteboardImg}
                       imgAltText="Whiteboard"
                       title={whiteboardText.title}
                       descText={whiteboardText.descText}
@@ -141,38 +139,11 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                   </div>
                   <div key="stickyNote" className="AccessoriesTray-appItem">
                     <AddAppItem
-                      imgSrc={whitebordImg}
+                      imgSrc={stickyNoteImg}
                       imgAltText="StickyNote"
-                      title="Add a sticky note"
-                      descText="desc text goes here"
+                      title="Sticky note"
+                      descText="Share snippets of information"
                       onClickHandler={onAddStickyNoteClick}
-                    />
-                  </div>
-                  <div key="music" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={musicImg}
-                      imgAltText="Music app"
-                      title="Music"
-                      descText="Play music along with the people in the room."
-                      isDisabled={true}
-                    />
-                  </div>
-                  <div key="timer" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={timerImg}
-                      imgAltText="timer app"
-                      title="Timer"
-                      descText="Add a timer to countdown and take breaks."
-                      isDisabled={true}
-                    />
-                  </div>
-                  <div key="calendar" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={calendarImg}
-                      imgAltText="meetings app"
-                      title="Meetings"
-                      descText="Schedule a meeting with one-click attend."
-                      isDisabled={true}
                     />
                   </div>
                 </div>

@@ -1,3 +1,7 @@
+## 1.89.0 
+
+- Adding in motive room
+
 ## 1.88.0
 
 - Fixing duplicate ParticipantCircle circle dragging due to merge conflict that made it in

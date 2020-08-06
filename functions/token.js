@@ -164,7 +164,8 @@ const ROOM_WHITELIST_PASSCODES = {
   producthunt: '269170',
   framer: '995771', 
   figma: '547569',
-  githubocto:'201974'
+  githubocto:'201974',
+  motive: '$Motive!20'
 };
 
 // When developing locally (npm run dev), don't enforce passcode

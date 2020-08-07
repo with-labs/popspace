@@ -1,7 +1,7 @@
 import React, { RefObject, useState } from 'react';
 import clsx from 'clsx';
 import { Widget } from '../Widget/Widget';
-import { RemoteParticipant, LocalParticipant } from 'twilio-video';
+import { Participant } from 'twilio-video';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
@@ -13,7 +13,7 @@ import styles from './StickyNoteWidget.module.css';
 interface IStickyNoteWidget {
   id: string;
   text: string;
-  participant?: LocalParticipant | RemoteParticipant;
+  participant?: Participant;
   onCloseHandler: (event: MouseEvent) => void;
   position?: LocationTuple;
   dragConstraints: RefObject<Element>;

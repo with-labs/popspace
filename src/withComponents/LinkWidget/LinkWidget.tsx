@@ -2,7 +2,7 @@ import React, { RefObject, MouseEvent, useState } from 'react';
 import clsx from 'clsx';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Widget } from '../Widget/Widget';
-import { RemoteParticipant, LocalParticipant } from 'twilio-video';
+import { Participant } from 'twilio-video';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
@@ -15,7 +15,7 @@ interface ILinkWidget {
   id: string;
   title: string;
   url: string;
-  participant?: LocalParticipant | RemoteParticipant;
+  participant?: Participant;
   onCloseHandler: (event: MouseEvent) => void;
   dragConstraints: RefObject<Element>;
   position?: LocationTuple;

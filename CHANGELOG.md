@@ -2,6 +2,8 @@
 
 - Add in sticky note widget
 - QOL changes for whiteboard and link widgets
+- Widgets now spawn in the middle of the screen
+- Code clean up
 
 ## 1.90.0
 

@@ -9,7 +9,7 @@ import { Participant, TrackPublication } from 'twilio-video';
 */
 export default function useScreenShareParticipant() {
   const { room } = useVideoContext();
-  const [screenShareParticipant, setScreenShareParticipant] = useState();
+  const [screenShareParticipant, setScreenShareParticipant] = useState<Participant>();
 
   useEffect(() => {
     if (room.state === 'connected') {
@@ -19,10 +19,13 @@ export default function useScreenShareParticipant() {
             // the screenshare participant could be the localParticipant
             .concat(room.localParticipant)
             .find((participant: Participant) =>
-              Array.from<TrackPublication>(participant.tracks.values()).find(track => track.trackName === 'screen')
+              Array.from<TrackPublication>(participant.tracks.values()).find(track =>
+                track.trackName.includes('screen')
+              )
             )
         );
       };
+      updateScreenShareParticipant();
       updateScreenShareParticipant();
 
       room.on('trackPublished', updateScreenShareParticipant);

@@ -1,0 +1,40 @@
+.stickyNote {
+  background: #fff2af;
+  max-width: 200px;
+}
+
+.title {
+  color: #c77f00;
+}
+
+.displayText {
+  overflow: auto;
+  max-height: 250px;
+}
+
+.textInput {
+  height: 96px;
+  resize: none;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0px 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.createNoteButton {
+  width: 100%;
+  height: 48px;
+  border-radius: 6px;
+  background-color: #ea990b;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.addedByText {
+  margin-top: 8px;
+  color: #9a6200;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

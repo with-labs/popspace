@@ -1,21 +1,32 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Add RoomStateProvider.
  * `localTracks` context property can now include LocalDataTracks.
+ *
+ * Aug 6, 2020 WQP
+ * - updated to latest twilio-video starter app
  */
-
 import React, { createContext, ReactNode } from 'react';
-import { ConnectOptions, Room, TwilioError, LocalAudioTrack, LocalVideoTrack, LocalDataTrack } from 'twilio-video';
+import {
+  CreateLocalTrackOptions,
+  ConnectOptions,
+  LocalAudioTrack,
+  LocalVideoTrack,
+  LocalDataTrack,
+  Room,
+  TwilioError,
+} from 'twilio-video';
 import { Callback, ErrorCallback } from '../../types';
 import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
 
+// TODO, this is a good idea and we should probably do it https://github.com/twilio/twilio-video-app-react/blob/master/src/components/VideoProvider/AttachVisibilityHandler/AttachVisibilityHandler.tsx
+// import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
 import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
-
 import { RoomStateProvider } from '../../withComponents/RoomState/RoomStateProvider';
 
 /*
@@ -32,8 +43,10 @@ export interface IVideoContext {
   connect: (token: string) => Promise<void>;
   onError: ErrorCallback;
   onDisconnect: Callback;
-  getLocalVideoTrack: (deviceId?: string) => Promise<LocalVideoTrack>;
+  getLocalVideoTrack: (newOptions?: CreateLocalTrackOptions) => Promise<LocalVideoTrack>;
   getLocalAudioTrack: (deviceId?: string) => Promise<LocalAudioTrack>;
+  isAcquiringLocalTracks: boolean;
+  removeLocalVideoTrack: () => void;
 }
 
 export const VideoContext = createContext<IVideoContext>(null!);
@@ -51,7 +64,13 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
     onError(error);
   };
 
-  const { localTracks, getLocalVideoTrack, getLocalAudioTrack } = useLocalTracks();
+  const {
+    localTracks,
+    getLocalVideoTrack,
+    getLocalAudioTrack,
+    isAcquiringLocalTracks,
+    removeLocalVideoTrack,
+  } = useLocalTracks();
   const { room, isConnecting, connect } = useRoom(localTracks, onErrorCallback, options);
 
   // Register onError and onDisconnect callback functions.
@@ -70,6 +89,8 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         getLocalVideoTrack,
         getLocalAudioTrack,
         connect,
+        isAcquiringLocalTracks,
+        removeLocalVideoTrack,
       }}
     >
       <RoomStateProvider>

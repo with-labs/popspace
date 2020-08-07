@@ -1,5 +1,5 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Have to guard track stoppage to make sure DataTracks aren't "stopped" because that's not part of their API. See
  * the `handleSignOut` handler.

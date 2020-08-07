@@ -4,31 +4,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { SlideMenu } from '../SlideMenu/SlideMenu';
 import { RoomAdmin } from '../RoomAdmin/RoomAdmin';
 import { AddAppItem } from '../AddAppItem/AddAppItem';
-import PostLink from '../PostLink';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
+import * as widgetOffsets from '../../constants/widgetInitialOffsets';
 
 import './accessoriesTray.css';
 
 import linkImg from './images/link.svg';
-import musicImg from './images/music.svg';
-import timerImg from './images/timer.svg';
-import calendarImg from './images/meetings.svg';
-import whitebordImg from './images/whiteboard.svg';
+import whiteboardImg from './images/whiteboard.svg';
+import stickyNoteImg from './images/app_stickies.svg';
 
 interface AccessoriesTrayProps {
   classNames?: string;
-}
-
-const SUGGESTION_EMAIL_ADDRESS = 'withsuggestions@gmail.com';
-
-enum Menu {
-  MENU_ROOT,
-  MENU_ADD_LINK,
 }
 
 export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
@@ -39,7 +30,6 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     descText: 'Draw on a shared whiteboard.',
   };
   const [whiteboardText, setWhiteboardText] = useState(defaultWhiteboardText);
-  const [menuState, setMenuState] = useState(Menu.MENU_ROOT);
   const { addWidget } = useWidgetContext();
   const { widgets } = useRoomParties();
   const {
@@ -48,35 +38,29 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
 
   const closeTray = () => {
     setIsAccessoriesTrayOpen(false);
-    setMenuState(Menu.MENU_ROOT);
-  };
-
-  const onUrlSubmitHandler = (url: string, title: string) => {
-    if (!title.length) title = url;
-    addWidget(WidgetTypes.Link, localParticipant.sid, { url, title });
-    closeTray();
   };
 
   const onAddLinkClick = () => {
-    setMenuState(Menu.MENU_ADD_LINK);
-  };
-
-  const onBackBtnClick = () => {
-    setMenuState(Menu.MENU_ROOT);
-  };
-
-  const onSuggestAppClick = () => {
-    const to = SUGGESTION_EMAIL_ADDRESS;
-    const subject = 'Suggest an app';
-    const body = `I would love it if you made an app that...`;
-    window.open(`mailto:${to}?subject=${subject}&body=${body}`, '_blank');
+    addWidget(WidgetTypes.Link, localParticipant.sid, {
+      url: '',
+      title: '',
+      initialOffset: widgetOffsets.WIDGET_LINK_INIT_OFFSET,
+    });
+    closeTray();
   };
 
   const onAddWhiteboardClick = (e: MouseEvent) => {
     // Only add a whiteboard if there are no other whiteboards in the room
     const isWhiteboardAlreadyInRoom = widgets.some(el => el.type === WidgetTypes.Whiteboard);
     if (!isWhiteboardAlreadyInRoom) {
-      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, { whiteboardId: uuidv4() });
+      // whiteboard size if based on the size of the window, so we have to do some calculation
+      // to ge the initial offset
+      const initialOffset = Math.round(window.innerWidth / (100 / widgetOffsets.WIDGET_WHITEBOARD_INIT_OFFSET)) / 2;
+      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, {
+        whiteboardId: uuidv4(),
+        isPublished: true,
+        initialOffset,
+      });
       closeTray();
     } else {
       // show an error message or something
@@ -90,6 +74,15 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     }
   };
 
+  const onAddStickyNoteClick = (e: MouseEvent) => {
+    addWidget(WidgetTypes.StickyNote, localParticipant.sid, {
+      isPublished: false,
+      text: '',
+      initialOffset: widgetOffsets.WIDGET_STICKY_NOTE_INIT_OFFSET,
+    });
+    closeTray();
+  };
+
   return (
     <div className="AccessoriesTray u-positionFixed u-layerControlsAlpha">
       {roomState === 'disconnected' ? null : (
@@ -100,69 +93,41 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
           isActive={isAccessoriesTrayOpen}
           mobileMenuClassNames="AccessoriesTray-mobileOffset"
         >
-          {menuState === Menu.MENU_ROOT ? (
-            <>
-              <div className="u-marginBottom20">
-                <RoomAdmin onClickChangeWallpaper={closeTray} />
+          <div className="u-marginBottom20">
+            <RoomAdmin onClickChangeWallpaper={closeTray} />
+          </div>
+          <div>
+            <div className="AccessoriesTray-appItems-title u-marginBottom20">Room accessories</div>
+            <div className="AccessoriesTray-appItemScroll">
+              <div key="links" className="AccessoriesTray-appItem">
+                <AddAppItem
+                  imgSrc={linkImg}
+                  imgAltText="link img icon"
+                  title="Link"
+                  descText="Post links visible to everybody in the room."
+                  onClickHandler={onAddLinkClick}
+                />
               </div>
-              <div>
-                <div className="AccessoriesTray-appItems-title u-marginBottom20">Room accessories</div>
-                <div className="AccessoriesTray-appItemScroll">
-                  <div key="links" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={linkImg}
-                      imgAltText="link img icon"
-                      title="Add a link"
-                      descText="Post links visible to everybody in the room."
-                      onClickHandler={onAddLinkClick}
-                    />
-                  </div>
-                  <div key="whiteboard" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={whitebordImg}
-                      imgAltText="Whiteboard"
-                      title={whiteboardText.title}
-                      descText={whiteboardText.descText}
-                      onClickHandler={onAddWhiteboardClick}
-                    />
-                  </div>
-                  <div key="music" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={musicImg}
-                      imgAltText="Music app"
-                      title="Music"
-                      descText="Play music along with the people in the room."
-                      isDisabled={true}
-                    />
-                  </div>
-                  <div key="timer" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={timerImg}
-                      imgAltText="timer app"
-                      title="Timer"
-                      descText="Add a timer to countdown and take breaks."
-                      isDisabled={true}
-                    />
-                  </div>
-                  <div key="calendar" className="AccessoriesTray-appItem">
-                    <AddAppItem
-                      imgSrc={calendarImg}
-                      imgAltText="meetings app"
-                      title="Meetings"
-                      descText="Schedule a meeting with one-click attend."
-                      isDisabled={true}
-                    />
-                  </div>
-                </div>
+              <div key="whiteboard" className="AccessoriesTray-appItem">
+                <AddAppItem
+                  imgSrc={whiteboardImg}
+                  imgAltText="Whiteboard"
+                  title={whiteboardText.title}
+                  descText={whiteboardText.descText}
+                  onClickHandler={onAddWhiteboardClick}
+                />
               </div>
-            </>
-          ) : null}
-          {menuState === Menu.MENU_ADD_LINK ? (
-            <div>
-              <div onClick={onBackBtnClick}>&lt; Add a link</div>
-              <PostLink onSubmitHandler={onUrlSubmitHandler} />
+              <div key="stickyNote" className="AccessoriesTray-appItem">
+                <AddAppItem
+                  imgSrc={stickyNoteImg}
+                  imgAltText="StickyNote"
+                  title="Sticky note"
+                  descText="Share snippets of information"
+                  onClickHandler={onAddStickyNoteClick}
+                />
+              </div>
             </div>
-          ) : null}
+          </div>
         </SlideMenu>
       )}
     </div>

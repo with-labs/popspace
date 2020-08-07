@@ -1,3 +1,10 @@
+## 1.91.0
+
+- Add in sticky note widget
+- QOL changes for whiteboard and link widgets
+- Widgets now spawn in the middle of the screen
+- Code clean up
+
 ## 1.90.0
 
 - Upgrade twilio-video and update local track state management to be …consistent with the latest starter app.

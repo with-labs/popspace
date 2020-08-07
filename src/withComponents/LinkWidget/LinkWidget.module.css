@@ -11,6 +11,10 @@
 
 .addedByText {
   color: #636c8b;
+  margin-top: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .link {
@@ -22,4 +26,33 @@
   width: 100%;
   white-space: nowrap;
   overflow: hidden;
+}
+
+.linkInput {
+  margin-bottom: 5px;
+}
+
+.textInput {
+  height: 96px;
+  resize: none;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0px 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.createLinkButton {
+  margin-top: 8px;
+  width: 100%;
+  height: 48px;
+  border-radius: 6px;
+  background-color: #636c8b;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.error {
+  margin-top: 8px;
+  color: red;
 }

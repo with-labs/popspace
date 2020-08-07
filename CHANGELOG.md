@@ -1,3 +1,7 @@
+## 1.92.0
+
+- Add in commonsans font
+
 ## 1.91.0
 
 - Add in sticky note widget

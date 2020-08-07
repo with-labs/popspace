@@ -1,5 +1,5 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Removed the part of this hook that shuffles the dominant speaker to the front of the participants array.
  */

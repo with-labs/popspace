@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { RemoteParticipant, LocalParticipant } from 'twilio-video';
+import { Participant } from 'twilio-video';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useParticipantMeta } from '../useParticipantMeta/useParticipantMeta';
 import { LocationTuple } from '../../types';
@@ -8,7 +8,7 @@ import { LocationTuple } from '../../types';
  * Compare the location of a given remote participant against the local participant
  * Returns distance
  */
-export function useParticipantLocationDelta(participant: LocalParticipant | RemoteParticipant) {
+export function useParticipantLocationDelta(participant: Participant) {
   const {
     room: { localParticipant },
   } = useVideoContext();

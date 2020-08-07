@@ -1,9 +1,8 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Adding in classNames param
  */
-
 
 import React, { useRef, useEffect } from 'react';
 import { IVideoTrack } from '../../types';
@@ -21,7 +20,6 @@ interface VideoTrackProps {
   isLocal?: boolean;
   priority?: Track.Priority;
   classNames?: string;
-
 }
 
 export default function VideoTrack({ track, isLocal, priority, classNames }: VideoTrackProps) {
@@ -46,5 +44,5 @@ export default function VideoTrack({ track, isLocal, priority, classNames }: Vid
   // The local video track is mirrored.
   const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
 
-  return <Video ref={ref} style={style} className={classNames}/>;
+  return <Video ref={ref} style={style} className={classNames} />;
 }

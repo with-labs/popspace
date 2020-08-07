@@ -57,10 +57,66 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   useLocalVolumeDetection();
 
   // get the widgets to display in the room
-  const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
-  const widgetStickyNote = widgets.filter(widget => widget.type === WidgetTypes.StickyNote);
-  // safe to assume only one whiteboard ever
-  const [widgetWhiteboard] = widgets.filter(widget => widget.type === WidgetTypes.Whiteboard);
+  const widgetComps = widgets.reduce<JSX.Element[]>((widComps, widget) => {
+    if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
+      switch (widget.type) {
+        case WidgetTypes.Link:
+          widComps.push(
+            <LinkWidget
+              key={widget.id}
+              id={widget.id}
+              isPublished={widget.data.isPublished}
+              position={widget.location}
+              title={widget.data.title}
+              url={widget.data.url}
+              onCloseHandler={() => removeWidget(widget.id)}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+              dragConstraints={dragableArea}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        case WidgetTypes.StickyNote:
+          widComps.push(
+            <StickyNoteWidget
+              key={widget.id}
+              id={widget.id}
+              position={widget.location}
+              text={widget.data.text}
+              isPublished={widget.data.isPublished}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+              onCloseHandler={() => removeWidget(widget.id)}
+              dragConstraints={dragableArea}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        case WidgetTypes.Whiteboard:
+          widComps.push(
+            <Whiteboard
+              widgetId={widget.id}
+              onCloseHandler={() => removeWidget(widget.id)}
+              whiteboardId={widget.data.whiteboardId}
+              dragConstraints={dragableArea}
+              position={widget.location}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        default:
+          break;
+      }
+    }
+    return widComps;
+  }, []);
 
   useEffect(() => {
     if (initialAvatar) {
@@ -174,68 +230,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         {Object.keys(huddles).map(huddleId => (
           <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
         ))}
-        <div>
-          {widgetWhiteboard ? (
-            <Whiteboard
-              widgetId={widgetWhiteboard.id}
-              onCloseHandler={() => removeWidget(widgetWhiteboard.id)}
-              whiteboardId={widgetWhiteboard.data.whiteboardId}
-              dragConstraints={dragableArea}
-              position={widgetWhiteboard.location}
-              initialOffset={widgetWhiteboard.data.initialOffset}
-            />
-          ) : null}
-        </div>
-        <div key="widgies">
-          {widgetLinks.map(widget => {
-            let retWidget = null;
-            if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
-              retWidget = (
-                <LinkWidget
-                  key={widget.id}
-                  id={widget.id}
-                  isPublished={widget.data.isPublished}
-                  position={widget.location}
-                  title={widget.data.title}
-                  url={widget.data.url}
-                  onCloseHandler={() => removeWidget(widget.id)}
-                  participant={
-                    widget.participantSid === localParticipant.sid
-                      ? localParticipant
-                      : remoteParticipants.find(pt => pt.sid === widget.participantSid)
-                  }
-                  dragConstraints={dragableArea}
-                  initialOffset={widget.data.initialOffset}
-                />
-              );
-            }
-            return retWidget;
-          })}
-          {widgetStickyNote.map(widget => {
-            let retWidget = null;
-            // if the note is published or if the sid is the same as the person who added it
-            if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
-              retWidget = (
-                <StickyNoteWidget
-                  key={widget.id}
-                  id={widget.id}
-                  position={widget.location}
-                  text={widget.data.text}
-                  isPublished={widget.data.isPublished}
-                  participant={
-                    widget.participantSid === localParticipant.sid
-                      ? localParticipant
-                      : remoteParticipants.find(pt => pt.sid === widget.participantSid)
-                  }
-                  onCloseHandler={() => removeWidget(widget.id)}
-                  dragConstraints={dragableArea}
-                  initialOffset={widget.data.initialOffset}
-                />
-              );
-            }
-            return retWidget;
-          })}
-        </div>
+        <div className="widgets">{widgetComps}</div>
         {Object.keys(bubs).map(key => {
           const { pt, top, left } = bubs[key];
 

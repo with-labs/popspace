@@ -70,7 +70,7 @@ ReactDOM.render(
             <AnglesMainApp />
           </Route>
 
-          <Route path="/signup">
+          <Route exact path="/signup">
             <Signup />}
           </Route>
 

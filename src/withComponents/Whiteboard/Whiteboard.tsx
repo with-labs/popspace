@@ -1,21 +1,42 @@
-import React, { useRef, MouseEvent } from 'react';
-
+import React, { RefObject, useRef, MouseEvent } from 'react';
+import { Widget } from '../Widget/Widget';
+import { LocationTuple } from '../../types';
 import clsx from 'clsx';
+import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 
 import styles from './whiteboard.module.css';
 
 type WhiteboardProps = {
   onCloseHandler: (event: MouseEvent) => void;
   whiteboardId: string;
+  dragConstraints: RefObject<Element>;
+  position?: LocationTuple;
+  widgetId: string;
+  initialOffset?: number;
 };
 
-const Whiteboard = ({ whiteboardId, onCloseHandler }: WhiteboardProps) => {
+const Whiteboard = ({
+  widgetId,
+  whiteboardId,
+  onCloseHandler,
+  dragConstraints,
+  position,
+  initialOffset = 0,
+}: WhiteboardProps) => {
   const iframeRef = useRef(null);
   const witeboardIdRef = useRef(whiteboardId);
 
   return (
-    <div className={styles.root}>
-      <div className={clsx('u-round u-layerSurfaceBeta', styles.close)} onClick={onCloseHandler}></div>
+    <Widget
+      id={widgetId}
+      title="Whiteboard"
+      position={position}
+      onCloseHandler={onCloseHandler}
+      dragConstraints={dragConstraints}
+      classNames={styles.root}
+      initialOffset={initialOffset}
+      type={WidgetTypes.Whiteboard}
+    >
       <div className={styles.frame}>
         <div className={styles.matte}>
           <iframe
@@ -28,7 +49,7 @@ const Whiteboard = ({ whiteboardId, onCloseHandler }: WhiteboardProps) => {
           ></iframe>
         </div>
       </div>
-    </div>
+    </Widget>
   );
 };
 

@@ -1,3 +1,39 @@
+## 1.92.0
+
+- Add in commonsans font
+
+## 1.91.0
+
+- Add in sticky note widget
+- QOL changes for whiteboard and link widgets
+- Widgets now spawn in the middle of the screen
+- Code clean up
+
+## 1.90.0
+
+- Upgrade twilio-video and update local track state management to be …consistent with the latest starter app.
+- Add cookies for mic and camera preferences so that when devices change we can attempt to connect to the last set mic/camera.
+- Only set the mic/camera pref cookie when the user explicitly sets a mic/camera via the settings modal.
+- TODO: fix local audio volume detection. currently stops working if the the audio input device is changed.
+
+## 1.89.0
+
+- Adding in motive room
+
+## 1.88.0
+
+- Fixing duplicate ParticipantCircle circle dragging due to merge conflict that made it in
+
+## 1.87.0
+
+- Adding in the ability to drag widgets using framer-motion
+- updating look and feel of whiteboard widget
+- refinement of widget components to track position
+
+## 1.86.0
+
+- Make ParticipantCircle bubble background color always white.
+
 ## 1.85.0
 
 - useLocalVolumeDetection hook to analyze mic input data

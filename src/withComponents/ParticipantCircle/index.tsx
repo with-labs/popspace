@@ -161,12 +161,6 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     );
   });
 
-  const styles = {
-    backgroundColor: avatar?.backgroundColor,
-    borderColor: isSpeaking ? '#b9c5ff' : avatar?.backgroundColor,
-    ...style,
-  };
-
   return (
     <>
       <div
@@ -174,7 +168,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
           'is-localParticipant': isLocal,
           'is-speaking': isSpeaking,
         })}
-        style={styles}
+        style={style}
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={() => onClick()}

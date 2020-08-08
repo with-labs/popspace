@@ -1,54 +1,57 @@
+/**
+ * #WITH_EDIT
+ *
+ * Aug. 6, 2020 WQP
+ * - Updated to latest twilio-video starter app code
+ * - Added updates for video off by default and local data tracks
+ */
+
 import { act, renderHook } from '@testing-library/react-hooks';
 import useLocalTracks from './useLocalTracks';
-import Video from 'twilio-video';
+import Video, { LocalVideoTrack } from 'twilio-video';
 import { EventEmitter } from 'events';
-import * as TV from 'twilio-video';
 
 // WARNING, this is a big no-no, BUT LocalDataTrack is undefined in the unit testing env for some unknown reason.
 // The only way I could get the tests working was to monkey patch LocalDataTrack back into the module.
+import * as TV from 'twilio-video';
 class LDT {}
 // @ts-ignore
 TV.LocalDataTrack = LDT;
 
 describe('the useLocalTracks hook', () => {
+  afterEach(jest.clearAllMocks);
+
   it('should return an array of tracks and two functions', async () => {
     const { result, waitForNextUpdate } = renderHook(useLocalTracks);
-    // LocalDataTrack is always present.
-    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
+    expect(result.current.localTracks).toEqual([]);
     await waitForNextUpdate();
-    // Video is off by default, so only one track
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(LDT)]);
+    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
     expect(result.current.getLocalVideoTrack).toEqual(expect.any(Function));
   });
 
-  it('should be called with the correct arguments', async () => {
-    const { result, waitForNextUpdate } = renderHook(useLocalTracks);
+  it('should create only a audio and video local track by default when loaded', async () => {
+    Date.now = () => 123456;
+    const { waitForNextUpdate } = renderHook(useLocalTracks);
     await waitForNextUpdate();
-    expect(Video.createLocalAudioTrack).toHaveBeenCalled();
-
-    // Since video is off by default, must call getLocalVideoTrack to test the args sent to the Twilio Video obj.
-    result.current.getLocalVideoTrack();
-    expect(Video.createLocalVideoTrack).toHaveBeenCalledWith({
-      frameRate: 24,
-      height: 720,
-      width: 1280,
-      name: 'camera',
+    expect(Video.createLocalTracks).toHaveBeenCalledWith({
+      audio: true,
     });
   });
 
-  it('should respond to "stopped" events from the local video track', async () => {
-    const { result, waitForNextUpdate } = renderHook(useLocalTracks);
+  describe('the removeLocalVideoTrack function', () => {
+    it('should call videoTrack.stop() and remove the videoTrack from state', async () => {
+      const { result, waitForNextUpdate } = renderHook(useLocalTracks);
+      await waitForNextUpdate();
+      const initialVideoTrack = result.current.localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
+      expect(initialVideoTrack!.stop).not.toHaveBeenCalled();
+      expect(initialVideoTrack).toBeTruthy();
 
-    // Must enable video to be able to test the 'stopped' event on video
-    result.current.getLocalVideoTrack();
+      act(() => {
+        result.current.removeLocalVideoTrack();
+      });
 
-    await waitForNextUpdate();
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
-    act(() => {
-      result.current.localTracks[0].emit('stopped');
-      result.current.localTracks[1].emit('stopped');
+      expect(result.current.localTracks.some(track => track.kind === 'video')).toBe(false);
+      expect(initialVideoTrack!.stop).toHaveBeenCalled();
     });
-    // LocalDataTrack is always present and cannot be stopped.
-    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
   });
 });

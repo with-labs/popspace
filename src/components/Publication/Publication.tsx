@@ -1,5 +1,5 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Adding in classNames param
  */
@@ -17,15 +17,14 @@ import { IVideoTrack } from '../../types';
 import {
   AudioTrack as IAudioTrack,
   LocalTrackPublication,
-  RemoteParticipant,
-  LocalParticipant,
+  Participant,
   RemoteTrackPublication,
   Track,
 } from 'twilio-video';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
-  participant: LocalParticipant | RemoteParticipant;
+  participant: Participant;
   isLocal: boolean;
   disableAudio?: boolean;
   videoPriority?: Track.Priority;

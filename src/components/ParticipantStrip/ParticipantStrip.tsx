@@ -1,5 +1,5 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * Added huddle context and modified the `setSelected` handler to change huddle statuses.
  * Setting the `disableAudio` prop on remote participants based on audio blacklist (which is dervied from huddles).

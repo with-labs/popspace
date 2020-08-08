@@ -17,7 +17,7 @@ type LocalVideoPreviewProps = {
 const LocalVideoPreview = ({ classNames }: LocalVideoPreviewProps) => {
   const { localTracks } = useVideoContext();
 
-  const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
+  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
   const placeHolderVideo = (
     <div className={clsx('LocalVideo-placeHolder u-height100Percent', classNames)}>
       <img src={camera} alt="camera_icon" />

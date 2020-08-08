@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { LocalParticipant, RemoteParticipant, RemoteVideoTrack, LocalVideoTrack } from 'twilio-video';
+import { LocalVideoTrack, Participant, RemoteVideoTrack } from 'twilio-video';
 
 import BandwidthWarning from '../BandwidthWarning/BandwidthWarning';
 import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
@@ -14,6 +14,7 @@ const useStyles = makeStyles({
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
+    gridArea: 'participantList',
   },
   isVideoSwitchedOff: {
     '& video': {
@@ -40,7 +41,7 @@ const useStyles = makeStyles({
 });
 
 interface MainParticipantInfoProps {
-  participant: LocalParticipant | RemoteParticipant;
+  participant: Participant;
   children: React.ReactNode;
 }
 
@@ -48,8 +49,8 @@ export default function MainParticipantInfo({ participant, children }: MainParti
   const classes = useStyles();
 
   const publications = usePublications(participant);
-  const videoPublication = publications.find(p => p.trackName === 'camera');
-  const screenSharePublication = publications.find(p => p.trackName === 'screen');
+  const videoPublication = publications.find(p => p.trackName.includes('camera'));
+  const screenSharePublication = publications.find(p => p.trackName.includes('screen'));
   const isVideoEnabled = Boolean(videoPublication);
 
   const videoTrack = useTrack(screenSharePublication || videoPublication);

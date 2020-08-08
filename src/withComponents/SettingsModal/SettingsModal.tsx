@@ -1,5 +1,6 @@
 import React, { MouseEvent, ReactNode, CSSProperties, useState, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import Cookie from 'js-cookie';
 
 import 'emoji-mart/css/emoji-mart.css';
 import { Picker, Emoji } from 'emoji-mart';
@@ -76,6 +77,20 @@ const SettingsModal = (props: SettingsModalProps) => {
     updateEmoji(null);
   }
 
+  const updateCameraSelection = (cameraId: string) => {
+    // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
+    // by the user.
+    Cookie.set('vidPref', cameraId);
+    updateActiveCamera(cameraId);
+  };
+
+  const updateMicSelection = (micId: string) => {
+    // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
+    // by the user.
+    Cookie.set('micPref', micId);
+    updateActiveMic(micId);
+  };
+
   return (
     <div onClick={e => e.stopPropagation()}>
       <WithModal isOpen={isSettingsModalOpen} onCloseHandler={closeSettingsModal} title="Settings">
@@ -135,7 +150,7 @@ const SettingsModal = (props: SettingsModalProps) => {
                 <div className="SettingsModal-toggle">
                   <select
                     className="SettingsModal-select u-width100Percent"
-                    onChange={opt => updateActiveMic(opt.target.value)}
+                    onChange={opt => updateMicSelection(opt.target.value)}
                     value={activeMicId || 'default'}
                   >
                     {mics.map(mic => {
@@ -153,7 +168,7 @@ const SettingsModal = (props: SettingsModalProps) => {
                 <div className="SettingsModal-toggle">
                   <select
                     className="SettingsModal-select u-width100Percent"
-                    onChange={opt => updateActiveCamera(opt.target.value)}
+                    onChange={opt => updateCameraSelection(opt.target.value)}
                     value={activeCameraId || 'default'}
                   >
                     {cameras.map(camera => {

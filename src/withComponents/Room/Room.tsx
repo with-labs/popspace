@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
 import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 
@@ -24,8 +24,10 @@ import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
-import { LocationTuple } from '../ParticipantMetaProvider/participantMetaReducer';
+import { LocationTuple } from '../../types';
 import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
+import { motion } from 'framer-motion';
+import { StickyNoteWidget } from '../StickyNoteWidget/StickyNoteWidget';
 
 export interface DragItem {
   type: string;
@@ -46,6 +48,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const [windowWidth, windowHeight] = useWindowSize();
   const remoteParticipants = useParticipants();
   const { updateLocation, participantMeta, updateAvatar } = useParticipantMetaContext();
+  const dragableArea = useRef(null);
 
   const {
     room: { localParticipant },
@@ -53,9 +56,67 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
 
   useLocalVolumeDetection();
 
-  const widgetLinks = widgets.filter(widget => widget.type === WidgetTypes.Link);
-  // safe to assume only one whiteboard ever
-  const [widgetWhiteboard] = widgets.filter(widget => widget.type === WidgetTypes.Whiteboard);
+  // get the widgets to display in the room
+  const widgetComps = widgets.reduce<JSX.Element[]>((widComps, widget) => {
+    if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
+      switch (widget.type) {
+        case WidgetTypes.Link:
+          widComps.push(
+            <LinkWidget
+              key={widget.id}
+              id={widget.id}
+              isPublished={widget.data.isPublished}
+              position={widget.location}
+              title={widget.data.title}
+              url={widget.data.url}
+              onCloseHandler={() => removeWidget(widget.id)}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+              dragConstraints={dragableArea}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        case WidgetTypes.StickyNote:
+          widComps.push(
+            <StickyNoteWidget
+              key={widget.id}
+              id={widget.id}
+              position={widget.location}
+              text={widget.data.text}
+              isPublished={widget.data.isPublished}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+              onCloseHandler={() => removeWidget(widget.id)}
+              dragConstraints={dragableArea}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        case WidgetTypes.Whiteboard:
+          widComps.push(
+            <Whiteboard
+              widgetId={widget.id}
+              onCloseHandler={() => removeWidget(widget.id)}
+              whiteboardId={widget.data.whiteboardId}
+              dragConstraints={dragableArea}
+              position={widget.location}
+              initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        default:
+          break;
+      }
+    }
+    return widComps;
+  }, []);
 
   useEffect(() => {
     if (initialAvatar) {
@@ -164,53 +225,32 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   }, [floaters, participantMeta]); // Only want to update the bubble memberships when floaters change. If bubs included, will enter infinite render loop.
 
   return (
-    <div ref={drop} className="u-positionRelative u-height100Percent">
-      {Object.keys(huddles).map(huddleId => (
-        <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
-      ))}
-      <div key="widgies" className="u-flex u-flexWrap u-floatRight u-flexJustifyEnd" style={{ maxWidth: '40%' }}>
-        {widgetLinks.map(widget => (
-          <div key={widget.id} style={{ margin: 10 }}>
-            <LinkWidget
-              title={widget.data.title}
-              url={widget.data.url}
-              onCloseHandler={() => removeWidget(widget.id)}
-              participant={
-                widget.participantSid === localParticipant.sid
-                  ? localParticipant
-                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
-              }
-            />
-          </div>
+    <motion.div ref={dragableArea} className="u-height100Percent u-width100Percent">
+      <div ref={drop} className="u-positionRelative u-height100Percent">
+        {Object.keys(huddles).map(huddleId => (
+          <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
         ))}
-      </div>
-      <div>
-        {widgetWhiteboard ? (
-          <Whiteboard
-            onCloseHandler={() => removeWidget(widgetWhiteboard.id)}
-            whiteboardId={widgetWhiteboard.data.whiteboardId}
-          />
-        ) : null}
-      </div>
-      {Object.keys(bubs).map(key => {
-        const { pt, top, left } = bubs[key];
+        <div className="widgets">{widgetComps}</div>
+        {Object.keys(bubs).map(key => {
+          const { pt, top, left } = bubs[key];
 
-        return (
-          <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
-            <div
-              className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
-              key={pt.sid}
-            >
-              <ParticipantCircle
-                participant={pt}
-                onClick={() => null}
-                disableAudio={disabledAudioSids.includes(pt.sid)}
-              />
-            </div>
-          </DraggableItem>
-        );
-      })}
-      <SharedScreenViewer />
-    </div>
+          return (
+            <DraggableItem key={key} id={key} left={left} top={top} isDraggable={pt.sid === localParticipant.sid}>
+              <div
+                className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
+                key={pt.sid}
+              >
+                <ParticipantCircle
+                  participant={pt}
+                  onClick={() => null}
+                  disableAudio={disabledAudioSids.includes(pt.sid)}
+                />
+              </div>
+            </DraggableItem>
+          );
+        })}
+        <SharedScreenViewer />
+      </div>
+    </motion.div>
   );
 };

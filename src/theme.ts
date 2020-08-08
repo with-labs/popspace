@@ -1,10 +1,10 @@
 import { createMuiTheme } from '@material-ui/core';
 
-const geomanist = {
-  fontFamily: 'Geomanist',
+const commonSans = {
+  fontFamily: 'CommonSans',
   src: `
-    url("/fonts/geomanist-Regular-webfont.woff2") format("woff2"),
-    url("/fonts/geomanist-Regular-webfont.woff") format("woff")
+    url("/fonts/CommonSans-Regular.woff2") format("woff2"),
+    url("/fonts/CommonSans-Regular.woff") format("woff")
   `,
 };
 
@@ -30,12 +30,12 @@ export default createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Geomanist',
+    fontFamily: 'CommonSans',
   },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [geomanist],
+        '@font-face': [commonSans],
       },
     },
   },

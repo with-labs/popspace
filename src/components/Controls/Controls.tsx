@@ -1,9 +1,8 @@
 /**
- * #ANGLES_EDIT
+ * #WITH_EDIT
  *
  * removing the share and end call button as per converstation with laurent.
  */
-
 
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';

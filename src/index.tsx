@@ -71,11 +71,11 @@ ReactDOM.render(
           </Route>
 
           <Route exact path="/signup">
-            <Signup />}
+            <Signup />
           </Route>
 
           <Route path="/complete_signup">
-            <VerifyEmail />}
+            <VerifyEmail />
           </Route>
 
           <Route path="/login">

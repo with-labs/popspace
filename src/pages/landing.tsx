@@ -55,6 +55,7 @@ export default class Landing extends React.Component<any, any> {
     return (
       <div>
         <p>Node env: {process.env.NODE_ENV}</p>
+        <p>With env: {process.env.WITH_ENV}</p>
         <p>Test: {process.env.TEST}</p>
       </div>
     );

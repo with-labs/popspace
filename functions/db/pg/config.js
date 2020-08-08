@@ -41,7 +41,7 @@ const getCredentials = () => {
     case "test":
       return STAGING_CREDENTIALS
     default:
-      throw `unrecognized environemt ${process.env.NODE_ENV}`
+      throw `unrecognized environemt ${process.env.NODE_ENV} Env: ${JSON.stringify(process.env)}`
   }
 }
 

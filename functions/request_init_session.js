@@ -1,7 +1,8 @@
-require("dotenv").config()
+const utils = require("utils");
+const env = utils.env.init(require("./env.json"))
+
 const cryptoRandomString = require('crypto-random-string');
 const db = require("db");
-const utils = require("utils");
 
 /*
 Log in flow
@@ -25,8 +26,7 @@ const accountExists = async (email) => {
 
 const newLogInRequest = async (email)  => {
   const otp = cryptoRandomString({length: 64, type: 'url-safe'})
-  const protocol = process.env.NODE_ENV == "dev" ? "http" : "https"
-  const logInUrl = `${protocol}://${process.env.APP_HOST}/login?otp=${otp}&email=${email}`
+  const logInUrl = `${env.appUrl()}/login?otp=${otp}&email=${email}`
   await accountRedis.writeLogInRequest(email, otp)
   return logInUrl
 }

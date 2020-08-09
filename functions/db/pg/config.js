@@ -4,7 +4,7 @@ const LOCAL_CREDENTIALS = {
   "password": "withso",
   "host": "localhost",
   "database": "withso",
-  "port": "5433"
+  "port": process.env.PG_PORT || "5433"
 }
 
 const PROD_CREDENTIALS = {

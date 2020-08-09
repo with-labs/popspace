@@ -44,7 +44,7 @@
     "shelljs": "^0.8.4",
     "twilio": "^3.48.1",
     "twilio-video": "^2.7.1",
-    
+
     "typescript": "^3.7.5",
     "uuid": "^7.0.2"
   },
@@ -80,6 +80,7 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
+    "prebuild": "node ./scripts/write_env.js",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build",
     "postinstall": "cd functions && npm run build:setup",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",

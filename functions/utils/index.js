@@ -7,5 +7,6 @@
 
 module.exports = {
   http: require("./http"),
-  session: require("./session")
+  session: require("./session"),
+  env: require("./env")
 }

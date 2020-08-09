@@ -1,7 +1,8 @@
-require("dotenv").config()
+const utils = require("utils");
+const env = utils.env.init(require("./env.json"))
+
 const cryptoRandomString = require('crypto-random-string')
 const db = require("db")
-const utils = require("utils")
 
 const accountRedis = new db.redis.AccountsRedis()
 let pg = null

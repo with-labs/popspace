@@ -1,6 +1,8 @@
-require("dotenv").config();
-const db = require("db");
 const utils = require("utils");
+const env = utils.env.init(require("./env.json"))
+
+const db = require("db");
+
 
 const accountRedis = new db.redis.AccountsRedis();
 let pg = null

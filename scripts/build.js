@@ -13,8 +13,15 @@ fs.writeFileSync(
   `NODE_ENV=${process.env.NODE_ENV}\n`
 );
 
-cmd("cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build", (err, msg) => {
-  if(err) {
-    return console.log(err)
-  }
+console.log("Successfully wrote a .env file ", process.env)
+
+cmd('pwd', (err, msg) => {
+  console.log("================PWD", msg)
+  cmd("cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build", (err, msg) => {
+    if(err) {
+      return console.log(err)
+    }
+  })
+
 })
+

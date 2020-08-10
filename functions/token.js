@@ -165,7 +165,8 @@ const ROOM_WHITELIST_PASSCODES = {
   framer: '995771', 
   figma: '547569',
   githubocto:'201974',
-  motive: '$Motive!20'
+  motive: '$Motive!20',
+  ff: 'ff2020'
 };
 
 // When developing locally (npm run dev), don't enforce passcode

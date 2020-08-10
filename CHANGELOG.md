@@ -1,3 +1,7 @@
+## 1.93.0
+
+- adding in ff room
+
 ## 1.92.0
 
 - Add in commonsans font

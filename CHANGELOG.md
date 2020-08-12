@@ -1,3 +1,7 @@
+## 1.94.0
+
+- adding rooms abhi, clicky_design_team, school, community2020, place2meet, hipolabs, crunchydata, jakes, vmware_mapbu_services_strategy, aletran, alextran, treehouse, community, ola, avengers, pmm, patronus, amh, distrofolks, project_management, farmone, workspace_water, braid, g2_track_engineering, leanworkshop, fynd, singlefile, gmg_tech, supplyframe
+
 ## 1.93.0
 
 - adding in ff room

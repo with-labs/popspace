@@ -1,3 +1,8 @@
+## 1.98.0
+
+- Adding in the 1st version of the youtube widget
+- updating selection state for spacial audio
+
 ## 1.97.0
 
 - For camera/mic selections and preferences, store the device label instead of deviceId.

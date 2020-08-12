@@ -17,6 +17,7 @@ import './accessoriesTray.css';
 import linkImg from './images/link.svg';
 import whiteboardImg from './images/whiteboard.svg';
 import stickyNoteImg from './images/app_stickies.svg';
+import youTubeImg from './images/app_youtube.svg';
 
 interface AccessoriesTrayProps {
   classNames?: string;
@@ -83,6 +84,15 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
     closeTray();
   };
 
+  const onAddYouTubeClick = (e: MouseEvent) => {
+    addWidget(WidgetTypes.YouTube, localParticipant.sid, {
+      isPublished: false,
+      videoId: '',
+      initialOffset: widgetOffsets.WIDGET_YOUTUBE_INIT_OFFSET,
+    });
+    closeTray();
+  };
+
   return (
     <div className="AccessoriesTray u-positionFixed u-layerControlsAlpha">
       {roomState === 'disconnected' ? null : (
@@ -122,8 +132,17 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
                   imgSrc={stickyNoteImg}
                   imgAltText="StickyNote"
                   title="Sticky note"
-                  descText="Share snippets of information"
+                  descText="Share snippets of information."
                   onClickHandler={onAddStickyNoteClick}
+                />
+              </div>
+              <div key="youTube" className="AccessoriesTray-appItem">
+                <AddAppItem
+                  imgSrc={youTubeImg}
+                  imgAltText="YouTube"
+                  title="YouTube"
+                  descText="Watch YouTube videos together."
+                  onClickHandler={onAddYouTubeClick}
                 />
               </div>
             </div>

@@ -1,35 +1,18 @@
-const utils = require("utils");
-const env = utils.env.init(require("./env.json"))
+const lib = require("lib");
+lib.util.env.init(require("./env.json"))
 
-const cryptoRandomString = require('crypto-random-string');
-const db = require("db");
 
 /*
 Log in flow
 
 1. Check whether email is registered
 2. Generate URL-safe OTP
-3. Store login request in redis as {email: otp}
+3. Store login request (email, otp)
 4. Send email with OTP link
 5. If OTP link is opened, an resolve_init_session endpoint is called with the email+OTP parsed out of the link
-6. Create/store session in redis/localStorage
+6. Create/store session
 
 */
-
-const accountRedis = new db.redis.AccountsRedis();
-
-const accountExists = async (email) => {
-  const pg = await db.pg.init()
-  const user = await pg.users.find({email: email})
-  return user.length > 0
-}
-
-const newLogInRequest = async (email)  => {
-  const otp = cryptoRandomString({length: 64, type: 'url-safe'})
-  const logInUrl = `${env.appUrl()}/login?otp=${otp}&email=${email}`
-  await accountRedis.writeLogInRequest(email, otp)
-  return logInUrl
-}
 
 const sendOtpEmail = async (email, logInUrl) => {
   // TODO:  send email
@@ -38,18 +21,23 @@ const sendOtpEmail = async (email, logInUrl) => {
 
 module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
-  if(utils.http.failUnlessPost(event, callback)) return;
+  if(util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
 
-  const haveAccount = await accountExists(params.email)
+  const accounts = new lib.db.Accounts()
+  await accounts.init()
 
-  if(!haveAccount) {
-    return utils.http.fail(callback, "Unknown email", {invalidEmail: true})
+  const user = await accounts.userByEmail(params.email)
+  if(!user) {
+    return util.http.fail(callback, "Unknown email", {invalidEmail: true})
   }
 
-  const logInUrl = await newLogInRequest(params.email)
+  const loginRequest = await accounts.createLoginRequest(user)
+  const logInUrl = await accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
+
   await sendOtpEmail(params.email, logInUrl)
 
-  utils.http.succeed(callback, {logInUrl: logInUrl});
+  await accounts.cleanup()
+  util.http.succeed(callback, {logInUrl: logInUrl});
 }

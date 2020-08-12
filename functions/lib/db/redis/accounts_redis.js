@@ -3,17 +3,23 @@ const RedisBase = require("./redis_base");
 const ENV_CREDENTIALS = {
   local: {
     host: process.env.REDIS_ACCOUNTS_HOST,
-    port: process.env.REDIS_ACCOUNTS_PORT
+    port: process.env.REDIS_ACCOUNTS_PORT,
+    auth_pass: process.env.REDIS_ACCOUNTS_PASS,
+    password: process.env.REDIS_ACCOUNTS_PASS,
+    pass: process.env.REDIS_ACCOUNTS_PASS,
+    tls: { checkServerIdentity: () => undefined }
   },
   production: {
     host: process.env.PRODUCTION_REDIS_ACCOUNTS_HOST,
     port: process.env.PRODUCTION_REDIS_ACCOUNTS_PORT,
-    auth_pass: process.env.PRODUCTION_REDIS_ACCOUNTS_AUTH_PASS
+    auth_pass: process.env.PRODUCTION_REDIS_ACCOUNTS_AUTH_PASS,
+    tls: { checkServerIdentity: () => undefined }
   },
   staging: {
     host: process.env.STAGING_REDIS_ACCOUNTS_HOST,
     port: process.env.STAGING_REDIS_ACCOUNTS_PORT,
-    auth_pass: process.env.STAGING_REDIS_ACCOUNTS_AUTH_PASS
+    auth_pass: process.env.STAGING_REDIS_ACCOUNTS_AUTH_PASS,
+    tls: { checkServerIdentity: () => undefined }
   }
 }
 

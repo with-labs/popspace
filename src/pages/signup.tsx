@@ -48,9 +48,13 @@ export default function Signup(props: any) {
     if (validation.valid) {
       const result: any = await Api.signup(input);
       const temp: any = document.getElementById('temp') || {};
-      const signupUrl = (result || {}).signupUrl;
-      temp['innerHTML'] = `<div>Complete signup:</div> <a href="${signupUrl}"> ${signupUrl} </a>`;
       console.log(result);
+      if (result && result.success) {
+        const signupUrl = (result || {}).signupUrl;
+        temp['innerHTML'] = `<div>Complete signup:</div> <a href="${signupUrl}"> ${signupUrl} </a>`;
+      } else {
+        alert(result.message);
+      }
     } else {
       alert(`Invalid fields: ${JSON.stringify(Object.keys(validation.invalidFields))}`);
       console.log(validation);

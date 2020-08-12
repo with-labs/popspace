@@ -1,64 +1,40 @@
-const utils = require("utils");
-const env = utils.env.init(require("./env.json"))
+const lib = require("lib");
+lib.util.env.init(require("./env.json"))
 
-const db = require("db");
-
-
-const accountRedis = new db.redis.AccountsRedis();
-let pg = null
-
-const isValidOtp = (request, otp) => {
-  return request.otp == otp
-}
-
-const isExpired = (request) => {
-  if(!!request.resolvedAt) return true;
-  const expireDuration = request.expireDuration
-  if(!expireDuration) return false;
-  const expiresAt = parseInt(request.requestedAt) + parseInt(expireDuration)
-  console.log(expireDuration, expiresAt, Date.now(), expiresAt - Date.now())
-  return !!request.resolvedAt || (expiresAt - Date.now() < 0)
-}
-
-const logIn = async (request) => {
-  await accountRedis.resolveLogInRequest(request)
-  const user = await pg.users.find({email: request.email})
-  const token = await utils.session.beginSession(user[0].id, accountRedis);
-  return token;
-}
-
-const sendRegistrationAttemptEmail = async (request) => {
-  console.log("Email already registered. Sending email with OTP.");
+const handleAccountCreateFailure = (errorCode, callback) => {
+  switch(errorCode) {
+    case lib.db.Accounts.ERROR_CODES.INVALID_OTP:
+      return util.http.fail(callback, "Invalid one-time passcode.");
+    case lib.db.Accounts.ERROR_CODES.EXPIRED_OTP:
+      return util.http.fail(callback, "Sorry, this link has expired. Please sign up again.");
+    case lib.db.Accounts.ERROR_CODES.RESOLVED_OTP:
+      return util.http.fail(callback, "It seems this link has already been used to log in. Please try again.");
+    case lib.db.Accounts.ERROR_CODES.UNEXPECTER_ERROR:
+      // TODO: ERROR_LOGGING
+      return util.http.fail(callback, "An unexpected error happened. Please try again.");
+    default:
+      return util.http.fail(callback, "An unexpected error happened. Please try again.");
+  }
 }
 
 module.exports.handler = async (event, context, callback) => {
-  if(utils.http.failUnlessPost(event, callback)) return;
+  if(util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  pg = await db.pg.init();
+  const accounts = new lib.db.Accounts()
+  await accounts.init()
 
   const otp = params.otp;
-  const email = params.email;
+  const uid = params.uid;
 
-  const request = await accountRedis.getLogInRequest(params.email);
-
-  if(!request) {
-    return utils.http.fail(callback, "No login request for this email")
+  const result = await accounts.resolveLoginRequest(uid, otp)
+  if(result.error != null) {
+    return handleAccountCreateFailure(result.error, callback)
   }
 
-  if(isValidOtp(request, otp)) {
-    if(isExpired(request)) {
-      utils.http.fail(callback, "Your code has expired. Please log in again.");
-    } else {
-      try {
-        const token = await logIn(request);
-        utils.http.succeed(callback, {token: JSON.stringify(token)});
-      } catch(e) {
-        utils.http.fail(callback, e.message);
-      }
-    }
-  } else {
-    utils.http.fail(callback, "Invalid OTP/email");
-  }
+  const session = result.session
+  const token = accounts.tokenFromSession(session)
 
+  await accounts.cleanup()
+  util.http.succeed(callback, {token: token});
 }

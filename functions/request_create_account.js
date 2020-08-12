@@ -1,30 +1,15 @@
-const utils = require("utils");
-const env = utils.env.init(require("./env.json"))
-
-const cryptoRandomString = require('crypto-random-string');
-const db = require("db");
-
+const lib = require("lib");
+lib.util.env.init(require("./env.json"))
 
 /*
 Sign up flow
 
 1. Generate URL-safe OTP
-2. Store account create request in redis as {email: params}
+2. Store account create request
 3. Send email with OTP link
 4. If OTP link is opened, a resolve_create_account endpoint is called with the email+OTP parsed out of the link
-5. Create/store session in redis/localStorage
+5. Create/store session
 */
-
-const accountRedis = new db.redis.AccountsRedis();
-
-const newUserCreateRequest = async (params)  => {
-  const otp = cryptoRandomString({length: 64, type: 'url-safe'})
-  // If this email already requested an account create, inavlidate the old request
-  // const signupUrl = `${process.env.APP_HOST}/.netlify/functions/resolve_create_account?otp=${otp}&email=${params.email}`
-  const signupUrl = `${env.appUrl()}/complete_signup?otp=${otp}&email=${params.email}`
-  await accountRedis.writeAccountCreateRequest(params, otp)
-  return signupUrl
-}
 
 const sendOtpEmail = async (params, signupUrl) => {
   // TODO:  send email
@@ -33,14 +18,38 @@ const sendOtpEmail = async (params, signupUrl) => {
 
 module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
-  if(utils.http.failUnlessPost(event, callback)) return;
+  if(lib.util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  const signupUrl = await newUserCreateRequest(params)
-  if(!signupUrl) {
-    return utils.http.fail(callback, "Email already registered. Check your email for a verification link.")
+  const accounts = new lib.db.Accounts(params)
+  await accounts.init()
+
+  const existingUser = await accounts.userByEmail(params.email)
+
+  if(existingUser) {
+    return lib.util.http.fail(callback, "Email already registered. Please log in!")
   }
+
+  const existingCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
+
+  if(existingCreateRequest) {
+    if(!accounts.isExpired(existingCreateRequest)) {
+      return lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
+    }
+  }
+
+  const createRequest = await accounts.createAccountRequest({
+    first_name: params.firstName,
+    last_name: params.lastName,
+    display_name: `${params.firstName} ${params.lastName}`,
+    email: params.email,
+    newsletter_opt_in: params.receiveMarketing
+  })
+
+  const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
+
   await sendOtpEmail(params, signupUrl)
 
-  utils.http.succeed(callback, {signupUrl: signupUrl});
+  await accounts.cleanup()
+  return lib.util.http.succeed(callback, {signupUrl: signupUrl});
 }

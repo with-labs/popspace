@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 export default function VerifyEmail() {
   const query = new URLSearchParams(useLocation().search);
   const otp: string = query.get('otp') || '';
-  const email: string = query.get('email') || '';
+  const uid: string = query.get('uid') || '';
 
   const renderError = (result: any) => {
     const output: any = document.getElementById('output') || {};
@@ -13,7 +13,7 @@ export default function VerifyEmail() {
     alert(result.message);
   };
 
-  Api.logIn(otp, email).then((result: any) => {
+  Api.logIn(otp, uid).then((result: any) => {
     if (result.success) {
       window.localStorage.setItem('__session_token', result.token);
       window.location.href = '/';

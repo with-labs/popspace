@@ -10,10 +10,11 @@ exports.up = pgm => {
     display_name: { type: 'text' },
     email: { type:  'text', notNull: true, unique: true},
     created_at: {
-      type: 'timestamp',
+      type: 'timestamptz',
       notNull: true,
-      default: pgm.func('current_timestamp'),
+      default: pgm.func("(now() at time zone 'utc')"),
     },
+    newsletter_opt_in: { type: 'boolean' }
   })
   pgm.createIndex('users', 'email')
 };

@@ -8,6 +8,7 @@ const LOCAL_CREDENTIALS = {
 }
 
 const PROD_CREDENTIALS = {
+  // These are run at build time, and are thus fetched from the Netlify admin panel
   "driver": "pg",
   "user": process.env.PRODUCTION_PG_USER,
   "password": process.env.PRODUCTION_PG_PASSWORD,

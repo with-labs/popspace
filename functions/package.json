@@ -1,9 +1,8 @@
 {
   "dependencies": {
-    "db": "file:db",
-    "utils": "file:utils"
+    "lib": "file:lib"
   },
   "scripts": {
-    "build:setup": "npm install && cd db && npm install && npm run db:migrate"
+    "build:setup": "npm install && cd lib && npm install && npm run db:migrate"
   }
 }

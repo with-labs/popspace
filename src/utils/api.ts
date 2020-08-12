@@ -13,8 +13,8 @@ class Api {
     return await this.post('/request_init_session', { email: email });
   }
 
-  async logIn(otp: string, email: string) {
-    return await this.post('/resolve_init_session', { otp: otp, email: email });
+  async logIn(otp: string, uid: string) {
+    return await this.post('/resolve_init_session', { otp: otp, uid: uid });
   }
 
   async getProfile(token: any) {

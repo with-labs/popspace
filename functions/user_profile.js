@@ -1,40 +1,30 @@
-const utils = require("utils");
-const env = utils.env.init(require("./env.json"))
+  const lib = require("lib");
+const env = lib.util.env.init(require("./env.json"))
 
-const cryptoRandomString = require('crypto-random-string')
-const db = require("db")
-
-const accountRedis = new db.redis.AccountsRedis()
-let pg = null
-
-const getProfile = async (token) => {
-  pg = await db.pg.init();
-  const user = await pg.users.find({id: token.userId})
+const getProfile = (user) => {
   return {
-    user: user[0]
+    user: user
   }
 }
 
 module.exports.handler = async (event, context, callback) => {
-  if(utils.http.failUnlessPost(event, callback)) return
+  if(lib.util.http.failUnlessPost(event, callback)) return
 
   const params = JSON.parse(event.body)
   if(!params.token) {
-    return utils.http.fail(callback, "Must specify authentication token")
-  }
-  let token = null
-  try {
-    token = JSON.parse(params.token)
-  } catch {
-    return utils.http.fail(callback, "Invalid token format")
+    return lib.util.http.fail(callback, "Must specify authentication token")
   }
 
-  const isValid = await utils.session.verifySessionToken(token, accountRedis)
-  if(!isValid) {
-    return utils.http.fail(callback, "Authentication failed")
+  const accounts = new lib.db.Accounts()
+  await accounts.init()
+
+  const session = await accounts.sessionFromToken(params.token)
+
+  if(!session) {
+    return lib.util.http.fail(callback, "Authentication failed")
   }
 
-  const profile = await getProfile(token)
-
-  utils.http.succeed(callback, {profile: profile})
+  const user = await accounts.userById(parseInt(session.user_id))
+  await accounts.cleanup()
+  lib.util.http.succeed(callback, { profile: getProfile(user) })
 }

@@ -1,3 +1,7 @@
+## 1.99.0
+
+- Add room betaworks, hodgesfamily, knightrider
+
 ## 1.98.0
 
 - Adding in the 1st version of the youtube widget

@@ -196,6 +196,9 @@ const ROOM_WHITELIST_PASSCODES = {
   singlefile: '114146',
   gmg_tech: '637526',
   supplyframe: '472368',
+  betaworks: 'betaworks2020',
+  hodgesfamily: 'hodgesfamily2020',
+  knightrider: 'knightrider2020',
 };
 
 // When developing locally (npm run dev), don't enforce passcode

@@ -8,8 +8,8 @@ export interface IParticipantMeta {
   location: LocationTuple;
   emoji: EmojiData;
   avatar: string;
-  activeCameraId: string;
-  activeMicId: string;
+  activeCameraLabel: string;
+  activeMicLabel: string;
   activeSpeakersId: string; // TODO selecting active speakers output not implemented yet, but is the placeholder.
   viewingScreenSid: string;
   isSpeaking: boolean;
@@ -58,7 +58,7 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
         ...state,
         [payload.sid]: {
           ...state[payload.sid],
-          activeCameraId: payload.cameraId,
+          activeCameraLabel: payload.cameraLabel,
         },
       };
 
@@ -66,7 +66,7 @@ export default function reducer(state: IParticipantMetaState = {}, action: Actio
     }
 
     case Actions.UpdateActiveMic: {
-      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], activeMicId: payload.micId } };
+      const newPts = { ...state, [payload.sid]: { ...state[payload.sid], activeMicLabel: payload.micLabel } };
 
       return newPts;
     }
@@ -108,17 +108,17 @@ export const avatarUpdate = (sid: string, avatar: string) => ({
   payload: { sid, avatar },
 });
 
-export const activeCameraUpdate = (sid: string, cameraId: string) => ({
+export const activeCameraUpdate = (sid: string, cameraLabel: string) => ({
   type: Actions.UpdateActiveCamera,
-  payload: { sid, cameraId },
+  payload: { sid, cameraLabel },
   meta: {
     local: true,
   },
 });
 
-export const activeMicUpdate = (sid: string, micId: string) => ({
+export const activeMicUpdate = (sid: string, micLabel: string) => ({
   type: Actions.UpdateActiveMic,
-  payload: { sid, micId },
+  payload: { sid, micLabel },
   meta: {
     local: true,
   },

@@ -1,3 +1,8 @@
+## 1.97.0
+
+- For camera/mic selections and preferences, store the device label instead of deviceId.
+- This is for security purposes, as well as to make debugging device selections significantly easier.
+
 ## 1.96.0
 
 - Fix local video mirroring.

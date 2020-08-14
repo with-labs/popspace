@@ -42,7 +42,7 @@ const SettingsModal = (props: SettingsModalProps) => {
   const [isVideoEnabled] = useLocalVideoToggle();
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const { updateActiveCamera, updateActiveMic } = useParticipantMetaContext();
-  const { activeCameraId, activeMicId, avatar } = useParticipantMeta(participant);
+  const { activeCameraLabel, activeMicLabel, avatar } = useParticipantMeta(participant);
 
   const { cameras, mics } = useAVSourcesContext();
 
@@ -77,18 +77,18 @@ const SettingsModal = (props: SettingsModalProps) => {
     updateEmoji(null);
   }
 
-  const updateCameraSelection = (cameraId: string) => {
+  const updateCameraSelection = (cameraLabel: string) => {
     // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
     // by the user.
-    Cookie.set('vidPref', cameraId);
-    updateActiveCamera(cameraId);
+    Cookie.set('vidPref', cameraLabel);
+    updateActiveCamera(cameraLabel);
   };
 
-  const updateMicSelection = (micId: string) => {
+  const updateMicSelection = (micLabel: string) => {
     // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
     // by the user.
-    Cookie.set('micPref', micId);
-    updateActiveMic(micId);
+    Cookie.set('micPref', micLabel);
+    updateActiveMic(micLabel);
   };
 
   return (
@@ -151,11 +151,11 @@ const SettingsModal = (props: SettingsModalProps) => {
                   <select
                     className="SettingsModal-select u-width100Percent"
                     onChange={opt => updateMicSelection(opt.target.value)}
-                    value={activeMicId || 'default'}
+                    value={activeMicLabel || 'default'}
                   >
                     {mics.map(mic => {
                       return (
-                        <option key={mic.deviceId} value={mic.deviceId}>
+                        <option key={mic.deviceId} value={mic.label}>
                           {mic.label}
                         </option>
                       );
@@ -169,11 +169,11 @@ const SettingsModal = (props: SettingsModalProps) => {
                   <select
                     className="SettingsModal-select u-width100Percent"
                     onChange={opt => updateCameraSelection(opt.target.value)}
-                    value={activeCameraId || 'default'}
+                    value={activeCameraLabel || 'default'}
                   >
                     {cameras.map(camera => {
                       return (
-                        <option key={camera.deviceId} value={camera.deviceId}>
+                        <option key={camera.deviceId} value={camera.label}>
                           {camera.label}
                         </option>
                       );

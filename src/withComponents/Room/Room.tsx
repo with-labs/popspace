@@ -28,6 +28,7 @@ import { LocationTuple } from '../../types';
 import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
 import { motion } from 'framer-motion';
 import { StickyNoteWidget } from '../StickyNoteWidget/StickyNoteWidget';
+import { YouTubeWidget } from '../YouTubeWidget/YouTubeWidget';
 
 export interface DragItem {
   type: string;
@@ -108,6 +109,26 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               dragConstraints={dragableArea}
               position={widget.location}
               initialOffset={widget.data.initialOffset}
+            />
+          );
+          break;
+        case WidgetTypes.YouTube:
+          widComps.push(
+            <YouTubeWidget
+              key={widget.id}
+              id={widget.id}
+              position={widget.location}
+              videoId={widget.data.videoId}
+              isPublished={widget.data.isPublished}
+              participant={
+                widget.participantSid === localParticipant.sid
+                  ? localParticipant
+                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+              }
+              dragConstraints={dragableArea}
+              initialOffset={widget.data.initialOffset}
+              timeStamp={widget.data.timeStamp}
+              isPlaying={widget.data.isPlaying}
             />
           );
           break;

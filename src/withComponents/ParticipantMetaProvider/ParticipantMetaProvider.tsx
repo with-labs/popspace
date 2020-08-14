@@ -77,15 +77,15 @@ export function ParticipantMetaProvider({ children }: IParticipantMetaProviderPr
   );
 
   const updateActiveCamera = useCallback(
-    (cameraId: string) => {
-      dispatch(activeCameraUpdate(localParticipant.sid, cameraId));
+    (cameraLabel: string) => {
+      dispatch(activeCameraUpdate(localParticipant.sid, cameraLabel));
     },
     [localParticipant, dispatch]
   );
 
   const updateActiveMic = useCallback(
-    (micId: string) => {
-      dispatch(activeMicUpdate(localParticipant.sid, micId));
+    (micLabel: string) => {
+      dispatch(activeMicUpdate(localParticipant.sid, micLabel));
     },
     [localParticipant, dispatch]
   );

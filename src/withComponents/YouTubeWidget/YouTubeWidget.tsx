@@ -4,7 +4,6 @@ import { Widget } from '../Widget/Widget';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
 import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
-import { WidgetTypes } from '../WidgetProvider/widgetTypes';
 import YouTube from 'react-youtube';
 import styles from './YouTubeWidget.module.css';
 
@@ -36,6 +35,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
   const [formError, setFormError] = useState('');
   const [currentTimeStamp, setCurrentTimeStamp] = useState(-1);
   const [player, setPlayer] = useState<YT.Player>();
+  const [playerVars, setPlayerVars] = useState<{ [key: string]: any }>({});
 
   // check if video status has changed
   useEffect(() => {
@@ -58,27 +58,58 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
   const handlePublish = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // check to see if the url is valid, using the full and short youtube url
-    if (/^(https?:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$/.test(videoUrl)) {
-      // strip the video id out of the
-      // TODO: sanitize inputs? check for issues?
-      const tempVideoId = videoUrl.split('?v=')[1];
-      if (tempVideoId) {
-        // we have a video id
-        // update the widet info
-        updateWidgetData(id, {
+    const videoOptions: { [key: string]: any } = {};
+
+    // youtube regEx
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+
+    // get the video ID if its valid
+    var match = videoUrl.match(regExp);
+
+    // check to see if we have match
+    // video ids are always 11 characters
+    if (match && match[2].length === 11) {
+      // match will return our video id, so get it here
+      const newVideoId = match[2];
+
+      // check to see if we have query params and parse them out
+      const querySplit = videoUrl.split('?');
+      if (querySplit.length === 2) {
+        const queryString = querySplit[1];
+
+        // split the query
+        const variables = queryString.split('&');
+
+        // get the content
+        variables.forEach(variable => {
+          const splitVar = variable.split('=');
+
+          //TODO: expand on this list of supported things, but
+          // but for now jus support start and end times and t as start
+          if (splitVar[0] === 'start' || splitVar[0] === 'end' || splitVar[0] === 't') {
+            // TODO: check if we have a time string like '1m22s' or just a seonds value
+            videoOptions[splitVar[0] === 't' ? 'start' : splitVar[0]] = parseInt(splitVar[1], 10);
+          }
+        });
+      }
+
+      setPlayerVars(videoOptions);
+
+      // update the widet info
+      updateWidgetData(id, {
           ...data,
           isPublished: true,
-          videoId: tempVideoId,
+          videoId: newVideoId,
           isPlaying: false,
-        });
-      } else {
-        // set invalid url
-        setFormError('Cannot find video id.');
-      }
+      });
     } else {
-      // set invalid url
-      setFormError('Please provide a valid URL.');
+      //error
+      let errorText = 'Please provide a valid URL.';
+
+      if (match && match[2].length !== 11) {
+        errorText = 'invalid video id';
+      }
+      setFormError(errorText);
     }
   };
 
@@ -157,12 +188,15 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
       }
     };
 
+    // TODO: I am seeing more and more issues using this lib, such as player opt not being set correctly,
+    // might want to just suck it up and make our own component it seems
     videoPlayerContent = (
       <div className={styles.youtubePlayerContainer}>
         <YouTube
           opts={{
             height: '270',
             width: '480',
+            playerVars: { ...playerVars },
           }}
           videoId={videoId}
           onPlay={handleOnPlay}

@@ -1,3 +1,8 @@
+## 1.96.0
+
+- Fix local video mirroring.
+- Remove extra border on participant video bubble.
+
 ## 1.95.0
 
 - Changing useLocalVolumeDetection hook to use a modified version of the AudioLevelIndicator component from the the latest twilio starter app.

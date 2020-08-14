@@ -87,7 +87,7 @@ export default function Publication({
         <VideoTrack
           track={track as IVideoTrack}
           priority={videoPriority}
-          isLocal={track.name === 'camera' && isLocal}
+          isLocal={track.name.startsWith('camera') && isLocal}
           classNames={classNames}
         />
       );

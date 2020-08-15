@@ -1,3 +1,7 @@
+## 1.100.0
+
+- Move things that should be dev to dependencies to that part of package.json.
+
 ## 1.99.0
 
 - Add room betaworks, hodgesfamily, knightrider

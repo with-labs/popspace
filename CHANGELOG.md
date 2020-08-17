@@ -1,3 +1,8 @@
+## 1.101.0
+
+- updating sticky note width
+- updating sticky note text wrap and y scroll
+
 ## 1.100.0
 
 - Move things that should be dev to dependencies to that part of package.json.

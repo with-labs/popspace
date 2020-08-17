@@ -8,7 +8,7 @@
 }
 
 .displayText {
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-wrap: anywhere;
   max-height: 250px;
 }

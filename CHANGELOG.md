@@ -1,3 +1,7 @@
+## 1.102.0
+
+- fix scrollbar behavior for stickynote
+
 ## 1.101.0
 
 - updating sticky note width

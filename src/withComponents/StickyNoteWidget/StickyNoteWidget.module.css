@@ -1,6 +1,6 @@
 .stickyNote {
   background: #fff2af;
-  max-width: 200px;
+  max-width: 240px;
 }
 
 .title {
@@ -8,7 +8,8 @@
 }
 
 .displayText {
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-wrap: anywhere;
   max-height: 250px;
 }
 

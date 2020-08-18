@@ -1,3 +1,7 @@
+## 1.103.0
+
+- updating fonts to silka
+
 ## 1.102.0
 
 - fix scrollbar behavior for stickynote

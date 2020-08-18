@@ -17,12 +17,12 @@ interface IWithModal {
 
 export const WithModal: React.FC<IWithModal> = ({ title, children, isOpen, onCloseHandler, className }) => {
   return (
-    <div onClick={e => e.stopPropagation()}>
+    <div onClick={(e) => e.stopPropagation()}>
       <Modal
         isOpen={isOpen}
         onRequestClose={onCloseHandler}
         overlayClassName=""
-        className={clsx(styles.content, 'u-overflowYScrollable u-sm-sizeFull u-flex u-flexCol', className)}
+        className={clsx(styles.content, 'u-sm-sizeFull u-flex u-flexCol', className)}
         closeTimeoutMS={200}
       >
         <h2

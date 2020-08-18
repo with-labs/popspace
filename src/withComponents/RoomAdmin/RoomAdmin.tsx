@@ -59,7 +59,7 @@ const RoomAdmin = ({ onClickChangeWallpaper }: RoomAdminProps) => {
           <div className={clsx('u-round', style.turquise18)}></div>
           <div className={clsx('u-round', style.mandarin8)}></div>
           <div className={clsx('u-round', style.cherry6)}></div>
-          <div className={clsx('u-fontB2', style['spatialToggle-title'])}>Spatial audio</div>
+          <div className={clsx('u-fontB1', style['spatialToggle-title'])}>Spatial</div>
         </button>
         <button
           className={clsx(style.spatialToggle, { [style['is-selected']]: properties.spatialAudio === 'off' })}
@@ -69,7 +69,7 @@ const RoomAdmin = ({ onClickChangeWallpaper }: RoomAdminProps) => {
           <div className={clsx('u-round', style.turquise12)}></div>
           <div className={clsx('u-round', style.mandarin12)}></div>
           <div className={clsx('u-round', style.cherry12)}></div>
-          <div className={clsx('u-fontB2', style['spatialToggle-title'])}>Global audio</div>
+          <div className={clsx('u-fontB1', style['spatialToggle-title'])}>Global</div>
         </button>
       </div>
       <Modal

@@ -5,7 +5,7 @@ import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppStateProvider, { useAppState } from './state';
-import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation, useParams } from 'react-router-dom';
 import { ConnectOptions, TwilioError } from 'twilio-video';
 import theme from './theme';
 import './types';
@@ -46,19 +46,21 @@ function useQuery() {
 
 // -------- here is the where we set up the angles application
 
-const AnglesMainApp = () => {
-  const { error, setError } = useAppState();
-  const query = useQuery();
-  const room: string | null = query.get('r');
+const Home = () => {
+  return <Landing />;
+};
 
+const NamedRoom = () => {
+  const params: any = useParams();
+  const roomName: any = params['room_name'];
+  const { error, setError } = useAppState();
+  console.log(params, roomName);
   return (
     <VideoProvider options={connectionOptions} onError={setError}>
-      {room ? <Room name={room} error={error} setError={setError} /> : <Landing />}
+      <Room name={roomName} error={error} setError={setError} />
     </VideoProvider>
   );
 };
-
-// -----------
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
@@ -67,7 +69,7 @@ ReactDOM.render(
       <AppStateProvider>
         <Switch>
           <Route exact path="/">
-            <AnglesMainApp />
+            <Home />
           </Route>
 
           <Route exact path="/signup">
@@ -82,7 +84,11 @@ ReactDOM.render(
             <Login />
           </Route>
 
-          <Redirect to="/" />
+          <Route path="/:room_name">
+            <NamedRoom />
+          </Route>
+
+          {/*<Redirect to="/" />*/}
         </Switch>
       </AppStateProvider>
     </Router>

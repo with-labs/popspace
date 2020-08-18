@@ -33,7 +33,7 @@ const LabeledCheckbox = (props: any) => (
 export default function Signup(props: any) {
   const checkboxesState = {
     accept_tos: false,
-    receive_marketing: true,
+    receive_marketing: false,
   };
 
   const onCheckboxChange = (event: any) => {

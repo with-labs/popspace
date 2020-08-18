@@ -24,7 +24,7 @@ mockUseRoomMetaContext.mockImplementation(() => ({ properties: { spatialAudio: '
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {
     it('should render a VideoTrack', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'video' }));
+      mockUseTrack.mockImplementation(() => ({ kind: 'video', name: 'camera' }));
       const wrapper = shallow(
         <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
       );
@@ -33,7 +33,7 @@ describe('the Publication component', () => {
     });
 
     it('should ignore the "isLocal" prop when track.name is not "camera"', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'video' }));
+      mockUseTrack.mockImplementation(() => ({ kind: 'video', name: 'screen' }));
       const wrapper = shallow(
         <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
       );
@@ -52,7 +52,7 @@ describe('the Publication component', () => {
   });
   describe('when track.kind is "audio"', () => {
     it('should render an AudioTrack', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'audio' }));
+      mockUseTrack.mockImplementation(() => ({ kind: 'audio', name: 'mic' }));
       const wrapper = shallow(
         <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
       );
@@ -61,7 +61,7 @@ describe('the Publication component', () => {
     });
 
     it('should render null when disableAudio is true', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'audio' }));
+      mockUseTrack.mockImplementation(() => ({ kind: 'audio', name: 'mic' }));
       const wrapper = shallow(
         <Publication
           isLocal

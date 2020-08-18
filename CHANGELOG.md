@@ -1,3 +1,47 @@
+## 1.102.0
+
+- fix scrollbar behavior for stickynote
+
+## 1.101.0
+
+- updating sticky note width
+- updating sticky note text wrap and y scroll
+
+## 1.100.0
+
+- Move things that should be dev to dependencies to that part of package.json.
+
+## 1.99.0
+
+- Add room betaworks, hodgesfamily, knightrider
+
+## 1.98.0
+
+- Adding in the 1st version of the youtube widget
+- updating selection state for spacial audio
+
+## 1.97.0
+
+- For camera/mic selections and preferences, store the device label instead of deviceId.
+- This is for security purposes, as well as to make debugging device selections significantly easier.
+
+## 1.96.0
+
+- Fix local video mirroring.
+- Remove extra border on participant video bubble.
+
+## 1.95.0
+
+- Changing useLocalVolumeDetection hook to use a modified version of the AudioLevelIndicator component from the the latest twilio starter app.
+
+## 1.94.0
+
+- adding rooms abhi, clicky_design_team, school, community2020, place2meet, hipolabs, crunchydata, jakes, vmware_mapbu_services_strategy, aletran, alextran, treehouse, community, ola, avengers, pmm, patronus, amh, distrofolks, project_management, farmone, workspace_water, braid, g2_track_engineering, leanworkshop, fynd, singlefile, gmg_tech, supplyframe
+
+## 1.93.0
+
+- adding in ff room
+
 ## 1.92.0
 
 - Add in commonsans font

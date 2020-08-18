@@ -43,9 +43,9 @@ const DummyProvider: React.FC<{}> = ({ children }) => {
     room: { localParticipant },
   } = useVideoContext();
 
-  const { activeCameraId, activeMicId } = useParticipantMeta(localParticipant);
+  const { activeCameraLabel, activeMicLabel } = useParticipantMeta(localParticipant);
 
-  useHandleDeviceChange(activeCameraId, activeMicId);
+  useHandleDeviceChange(activeCameraLabel, activeMicLabel);
 
   return <>{children}</>;
 };

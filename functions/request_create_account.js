@@ -24,6 +24,8 @@ module.exports.handler = async (event, context, callback) => {
   const accounts = new lib.db.Accounts(params)
   await accounts.init()
 
+  // Make sure we don't distinguish emails just by whitespace
+  params.email = parms.email.trim()
   const existingUser = await accounts.userByEmail(params.email)
 
   if(existingUser) {

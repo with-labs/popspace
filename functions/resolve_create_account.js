@@ -21,13 +21,13 @@ module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
+  params.email = params.email.trim()
+
   const accounts = new lib.db.Accounts()
   await accounts.init()
 
   const otp = params.otp;
   const email = params.email;
-
-  util.dev.log("Resolve create account", params)
 
   const result = await accounts.tryToResolveAccountCreateRequest(email, otp)
   if(result.error != null) {

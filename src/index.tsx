@@ -52,13 +52,45 @@ const Home = () => {
 
 const NamedRoom = () => {
   const params: any = useParams();
-  const roomName: any = params['room_name'];
+  const roomName = params['room_name'];
   const { error, setError } = useAppState();
-  console.log(params, roomName);
   return (
     <VideoProvider options={connectionOptions} onError={setError}>
       <Room name={roomName} error={error} setError={setError} />
     </VideoProvider>
+  );
+};
+
+const landingPageOrRedirect = () => {
+  if (window.localStorage.getItem('__withso_admin')) {
+    return <Landing />;
+  } else {
+    return () => {
+      window.location.href = 'https://with.so';
+    };
+  }
+};
+
+const enableAdmin = () => {
+  return (
+    <div style={{ color: 'black' }}>
+      <button
+        onClick={() => {
+          window.localStorage.setItem('__withso_admin', 'true');
+        }}
+      >
+        {' '}
+        Become admin
+      </button>
+      <button
+        onClick={() => {
+          window.localStorage.removeItem('__withso_admin');
+        }}
+      >
+        {' '}
+        Unbecome admin
+      </button>
+    </div>
   );
 };
 
@@ -69,7 +101,11 @@ ReactDOM.render(
       <AppStateProvider>
         <Switch>
           <Route exact path="/">
-            <Home />
+            {landingPageOrRedirect()}
+          </Route>
+
+          <Route exact path="/1_secret_2_admin_3_enabler_4">
+            {enableAdmin()}
           </Route>
 
           <Route exact path="/signup">
@@ -87,8 +123,6 @@ ReactDOM.render(
           <Route path="/:room_name">
             <NamedRoom />
           </Route>
-
-          {/*<Redirect to="/" />*/}
         </Switch>
       </AppStateProvider>
     </Router>

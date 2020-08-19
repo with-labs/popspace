@@ -5,5 +5,9 @@ module.exports = {
     INVALID_OTP: 1,
     EXPIRED_OTP: 2,
     RESOLVED_OTP: 3
+  },
+
+  room: {
+    TOO_MANY_OWNED_ROOMS: 1
   }
 }

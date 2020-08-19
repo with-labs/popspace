@@ -17,6 +17,8 @@ const sessionTokenExists = (sessionToken: any) => {
 };
 
 export default class Landing extends React.Component<any, any> {
+  onProfileChange: Function;
+
   constructor(props: any) {
     super(props);
 
@@ -26,6 +28,10 @@ export default class Landing extends React.Component<any, any> {
       loading: sessionTokenExists(sessionToken),
       profile: null,
       error: null,
+    };
+
+    this.onProfileChange = (newProfile: any) => {
+      this.setState({ profile: newProfile });
     };
 
     if (sessionTokenExists(sessionToken)) {
@@ -74,7 +80,7 @@ export default class Landing extends React.Component<any, any> {
   }
 
   renderLoggedIn() {
-    return <Profile profile={this.state.profile} />;
+    return <Profile profile={this.state.profile} onProfileChange={this.onProfileChange} />;
   }
 
   renderLoggedOut() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
+import Api from '../../utils/api';
 
 const Main = styled('main')({
   height: '100%',
@@ -12,9 +13,23 @@ const logOut = () => {
   window.location.href = '/';
 };
 
-export default class Landing extends React.Component<any, any> {
+export default class Profile extends React.Component<any, any> {
+  createRoom: (event: any) => void;
+
   constructor(props: any) {
     super(props);
+    const sessionToken = localStorage.getItem('__session_token');
+    this.createRoom = async () => {
+      const result: any = await Api.createRoom(sessionToken);
+      if (result.success) {
+        if (this.props.onProfileChange) {
+          this.props.profile.rooms.owned.push(result.newRoom);
+          this.props.onProfileChange(this.props.profile);
+        }
+      } else {
+        window.alert(result.message);
+      }
+    };
   }
 
   render() {
@@ -33,6 +48,7 @@ export default class Landing extends React.Component<any, any> {
       <div>
         <h2> Your rooms </h2>
         {this.renderRoomList(this.props.profile.rooms.owned)}
+        {this.renderCreateRoom()}
         <h2> Rooms you're a member in </h2>
         {this.renderRoomList(this.props.profile.rooms.member)}
       </div>
@@ -46,9 +62,9 @@ export default class Landing extends React.Component<any, any> {
 
   renderRoom(room: any) {
     return (
-      <a key={`room_${room.id}`} href={this.roomUrl(room)}>
-        {this.roomName(room)}
-      </a>
+      <div key={`room_${room.id}`}>
+        <a href={this.roomUrl(room)}>{this.roomName(room)}</a>
+      </div>
     );
   }
 
@@ -58,5 +74,9 @@ export default class Landing extends React.Component<any, any> {
 
   roomName(room: any) {
     return room.name || room.unique_id;
+  }
+
+  renderCreateRoom() {
+    return <button onClick={this.createRoom}>New room</button>;
   }
 }

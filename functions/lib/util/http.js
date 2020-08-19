@@ -13,7 +13,7 @@ const http = {
 
   fail: (callback, message, data={}) => {
     data.message = data.message || "Unknown error"
-    return callback(null, {
+    callback(null, {
       statusCode: 200,
       headers,
       body: JSON.stringify(Object.assign(data, {message: message, success: false}))
@@ -26,6 +26,27 @@ const http = {
       headers,
       body: JSON.stringify(Object.assign(data, {success: true}))
     });
+  },
+
+  async verifySessionAndGetUser(event, callback, accounts) {
+    // TODO: transition to a middleware style,
+    // where the params are only parsed once
+    // Get rid of passing in accounts; there should be some global way
+    // the db is initialized
+    const params = JSON.parse(event.body)
+    if(!params.token) {
+      return lib.util.http.fail(callback, "Must specify authentication token")
+    }
+    const session = await accounts.sessionFromToken(params.token)
+    if(!session) {
+      return lib.util.http.fail(callback, "Authentication failed")
+    }
+    const userId = parseInt(session.user_id)
+    const user = await accounts.userById(userId)
+    if(!user) {
+      return lib.util.http.fail(callback, "Authentication failed")
+    }
+    return user
   }
 }
 

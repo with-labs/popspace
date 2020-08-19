@@ -43,20 +43,7 @@ export default class Landing extends React.Component<any, any> {
   }
 
   render() {
-    return (
-      <Main>
-        {this.renderAppropriateState()}
-        {this.renderEnvTest()}
-      </Main>
-    );
-  }
-
-  renderEnvTest() {
-    return (
-      <div>
-        <p>Node env: {process.env.NODE_ENV}</p>
-      </div>
-    );
+    return <Main>{this.renderAppropriateState()}</Main>;
   }
 
   renderAppropriateState() {

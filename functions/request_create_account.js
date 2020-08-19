@@ -25,7 +25,7 @@ module.exports.handler = async (event, context, callback) => {
   await accounts.init()
 
   // Make sure we don't distinguish emails just by whitespace
-  params.email = parms.email.trim()
+  params.email = params.email.trim()
   const existingUser = await accounts.userByEmail(params.email)
 
   if(existingUser) {

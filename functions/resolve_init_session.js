@@ -3,13 +3,13 @@ lib.util.env.init(require("./env.json"))
 
 const handleAccountCreateFailure = (errorCode, callback) => {
   switch(errorCode) {
-    case lib.db.Accounts.ERROR_CODES.INVALID_OTP:
+    case lib.db.ErrorCodes.INVALID_OTP:
       return util.http.fail(callback, "Invalid one-time passcode.");
-    case lib.db.Accounts.ERROR_CODES.EXPIRED_OTP:
+    case lib.db.ErrorCodes.EXPIRED_OTP:
       return util.http.fail(callback, "Sorry, this link has expired. Please sign up again.");
-    case lib.db.Accounts.ERROR_CODES.RESOLVED_OTP:
+    case lib.db.ErrorCodes.RESOLVED_OTP:
       return util.http.fail(callback, "It seems this link has already been used to log in. Please try again.");
-    case lib.db.Accounts.ERROR_CODES.UNEXPECTER_ERROR:
+    case lib.db.ErrorCodes.UNEXPECTER_ERROR:
       // TODO: ERROR_LOGGING
       return util.http.fail(callback, "An unexpected error happened. Please try again.");
     default:

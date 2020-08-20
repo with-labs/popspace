@@ -1,48 +1,42 @@
 /* Font utils */
+
+/* semi-bold is 600 */
 .u-fontH1 {
-  font-family: CommonSans;
+  font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  line-height: 20px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 30px;
 }
 
 .u-fontH2 {
-  font-family: CommonSans;
+  font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 18px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .u-fontP1 {
-  font-family: CommonSans;
+  font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .u-fontP2 {
-  font-family: CommonSans;
+  font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
   font-weight: normal;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 13px;
+  line-height: 16px;
 }
 
 .u-fontB1 {
-  font-family: CommonSans;
+  font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 14px;
-}
-
-.u-fontB2 {
-  font-family: CommonSans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 12px;
-  line-height: 18px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 22px;
 }

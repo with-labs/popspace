@@ -5,13 +5,6 @@ import { Emoji } from 'emoji-mart';
 import './index.css';
 
 import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
-import { ReactComponent as ScreenShareIcon } from '../../images/icons/ScreenShare.svg';
-import { ReactComponent as ScreenUnshareIcon } from '../../images/icons/screen_share_stop.svg';
-
-import { AudioToggle } from '../AudioToggle/AudioToggle';
-import { VideoToggle } from '../VideoToggle/VideoToggle';
-
-import SettingsModal from '../SettingsModal/SettingsModal';
 
 import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
@@ -26,8 +19,6 @@ import { useParticipantMeta } from '../../withHooks/useParticipantMeta/usePartic
 import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 import { Avatar } from '../Avatar/Avatar';
-
-import useScreenShareToggle from '../../hooks/useScreenShareToggle/useScreenShareToggle';
 
 interface ParticipantCircleProps {
   participant: LocalParticipant | RemoteParticipant;
@@ -57,16 +48,16 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
 
   let filteredPublications;
 
-  if (enableScreenShare && publications.some(p => p.trackName === 'screen')) {
-    filteredPublications = publications.filter(p => p.trackName !== 'camera');
+  if (enableScreenShare && publications.some((p) => p.trackName === 'screen')) {
+    filteredPublications = publications.filter((p) => p.trackName !== 'camera');
   } else {
-    filteredPublications = publications.filter(p => p.trackName !== 'screen');
+    filteredPublications = publications.filter((p) => p.trackName !== 'screen');
   }
 
   // only local participant can see gear icon to open settings
-  let settings = null;
-  if (isLocal || emoji) {
-    settings = (
+  let emojiDisplay = null;
+  if (emoji) {
+    emojiDisplay = (
       <div
         className={clsx(
           'ParticipantCircle-settings u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem ',
@@ -74,52 +65,22 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             'is-set': emoji,
           }
         )}
-        onClick={e => {
-          e.stopPropagation();
-          openSettingsModal();
-        }}
-        onMouseEnter={() => setIsHoveringOverSettings(true)}
-        onMouseLeave={() => setIsHoveringOverSettings(false)}
       >
-        {emoji ? (
-          isHoveringOverSettings && isLocal ? (
-            <SettingsIcon />
-          ) : (
-            <Emoji emoji={emoji} size={24} />
-          )
-        ) : (
-          <SettingsIcon />
-        )}
+        <Emoji emoji={emoji} size={24} />
       </div>
     );
   }
 
-  const [, toggleIsSharing] = useScreenShareToggle();
-  const screenShareTrack = publications.find(pub => pub.trackName === 'screen');
+  const screenShareTrack = publications.find((pub) => pub.trackName === 'screen');
 
   let screenShare = null;
-
-  if (isLocal) {
-    screenShare = (
-      <div
-        className={clsx(
-          'ParticipantCircle-screenShare u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter ParticipantCircle-menuItem',
-          { 'is-active': !!screenShareTrack }
-        )}
-        onClick={e => {
-          e.stopPropagation();
-          toggleIsSharing();
-        }}
-      >
-        {!!screenShareTrack ? <ScreenUnshareIcon /> : <ScreenShareIcon />}
-      </div>
-    );
-  } else if (screenShareTrack) {
+  // only show the share sreen button to others in the room
+  if (!isLocal && screenShareTrack) {
     screenShare = (
       <div
         ref={sharedScreenBtnRef}
         className="ParticipantCircle-screenSharePreview u-layerSurfaceAlpha u-flex u-flexAlignItemsCenter u-flexJustifyCenter"
-        onClick={e => {
+        onClick={(e) => {
           e.stopPropagation();
           updateScreenViewSid(participant.sid);
         }}
@@ -129,21 +90,10 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     );
   }
 
-  function openSettingsModal() {
-    // only the local participant can open their settings
-    if (isLocal) {
-      setIsSettingsModalOpen(true);
-    }
-  }
-
-  function closeSettingsModal() {
-    setIsSettingsModalOpen(false);
-  }
-
   // `hasVideoPublication` can be used to change the circle's appearance. Below, if there is no video publication
   // an Avatar is rendered.
   let hasVideoPublication = false;
-  const pubs = filteredPublications.map(publication => {
+  const pubs = filteredPublications.map((publication) => {
     if (publication.kind === 'video') {
       hasVideoPublication = true;
     }
@@ -178,7 +128,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             <Avatar name={avatarName} />
           </div>
         )}
-        {settings}
+        {emojiDisplay}
         {screenShare}
         {pubs}
         <div
@@ -191,33 +141,7 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
             {participantDisplayIdentity}
           </div>
         </div>
-        {isLocal ? (
-          <div
-            className="ParticipantCircle-hud u-layerSurfaceAlpha u-flex u-flexJustifyCenter u-positionAbsolute u-width100Percent"
-            onClick={e => {
-              e.stopPropagation();
-            }}
-          >
-            <div className="ParticipantCircle-hud-item ParticipantCircle-menuItem">
-              <VideoToggle compact={true} border={false} />
-            </div>
-            <div
-              className={clsx('ParticipantCircle-hud-item ParticipantCircle-menuItem', { 'is-shown': !isAudioEnabled })}
-            >
-              <AudioToggle border={false} />
-            </div>
-          </div>
-        ) : null}
       </div>
-      {isLocal ? (
-        <SettingsModal
-          isSettingsModalOpen={isSettingsModalOpen}
-          closeSettingsModal={closeSettingsModal}
-          updateEmoji={updateEmoji}
-          emoji={emoji}
-          participant={participant}
-        />
-      ) : null}
     </>
   );
 };

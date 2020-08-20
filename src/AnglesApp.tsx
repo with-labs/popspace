@@ -20,7 +20,7 @@ import { Room } from './withComponents/Room/Room';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
-import { AccessoriesTray } from './withComponents/AccessoriesTray/AccessoriesTray';
+import { AccessoriesDock } from './withComponents/AccessoriesDock/AccessoriesDock';
 
 const Container = styled('div')({
   display: 'flex',
@@ -85,7 +85,7 @@ export default function AnglesApp(props: AnglesAppProps) {
             <div className="u-flexGrow1 u-width100Percent u-height100Percent">
               <Room initialAvatar={initialAvatar} />
               <ReconnectingNotification />
-              <AccessoriesTray />
+              <AccessoriesDock />
             </div>
           </DndProvider>
         )}

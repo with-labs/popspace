@@ -14,8 +14,7 @@ const PROD_CREDENTIALS = {
   "password": process.env.PRODUCTION_PG_PASSWORD,
   "host": process.env.PRODUCTION_PG_HOST,
   "database": process.env.PRODUCTION_PG_DATABASE,
-  "port": process.env.PRODUCTION_PG_PORT,
-  "ssl": true
+  "port": process.env.PRODUCTION_PG_PORT
 }
 
 const STAGING_CREDENTIALS = {

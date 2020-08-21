@@ -9,6 +9,8 @@
     "@primer/octicons-react": "^9.4.0",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
+    "crypto-random-string": "^3.2.0",
+    "dotenv": "^8.2.0",
     "emoji-mart": "^3.0.0",
     "express": "^4.17.1",
     "firebase": "^7.8.0",
@@ -27,6 +29,7 @@
     "react-youtube": "^7.11.3",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
+    "shelljs": "^0.8.4",
     "twilio": "^3.48.1",
     "twilio-video": "^2.7.2",
     "uuid": "^7.0.2"
@@ -78,6 +81,7 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
+    "prebuild": "node ./scripts/write_env.js && cd functions && npm run build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
     "test": "jest",

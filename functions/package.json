@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "lib": "file:lib"
+  },
+  "scripts": {
+    "build:setup": "npm install && cd lib && npm install && npm run db:migrate"
+  }
+}

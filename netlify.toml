@@ -8,9 +8,13 @@
   TWILIO_API_KEYS_ENV = "production"
 
 [context.deploy-preview.environment]
-  REACT_APP_ANALYTICS_ENV = "development"
-  TWILIO_API_KEYS_ENV = "development"
+  REACT_APP_ANALYTICS_ENV = "staging"
+  TWILIO_API_KEYS_ENV = "staging"
+  NODE_ENV="preview"
+  WITH_ENV="preview"
 
 [context.branch-deploy.environment]
-  REACT_APP_ANALYTICS_ENV = "development"
-  TWILIO_API_KEYS_ENV = "development"
+  REACT_APP_ANALYTICS_ENV = "staging"
+  TWILIO_API_KEYS_ENV = "staging"
+  NODE_ENV="branch-deploy"
+  WITH_ENV="branch-deploy"

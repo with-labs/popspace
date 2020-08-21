@@ -1,6 +1,6 @@
 {
   "name": "with-app",
-  "version": "1.104.0",
+  "version": "1.105.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {

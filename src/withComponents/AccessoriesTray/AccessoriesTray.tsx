@@ -1,3 +1,6 @@
+// this is being replaced by the accessories dock, but
+// keeping around for a bit to repurpose.
+// will remove sometime in the future - Jesse, 8-20-2020
 import React, { useState, MouseEvent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -23,7 +26,7 @@ interface AccessoriesTrayProps {
   classNames?: string;
 }
 
-export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
+export const AccessoriesTray: React.FC<AccessoriesTrayProps> = (props) => {
   const roomState = useRoomState();
   const [isAccessoriesTrayOpen, setIsAccessoriesTrayOpen] = useState(false);
   const defaultWhiteboardText = {
@@ -52,7 +55,7 @@ export const AccessoriesTray: React.FC<AccessoriesTrayProps> = props => {
 
   const onAddWhiteboardClick = (e: MouseEvent) => {
     // Only add a whiteboard if there are no other whiteboards in the room
-    const isWhiteboardAlreadyInRoom = widgets.some(el => el.type === WidgetTypes.Whiteboard);
+    const isWhiteboardAlreadyInRoom = widgets.some((el) => el.type === WidgetTypes.Whiteboard);
     if (!isWhiteboardAlreadyInRoom) {
       // whiteboard size if based on the size of the window, so we have to do some calculation
       // to ge the initial offset

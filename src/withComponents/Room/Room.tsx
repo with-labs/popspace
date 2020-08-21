@@ -74,7 +74,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               participant={
                 widget.participantSid === localParticipant.sid
                   ? localParticipant
-                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
               }
               dragConstraints={dragableArea}
               initialOffset={widget.data.initialOffset}
@@ -92,7 +92,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               participant={
                 widget.participantSid === localParticipant.sid
                   ? localParticipant
-                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
               }
               onCloseHandler={() => removeWidget(widget.id)}
               dragConstraints={dragableArea}
@@ -103,6 +103,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         case WidgetTypes.Whiteboard:
           widComps.push(
             <Whiteboard
+              key={widget.id}
               widgetId={widget.id}
               onCloseHandler={() => removeWidget(widget.id)}
               whiteboardId={widget.data.whiteboardId}
@@ -123,7 +124,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               participant={
                 widget.participantSid === localParticipant.sid
                   ? localParticipant
-                  : remoteParticipants.find(pt => pt.sid === widget.participantSid)
+                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
               }
               dragConstraints={dragableArea}
               initialOffset={widget.data.initialOffset}
@@ -217,7 +218,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
     // Array of sids that are present in the floaters list.
     const seenSids: string[] = [];
     // Iterate over floaters and add/update bubble position objects as necessary.
-    floaters.forEach(fl => {
+    floaters.forEach((fl) => {
       if (!bubs[fl.sid]) {
         // Add the floater bubble.
         const [left, top] =
@@ -248,11 +249,11 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   return (
     <motion.div ref={dragableArea} className="u-height100Percent u-width100Percent">
       <div ref={drop} className="u-positionRelative u-height100Percent">
-        {Object.keys(huddles).map(huddleId => (
+        {Object.keys(huddles).map((huddleId) => (
           <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
         ))}
         <div className="widgets">{widgetComps}</div>
-        {Object.keys(bubs).map(key => {
+        {Object.keys(bubs).map((key) => {
           const { pt, top, left } = bubs[key];
 
           return (

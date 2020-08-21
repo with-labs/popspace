@@ -1,3 +1,9 @@
+## 1.105.0
+
+- adding in new AccessoriesDock
+- mothballing AccessoriesTray
+- updating participant circle to match new functionality
+
 ## 1.104.0
 
 - Add user database, sign up, log in flow based on one-time passcodes, room dashboard/creating rooms

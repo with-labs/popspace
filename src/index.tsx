@@ -45,11 +45,6 @@ function useQuery() {
 }
 
 // -------- here is the where we set up the angles application
-
-const Home = () => {
-  return <Landing />;
-};
-
 const NamedRoom = () => {
   const params: any = useParams();
   const roomName = params['room_name'];
@@ -61,17 +56,46 @@ const NamedRoom = () => {
   );
 };
 
-const landingPageOrRedirect = () => {
-  if (window.localStorage.getItem('__withso_admin')) {
-    return <Landing />;
+const RedirectOrRoom = () => {
+  const query = useQuery();
+  const room: string | null = query.get('r');
+  const { error, setError } = useAppState();
+  if (room) {
+    return (
+      <VideoProvider options={connectionOptions} onError={setError}>
+        <Room name={room} error={error} setError={setError} />
+      </VideoProvider>
+    );
   } else {
-    return () => {
-      window.location.href = 'https://with.so';
-    };
+    window.location.href = 'https://with.so';
+    return <div />;
   }
 };
 
-const enableAdmin = () => {
+const LandingOrRoom = () => {
+  const query = useQuery();
+  const room: string | null = query.get('r');
+  const { error, setError } = useAppState();
+  if (room) {
+    return (
+      <VideoProvider options={connectionOptions} onError={setError}>
+        <Room name={room} error={error} setError={setError} />
+      </VideoProvider>
+    );
+  } else {
+    return <Landing />;
+  }
+};
+
+const LandingPageOrRedirect = () => {
+  if (window.localStorage.getItem('__withso_admin')) {
+    return <LandingOrRoom />;
+  } else {
+    return <RedirectOrRoom />;
+  }
+};
+
+const EnableAdmin = () => {
   return (
     <div style={{ color: 'black' }}>
       <button
@@ -101,11 +125,11 @@ ReactDOM.render(
       <AppStateProvider>
         <Switch>
           <Route exact path="/">
-            {landingPageOrRedirect()}
+            <LandingPageOrRedirect />
           </Route>
 
           <Route exact path="/1_secret_2_admin_3_enabler_4">
-            {enableAdmin()}
+            <EnableAdmin />
           </Route>
 
           <Route exact path="/signup">

@@ -1,3 +1,10 @@
+## 1.104.0
+
+- Add user database, sign up, log in flow based on one-time passcodes, room dashboard/creating rooms
+- Cross-environment support for netlify (prebuild step that generates env.json based on build-time env)
+- Page routing - logged out, dashboard, rooms
+- Add /roomname routing support alongside /?r=roomname
+
 ## 1.103.0
 
 - updating fonts to silka

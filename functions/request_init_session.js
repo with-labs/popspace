@@ -19,6 +19,9 @@ const sendOtpEmail = async (email, logInUrl) => {
   console.log(`Sending ${logInUrl} to email: ${email}`)
 }
 
+/**
+ * Send a magic link to the provided email which will initiate a session.
+ */
 module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
   if(util.http.failUnlessPost(event, callback)) return;

@@ -10,6 +10,9 @@ const handleRoomCreateError = (errorCode, callback) => {
   }
 }
 
+/**
+ * Creates a new room for authenticated users
+ */
 module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 

@@ -17,6 +17,12 @@ const handleAccountCreateFailure = (errorCode, callback) => {
   }
 }
 
+/**
+ * Checks whether the specified one-time passcode matches the provided email,
+ * and if it does - initiates a session.
+ * Returns the session string, which can be stored on the front end for
+ * future authorization.
+ */
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 

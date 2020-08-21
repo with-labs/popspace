@@ -1,30 +1,10 @@
 /*
-Massive.js is a lightweight query builder for Node.js
+Class for managing sessions with postgres.
 
-Why didn't we choose a heavy-duty ORM (Sequelize) or something even lighter (node-postgres)?
+Currently based on massive.js which manages a connection pool.
 
-Argument against heavy-duty ORM:
-ORMs take over and offer opinionated frameworks: migrations, models, query DSL.
-I've had lots of experience with ORMs, and most of the time they don't get in the way.
-However, when they do, it's pretty bad; they can also obscure the power of SQL,
-and encourage less efficient styles than what you can get with raw SQL.
-Models can be limiting and encourage bad data hygene; eager loading can
-be rather complex and limited, e.g. selecting subsets of columns is very tricky
-and rarely supported by ORM frameworks, though often highly necessary (e.g.
-in the case of caching, where you want to minimize the memory footprint).
-ORM models are often used sporadically, and the same queries are built over and over,
-since the DSL encourages ad-hoc queries, vs building methods on models -
-which can make optimiziating harder (arguably, it's a matter of culture).
-
-On the other hand, ORMs don't offer much more developer efficiency than
-a basic query builder that parses into data structures, rather than models.
-
-Argument against ultra-lightweight frameworks:
-The bare minimum I want to work with data is parsing the results from SQL into
-something that can be used in the language. In js, that means getting an Object back.
-That's just about all that massivejs does on top of a basic connection framework to
-postgres. It also takes care of managing connection pools, which is not that much
-extra weight for a framework to pull
+In netlify, we need to manually tear down the connections at the
+end of a function's execution.
 */
 const massive = require('massive');
 const monitor = require('pg-monitor');

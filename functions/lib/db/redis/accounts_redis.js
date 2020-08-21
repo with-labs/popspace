@@ -1,3 +1,17 @@
+/**
+This is not currently in use, but it's useful reference for future.
+
+While we're on Netlify, there is no great option to use redis.
+
+If/when we migrate into AWS, we'll at least want to store sessions in redis,
+maybe account create data as well (but less importantly).
+
+They key adavntage we'd get with redis is the O(1) access to sessions -
+which is beneficial since it's high throughput: every request need to do a
+session key check. It's great to take a non-stop stream of requests off
+the main database, and not have to degrade our load times as more users sign up.
+*/
+
 const RedisBase = require("./redis_base");
 
 const ENV_CREDENTIALS = {

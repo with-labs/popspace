@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
 
-import HomeLoggedOut from './landing/home_logged_out';
+import HomeLoggedOut from './landing/homeLoggedOut';
 import Profile from './landing/profile';
 import Api from '../utils/api';
 
@@ -31,9 +31,12 @@ export default class Landing extends React.Component<any, any> {
     };
 
     this.onProfileChange = (newProfile: any) => {
-      this.setState({ profile: newProfile });
+      this.setState(() => ({ profile: newProfile }));
     };
+  }
 
+  componentDidMount() {
+    const sessionToken = localStorage.getItem('__session_token');
     if (sessionTokenExists(sessionToken)) {
       Api.getProfile(sessionToken).then((result: any) => {
         if (result.success) {

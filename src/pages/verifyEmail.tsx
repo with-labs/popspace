@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Api from '../utils/api';
 import { useLocation } from 'react-router-dom';
 
@@ -13,14 +13,18 @@ export default function VerifyEmail() {
     alert(result.message);
   };
 
-  Api.completeSignup(otp, email).then((result: any) => {
-    if (result.success) {
-      window.localStorage.setItem('__session_token', result.token);
-      window.location.href = '/';
-    } else {
-      renderError(result);
-    }
-  });
+  const requestCompleteSetup = () => {
+    Api.completeSignup(otp, email).then((result: any) => {
+      if (result.success) {
+        window.localStorage.setItem('__session_token', result.token);
+        window.location.href = '/';
+      } else {
+        renderError(result);
+      }
+    });
+  };
+
+  useEffect(requestCompleteSetup, []);
 
   return (
     <div>

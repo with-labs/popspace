@@ -14,7 +14,7 @@ import { VideoProvider } from './components/VideoProvider';
 import Room from './pages/room';
 import Landing from './pages/landing';
 import Signup from './pages/signup';
-import VerifyEmail from './pages/verify_email';
+import VerifyEmail from './pages/verifyEmail';
 import Login from './pages/login';
 
 import './with.css';

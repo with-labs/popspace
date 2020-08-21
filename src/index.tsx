@@ -5,14 +5,18 @@ import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppStateProvider, { useAppState } from './state';
-import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation, useParams } from 'react-router-dom';
 import { ConnectOptions, TwilioError } from 'twilio-video';
-import ErrorDialog from './components/ErrorDialog/ErrorDialog';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
-import AnglesApp from './AnglesApp';
+import Room from './pages/room';
+import Landing from './pages/landing';
+import Signup from './pages/signup';
+import VerifyEmail from './pages/verifyEmail';
+import Login from './pages/login';
+
 import './with.css';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
@@ -41,30 +45,78 @@ function useQuery() {
 }
 
 // -------- here is the where we set up the angles application
-
-const AnglesMainApp = () => {
+const NamedRoom = () => {
+  const params: any = useParams();
+  const roomName = params['room_name'];
   const { error, setError } = useAppState();
-  const query = useQuery();
-  const room: string | null = query.get('r');
-
   return (
     <VideoProvider options={connectionOptions} onError={setError}>
-      {room ? (
-        <div>
-          <ErrorDialog dismissError={() => setError(null)} error={error} />
-          <AnglesApp roomName={room} />
-        </div>
-      ) : (
-        <ErrorDialog
-          dismissError={() => setError(null)}
-          error={new Error('A room name is required to access the application.') as TwilioError}
-        />
-      )}
+      <Room name={roomName} error={error} setError={setError} />
     </VideoProvider>
   );
 };
 
-// -----------
+const RedirectOrRoom = () => {
+  const query = useQuery();
+  const room: string | null = query.get('r');
+  const { error, setError } = useAppState();
+  if (room) {
+    return (
+      <VideoProvider options={connectionOptions} onError={setError}>
+        <Room name={room} error={error} setError={setError} />
+      </VideoProvider>
+    );
+  } else {
+    window.location.href = 'https://with.so';
+    return <div />;
+  }
+};
+
+const LandingOrRoom = () => {
+  const query = useQuery();
+  const room: string | null = query.get('r');
+  const { error, setError } = useAppState();
+  if (room) {
+    return (
+      <VideoProvider options={connectionOptions} onError={setError}>
+        <Room name={room} error={error} setError={setError} />
+      </VideoProvider>
+    );
+  } else {
+    return <Landing />;
+  }
+};
+
+const LandingPageOrRedirect = () => {
+  if (window.localStorage.getItem('__withso_admin')) {
+    return <LandingOrRoom />;
+  } else {
+    return <RedirectOrRoom />;
+  }
+};
+
+const EnableAdmin = () => {
+  return (
+    <div style={{ color: 'black' }}>
+      <button
+        onClick={() => {
+          window.localStorage.setItem('__withso_admin', 'true');
+        }}
+      >
+        {' '}
+        Become admin
+      </button>
+      <button
+        onClick={() => {
+          window.localStorage.removeItem('__withso_admin');
+        }}
+      >
+        {' '}
+        Unbecome admin
+      </button>
+    </div>
+  );
+};
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
@@ -73,9 +125,28 @@ ReactDOM.render(
       <AppStateProvider>
         <Switch>
           <Route exact path="/">
-            <AnglesMainApp />
+            <LandingPageOrRedirect />
           </Route>
-          <Redirect to="/" />
+
+          <Route exact path="/1_secret_2_admin_3_enabler_4">
+            <EnableAdmin />
+          </Route>
+
+          <Route exact path="/signup">
+            <Signup />
+          </Route>
+
+          <Route path="/complete_signup">
+            <VerifyEmail />
+          </Route>
+
+          <Route path="/login">
+            <Login />
+          </Route>
+
+          <Route path="/:room_name">
+            <NamedRoom />
+          </Route>
         </Switch>
       </AppStateProvider>
     </Router>

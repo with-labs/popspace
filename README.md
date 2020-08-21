@@ -91,6 +91,14 @@ TWILIO_API_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ### Running the App locally
 
+Before running, it's necessary to generate an `env.json` file. Make sure you have the necessary environment variables defined (e.g. by having a .env file in your project, which we gitignore; ask a dev for a .env file - but configure it so it works with your local postgres/redis), then run
+
+```
+    $ npm run prebuild
+```
+
+Sadly, Netlify does not allow convenient distinction between environments, and we've had to implement a workaround similar to https://community.netlify.com/t/netlify-functions-and-env-variables-from-netlify-toml/4404/13
+
 Run the app locally with
 
     $ npm run dev

@@ -1,10 +1,12 @@
 import { createMuiTheme } from '@material-ui/core';
 
-const commonSans = {
-  fontFamily: 'CommonSans',
+const silka = {
+  fontFamily: 'Silka',
   src: `
-    url("/fonts/CommonSans-Regular.woff2") format("woff2"),
-    url("/fonts/CommonSans-Regular.woff") format("woff")
+    url("/fonts/silka-regular.woff2") format("woff2"),
+    url("/fonts/silka-regular.woff") format("woff"),
+    url("/fonts/silka-semibold.woff2") format("woff2"),
+    url("/fonts/silka-semibold.woff") format("woff")
   `,
 };
 
@@ -30,12 +32,12 @@ export default createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'CommonSans',
+    fontFamily: 'Silka',
   },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [commonSans],
+        '@font-face': [silka],
       },
     },
   },

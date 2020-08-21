@@ -1,3 +1,27 @@
+## 1.104.0
+
+- Add user database, sign up, log in flow based on one-time passcodes, room dashboard/creating rooms
+- Cross-environment support for netlify (prebuild step that generates env.json based on build-time env)
+- Page routing - logged out, dashboard, rooms
+- Add /roomname routing support alongside /?r=roomname
+
+## 1.103.0
+
+- updating fonts to silka
+
+## 1.102.0
+
+- fix scrollbar behavior for stickynote
+
+## 1.101.0
+
+- updating sticky note width
+- updating sticky note text wrap and y scroll
+
+## 1.100.0
+
+- Move things that should be dev to dependencies to that part of package.json.
+
 ## 1.99.0
 
 - Add room betaworks, hodgesfamily, knightrider

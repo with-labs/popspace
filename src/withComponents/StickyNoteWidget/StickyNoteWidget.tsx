@@ -10,28 +10,23 @@ import { LocationTuple } from '../../types';
 
 import styles from './StickyNoteWidget.module.css';
 
-interface IStickyNoteWidget {
-  id: string;
+interface IStickyNoteData {
   text: string;
-  participant?: Participant;
-  onCloseHandler: (event: MouseEvent) => void;
-  position?: LocationTuple;
-  dragConstraints: RefObject<Element>;
   isPublished: boolean;
   initialOffset?: number;
 }
+interface IStickyNoteWidget {
+  id: string;
+  participant?: Participant;
+  position?: LocationTuple;
+  dragConstraints: RefObject<Element>;
+  data: IStickyNoteData;
+}
 
-export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({
-  id,
-  position,
-  text,
-  participant,
-  onCloseHandler,
-  isPublished,
-  dragConstraints,
-  initialOffset = 0,
-}) => {
-  const { addWidget, updateWidgetData } = useWidgetContext();
+export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, participant, dragConstraints, data }) => {
+  // get the needed data from the data object
+  const { text, isPublished, initialOffset } = data;
+  const { addWidget, updateWidgetData, removeWidget } = useWidgetContext();
   const {
     room: { localParticipant },
   } = useVideoContext();
@@ -59,6 +54,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({
         value={inputText}
         onChange={handleTextChange}
         placeholder="Type your note"
+        autoFocus
       />
       <button className={clsx('u-fontB1', styles.createNoteButton)} onClick={handlePublish}>
         Create Note
@@ -70,20 +66,24 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({
     <div className={clsx('u-fontP2', styles.addedByText)}>Added by {participantDisplayIdentity}</div>
   ) : null;
 
+  const handleClose = () => {
+    removeWidget(id);
+  };
+
   return (
     <Widget
       id={id}
       title="Sticky Note"
       classNames={styles.stickyNote}
       titleClassNames={styles.title}
-      onCloseHandler={onCloseHandler}
+      onCloseHandler={handleClose}
       onAddHandler={handleAddNewStickyNote}
       position={position}
       dragConstraints={dragConstraints}
       initialOffset={initialOffset}
       type={WidgetTypes.StickyNote}
     >
-      <div>
+      <div className={styles.stickyNoteContainer}>
         {stickyNoteContent}
         {authorDisplay}
       </div>

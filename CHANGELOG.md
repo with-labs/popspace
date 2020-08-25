@@ -1,3 +1,11 @@
+## 1.106.0
+
+- updating font classes
+- updating widgets to match design
+- bringing widgets into line with the common widget interface
+- adding in scroll bar syling.
+- updating widgets to use generic data prop
+
 ## 1.105.0
 
 - adding in new AccessoriesDock

@@ -1,40 +1,49 @@
 .stickyNote {
-  background: #fff2af;
   max-width: 240px;
+  width: 240px;
+}
+
+.stickyNoteContainer {
+  padding: 16px;
 }
 
 .title {
-  color: #c77f00;
+  background-color: var(--color-mandarin-light);
 }
 
 .displayText {
   overflow-y: auto;
   overflow-wrap: anywhere;
   max-height: 250px;
+  color: var(--color-ink);
 }
 
+/* 
+  TODO: Outline none here reduces accesability, need to handle this better.
+  see the accessability project in height
+*/
 .textInput {
   height: 96px;
   resize: none;
   width: 100%;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0px 1px 4px rgba(0, 0, 0, 0.06);
+  border-style: none;
+  border-color: Transparent;
+  outline: none;
 }
 
 .createNoteButton {
   width: 100%;
   height: 48px;
   border-radius: 6px;
-  background-color: #ea990b;
+  background-color: var(--color-mandarin-regular);
   border: none;
-  color: white;
+  color: var(--color-ink);
   cursor: pointer;
 }
 
 .addedByText {
   margin-top: 8px;
-  color: #9a6200;
+  color: var(--color-slate);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

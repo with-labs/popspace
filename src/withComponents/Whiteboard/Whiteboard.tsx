@@ -1,39 +1,41 @@
-import React, { RefObject, useRef, MouseEvent } from 'react';
+import React, { RefObject, useRef } from 'react';
 import { Widget } from '../Widget/Widget';
 import { LocationTuple } from '../../types';
-import clsx from 'clsx';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
-
+import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import styles from './whiteboard.module.css';
 
-type WhiteboardProps = {
-  onCloseHandler: (event: MouseEvent) => void;
+interface IWhiteboardData {
+  initialOffset?: number;
   whiteboardId: string;
+}
+
+type WhiteboardProps = {
   dragConstraints: RefObject<Element>;
   position?: LocationTuple;
-  widgetId: string;
-  initialOffset?: number;
+  id: string;
+  data: IWhiteboardData;
 };
 
-const Whiteboard = ({
-  widgetId,
-  whiteboardId,
-  onCloseHandler,
-  dragConstraints,
-  position,
-  initialOffset = 0,
-}: WhiteboardProps) => {
+const Whiteboard = ({ id, dragConstraints, position, data }: WhiteboardProps) => {
+  const { initialOffset, whiteboardId } = data;
   const iframeRef = useRef(null);
   const witeboardIdRef = useRef(whiteboardId);
+  const { removeWidget } = useWidgetContext();
+
+  const onCloseHandler = () => {
+    removeWidget(id);
+  };
 
   return (
     <Widget
-      id={widgetId}
+      id={id}
       title="Whiteboard"
       position={position}
       onCloseHandler={onCloseHandler}
       dragConstraints={dragConstraints}
       classNames={styles.root}
+      titleClassNames={styles.title}
       initialOffset={initialOffset}
       type={WidgetTypes.Whiteboard}
     >

@@ -16,6 +16,25 @@ html {
   box-sizing: inherit;
 }
 
+/* scrollbar width */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+/* scrollbar Track */
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+/* scrollbar Handle */
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+/* scrollbar Handle on hover */
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 /* Set the z-index of the modal overlay to ensure it's above everything else */
 .ReactModal__Overlay {
   z-index: var(--layerControlsAlpha);

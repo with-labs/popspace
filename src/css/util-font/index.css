@@ -17,6 +17,14 @@
   line-height: 22px;
 }
 
+.u-fontH3 {
+  font-family: Silka, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
+}
+
 .u-fontP1 {
   font-family: Silka, Helvetica, sans-serif;
   font-style: normal;
@@ -39,4 +47,12 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 22px;
+}
+
+.u-fontB2 {
+  font-family: Silka, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16px;
 }

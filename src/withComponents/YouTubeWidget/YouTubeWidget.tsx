@@ -1,8 +1,6 @@
 import React, { RefObject, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { Widget } from '../Widget/Widget';
-import { Participant } from 'twilio-video';
-import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
 import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
@@ -10,16 +8,19 @@ import { WidgetTypes } from '../WidgetProvider/widgetTypes';
 import YouTube from 'react-youtube';
 import styles from './YouTubeWidget.module.css';
 
-interface IYouTubeWidget {
-  id: string;
-  videoId: string;
-  participant?: Participant;
-  dragConstraints: RefObject<Element>;
-  position?: LocationTuple;
+interface IYoutubeWidgetData {
   isPublished: boolean;
   initialOffset?: number;
   timeStamp?: number;
   isPlaying?: boolean;
+  videoId: string;
+}
+
+interface IYouTubeWidget {
+  id: string;
+  dragConstraints: RefObject<Element>;
+  position?: LocationTuple;
+  data: IYoutubeWidgetData;
 }
 
 // TODO:
@@ -29,19 +30,9 @@ interface IYouTubeWidget {
 //   will be at the last known
 // - improve the publish url parser, to better handle the other paramters and shortened urls
 
-export const YouTubeWidget: React.FC<IYouTubeWidget> = ({
-  id,
-  videoId,
-  participant,
-  dragConstraints,
-  position,
-  isPublished,
-  initialOffset,
-  timeStamp = -1,
-  isPlaying,
-}) => {
+export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, position, data }) => {
+  const { isPublished, initialOffset, timeStamp = 0, isPlaying, videoId } = data;
   const { removeWidget, updateWidgetData } = useWidgetContext();
-  const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const [videoUrl, setVideoUrl] = useState('');
   const [formError, setFormError] = useState('');
   const [currentTimeStamp, setCurrentTimeStamp] = useState(-1);
@@ -92,16 +83,12 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({
     }
   };
 
-  // playing around the idea that
-  // widgets should control their own state with in
-  // the context. feels alot better then passing in the close function
-  // while working with context + redux
-  const handleClose = () => {
+  const onCloseHandler = () => {
     removeWidget(id);
   };
 
   let videoPlayerContent = (
-    <div>
+    <div className={styles.youtubeContainer}>
       <form onSubmit={handlePublish}>
         <FormInput
           classNames={styles.videoUrlInput}
@@ -176,7 +163,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({
     };
 
     videoPlayerContent = (
-      <>
+      <div className={styles.youtubePlayerContainer}>
         <YouTube
           opts={{
             height: '270',
@@ -186,14 +173,11 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({
           onPlay={handleOnPlay}
           onPause={handleOnPause}
           onReady={handleOnReady}
+          className={styles.youtubePlayerBorder}
         />
-      </>
+      </div>
     );
   }
-
-  const authorDisplay = isPublished ? (
-    <div className={clsx('u-fontP2', styles.addedByText)}>Added by {participantDisplayIdentity}</div>
-  ) : null;
 
   return (
     <Widget
@@ -201,14 +185,13 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({
       title="YouTube - beta"
       classNames={styles.youtube}
       titleClassNames={styles.title}
-      onCloseHandler={handleClose}
+      onCloseHandler={onCloseHandler}
       position={position}
       dragConstraints={dragConstraints}
       initialOffset={initialOffset}
       type={WidgetTypes.YouTube}
     >
       {videoPlayerContent}
-      {authorDisplay}
     </Widget>
   );
 };

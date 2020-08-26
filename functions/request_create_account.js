@@ -11,10 +11,6 @@ Sign up flow
 5. Create/store session
 */
 
-const sendOtpEmail = async (params, signupUrl) => {
-  // TODO:  send email
-  console.log(`Sending ${signupUrl} to email: ${params.email}`)
-}
 
 module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
@@ -50,8 +46,8 @@ module.exports.handler = async (event, context, callback) => {
 
   const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
 
-  await sendOtpEmail(params, signupUrl)
+  await lib.email.signup.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
   await accounts.cleanup()
-  return lib.util.http.succeed(callback, {signupUrl: signupUrl});
+  return lib.util.http.succeed(callback, {});
 }

@@ -31,6 +31,6 @@ module.exports.handler = async (event, context, callback) => {
 
   await accounts.cleanup()
   await rooms.cleanup()
-  console.log(result)
+
   lib.util.http.succeed(callback, { newRoom: result.newRoom })
 }

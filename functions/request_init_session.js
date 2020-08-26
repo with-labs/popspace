@@ -14,11 +14,6 @@ Log in flow
 
 */
 
-const sendOtpEmail = async (email, logInUrl) => {
-  // TODO:  send email
-  console.log(`Sending ${logInUrl} to email: ${email}`)
-}
-
 /**
  * Send a magic link to the provided email which will initiate a session.
  */
@@ -40,8 +35,8 @@ module.exports.handler = async (event, context, callback) => {
   const loginRequest = await accounts.createLoginRequest(user)
   const logInUrl = await accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
-  await sendOtpEmail(params.email, logInUrl)
+  await lib.email.signup.sendLoginOtpEmail(params.email, params.firstName, logInUrl)
 
   await accounts.cleanup()
-  util.http.succeed(callback, {logInUrl: logInUrl});
+  util.http.succeed(callback, {});
 }

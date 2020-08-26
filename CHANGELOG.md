@@ -1,3 +1,7 @@
+## 1.108.0
+
+- fixing sticky note to always display who added it, even after that user leaves the room.
+
 ## 1.107.0
 
 - Add better error handling/message for mic/camera access errors.

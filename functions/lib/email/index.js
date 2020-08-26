@@ -1,4 +1,4 @@
 module.exports = {
-  ses: require("./ses")
+  ses: require("./ses"),
   account: require("./account")
 }

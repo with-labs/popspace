@@ -14,14 +14,15 @@ class Otp {
   }
 
   verify(request, otp) {
+    util.dev.log("Request", request)
     if(!request || request.otp != otp) {
-      return { error: lib.db.ErrorCodes.INVALID_OTP }
+      return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
     }
     if(this.isExpired(request)) {
-      return { error: lib.db.ErrorCodes.EXPIRED_OTP }
+      return { error: lib.db.ErrorCodes.otp.EXPIRED_OTP }
     }
     if(request.resolved_at) {
-      return { error: lib.db.ErrorCodes.RESOLVED_OTP }
+      return { error: lib.db.ErrorCodes.otp.RESOLVED_OTP }
     }
     return {}
   }
@@ -35,4 +36,4 @@ class Otp {
   }
 }
 
-module.exports = Otp
+module.exports = new Otp()

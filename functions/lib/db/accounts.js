@@ -3,7 +3,6 @@ const DbAccess = require("./pg/db_access")
 class Accounts extends DbAccess {
   constructor() {
     super()
-    this.otp = new lib.db.Otp()
   }
 
   getSignupUrl(appUrl, accountCreateRequest) {
@@ -46,16 +45,16 @@ class Accounts extends DbAccess {
   */
   async createAccountRequest(requestParams) {
     const request = Object.assign({}, requestParams)
-    request.otp = this.otp.generate()
+    request.otp = lib.db.otp.generate()
     request.requested_at = this.now()
-    request.expires_at = this.otp.standardExpiration()
+    request.expires_at = lib.db.otp.standardExpiration()
 
     return await this.pg.otp_account_create_requests.insert(request)
   }
 
   async tryToResolveAccountCreateRequest(email, otp) {
     const request = await this.pg.otp_account_create_requests.findOne({email: email, otp: otp})
-    const verification = this.otp.verify(request, otp)
+    const verification = lib.db.otp.verify(request, otp)
     if(verification.error != null) {
       return verification
     }
@@ -83,9 +82,9 @@ class Accounts extends DbAccess {
 
   async createLoginRequest(user) {
     const loginRequest = {
-      otp: this.otp.generate(),
+      otp: lib.db.otp.generate(),
       requested_at: this.now(),
-      expires_at: this.otp.standardExpiration(),
+      expires_at: lib.db.otp.standardExpiration(),
       user_id: user.id
     }
 
@@ -94,7 +93,7 @@ class Accounts extends DbAccess {
 
   async resolveLoginRequest(userId, otp) {
     const request = await this.pg.otp_login_requests.findOne({user_id: userId, otp: otp})
-    const verification = this.otp.verify(request, otp)
+    const verification = lib.db.otp.verify(request, otp)
     if(verification.error != null) {
       return verification
     }
@@ -117,7 +116,7 @@ class Accounts extends DbAccess {
     const db = tx || this.pg
     return await db.sessions.insert({
       user_id: userId,
-      secret: this.otp.generate(),
+      secret: lib.db.otp.generate(),
       expires_at: null
     })
   }
@@ -132,7 +131,7 @@ class Accounts extends DbAccess {
   async sessionFromToken(sessionToken) {
     const sessionObject = JSON.parse(sessionToken)
     const session = await this.pg.sessions.findOne({user_id: sessionObject.uid, secret: sessionObject.secret})
-    if(!session || this.otp.isExpired(session)) {
+    if(!session || lib.db.otp.isExpired(session)) {
       return null
     } else {
       return session

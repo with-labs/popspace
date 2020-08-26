@@ -35,7 +35,7 @@ module.exports.handler = async (event, context, callback) => {
   const loginRequest = await accounts.createLoginRequest(user)
   const logInUrl = await accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
-  await lib.email.signup.sendLoginOtpEmail(params.email, params.firstName, logInUrl)
+  await lib.email.account.sendLoginOtpEmail(params.email, params.firstName, logInUrl)
 
   await accounts.cleanup()
   util.http.succeed(callback, {});

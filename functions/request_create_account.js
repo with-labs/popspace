@@ -31,7 +31,7 @@ module.exports.handler = async (event, context, callback) => {
   const existingCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
 
   if(existingCreateRequest) {
-    if(!accounts.isExpired(existingCreateRequest)) {
+    if(!lib.db.otp.isExpired(existingCreateRequest)) {
       return lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
     }
   }
@@ -46,7 +46,7 @@ module.exports.handler = async (event, context, callback) => {
 
   const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
 
-  await lib.email.signup.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
+  await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
   await accounts.cleanup()
   return lib.util.http.succeed(callback, {});

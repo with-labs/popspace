@@ -7,14 +7,13 @@
 
 require("./globals")
 
-global.util = require("./util/index.js")
-global.db = require("./db/index.js")
-global.email = require("./email/index.js")
+global.lib = {}
 
-global.lib = {
-  util: util,
-  db: db,
-  email: email
-}
+global.lib.util = require("./util/index.js")
+global.lib.db = require("./db/index.js")
+global.lib.email = require("./email/index.js")
+
+global.util = lib.util
+global.db = lib.db
 
 module.exports = lib

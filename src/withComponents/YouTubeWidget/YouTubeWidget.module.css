@@ -1,5 +1,21 @@
+.youtubeContainer {
+  padding: 16px;
+}
+
+.youtubePlayerContainer {
+  height: 270px;
+}
+
+.youtubePlayerBorder {
+  border-radius: 0 0 10px 10px;
+}
+
 .videoUrlInput {
   margin-bottom: 5px;
+}
+
+.title {
+  background-color: var(--color-cherry-light);
 }
 
 .addVideoButton {
@@ -7,16 +23,9 @@
   height: 48px;
   border-radius: 6px;
   border: none;
-  color: white;
+  color: var(--color-ink);
   cursor: pointer;
-  background-color: #636c8b;
-}
-
-.addedByText {
-  margin-top: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background-color: var(--color-cherry-regular);
 }
 
 .error {

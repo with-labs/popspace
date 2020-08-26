@@ -18,7 +18,6 @@ import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 import style from './Room.module.css';
 import { LinkWidget } from '../LinkWidget/LinkWidget';
 import Whiteboard from '../Whiteboard/Whiteboard';
-import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { WidgetTypes } from '../WidgetProvider/widgetTypes';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
@@ -44,7 +43,6 @@ interface IRoomProps {
 export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const { huddles, floaters, widgets, localHuddle } = useRoomParties();
   const { inviteToHuddle } = useHuddleContext();
-  const { removeWidget } = useWidgetContext();
   const disabledAudioSids = useAudioTrackBlacklist();
   const [windowWidth, windowHeight] = useWindowSize();
   const remoteParticipants = useParticipants();
@@ -59,25 +57,16 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
 
   // get the widgets to display in the room
   const widgetComps = widgets.reduce<JSX.Element[]>((widComps, widget) => {
-    if (widget.data.isPublished || widget.participantSid === localParticipant.sid) {
+    if (widget?.data.isPublished || widget.participantSid === localParticipant.sid) {
       switch (widget.type) {
         case WidgetTypes.Link:
           widComps.push(
             <LinkWidget
               key={widget.id}
               id={widget.id}
-              isPublished={widget.data.isPublished}
-              position={widget.location}
-              title={widget.data.title}
-              url={widget.data.url}
-              onCloseHandler={() => removeWidget(widget.id)}
-              participant={
-                widget.participantSid === localParticipant.sid
-                  ? localParticipant
-                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
-              }
               dragConstraints={dragableArea}
-              initialOffset={widget.data.initialOffset}
+              position={widget.location}
+              data={widget.data}
             />
           );
           break;
@@ -87,16 +76,13 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               key={widget.id}
               id={widget.id}
               position={widget.location}
-              text={widget.data.text}
-              isPublished={widget.data.isPublished}
               participant={
                 widget.participantSid === localParticipant.sid
                   ? localParticipant
                   : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
               }
-              onCloseHandler={() => removeWidget(widget.id)}
               dragConstraints={dragableArea}
-              initialOffset={widget.data.initialOffset}
+              data={widget.data}
             />
           );
           break;
@@ -104,12 +90,10 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
           widComps.push(
             <Whiteboard
               key={widget.id}
-              widgetId={widget.id}
-              onCloseHandler={() => removeWidget(widget.id)}
-              whiteboardId={widget.data.whiteboardId}
+              id={widget.id}
               dragConstraints={dragableArea}
               position={widget.location}
-              initialOffset={widget.data.initialOffset}
+              data={widget.data}
             />
           );
           break;
@@ -119,17 +103,8 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               key={widget.id}
               id={widget.id}
               position={widget.location}
-              videoId={widget.data.videoId}
-              isPublished={widget.data.isPublished}
-              participant={
-                widget.participantSid === localParticipant.sid
-                  ? localParticipant
-                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
-              }
               dragConstraints={dragableArea}
-              initialOffset={widget.data.initialOffset}
-              timeStamp={widget.data.timeStamp}
-              isPlaying={widget.data.isPlaying}
+              data={widget.data}
             />
           );
           break;

@@ -3,13 +3,16 @@
   width: 45vw;
 }
 
+.title {
+  background-color: var(--color-turquoise-light);
+}
+
 .frame {
   position: absolute;
   height: 35vh;
   width: 45vw;
   overflow: hidden;
-  border-radius: 5px;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
 .matte {
@@ -29,26 +32,6 @@
     height: 35vh;
     width: calc(100vw - 20px);
   }
-}
-
-.close {
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  height: 30px;
-  cursor: pointer;
-  width: 30px;
-  background: #fff;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-}
-
-.close:before {
-  content: 'x';
-  height: 30px;
-  width: 30px;
-  line-height: 30px;
-  text-align: center;
-  position: absolute;
 }
 
 .frame {

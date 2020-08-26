@@ -1,8 +1,8 @@
 import React, { RefObject, useCallback } from 'react';
 import clsx from 'clsx';
 import { motion, PanInfo } from 'framer-motion';
-import { ReactComponent as CloseBtn } from './images/Close.svg';
-import { ReactComponent as AddBtn } from './images/Plus.svg';
+import { ReactComponent as CloseBtn } from './images/delete.svg';
+import { ReactComponent as AddBtn } from './images/add.svg';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
@@ -23,7 +23,7 @@ interface IWidgetProps {
   type: string;
 }
 
-export const Widget: React.FC<IWidgetProps> = props => {
+export const Widget: React.FC<IWidgetProps> = (props) => {
   const {
     id,
     position,
@@ -57,7 +57,10 @@ export const Widget: React.FC<IWidgetProps> = props => {
   );
 
   const addButton = onAddHandler ? (
-    <div className={clsx(styles.addButton, 'u-cursorPointer u-height100Percent')} onClick={() => onAddHandler()}>
+    <div
+      className={clsx(styles.addButton, 'u-cursorPointer u-flex u-flexAlignItemsCenter')}
+      onClick={() => onAddHandler()}
+    >
       <AddBtn />
     </div>
   ) : null;
@@ -98,10 +101,10 @@ export const Widget: React.FC<IWidgetProps> = props => {
         left: `calc((50% - ${initialOffset}px)`,
       }}
     >
-      <div className="u-flex u-flexRow">
-        <div className={clsx('u-fontH2 u-flexGrow1', styles.title, styles.grabbable, titleClassNames)}>{title}</div>
+      <div className={clsx('u-flex u-flexRow u-flexAlignItemsCenter', styles.title, titleClassNames)}>
+        <div className={clsx('u-fontH2 u-flexGrow1', styles.titleText, styles.grabbable)}>{title}</div>
         {addButton}
-        <div className="u-cursorPointer u-height100Percent" onClick={() => onCloseHandler()}>
+        <div className="u-cursorPointer u-flex u-flexAlignItemsCenter" onClick={() => onCloseHandler()}>
           <CloseBtn />
         </div>
       </div>

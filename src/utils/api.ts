@@ -25,6 +25,10 @@ class Api {
     return await this.post('/create_room', { token });
   }
 
+  resolveRoomInvite(token: any, otp: string, inviteId: string) {
+    return await this.post('/resolve_room_invite', { token, otp, inviteId });
+  }
+
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

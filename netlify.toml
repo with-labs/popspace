@@ -1,3 +1,6 @@
+[dev]
+  targetPort = 3002
+
 [build]
   command = "npm run build"
   publish = "build"

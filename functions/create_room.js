@@ -19,7 +19,9 @@ module.exports.handler = async (event, context, callback) => {
   const accounts = new lib.db.Accounts()
   await accounts.init()
   const user = await lib.util.http.verifySessionAndGetUser(event, callback, accounts)
-  if(!user) return;
+  if(!user) {
+    return util.http.fail(callback, "Must be authenticated to create rooms.");
+  }
 
   const rooms = new lib.db.Rooms()
   await rooms.init()

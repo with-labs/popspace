@@ -1,22 +1,6 @@
 const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
-const handleLoginFailure = (errorCode, callback) => {
-  switch(errorCode) {
-    case lib.db.ErrorCodes.otp.INVALID_OTP:
-      return util.http.fail(callback, "Invalid one-time passcode.");
-    case lib.db.ErrorCodes.otp.EXPIRED_OTP:
-      return util.http.fail(callback, "Sorry, this link has expired. Please sign up again.");
-    case lib.db.ErrorCodes.otp.RESOLVED_OTP:
-      return util.http.fail(callback, "It seems this link has already been used to log in. Please try again.");
-    case lib.db.ErrorCodes.UNEXPECTER_ERROR:
-      // TODO: ERROR_LOGGING
-      return util.http.fail(callback, "An unexpected error happened. Please try again.");
-    default:
-      return util.http.fail(callback, "An unexpected error happened. Please try again.");
-  }
-}
-
 /**
  * Checks whether the specified one-time passcode matches the provided email,
  * and if it does - initiates a session.
@@ -35,7 +19,7 @@ module.exports.handler = async (event, context, callback) => {
 
   const result = await accounts.resolveLoginRequest(uid, otp)
   if(result.error != null) {
-    return handleLoginFailure(result.error, callback)
+    return lib.db.otp.handleAuthFailure(result.error, callback)
   }
 
   const session = result.session

@@ -8,6 +8,7 @@ module.exports = {
   },
 
   room: {
-    TOO_MANY_OWNED_ROOMS: 1
+    TOO_MANY_OWNED_ROOMS: 1,
+    ALREADY_INVITED: 2
   }
 }

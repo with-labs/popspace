@@ -3,6 +3,8 @@ const cryptoRandomString = require('crypto-random-string');
 const LOWERCASE_AND_NUMBERS = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
 const MAX_FREE_ROOMS = 3
+// Never expire by default
+const STANDARD_MEMBERSHIP_DURATION_MILLIS = 0
 
 class Rooms extends DbAccess {
   constructor() {
@@ -20,6 +22,23 @@ class Rooms extends DbAccess {
     return cryptoRandomString({length: 5, characters: LOWERCASE_AND_NUMBERS});
   }
 
+  async getInviteUrl(appUrl, invite) {
+    const existingUser = await this.pg.users.findOne({email: invite.email})
+    if(existingUser) {
+      return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
+    } else {
+      return `${appUrl}/invited?otp=${invite.otp}&iid=${invite.id}`
+    }
+  }
+
+  async inviteById(id) {
+    return await this.pg.room_invitations.findOne({id: id})
+  }
+
+  async roomById(id) {
+    return await this.pg.rooms.find({id: id})
+  }
+
   async generateRoom(userId) {
     let idString = this.generateIdString()
     let isUnique = await this.isUniqueIdString(idString)
@@ -32,6 +51,58 @@ class Rooms extends DbAccess {
       owner_id: userId,
       unique_id: idString
     })
+  }
+
+  async latestRoomInvitation(roomId, inviteeEmail) {
+    const invitations = await this.pg.room_invitations.find({
+      room_id: roomId,
+      email: inviteeEmail
+    }, {
+      order: [{
+        field: "created_at",
+        direction: "desc"
+      }],
+      limit: 1
+    })
+    return invitations[0]
+  }
+
+  async createInvitation(roomId, inviteeEmail) {
+    return await this.pg.room_invitations.insert({
+      room_id: roomId,
+      email: inviteeEmail,
+      otp: lib.db.otp.generate(),
+      issued_at: this.now(),
+      expires_at: lib.db.otp.standardExpiration(),
+      membership_duration_millis: STANDARD_MEMBERSHIP_DURATION_MILLIS
+    })
+  }
+
+  async resolveInvitation(invitation, user, otp) {
+    const verification = lib.db.otp.verify(invitation, otp)
+    if(verification.error != null) {
+      return verification
+    }
+
+    try {
+
+      const membership = await this.pg.withTransaction(async (tx) => {
+        await tx.room_invitations.update({id: invitation.id}, {resolved_at: this.now()})
+        return await tx.room_memberships.insert({
+          room_id: invitation.room_id,
+          user_id: user.id,
+          invitation_id: invitation.id,
+          began_at: this.now(),
+          expires_at: 0 // non-expiring invitations by default
+        })
+      })
+
+      return { membership }
+
+    } catch(e) {
+      // TODO: ERROR_LOGGING
+      return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
+    }
   }
 
   async getOwnedRooms(userId) {

@@ -1,4 +1,4 @@
-const SENDER = 'with.dev@with.so'
+const SENDER = 'notify@with.so'
 
 
 const signInHtml = (firstName, url) => {

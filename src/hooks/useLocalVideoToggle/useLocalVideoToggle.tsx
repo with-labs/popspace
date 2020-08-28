@@ -3,6 +3,8 @@
  *
  * Aug 6, 2020 WQP
  * - Add effect to set the previous device ref to the local particiapnt's active camera id
+ * Aug 28, 2020 WQP
+ * - Add error messaging for when we fails to get a local video track.
  */
 import { LocalVideoTrack } from 'twilio-video';
 import { useCallback, useRef, useState, useEffect } from 'react';
@@ -18,13 +20,13 @@ export default function useLocalVideoToggle() {
     removeLocalVideoTrack,
     onError,
   } = useVideoContext();
-  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+  const videoTrack = localTracks.find((track) => track.name.includes('camera')) as LocalVideoTrack;
   const [isPublishing, setIspublishing] = useState(false);
   const previousDeviceIdRef = useRef<string>();
   const { cameras } = useAVSourcesContext();
 
   const { activeCameraLabel } = useParticipantMeta(localParticipant);
-  const activeCameraId = cameras.find(cam => cam.label === activeCameraLabel)?.deviceId;
+  const activeCameraId = cameras.find((cam) => cam.label === activeCameraLabel)?.deviceId;
 
   // When the active camera id changes in user meta, update the previous device id ref so that when video is enabled
   // that camera is the one that is enabled
@@ -44,7 +46,14 @@ export default function useLocalVideoToggle() {
         setIspublishing(true);
         getLocalVideoTrack({ deviceId: { exact: previousDeviceIdRef.current } })
           .then((track: LocalVideoTrack) => localParticipant?.publishTrack(track, { priority: 'low' }))
-          .catch(onError)
+          .catch((err) => {
+            const msg =
+              err.message === 'Permission denied' || 'Permission dismissed'
+                ? 'Please grant camera access to enable video.'
+                : 'An error occurred while connecting to your camera.';
+            // @ts-ignore
+            onError(new Error(msg));
+          })
           .finally(() => setIspublishing(false));
       }
     }

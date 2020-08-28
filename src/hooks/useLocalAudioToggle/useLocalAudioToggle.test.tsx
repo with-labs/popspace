@@ -64,6 +64,7 @@ describe('the useLocalAudioToggle hook', () => {
     it('should not throw an error if track is undefined', () => {
       mockUseVideoContext.mockImplementation(() => ({
         localTracks: [],
+        onError: jest.fn(),
       }));
 
       const { result } = renderHook(useLocalAudioToggle);

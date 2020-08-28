@@ -1,3 +1,7 @@
+## 1.107.0
+
+- Add better error handling/message for mic/camera access errors.
+
 ## 1.106.0
 
 - updating font classes

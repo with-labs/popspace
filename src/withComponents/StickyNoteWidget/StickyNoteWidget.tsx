@@ -14,6 +14,7 @@ interface IStickyNoteData {
   text: string;
   isPublished: boolean;
   initialOffset?: number;
+  author: string;
 }
 interface IStickyNoteWidget {
   id: string;
@@ -25,7 +26,12 @@ interface IStickyNoteWidget {
 
 export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, participant, dragConstraints, data }) => {
   // get the needed data from the data object
-  const { text, isPublished, initialOffset } = data;
+  // TODO: there is a current fragility where if the the user who has added the
+  // sticky note leaves the room, we loose their display name in the widget
+  // right now the work around for this until we implment persistant users into the
+  // the app is to just statsh the participantDisplayIdentity of the user when they
+  // create the app in the widget data blob
+  const { text, isPublished, initialOffset, author } = data;
   const { addWidget, updateWidgetData, removeWidget } = useWidgetContext();
   const {
     room: { localParticipant },
@@ -38,7 +44,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   };
 
   const handlePublish = () => {
-    updateWidgetData(id, { isPublished: true, text: inputText, initialOffset });
+    updateWidgetData(id, { isPublished: true, text: inputText, initialOffset, author: participantDisplayIdentity });
   };
 
   const handleAddNewStickyNote = () => {
@@ -63,7 +69,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   );
 
   const authorDisplay = isPublished ? (
-    <div className={clsx('u-fontP2', styles.addedByText)}>Added by {participantDisplayIdentity}</div>
+    <div className={clsx('u-fontP2', styles.addedByText)}>Added by {author}</div>
   ) : null;
 
   const handleClose = () => {

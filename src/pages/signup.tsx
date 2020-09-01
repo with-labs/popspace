@@ -51,7 +51,7 @@ export default function Signup(props: any) {
       console.log(result);
       if (result && result.success) {
         const signupUrl = (result || {}).signupUrl;
-        temp['innerHTML'] = `<div>Complete signup:</div> <a href="${signupUrl}"> ${signupUrl} </a>`;
+        temp['innerHTML'] = `<div>Check your email to complete signup! </a>`;
       } else {
         alert(result.message);
       }

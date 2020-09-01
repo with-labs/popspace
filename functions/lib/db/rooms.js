@@ -7,7 +7,6 @@ const MAX_FREE_ROOMS = 3
 class Rooms extends DbAccess {
   constructor() {
     super()
-    this.otp = new lib.db.Otp()
   }
 
   generateIdString() {

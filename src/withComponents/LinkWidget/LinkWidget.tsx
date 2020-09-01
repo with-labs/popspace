@@ -14,7 +14,6 @@ interface ILinkWidgetData {
   isPublished: boolean;
   title: string;
   url: string;
-  initialOffset?: number;
 }
 
 interface ILinkWidget {
@@ -28,7 +27,7 @@ interface ILinkWidget {
 
 export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, position, classNames, data }) => {
   // get the needed data from the data object
-  const { isPublished, title, url, initialOffset } = data;
+  const { isPublished, title, url } = data;
 
   const { updateWidgetData, removeWidget } = useWidgetContext();
   const [titleText, setTitleText] = useState(title);
@@ -39,10 +38,10 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
     event.preventDefault();
     if (/^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(urlText)) {
       updateWidgetData(id, {
+        ...data,
         isPublished: true,
         title: titleText.length === 0 ? urlText : titleText,
         url: urlText,
-        initialOffset,
       });
     } else {
       // Set the invalid url message.
@@ -87,8 +86,6 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
       onCloseHandler={onCloseHandler}
       dragConstraints={dragConstraints}
       position={position}
-      initialOffset={initialOffset}
-      type={WidgetTypes.Link}
     >
       <div className={styles.linkWidgetContainer}>{linkContent}</div>
     </Widget>

@@ -13,7 +13,6 @@ import styles from './StickyNoteWidget.module.css';
 interface IStickyNoteData {
   text: string;
   isPublished: boolean;
-  initialOffset?: number;
   author: string;
 }
 interface IStickyNoteWidget {
@@ -31,7 +30,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   // right now the work around for this until we implment persistant users into the
   // the app is to just statsh the participantDisplayIdentity of the user when they
   // create the app in the widget data blob
-  const { text, isPublished, initialOffset, author } = data;
+  const { text, isPublished, author } = data;
   const { addWidget, updateWidgetData, removeWidget } = useWidgetContext();
   const {
     room: { localParticipant },
@@ -44,11 +43,11 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   };
 
   const handlePublish = () => {
-    updateWidgetData(id, { isPublished: true, text: inputText, initialOffset, author: participantDisplayIdentity });
+    updateWidgetData(id, { ...data, isPublished: true, text: inputText, author: participantDisplayIdentity });
   };
 
   const handleAddNewStickyNote = () => {
-    addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '', initialOffset });
+    addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '' });
   };
 
   const stickyNoteContent = isPublished ? (
@@ -86,8 +85,6 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
       onAddHandler={handleAddNewStickyNote}
       position={position}
       dragConstraints={dragConstraints}
-      initialOffset={initialOffset}
-      type={WidgetTypes.StickyNote}
     >
       <div className={styles.stickyNoteContainer}>
         {stickyNoteContent}

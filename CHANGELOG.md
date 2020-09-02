@@ -1,3 +1,8 @@
+## 1.110.0
+
+- Support for sending emails through SES
+- Signup and log in routes send OTP emails via notify@with.so
+
 ## 1.109.0
 
 - Upgrade framer-motion to latest version.

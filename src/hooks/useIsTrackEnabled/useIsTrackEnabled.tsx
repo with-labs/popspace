@@ -1,3 +1,10 @@
+/**
+ * ##WITH_EDIT
+ *
+ * Aug 28, 2020 WQP
+ * - Return false when the track is undefined
+ */
+
 import { useState, useEffect } from 'react';
 import { LocalAudioTrack, LocalVideoTrack, RemoteAudioTrack, RemoteVideoTrack } from 'twilio-video';
 
@@ -7,9 +14,8 @@ export default function useIsTrackEnabled(track: TrackType) {
   const [isEnabled, setIsEnabled] = useState(track ? track.isEnabled : true);
 
   useEffect(() => {
-    setIsEnabled(track ? track.isEnabled : true);
-
     if (track) {
+      setIsEnabled(track.isEnabled);
       const setEnabled = () => setIsEnabled(true);
       const setDisabled = () => setIsEnabled(false);
       track.on('enabled', setEnabled);
@@ -18,6 +24,8 @@ export default function useIsTrackEnabled(track: TrackType) {
         track.off('enabled', setEnabled);
         track.off('disabled', setDisabled);
       };
+    } else {
+      setIsEnabled(false);
     }
   }, [track]);
 

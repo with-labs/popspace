@@ -23,7 +23,7 @@ describe('the useLocalTracks hook', () => {
 
   it('should return an array of tracks and two functions', async () => {
     const { result, waitForNextUpdate } = renderHook(useLocalTracks);
-    expect(result.current.localTracks).toEqual([]);
+    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
     await waitForNextUpdate();
     expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
     expect(result.current.getLocalVideoTrack).toEqual(expect.any(Function));
@@ -42,7 +42,7 @@ describe('the useLocalTracks hook', () => {
     it('should call videoTrack.stop() and remove the videoTrack from state', async () => {
       const { result, waitForNextUpdate } = renderHook(useLocalTracks);
       await waitForNextUpdate();
-      const initialVideoTrack = result.current.localTracks.find(track => track.kind === 'video') as LocalVideoTrack;
+      const initialVideoTrack = result.current.localTracks.find((track) => track.kind === 'video') as LocalVideoTrack;
       expect(initialVideoTrack!.stop).not.toHaveBeenCalled();
       expect(initialVideoTrack).toBeTruthy();
 
@@ -50,7 +50,7 @@ describe('the useLocalTracks hook', () => {
         result.current.removeLocalVideoTrack();
       });
 
-      expect(result.current.localTracks.some(track => track.kind === 'video')).toBe(false);
+      expect(result.current.localTracks.some((track) => track.kind === 'video')).toBe(false);
       expect(initialVideoTrack!.stop).toHaveBeenCalled();
     });
   });

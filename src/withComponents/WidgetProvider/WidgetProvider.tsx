@@ -48,7 +48,7 @@ interface IWidgetProviderProps {
  */
 export function WidgetProvider({ children }: IWidgetProviderProps) {
   // @ts-ignore
-  const widgets = useSelector(state => state.widgets);
+  const widgets = useSelector((state) => state.widgets);
   const { dispatch } = useRoomStateContext();
 
   // Mutator to add a widget.

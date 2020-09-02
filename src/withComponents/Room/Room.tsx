@@ -65,7 +65,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               key={widget.id}
               id={widget.id}
               dragConstraints={dragableArea}
-              position={widget.location}
+              position={widget.data.location}
               data={widget.data}
             />
           );
@@ -75,7 +75,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
             <StickyNoteWidget
               key={widget.id}
               id={widget.id}
-              position={widget.location}
+              position={widget.data.location}
               participant={
                 widget.participantSid === localParticipant.sid
                   ? localParticipant
@@ -92,7 +92,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               key={widget.id}
               id={widget.id}
               dragConstraints={dragableArea}
-              position={widget.location}
+              position={widget.data.location}
               data={widget.data}
             />
           );
@@ -102,7 +102,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
             <YouTubeWidget
               key={widget.id}
               id={widget.id}
-              position={widget.location}
+              position={widget.data.location}
               dragConstraints={dragableArea}
               data={widget.data}
             />
@@ -227,7 +227,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         {Object.keys(huddles).map((huddleId) => (
           <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
         ))}
-        <div className="widgets">{widgetComps}</div>
+        {widgetComps}
         {Object.keys(bubs).map((key) => {
           const { pt, top, left } = bubs[key];
 

@@ -70,7 +70,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
     getLocalAudioTrack,
     isAcquiringLocalTracks,
     removeLocalVideoTrack,
-  } = useLocalTracks();
+  } = useLocalTracks(onError);
   const { room, isConnecting, connect } = useRoom(localTracks, onErrorCallback, options);
 
   // Register onError and onDisconnect callback functions.

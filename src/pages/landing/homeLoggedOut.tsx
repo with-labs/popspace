@@ -26,7 +26,7 @@ const logIn = async () => {
   const loginRequest: any = await Api.requestLoginOtp(email);
   if (loginRequest.success) {
     const output: any = document.getElementById('tmp') || {};
-    output.innerHTML = `<div> An email been sent with this link (not yet!): </div> <a href="${loginRequest.logInUrl}"> ${loginRequest.logInUrl} </a>`;
+    output.innerHTML = `<div> Check your email to log in! </a>`;
   } else {
     alert(loginRequest.message);
   }

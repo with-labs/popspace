@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 import Modal from 'react-modal';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,6 +18,7 @@ import useScreenShareToggle from '../../hooks/useScreenShareToggle/useScreenShar
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 import usePublications from '../../hooks/usePublications/usePublications';
+import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import SettingsModal from '../SettingsModal/SettingsModal';
 import { DockItem } from './DockItem/DockItem';
@@ -44,6 +45,7 @@ interface IAccessoriesDockProps {
 
 export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames }) => {
   const roomState = useRoomState();
+  const [windowWidth, windowHeight] = useWindowSize();
   const { widgets } = useRoomParties();
   const { addWidget } = useWidgetContext();
   const { properties } = useRoomMetaContext();
@@ -85,12 +87,19 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
     setIsBgPickerOpen(true);
   };
 
+  const calcWidgetInitialLocation = useCallback(
+    (initialOffset) => {
+      return [(windowWidth / 2 - initialOffset) / windowWidth, (windowHeight / 2 - initialOffset) / windowHeight];
+    },
+    [windowWidth, windowHeight]
+  );
+
   // on click, add a link widget to the room
   const onLinkWidgetClick = () => {
     addWidget(WidgetTypes.Link, localParticipant.sid, {
       url: '',
       title: '',
-      initialOffset: widgetOffsets.WIDGET_LINK_INIT_OFFSET,
+      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_LINK_INIT_OFFSET),
     });
   };
 
@@ -104,7 +113,7 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
       addWidget(WidgetTypes.Whiteboard, localParticipant.sid, {
         whiteboardId: uuidv4(),
         isPublished: true,
-        initialOffset,
+        location: calcWidgetInitialLocation(initialOffset),
       });
     } else {
       // show an error message or something
@@ -123,7 +132,7 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
     addWidget(WidgetTypes.StickyNote, localParticipant.sid, {
       isPublished: false,
       text: '',
-      initialOffset: widgetOffsets.WIDGET_STICKY_NOTE_INIT_OFFSET,
+      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_STICKY_NOTE_INIT_OFFSET),
     });
   };
 
@@ -132,7 +141,7 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
     addWidget(WidgetTypes.YouTube, localParticipant.sid, {
       isPublished: false,
       videoId: '',
-      initialOffset: widgetOffsets.WIDGET_YOUTUBE_INIT_OFFSET,
+      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_YOUTUBE_INIT_OFFSET),
     });
   };
 

@@ -10,7 +10,12 @@ const fetchEnvVars = () => {
   return {
     NODE_ENV: process.env.NODE_ENV,
     // Some people may have a custom config for pg in dev
-    PG_PORT: process.env.PG_PORT
+    PG_PORT: process.env.PG_PORT,
+    // In netlify, we'll have these from the admin console.
+    // We can start by sharing credentials between staging/production,
+    // and branch on NODE_ENV here if necessary
+    AWS_SES_ACCESS_KEY: process.env.AWS_SES_ACCESS_KEY,
+    AWS_SES_SECRET_KEY: process.env.AWS_SES_SECRET_KEY
   }
 }
 

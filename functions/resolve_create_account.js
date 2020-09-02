@@ -9,7 +9,7 @@ const handleAccountCreateFailure = (errorCode, callback) => {
       return util.http.fail(callback, "Sorry, this link has expired. Please sign up again.");
     case lib.db.ErrorCodes.otp.RESOLVED_OTP:
       return util.http.fail(callback, "It seems this email is already registered! Please log in.");
-    case lib.db.ErrorCodes.otp.UNEXPECTER_ERROR:
+    case lib.db.ErrorCodes.UNEXPECTER_ERROR:
       // TODO: ERROR_LOGGING
       return util.http.fail(callback, "An unexpected error happened. Please try again.");
     default:

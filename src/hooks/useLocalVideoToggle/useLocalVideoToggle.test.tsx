@@ -101,7 +101,7 @@ describe('the useLocalVideoToggle hook', () => {
       expect(mockGetLocalVideoTrack).toHaveBeenCalled();
     });
 
-    it('should call mockLocalParticipant.publishTrack when a localVideoTrack does not exist and localParticipant does exist', async done => {
+    it('should call mockLocalParticipant.publishTrack when a localVideoTrack does not exist and localParticipant does exist', async (done) => {
       const mockGetLocalVideoTrack = jest.fn(() => Promise.resolve('mockTrack'));
 
       const mockLocalParticipant = new EventEmitter() as LocalParticipant;
@@ -150,7 +150,7 @@ describe('the useLocalVideoToggle hook', () => {
       const mockOnError = jest.fn();
 
       const mockLocalParticipant = new EventEmitter() as LocalParticipant;
-      mockLocalParticipant.publishTrack = jest.fn(() => Promise.reject('mockError'));
+      mockLocalParticipant.publishTrack = jest.fn(() => Promise.reject(new Error('error')));
 
       mockUseVideoContext.mockImplementation(() => ({
         localTracks: [],
@@ -164,7 +164,7 @@ describe('the useLocalVideoToggle hook', () => {
         result.current[1]();
       });
       await waitForNextUpdate();
-      expect(mockOnError).toHaveBeenCalledWith('mockError');
+      expect(mockOnError).toHaveBeenCalledWith(expect.any(Error));
     });
 
     it('should call getLocalVideoTrack with the deviceId of the previously active track', async () => {

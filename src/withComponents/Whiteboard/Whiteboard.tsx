@@ -6,7 +6,6 @@ import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetCont
 import styles from './whiteboard.module.css';
 
 interface IWhiteboardData {
-  initialOffset?: number;
   whiteboardId: string;
 }
 
@@ -18,7 +17,7 @@ type WhiteboardProps = {
 };
 
 const Whiteboard = ({ id, dragConstraints, position, data }: WhiteboardProps) => {
-  const { initialOffset, whiteboardId } = data;
+  const { whiteboardId } = data;
   const iframeRef = useRef(null);
   const witeboardIdRef = useRef(whiteboardId);
   const { removeWidget } = useWidgetContext();
@@ -36,12 +35,11 @@ const Whiteboard = ({ id, dragConstraints, position, data }: WhiteboardProps) =>
       dragConstraints={dragConstraints}
       classNames={styles.root}
       titleClassNames={styles.title}
-      initialOffset={initialOffset}
-      type={WidgetTypes.Whiteboard}
     >
       <div className={styles.frame}>
         <div className={styles.matte}>
           <iframe
+            title="whiteboard-widget"
             ref={iframeRef}
             className={styles.frame}
             src={`${window.location.protocol}//witeboard.com/${witeboardIdRef.current}`}

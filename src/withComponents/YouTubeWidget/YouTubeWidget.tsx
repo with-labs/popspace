@@ -10,7 +10,6 @@ import styles from './YouTubeWidget.module.css';
 
 interface IYoutubeWidgetData {
   isPublished: boolean;
-  initialOffset?: number;
   timeStamp?: number;
   isPlaying?: boolean;
   videoId: string;
@@ -31,7 +30,7 @@ interface IYouTubeWidget {
 // - improve the publish url parser, to better handle the other paramters and shortened urls
 
 export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, position, data }) => {
-  const { isPublished, initialOffset, timeStamp = 0, isPlaying, videoId } = data;
+  const { isPublished, timeStamp = 0, isPlaying, videoId } = data;
   const { removeWidget, updateWidgetData } = useWidgetContext();
   const [videoUrl, setVideoUrl] = useState('');
   const [formError, setFormError] = useState('');
@@ -68,9 +67,9 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
         // we have a video id
         // update the widet info
         updateWidgetData(id, {
+          ...data,
           isPublished: true,
           videoId: tempVideoId,
-          initialOffset,
           isPlaying: false,
         });
       } else {
@@ -136,9 +135,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
         // change isPlaying to true
         updateWidgetData(id, {
-          isPublished: true,
-          videoId: videoId,
-          initialOffset,
+          ...data,
           isPlaying: true,
           timeStamp: currentTime,
         });
@@ -153,9 +150,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
         // change isPlaying to false
         updateWidgetData(id, {
-          isPublished: true,
-          videoId: videoId,
-          initialOffset,
+          ...data,
           isPlaying: false,
           timeStamp: currentTime,
         });
@@ -188,8 +183,6 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
       onCloseHandler={onCloseHandler}
       position={position}
       dragConstraints={dragConstraints}
-      initialOffset={initialOffset}
-      type={WidgetTypes.YouTube}
     >
       {videoPlayerContent}
     </Widget>

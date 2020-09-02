@@ -1,3 +1,24 @@
+## 1.110.0
+
+- Support for sending emails through SES
+- Signup and log in routes send OTP emails via notify@with.so
+
+## 1.109.0
+
+- Upgrade framer-motion to latest version.
+- DraggableEntity component to encapsulate logic of updating location with framer-motion drag.
+- Widget component now to use DraggableEntity.
+- No longer using `initialOffset` property in widgets; now setting initial position when they are created.
+- Moving the `location` property of widgets into the `data` sub-property from the top level widget data.
+
+## 1.108.0
+
+- fixing sticky note to always display who added it, even after that user leaves the room.
+
+## 1.107.0
+
+- Add better error handling/message for mic/camera access errors.
+
 ## 1.106.0
 
 - updating font classes

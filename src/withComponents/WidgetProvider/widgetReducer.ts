@@ -8,7 +8,6 @@ export interface IWidgetProperties {
   id: string;
   participantSid: string;
   data: any;
-  location?: LocationTuple;
 }
 // `IWidgetState` is the state maintained by this context provider representing the widgets present in the room.
 export interface IWidgetState {
@@ -46,7 +45,10 @@ export default function reducer(state: IWidgetState = {}, action: Action) {
         ...state,
         [payload.widgetId]: {
           ...state[payload.widgetId],
-          location: payload.location,
+          data: {
+            ...state[payload.widgetId].data,
+            location: payload.location,
+          },
         },
       };
 

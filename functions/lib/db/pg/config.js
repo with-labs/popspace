@@ -4,7 +4,7 @@ const LOCAL_CREDENTIALS = {
   "password": "withso",
   "host": "localhost",
   "database": "withso",
-  "port": process.env.PG_PORT || "5433"
+  "port": process.env.PG_PORT || "5432"
 }
 
 const PROD_CREDENTIALS = {
@@ -23,7 +23,7 @@ const STAGING_CREDENTIALS = {
   "password": process.env.STAGING_PG_PASSWORD,
   "host": process.env.STAGING_PG_HOST,
   "database": process.env.STAGING_PG_DATABASE,
-  "port": process.env.STAGING_PG_PORT,
+  "port": process.env.STAGING_PG_PORT
 }
 
 const getCredentials = () => {
@@ -41,7 +41,7 @@ const getCredentials = () => {
     case "test":
       return STAGING_CREDENTIALS
     default:
-      throw `unrecognized environemt ${process.env.NODE_ENV} Env: ${JSON.stringify(process.env)}`
+      throw `unrecognized environment ${process.env.NODE_ENV} Env: ${JSON.stringify(process.env)}`
   }
 }
 

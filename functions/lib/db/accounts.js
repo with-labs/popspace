@@ -50,19 +50,19 @@ class Accounts extends DbAccess {
       display_name: `${params.firstName} ${params.lastName}`,
       email: util.args.consolidateEmailString(params.email),
       newsletter_opt_in: params.receiveMarketing,
-      request.otp: lib.db.otp.generate(),
-      request.requested_at: this.now(),
-      request.expires_at: lib.db.otp.standardExpiration()
+      otp: lib.db.otp.generate(),
+      requested_at: this.now(),
+      expires_at: lib.db.otp.standardExpiration()
     }
     return await this.pg.otp_account_create_requests.insert(request)
   }
 
   async findAndResolveAccountCreateRequest(email, otp) {
     const request = await this.pg.otp_account_create_requests.findOne({email: util.args.consolidateEmailString(email), otp: otp})
-    return await this.tryToResolveAccountCreateRequest(request)
+    return await this.tryToResolveAccountCreateRequest(request, otp)
   }
 
-  async tryToResolveAccountCreateRequest(request) {
+  async tryToResolveAccountCreateRequest(request, otp) {
     const verification = lib.db.otp.verify(request, otp)
     if(verification.error != null) {
       return verification

@@ -42,7 +42,7 @@ export default function Signup(props: any) {
     const id = event.target.id;
   };
 
-  const register = async (input) => {
+  const register = async (input: any) => {
     const result: any = await Api.signup(input);
     const temp: any = document.getElementById('temp') || {};
 

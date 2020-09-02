@@ -3,7 +3,7 @@ const moment = require("moment")
 
 const STANDARD_REQUEST_DURATION_MILLIS = 60 * 60 * 1000
 
-module.exports = {
+const otplib = {
   isExpired: (entity) => {
     if(!entity.expires_at) return false;
     return moment(entity.expires_at).valueOf() < moment.utc().valueOf()
@@ -13,7 +13,7 @@ module.exports = {
     if(!request || request.otp != otp) {
       return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
     }
-    if(this.isExpired(request)) {
+    if(otplib.isExpired(request)) {
       return { error: lib.db.ErrorCodes.otp.EXPIRED_OTP }
     }
     if(request.resolved_at) {
@@ -47,3 +47,5 @@ module.exports = {
   }
 
 }
+
+module.exports = otplib

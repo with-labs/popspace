@@ -47,22 +47,37 @@ export default class Profile extends React.Component<any, any> {
     return (
       <div>
         <h2> Your rooms </h2>
-        {this.renderRoomList(this.props.profile.rooms.owned)}
+        {this.renderOwnedRoomList(this.props.profile.rooms.owned)}
         {this.renderCreateRoom()}
         <h2> Rooms you're a member in </h2>
-        {this.renderRoomList(this.props.profile.rooms.member)}
+        {this.renderMemberRoomList(this.props.profile.rooms.member)}
       </div>
     );
   }
 
-  renderRoomList(rooms: any) {
-    const roomRenderer = (room: any) => this.renderRoom(room);
+  renderOwnedRoomList(rooms: any) {
+    const roomRenderer = (room: any) => this.renderOwnedRoom(room);
     return rooms.map(roomRenderer);
   }
 
-  renderRoom(room: any) {
+  renderMemberRoomList(rooms: any) {
+    const roomRenderer = (room: any) => this.renderMemberRoom(room);
+    return rooms.map(roomRenderer);
+  }
+
+  renderOwnedRoom(room: any) {
     return (
-      <div key={`room_${room.id}`}>
+      <div key={`oroom_${room.id}`}>
+        <a href={this.roomUrl(room)}>{this.roomName(room)}</a>
+        <input placeholder="Invite by email" />
+        <button> Invite </button>
+      </div>
+    );
+  }
+
+  renderMemberRoom(room: any) {
+    return (
+      <div key={`mroom_${room.id}`}>
         <a href={this.roomUrl(room)}>{this.roomName(room)}</a>
       </div>
     );

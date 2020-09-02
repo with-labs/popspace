@@ -14,7 +14,7 @@ export default function VerifyEmail() {
     alert(result.message);
   };
 
-  const register = (input) => {
+  const register = (input: any) => {
     Api.registerThroughInvite(input, otp, inviteId).then((result: any) => {
       if (result.success) {
         if (result.newSessionToken) {

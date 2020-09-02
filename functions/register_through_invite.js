@@ -1,6 +1,25 @@
 const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
+
+const tryToSetUpNewAccount = async (params, accounts) => {
+  let existingAccountCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
+  if(existingCreateRequest) {
+    return await accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest)
+  } else {
+    const createRequest = await accounts.tryToCreateAccountRequest(params)
+    return await accounts.tryToResolveAccountCreateRequest(createRequest)
+  }
+}
+
+const needsNewSessionToken = async (sessionToken, user, accounts) => {
+  if(!sessionToken) {
+    return true
+  }
+  const session = await accuonts.sessionFromToken(sessionToken)
+  return parseInt(session.user_id) == parseInt(user.id)
+}
+
 /**
  * Finalizes the registration process for someone who clicked a room invite link
  * without previously having registered with us.
@@ -16,42 +35,36 @@ module.exports.handler = async (event, context, callback) => {
   const params = body.data
   const otp = body.otp
   const inviteId = body.inviteId
+  const sessionToken = body.token
 
   const rooms = new lib.db.Rooms()
   await rooms.init()
-
   const invite = await rooms.inviteById(inviteId)
-
   if(!invite) {
     return lib.util.http.fail(callback, "Invalid room invitation")
   }
-
-
-
-  const accounts = new lib.db.Accounts()
-  await accounts.init()
-
-  // Make sure we don't distinguish emails just by whitespace
-  params.email = params.trim()
-  const existingUser = await accounts.userByEmail(params.email)
-
-  if(existingUser) {
-    // TODO: just create a new session
-    return lib.util.http.fail(callback, "Email already registered. Please log in!")
+  const verification = rooms.isValidInvitation(invite)
+  if(verification.error) {
+    // refuse to create user if the invitation is not valid
+    return lib.db.otp.handleAuthFailure(verification.error, callback)
   }
 
-
-
   const accounts = new lib.db.Accounts()
   await accounts.init()
-
-  let user = accounts.userByEmail(invite.email)
-
-  if(!user) {
-    // We should never hit this if everything is working
-    // (as long as people are using the site correctly).
-    // We should check whether the user exists before calling this endpoint.
-    return lib.util.http.fail(callback, "Unknown email. Please sign up.")
+  let user = null
+  const existingUser = await accounts.userByEmail(params.email)
+  if(existingUser) {
+    // This is a registration endpoint, so something must have gone wrong if we hit this.
+    // However, if the invite OTP is correct, if verifies access of the caller to the email.
+    // That means we don't have to fail, we can just create a new session.
+    user = existingUser
+  } else {
+    // Make sure to create the user before resolving the invitation
+    const accountCreate = await tryToSetUpNewAccount(params.email, accounts)
+    if(accountCreate.error != null)  {
+      return lib.db.otp.handleAuthFailure(accountCreate.error, callback)
+    }
+    user = accountCreate.newUser
   }
 
   const resolve = await rooms.resolveInvitation(invite, user, otp)
@@ -59,42 +72,14 @@ module.exports.handler = async (event, context, callback) => {
     return lib.db.otp.handleAuthFailure(resolve.error, callback)
   }
 
-  const result = {}
-  if(!sessionToken || invitedUserDifferentFromSessionUser(sessionToken, user)) {
+  const response = {}
+  const willIssueToken = await needsNewSessionToken(sessionToken, user, accounts)
+  if(willIssueToken) {
     const session = await accounts.createSession()
     sessionToken = accounts.tokenFromSession(session)
-    result.newSessionToken = sessionToken
+    response.newSessionToken = sessionToken
   }
-
-
-
-
-
-
-
-
-
-  const existingCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
-
-  if(existingCreateRequest) {
-    // TODO: resolve
-    if(!lib.db.otp.isExpired(existingCreateRequest)) {
-      return lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
-    }
-  }
-
-  const createRequest = await accounts.createAccountRequest({
-    first_name: params.firstName,
-    last_name: params.lastName,
-    display_name: `${params.firstName} ${params.lastName}`,
-    email: params.email,
-    newsletter_opt_in: params.receiveMarketing
-  })
-
-  const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
-
-  await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
   await accounts.cleanup()
-  return lib.util.http.succeed(callback, {});
+  return lib.util.http.succeed(callback, response);
 }

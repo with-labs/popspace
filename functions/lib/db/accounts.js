@@ -15,7 +15,7 @@ class Accounts extends DbAccess {
 
   async getLatestAccountCreateRequest(email) {
     const requests = await this.pg.otp_account_create_requests.find({
-      email: email
+      email: util.args.consolidateEmailString(email)
     }, {
       order: [{
         field: "created_at",
@@ -27,7 +27,7 @@ class Accounts extends DbAccess {
   }
 
   async userByEmail(email) {
-    return this.pg.users.findOne({email: email})
+    return this.pg.users.findOne({email: util.args.consolidateEmailString(email)})
   }
 
   async userById(id) {
@@ -35,45 +35,50 @@ class Accounts extends DbAccess {
   }
 
   /*
-    requestParams = {
+    params = {
       email: string,
-      first_name: string,
-      last_name: string,
-      display_name: string,
-      newsletter_opt_in: boolean
+      firstName: string,
+      lastName: string,
+      displayName: string,
+      newsletterOptIn: boolean
     }
   */
-  async createAccountRequest(requestParams) {
-    const request = Object.assign({}, requestParams)
-    request.otp = lib.db.otp.generate()
-    request.requested_at = this.now()
-    request.expires_at = lib.db.otp.standardExpiration()
-
+  async tryToCreateAccountRequest(params) {
+    const request = {
+      first_name: params.firstName,
+      last_name: params.lastName,
+      display_name: `${params.firstName} ${params.lastName}`,
+      email: util.args.consolidateEmailString(params.email),
+      newsletter_opt_in: params.receiveMarketing,
+      request.otp: lib.db.otp.generate(),
+      request.requested_at: this.now(),
+      request.expires_at: lib.db.otp.standardExpiration()
+    }
     return await this.pg.otp_account_create_requests.insert(request)
   }
 
-  async tryToResolveAccountCreateRequest(email, otp) {
-    const request = await this.pg.otp_account_create_requests.findOne({email: email, otp: otp})
+  async findAndResolveAccountCreateRequest(email, otp) {
+    const request = await this.pg.otp_account_create_requests.findOne({email: util.args.consolidateEmailString(email), otp: otp})
+    return await this.tryToResolveAccountCreateRequest(request)
+  }
+
+  async tryToResolveAccountCreateRequest(request) {
     const verification = lib.db.otp.verify(request, otp)
     if(verification.error != null) {
       return verification
     }
-
     try {
-
       const newUser = await this.pg.withTransaction(async (tx) => {
         await tx.otp_account_create_requests.update({id: request.id}, {resolved_at: this.now()})
         return await tx.users.insert({
-          email: request.email,
+          email: util.args.consolidateEmailString(request.email),
           first_name: request.first_name,
           last_name: request.last_name,
           display_name: request.display_name,
           newsletter_opt_in: request.newsletter_opt_in
         })
       })
-
       return { newUser: newUser }
-
     } catch(e) {
       // TODO: ERROR_LOGGING
       return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
@@ -135,6 +140,16 @@ class Accounts extends DbAccess {
       return null
     } else {
       return session
+    }
+  }
+
+  async hasValidSession(userId, token) {
+    if(!userId || !token) {
+      return false
+    }
+    const session = await this.sessionFromToken(token)
+    if(!session) {
+      return false
     }
   }
 

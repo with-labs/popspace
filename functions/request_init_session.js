@@ -22,7 +22,7 @@ module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  params.email = params.email.trim()
+  params.email = util.args.consolidateEmailString(params.email)
 
   const accounts = new lib.db.Accounts()
   await accounts.init()

@@ -23,7 +23,7 @@ class Rooms extends DbAccess {
   }
 
   async getInviteUrl(appUrl, invite) {
-    const existingUser = await this.pg.users.findOne({email: invite.email})
+    const existingUser = await this.pg.users.findOne({email: util.args.consolidateEmailString(invite.email)})
     if(existingUser) {
       return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
     } else {
@@ -56,7 +56,7 @@ class Rooms extends DbAccess {
   async latestRoomInvitation(roomId, inviteeEmail) {
     const invitations = await this.pg.room_invitations.find({
       room_id: roomId,
-      email: inviteeEmail
+      email: util.args.consolidateEmailString(inviteeEmail)
     }, {
       order: [{
         field: "created_at",
@@ -70,7 +70,7 @@ class Rooms extends DbAccess {
   async createInvitation(roomId, inviteeEmail) {
     return await this.pg.room_invitations.insert({
       room_id: roomId,
-      email: inviteeEmail,
+      email: util.args.consolidateEmailString(inviteeEmail),
       otp: lib.db.otp.generate(),
       issued_at: this.now(),
       expires_at: lib.db.otp.standardExpiration(),
@@ -78,13 +78,28 @@ class Rooms extends DbAccess {
     })
   }
 
-  async resolveInvitation(invitation, user, otp) {
+  isValidInvitation(invitation, email, otp) {
     const verification = lib.db.otp.verify(invitation, otp)
+    if(verification.error != null) {
+      return verification
+    }
+    if(util.args.consolidateEmailString(invitation.email) != util.args.consolidateEmailString(email)) {
+      return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
+    }
+    return { isValid: true, error: null }
+  }
+
+  async resolveInvitation(invitation, user, otp) {
+    const verification = this.isValidInvitation(invitation, user.email, otp)
     if(verification.error != null) {
       return verification
     }
 
     try {
+      let expires_at = -1 // non-expiring memberships by default
+      if(invitation.membership_duration_millis) {
+        expires_at = invitation.issued_at + invitation.membership_duration_millis
+      }
 
       const membership = await this.pg.withTransaction(async (tx) => {
         await tx.room_invitations.update({id: invitation.id}, {resolved_at: this.now()})
@@ -93,12 +108,11 @@ class Rooms extends DbAccess {
           user_id: user.id,
           invitation_id: invitation.id,
           began_at: this.now(),
-          expires_at: 0 // non-expiring invitations by default
+          expires_at: expires_at
         })
       })
 
       return { membership }
-
     } catch(e) {
       // TODO: ERROR_LOGGING
       return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }

@@ -11,7 +11,7 @@ module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  params.email = params.email.trim()
+  params.email = util.args.consolidateEmailString(params.email)
 
   const accounts = new lib.db.Accounts()
   await accounts.init()
@@ -19,7 +19,7 @@ module.exports.handler = async (event, context, callback) => {
   const otp = params.otp;
   const email = params.email;
 
-  const result = await accounts.tryToResolveAccountCreateRequest(email, otp)
+  const result = await accounts.findAndResolveAccountCreateRequest(email, otp)
   if(result.error != null) {
     return lib.db.otp.handleAuthFailure(result.error, callback)
   }

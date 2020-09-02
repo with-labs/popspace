@@ -1,5 +1,8 @@
 module.exports = {
   consolidateEmailString: (email) => {
-    return email.trim().toLowerCase()
+    if(email) {
+      return email.trim().toLowerCase()
+    }
+    return email
   }
 }

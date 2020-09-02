@@ -143,14 +143,12 @@ class Accounts extends DbAccess {
     }
   }
 
-  async hasValidSession(userId, token) {
-    if(!userId || !token) {
-      return false
+  async needsNewSessionToken(sessionToken, user) {
+    if(!sessionToken) {
+      return true
     }
-    const session = await this.sessionFromToken(token)
-    if(!session) {
-      return false
-    }
+    const session = await this.sessionFromToken(sessionToken)
+    return parseInt(session.user_id) == parseInt(user.id)
   }
 
 }

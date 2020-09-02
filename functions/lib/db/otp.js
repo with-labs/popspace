@@ -37,7 +37,9 @@ const otplib = {
       case lib.db.ErrorCodes.otp.EXPIRED_OTP:
         return util.http.fail(callback, "Sorry, this link has expired. Please sign up again.");
       case lib.db.ErrorCodes.otp.RESOLVED_OTP:
-        return util.http.fail(callback, "It seems this link has already been used to log in. Please try again.");
+        // We could be more elaborate and try to figure out if it's the current user
+        // and whether they already have access to the OTP-protected resource
+        return util.http.fail(callback, "This code is no longer valid. Please try again.");
       case lib.db.ErrorCodes.UNEXPECTER_ERROR:
         // TODO: ERROR_LOGGING
         return util.http.fail(callback, "An unexpected error happened. Please try again.");

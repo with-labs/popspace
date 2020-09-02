@@ -15,6 +15,7 @@ const logOut = () => {
 
 export default class Profile extends React.Component<any, any> {
   createRoom: (event: any) => void;
+  invite: (room: any) => void;
 
   constructor(props: any) {
     super(props);
@@ -26,6 +27,16 @@ export default class Profile extends React.Component<any, any> {
           this.props.profile.rooms.owned.push(result.newRoom);
           this.props.onProfileChange(this.props.profile);
         }
+      } else {
+        window.alert(result.message);
+      }
+    };
+    this.invite = async (room) => {
+      // TODO: use proper react style to fetch input values
+      const emailInput: any = document.getElementById(`invite_${room.id}`);
+      const result: any = await Api.roomInvite(sessionToken, room.id, emailInput.value);
+      if (result.success) {
+        window.alert('Invite email sent!');
       } else {
         window.alert(result.message);
       }
@@ -69,8 +80,15 @@ export default class Profile extends React.Component<any, any> {
     return (
       <div key={`oroom_${room.id}`}>
         <a href={this.roomUrl(room)}>{this.roomName(room)}</a>
-        <input placeholder="Invite by email" />
-        <button> Invite </button>
+        <input id={`invite_${room.id}`} placeholder="Invite by email" />
+        <button
+          onClick={() => {
+            this.invite(room);
+          }}
+        >
+          {' '}
+          Invite{' '}
+        </button>
       </div>
     );
   }

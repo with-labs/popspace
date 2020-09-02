@@ -36,7 +36,17 @@ class Rooms extends DbAccess {
   }
 
   async roomById(id) {
-    return await this.pg.rooms.find({id: id})
+    return await this.pg.rooms.findOne({id: id})
+  }
+
+  async isMember(userId, roomId) {
+    const membership = await this.pg.room_memberships.findOne({user_id: userId, room_id: roomId})
+    if(!membership) {
+      return false
+    }
+    const current = this.timestamptzStillCurrent(membership.expires_at)
+    const revoked = this.timestamptzHasPassed(membership.revoked_at)
+    return current && !revoked
   }
 
   async generateRoom(userId) {
@@ -96,9 +106,9 @@ class Rooms extends DbAccess {
     }
 
     try {
-      let expires_at = -1 // non-expiring memberships by default
-      if(invitation.membership_duration_millis) {
-        expires_at = invitation.issued_at + invitation.membership_duration_millis
+      let expires_at = null // non-expiring memberships by default
+      if(invitation.membership_duration_millis && invitation.membership_duration_millis > 0) {
+        expires_at = this.timestamptzPlusMillis(invitation.issued_at, invitation.membership_duration_millis)
       }
 
       const membership = await this.pg.withTransaction(async (tx) => {

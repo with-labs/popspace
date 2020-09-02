@@ -16,6 +16,7 @@ import Landing from './pages/landing';
 import Signup from './pages/signup';
 import VerifyEmail from './pages/verifyEmail';
 import Login from './pages/login';
+import JoinRoom from './pages/JoinRoom';
 
 import './with.css';
 
@@ -142,6 +143,10 @@ ReactDOM.render(
 
           <Route path="/login">
             <Login />
+          </Route>
+
+          <Route path="/join_room">
+            <JoinRoom />
           </Route>
 
           <Route path="/:room_name">

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Api from '../utils/api';
 import { useLocation } from 'react-router-dom';
 
-export default function VerifyEmail() {
+export default function JoinRoom() {
   const query = new URLSearchParams(useLocation().search);
   const otp: string = query.get('otp') || '';
   const inviteId: string = query.get('iid') || '';

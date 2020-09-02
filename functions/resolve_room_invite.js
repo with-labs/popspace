@@ -1,11 +1,6 @@
 const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
-const invitedUserDifferentFromSessionUser = (sessionToken, user) => {
-  const sessionData = JSON.parse(sessionToken)
-  return parseInt(sessionData.uid) != parseInt(user.id)
-}
-
 /**
  * Checks whether the specified one-time passcode matches the provided room invite,
  * and if it does - resolves a room invite
@@ -32,7 +27,7 @@ module.exports.handler = async (event, context, callback) => {
   const accounts = new lib.db.Accounts()
   await accounts.init()
 
-  let user = accounts.userByEmail(invite.email)
+  let user = await accounts.userByEmail(invite.email)
 
   if(!user) {
     // We should never hit this if everything is working
@@ -42,16 +37,21 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   const resolve = await rooms.resolveInvitation(invite, user, otp)
+
   if(resolve.error) {
     return lib.db.otp.handleAuthFailure(resolve.error, callback)
   }
 
   const result = {}
-  if(!sessionToken || invitedUserDifferentFromSessionUser(sessionToken, user)) {
-    const session = await accounts.createSession()
+  const shouldRenewToken = await accounts.needsNewSessionToken(sessionToken, user)
+  if(shouldRenewToken) {
+    const session = await accounts.createSession(user.id)
     sessionToken = accounts.tokenFromSession(session)
     result.newSessionToken = sessionToken
   }
+
+  const room = await rooms.roomById(invite.room_id)
+  result.roomName = room.name || room.unique_id
 
   util.http.succeed(callback, result)
 }

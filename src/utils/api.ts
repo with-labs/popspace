@@ -25,6 +25,10 @@ class Api {
     return await this.post('/create_room', { token });
   }
 
+  async roomInvite(token: any, roomId: any, email: any) {
+    return await this.post('/send_room_invite', { token, roomId, email });
+  }
+
   async resolveRoomInvite(token: any, otp: string, inviteId: string) {
     return await this.post('/resolve_room_invite', { token, otp, inviteId });
   }

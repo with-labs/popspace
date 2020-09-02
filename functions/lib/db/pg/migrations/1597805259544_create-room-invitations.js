@@ -15,7 +15,7 @@ exports.up = pgm => {
     // which locks us into expiring relative to issue date
     membership_duration_millis: { type: 'bigint' },
     revoked_at: { type: 'timestamptz' },
-    accepted_at: { type: 'timestamptz' },
+    resolved_at: { type: 'timestamptz' },
     created_at: {
       type: 'timestamptz',
       notNull: true,

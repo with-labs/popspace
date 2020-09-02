@@ -12,14 +12,6 @@ const tryToSetUpNewAccount = async (params, accounts) => {
   }
 }
 
-const needsNewSessionToken = async (sessionToken, user, accounts) => {
-  if(!sessionToken) {
-    return true
-  }
-  const session = await accuonts.sessionFromToken(sessionToken)
-  return parseInt(session.user_id) == parseInt(user.id)
-}
-
 /**
  * Finalizes the registration process for someone who clicked a room invite link
  * without previously having registered with us.
@@ -73,9 +65,9 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   const response = {}
-  const willIssueToken = await needsNewSessionToken(sessionToken, user, accounts)
-  if(willIssueToken) {
-    const session = await accounts.createSession()
+  const shouldIssueToken = await accounts.needsNewSessionToken(sessionToken, user)
+  if(shouldIssueToken) {
+    const session = await accounts.createSession(user.id)
     sessionToken = accounts.tokenFromSession(session)
     response.newSessionToken = sessionToken
   }

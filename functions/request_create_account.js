@@ -17,7 +17,7 @@ module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return;
 
   const params = JSON.parse(event.body)
-  const accounts = new lib.db.Accounts(params)
+  const accounts = new lib.db.Accounts()
   await accounts.init()
 
   // Make sure we don't distinguish emails just by whitespace

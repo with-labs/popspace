@@ -12,6 +12,8 @@ const http = {
   },
 
   fail: (callback, message, data={}) => {
+    // TODO: tear down db connections - will have to update all http.fail references,
+    // since the return value will change to a promise
     data.message = data.message || "Unknown error"
     callback(null, {
       statusCode: 200,

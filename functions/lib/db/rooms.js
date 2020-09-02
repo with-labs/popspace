@@ -27,7 +27,7 @@ class Rooms extends DbAccess {
     if(existingUser) {
       return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
     } else {
-      return `${appUrl}/invited?otp=${invite.otp}&iid=${invite.id}`
+      return `${appUrl}/invite?otp=${invite.otp}&iid=${invite.id}`
     }
   }
 

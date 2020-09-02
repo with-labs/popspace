@@ -49,6 +49,7 @@ export default class Profile extends React.Component<any, any> {
         <h1> Profile </h1>
         <div>Welcome, {this.props.profile.user.display_name}</div>
         {this.renderRooms()}
+        <br />
         <button onClick={logOut}> Log out </button>
       </Main>
     );
@@ -58,8 +59,10 @@ export default class Profile extends React.Component<any, any> {
     return (
       <div>
         <h2> Your rooms </h2>
-        {this.renderOwnedRoomList(this.props.profile.rooms.owned)}
         {this.renderCreateRoom()}
+        <br />
+        <br />
+        {this.renderOwnedRoomList(this.props.profile.rooms.owned)}
         <h2> Rooms you're a member in </h2>
         {this.renderMemberRoomList(this.props.profile.rooms.member)}
       </div>

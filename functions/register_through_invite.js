@@ -4,7 +4,7 @@ lib.util.env.init(require("./env.json"))
 
 const tryToSetUpNewAccount = async (params, accounts) => {
   let existingAccountCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
-  if(existingCreateRequest) {
+  if(existingAccountCreateRequest) {
     return await accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
   } else {
     const createRequest = await accounts.tryToCreateAccountRequest(params)
@@ -29,13 +29,15 @@ module.exports.handler = async (event, context, callback) => {
   const inviteId = body.inviteId
   const sessionToken = body.token
 
+  params.email = util.args.consolidateEmailString(params.email)
+
   const rooms = new lib.db.Rooms()
   await rooms.init()
   const invite = await rooms.inviteById(inviteId)
   if(!invite) {
     return lib.util.http.fail(callback, "Invalid room invitation")
   }
-  const verification = rooms.isValidInvitation(invite)
+  const verification = rooms.isValidInvitation(invite, params.email, otp)
   if(verification.error) {
     // refuse to create user if the invitation is not valid
     return lib.db.otp.handleAuthFailure(verification.error, callback)
@@ -52,7 +54,7 @@ module.exports.handler = async (event, context, callback) => {
     user = existingUser
   } else {
     // Make sure to create the user before resolving the invitation
-    const accountCreate = await tryToSetUpNewAccount(params.email, accounts)
+    const accountCreate = await tryToSetUpNewAccount(params, accounts)
     if(accountCreate.error != null)  {
       return lib.db.otp.handleAuthFailure(accountCreate.error, callback)
     }
@@ -68,9 +70,11 @@ module.exports.handler = async (event, context, callback) => {
   const shouldIssueToken = await accounts.needsNewSessionToken(sessionToken, user)
   if(shouldIssueToken) {
     const session = await accounts.createSession(user.id)
-    sessionToken = accounts.tokenFromSession(session)
-    response.newSessionToken = sessionToken
+    response.newSessionToken = accounts.tokenFromSession(session)
   }
+
+  const room = await rooms.roomById(invite.room_id)
+  result.roomName = room.name || room.unique_id
 
   await accounts.cleanup()
   return lib.util.http.succeed(callback, response);

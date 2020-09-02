@@ -115,12 +115,12 @@ export default function Signup(props: any) {
 
   return (
     <Main>
+      <FieldHeader>Email</FieldHeader>
+      <FieldInput id="email" value={props.email} disabled={!!props.email}></FieldInput>
       <FieldHeader>First name</FieldHeader>
       <FieldInput id="first_name"></FieldInput>
       <FieldHeader>Last name</FieldHeader>
       <FieldInput id="last_name"></FieldInput>
-      <FieldHeader>Email</FieldHeader>
-      <FieldInput id="email"></FieldInput>
       <div>
         <LabeledCheckbox
           id="accept_tos"

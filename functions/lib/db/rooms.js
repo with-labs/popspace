@@ -23,11 +23,12 @@ class Rooms extends DbAccess {
   }
 
   async getInviteUrl(appUrl, invite) {
-    const existingUser = await this.pg.users.findOne({email: util.args.consolidateEmailString(invite.email)})
+    const email = util.args.consolidateEmailString(invite.email)
+    const existingUser = await this.pg.users.findOne({email: email})
     if(existingUser) {
       return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
     } else {
-      return `${appUrl}/invite?otp=${invite.otp}&iid=${invite.id}`
+      return `${appUrl}/invite?otp=${invite.otp}&iid=${invite.id}&email=${email}`
     }
   }
 

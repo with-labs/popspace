@@ -16,18 +16,16 @@ import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext'
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import style from './Room.module.css';
-import { LinkWidget } from '../LinkWidget/LinkWidget';
-import Whiteboard from '../Whiteboard/Whiteboard';
-import { WidgetTypes } from '../WidgetProvider/widgetTypes';
-import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { LocationTuple } from '../../types';
 import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
 import { motion } from 'framer-motion';
-import { StickyNoteWidget } from '../StickyNoteWidget/StickyNoteWidget';
-import { YouTubeWidget } from '../YouTubeWidget/YouTubeWidget';
+
+import { Widgets } from './Widgets';
+import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary';
+import { WithModal } from '../WithModal/WithModal';
 
 export interface DragItem {
   type: string;
@@ -40,12 +38,24 @@ interface IRoomProps {
   initialAvatar: string;
 }
 
+const WidgetsFallback = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  return (
+    <WithModal isOpen={isOpen} onCloseHandler={() => setIsOpen(false)}>
+      <h1 className="u-fontH1">Accessories error</h1>
+      <p className="u-fontP1">
+        An error occurred while setting up the room's accessories. Try refreshing the page and rejoining the room to fix
+        this error.
+      </p>
+    </WithModal>
+  );
+};
+
 export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
-  const { huddles, floaters, widgets, localHuddle } = useRoomParties();
+  const { huddles, floaters, localHuddle } = useRoomParties();
   const { inviteToHuddle } = useHuddleContext();
   const disabledAudioSids = useAudioTrackBlacklist();
   const [windowWidth, windowHeight] = useWindowSize();
-  const remoteParticipants = useParticipants();
   const { updateLocation, participantMeta, updateAvatar } = useParticipantMetaContext();
   const dragableArea = useRef(null);
 
@@ -54,66 +64,6 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   } = useVideoContext();
 
   useLocalVolumeDetection();
-
-  // get the widgets to display in the room
-  const widgetComps = widgets.reduce<JSX.Element[]>((widComps, widget) => {
-    if (widget?.data.isPublished || widget.participantSid === localParticipant.sid) {
-      switch (widget.type) {
-        case WidgetTypes.Link:
-          widComps.push(
-            <LinkWidget
-              key={widget.id}
-              id={widget.id}
-              dragConstraints={dragableArea}
-              position={widget.data.location}
-              data={widget.data}
-            />
-          );
-          break;
-        case WidgetTypes.StickyNote:
-          widComps.push(
-            <StickyNoteWidget
-              key={widget.id}
-              id={widget.id}
-              position={widget.data.location}
-              participant={
-                widget.participantSid === localParticipant.sid
-                  ? localParticipant
-                  : remoteParticipants.find((pt) => pt.sid === widget.participantSid)
-              }
-              dragConstraints={dragableArea}
-              data={widget.data}
-            />
-          );
-          break;
-        case WidgetTypes.Whiteboard:
-          widComps.push(
-            <Whiteboard
-              key={widget.id}
-              id={widget.id}
-              dragConstraints={dragableArea}
-              position={widget.data.location}
-              data={widget.data}
-            />
-          );
-          break;
-        case WidgetTypes.YouTube:
-          widComps.push(
-            <YouTubeWidget
-              key={widget.id}
-              id={widget.id}
-              position={widget.data.location}
-              dragConstraints={dragableArea}
-              data={widget.data}
-            />
-          );
-          break;
-        default:
-          break;
-      }
-    }
-    return widComps;
-  }, []);
 
   useEffect(() => {
     if (initialAvatar) {
@@ -227,7 +177,9 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
         {Object.keys(huddles).map((huddleId) => (
           <HuddleBubble huddleId={huddleId} participants={huddles[huddleId]} key={huddleId} />
         ))}
-        {widgetComps}
+        <ErrorBoundary fallback={() => <WidgetsFallback />}>
+          <Widgets dragConstraints={dragableArea} />
+        </ErrorBoundary>
         {Object.keys(bubs).map((key) => {
           const { pt, top, left } = bubs[key];
 

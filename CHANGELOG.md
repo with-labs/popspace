@@ -1,3 +1,9 @@
+## 1.111.0
+
+- ErrorBoundary component
+- Add error boundary around main room.
+- Add error boundary around widgets in room.
+
 ## 1.110.0
 
 - Support for sending emails through SES

@@ -11,9 +11,8 @@ const http = {
     return false;
   },
 
-  fail: (callback, message, data={}) => {
-    // TODO: tear down db connections - will have to update all http.fail references,
-    // since the return value will change to a promise
+  fail: async (callback, message, data={}) => {
+    await lib.cleanup()
     data.message = data.message || "Unknown error"
     callback(null, {
       statusCode: 200,
@@ -22,7 +21,8 @@ const http = {
     });
   },
 
-  succeed: (callback, data) => {
+  succeed: async (callback, data) => {
+    await lib.cleanup()
     return callback(null, {
       statusCode: 200,
       headers,

@@ -24,7 +24,7 @@ class Rooms extends DbAccess {
 
   async getInviteUrl(appUrl, invite) {
     const email = util.args.consolidateEmailString(invite.email)
-    const existingUser = await this.pg.users.findOne({email: email})
+    const existingUser = await db.pg.massive.users.findOne({email: email})
     if(existingUser) {
       return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
     } else {
@@ -33,15 +33,15 @@ class Rooms extends DbAccess {
   }
 
   async inviteById(id) {
-    return await this.pg.room_invitations.findOne({id: id})
+    return await db.pg.massive.room_invitations.findOne({id: id})
   }
 
   async roomById(id) {
-    return await this.pg.rooms.findOne({id: id})
+    return await db.pg.massive.rooms.findOne({id: id})
   }
 
   async isMember(userId, roomId) {
-    const membership = await this.pg.room_memberships.findOne({user_id: userId, room_id: roomId})
+    const membership = await db.pg.massive.room_memberships.findOne({user_id: userId, room_id: roomId})
     if(!membership) {
       return false
     }
@@ -58,14 +58,14 @@ class Rooms extends DbAccess {
       idString = this.generateIdString()
       isUnique = await this.isUniqueIdString(idString)
     }
-    return await this.pg.rooms.insert({
+    return await db.pg.massive.rooms.insert({
       owner_id: userId,
       unique_id: idString
     })
   }
 
   async latestRoomInvitation(roomId, inviteeEmail) {
-    const invitations = await this.pg.room_invitations.find({
+    const invitations = await db.pg.massive.room_invitations.find({
       room_id: roomId,
       email: util.args.consolidateEmailString(inviteeEmail)
     }, {
@@ -79,7 +79,7 @@ class Rooms extends DbAccess {
   }
 
   async createInvitation(roomId, inviteeEmail) {
-    return await this.pg.room_invitations.insert({
+    return await db.pg.massive.room_invitations.insert({
       room_id: roomId,
       email: util.args.consolidateEmailString(inviteeEmail),
       otp: lib.db.otp.generate(),
@@ -112,7 +112,7 @@ class Rooms extends DbAccess {
         expires_at = this.timestamptzPlusMillis(invitation.issued_at, invitation.membership_duration_millis)
       }
 
-      const membership = await this.pg.withTransaction(async (tx) => {
+      const membership = await db.pg.massive.withTransaction(async (tx) => {
         await tx.room_invitations.update({id: invitation.id}, {resolved_at: this.now()})
         return await tx.room_memberships.insert({
           room_id: invitation.room_id,
@@ -131,7 +131,7 @@ class Rooms extends DbAccess {
   }
 
   async getOwnedRooms(userId) {
-    return await this.pg.rooms.find({
+    return await db.pg.massive.rooms.find({
       owner_id: userId
     })
   }
@@ -149,7 +149,7 @@ class Rooms extends DbAccess {
   }
 
   async getMemberRooms(userId) {
-    return await this.pg.query(`
+    return await db.pg.massive.query(`
       SELECT
         rooms.id,
         rooms.unique_id,
@@ -163,13 +163,13 @@ class Rooms extends DbAccess {
 
   // Private
   async isUniqueIdString(idString) {
-    const existingEntry = await this.pg.rooms.findOne({unique_id: idString})
+    const existingEntry = await db.pg.massive.rooms.findOne({unique_id: idString})
     return !existingEntry
   }
 
   async underMaxOwnedRoomLimit(userId) {
-    const count = await this.pg.rooms.count({owner_id: userId})
-    return count <= MAX_FREE_ROOMS
+    const count = await db.pg.massive.rooms.count({owner_id: userId})
+    return count < MAX_FREE_ROOMS
   }
 }
 

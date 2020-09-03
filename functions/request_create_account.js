@@ -16,23 +16,24 @@ module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
   if(lib.util.http.failUnlessPost(event, callback)) return;
 
+  await lib.init()
+
   const params = JSON.parse(event.body)
   const accounts = new lib.db.Accounts()
-  await accounts.init()
 
   // Make sure we don't distinguish emails just by whitespace
   params.email = util.args.consolidateEmailString(params.email)
   const existingUser = await accounts.userByEmail(params.email)
 
   if(existingUser) {
-    return lib.util.http.fail(callback, "Email already registered. Please log in!")
+    return await lib.util.http.fail(callback, "Email already registered. Please log in!")
   }
 
   const existingCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
 
   if(existingCreateRequest) {
     if(!lib.db.otp.isExpired(existingCreateRequest)) {
-      return lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
+      return await lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
     }
   }
 
@@ -40,6 +41,5 @@ module.exports.handler = async (event, context, callback) => {
   const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
   await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
-  await accounts.cleanup()
-  return lib.util.http.succeed(callback, {});
+  return await lib.util.http.succeed(callback, {});
 }

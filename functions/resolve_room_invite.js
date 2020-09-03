@@ -10,36 +10,34 @@ lib.util.env.init(require("./env.json"))
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
+  await lib.init()
+
   const params = JSON.parse(event.body)
   const otp = params.otp
   const inviteId = params.inviteId
   let sessionToken = params.token
 
   const rooms = new lib.db.Rooms()
-  await rooms.init()
-
   const invite = await rooms.inviteById(inviteId)
 
   if(!invite) {
-    return lib.util.http.fail(callback, "Invalid room invitation")
+    return await lib.util.http.fail(callback, "Invalid room invitation")
   }
 
   const accounts = new lib.db.Accounts()
-  await accounts.init()
-
   let user = await accounts.userByEmail(invite.email)
 
   if(!user) {
     // We should never hit this if everything is working
     // (as long as people are using the site correctly).
     // We should check whether the user exists before calling this endpoint.
-    return lib.util.http.fail(callback, "Unknown email. Please sign up.")
+    return await lib.util.http.fail(callback, "Unknown email. Please sign up.")
   }
 
   const resolve = await rooms.resolveInvitation(invite, user, otp)
 
   if(resolve.error) {
-    return lib.db.otp.handleAuthFailure(resolve.error, callback)
+    return await lib.db.otp.handleAuthFailure(resolve.error, callback)
   }
 
   const result = {}
@@ -53,5 +51,5 @@ module.exports.handler = async (event, context, callback) => {
   const room = await rooms.roomById(invite.room_id)
   result.roomName = room.name || room.unique_id
 
-  util.http.succeed(callback, result)
+  return await util.http.succeed(callback, result)
 }

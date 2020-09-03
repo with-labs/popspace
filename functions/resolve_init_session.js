@@ -10,21 +10,21 @@ lib.util.env.init(require("./env.json"))
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
+  await lib.init()
+
   const params = JSON.parse(event.body)
   const accounts = new lib.db.Accounts()
-  await accounts.init()
 
   const otp = params.otp;
   const uid = params.uid;
 
   const result = await accounts.resolveLoginRequest(uid, otp)
   if(result.error != null) {
-    return lib.db.otp.handleAuthFailure(result.error, callback)
+    return await lib.db.otp.handleAuthFailure(result.error, callback)
   }
 
   const session = result.session
   const token = accounts.tokenFromSession(session)
 
-  await accounts.cleanup()
-  util.http.succeed(callback, {token: token});
+  return await util.http.succeed(callback, {token: token});
 }

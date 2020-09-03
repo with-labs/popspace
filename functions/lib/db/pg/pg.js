@@ -27,6 +27,7 @@ let db = null
 class Pg {
   async init() {
     if(db) {
+      this.massive = db
       return db
     }
     overridePgTimestampConversion()
@@ -38,6 +39,7 @@ class Pg {
     const config = require('./config.js')
     db = await massive(config)
     monitor.attach(db.driverConfig);
+    this.massive = db
     return db
   }
 
@@ -46,6 +48,7 @@ class Pg {
       monitor.detach()
       await db.pgp.end()
       db = null
+      this.massive = null
     }
   }
 }

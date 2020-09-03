@@ -14,10 +14,11 @@ export default function SignupThroughInvite() {
     const existingToken = window.localStorage.getItem('__session_token');
     const result: any = await Api.registerThroughInvite(existingToken, data, otp, inviteId);
     if (result.success) {
+      console.log(result);
       if (result.newSessionToken) {
         window.localStorage.setItem('__session_token', result.newSessionToken);
       }
-      window.location.href = `/${result.roomName}`;
+      // window.location.href = `/${result.roomName}`;
     } else {
       alert(result.message);
     }

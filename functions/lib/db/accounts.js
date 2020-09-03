@@ -14,7 +14,7 @@ class Accounts extends DbAccess {
   }
 
   async getLatestAccountCreateRequest(email) {
-    const requests = await this.pg.otp_account_create_requests.find({
+    const requests = await db.pg.massive.otp_account_create_requests.find({
       email: util.args.consolidateEmailString(email)
     }, {
       order: [{
@@ -27,11 +27,11 @@ class Accounts extends DbAccess {
   }
 
   async userByEmail(email) {
-    return this.pg.users.findOne({email: util.args.consolidateEmailString(email)})
+    return db.pg.massive.users.findOne({email: util.args.consolidateEmailString(email)})
   }
 
   async userById(id) {
-    return this.pg.users.findOne({id: id})
+    return db.pg.massive.users.findOne({id: id})
   }
 
   /*
@@ -54,11 +54,11 @@ class Accounts extends DbAccess {
       requested_at: this.now(),
       expires_at: lib.db.otp.standardExpiration()
     }
-    return await this.pg.otp_account_create_requests.insert(request)
+    return await db.pg.massive.otp_account_create_requests.insert(request)
   }
 
   async findAndResolveAccountCreateRequest(email, otp) {
-    const request = await this.pg.otp_account_create_requests.findOne({email: util.args.consolidateEmailString(email), otp: otp})
+    const request = await db.pg.massive.otp_account_create_requests.findOne({email: util.args.consolidateEmailString(email), otp: otp})
     return await this.tryToResolveAccountCreateRequest(request, otp)
   }
 
@@ -68,7 +68,7 @@ class Accounts extends DbAccess {
       return verification
     }
     try {
-      const newUser = await this.pg.withTransaction(async (tx) => {
+      const newUser = await db.pg.massive.withTransaction(async (tx) => {
         await tx.otp_account_create_requests.update({id: request.id}, {resolved_at: this.now()})
         return await tx.users.insert({
           email: util.args.consolidateEmailString(request.email),
@@ -93,18 +93,18 @@ class Accounts extends DbAccess {
       user_id: user.id
     }
 
-    return await this.pg.otp_login_requests.insert(loginRequest)
+    return await db.pg.massive.otp_login_requests.insert(loginRequest)
   }
 
   async resolveLoginRequest(userId, otp) {
-    const request = await this.pg.otp_login_requests.findOne({user_id: userId, otp: otp})
+    const request = await db.pg.massive.otp_login_requests.findOne({user_id: userId, otp: otp})
     const verification = lib.db.otp.verify(request, otp)
     if(verification.error != null) {
       return verification
     }
 
     try {
-      const session = await this.pg.withTransaction(async (tx) => {
+      const session = await db.pg.massive.withTransaction(async (tx) => {
         await tx.otp_login_requests.update({id: request.id}, {resolved_at: this.now()})
         return await this.createSession(userId, tx)
       })
@@ -118,7 +118,7 @@ class Accounts extends DbAccess {
   }
 
   async createSession(userId, tx=null) {
-    const db = tx || this.pg
+    const db = tx || db.pg.massive
     return await db.sessions.insert({
       user_id: userId,
       secret: lib.db.otp.generate(),
@@ -135,7 +135,7 @@ class Accounts extends DbAccess {
 
   async sessionFromToken(sessionToken) {
     const sessionObject = JSON.parse(sessionToken)
-    const session = await this.pg.sessions.findOne({user_id: sessionObject.uid, secret: sessionObject.secret})
+    const session = await db.pg.massive.sessions.findOne({user_id: sessionObject.uid, secret: sessionObject.secret})
     if(!session || lib.db.otp.isExpired(session)) {
       return null
     } else {

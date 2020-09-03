@@ -21,15 +21,16 @@ module.exports.handler = async (event, context, callback) => {
   // We only care about POSTs with body data
   if(util.http.failUnlessPost(event, callback)) return;
 
+  await lib.init()
+
   const params = JSON.parse(event.body)
   params.email = util.args.consolidateEmailString(params.email)
 
   const accounts = new lib.db.Accounts()
-  await accounts.init()
 
   const user = await accounts.userByEmail(params.email)
   if(!user) {
-    return util.http.fail(callback, "Unknown email", {invalidEmail: true})
+    return await util.http.fail(callback, "Unknown email", {invalidEmail: true})
   }
 
   const loginRequest = await accounts.createLoginRequest(user)
@@ -37,6 +38,5 @@ module.exports.handler = async (event, context, callback) => {
 
   await lib.email.account.sendLoginOtpEmail(params.email, user.first_name, logInUrl)
 
-  await accounts.cleanup()
-  util.http.succeed(callback, {});
+  return await util.http.succeed(callback, {});
 }

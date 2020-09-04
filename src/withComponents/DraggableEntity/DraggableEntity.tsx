@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef } from 'react';
 import { motion, PanInfo, useMotionValue } from 'framer-motion';
 import { LocationTuple } from '../../types';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
@@ -15,6 +15,7 @@ interface IDraggableEntityProps {
 export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
   const { position, children, dragConstraints, onDragEnd, className } = props;
   const [windowWidth, windowHeight] = useWindowSize();
+  const entityRef = useRef<HTMLDivElement>(null!);
 
   // Callback to convert a location tuple to top/left values.
   const locationToPx = useCallback(
@@ -52,12 +53,15 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
    */
   const onDragEndHandler = (event: any, info: PanInfo) => {
     // Get the x/y position of the widget that was dragged.
-    // TODO maybe? should we round these?
-    const { x, y } = event.target.getBoundingClientRect();
+    let { x, y, height, width, right, bottom } = entityRef.current.getBoundingClientRect();
+
+    // Do some sanitation to the x and y to make sure the widget doesn't go off-screen.
+    x = x > 0 ? Math.min(x, right - width) : Math.max(x, 0);
+    y = y > 0 ? Math.min(y, bottom - height) : Math.max(y, 0);
 
     // Set the new position into the motion values for x and y of the widget.
-    motionX.set(x);
-    motionY.set(y);
+    motionX.set(Math.round(x));
+    motionY.set(Math.round(y));
 
     // Update the widget location in the store.
     onDragEnd(pxToLocation(x, y));
@@ -78,10 +82,11 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
 
   return (
     <motion.div
+      ref={entityRef}
       className={`${styles.DraggableEntity} ${className}`}
+      animate={widgetAnimateLocation}
       initial={false}
       drag
-      animate={widgetAnimateLocation}
       dragMomentum={false}
       dragConstraints={dragConstraints}
       onDragEnd={onDragEndHandler}

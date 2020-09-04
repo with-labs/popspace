@@ -1,3 +1,8 @@
+## 1.112.0
+
+- Use ref of main DraggableEntity component to get the drop position.
+- Default to window width/height instead of 0 in useWindowSize hook.
+
 ## 1.111.0
 
 - ErrorBoundary component

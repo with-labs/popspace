@@ -1,3 +1,10 @@
+## 1.115.0
+
+- Support for email-based room invites for new and existing users
+- New users sign up and create an account upon receiving the invite
+- Invite process takes over session, and can log people or change their current user
+- After accepting the invite, users land in the target room
+
 ## 1.114.0
 
 - updating youtube widget to impove url and option parsing

@@ -16,10 +16,6 @@ module.exports.handler = async (event, context, callback) => {
 
   const params = JSON.parse(event.body)
   params.email = util.args.consolidateEmailString(params.email)
-  if(user.email == params.email) {
-    return await lib.util.http.fail(callback, "Can not invite yourself")
-  }
-
   const rooms = new lib.db.Rooms()
   const room = await rooms.roomById(params.roomId)
   if(!room) {
@@ -28,6 +24,10 @@ module.exports.handler = async (event, context, callback) => {
 
   if(parseInt(room.owner_id) != parseInt(user.id)) {
     return await lib.util.http.fail(callback, `You are not currently logged in as the owner of that room.`)
+  }
+
+  if(user.email == params.email) {
+    return await lib.util.http.fail(callback, "Can not invite yourself")
   }
 
   const invitee = await accounts.userByEmail(params.email)

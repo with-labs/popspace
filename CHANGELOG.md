@@ -1,3 +1,7 @@
+## 1.114.0
+
+- updating youtube widget to impove url and option parsing
+
 ## 1.113.0
 
 - Add visibility handler to pause video when app loses focus on mobile devices, per starter app.

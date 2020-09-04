@@ -61,6 +61,7 @@ module.exports.handler = async (event, context, callback) => {
       return await lib.db.otp.handleAuthFailure(accountCreate.error, callback)
     }
     user = accountCreate.newUser
+    await rooms.generateRoom(user.id)
   }
 
   const resolve = await rooms.resolveInvitation(invite, user, otp)

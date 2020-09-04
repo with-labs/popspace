@@ -1,3 +1,7 @@
+## 1.113.0
+
+- Add visibility handler to pause video when app loses focus on mobile devices, per starter app.
+
 ## 1.112.0
 
 - Use ref of main DraggableEntity component to get the drop position.

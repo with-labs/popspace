@@ -118,8 +118,8 @@ class Accounts extends DbAccess {
   }
 
   async createSession(userId, tx=null) {
-    const db = tx || db.pg.massive
-    return await db.sessions.insert({
+    const txOrMassive = tx || lib.db.pg.massive
+    return await txOrMassive.sessions.insert({
       user_id: userId,
       secret: lib.db.otp.generate(),
       expires_at: null
@@ -148,7 +148,7 @@ class Accounts extends DbAccess {
       return true
     }
     const session = await this.sessionFromToken(sessionToken)
-    return parseInt(session.user_id) == parseInt(user.id)
+    return parseInt(session.user_id) != parseInt(user.id)
   }
 
 }

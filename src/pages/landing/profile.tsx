@@ -19,9 +19,8 @@ export default class Profile extends React.Component<any, any> {
 
   constructor(props: any) {
     super(props);
-    const sessionToken = localStorage.getItem('__session_token');
     this.createRoom = async () => {
-      const result: any = await Api.createRoom(sessionToken);
+      const result: any = await Api.createRoom(localStorage.getItem('__session_token'));
       if (result.success) {
         if (this.props.onProfileChange) {
           this.props.profile.rooms.owned.push(result.newRoom);
@@ -34,7 +33,7 @@ export default class Profile extends React.Component<any, any> {
     this.invite = async (room) => {
       // TODO: use proper react style to fetch input values
       const emailInput: any = document.getElementById(`invite_${room.id}`);
-      const result: any = await Api.roomInvite(sessionToken, room.id, emailInput.value);
+      const result: any = await Api.roomInvite(localStorage.getItem('__session_token'), room.id, emailInput.value);
       if (result.success) {
         window.alert('Invite email sent!');
       } else {

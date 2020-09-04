@@ -31,25 +31,42 @@ module.exports.handler = async (event, context, callback) => {
     // We should never hit this if everything is working
     // (as long as people are using the site correctly).
     // We should check whether the user exists before calling this endpoint.
-    return await lib.util.http.fail(callback, "Unknown email. Please sign up.")
+    return await lib.util.http.fail(
+      callback,
+      "Unknown email. Please sign up.",
+      { errorCode: util.http.ERRORS.rooms.JOIN_FAIL_NO_SUCH_USER }
+    )
   }
 
   const resolve = await rooms.resolveInvitation(invite, user, otp)
 
-  if(resolve.error) {
-    return await lib.db.otp.handleAuthFailure(resolve.error, callback)
-  }
-
   const result = {}
   const shouldRenewToken = await accounts.needsNewSessionToken(sessionToken, user)
+  const room = await rooms.roomById(invite.room_id)
+  result.roomName = room.name || room.unique_id
+
+  if(resolve.error) {
+    // If we can't resolve - but it's a valid invite and the user is a member -
+    // we can let them through into the room anyway if they have the OTP
+    if(resolve.error == lib.db.ErrorCodes.otp.RESOLVED_OTP && invite.otp == otp) {
+      const alreadyMember = await rooms.isMember(user.id, invite.room_id)
+      if(alreadyMember && !shouldRenewToken) {
+        // Don't allow the link to function as an un-expiring log in link -
+        // only pass them through with a valid token.
+        return await util.http.succeed(callback, result)
+      } else {
+        return await lib.db.otp.handleAuthFailure(resolve.error, callback)
+      }
+    } else {
+      return await lib.db.otp.handleAuthFailure(resolve.error, callback)
+    }
+  }
+
   if(shouldRenewToken) {
     const session = await accounts.createSession(user.id)
     sessionToken = accounts.tokenFromSession(session)
     result.newSessionToken = sessionToken
   }
-
-  const room = await rooms.roomById(invite.room_id)
-  result.roomName = room.name || room.unique_id
 
   return await util.http.succeed(callback, result)
 }

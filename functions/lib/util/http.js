@@ -2,7 +2,16 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
+const ERRORS = {
+  rooms: {
+    JOIN_FAIL_NO_SUCH_USER: 1,
+    JOIN_ALREADY_MEMBER: 2
+  }
+}
+
 const http = {
+  ERRORS: ERRORS,
+
   failUnlessPost: (event, callback) => {
     if(event.httpMethod !== 'POST' || !event.body) {
       http.fail(callback, "Must provide POST body")
@@ -37,7 +46,7 @@ const http = {
     // the db is initialized
     const params = JSON.parse(event.body)
     if(!params.token) {
-      return lib.util.http.fail(callback, "Must specify authentication token")
+      return lib.util.http.fail(callback, "Must be logged in")
     }
     const session = await accounts.sessionFromToken(params.token)
     if(!session) {

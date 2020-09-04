@@ -1,6 +1,7 @@
 const lib = require("lib");
 const env = lib.util.env.init(require("./env.json"))
 
+
 module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 
@@ -29,9 +30,12 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(callback, `You are not currently logged in as the owner of that room.`)
   }
 
-  const alreadyMember = await rooms.isMember(user.id, room.id)
-  if(alreadyMember) {
-    return await lib.util.http.fail(callback, `${user.email} is already a member of this room.`)
+  const invitee = await accounts.userByEmail(params.email)
+  if(invitee) {
+    const alreadyMember = await rooms.isMember(invitee.id, room.id)
+    if(alreadyMember) {
+      return await lib.util.http.fail(callback, `${user.email} is already a member of this room.`)
+    }
   }
 
   const existingRoomInvitation = await rooms.latestRoomInvitation(params.roomId, params.email)

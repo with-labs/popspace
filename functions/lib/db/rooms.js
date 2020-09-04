@@ -23,13 +23,14 @@ class Rooms extends DbAccess {
   }
 
   async getInviteUrl(appUrl, invite) {
+    // The inivite can happen for existing users, as well as for new users.
+    // For new users, it'd be nice if users immediately went to the signup page -
+    // however, if the new user registers before the click the invite, we wouldn't
+    // like to render the signup page, and so a check is inevitable as they land on it.
+    // Thus, it's not really possible to immediately render a signup page for new users,
+    // and we must always check whether the user exists before rendering that page.
     const email = util.args.consolidateEmailString(invite.email)
-    const existingUser = await db.pg.massive.users.findOne({email: email})
-    if(existingUser) {
-      return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}`
-    } else {
-      return `${appUrl}/invite?otp=${invite.otp}&iid=${invite.id}&email=${email}`
-    }
+    return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}`
   }
 
   async inviteById(id) {

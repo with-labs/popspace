@@ -5,11 +5,13 @@ lib.util.env.init(require("./env.json"))
 const tryToSetUpNewAccount = async (params, accounts) => {
   let existingAccountCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
   if(existingAccountCreateRequest) {
-    return await accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
-  } else {
-    const createRequest = await accounts.tryToCreateAccountRequest(params)
-    return await accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
+    const resolve = await accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
+    if(!resolve.error) {
+      return resolve
+    }
   }
+  const createRequest = await accounts.tryToCreateAccountRequest(params)
+  return await accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
 }
 
 /**

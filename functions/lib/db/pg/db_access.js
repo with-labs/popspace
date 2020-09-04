@@ -9,21 +9,20 @@ class DbAccess {
     return moment.utc().format()
   }
 
-  timestamptzPlusMillis(timestamptzValue, millis) {
-    const startMoment = moment(timestamptzValue).utc()
+  timestamptzPlusMillis(timestamptz, millis) {
+    const startMoment = moment(timestamptz).utc()
     millis = parseInt(millis)
     return moment(startMoment.valueOf() + millis).utc().format()
   }
 
-  timestamptzStillCurrent(expirationTimestamptz) {
-    if(!expirationTimestamptz) {
-      return true // null = never expire
-    }
-    return moment(entity.expires_at).valueOf() < moment.utc().valueOf()
+  timestamptzStillCurrent(timestamptz) {
+    // null = never expire
+    return !timestamptz || (moment(timestamptz).valueOf() < moment.utc().valueOf())
   }
 
   timestamptzHasPassed(timestamptz) {
-    return !this.timestamptzStillCurrent(expirationTimestamptz)
+    // null = hasn't passed
+    return timestamptz && !this.timestamptzStillCurrent(timestamptz)
   }
 }
 

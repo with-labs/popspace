@@ -21,6 +21,8 @@ import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 
 import { AccessoriesDock } from './withComponents/AccessoriesDock/AccessoriesDock';
+import { ErrorBoundary } from './withComponents/ErrorBoundary/ErrorBoundary';
+import { WithModal } from './withComponents/WithModal/WithModal';
 
 const Container = styled('div')({
   display: 'flex',
@@ -36,6 +38,17 @@ const Main = styled('main')({
 
 type AnglesAppProps = {
   roomName: string;
+};
+
+const RoomFallback = () => {
+  return (
+    <WithModal isOpen={true}>
+      <h1 className="u-fontH1">Well, this is awkward...</h1>
+      <p className="u-fontP1">
+        An unexpected error has occurred. Please try refreshing the page and rejoining the room.
+      </p>
+    </WithModal>
+  );
 };
 
 export default function AnglesApp(props: AnglesAppProps) {
@@ -83,9 +96,11 @@ export default function AnglesApp(props: AnglesAppProps) {
         ) : (
           <DndProvider backend={Backend}>
             <div className="u-flexGrow1 u-width100Percent u-height100Percent">
-              <Room initialAvatar={initialAvatar} />
-              <ReconnectingNotification />
-              <AccessoriesDock />
+              <ErrorBoundary fallback={() => <RoomFallback />}>
+                <Room initialAvatar={initialAvatar} />
+                <ReconnectingNotification />
+                <AccessoriesDock />
+              </ErrorBoundary>
             </div>
           </DndProvider>
         )}

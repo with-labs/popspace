@@ -11,7 +11,7 @@ interface IWithModal {
   title?: string;
   children?: ReactNode;
   isOpen: boolean;
-  onCloseHandler: (e: MouseEvent) => void;
+  onCloseHandler?: (e: MouseEvent) => void;
   className?: string;
 }
 
@@ -25,13 +25,15 @@ export const WithModal: React.FC<IWithModal> = ({ title, children, isOpen, onClo
         className={clsx(styles.content, 'u-sm-sizeFull u-flex u-flexCol', className)}
         closeTimeoutMS={200}
       >
-        <h2
-          className={clsx(styles.title, 'u-fontP1 u-flex u-flexAlignItemsCenter u-cursorPointer u-marginBottom40')}
-          onClick={onCloseHandler}
-        >
-          <BackGlyph />
-          {title}
-        </h2>
+        {title ? (
+          <h2
+            className={clsx(styles.title, 'u-fontP1 u-flex u-flexAlignItemsCenter u-cursorPointer u-marginBottom40')}
+            onClick={onCloseHandler}
+          >
+            {onCloseHandler ? <BackGlyph /> : null}
+            {title}
+          </h2>
+        ) : null}
         {children}
       </Modal>
     </div>

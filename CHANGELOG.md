@@ -1,3 +1,18 @@
+## 1.113.0
+
+- Add visibility handler to pause video when app loses focus on mobile devices, per starter app.
+
+## 1.112.0
+
+- Use ref of main DraggableEntity component to get the drop position.
+- Default to window width/height instead of 0 in useWindowSize hook.
+
+## 1.111.0
+
+- ErrorBoundary component
+- Add error boundary around main room.
+- Add error boundary around widgets in room.
+
 ## 1.110.0
 
 - Support for sending emails through SES

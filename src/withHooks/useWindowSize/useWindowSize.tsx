@@ -5,7 +5,7 @@ export default function useWindowSize() {
     return typeof window === 'object';
   }, []);
 
-  const [windowSize, setWindowSize] = useState<number[]>([0, 0]);
+  const [windowSize, setWindowSize] = useState<number[]>([window.innerWidth, window.innerHeight]);
 
   useEffect(() => {
     if (isClient) {

@@ -20,6 +20,8 @@ import Login from './pages/login';
 import JoinRoom from './pages/JoinRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
+import { Signin } from './pages/SignIn/Signin';
+
 import './with.css';
 
 import packageJson from '../package.json';
@@ -143,6 +145,10 @@ ReactDOM.render(
 
           <Route exact path="/1_secret_2_admin_3_enabler_4">
             <EnableAdmin />
+          </Route>
+
+          <Route exact path="/signin">
+            <Signin />
           </Route>
 
           <Route exact path="/signup">

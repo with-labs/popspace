@@ -42,18 +42,28 @@ export default function Signup(props: any) {
     const id = event.target.id;
   };
 
+  const register = async (input: any) => {
+    const result: any = await Api.signup(input);
+    const temp: any = document.getElementById('temp') || {};
+
+    if (result && result.success) {
+      const signupUrl = (result || {}).signupUrl;
+      temp['innerHTML'] = `<div>Check your email to complete signup! </a>`;
+    } else {
+      alert(result.message);
+    }
+  };
+
   const finishSignup = async () => {
     const input = getInput();
     const validation = checkInput(input);
     if (validation.valid) {
-      const result: any = await Api.signup(input);
-      const temp: any = document.getElementById('temp') || {};
-      console.log(result);
-      if (result && result.success) {
-        const signupUrl = (result || {}).signupUrl;
-        temp['innerHTML'] = `<div>Check your email to complete signup! </a>`;
+      if (props.register) {
+        // Support embedding the signup form with custom behavior
+        // e.g. for processing email invitations.
+        await props.register(input);
       } else {
-        alert(result.message);
+        await register(input);
       }
     } else {
       alert(`Invalid fields: ${JSON.stringify(Object.keys(validation.invalidFields))}`);
@@ -105,12 +115,12 @@ export default function Signup(props: any) {
 
   return (
     <Main>
+      <FieldHeader>Email</FieldHeader>
+      <FieldInput id="email" value={props.email} disabled={!!props.email}></FieldInput>
       <FieldHeader>First name</FieldHeader>
       <FieldInput id="first_name"></FieldInput>
       <FieldHeader>Last name</FieldHeader>
       <FieldInput id="last_name"></FieldInput>
-      <FieldHeader>Email</FieldHeader>
-      <FieldInput id="email"></FieldInput>
       <div>
         <LabeledCheckbox
           id="accept_tos"

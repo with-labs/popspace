@@ -16,7 +16,7 @@ const signInHtml = (firstName, url) => {
             Here is your activation link for With. The link expires in an hour, but you can always get a new one by going through the sign in steps&nbsp;again.
           </p>
           <div style="margin-top:30px!important; margin-bottom:30px!important;">
-            <a href="#" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="background-color:#ffd873; border-radius:6px; border:1px solid #ebc76a; box-shadow: 0px 2px 8px 0px #ededed; color:#333; display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif!important; font-size:16px; font-weight:700; line-height:40px; padding:0 16px; text-align:center; text-decoration:none">
+            <a href="${url}" target="_blank" rel="noopener noreferrer" data-auth="NotApplicable" style="background-color:#ffd873; border-radius:6px; border:1px solid #ebc76a; box-shadow: 0px 2px 8px 0px #ededed; color:#333; display:inline-block; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif!important; font-size:16px; font-weight:700; line-height:40px; padding:0 16px; text-align:center; text-decoration:none">
               Activate With
             </a>
           </div>

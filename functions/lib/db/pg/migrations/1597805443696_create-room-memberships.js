@@ -7,7 +7,7 @@ exports.up = pgm => {
     id: { type: 'bigserial', primaryKey: true },
     room_id: { type: 'bigint', notNull: true },
     user_id: { type: 'bigint', notNull: true },
-    invite_id: { type: 'bigint' },
+    invitation_id: { type: 'bigint' },
     began_at: { type: 'timestamptz' },
     expires_at: { type: 'timestamptz' },
     revoked_at: { type: 'timestamptz' },
@@ -19,7 +19,7 @@ exports.up = pgm => {
   })
   pgm.createIndex('room_memberships', 'room_id')
   pgm.createIndex('room_memberships', 'user_id')
-  pgm.createIndex('room_memberships', 'invite_id')
+  pgm.createIndex('room_memberships', 'invitation_id')
 };
 
 exports.down = pgm => {

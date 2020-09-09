@@ -16,21 +16,20 @@ const handleRoomCreateError = (errorCode, callback) => {
 module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 
+  await lib.init()
   const accounts = new lib.db.Accounts()
-  await accounts.init()
+
   const user = await lib.util.http.verifySessionAndGetUser(event, callback, accounts)
-  if(!user) return;
-
-  const rooms = new lib.db.Rooms()
-  await rooms.init()
-
-  const result = await rooms.tryToGenerateRoom(user.id)
-  if(result.error) {
-    return handleRoomCreateError(result.error, callback)
+  if(!user) {
+    return await util.http.fail(callback, "Must be authenticated to create rooms.");
   }
 
-  await accounts.cleanup()
-  await rooms.cleanup()
+  const rooms = new lib.db.Rooms()
+  const result = await rooms.tryToGenerateRoom(user.id)
+  if(result.error) {
+    return await handleRoomCreateError(result.error, callback)
+  }
 
-  lib.util.http.succeed(callback, { newRoom: result.newRoom })
+  await lib.cleanup()
+  return await lib.util.http.succeed(callback, { newRoom: result.newRoom })
 }

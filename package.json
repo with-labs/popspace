@@ -1,6 +1,6 @@
 {
   "name": "with-app",
-  "version": "1.114.0",
+  "version": "1.115.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
@@ -80,7 +80,7 @@
     ]
   },
   "scripts": {
-    "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
+    "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode PORT=3002 react-scripts start",
     "prebuild": "node ./scripts/write_env.js && cd functions && npm run build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
@@ -117,7 +117,7 @@
       "pre-commit": "lint-staged"
     }
   },
-  "proxy": "http://localhost:8081/",
+  "proxy": "http://localhost:8888/",
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

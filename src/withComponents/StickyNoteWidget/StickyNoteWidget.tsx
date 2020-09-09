@@ -7,6 +7,8 @@ import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetCont
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 import { LocationTuple } from '../../types';
+import { Button, ButtonTypes } from '../Button/Button';
+import { Colors } from '../../constants/ColorEnum';
 
 import styles from './StickyNoteWidget.module.css';
 
@@ -42,18 +44,19 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
     setInputText(event.target.value);
   };
 
-  const handlePublish = () => {
-    updateWidgetData(id, { ...data, isPublished: true, text: inputText, author: participantDisplayIdentity });
-  };
-
   const handleAddNewStickyNote = () => {
     addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '' });
+  };
+
+  const handlePublish = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    updateWidgetData(id, { ...data, isPublished: true, text: inputText, author: participantDisplayIdentity });
   };
 
   const stickyNoteContent = isPublished ? (
     <div className={styles.displayText}>{text}</div>
   ) : (
-    <div>
+    <form onSubmit={handlePublish}>
       <textarea
         className={clsx('u-fontP1', styles.textInput)}
         value={inputText}
@@ -61,10 +64,14 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
         placeholder="Type your note"
         autoFocus
       />
-      <button className={clsx('u-fontB1', styles.createNoteButton)} onClick={handlePublish}>
-        Create Note
-      </button>
-    </div>
+
+      <Button
+        buttonText="Add a Video"
+        type={ButtonTypes.SUBMIT}
+        buttonColor={Colors.mandarin}
+        className={styles.createNoteButton}
+      />
+    </form>
   );
 
   const authorDisplay = isPublished ? (

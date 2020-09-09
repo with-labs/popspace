@@ -15,9 +15,11 @@
   --color-lavender-regular: #aebae4;
   --color-lavender-light: #e8efff;
 
+  --color-slate-bold: #8e92a0;
+  --color-slate-regular: #c6c8cf;
+  --color-slate-light: #eceef1;
+
   --color-ink: #333333;
-  --color-slate: #8e92a0;
-  --color-slate-light: #ebecee;
   --color-sand: #fff8f0;
   --color-snow: #ffffff;
 }

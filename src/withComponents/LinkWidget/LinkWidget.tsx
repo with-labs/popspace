@@ -5,9 +5,9 @@ import { Widget } from '../Widget/Widget';
 import { Participant } from 'twilio-video';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
-import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
-import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
-
+import { TextField } from '../TextField/TextField';
+import { Button, ButtonTypes } from '../Button/Button';
+import { Colors } from '../../constants/ColorEnum';
 import styles from './LinkWidget.module.css';
 
 interface ILinkWidgetData {
@@ -59,17 +59,30 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
     </div>
   ) : (
     <form onSubmit={handlePublish}>
-      <FormInput
-        classNames={styles.linkInput}
-        placeholderText={'Title'}
+      <TextField
+        id={`LinkWidgetTitle-${id}`}
+        className={styles.linkInput}
         value={titleText}
-        onChangeHandler={setTitleText}
+        onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setTitleText(event.target.value)}
+        placeholderText={'Title'}
       />
-      <FormInput placeholderText={'Url'} value={urlText} onChangeHandler={setUrlText} />
-      <div className={styles.error}>{formError}</div>
-      <button type="submit" className={clsx('u-fontB1', styles.createLinkButton)}>
-        Add a link
-      </button>
+
+      <TextField
+        id={`LinkWidgetUrl-${id}`}
+        className={styles.linkInput}
+        value={urlText}
+        onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setUrlText(event.target.value)}
+        placeholderText={'Url'}
+        hasError={formError.length > 0}
+        helperText={formError}
+      />
+
+      <Button
+        buttonText="Add a link"
+        type={ButtonTypes.SUBMIT}
+        buttonColor={Colors.lavender}
+        className={styles.createLinkButton}
+      />
     </form>
   );
 

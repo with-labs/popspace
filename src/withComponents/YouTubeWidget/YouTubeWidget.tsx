@@ -1,9 +1,10 @@
 import React, { RefObject, useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { Widget } from '../Widget/Widget';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
-import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
+import { TextField } from '../TextField/TextField';
+import { Button, ButtonTypes } from '../Button/Button';
+import { Colors } from '../../constants/ColorEnum';
 import YouTube from 'react-youtube';
 import styles from './YouTubeWidget.module.css';
 
@@ -81,7 +82,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
         const variables = queryString.split('&');
 
         // get the content
-        variables.forEach(variable => {
+        variables.forEach((variable) => {
           const splitVar = variable.split('=');
 
           //TODO: expand on this list of supported things, but
@@ -97,10 +98,10 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
       // update the widet info
       updateWidgetData(id, {
-          ...data,
-          isPublished: true,
-          videoId: newVideoId,
-          isPlaying: false,
+        ...data,
+        isPublished: true,
+        videoId: newVideoId,
+        isPlaying: false,
       });
     } else {
       //error
@@ -120,16 +121,21 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
   let videoPlayerContent = (
     <div className={styles.youtubeContainer}>
       <form onSubmit={handlePublish}>
-        <FormInput
-          classNames={styles.videoUrlInput}
-          placeholderText={'Video Url'}
+        <TextField
+          id={`youtubeWidget-${id}`}
+          className={styles.videoUrlInput}
           value={videoUrl}
-          onChangeHandler={setVideoUrl}
+          onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setVideoUrl(event.target.value)}
+          placeholderText={'Video Url'}
+          hasError={formError.length > 0}
+          helperText={formError}
         />
-        <div className={styles.error}>{formError}</div>
-        <button type="submit" className={clsx('u-fontB1', styles.addVideoButton)}>
-          Add a Video
-        </button>
+        <Button
+          buttonText="Add a Video"
+          type={ButtonTypes.SUBMIT}
+          buttonColor={Colors.cherry}
+          className={styles.addVideoButton}
+        />
       </form>
     </div>
   );

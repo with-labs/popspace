@@ -12,8 +12,8 @@ export function useParticipantLocationDelta(participant: Participant) {
   const {
     room: { localParticipant },
   } = useVideoContext();
-  const [xRp, yRp]: LocationTuple = useParticipantMeta(participant).location;
-  const [xLp, yLp]: LocationTuple = useParticipantMeta(localParticipant).location;
+  const [xRp, yRp]: LocationTuple = useParticipantMeta(participant).location || [0, 0];
+  const [xLp, yLp]: LocationTuple = useParticipantMeta(localParticipant).location || [0, 0];
 
   const distanceData = useMemo(() => {
     const xDelta: number = Math.abs(xLp - xRp);

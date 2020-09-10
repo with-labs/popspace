@@ -17,8 +17,6 @@ import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaCo
 import { useRoomMetaContextBackground } from './withHooks/useRoomMetaContextBackground/useRoomMetaContextBackground';
 
 import { Room } from './withComponents/Room/Room';
-import { DndProvider } from 'react-dnd';
-import Backend from 'react-dnd-html5-backend';
 
 import { AccessoriesDock } from './withComponents/AccessoriesDock/AccessoriesDock';
 import { ErrorBoundary } from './withComponents/ErrorBoundary/ErrorBoundary';
@@ -94,15 +92,13 @@ export default function AnglesApp(props: AnglesAppProps) {
         {roomState === 'disconnected' ? (
           <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
         ) : (
-          <DndProvider backend={Backend}>
-            <div className="u-flexGrow1 u-width100Percent u-height100Percent">
-              <ErrorBoundary fallback={() => <RoomFallback />}>
-                <Room initialAvatar={initialAvatar} />
-                <ReconnectingNotification />
-                <AccessoriesDock />
-              </ErrorBoundary>
-            </div>
-          </DndProvider>
+          <div className="u-flexGrow1 u-width100Percent u-height100Percent">
+            <ErrorBoundary fallback={() => <RoomFallback />}>
+              <Room initialAvatar={initialAvatar} />
+              <ReconnectingNotification />
+              <AccessoriesDock />
+            </ErrorBoundary>
+          </div>
         )}
       </Main>
     </Container>

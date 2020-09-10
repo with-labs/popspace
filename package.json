@@ -1,6 +1,6 @@
 {
   "name": "with-app",
-  "version": "1.115.0",
+  "version": "1.116.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
@@ -19,8 +19,6 @@
     "js-cookie": "^2.2.1",
     "lodash.throttle": "^4.1.1",
     "react": "^16.12.0",
-    "react-dnd": "^10.0.2",
-    "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.12.0",
     "react-modal": "^3.11.2",
     "react-redux": "^7.2.0",

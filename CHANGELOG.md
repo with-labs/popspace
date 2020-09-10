@@ -1,3 +1,9 @@
+## 1.116.0
+
+- Do not animate DraggableEntity while dragging. This fixes the bug where re-renders during dragging were causing the entity to jump.
+- Remove old react-dnd code for participant bubbles and start using DraggableEntity instead.
+- Remove react-dnd and react-dnd-html5-backend packages.
+
 ## 1.115.0
 
 - Support for email-based room invites for new and existing users

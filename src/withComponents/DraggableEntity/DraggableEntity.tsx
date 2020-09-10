@@ -1,4 +1,4 @@
-import React, { RefObject, useCallback, useEffect, useRef } from 'react';
+import React, { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import { motion, PanInfo, useMotionValue } from 'framer-motion';
 import { LocationTuple } from '../../types';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
@@ -16,6 +16,7 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
   const { position, children, dragConstraints, onDragEnd, className } = props;
   const [windowWidth, windowHeight] = useWindowSize();
   const entityRef = useRef<HTMLDivElement>(null!);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Callback to convert a location tuple to top/left values.
   const locationToPx = useCallback(
@@ -45,6 +46,9 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
   const motionXPx = Math.round(motionX.get());
   const motionYPx = Math.round(motionY.get());
 
+  const onDragStartHandler = () => {
+    setIsDragging(true);
+  };
   /**
    * Handler to listen for the widget's drag end event and update the position in the store and motion values.
    *
@@ -65,12 +69,14 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
 
     // Update the widget location in the store.
     onDragEnd(pxToLocation(x, y));
+
+    setIsDragging(false);
   };
 
   // If the "position" derived from the store differs from the position defined in the motion values, the widget
   // should animate to the new position.
   let widgetAnimateLocation = {};
-  if (positionXPx !== motionXPx || positionYPx !== motionYPx) {
+  if (!isDragging && (positionXPx !== motionXPx || positionYPx !== motionYPx)) {
     widgetAnimateLocation = { x: positionXPx, y: positionYPx };
   }
 
@@ -89,6 +95,7 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
       drag
       dragMomentum={false}
       dragConstraints={dragConstraints}
+      onDragStart={onDragStartHandler}
       onDragEnd={onDragEndHandler}
       // Use the motion values for x and y
       style={{ x: motionX, y: motionY }}

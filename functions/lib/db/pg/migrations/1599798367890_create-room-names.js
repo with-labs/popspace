@@ -3,18 +3,19 @@
 exports.shorthands = undefined;
 
 exports.up = pgm => {
-  pgm.createTable('rooms', {
+  pgm.createTable('room_names', {
     id: { type: 'bigserial', primaryKey: true },
-    owner_id: { type: 'bigint', notNull: true },
+    room_id: { type: 'bigint', notNull: true },
+    name: { type: 'text', notNull: true },
     created_at: {
       type: 'timestamptz',
       notNull: true,
       default: pgm.func("(now() at time zone 'utc')"),
     }
   })
-  pgm.createIndex('rooms', 'owner_id')
+  pgm.createIndex('room_names', 'name')
 };
 
 exports.down = pgm => {
-  pgm.dropTable('rooms')
+  pgm.dropTable('room_names')
 };

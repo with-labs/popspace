@@ -108,6 +108,7 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
               dragConstraints={dragableArea}
               className={clsx('u-layerSurfaceDelta ', style.participantBubble, { 'u-blur': localHuddle })}
               key={pt.sid}
+              disableDrag={pt.sid !== localParticipant.sid}
             >
               <ParticipantCircle
                 participant={pt}

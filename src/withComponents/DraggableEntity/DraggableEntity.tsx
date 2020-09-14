@@ -10,10 +10,11 @@ interface IDraggableEntityProps {
   dragConstraints: RefObject<Element>;
   onDragEnd: (location: LocationTuple) => void;
   className?: string;
+  disableDrag?: boolean;
 }
 
 export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
-  const { position, children, dragConstraints, onDragEnd, className } = props;
+  const { position, children, dragConstraints, onDragEnd, className, disableDrag = false } = props;
   const [windowWidth, windowHeight] = useWindowSize();
   const entityRef = useRef<HTMLDivElement>(null!);
   const [isDragging, setIsDragging] = useState(false);
@@ -92,7 +93,7 @@ export const DraggableEntity: React.FC<IDraggableEntityProps> = (props) => {
       className={`${styles.DraggableEntity} ${className}`}
       animate={widgetAnimateLocation}
       initial={false}
-      drag
+      drag={!disableDrag}
       dragMomentum={false}
       dragConstraints={dragConstraints}
       onDragStart={onDragStartHandler}

@@ -1,3 +1,7 @@
+## 1.119.0
+
+- Prevent user's ability to move participant bubbles other than their own.
+
 ## 1.118.0
 
 - adding in Textfield, checkbox, and Button, material ui backed components

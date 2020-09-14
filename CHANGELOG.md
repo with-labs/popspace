@@ -1,3 +1,9 @@
+## 1.118.0
+
+- adding in Textfield, checkbox, and Button, material ui backed components
+- updating join room, bg picker, stickynote, link, and youtube widget to use these new components
+- removing FormInput and FormInputV2, obsolete.
+
 ## 1.117.0
 
 - Add @sentry/react and integrate with the web app. Include an error boundary for Sentry to log to.

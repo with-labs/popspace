@@ -2,3 +2,13 @@
   padding-left: 32px;
   padding-right: 32px;
 }
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .contentArea {
+    order: 2;
+  }
+
+  .imageArea {
+    order: 1;
+  }
+}

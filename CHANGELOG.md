@@ -1,3 +1,7 @@
+## 1.117.0
+
+- Add @sentry/react and integrate with the web app. Include an error boundary for Sentry to log to.
+
 ## 1.116.0
 
 - Do not animate DraggableEntity while dragging. This fixes the bug where re-renders during dragging were causing the entity to jump.

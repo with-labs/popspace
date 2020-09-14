@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/react';
 
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppStateProvider, { useAppState } from './state';
-import { BrowserRouter as Router, Redirect, Route, Switch, useLocation, useParams } from 'react-router-dom';
-import { ConnectOptions, TwilioError } from 'twilio-video';
+import { BrowserRouter as Router, Route, Switch, useLocation, useParams } from 'react-router-dom';
+import { ConnectOptions } from 'twilio-video';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
@@ -20,6 +21,16 @@ import JoinRoom from './pages/JoinRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
 import './with.css';
+
+import packageJson from '../package.json';
+
+if (process.env.REACT_APP_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    release: 'with-app@' + packageJson.version,
+    normalizeDepth: 10, // Bump this up so we can get the most out of the Redux integration.
+  });
+}
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.

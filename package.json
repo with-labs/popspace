@@ -1,12 +1,13 @@
 {
   "name": "with-app",
-  "version": "1.116.0",
+  "version": "1.117.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@primer/octicons-react": "^9.4.0",
+    "@sentry/react": "^5.23.0",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",

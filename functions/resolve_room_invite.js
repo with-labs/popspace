@@ -42,8 +42,8 @@ module.exports.handler = async (event, context, callback) => {
 
   const result = {}
   const shouldRenewToken = await accounts.needsNewSessionToken(sessionToken, user)
-  const room = await rooms.roomById(invite.room_id)
-  result.roomName = room.name || room.unique_id
+  const roomNameEntry = await rooms.preferredNameById(invite.room_id)
+  result.roomName = roomNameEntry.name
 
   if(resolve.error) {
     // If we can't resolve - but it's a valid invite and the user is a member -

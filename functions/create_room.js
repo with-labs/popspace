@@ -30,6 +30,6 @@ module.exports.handler = async (event, context, callback) => {
     return await handleRoomCreateError(result.error, callback)
   }
 
-  await lib.cleanup()
-  return await lib.util.http.succeed(callback, { newRoom: result.newRoom })
+  const namedRoom = await rooms.namedRoomById(result.room.id)
+  return await lib.util.http.succeed(callback, { newRoom: namedRoom })
 }

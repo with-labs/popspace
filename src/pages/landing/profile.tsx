@@ -108,7 +108,7 @@ export default class Profile extends React.Component<any, any> {
   }
 
   roomName(room: any) {
-    return room.name || room.unique_id;
+    return room.name;
   }
 
   renderCreateRoom() {

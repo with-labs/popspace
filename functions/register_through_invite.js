@@ -76,8 +76,8 @@ module.exports.handler = async (event, context, callback) => {
     response.newSessionToken = accounts.tokenFromSession(session)
   }
 
-  const room = await rooms.roomById(invite.room_id)
-  response.roomName = room.name || room.unique_id
+  const roomNameEntry = await rooms.preferredNameById(invite.room_id)
+  response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);
 }

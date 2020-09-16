@@ -21,7 +21,24 @@ declare module '@material-ui/core/styles/createMuiTheme' {
   }
 }
 
+declare module '@material-ui/core/styles/createBreakpoints' {
+  interface BreakpointOverrides {
+    xs: false; // removes the `xs` breakpoint
+    sm: true;
+    md: true;
+    lg: true;
+    xl: false; // removes the `xl` breakpoint
+  }
+}
+
 export default createMuiTheme({
+  breakpoints: {
+    values: {
+      sm: 0,
+      md: 640,
+      lg: 960,
+    },
+  },
   typography: {
     fontFamily: 'Silka',
   },
@@ -39,20 +56,24 @@ export default createMuiTheme({
         position: 'relative',
         '& $notchedOutline': {
           borderColor: 'rgba(0, 0, 0, 0.23)',
+          borderWidth: 2,
         },
         '&:hover:not($disabled):not($focused):not($error) $notchedOutline': {
           borderColor: 'var(--color-slate-regular)',
+          borderWidth: 2,
           // Reset on touch devices, it doesn't add specificity
           '@media (hover: none)': {
             borderColor: 'var(--color-slate-regular)',
+            borderWidth: 2,
           },
         },
         '&$focused $notchedOutline': {
           borderColor: 'var(--color-turquoise-bold)',
-          borderWidth: 1,
+          borderWidth: 2,
         },
         '&$error': {
           borderColor: 'var(--color-cherry-bold)',
+          borderWidth: 2,
         },
       },
     },

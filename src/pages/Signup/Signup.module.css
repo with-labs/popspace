@@ -3,6 +3,10 @@
   padding-right: 32px;
 }
 
+.title {
+  margin-bottom: 40px;
+}
+
 @media (min-width: 0px) and (max-width: 639px) {
   .contentArea {
     order: 2;

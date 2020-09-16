@@ -21,6 +21,7 @@ import JoinRoom from './pages/JoinRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
 import { Signin } from './pages/SignIn/Signin';
+import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 
 import './with.css';
 
@@ -169,6 +170,10 @@ ReactDOM.render(
 
           <Route path="/invite">
             <SignupThroughInvite />
+          </Route>
+
+          <Route path="/finalize_account">
+            <FinalizeAccount email="test@test.com" />
           </Route>
 
           <Route path="/:room_name">

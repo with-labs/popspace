@@ -16,6 +16,13 @@ html {
   box-sizing: inherit;
 }
 
+html,
+body,
+#root,
+#root > div {
+  height: 100%;
+}
+
 /* scrollbar width */
 *::-webkit-scrollbar {
   width: 10px;

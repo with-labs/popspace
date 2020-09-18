@@ -1,5 +1,4 @@
 const lib = require("lib");
-const env = lib.util.env.init(require("./env.json"))
 
 const handleRoomCreateError = (errorCode, callback) => {
   switch(errorCode) {
@@ -16,7 +15,7 @@ const handleRoomCreateError = (errorCode, callback) => {
 module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 
-  await lib.init()
+  await lib.init(require("./env.json"))
   const accounts = new lib.db.Accounts()
 
   const user = await lib.util.http.verifySessionAndGetUser(event, callback, accounts)

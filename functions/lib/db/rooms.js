@@ -73,7 +73,7 @@ class Rooms extends DbAccess {
       ORDER BY
         rooms.id ASC
     `)
-    return this.namedRoomsListToMostPreferredList(namedRooms)
+    return this.namedRoomsListToMostPreferredList(namedRooms)[0]
   }
 
   async isMember(userId, roomId) {
@@ -256,7 +256,7 @@ class Rooms extends DbAccess {
       idString = this.generateIdString()
       isUnique = await this.isUniqueIdString(idString)
     }
-    return await createRoomWithName(idString, userId)
+    return await this.createRoomWithName(idString, userId)
   }
 
   async createRoomWithName(name, ownerId=null, priorityLevel = 0, isVanity=false) {

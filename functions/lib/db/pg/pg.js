@@ -63,6 +63,10 @@ class Pg {
       this.massive = null
     }
   }
+
+  async silenceLogs() {
+    monitor.detach()
+  }
 }
 
 

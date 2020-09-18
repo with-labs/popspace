@@ -15,6 +15,6 @@ module.exports = {
   },
 
   user: {
-    ALEADY_REGISTERED: 1
+    ALREADY_REGISTERED: 1
   }
 }

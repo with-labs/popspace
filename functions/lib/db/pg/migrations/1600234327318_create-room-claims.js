@@ -12,6 +12,7 @@ exports.up = pgm => {
     expires_at: { type: 'timestamptz'},
     revoked_at: { type: 'timestamptz' },
     resolved_at: { type: 'timestamptz' },
+    emailed_at: { type: 'timestamptz' },
     created_at: {
       type: 'timestamptz',
       notNull: true,

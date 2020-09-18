@@ -40,6 +40,7 @@ const CREATE_NEW_ROOMS = true
 
 const createOneClaim = async (email, roomName, allowRegistered) => {
   const shouldSendEmails = false
+  console.log(`Trying to create claim ${email} ${roomName}`)
   const result = await rooms.tryToCreateClaim(
     email,
     roomName,
@@ -56,37 +57,47 @@ const createOneClaim = async (email, roomName, allowRegistered) => {
 }
 
 const claimsFromCsv = async (allowRegistered, path) => {
+  console.log(`Importing from ${path}`)
   const data = await readCsv(path)
   for(const row of data) {
     const email = row['Email Address']
     const roomName = row['Room name']
     try {
+      console.log("=========================================")
       const claim = await createOneClaim(email, roomName, allowRegistered)
       console.log(`claim ${claim.id} created ${email} -> ${roomName}`)
     } catch(errorCode) {
       switch(errorCode) {
         case lib.db.ErrorCodes.user.ALREADY_REGISTERED:
           console.log("Skipping already registered user : ", email)
+          break
         case lib.db.ErrorCodes.room.UNKNOWN_ROOM:
           // this shouldn't happen; we always allow creating new
           console.log(`Unknown room name ${roomName}`)
+          break
         case lib.db.ErrorCodes.room.CLAIM_UNIQUENESS:
           console.log(`Skipping: claim for this room already exists; claimer: ${email}`)
+          break
+        default:
+          console.log(`Unknown error: ${errorCode}`)
+          break
       }
-
     }
-
   }
+  console.log("Import complete")
 }
 
 const sendUnsent = async (allowRegistered) => {
+  const claims = await db.pg.massive.room_claims.find({ emailed_at: null })
+  console.log(`About to send ${claims.length} emails...`)
   const appUrl = "http://localhost:8888"
-  const url = await rooms.getClaimUrl(appUrl, claim)
-  console.log("Claim URL:", url)
-  if(sendEmail) {
-    await lib.email.room.sendRoomClaimEmail(email, url)
-    console.log("Email sent")
+  for(const claim of claims) {
+    const url = await rooms.getClaimUrl(appUrl, claim)
+    await rooms.claimUpdateEmailedAt(claim.id)
+    await lib.email.room.sendRoomClaimEmail(claim.email, url)
+    console.log(`Sent to ${claim.email}`)
   }
+  console.log("Done")
 }
 
 
@@ -100,10 +111,12 @@ const run = async () => {
   const allowRegistered = options['allow-registered'] || ALLOW_REGISTERED_DEFAULT
   try {
     await lib.init()
+    db.pg.silenceLogs()
     if(options['email-claims-from-queue']) {
       await sendUnsent(allowRegistered)
     } else {
-      await claimsFromCsv(allowRegistered, `${__dirname}/one_time/data/subscribed_segment_export_5f6de9269c.csv`)
+      // await claimsFromCsv(allowRegistered, `${__dirname}/one_time/data/subscribed_segment_export_5f6de9269c.csv`)
+      await claimsFromCsv(allowRegistered, `${__dirname}/one_time/data/test.csv`)
     }
   } catch(e) {
     console.log(e)

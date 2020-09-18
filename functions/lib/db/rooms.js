@@ -174,12 +174,11 @@ class Rooms extends DbAccess {
       if(allowRegistered) {
         console.log(`Warning: user ${user.email} already registered.`)
       } else {
-        return { error: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+        return { error: lib.db.ErrorCodes.user.ALREADY_REGISTERED, user: user }
       }
     }
 
     let roomNameEntry = await db.pg.massive.room_names.findOne({name: roomName})
-
     if(!roomNameEntry) {
       if(createNewRooms) {
         const priorityLevel = 1
@@ -209,6 +208,10 @@ class Rooms extends DbAccess {
       issued_at: this.now(),
       expires_at: expiresAt
     })
+  }
+
+  async claimUpdateEmailedAt(claimId) {
+    return await db.pg.massive.room_claims.update({id: claimId}, {emailed_at: this.now()})
   }
 
   isValidInvitation(invitation, email, otp) {

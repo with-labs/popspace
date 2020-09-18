@@ -2,10 +2,10 @@ const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
 /**
- * Checks whether the specified one-time passcode matches the provided room invite,
- * and if it does - resolves a room invite
+ * Checks whether the specified one-time passcode matches the provided room claim,
+ * and if it does - resolves a room claim
  * Further, checks whether the provided session is valid, and whether the user
- * matches the invite user. Issues a new session if necessary.
+ * matches the claim user. Issues a new session if necessary.
  */
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
@@ -46,10 +46,10 @@ module.exports.handler = async (event, context, callback) => {
   result.roomName = roomNameEntry.name
 
   if(resolve.error) {
-    // If we can't resolve - but it's a valid invite and the user is a member -
+    // If we can't resolve - but it's a valid claim and the user is a member -
     // we can let them through into the room anyway if they have the OTP
-    if(resolve.error == lib.db.ErrorCodes.otp.RESOLVED_OTP && invite.otp == otp) {
-      const alreadyMember = await rooms.isMember(user.id, invite.room_id)
+    if(resolve.error == lib.db.ErrorCodes.otp.RESOLVED_OTP && claim.otp == otp) {
+      const alreadyMember = await rooms.isMember(user.id, claim.room_id)
       if(alreadyMember && !shouldRenewToken) {
         // Don't allow the link to function as an un-expiring log in link -
         // only pass them through with a valid token.

@@ -56,3 +56,7 @@
   font-size: 13px;
   line-height: 16px;
 }
+
+.u-fontBold {
+  font-weight: bold !important;
+}

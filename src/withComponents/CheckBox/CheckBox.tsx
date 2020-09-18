@@ -16,12 +16,13 @@ const labelStlyes = makeStyles({
 
 interface ICheckBox {
   className?: string;
-  labelText: string;
+  labelText: string | React.ReactNode;
   checked: boolean;
   onClickHandler: (event: object) => void;
   labelPosition?: Positions;
   isDisabled?: boolean;
   ariaLabelText?: string;
+  checkboxName?: string;
 }
 
 export const CheckBox: React.FC<ICheckBox> = (props) => {
@@ -33,6 +34,7 @@ export const CheckBox: React.FC<ICheckBox> = (props) => {
     labelPosition = Positions.END,
     isDisabled = false,
     ariaLabelText,
+    checkboxName,
   } = props;
 
   const labelClasses = labelStlyes();
@@ -45,7 +47,7 @@ export const CheckBox: React.FC<ICheckBox> = (props) => {
             checkedIcon={<Checked />}
             checked={checked}
             onChange={onClickHandler}
-            name="checkbox"
+            name={checkboxName}
             inputProps={{ 'aria-label': ariaLabelText }}
           />
         }

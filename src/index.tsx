@@ -20,6 +20,9 @@ import Login from './pages/login';
 import JoinRoom from './pages/JoinRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
+import { Signin } from './pages/SignIn/Signin';
+import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
+
 import './with.css';
 
 import packageJson from '../package.json';
@@ -145,6 +148,10 @@ ReactDOM.render(
             <EnableAdmin />
           </Route>
 
+          <Route exact path="/signin">
+            <Signin />
+          </Route>
+
           <Route exact path="/signup">
             <Signup />
           </Route>
@@ -163,6 +170,10 @@ ReactDOM.render(
 
           <Route path="/invite">
             <SignupThroughInvite />
+          </Route>
+
+          <Route path="/finalize_account">
+            <FinalizeAccount email="test@test.com" />
           </Route>
 
           <Route path="/:room_name">

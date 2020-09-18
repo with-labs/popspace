@@ -6,7 +6,7 @@ const labelSyles = makeStyles((theme) => ({
   formControl: {
     transform: 'translate(0, 0) scale(1)',
     position: 'relative',
-    paddingBottom: 12,
+    paddingBottom: 8,
     fontStyle: 'normal',
     fontWeight: 600,
     fontSize: '13px',
@@ -67,7 +67,14 @@ export const TextField: React.FC<ITextField> = (props) => {
   const inputClasses = inputStyles();
 
   const label = labelText ? (
-    <InputLabel id={inputLabelId} classes={labelClasses} htmlFor={id} shrink={true} disableAnimation={true}>
+    <InputLabel
+      id={inputLabelId}
+      classes={labelClasses}
+      htmlFor={id}
+      shrink={true}
+      disableAnimation={true}
+      error={hasError}
+    >
       {labelText && isRequired ? `${labelText} *` : labelText}
     </InputLabel>
   ) : null;

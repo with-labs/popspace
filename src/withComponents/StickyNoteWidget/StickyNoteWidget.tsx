@@ -66,7 +66,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
       />
 
       <Button
-        buttonText="Add a Video"
+        buttonText="Add note"
         type={ButtonTypes.SUBMIT}
         buttonColor={Colors.mandarin}
         className={styles.createNoteButton}

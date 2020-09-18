@@ -5,15 +5,19 @@
  * `localTracks` context property can now include LocalDataTracks.
  *
  * Aug 6, 2020 WQP
- * - updated to latest twilio-video starter app
+ * - updated to latest twilio-video starter app.
  *
  * Aug 27, 2020 WQP
- * - Add onError to useLocalTracks
+ * - Add onError to useLocalTracks.
  *
  * Aug 30, 2020 WQP
- * - Add AttachVisibilityHandler, per starter app
+ * - Add AttachVisibilityHandler, per starter app.
+ *
+ * Sept 17, 2020 WQP
+ * - Add Sentry logging in error setting callback.
  */
 import React, { createContext, ReactNode } from 'react';
+import * as Sentry from '@sentry/react';
 import {
   CreateLocalTrackOptions,
   ConnectOptions,
@@ -66,6 +70,7 @@ interface VideoProviderProps {
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = (error: TwilioError) => {
     console.log(`ERROR: ${error.message}`, error);
+    Sentry.captureException(error);
     onError(error);
   };
 

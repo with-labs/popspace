@@ -4,19 +4,15 @@ import { Emoji } from 'emoji-mart';
 
 import './index.css';
 
-import { ReactComponent as SettingsIcon } from '../../images/icons/settings.svg';
-
 import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import useLocalAudioToggle from '../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
 
 import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
 import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
-import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 
 import { Avatar } from '../Avatar/Avatar';
 
@@ -33,18 +29,14 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
   const sharedScreenBtnRef = useRef<HTMLDivElement>(null);
   const { participant, disableAudio, enableScreenShare, videoPriority, onClick, style = {} } = props;
   const meta = useParticipantMeta(participant);
-  const [isAudioEnabled] = useLocalAudioToggle();
   const [isHovering, setIsHovering] = useState(false);
-  const [isHoveringOverSettings, setIsHoveringOverSettings] = useState(false);
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const { updateEmoji, updateScreenViewSid } = useParticipantMetaContext();
+  const { updateScreenViewSid } = useParticipantMetaContext();
   const { room } = useVideoContext();
   const publications = usePublications(participant);
   const isLocal = participant === room.localParticipant;
 
   const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
   const { emoji, avatar: avatarName, isSpeaking } = meta;
-  const avatar = useAvatar(avatarName);
 
   let filteredPublications;
 

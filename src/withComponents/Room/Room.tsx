@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import clsx from 'clsx';
+import * as Sentry from '@sentry/react';
 
 import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
 
@@ -8,7 +9,6 @@ import { HuddleBubble } from './HuddleBubble';
 import { SharedScreenViewer } from '../SharedScreenViewer/SharedScreenViewer';
 
 import useAudioTrackBlacklist from '../../withHooks/useAudioTrackBlacklist/useAudioTrackBlacklist';
-import useHuddleContext from '../../withHooks/useHuddleContext/useHuddleContext';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 
 import style from './Room.module.css';
@@ -51,7 +51,6 @@ const WidgetsFallback = () => {
 
 export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   const { huddles, floaters, localHuddle } = useRoomParties();
-  const { inviteToHuddle } = useHuddleContext();
   const disabledAudioSids = useAudioTrackBlacklist();
   const [windowWidth, windowHeight] = useWindowSize();
   const { updateLocation, participantMeta, updateAvatar } = useParticipantMetaContext();
@@ -66,6 +65,8 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
   useEffect(() => {
     if (initialAvatar) {
       updateAvatar(initialAvatar);
+    } else {
+      Sentry.captureMessage(`Missing avatar in Room initialization for ${localParticipant.sid}`, Sentry.Severity.Debug);
     }
   }, [initialAvatar]);
 

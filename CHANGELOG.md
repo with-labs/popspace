@@ -1,3 +1,8 @@
+## 1.121.0
+
+- Add logging to main app component to report when there is a missing avatar.
+- Add Sentry log to VideoProvider error setting callback.
+
 ## 1.120.0
 
 - Change the way room names are assigned to support vanity names

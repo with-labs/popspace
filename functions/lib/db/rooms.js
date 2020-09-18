@@ -203,6 +203,24 @@ class Rooms extends DbAccess {
     }
   }
 
+  async resolveClaim(claim, user, otp) {
+    const verification = this.isValidInvitation(claim, user.email, otp)
+    if(verification.error != null) {
+      return verification
+    }
+
+    try {
+      return await db.pg.massive.withTransaction(async (tx) => {
+        await tx.room_claims.update({id: claim.id}, {resolved_at: this.now()})
+        return await tx.rooms.update({id: claim.room_id}, {owner_id; user.id})
+      })
+
+    } catch(e) {
+      // TODO: ERROR_LOGGING
+      return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
+    }
+  }
+
 
   async tryToGenerateRoom(userId) {
     const canGenerate = await this.underMaxOwnedRoomLimit(userId)

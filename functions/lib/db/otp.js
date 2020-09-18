@@ -10,7 +10,7 @@ const otplib = {
   },
 
   verify: (request, otp) => {
-    if(!request || request.otp != otp) {
+    if(!request || request.otp != otp || request.revoked_at) {
       return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
     }
     if(otplib.isExpired(request)) {

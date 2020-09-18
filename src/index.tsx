@@ -18,6 +18,7 @@ import Signup from './pages/signup';
 import VerifyEmail from './pages/verifyEmail';
 import Login from './pages/login';
 import JoinRoom from './pages/JoinRoom';
+import ClaimRoom from './pages/ClaimRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
 import { Signin } from './pages/SignIn/Signin';
@@ -158,6 +159,10 @@ ReactDOM.render(
 
           <Route path="/complete_signup">
             <VerifyEmail />
+          </Route>
+
+          <Route path="/claim_room">
+            <ClaimRoom />
           </Route>
 
           <Route path="/login">

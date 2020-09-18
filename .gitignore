@@ -13,6 +13,7 @@ coverage
 
 # production
 build
+scripts/one_time/data
 
 # misc
 .DS_Store

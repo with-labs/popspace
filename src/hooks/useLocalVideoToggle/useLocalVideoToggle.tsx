@@ -44,7 +44,14 @@ export default function useLocalVideoToggle() {
         removeLocalVideoTrack();
       } else {
         setIspublishing(true);
-        getLocalVideoTrack({ deviceId: { exact: previousDeviceIdRef.current } })
+        // Only attempt to set the camera device id if one exists. If the camera id is falsey, but defined, it will
+        // cause an "overconstrained" error when getting the video track (ex. if previousDeviceIdRef.current is "").
+        const vidOpts = previousDeviceIdRef.current
+          ? {
+              deviceId: { exact: previousDeviceIdRef.current },
+            }
+          : {};
+        getLocalVideoTrack(vidOpts)
           .then((track: LocalVideoTrack) => localParticipant?.publishTrack(track, { priority: 'low' }))
           .catch((err) => {
             const msg =

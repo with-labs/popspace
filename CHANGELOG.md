@@ -1,3 +1,9 @@
+## 1.122.0
+
+- Only send device id options in useLocalVideoToggle > getLocalVideoTrack if the device id ref has a truthy value.
+- This corrects the behavior inside the room of the browser asking permission to access a camera if one had not been enabled yet.
+- Passing a falsey-yet-defined value for the device id option to the video track was resulting in an overconstrained error, which propagated up as a permission error and the browser not asking for camera permissions when inside the room.
+
 ## 1.121.0
 
 - Add logging to main app component to report when there is a missing avatar.

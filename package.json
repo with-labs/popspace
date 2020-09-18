@@ -12,6 +12,7 @@
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",
+    "csv-parser": "^2.3.3",
     "dotenv": "^8.2.0",
     "emoji-mart": "^3.0.0",
     "express": "^4.17.1",

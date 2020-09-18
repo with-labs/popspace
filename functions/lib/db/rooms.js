@@ -167,6 +167,40 @@ class Rooms extends DbAccess {
     })
   }
 
+  async tryToCreateClaim(email, roomName, allowRegistered=false, createNewRooms=false) {
+    email = lib.util.args.consolidateEmailString(email)
+    const user = await db.pg.massive.users.findOne({ email: email })
+    if(user) {
+      if(allowRegistered) {
+        console.log(`Warning: user ${user.email} already registered.`)
+      } else {
+        return { error: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+      }
+    }
+
+    let roomNameEntry = await db.pg.massive.room_names.findOne({name: roomName})
+
+    if(!roomNameEntry) {
+      if(createNewRooms) {
+        const priorityLevel = 1
+        const isVanity = true
+        const ownerId = null
+        const createResult =  await this.createRoomWithName(roomName, ownerId, priorityLevel, isVanity)
+        roomNameEntry = createResult.nameEntry
+      } else {
+        return { error: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
+      }
+    }
+
+    let room = await this.roomById(roomNameEntry.room_id)
+    const existingClaim = await db.pg.massive.room_claims.findOne({room_id: room.id})
+    if(existingClaim) {
+      return { error: lib.db.ErrorCodes.room.CLAIM_UNIQUENESS }
+    }
+    const claim = await this.createClaim(room.id, email)
+    return { claim }
+  }
+
   async createClaim(roomId, claimerEmail, expiresAt = null) {
     return await db.pg.massive.room_claims.insert({
       room_id: roomId,

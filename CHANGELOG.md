@@ -1,3 +1,7 @@
+## 1.120.0
+
+- Change the way room names are assigned to support vanity names
+
 ## 1.119.0
 
 - Prevent user's ability to move participant bubbles other than their own.

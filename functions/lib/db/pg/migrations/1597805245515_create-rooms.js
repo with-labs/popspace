@@ -5,7 +5,7 @@ exports.shorthands = undefined;
 exports.up = pgm => {
   pgm.createTable('rooms', {
     id: { type: 'bigserial', primaryKey: true },
-    owner_id: { type: 'bigint', notNull: true },
+    owner_id: { type: 'bigint' },
     created_at: {
       type: 'timestamptz',
       notNull: true,

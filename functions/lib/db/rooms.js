@@ -33,6 +33,11 @@ class Rooms extends DbAccess {
     return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}`
   }
 
+  async getClaimUrl(appUrl, claim) {
+    const email = util.args.consolidateEmailString(claim.email)
+    return `${appUrl}/claim_room?otp=${claim.otp}&cid=${claim.id}&email=${email}`
+  }
+
   async inviteById(id) {
     return await db.pg.massive.room_invitations.findOne({id: id})
   }
@@ -162,6 +167,16 @@ class Rooms extends DbAccess {
     })
   }
 
+  async createClaim(roomId, claimerEmail, expiresAt = null) {
+    return await db.pg.massive.room_claims.insert({
+      room_id: roomId,
+      email: claimerEmail,
+      otp: lib.db.otp.generate(),
+      issued_at: this.now(),
+      expires_at: expiresAt
+    })
+  }
+
   isValidInvitation(invitation, email, otp) {
     const verification = lib.db.otp.verify(invitation, otp)
     if(verification.error != null) {
@@ -212,7 +227,7 @@ class Rooms extends DbAccess {
     try {
       return await db.pg.massive.withTransaction(async (tx) => {
         await tx.room_claims.update({id: claim.id}, {resolved_at: this.now()})
-        return await tx.rooms.update({id: claim.room_id}, {owner_id; user.id})
+        return await tx.rooms.update({id: claim.room_id}, {owner_id: user.id})
       })
 
     } catch(e) {
@@ -241,14 +256,19 @@ class Rooms extends DbAccess {
       idString = this.generateIdString()
       isUnique = await this.isUniqueIdString(idString)
     }
+    return await createRoomWithName(idString, userId)
+  }
+
+  async createRoomWithName(name, ownerId=null, priorityLevel = 0, isVanity=false) {
     return await db.pg.massive.withTransaction(async (tx) => {
       const room = await tx.rooms.insert({
-        owner_id: userId
+        owner_id: ownerId
       })
       const generatedName = await tx.room_names.insert({
         room_id: room.id,
-        name: idString,
-        priority_level: 0
+        name: name,
+        priority_level: priorityLevel,
+        is_vanity: isVanity
       })
       return {
         room: room,

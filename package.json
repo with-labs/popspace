@@ -8,6 +8,7 @@
     "@material-ui/icons": "^4.9.1",
     "@primer/octicons-react": "^9.4.0",
     "@sentry/react": "^5.23.0",
+    "command-line-args": "^5.1.1",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",

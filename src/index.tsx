@@ -23,6 +23,8 @@ import SignupThroughInvite from './pages/SignupThroughInvite';
 
 import { Signin } from './pages/SignIn/Signin';
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
+import { SimpleDashboard } from './pages/SimpleDashboard/SimpleDashboard';
+
 
 import './with.css';
 
@@ -100,7 +102,8 @@ const LandingOrRoom = () => {
       </VideoProvider>
     );
   } else {
-    return <Landing />;
+    return <SimpleDashboard />;
+    // return <Landing />;
   }
 };
 

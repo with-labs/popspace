@@ -6,8 +6,6 @@ exports.up = pgm => {
   pgm.createTable('rooms', {
     id: { type: 'bigserial', primaryKey: true },
     owner_id: { type: 'bigint', notNull: true },
-    unique_id: { type: 'text', unique: true },
-    name: { type: 'text', unique: true },
     created_at: {
       type: 'timestamptz',
       notNull: true,
@@ -15,8 +13,6 @@ exports.up = pgm => {
     }
   })
   pgm.createIndex('rooms', 'owner_id')
-  pgm.createIndex('rooms', 'unique_id')
-  pgm.createIndex('rooms', 'name')
 };
 
 exports.down = pgm => {

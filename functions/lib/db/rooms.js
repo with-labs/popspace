@@ -2,7 +2,7 @@ const DbAccess = require("./pg/db_access")
 const cryptoRandomString = require('crypto-random-string');
 const LOWERCASE_AND_NUMBERS = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
-const MAX_FREE_ROOMS = 3
+const MAX_FREE_ROOMS = 10
 // Never expire by default
 const STANDARD_MEMBERSHIP_DURATION_MILLIS = 0
 
@@ -41,6 +41,36 @@ class Rooms extends DbAccess {
     return await db.pg.massive.rooms.findOne({id: id})
   }
 
+  async preferredNameById(id) {
+    const names = await db.pg.massive.room_names.find({
+      room_id: id
+    }, {
+      order: [{
+        field: "priority_level",
+        direction: "desc"
+      }],
+      limit: 1
+    })
+    return names[0]
+  }
+
+  async namedRoomById(id) {
+    const namedRooms = await db.pg.massive.query(`
+      SELECT
+        rooms.id AS id,
+        rooms.owner_id AS owner_id,
+        room_names.name AS name,
+        room_names.priority_level AS priority_level
+      FROM
+        rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
+      WHERE
+        rooms.id = ${id}
+      ORDER BY
+        rooms.id ASC
+    `)
+    return this.namedRoomsListToMostPreferredList(namedRooms)
+  }
+
   async isMember(userId, roomId) {
     const membership = await db.pg.massive.room_memberships.findOne({user_id: userId, room_id: roomId})
     if(!membership) {
@@ -51,18 +81,60 @@ class Rooms extends DbAccess {
     return current && !revoked
   }
 
-  async generateRoom(userId) {
-    let idString = this.generateIdString()
-    let isUnique = await this.isUniqueIdString(idString)
-    while(!isUnique) {
-      // TODO: alert if too many collisions
-      idString = this.generateIdString()
-      isUnique = await this.isUniqueIdString(idString)
+  /*
+    Since rooms can have multiple routes/names,
+    we may want to convert lists of duplicate rooms with all their names
+    into lists that contain just 1 entry for each room - the most preferred name.
+  */
+  namedRoomsListToMostPreferredList(roomList) {
+    let bestById = {}
+    for(const room of roomList) {
+      const previousBest = bestById[room.id]
+      if(!previousBest || room.priority_level > previousBest.priority_level) {
+        bestById[room.id] = room
+      }
     }
-    return await db.pg.massive.rooms.insert({
-      owner_id: userId,
-      unique_id: idString
-    })
+    return Object.values(bestById)
+  }
+
+  async getOwnedRooms(userId) {
+    return await db.pg.massive.query(`
+      SELECT
+        rooms.id AS id,
+        rooms.owner_id AS owner_id,
+        room_names.name AS name,
+        room_names.priority_level AS priority_level
+      FROM
+        rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
+      WHERE
+        rooms.owner_id = ${userId}
+      ORDER BY
+        rooms.id ASC,
+        room_names.priority_level DESC
+    `)
+  }
+
+  async getMemberRooms(userId) {
+    return await db.pg.massive.query(`
+      SELECT
+        room_names.room_id AS id,
+        rooms_and_memberships.owner_id AS owner_id,
+        room_names.name AS name,
+        room_names.priority_level AS priority_level
+      FROM
+        (
+          SELECT owner_id, room_id
+          FROM
+            room_memberships LEFT OUTER JOIN rooms
+          ON
+            room_memberships.room_id = rooms.id
+          WHERE
+            room_memberships.user_id = ${userId}
+        ) AS rooms_and_memberships
+        LEFT OUTER JOIN
+          room_names
+          on rooms_and_memberships.room_id = room_names.room_id;
+    `)
   }
 
   async latestRoomInvitation(roomId, inviteeEmail) {
@@ -131,11 +203,6 @@ class Rooms extends DbAccess {
     }
   }
 
-  async getOwnedRooms(userId) {
-    return await db.pg.massive.rooms.find({
-      owner_id: userId
-    })
-  }
 
   async tryToGenerateRoom(userId) {
     const canGenerate = await this.underMaxOwnedRoomLimit(userId)
@@ -145,26 +212,36 @@ class Rooms extends DbAccess {
     // We may want to add a lock here to avoid race conditions:
     // the check passed, a new request is sent, also passes checks,
     // 2 rooms are created
-    const newRoom = await this.generateRoom(userId)
-    return { newRoom }
+    return await this.generateRoom(userId)
   }
 
-  async getMemberRooms(userId) {
-    return await db.pg.massive.query(`
-      SELECT
-        rooms.id,
-        rooms.unique_id,
-        rooms.name,
-        rooms.owner_id
-          FROM room_memberships LEFT OUTER JOIN rooms
-            ON room_memberships.room_id = rooms.id
-          WHERE room_memberships.user_id = ${userId}
-    `)
+  async generateRoom(userId) {
+    let idString = this.generateIdString()
+    let isUnique = await this.isUniqueIdString(idString)
+    while(!isUnique) {
+      // TODO: alert if too many collisions
+      idString = this.generateIdString()
+      isUnique = await this.isUniqueIdString(idString)
+    }
+    return await db.pg.massive.withTransaction(async (tx) => {
+      const room = await tx.rooms.insert({
+        owner_id: userId
+      })
+      const generatedName = await tx.room_names.insert({
+        room_id: room.id,
+        name: idString,
+        priority_level: 0
+      })
+      return {
+        room: room,
+        nameEntry: generatedName
+      }
+    })
   }
 
   // Private
   async isUniqueIdString(idString) {
-    const existingEntry = await db.pg.massive.rooms.findOne({unique_id: idString})
+    const existingEntry = await db.pg.massive.room_names.findOne({name: idString})
     return !existingEntry
   }
 

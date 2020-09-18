@@ -6,11 +6,12 @@ module.exports = class {
   async userProfile(rooms) {
     const ownedRooms = await rooms.getOwnedRooms(this.user.id)
     const memberRooms = await rooms.getMemberRooms(this.user.id)
+
     return {
       user: this.user,
       rooms: {
-        owned: ownedRooms,
-        member: memberRooms
+        owned: rooms.namedRoomsListToMostPreferredList(ownedRooms),
+        member: rooms.namedRoomsListToMostPreferredList(memberRooms)
       }
     }
   }

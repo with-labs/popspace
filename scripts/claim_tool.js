@@ -92,14 +92,18 @@ const sendUnsent = async (allowRegistered) => {
   console.log(`About to send ${claims.length} emails...`)
   const appUrl = "http://localhost:8888"
   for(const claim of claims) {
+    if(claim.emailed_at) {
+      console.log(`Already sent email to ${claim.email} at ${claim.emailed_at}; skipping`)
+      continue
+    }
     const url = await rooms.getClaimUrl(appUrl, claim)
+    const nameEntry = await rooms.preferredNameById(claim.room_id)
     await rooms.claimUpdateEmailedAt(claim.id)
-    await lib.email.room.sendRoomClaimEmail(claim.email, url)
+    await lib.email.room.sendRoomClaimEmail(claim.email, nameEntry.name, url)
     console.log(`Sent to ${claim.email}`)
   }
   console.log("Done")
 }
-
 
 const run = async () => {
   const optionDefinitions = [

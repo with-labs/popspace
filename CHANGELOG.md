@@ -1,3 +1,10 @@
+## 1.125.0
+
+- connect sign in, finalize account page
+- add in simple dashboard
+- add in correct routing handling for logging in
+- marked files for deletion once backend is completed
+
 ## 1.124.0
 
 - API and example for claiming a room for alpha users

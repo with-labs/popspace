@@ -1,27 +1,112 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { TextField } from '../../withComponents/TextField/TextField';
 import { CheckBox } from '../../withComponents/CheckBox/CheckBox';
 import { Button, ButtonTypes } from '../../withComponents/Button/Button';
+import { CircularProgress } from '@material-ui/core';
+import useQuery from '../../withHooks/useQuery/useQuery';
+
+import Api from '../../utils/api';
+import * as Sentry from '@sentry/react';
+
+import { Routes } from '../../constants/Routes';
+import { ErrorCodes } from '../../constants/ErrorCodes';
+import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../withComponents/Header/Header';
 import signinImg from '../../images/SignIn.png';
 
-interface IFinalizeAccountProps {
-  email: string;
-}
+interface IFinalizeAccountProps {}
 
 export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
-  const { email } = props;
+  const history = useHistory();
+
+  // get the query params from the invite
+  const query = useQuery();
+
+  // pull out the information we need from query string
+  //if we dont have the params, redirect to root
+  const otp = useMemo(() => query.get('otp'), [query]);
+  const email = useMemo(() => query.get('email'), [query]);
+  const claimId = useMemo(() => query.get('cid'), [query]);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [acceptTos, setAcceptTos] = useState(false);
-  const [sendEmails, setSendEmails] = useState(false);
+  const [receiveMarketing, setReceiveMarketing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setIsLoading(true);
+    debugger;
+    // if opt, email , or the claim id is empty, redirect to root
+    if (!otp || !email || !claimId) {
+      history.push(`/${Routes.ROOT}`);
+    } else {
+      // check to see if the room has already been claimed
+      const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
+      Api.resolveRoomClaim(existingToken, otp, claimId)
+        .then((result: any) => {
+          if (result.success) {
+            if (result.newSessionToken) {
+              window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
+            }
+            // redirect to the room
+            history.push(`/${result.roomName}`);
+          } else {
+            if (result.errorCode === ErrorCodes.CLAIM_FAIL_NO_SUCH_USER) {
+              // the room is unclaimed, but the user isnt create,
+              //  so we render the finialize form to finish creating the user
+              setIsLoading(false);
+            } else {
+              setIsLoading(false);
+              Sentry.captureMessage(`Error claiming room for ${email}`, Sentry.Severity.Error);
+              setError(result.message);
+            }
+          }
+        })
+        .catch((e: any) => {
+          setIsLoading(false);
+          Sentry.captureMessage(`Error claiming room for ${email}`, Sentry.Severity.Error);
+          setError(e.message);
+        });
+    }
+  }, [history, otp, email, claimId]);
+
+  const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
+
+    const data = {
+      firstName,
+      lastName,
+      email,
+      acceptTos,
+      receiveMarketing,
+    };
+
+    if (!otp || !claimId) {
+      Sentry.captureMessage(`Error finializing accoung for ${email}`, Sentry.Severity.Error);
+      setError('An error has occurred, please try again later');
+    } else {
+      // Note: currently for alpha users or users we send invites out to, this registers the room
+      // to their account. There will be a seperate api endpoint for when we do this same flow via user invites
+      const result: any = await Api.registerThroughClaim(existingToken, data, otp, claimId);
+      if (result.success) {
+        if (result.newSessionToken) {
+          window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
+        }
+        // redirect to the room
+        history.push(`/${result.roomName}`);
+      } else {
+        Sentry.captureMessage(`Error finializing accoung for ${email}`, Sentry.Severity.Error);
+        setError('An error has occurred, please try again later');
+      }
+    }
   };
 
   const rightCol = (
@@ -62,8 +147,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
           />
           <CheckBox
             labelText="It’s ok to send me occasional emails"
-            checked={sendEmails}
-            onClickHandler={() => setSendEmails(!sendEmails)}
+            checked={receiveMarketing}
+            onClickHandler={() => setReceiveMarketing(!receiveMarketing)}
             checkboxName="send me occasional emails checkbox"
           />
         </div>
@@ -73,6 +158,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
           type={ButtonTypes.SUBMIT}
           isDisabled={firstName.length === 0 || lastName.length === 0 || !acceptTos}
         />
+
+        {error ? <div className={styles.errorMsg}>{error}</div> : null}
       </form>
     </div>
   );
@@ -80,16 +167,23 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   return (
     <main className="u-flex u-height100Percent u-flexCol">
       <Header />
-      <TwoColLayout
-        left={rightCol}
-        right={
-          <div className={styles.imageContainer}>
-            <img className={styles.image} src={signinImg} alt="sign in" />
-          </div>
-        }
-        leftColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter"
-        rightColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone"
-      />
+      {isLoading ? (
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
+          <CircularProgress />
+        </div>
+      ) : (
+        <TwoColLayout
+          left={rightCol}
+          right={
+            <div className={styles.imageContainer}>
+              <img className={styles.image} src={signinImg} alt="sign in" />
+            </div>
+          }
+          leftColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter"
+          rightColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone"
+        />
+      )}
+      ;
     </main>
   );
 };

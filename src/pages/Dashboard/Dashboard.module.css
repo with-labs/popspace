@@ -1,0 +1,9 @@
+.root {
+  background-color: var(--color-sand);
+}
+
+.roomContainer {
+  border-radius: 16px;
+  background-color: var(--color-snow);
+  padding: 32px;
+}

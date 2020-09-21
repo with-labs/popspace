@@ -1,0 +1,9 @@
+.dashboardItem {
+  border: 1px solid #eceef1;
+  border-radius: 10px;
+  padding: 16px;
+  height: 196px;
+}
+
+.joinRoomButton {
+}

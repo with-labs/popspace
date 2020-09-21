@@ -54,6 +54,7 @@ export default createMuiTheme({
         borderRadius: 6,
         borderWidth: 2,
         position: 'relative',
+        backgroundColor: 'var(--color-snow)',
         '& $notchedOutline': {
           borderColor: 'rgba(0, 0, 0, 0.23)',
           borderWidth: 2,
@@ -90,6 +91,11 @@ export default createMuiTheme({
     MuiButton: {
       root: {
         borderRadius: '6px',
+      },
+    },
+    MuiCircularProgress: {
+      colorPrimary: {
+        color: 'var(--color-lavender-bold)',
       },
     },
   },

@@ -37,6 +37,13 @@ class Api {
     return await this.post('/register_through_invite', { token, data, otp, inviteId });
   }
 
+  async registerThroughClaim(token: any, data: any, otp: string, claimId: string) {
+    return await this.post('/register_through_claim', { token, data, otp, claimId });
+  }
+
+  async resolveRoomClaim(token: any, otp: string, claimId: string) {
+    return await this.post('/resolve_room_claim', { token, otp, claimId });
+  }
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

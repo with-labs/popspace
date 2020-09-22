@@ -1,3 +1,10 @@
+## 1.124.0
+
+- API and example for claiming a room for alpha users
+- Registration through room claim
+- A script to invite an individual email
+- A script to parse CSV with alpha user emails
+
 ## 1.123.0
 
 - adding in signin flow pages

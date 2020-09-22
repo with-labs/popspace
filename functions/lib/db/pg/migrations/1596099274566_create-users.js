@@ -11,6 +11,7 @@ exports.up = pgm => {
     email: { type: 'text', notNull: true, unique: true},
     avatar_url: { type: 'text' },
     newsletter_opt_in: { type: 'boolean' },
+    admin: { type: 'boolean', default: false },
     created_at: {
       type: 'timestamptz',
       notNull: true,

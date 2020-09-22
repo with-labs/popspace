@@ -9,6 +9,7 @@ exports.up = pgm => {
     name: { type: 'text', notNull: true, unique: true},
     // Allows chosing a most preferred name for a room with many names
     priority_level: { type: 'integer', notNull: true, default: 0 },
+    is_vanity: { type: 'boolean' },
     created_at: {
       type: 'timestamptz',
       notNull: true,

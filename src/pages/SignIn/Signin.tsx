@@ -6,6 +6,7 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Header } from '../../withComponents/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
+import Api from '../../utils/api';
 
 import styles from './Signin.module.css';
 import signinImg from '../../images/SignIn.png';
@@ -17,7 +18,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [emailError, setEmailError] = useState('');
 
-  const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // clear any errors we have
     setEmailError('');
@@ -26,9 +27,17 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     const isValid = isEmailValid(email);
 
     if (isValid) {
-      // refine when button goes live
-      // hook up to api
-      setShowConfirmation(true);
+      // TODO: fix typing
+      const loginRequest: any = await Api.requestLoginOtp(email);
+      if (loginRequest.success) {
+        // we have sent off the magic link to the user, so render success page
+        setShowConfirmation(true);
+      } else {
+        // we have an error
+        // TODO: Do we want to change where this error shows up in the form or keep
+        // it by the email?
+        setEmailError(loginRequest.message);
+      }
     } else {
       setEmailError('Please provide a valid email.');
     }

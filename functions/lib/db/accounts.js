@@ -10,7 +10,7 @@ class Accounts extends DbAccess {
   }
 
   getLoginUrl(appUrl, loginRequest) {
-    return `${appUrl}/login?otp=${loginRequest.otp}&uid=${loginRequest.user_id}`
+    return `${appUrl}/loginwithemail?otp=${loginRequest.otp}&uid=${loginRequest.user_id}`
   }
 
   async getLatestAccountCreateRequest(email) {

@@ -1,3 +1,7 @@
+## 1.126.0
+
+- Protection against SQL injection for raw queries with user input
+
 ## 1.125.0
 
 - connect sign in, finalize account page

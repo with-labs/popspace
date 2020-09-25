@@ -63,7 +63,7 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
         className={styles.linkInput}
         value={titleText}
         onChange={(event) => setTitleText(event.target.value)}
-        placeholder={'Title'}
+        placeholder="Title"
         margin="normal"
       />
 
@@ -72,7 +72,7 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
         className={styles.linkInput}
         value={urlText}
         onChange={(event) => setUrlText(event.target.value)}
-        placeholder={'Url'}
+        placeholder="Url"
         error={formError.length > 0}
         helperText={formError}
         margin="normal"

@@ -2,6 +2,11 @@
   padding: 32px;
 }
 
+.column {
+  max-width: 600px;
+  min-width: 280px;
+}
+
 .colMargin {
   margin-right: 24px;
 }

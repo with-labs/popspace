@@ -1,4 +1,5 @@
 import { LocalVideoTrack, RemoteVideoTrack, TwilioError } from 'twilio-video';
+import { ErrorTypes } from './constants/ErrorType';
 
 declare module 'twilio-video' {
   interface LocalParticipant {
@@ -56,4 +57,10 @@ export type UserInfo = {
   last_name: string;
   id: string;
   newsletter_opt_in: boolean;
+};
+
+// TODO: update error object once we bring that into line
+export type ErrorInfo = {
+  errorType: ErrorTypes;
+  error?: { [key: string]: any };
 };

@@ -48,6 +48,9 @@ const createPaletteTheme = (colors: PaletteOptions) => {
     background: {
       paper: brandPalette.snow.main,
     },
+    text: {
+      primary: brandPalette.ink.main,
+    },
     ...colors,
   };
 
@@ -229,6 +232,12 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiMenu: {
         paper: {
           border: `1px solid ${palette.grey[500]}`,
+        },
+      },
+      MuiLink: {
+        root: {
+          fontWeight: 'bold',
+          color: palette.text.primary,
         },
       },
     },

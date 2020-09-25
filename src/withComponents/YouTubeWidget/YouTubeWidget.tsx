@@ -2,11 +2,11 @@ import React, { RefObject, useState, useEffect } from 'react';
 import { Widget } from '../Widget/Widget';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
-import { TextField } from '../TextField/TextField';
-import { Button, ButtonTypes } from '../Button/Button';
 import { Colors } from '../../constants/ColorEnum';
 import YouTube from 'react-youtube';
 import styles from './YouTubeWidget.module.css';
+import { Button, TextField, ThemeProvider } from '@material-ui/core';
+import { cherry } from '../../theme/theme';
 
 interface IYoutubeWidgetData {
   isPublished: boolean;
@@ -120,22 +120,20 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
   let videoPlayerContent = (
     <div className={styles.youtubeContainer}>
-      <form onSubmit={handlePublish}>
+      <form onSubmit={handlePublish} className={styles.youtubeForm}>
         <TextField
           id={`youtubeWidget-${id}`}
           className={styles.videoUrlInput}
           value={videoUrl}
-          onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setVideoUrl(event.target.value)}
-          placeholderText={'Video Url'}
-          hasError={formError.length > 0}
+          onChange={(event) => setVideoUrl(event.target.value)}
+          placeholder={'Video Url'}
+          error={formError.length > 0}
           helperText={formError}
+          margin="normal"
         />
-        <Button
-          buttonText="Add a Video"
-          type={ButtonTypes.SUBMIT}
-          buttonColor={Colors.cherry}
-          className={styles.addVideoButton}
-        />
+        <Button type="submit" className={styles.addVideoButton}>
+          Add a video
+        </Button>
       </form>
     </div>
   );
@@ -215,16 +213,18 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
   }
 
   return (
-    <Widget
-      id={id}
-      title="YouTube - beta"
-      classNames={styles.youtube}
-      titleClassNames={styles.title}
-      onCloseHandler={onCloseHandler}
-      position={position}
-      dragConstraints={dragConstraints}
-    >
-      {videoPlayerContent}
-    </Widget>
+    <ThemeProvider theme={cherry}>
+      <Widget
+        id={id}
+        title="YouTube - beta"
+        classNames={styles.youtube}
+        titleClassNames={styles.title}
+        onCloseHandler={onCloseHandler}
+        position={position}
+        dragConstraints={dragConstraints}
+      >
+        {videoPlayerContent}
+      </Widget>
+    </ThemeProvider>
   );
 };

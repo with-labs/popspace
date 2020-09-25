@@ -3,9 +3,6 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { TextField } from '../../withComponents/TextField/TextField';
-import { CheckBox } from '../../withComponents/CheckBox/CheckBox';
-import { Button, ButtonTypes } from '../../withComponents/Button/Button';
 import { CircularProgress } from '@material-ui/core';
 import useQuery from '../../withHooks/useQuery/useQuery';
 
@@ -18,6 +15,8 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../withComponents/Header/Header';
 import signinImg from '../../images/SignIn.png';
+import { Button, TextField } from '@material-ui/core';
+import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
 
 interface IFinalizeAccountProps {}
 
@@ -122,43 +121,39 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
       <form onSubmit={onFormSubmit}>
         <div className="u-flex u-sm-flexCol u-flexRow">
           <TextField
-            id={`firstName`}
+            id="firstName"
             value={firstName}
-            onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setFirstName(event.target.value)}
-            placeholderText={'Dorothy'}
-            labelText="First Name"
+            onChange={(event) => setFirstName(event.target.value)}
+            placeholder="Dorothy"
+            label="First Name"
             className={styles.firstName}
           />
           <TextField
-            id={`lastName`}
+            id="lastName"
             value={lastName}
-            onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setLastName(event.target.value)}
-            placeholderText={'Gale'}
-            labelText="Last Name"
+            onChange={(event) => setLastName(event.target.value)}
+            placeholder="Gale"
+            label="Last Name"
             className={styles.lastName}
           />
         </div>
         <div className={styles.checkboxes}>
-          <CheckBox
-            labelText={<span>I agree to the Terms of Service</span>}
+          <CheckboxField
+            label={<span>I agree to the Terms of Service</span>}
             checked={acceptTos}
-            onClickHandler={() => setAcceptTos(!acceptTos)}
-            checkboxName="terms of service checkbox"
+            onChange={() => setAcceptTos(!acceptTos)}
+            name="terms of service checkbox"
           />
-          <CheckBox
-            labelText="It’s ok to send me occasional emails"
+          <CheckboxField
+            label="It’s ok to send me occasional emails"
             checked={receiveMarketing}
-            onClickHandler={() => setReceiveMarketing(!receiveMarketing)}
-            checkboxName="send me occasional emails checkbox"
+            onChange={() => setReceiveMarketing(!receiveMarketing)}
+            name="send me occasional emails checkbox"
           />
         </div>
-        <Button
-          className={styles.button}
-          buttonText="Go to my room"
-          type={ButtonTypes.SUBMIT}
-          isDisabled={firstName.length === 0 || lastName.length === 0 || !acceptTos}
-        />
-
+        <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+          Go to my room
+        </Button>
         {error ? <div className={styles.errorMsg}>{error}</div> : null}
       </form>
     </div>

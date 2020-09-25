@@ -70,7 +70,7 @@ export default function MenuBar() {
     if (!window.location.origin.includes('twil.io')) {
       window.history.replaceState(null, '', window.encodeURI(`/room/${roomName}`));
     }
-    getToken(name, roomName).then(token => connect(token));
+    getToken(name, roomName).then((token) => connect(token));
   };
 
   return (
@@ -85,7 +85,7 @@ export default function MenuBar() {
                 className={classes.textField}
                 value={name}
                 onChange={handleNameChange}
-                margin="dense"
+                margin="normal"
               />
             ) : (
               <Typography className={classes.displayName} variant="body1">
@@ -98,7 +98,7 @@ export default function MenuBar() {
               className={classes.textField}
               value={roomName}
               onChange={handleRoomNameChange}
-              margin="dense"
+              margin="normal"
             />
             <Button
               type="submit"

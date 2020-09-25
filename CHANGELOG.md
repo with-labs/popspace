@@ -1,3 +1,9 @@
+## 1.127.0
+
+- Move various style configurations into the Material-UI theme
+- Remove some wrapper components which only provided style customizations
+- Add Storybook for previewing individual components
+
 ## 1.126.0
 
 - Protection against SQL injection for raw queries with user input

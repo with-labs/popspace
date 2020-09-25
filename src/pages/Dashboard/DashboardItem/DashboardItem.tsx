@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Button, ButtonTypes } from '../../../withComponents/Button/Button';
 import { useHistory } from 'react-router-dom';
 
 import styles from './DashboardItem.module.css';
+import { Button } from '@material-ui/core';
 
 interface IDashboardProps {
   roomName: string;
@@ -20,12 +20,9 @@ export const DashboardItem: React.FC<IDashboardProps> = (props) => {
   return (
     <div className={clsx(styles.dashboardItem, 'u-flex u-flexCol u-sm-sizeFull u-size1of2')}>
       <div className={clsx(styles.title, 'u-fontH1 u-height100Percent')}>{roomName}</div>
-      <Button
-        buttonText="Join room"
-        type={ButtonTypes.BUTTON}
-        className={styles.joinRoomButton}
-        onClickHandler={onButtonClickHandler}
-      />
+      <Button type="button" className={styles.joinRoomButton} onClick={onButtonClickHandler}>
+        Join room
+      </Button>
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { TextField } from '../../withComponents/TextField/TextField';
-import { Button, ButtonTypes } from '../../withComponents/Button/Button';
 import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Header } from '../../withComponents/Header/Header';
@@ -10,6 +8,7 @@ import Api from '../../utils/api';
 
 import styles from './Signin.module.css';
 import signinImg from '../../images/SignIn.png';
+import { Button, TextField } from '@material-ui/core';
 
 interface ISigninProps {}
 
@@ -48,16 +47,18 @@ export const Signin: React.FC<ISigninProps> = (props) => {
       <div className={clsx(styles.title, 'u-fontH1')}>Sign in</div>
       <form onSubmit={onFormSubmit}>
         <TextField
-          id={`SignIn-email`}
+          id="SignIn-email"
           value={email}
-          onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
-          placeholderText={'dorothy@emerald.so'}
-          labelText="Email Address"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="dorothy@emerald.so"
+          label="Email Address"
           className={styles.emailInput}
-          hasError={emailError.length > 0}
+          error={!!emailError}
           helperText={emailError}
         />
-        <Button buttonText="Sign in" type={ButtonTypes.SUBMIT} isDisabled={email.length === 0} />
+        <Button type="submit" disabled={!email.length}>
+          Sign in
+        </Button>
       </form>
     </div>
   );

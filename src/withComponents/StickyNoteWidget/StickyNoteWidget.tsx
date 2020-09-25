@@ -7,10 +7,11 @@ import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetCont
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 import { LocationTuple } from '../../types';
-import { Button, ButtonTypes } from '../Button/Button';
 import { Colors } from '../../constants/ColorEnum';
 
 import styles from './StickyNoteWidget.module.css';
+import { Button, ThemeProvider } from '@material-ui/core';
+import { mandarin } from '../../theme/theme';
 
 interface IStickyNoteData {
   text: string;
@@ -65,12 +66,9 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
         autoFocus
       />
 
-      <Button
-        buttonText="Add note"
-        type={ButtonTypes.SUBMIT}
-        buttonColor={Colors.mandarin}
-        className={styles.createNoteButton}
-      />
+      <Button type="submit" className={styles.createNoteButton}>
+        Add note
+      </Button>
     </form>
   );
 
@@ -83,20 +81,22 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   };
 
   return (
-    <Widget
-      id={id}
-      title="Sticky Note"
-      classNames={styles.stickyNote}
-      titleClassNames={styles.title}
-      onCloseHandler={handleClose}
-      onAddHandler={handleAddNewStickyNote}
-      position={position}
-      dragConstraints={dragConstraints}
-    >
-      <div className={styles.stickyNoteContainer}>
-        {stickyNoteContent}
-        {authorDisplay}
-      </div>
-    </Widget>
+    <ThemeProvider theme={mandarin}>
+      <Widget
+        id={id}
+        title="Sticky Note"
+        classNames={styles.stickyNote}
+        titleClassNames={styles.title}
+        onCloseHandler={handleClose}
+        onAddHandler={handleAddNewStickyNote}
+        position={position}
+        dragConstraints={dragConstraints}
+      >
+        <div className={styles.stickyNoteContainer}>
+          {stickyNoteContent}
+          {authorDisplay}
+        </div>
+      </Widget>
+    </ThemeProvider>
   );
 };

@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import { Button, ButtonTypes } from '../Button/Button';
 import styles from './Header.module.css';
 
 import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
+import { Button } from '@material-ui/core';
 
 interface IHeaderProps {
   text?: string;
@@ -16,21 +16,15 @@ export const Header: React.FC<IHeaderProps> = (props) => {
   const { text, onSignInHandler, onSignOutHandler, isFullLength = false } = props;
 
   const loginButton = onSignInHandler ? (
-    <Button
-      buttonText="Sign in"
-      type={ButtonTypes.BUTTON}
-      onClickHandler={onSignInHandler}
-      ariaLabelText="Sign in button"
-    />
+    <Button type="button" onClick={onSignInHandler}>
+      Sign in
+    </Button>
   ) : null;
 
   const logoutButton = onSignOutHandler ? (
-    <Button
-      buttonText="Sign out"
-      type={ButtonTypes.BUTTON}
-      onClickHandler={onSignOutHandler}
-      ariaLabelText="Sign out button"
-    />
+    <Button type="button" onClick={onSignOutHandler}>
+      Sign out
+    </Button>
   ) : null;
 
   const headerStyles = isFullLength ? styles.headerFull : styles.header;

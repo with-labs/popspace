@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
-import { TextField } from '../TextField/TextField';
-import { Button, ButtonTypes } from '../Button/Button';
 
 import WithLogo from './images/logo_extrasmall.svg';
 import { ReactComponent as EditIcon } from '../../images/icons/edit.svg';
@@ -17,6 +15,7 @@ import { AudioToggle } from '../AudioToggle/AudioToggle';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
 
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
+import { Button, TextField } from '@material-ui/core';
 
 type JoinRoomProps = {
   roomName: string;
@@ -110,26 +109,24 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) =
     <form className="JoinRoom-form u-flex u-flexCol" onSubmit={onSubmitHandler}>
       <TextField
         id="screenName"
-        labelText="Desired screen name"
+        label="Desired screen name"
         value={screenName}
-        onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setScreenName(event.target.value)}
-        isRequired={true}
+        onChange={(event) => setScreenName(event.target.value)}
+        required={true}
         className={'JoinRoom-formInputOffset u-marginBottom8'}
       />
       <TextField
         id="password"
-        labelText="Password"
+        label="Password"
         value={password}
-        onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}
+        onChange={(event) => setPassword(event.target.value)}
         type="password"
-        isRequired={true}
+        required={true}
         className={'JoinRoom-formInputOffset u-marginBottom16'}
       />
-      <Button
-        buttonText={isJoining ? 'Joining...' : 'Join Room'}
-        type={ButtonTypes.SUBMIT}
-        isDisabled={!isJoining && (screenName.length === 0 || password.length === 0)}
-      />
+      <Button type="submit" disabled={!isJoining && (screenName.length === 0 || password.length === 0)}>
+        {isJoining ? 'Joining...' : 'Join Room'}
+      </Button>
       <div className="u-marginTop16 u-marginBottom16">
         We use analytics software to improve With. Please feel free to come back later, when we made it optional.
       </div>

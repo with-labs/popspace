@@ -8,7 +8,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom';
 import { ConnectOptions } from 'twilio-video';
-import theme from './theme';
+import { mandarin as theme } from './theme/theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 

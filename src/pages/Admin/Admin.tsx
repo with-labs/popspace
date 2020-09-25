@@ -1,8 +1,7 @@
 // TODO: WIP
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { TextField } from '../../withComponents/TextField/TextField';
-import { Button, ButtonTypes } from '../../withComponents/Button/Button';
+import { Button, TextField } from '@material-ui/core';
 import { Header } from '../../withComponents/Header/Header';
 
 import Table from '@material-ui/core/Table';
@@ -20,7 +19,7 @@ interface IAdminProps {}
 export const Admin: React.FC<IAdminProps> = (props) => {
   const [email, setEmail] = useState('');
   const [roomName, setRoomName] = useState('');
-  const [users, setUsers] = useState<{ email: string; room: string }[]>([]);
+  const [users] = useState<{ email: string; room: string }[]>([]);
 
   useEffect(() => {
     // TODO:
@@ -42,23 +41,24 @@ export const Admin: React.FC<IAdminProps> = (props) => {
               <TextField
                 id="email"
                 value={email}
-                onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}
-                labelText="Email"
+                onChange={(event) => setEmail(event.target.value)}
+                label="Email"
                 className={'u-sm-sizeFull'}
               />
               <TextField
                 id="roomName"
                 value={roomName}
-                onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setRoomName(event.target.value)}
-                labelText="Room Name"
+                onChange={(event) => setRoomName(event.target.value)}
+                label="Room Name"
                 className={clsx(styles.field, 'u-sm-sizeFull')}
               />
               <Button
                 className={clsx(styles.button, 'u-sm-sizeFull')}
-                buttonText="Send invite"
-                type={ButtonTypes.SUBMIT}
-                isDisabled={email.length === 0 || roomName.length === 0}
-              />
+                type="submit"
+                disabled={email.length === 0 || roomName.length === 0}
+              >
+                Send invite
+              </Button>
             </div>
           </form>
           <TableContainer component={Paper} className={styles.table}>

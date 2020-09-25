@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Checkbox, makeStyles, FormControlLabel } from '@material-ui/core';
 import { Positions } from '../../constants/PositionEnum';
-import { ReactComponent as Checked } from './images/Checkbox.svg';
-import { ReactComponent as Unchecked } from './images/Unchecked.svg';
 
-const labelStlyes = makeStyles({
+const useLabelStyles = makeStyles({
   label: {
     color: 'var(--color-ink)',
     fontStyle: 'normal',
@@ -14,39 +12,41 @@ const labelStlyes = makeStyles({
   },
 });
 
-interface ICheckBox {
+export interface ICheckboxProps {
   className?: string;
-  labelText: string | React.ReactNode;
+  label: string | React.ReactNode;
   checked: boolean;
-  onClickHandler: (event: object) => void;
-  labelPosition?: Positions;
-  isDisabled?: boolean;
+  onChange: (event: ChangeEvent, checked: boolean) => void;
+  labelPlacement?: Positions;
+  disabled?: boolean;
   ariaLabelText?: string;
-  checkboxName?: string;
+  name?: string;
 }
 
-export const CheckBox: React.FC<ICheckBox> = (props) => {
+/**
+ * Extends the Checkbox into a field with a label
+ */
+export const CheckboxField: React.FC<ICheckboxProps> = (props) => {
   const {
     className,
-    labelText,
+    label: labelText,
     checked,
-    onClickHandler,
-    labelPosition = Positions.END,
-    isDisabled = false,
+    onChange,
+    labelPlacement: labelPosition = Positions.END,
+    disabled: isDisabled = false,
     ariaLabelText,
-    checkboxName,
+    name: checkboxName,
   } = props;
 
-  const labelClasses = labelStlyes();
+  const labelClasses = useLabelStyles();
+
   return (
     <div className={className}>
       <FormControlLabel
         control={
           <Checkbox
-            icon={<Unchecked />}
-            checkedIcon={<Checked />}
             checked={checked}
-            onChange={onClickHandler}
+            onChange={onChange}
             name={checkboxName}
             inputProps={{ 'aria-label': ariaLabelText }}
           />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
-import { TextField } from '../TextField/TextField';
+import { TextField } from '@material-ui/core';
 import './index.css';
 
 import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
@@ -38,9 +38,9 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
           <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
             <TextField
               id="bgPicker"
-              placeholderText={'URL to an image (jpg, png, gif)'}
+              placeholder={'URL to an image (jpg, png, gif)'}
               value={customBg}
-              onChangeHandler={(event: React.ChangeEvent<HTMLInputElement>) => setCustomBg(event.target.value)}
+              onChange={(event) => setCustomBg(event.target.value)}
               className={clsx('BackgroundPicker-customBgImg', {
                 'is-selected': properties.bg === BackgroundName.Custom,
               })}

@@ -10,6 +10,11 @@
   border-radius: 0 0 10px 10px;
 }
 
+.youtubeForm {
+  display: flex;
+  flex-direction: column;
+}
+
 .videoUrlInput {
   margin-bottom: 5px;
 }

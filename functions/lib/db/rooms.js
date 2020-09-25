@@ -1,25 +1,12 @@
 const DbAccess = require("./pg/db_access")
 const cryptoRandomString = require('crypto-random-string');
-const LOWERCASE_AND_NUMBERS = 'abcdefghijklmnopqrstuvwxyz0123456789'
-
-const MAX_FREE_ROOMS = 10
+const MAX_FREE_ROOMS = 100
 // Never expire by default
 const STANDARD_MEMBERSHIP_DURATION_MILLIS = 0
 
 class Rooms extends DbAccess {
   constructor() {
     super()
-  }
-
-  generateIdString() {
-    // NOTE:
-    // We want to maintain a relatively low collision rate
-    // Collision rate is a product of the randomness space and # of taken slots
-    // with a 36-char alphabet of length 5, we get 36^5 or 6 * 10^7 unique ids
-    // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
-    // i.e. 600k rooms
-    // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
-    return cryptoRandomString({length: 5, characters: LOWERCASE_AND_NUMBERS});
   }
 
   async getInviteUrl(appUrl, invite) {
@@ -286,11 +273,18 @@ class Rooms extends DbAccess {
   }
 
   async generateRoom(userId) {
-    let idString = this.generateIdString()
+    // NOTE:
+    // We want to maintain a relatively low room id string collision rate
+    // Collision rate is a product of the randomness space and # of taken slots
+    // with a 36-char alphabet of length 5, we get 36^5 or 6 * 10^7 unique ids
+    // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
+    // i.e. 600k rooms
+    // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
+    let idString = util.algorithms.generateId()
     let isUnique = await this.isUniqueIdString(idString)
     while(!isUnique) {
       // TODO: alert if too many collisions
-      idString = this.generateIdString()
+      idString = util.algorithms.generateId()
       isUnique = await this.isUniqueIdString(idString)
     }
     return await this.createRoomWithName(idString, userId)

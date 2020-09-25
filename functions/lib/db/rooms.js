@@ -69,10 +69,10 @@ class Rooms extends DbAccess {
       FROM
         rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
       WHERE
-        rooms.id = ${id}
+        rooms.id = $1
       ORDER BY
         rooms.id ASC
-    `)
+    `, [id])
     return this.namedRoomsListToMostPreferredList(namedRooms)[0]
   }
 
@@ -112,11 +112,11 @@ class Rooms extends DbAccess {
       FROM
         rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
       WHERE
-        rooms.owner_id = ${userId}
+        rooms.owner_id = $1
       ORDER BY
         rooms.id ASC,
         room_names.priority_level DESC
-    `)
+    `, [userId])
   }
 
   async getMemberRooms(userId) {
@@ -134,12 +134,12 @@ class Rooms extends DbAccess {
           ON
             room_memberships.room_id = rooms.id
           WHERE
-            room_memberships.user_id = ${userId}
+            room_memberships.user_id = $1
         ) AS rooms_and_memberships
         LEFT OUTER JOIN
           room_names
           on rooms_and_memberships.room_id = room_names.room_id;
-    `)
+    `, [userId])
   }
 
   async latestRoomInvitation(roomId, inviteeEmail) {

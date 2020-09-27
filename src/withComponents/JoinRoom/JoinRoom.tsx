@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import LocalVideoPreview from '../LocalVideoPreview';
 
@@ -6,9 +6,6 @@ import WithLogo from './images/logo_extrasmall.svg';
 import { ReactComponent as EditIcon } from '../../images/icons/edit.svg';
 
 import './joinRoom.css';
-
-import { FormInputV2 } from '../FormInputV2/FormInputV2';
-import { FormButton } from '../FormButton/FormButton';
 
 import { AvatarSelect } from '../AvatarSelect/AvatarSelect';
 import { randomAvatar } from '../AvatarSelect/options';
@@ -18,6 +15,7 @@ import { AudioToggle } from '../AudioToggle/AudioToggle';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
 
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
+import { Button, TextField } from '@material-ui/core';
 
 type JoinRoomProps = {
   roomName: string;
@@ -109,24 +107,26 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) =
 
   const userLoginForm = (
     <form className="JoinRoom-form u-flex u-flexCol" onSubmit={onSubmitHandler}>
-      <FormInputV2
-        placeholderText={'Desired screen name'}
-        classNames={'JoinRoom-formInputOffset u-marginBottom8'}
+      <TextField
+        id="screenName"
+        label="Desired screen name"
         value={screenName}
-        onChangeHandler={setScreenName}
+        onChange={(event) => setScreenName(event.target.value)}
+        required={true}
+        className={'JoinRoom-formInputOffset u-marginBottom8'}
       />
-      <FormInputV2
-        placeholderText={'Room password'}
-        classNames={'JoinRoom-formInputOffset u-marginBottom16'}
+      <TextField
+        id="password"
+        label="Password"
         value={password}
-        onChangeHandler={setPassword}
+        onChange={(event) => setPassword(event.target.value)}
         type="password"
+        required={true}
+        className={'JoinRoom-formInputOffset u-marginBottom16'}
       />
-      <FormButton
-        text={isJoining ? 'Joining...' : 'Join Room'}
-        btnType={'submit'}
-        isActive={!isJoining && screenName.length > 0 && password.length > 0}
-      />
+      <Button type="submit" disabled={!isJoining && (screenName.length === 0 || password.length === 0)}>
+        {isJoining ? 'Joining...' : 'Join Room'}
+      </Button>
       <div className="u-marginTop16 u-marginBottom16">
         We use analytics software to improve With. Please feel free to come back later, when we made it optional.
       </div>
@@ -154,7 +154,7 @@ const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) =
         </div>
         <div className={clsx('JoinRoom-avatarSelect u-layerSurfaceBeta', { 'is-open': isSelectingAvatar })}>
           <AvatarSelect
-            onAvatarChange={av => setInitialAvatar(av)}
+            onAvatarChange={(av) => setInitialAvatar(av)}
             defaultAvatar={initialAvatar}
             handleClose={() => toggleIsSelectingAvatar(false)}
           />

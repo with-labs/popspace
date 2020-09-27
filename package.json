@@ -1,15 +1,18 @@
 {
   "name": "with-app",
-  "version": "1.113.0",
+  "version": "1.127.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
     "@material-ui/core": "^4.9.1",
     "@material-ui/icons": "^4.9.1",
     "@primer/octicons-react": "^9.4.0",
+    "@sentry/react": "^5.23.0",
+    "command-line-args": "^5.1.1",
     "concurrently": "^5.1.0",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",
+    "csv-parser": "^2.3.3",
     "dotenv": "^8.2.0",
     "emoji-mart": "^3.0.0",
     "express": "^4.17.1",
@@ -19,8 +22,6 @@
     "js-cookie": "^2.2.1",
     "lodash.throttle": "^4.1.1",
     "react": "^16.12.0",
-    "react-dnd": "^10.0.2",
-    "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.12.0",
     "react-modal": "^3.11.2",
     "react-redux": "^7.2.0",
@@ -35,6 +36,14 @@
     "uuid": "^7.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@harelpls/storybook-addon-materialui": "^2.0.0",
+    "@storybook/addon-actions": "^6.0.21",
+    "@storybook/addon-essentials": "^6.0.21",
+    "@storybook/addon-links": "^6.0.21",
+    "@storybook/node-logger": "^6.0.21",
+    "@storybook/preset-create-react-app": "^3.1.4",
+    "@storybook/react": "^6.0.21",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/react-hooks": "^3.2.1",
@@ -54,6 +63,7 @@
     "@types/twilio-video": "^2.7.0",
     "@types/uuid": "^8.3.0",
     "@types/youtube": "0.0.39",
+    "babel-loader": "^8.1.0",
     "cypress": "^3.8.3",
     "cypress-multi-reporters": "^1.2.3",
     "enzyme": "^3.11.0",
@@ -68,8 +78,10 @@
     "pixelmatch": "^5.1.0",
     "prettier": "^2.0.5",
     "puppeteer": "^2.1.1",
+    "react-is": "^16.13.1",
     "react-test-renderer": "^16.12.0",
     "start-server-and-test": "^1.10.8",
+    "storybook-addon-material-ui": "^0.9.0-alpha.21",
     "ts-jest": "^26.2.0",
     "typescript": "^3.9.7"
   },
@@ -80,7 +92,7 @@
     ]
   },
   "scripts": {
-    "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode react-scripts start",
+    "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode PORT=3002 react-scripts start",
     "prebuild": "node ./scripts/write_env.js && cd functions && npm run build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode react-scripts build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
@@ -92,7 +104,9 @@
     "cypress:run": "cypress run --browser chrome",
     "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8081 start-server-and-test server http://localhost:8081 cypress:run",
     "deploy:dev": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build --environment=dev",
-    "deploy:prod": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build --environment=prod"
+    "deploy:prod": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build --environment=prod",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -117,7 +131,7 @@
       "pre-commit": "lint-staged"
     }
   },
-  "proxy": "http://localhost:8081/",
+  "proxy": "http://localhost:8888/",
   "jest": {
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

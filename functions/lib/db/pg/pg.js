@@ -27,6 +27,7 @@ let db = null
 class Pg {
   async init() {
     if(db) {
+      this.massive = db
       return db
     }
     overridePgTimestampConversion()
@@ -37,7 +38,20 @@ class Pg {
     // we won't have the credentials.
     const config = require('./config.js')
     db = await massive(config)
-    monitor.attach(db.driverConfig);
+    this.massive = db
+    try {
+      monitor.attach(db.driverConfig);
+    } catch(e) {
+      // With lambdas it seems sometimes the monitor fails to detach between runs
+      // keep logs to understand frequency
+      try {
+        monitor.detach()
+        monitor.attach(db.driverConfig)
+        console.log("========== Having to detach and re-attach monitor")
+      } catch (weirdException) {
+        console.log("========== Failed to attach monitor", weirdException)
+      }
+    }
     return db
   }
 
@@ -46,7 +60,12 @@ class Pg {
       monitor.detach()
       await db.pgp.end()
       db = null
+      this.massive = null
     }
+  }
+
+  async silenceLogs() {
+    monitor.detach()
   }
 }
 

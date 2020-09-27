@@ -1,5 +1,6 @@
 import { combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import * as Sentry from '@sentry/react';
 
 import huddles from '../HuddleProvider/huddleReducer';
 import widgets from '../WidgetProvider/widgetReducer';
@@ -20,6 +21,8 @@ const rootReducer = (state, action) => {
   return appReducer(state, action);
 };
 
-const store = createStore(rootReducer, {}, composeWithDevTools());
+const sentryEnhancer = Sentry.createReduxEnhancer();
+
+const store = createStore(rootReducer, {}, composeWithDevTools(sentryEnhancer));
 
 export default store;

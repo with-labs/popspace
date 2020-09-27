@@ -7,8 +7,11 @@ import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetCont
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
 import { LocationTuple } from '../../types';
+import { Colors } from '../../constants/ColorEnum';
 
 import styles from './StickyNoteWidget.module.css';
+import { Button, ThemeProvider } from '@material-ui/core';
+import { mandarin } from '../../theme/theme';
 
 interface IStickyNoteData {
   text: string;
@@ -42,18 +45,19 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
     setInputText(event.target.value);
   };
 
-  const handlePublish = () => {
-    updateWidgetData(id, { ...data, isPublished: true, text: inputText, author: participantDisplayIdentity });
-  };
-
   const handleAddNewStickyNote = () => {
     addWidget(WidgetTypes.StickyNote, localParticipant.sid, { isPublished: false, text: '' });
+  };
+
+  const handlePublish = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    updateWidgetData(id, { ...data, isPublished: true, text: inputText, author: participantDisplayIdentity });
   };
 
   const stickyNoteContent = isPublished ? (
     <div className={styles.displayText}>{text}</div>
   ) : (
-    <div>
+    <form onSubmit={handlePublish}>
       <textarea
         className={clsx('u-fontP1', styles.textInput)}
         value={inputText}
@@ -61,10 +65,11 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
         placeholder="Type your note"
         autoFocus
       />
-      <button className={clsx('u-fontB1', styles.createNoteButton)} onClick={handlePublish}>
-        Create Note
-      </button>
-    </div>
+
+      <Button type="submit" className={styles.createNoteButton}>
+        Add note
+      </Button>
+    </form>
   );
 
   const authorDisplay = isPublished ? (
@@ -76,20 +81,22 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidget> = ({ id, position, pa
   };
 
   return (
-    <Widget
-      id={id}
-      title="Sticky Note"
-      classNames={styles.stickyNote}
-      titleClassNames={styles.title}
-      onCloseHandler={handleClose}
-      onAddHandler={handleAddNewStickyNote}
-      position={position}
-      dragConstraints={dragConstraints}
-    >
-      <div className={styles.stickyNoteContainer}>
-        {stickyNoteContent}
-        {authorDisplay}
-      </div>
-    </Widget>
+    <ThemeProvider theme={mandarin}>
+      <Widget
+        id={id}
+        title="Sticky Note"
+        classNames={styles.stickyNote}
+        titleClassNames={styles.title}
+        onCloseHandler={handleClose}
+        onAddHandler={handleAddNewStickyNote}
+        position={position}
+        dragConstraints={dragConstraints}
+      >
+        <div className={styles.stickyNoteContainer}>
+          {stickyNoteContent}
+          {authorDisplay}
+        </div>
+      </Widget>
+    </ThemeProvider>
   );
 };

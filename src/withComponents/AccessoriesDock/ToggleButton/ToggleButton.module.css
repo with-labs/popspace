@@ -28,5 +28,5 @@
 }
 
 .iconInactive path {
-  fill: var(--color-slate);
+  fill: var(--color-slate-regular);
 }

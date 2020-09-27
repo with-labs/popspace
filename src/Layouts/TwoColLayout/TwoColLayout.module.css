@@ -1,0 +1,13 @@
+.contentPadding {
+  padding: 32px;
+}
+
+.colMargin {
+  margin-right: 24px;
+}
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .colMargin {
+    margin-right: 0;
+  }
+}

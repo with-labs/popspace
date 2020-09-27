@@ -1,23 +1,46 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/react';
 
 import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppStateProvider, { useAppState } from './state';
-import { BrowserRouter as Router, Redirect, Route, Switch, useLocation, useParams } from 'react-router-dom';
-import { ConnectOptions, TwilioError } from 'twilio-video';
-import theme from './theme';
+import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom';
+import { ConnectOptions } from 'twilio-video';
+import { mandarin as theme } from './theme/theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
 
+import useQuery from './withHooks/useQuery/useQuery';
+
+import { Routes } from './constants/Routes';
+
 import Room from './pages/room';
-import Landing from './pages/landing';
 import Signup from './pages/signup';
 import VerifyEmail from './pages/verifyEmail';
 import Login from './pages/login';
+import JoinRoom from './pages/JoinRoom';
+import ClaimRoom from './pages/ClaimRoom';
+import SignupThroughInvite from './pages/SignupThroughInvite';
+
+import { Signin } from './pages/SignIn/Signin';
+import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
+import { Dashboard } from './pages/Dashboard/Dashboard';
+import { Admin } from './pages/Admin/Admin';
+import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 
 import './with.css';
+
+import packageJson from '../package.json';
+
+if (process.env.REACT_APP_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    release: 'with-app@' + packageJson.version,
+    normalizeDepth: 10, // Bump this up so we can get the most out of the Redux integration.
+  });
+}
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -38,13 +61,7 @@ const connectionOptions: ConnectOptions = {
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
 };
 
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
-// -------- here is the where we set up the angles application
+// -------- here is the where we set up the with application
 const NamedRoom = () => {
   const params: any = useParams();
   const roomName = params['room_name'];
@@ -56,42 +73,27 @@ const NamedRoom = () => {
   );
 };
 
-const RedirectOrRoom = () => {
+const RootView = () => {
+  const { error, setError } = useAppState();
   const query = useQuery();
   const room: string | null = query.get('r');
-  const { error, setError } = useAppState();
+  // we still support the use o the r query param, so we check if youre
+  // trying to get in to a room, if we have it send you to the room
   if (room) {
     return (
       <VideoProvider options={connectionOptions} onError={setError}>
         <Room name={room} error={error} setError={setError} />
       </VideoProvider>
     );
+  } else if (window.localStorage.getItem('__withso_admin')) {
+    // we have the landing page feature flagged. If the user
+    // has the correct flag set, send them to the dash
+    return <Dashboard />;
   } else {
+    // if not going to a room, or have the feature flag,
+    // send the peson back to the product landing page
     window.location.href = 'https://with.so';
     return <div />;
-  }
-};
-
-const LandingOrRoom = () => {
-  const query = useQuery();
-  const room: string | null = query.get('r');
-  const { error, setError } = useAppState();
-  if (room) {
-    return (
-      <VideoProvider options={connectionOptions} onError={setError}>
-        <Room name={room} error={error} setError={setError} />
-      </VideoProvider>
-    );
-  } else {
-    return <Landing />;
-  }
-};
-
-const LandingPageOrRedirect = () => {
-  if (window.localStorage.getItem('__withso_admin')) {
-    return <LandingOrRoom />;
-  } else {
-    return <RedirectOrRoom />;
   }
 };
 
@@ -124,24 +126,40 @@ ReactDOM.render(
     <Router>
       <AppStateProvider>
         <Switch>
-          <Route exact path="/">
-            <LandingPageOrRedirect />
+          <Route exact path={`/${Routes.ROOT}`}>
+            <RootView />
           </Route>
 
-          <Route exact path="/1_secret_2_admin_3_enabler_4">
+          <Route exact path={`/${Routes.ENABLE_ADMIN}`}>
             <EnableAdmin />
           </Route>
 
-          <Route exact path="/signup">
+          <Route exact path={`/${Routes.SIGN_IN}`}>
+            <Signin />
+          </Route>
+
+          <Route exact path={`/${Routes.SIGN_UP}`}>
             <Signup />
           </Route>
 
-          <Route path="/complete_signup">
+          <Route path={`/${Routes.CLAIM_ROOM}`}>
+            <FinalizeAccount />
+          </Route>
+
+          <Route path={`/${Routes.COMPLETE_SIGNUP}`}>
             <VerifyEmail />
           </Route>
 
-          <Route path="/login">
-            <Login />
+          <Route path={`/${Routes.JOIN_ROOM}`}>
+            <JoinRoom />
+          </Route>
+
+          <Route path={`/${Routes.INVITE}`}>
+            <SignupThroughInvite />
+          </Route>
+
+          <Route path={`/${Routes.LOGIN_IN_WITH_EMAIL}`}>
+            <LoginWithEmail />
           </Route>
 
           <Route path="/:room_name">

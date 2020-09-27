@@ -1,3 +1,87 @@
+## 1.127.0
+
+- Move various style configurations into the Material-UI theme
+- Remove some wrapper components which only provided style customizations
+- Add Storybook for previewing individual components
+
+## 1.126.0
+
+- Protection against SQL injection for raw queries with user input
+
+## 1.125.0
+
+- connect sign in, finalize account page
+- add in simple dashboard
+- add in correct routing handling for logging in
+- marked files for deletion once backend is completed
+
+## 1.124.0
+
+- API and example for claiming a room for alpha users
+- Registration through room claim
+- A script to invite an individual email
+- A script to parse CSV with alpha user emails
+
+## 1.123.0
+
+- adding in signin flow pages
+- adding in finalize account pages
+- adding in start of basic admin page
+- adding in start of common header
+- fixing sticky note error
+- updating fonts, theme, and gloabl css files
+- add in new logo files
+
+## 1.122.0
+
+- adding in signin flow pages
+- adding in finalize account pages
+- adding in start of basic admin page
+- adding in start of common header
+- fixing sticky note error
+- updating fonts, theme, and gloabl css files
+- add in new logo files
+
+## 1.121.0
+
+- Add logging to main app component to report when there is a missing avatar.
+- Add Sentry log to VideoProvider error setting callback.
+
+## 1.120.0
+
+- Change the way room names are assigned to support vanity names
+
+## 1.119.0
+
+- Prevent user's ability to move participant bubbles other than their own.
+
+## 1.118.0
+
+- adding in Textfield, checkbox, and Button, material ui backed components
+- updating join room, bg picker, stickynote, link, and youtube widget to use these new components
+- removing FormInput and FormInputV2, obsolete.
+
+## 1.117.0
+
+- Add @sentry/react and integrate with the web app. Include an error boundary for Sentry to log to.
+
+## 1.116.0
+
+- Do not animate DraggableEntity while dragging. This fixes the bug where re-renders during dragging were causing the entity to jump.
+- Remove old react-dnd code for participant bubbles and start using DraggableEntity instead.
+- Remove react-dnd and react-dnd-html5-backend packages.
+
+## 1.115.0
+
+- Support for email-based room invites for new and existing users
+- New users sign up and create an account upon receiving the invite
+- Invite process takes over session, and can log people or change their current user
+- After accepting the invite, users land in the target room
+
+## 1.114.0
+
+- updating youtube widget to impove url and option parsing
+
 ## 1.113.0
 
 - Add visibility handler to pause video when app loses focus on mobile devices, per starter app.

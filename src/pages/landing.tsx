@@ -1,3 +1,4 @@
+// TODO: remove this
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
 
@@ -22,10 +23,8 @@ export default class Landing extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
 
-    const sessionToken = localStorage.getItem('__session_token');
-
     this.state = {
-      loading: sessionTokenExists(sessionToken),
+      loading: sessionTokenExists(localStorage.getItem('__session_token')),
       profile: null,
       error: null,
     };

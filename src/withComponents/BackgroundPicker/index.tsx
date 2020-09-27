@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-
 import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
-
-import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
+import { TextField } from '@material-ui/core';
 import './index.css';
 
 import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
@@ -38,11 +36,12 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
         </div>
         <div className="u-size1of2">
           <form className="BackgroundPicker-form" onSubmit={onCustomBackgoundHandler}>
-            <FormInput
-              placeholderText={'URL to an image (jpg, png, gif)'}
+            <TextField
+              id="bgPicker"
+              placeholder={'URL to an image (jpg, png, gif)'}
               value={customBg}
-              onChangeHandler={setCustomBg}
-              classNames={clsx('BackgroundPicker-customBgImg', {
+              onChange={(event) => setCustomBg(event.target.value)}
+              className={clsx('BackgroundPicker-customBgImg', {
                 'is-selected': properties.bg === BackgroundName.Custom,
               })}
             />
@@ -51,7 +50,7 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
       </div>
       <div className="BackgroundPicker-defaultContainer u-flex u-flexJustifyCenter">
         <div className="u-flex u-flexWrap">
-          {options.map(opt => (
+          {options.map((opt) => (
             <div
               key={opt.name}
               className="BackgroundPicker-defaultBg u-size1of4 u-sm-size1of2"

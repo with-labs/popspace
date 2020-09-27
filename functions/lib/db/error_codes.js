@@ -8,6 +8,13 @@ module.exports = {
   },
 
   room: {
-    TOO_MANY_OWNED_ROOMS: 1
+    TOO_MANY_OWNED_ROOMS: 1,
+    ALREADY_INVITED: 2,
+    UNKNOWN_ROOM: 3,
+    CLAIM_UNIQUENESS: 4
+  },
+
+  user: {
+    ALREADY_REGISTERED: 1
   }
 }

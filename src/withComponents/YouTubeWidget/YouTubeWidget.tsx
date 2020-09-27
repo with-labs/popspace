@@ -1,12 +1,12 @@
 import React, { RefObject, useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { Widget } from '../Widget/Widget';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
-import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
-import { WidgetTypes } from '../WidgetProvider/widgetTypes';
+import { Colors } from '../../constants/ColorEnum';
 import YouTube from 'react-youtube';
 import styles from './YouTubeWidget.module.css';
+import { Button, TextField, ThemeProvider } from '@material-ui/core';
+import { cherry } from '../../theme/theme';
 
 interface IYoutubeWidgetData {
   isPublished: boolean;
@@ -36,6 +36,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
   const [formError, setFormError] = useState('');
   const [currentTimeStamp, setCurrentTimeStamp] = useState(-1);
   const [player, setPlayer] = useState<YT.Player>();
+  const [playerVars, setPlayerVars] = useState<{ [key: string]: any }>({});
 
   // check if video status has changed
   useEffect(() => {
@@ -58,27 +59,58 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
   const handlePublish = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // check to see if the url is valid, using the full and short youtube url
-    if (/^(https?:\/\/)?((www\.)?youtube\.com|youtu\.?be)\/.+$/.test(videoUrl)) {
-      // strip the video id out of the
-      // TODO: sanitize inputs? check for issues?
-      const tempVideoId = videoUrl.split('?v=')[1];
-      if (tempVideoId) {
-        // we have a video id
-        // update the widet info
-        updateWidgetData(id, {
-          ...data,
-          isPublished: true,
-          videoId: tempVideoId,
-          isPlaying: false,
+    const videoOptions: { [key: string]: any } = {};
+
+    // youtube regEx
+    var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+
+    // get the video ID if its valid
+    var match = videoUrl.match(regExp);
+
+    // check to see if we have match
+    // video ids are always 11 characters
+    if (match && match[2].length === 11) {
+      // match will return our video id, so get it here
+      const newVideoId = match[2];
+
+      // check to see if we have query params and parse them out
+      const querySplit = videoUrl.split('?');
+      if (querySplit.length === 2) {
+        const queryString = querySplit[1];
+
+        // split the query
+        const variables = queryString.split('&');
+
+        // get the content
+        variables.forEach((variable) => {
+          const splitVar = variable.split('=');
+
+          //TODO: expand on this list of supported things, but
+          // but for now jus support start and end times and t as start
+          if (splitVar[0] === 'start' || splitVar[0] === 'end' || splitVar[0] === 't') {
+            // TODO: check if we have a time string like '1m22s' or just a seonds value
+            videoOptions[splitVar[0] === 't' ? 'start' : splitVar[0]] = parseInt(splitVar[1], 10);
+          }
         });
-      } else {
-        // set invalid url
-        setFormError('Cannot find video id.');
       }
+
+      setPlayerVars(videoOptions);
+
+      // update the widet info
+      updateWidgetData(id, {
+        ...data,
+        isPublished: true,
+        videoId: newVideoId,
+        isPlaying: false,
+      });
     } else {
-      // set invalid url
-      setFormError('Please provide a valid URL.');
+      //error
+      let errorText = 'Please provide a valid URL.';
+
+      if (match && match[2].length !== 11) {
+        errorText = 'invalid video id';
+      }
+      setFormError(errorText);
     }
   };
 
@@ -88,17 +120,20 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
 
   let videoPlayerContent = (
     <div className={styles.youtubeContainer}>
-      <form onSubmit={handlePublish}>
-        <FormInput
-          classNames={styles.videoUrlInput}
-          placeholderText={'Video Url'}
+      <form onSubmit={handlePublish} className={styles.youtubeForm}>
+        <TextField
+          id={`youtubeWidget-${id}`}
+          className={styles.videoUrlInput}
           value={videoUrl}
-          onChangeHandler={setVideoUrl}
+          onChange={(event) => setVideoUrl(event.target.value)}
+          placeholder={'Video Url'}
+          error={formError.length > 0}
+          helperText={formError}
+          margin="normal"
         />
-        <div className={styles.error}>{formError}</div>
-        <button type="submit" className={clsx('u-fontB1', styles.addVideoButton)}>
-          Add a Video
-        </button>
+        <Button type="submit" className={styles.addVideoButton}>
+          Add a video
+        </Button>
       </form>
     </div>
   );
@@ -157,12 +192,15 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
       }
     };
 
+    // TODO: I am seeing more and more issues using this lib, such as player opt not being set correctly,
+    // might want to just suck it up and make our own component it seems
     videoPlayerContent = (
       <div className={styles.youtubePlayerContainer}>
         <YouTube
           opts={{
             height: '270',
             width: '480',
+            playerVars: { ...playerVars },
           }}
           videoId={videoId}
           onPlay={handleOnPlay}
@@ -175,16 +213,18 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
   }
 
   return (
-    <Widget
-      id={id}
-      title="YouTube - beta"
-      classNames={styles.youtube}
-      titleClassNames={styles.title}
-      onCloseHandler={onCloseHandler}
-      position={position}
-      dragConstraints={dragConstraints}
-    >
-      {videoPlayerContent}
-    </Widget>
+    <ThemeProvider theme={cherry}>
+      <Widget
+        id={id}
+        title="YouTube - beta"
+        classNames={styles.youtube}
+        titleClassNames={styles.title}
+        onCloseHandler={onCloseHandler}
+        position={position}
+        dragConstraints={dragConstraints}
+      >
+        {videoPlayerContent}
+      </Widget>
+    </ThemeProvider>
   );
 };

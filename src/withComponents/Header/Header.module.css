@@ -1,0 +1,15 @@
+.header {
+  padding: 16px 32px;
+}
+
+.headerFull {
+  padding: 16px 0;
+}
+
+.text {
+  padding-left: 16px;
+}
+
+.buttonContainer {
+  margin-left: auto;
+}

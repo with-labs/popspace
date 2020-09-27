@@ -5,10 +5,9 @@ import { Widget } from '../Widget/Widget';
 import { Participant } from 'twilio-video';
 import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
 import { LocationTuple } from '../../types';
-import { FormInputV2 as FormInput } from '../FormInputV2/FormInputV2';
-import { WidgetTypes } from '../../withComponents/WidgetProvider/widgetTypes';
-
 import styles from './LinkWidget.module.css';
+import { Button, TextField, ThemeProvider } from '@material-ui/core';
+import { lavender } from '../../theme/theme';
 
 interface ILinkWidgetData {
   isPublished: boolean;
@@ -59,17 +58,29 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
     </div>
   ) : (
     <form onSubmit={handlePublish}>
-      <FormInput
-        classNames={styles.linkInput}
-        placeholderText={'Title'}
+      <TextField
+        id={`LinkWidgetTitle-${id}`}
+        className={styles.linkInput}
         value={titleText}
-        onChangeHandler={setTitleText}
+        onChange={(event) => setTitleText(event.target.value)}
+        placeholder={'Title'}
+        margin="normal"
       />
-      <FormInput placeholderText={'Url'} value={urlText} onChangeHandler={setUrlText} />
-      <div className={styles.error}>{formError}</div>
-      <button type="submit" className={clsx('u-fontB1', styles.createLinkButton)}>
+
+      <TextField
+        id={`LinkWidgetUrl-${id}`}
+        className={styles.linkInput}
+        value={urlText}
+        onChange={(event) => setUrlText(event.target.value)}
+        placeholder={'Url'}
+        error={formError.length > 0}
+        helperText={formError}
+        margin="normal"
+      />
+
+      <Button type="submit" className={styles.createLinkButton}>
         Add a link
-      </button>
+      </Button>
     </form>
   );
 
@@ -78,16 +89,18 @@ export const LinkWidget: React.FC<ILinkWidget> = ({ id, dragConstraints, positio
   };
 
   return (
-    <Widget
-      id={id}
-      title="Link"
-      classNames={clsx(styles.linkWidget, classNames)}
-      titleClassNames={styles.title}
-      onCloseHandler={onCloseHandler}
-      dragConstraints={dragConstraints}
-      position={position}
-    >
-      <div className={styles.linkWidgetContainer}>{linkContent}</div>
-    </Widget>
+    <ThemeProvider theme={lavender}>
+      <Widget
+        id={id}
+        title="Link"
+        classNames={clsx(styles.linkWidget, classNames)}
+        titleClassNames={styles.title}
+        onCloseHandler={onCloseHandler}
+        dragConstraints={dragConstraints}
+        position={position}
+      >
+        <div className={styles.linkWidgetContainer}>{linkContent}</div>
+      </Widget>
+    </ThemeProvider>
   );
 };

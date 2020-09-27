@@ -1,8 +1,8 @@
 import React, { createContext, ReactNode, useCallback, useEffect, useRef } from 'react';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useLocalDataTrack } from '../../withHooks/useLocalDataTrack/useLocalDataTrack';
-
 import { Provider } from 'react-redux';
+import * as Sentry from '@sentry/react';
 
 import store from './store';
 import { RoomMetaProvider } from '../RoomMetaProvider/RoomMetaProvider';
@@ -138,8 +138,16 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
             if (actionQueue.current.length) {
               hasReceivedPing.current = true;
               shouldQueueParticipantMetaActions.current = false;
-              actionQueue.current.forEach(act => {
+              actionQueue.current.forEach((act) => {
                 dispatch(act);
+
+                // @ts-ignore This is for debugging, no need to type the act obj.
+                if (act.type === PtMetaActionTypes.UpdateAvatar && !act?.payload?.avatar) {
+                  Sentry.captureMessage(
+                    `Missing avatar in PING action replay for ${localParticipant.sid}`,
+                    Sentry.Severity.Debug
+                  );
+                }
               });
               // Clear out the action queue
               actionQueue.current = [];

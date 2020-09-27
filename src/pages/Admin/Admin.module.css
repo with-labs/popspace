@@ -1,0 +1,25 @@
+.root {
+  background-color: var(--color-sand);
+}
+
+.button {
+  padding-top: 24px;
+}
+
+.field {
+  padding: 0 16px;
+}
+
+.table {
+  margin-top: 16px;
+}
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .field {
+    padding: 16px 0;
+  }
+
+  .button {
+    padding-top: 16px;
+  }
+}

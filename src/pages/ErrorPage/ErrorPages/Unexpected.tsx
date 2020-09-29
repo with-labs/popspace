@@ -1,19 +1,18 @@
 import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
-import { Routes } from '../../../constants/Routes';
-import { useHistory } from 'react-router-dom';
+import UnexpectedImg from '../images/Unexpected.png';
+import { Links } from '../../../constants/Links';
 
 interface IUnexpectedProps {
   errorMsg?: string;
 }
 
-// TODO hook up support contact button
 export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
   const { errorMsg } = props;
-  const history = useHistory();
 
   const onButtonClick = () => {
-    history.push(Routes.ROOT);
+    // open a new tab to the feedback page
+    window.open(Links.FEEDBACK, '_blank');
   };
 
   return (
@@ -24,7 +23,8 @@ export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
       title="Uh oh!"
       body="Our bad, something went wrong. We could show you some scary error message but you should just let us know :)"
       errorMessage={errorMsg}
-      img={''}
+      imgSrc={UnexpectedImg}
+      imgAltText="Unexpected"
     />
   );
 };

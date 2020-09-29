@@ -30,6 +30,11 @@
   cursor: pointer;
 }
 
+.error {
+  margin-top: 16px;
+  color: var(--color-cherry-bold);
+}
+
 @media (min-width: 0px) and (max-width: 639px) {
   .container {
     max-width: 100%;

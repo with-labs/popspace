@@ -3,17 +3,18 @@ import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Link } from '@material-ui/core';
 import { Routes } from '../../constants/Routes';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { DashboardItem } from './DashboardItem/DashboardItem';
+import { RoomSummary } from './RoomSummary/RoomSummary';
 import { Header } from '../../withComponents/Header/Header';
 import { RoomInfo } from '../../types';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types';
+import { ErrorInfo, UserInfo } from '../../types';
 import styles from './Dashboard.module.css';
 
 interface IDashboardProps {}
@@ -26,7 +27,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
   const [error, setError] = useState<ErrorInfo>(null!);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
 
   // run this on mount
@@ -62,38 +63,52 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     }
   }, [history]);
 
-  const onSignout = () => {
-    // delete the session token
-    localStorage.removeItem(USER_SESSION_TOKEN);
-    // redirect to landing page
-    window.location.href = Links.LANDING_PAGE;
-  };
-
-  const ownedRooms = rooms.owned.map((ownedRoom: any) => {
-    return <DashboardItem roomName={ownedRoom.name} key={ownedRoom.id} />;
-  });
-
-  const memberRooms = rooms.member.map((memberRoom) => {
-    return <DashboardItem roomName={memberRoom.name} key={memberRoom.id} />;
-  });
+  const feedbackItem = (
+    <DashboardItem>
+      <div
+        className={clsx(
+          styles.feedbackTextWrapper,
+          'u-height100Percent u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter'
+        )}
+      >
+        <div className="u-fontP1">
+          You will soon have the ability to create new room, rename rooms, and delete rooms.
+        </div>
+        <div className={styles.feedbackLink}>
+          <Link href={Links.FEEDBACK} target="_blank" rel="noopener noreferrer">
+            Give us feedback
+          </Link>
+        </div>
+      </div>
+    </DashboardItem>
+  );
 
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
     <main className={clsx(styles.root, 'u-height100Percent')}>
       <div className="u-flex u-flexJustifyCenter u-height100Percent">
-        <div className="u-flex u-flexCol u-size4of5">
-          <Header isFullLength={true} onSignOutHandler={onSignout} />
-          {isLoading ? (
-            <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
-              <CircularProgress />
+        <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
+          <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
+          <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
+            <div className={clsx(styles.text, 'u-fontH1')}>Your rooms</div>
+            <div className={clsx('u-width100Percent')}>
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
+                  {[...rooms.owned, ...rooms.member].map((memberRoom) => {
+                    return (
+                      <DashboardItem>
+                        <RoomSummary roomName={memberRoom.name} key={memberRoom.id} />
+                      </DashboardItem>
+                    );
+                  })}
+                  {feedbackItem}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className={clsx(styles.roomContainer, 'u-flex')}>
-              {ownedRooms}
-              {memberRooms}
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

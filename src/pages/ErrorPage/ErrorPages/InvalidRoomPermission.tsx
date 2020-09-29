@@ -3,6 +3,8 @@ import { GenericErrorPage } from './GenericErrorPage';
 import { Routes } from '../../../constants/Routes';
 import { useHistory } from 'react-router-dom';
 
+import NoAccessImg from '../images/No_Access.png';
+
 interface IInvalidRoomPermissionProps {
   errorMsg?: string;
 }
@@ -22,7 +24,8 @@ export const InvalidRoomPermission: React.FC<IInvalidRoomPermissionProps> = (pro
       title="You don’t have access to this room."
       body="Please contact the room host for more details."
       errorMessage={errorMsg}
-      img={''}
+      imgSrc={NoAccessImg}
+      imgAltText="No access"
     />
   );
 };

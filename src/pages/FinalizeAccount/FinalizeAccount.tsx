@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { CircularProgress } from '@material-ui/core';
+import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import useQuery from '../../withHooks/useQuery/useQuery';
 
 import Api from '../../utils/api';
@@ -16,7 +16,7 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../withComponents/Header/Header';
 import signinImg from '../../images/SignIn.png';
-import { Button, TextField, Link } from '@material-ui/core';
+import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
 import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
@@ -124,63 +124,6 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     }
   };
 
-  const rightCol = (
-    <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-      <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
-      <div className={clsx(styles.text, 'u-fontP1')}>
-        As an early user, you currently use your With room without it being associated to a user account.
-        <br />
-        For security and privacy, rooms are now associated to user accounts.
-        <br />
-        Please finalize your account {email} to keep access to your room.
-      </div>
-      <form onSubmit={onFormSubmit}>
-        <div className="u-flex u-sm-flexCol u-flexRow">
-          <TextField
-            id="firstName"
-            value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
-            placeholder="Dorothy"
-            label="First Name"
-            className={styles.firstName}
-          />
-          <TextField
-            id="lastName"
-            value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
-            placeholder="Gale"
-            label="Last Name"
-            className={styles.lastName}
-          />
-        </div>
-        <div className={styles.checkboxes}>
-          <CheckboxField
-            label={
-              <span>
-                I agree to the{' '}
-                <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                  Terms of Service
-                </Link>
-              </span>
-            }
-            checked={acceptTos}
-            onChange={() => setAcceptTos(!acceptTos)}
-            name="terms of service checkbox"
-          />
-          <CheckboxField
-            label="It’s ok to send me occasional emails"
-            checked={receiveMarketing}
-            onChange={() => setReceiveMarketing(!receiveMarketing)}
-            name="send me occasional emails checkbox"
-          />
-        </div>
-        <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-          Go to my room
-        </Button>
-      </form>
-    </div>
-  );
-
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
@@ -191,16 +134,69 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
           <CircularProgress />
         </div>
       ) : (
-        <TwoColLayout
-          left={rightCol}
-          right={
+        <TwoColLayout>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+            <div className={clsx(styles.container, 'u-flex u-flexCol')}>
+              <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
+              <div className={clsx(styles.text, 'u-fontP1')}>
+                As an early user, you currently use your With room without it being associated to a user account.
+                <br />
+                For security and privacy, rooms are now associated to user accounts.
+                <br />
+                Please finalize your account {email} to keep access to your room.
+              </div>
+              <form onSubmit={onFormSubmit}>
+                <div className="u-flex u-sm-flexCol u-flexRow">
+                  <TextField
+                    id="firstName"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                    placeholder="Dorothy"
+                    label="First Name"
+                    className={styles.firstName}
+                  />
+                  <TextField
+                    id="lastName"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    placeholder="Gale"
+                    label="Last Name"
+                    className={styles.lastName}
+                  />
+                </div>
+                <div className={styles.checkboxes}>
+                  <CheckboxField
+                    label={
+                      <span>
+                        I agree to the{' '}
+                        <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
+                          Terms of Service
+                        </Link>
+                      </span>
+                    }
+                    checked={acceptTos}
+                    onChange={() => setAcceptTos(!acceptTos)}
+                    name="terms of service checkbox"
+                  />
+                  <CheckboxField
+                    label="It’s ok to send me occasional emails"
+                    checked={receiveMarketing}
+                    onChange={() => setReceiveMarketing(!receiveMarketing)}
+                    name="send me occasional emails checkbox"
+                  />
+                </div>
+                <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+                  Go to my room
+                </Button>
+              </form>
+            </div>
+          </Column>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
             <div className={styles.imageContainer}>
               <img className={styles.image} src={signinImg} alt="sign in" />
             </div>
-          }
-          leftColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter"
-          rightColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone"
-        />
+          </Column>
+        </TwoColLayout>
       )}
     </main>
   );

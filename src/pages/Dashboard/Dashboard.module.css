@@ -1,9 +1,41 @@
 .root {
-  background-color: var(--color-sand);
+  background-color: var(--color-snow);
 }
 
-.roomContainer {
-  border-radius: 16px;
-  background-color: var(--color-snow);
+.wrapper {
+  max-width: 768px;
+}
+
+.text {
+  margin-bottom: 32px;
+}
+
+.bgContainer {
+  border-radius: 16px 16px 0 0;
+  background-color: var(--color-sand);
   padding: 32px;
+  overflow-y: scroll;
+}
+
+.roomGrid {
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: 50% 50%;
+}
+
+.feedbackTextWrapper {
+  padding: 0 10%;
+  text-align: center;
+}
+
+.feedbackLink {
+  margin-top: 32px;
+}
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .roomGrid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 100%;
+  }
 }

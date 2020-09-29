@@ -10,34 +10,29 @@ import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types';
 
-interface ILoginWithEmailProps {}
+interface IVerifyEmailProps {}
 
-export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
+export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorInfo>(null!);
 
-  // get the query params from the invite
+  // get the query params from the url
   const query = useQuery();
 
-  // pull out the information we need from query string
-  //if we dont have the params, redirect to root
   const otp = useMemo(() => query.get('otp'), [query]);
-  const uid = useMemo(() => query.get('uid'), [query]);
+  const email = useMemo(() => query.get('email'), [query]);
 
   useEffect(() => {
     setIsLoading(true);
-    // if opt, or the user id is empty, redirect to root
-    if (!otp || !uid) {
+    if (!otp || !email) {
       history.push(Routes.ROOT);
     } else {
-      Api.logIn(otp, uid)
+      Api.completeSignup(otp, email)
         .then((result: any) => {
           setIsLoading(false);
-          if (result.success) {
-            // set the session token
+          if (result.succuess) {
             window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
-            // redirect to the root
             history.push(Routes.ROOT);
           } else {
             setError({
@@ -48,14 +43,14 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
         })
         .catch((e: any) => {
           setIsLoading(false);
-          Sentry.captureMessage(`Error using room for ${uid}`, Sentry.Severity.Error);
+          Sentry.captureMessage(`Error verifying email for ${email}`, Sentry.Severity.Error);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,
           });
         });
     }
-  }, [history, otp, uid]);
+  }, [history, otp, email]);
 
   return (
     <div>

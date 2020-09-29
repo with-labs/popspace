@@ -1,0 +1,17 @@
+.body {
+  margin-top: 16px;
+  color: var(--color-slate-bold);
+}
+
+.error {
+  margin-top: 16px;
+  color: var(--color-cherry-bold);
+}
+
+.button {
+  margin-top: 32px;
+}
+
+.container {
+  max-width: 440px;
+}

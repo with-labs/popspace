@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 
 import { CssBaseline } from '@material-ui/core';
+import { StylesProvider } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppStateProvider, { useAppState } from './state';
@@ -18,10 +19,7 @@ import { Routes } from './constants/Routes';
 
 import Room from './pages/room';
 import Signup from './pages/signup';
-import VerifyEmail from './pages/verifyEmail';
-import Login from './pages/login';
 import JoinRoom from './pages/JoinRoom';
-import ClaimRoom from './pages/ClaimRoom';
 import SignupThroughInvite from './pages/SignupThroughInvite';
 
 import { Signin } from './pages/SignIn/Signin';
@@ -29,6 +27,7 @@ import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Admin } from './pages/Admin/Admin';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
+import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 
 import './with.css';
 
@@ -120,55 +119,60 @@ const EnableAdmin = () => {
   );
 };
 
+// injectFirst on the styles provider tells material ui to inject our styles before the
+// base classes so we can avoid having to put !important flags on all of our positional css
+// https://material-ui.com/guides/interoperability/#controlling-priority-4
 ReactDOM.render(
-  <MuiThemeProvider theme={theme}>
-    <CssBaseline />
-    <Router>
-      <AppStateProvider>
-        <Switch>
-          <Route exact path={`/${Routes.ROOT}`}>
-            <RootView />
-          </Route>
+  <StylesProvider injectFirst>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <AppStateProvider>
+          <Switch>
+            <Route exact path={Routes.ROOT}>
+              <RootView />
+            </Route>
 
-          <Route exact path={`/${Routes.ENABLE_ADMIN}`}>
-            <EnableAdmin />
-          </Route>
+            <Route exact path={Routes.ENABLE_ADMIN}>
+              <EnableAdmin />
+            </Route>
 
-          <Route exact path={`/${Routes.SIGN_IN}`}>
-            <Signin />
-          </Route>
+            <Route exact path={Routes.SIGN_IN}>
+              <Signin />
+            </Route>
 
-          <Route exact path={`/${Routes.SIGN_UP}`}>
-            <Signup />
-          </Route>
+            <Route exact path={Routes.SIGN_UP}>
+              <Signup />
+            </Route>
 
-          <Route path={`/${Routes.CLAIM_ROOM}`}>
-            <FinalizeAccount />
-          </Route>
+            <Route path={Routes.CLAIM_ROOM}>
+              <FinalizeAccount />
+            </Route>
 
-          <Route path={`/${Routes.COMPLETE_SIGNUP}`}>
-            <VerifyEmail />
-          </Route>
+            <Route path={Routes.COMPLETE_SIGNUP}>
+              <VerifyEmail />
+            </Route>
 
-          <Route path={`/${Routes.JOIN_ROOM}`}>
-            <JoinRoom />
-          </Route>
+            <Route path={Routes.JOIN_ROOM}>
+              <JoinRoom />
+            </Route>
 
-          <Route path={`/${Routes.INVITE}`}>
-            <SignupThroughInvite />
-          </Route>
+            <Route path={Routes.INVITE}>
+              <SignupThroughInvite />
+            </Route>
 
-          <Route path={`/${Routes.LOGIN_IN_WITH_EMAIL}`}>
-            <LoginWithEmail />
-          </Route>
+            <Route path={Routes.LOGIN_IN_WITH_EMAIL}>
+              <LoginWithEmail />
+            </Route>
 
-          <Route path="/:room_name">
-            <NamedRoom />
-          </Route>
-        </Switch>
-      </AppStateProvider>
-    </Router>
-  </MuiThemeProvider>,
+            <Route path="/:room_name">
+              <NamedRoom />
+            </Route>
+          </Switch>
+        </AppStateProvider>
+      </Router>
+    </MuiThemeProvider>
+  </StylesProvider>,
   // The Modal componenet requires being bound to root element of app.
   // If this root element ever changes, the Modal's root must also be updated
   // You can find the Modal at src/withComponents/SettingsModal/SettingsModal.tsx

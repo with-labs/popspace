@@ -33,8 +33,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
         setShowConfirmation(true);
       } else {
         // we have an error
-        // TODO: Do we want to change where this error shows up in the form or keep
-        // it by the email?
+        // TODO: update this once the error messaging from the backend is standarized
         setEmailError(loginRequest.message);
       }
     } else {
@@ -55,6 +54,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
           className={styles.emailInput}
           error={!!emailError}
           helperText={emailError}
+          margin="normal"
         />
         <Button type="submit" disabled={!email.length}>
           Sign in

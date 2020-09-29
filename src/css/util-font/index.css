@@ -1,6 +1,14 @@
 /* Font utils */
 
 /* semi-bold is 600 */
+.u-fontH0 {
+  font-family: Silka, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 42px;
+  line-height: 48px;
+}
+
 .u-fontH1 {
   font-family: Silka, Helvetica, sans-serif;
   font-style: normal;

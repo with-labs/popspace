@@ -1,3 +1,9 @@
+## 1.128.0
+
+- adding in Error pages
+- connecting error pages to api calls
+- general clean up, moving url string to enums
+
 ## 1.127.0
 
 - Move various style configurations into the Material-UI theme

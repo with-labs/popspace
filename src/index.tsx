@@ -33,7 +33,7 @@ import './with.css';
 
 import packageJson from '../package.json';
 
-if (process.env.REACT_APP_SENTRY_DSN) {
+if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
     release: 'with-app@' + packageJson.version,

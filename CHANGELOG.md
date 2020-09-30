@@ -1,3 +1,7 @@
+## 1.129.0
+
+- Add guard on NODE_ENV to prevent Sentry logging in local development environment.
+
 ## 1.128.0
 
 - adding in Error pages

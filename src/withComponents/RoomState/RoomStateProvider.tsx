@@ -5,10 +5,6 @@ import { Provider } from 'react-redux';
 import * as Sentry from '@sentry/react';
 
 import store from './store';
-import { RoomMetaProvider } from '../RoomMetaProvider/RoomMetaProvider';
-import { ParticipantMetaProvider } from '../ParticipantMetaProvider/ParticipantMetaProvider';
-import { HuddleProvider } from '../HuddleProvider/HuddleProvider';
-import { WidgetProvider } from '../WidgetProvider/WidgetProvider';
 
 import { Actions as PtMetaActionTypes } from '../ParticipantMetaProvider/participantMetaReducer';
 import { AVSourcesProvider } from '../AVSourcesProvider/AVSourcesProvider';
@@ -110,9 +106,10 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
         }
       }
     },
-    [localDT, localParticipant, shouldQueueParticipantMetaActions.current] // Only need to update this if the data track or the need to queue actions change
+    [localDT, localParticipant, shouldQueueParticipantMetaActions] // Only need to update this if the data track or the need to queue actions change
   );
 
+  const localParticipantSid = localParticipant?.sid;
   // Handler called on `trackMessage` events from the room. Will parse the track message as JSON then dispatch it
   // as an action to the redux store.
   const dataMessageHandler = useCallback(
@@ -130,7 +127,7 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
             !hasReceivedPing.current &&
             action.payload &&
             action.payload.state &&
-            action.payload.recipient === localParticipant.sid
+            action.payload.recipient === localParticipantSid
           ) {
             store.dispatch(action);
 
@@ -144,7 +141,7 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
                 // @ts-ignore This is for debugging, no need to type the act obj.
                 if (act.type === PtMetaActionTypes.UpdateAvatar && !act?.payload?.avatar) {
                   Sentry.captureMessage(
-                    `Missing avatar in PING action replay for ${localParticipant.sid}`,
+                    `Missing avatar in PING action replay for ${localParticipantSid}`,
                     Sentry.Severity.Debug
                   );
                 }
@@ -160,7 +157,7 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
         // Assume JSON parse error. Ignore.
       }
     },
-    [room]
+    [dispatch, localParticipantSid]
   );
 
   useEffect(() => {
@@ -206,15 +203,7 @@ export function RoomStateProvider({ children }: IRoomStateProviderProps) {
   return (
     <Provider store={store}>
       <RoomStateContext.Provider value={{ dispatch }}>
-        <RoomMetaProvider>
-          <ParticipantMetaProvider>
-            <AVSourcesProvider>
-              <HuddleProvider>
-                <WidgetProvider>{children}</WidgetProvider>
-              </HuddleProvider>
-            </AVSourcesProvider>
-          </ParticipantMetaProvider>
-        </RoomMetaProvider>
+        <AVSourcesProvider>{children}</AVSourcesProvider>
       </RoomStateContext.Provider>
     </Provider>
   );

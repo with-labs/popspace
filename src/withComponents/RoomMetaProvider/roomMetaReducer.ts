@@ -24,11 +24,11 @@ export default function reducer(
       const newProps = { ...state };
       newProps[payload.key] = payload.value;
 
-      return newProps;
+      return newProps as IRoomMetaState;
     }
 
     case Actions.PropertiesSet: {
-      const newProps = { ...state, ...payload };
+      const newProps = { ...state, ...payload } as IRoomMetaState;
 
       return newProps;
     }
@@ -37,11 +37,12 @@ export default function reducer(
       const newProps = { ...state };
       delete newProps[payload];
 
-      return newProps;
+      return newProps as IRoomMetaState;
     }
-  }
 
-  return state;
+    default:
+      return state;
+  }
 }
 
 export const propertySet = (key: string, value: string) => ({

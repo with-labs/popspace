@@ -1,3 +1,7 @@
+.root {
+  background-color: var(--color-sand);
+}
+
 .body {
   margin-top: 16px;
   color: var(--color-slate-bold);
@@ -14,4 +18,13 @@
 
 .container {
   max-width: 440px;
+}
+
+.imageContainer {
+  max-width: 100%;
+}
+
+.image {
+  width: 100%;
+  max-width: 600px;
 }

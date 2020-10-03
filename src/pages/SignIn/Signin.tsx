@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
+import { Column } from '../../Layouts/TwoColLayout/Column/Column';
+
 import { Header } from '../../withComponents/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
@@ -41,44 +43,40 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     }
   };
 
-  const signInForm = (
-    <div className={styles.container}>
-      <div className={clsx(styles.title, 'u-fontH1')}>Sign in</div>
-      <form onSubmit={onFormSubmit}>
-        <TextField
-          id="SignIn-email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="dorothy@emerald.so"
-          label="Email Address"
-          className={styles.emailInput}
-          error={!!emailError}
-          helperText={emailError}
-          margin="normal"
-        />
-        <Button type="submit" disabled={!email.length}>
-          Sign in
-        </Button>
-      </form>
-    </div>
-  );
-
   return (
     <main className="u-flex u-height100Percent u-flexCol">
       <Header />
       {showConfirmation ? (
         <ConfirmationView email={email} />
       ) : (
-        <TwoColLayout
-          left={signInForm}
-          right={
+        <TwoColLayout>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+            <div className={styles.container}>
+              <div className={clsx(styles.title, 'u-fontH1')}>Sign in</div>
+              <form onSubmit={onFormSubmit}>
+                <TextField
+                  id="SignIn-email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="dorothy@emerald.so"
+                  label="Email Address"
+                  className={styles.emailInput}
+                  error={!!emailError}
+                  helperText={emailError}
+                  margin="normal"
+                />
+                <Button type="submit" disabled={!email.length}>
+                  Sign in
+                </Button>
+              </form>
+            </div>
+          </Column>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
             <div className={styles.imageContainer}>
               <img className={styles.image} src={signinImg} alt="sign in" />
             </div>
-          }
-          leftColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter"
-          rightColClassNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone"
-        />
+          </Column>
+        </TwoColLayout>
       )}
     </main>
   );

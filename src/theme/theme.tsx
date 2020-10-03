@@ -5,6 +5,7 @@ import brandPalette from './palette';
 import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
 import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
 import { generateShadows } from './shadows';
+import { BackgroundPicker } from '../withComponents/BackgroundPicker';
 
 const silka = {
   fontFamily: 'Silka',
@@ -232,12 +233,27 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiMenu: {
         paper: {
           border: `1px solid ${palette.grey[500]}`,
+          borderRadius: '6px',
+          paddingTop: spacing(1),
+          paddingBottom: spacing(1),
         },
       },
       MuiLink: {
         root: {
           fontWeight: 'bold',
           color: palette.text.primary,
+        },
+      },
+      MuiDivider: {
+        root: {
+          backgroundColor: `${palette.grey[500]}`,
+          marginTop: spacing(1.5),
+          marginBottom: spacing(1.5),
+        },
+      },
+      MuiListItemIcon: {
+        root: {
+          minWidth: '40px',
         },
       },
     },

@@ -2,5 +2,7 @@
   border: 1px solid #eceef1;
   border-radius: 10px;
   padding: 16px;
+  background-color: var(--color-snow);
   height: 196px;
+  max-width: 340px;
 }

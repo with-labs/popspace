@@ -148,6 +148,9 @@ class Accounts extends DbAccess {
       return true
     }
     const session = await this.sessionFromToken(sessionToken)
+    if(!session) {
+      return true
+    }
     return parseInt(session.user_id) != parseInt(user.id)
   }
 

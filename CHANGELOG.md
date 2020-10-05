@@ -1,3 +1,8 @@
+## 1.132.0
+
+- fixing link strings
+- fixing typos
+
 ## 1.131.0
 
 - New room ID generation schema

@@ -100,7 +100,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     };
 
     if (!otp || !claimId) {
-      Sentry.captureMessage(`Error finializing accoung for ${email}`, Sentry.Severity.Warning);
+      Sentry.captureMessage(`Error finializing account for ${email}`, Sentry.Severity.Warning);
       setError({
         errorType: ErrorTypes.LINK_EXPIRED,
       });
@@ -116,7 +116,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         // redirect to the room
         history.push(`/${result.roomName}`);
       } else {
-        Sentry.captureMessage(`Error finializing accoung for ${email}`, Sentry.Severity.Error);
+        Sentry.captureMessage(`Error finializing account for ${email}`, Sentry.Severity.Error);
         setError({
           errorType: ErrorTypes.UNEXPECTED,
         });

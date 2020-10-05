@@ -1,6 +1,7 @@
 const DbAccess = require("./pg/db_access")
 const cryptoRandomString = require('crypto-random-string');
-const MAX_FREE_ROOMS = 100
+const ids = require("./util/ids")
+const MAX_FREE_ROOMS = 4
 // Never expire by default
 const STANDARD_MEMBERSHIP_DURATION_MILLIS = 0
 
@@ -280,11 +281,11 @@ class Rooms extends DbAccess {
     // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
     // i.e. 600k rooms
     // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
-    let idString = util.algorithms.generateId()
+    let idString = ids.generateId()
     let isUnique = await this.isUniqueIdString(idString)
     while(!isUnique) {
       // TODO: alert if too many collisions
-      idString = util.algorithms.generateId()
+      idString = ids.generateId()
       isUnique = await this.isUniqueIdString(idString)
     }
     return await this.createRoomWithName(idString, userId)

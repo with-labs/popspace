@@ -1,5 +1,5 @@
-const algorithms = {}
-module.exports = algorithms
+const ids = {}
+module.exports = ids
 
 const cryptoRandomString = require('crypto-random-string');
 
@@ -8,7 +8,7 @@ const NUMBERS = '0123456789'
 const LOWERCASE_AND_NUMBERS = LOWERCASE + NUMBERS
 const NAME_SCHEMAS = ["ccdccdc", "ccdcdcc", "cdccdcc"]
 
-algorithms.generateId = () => {
+ids.generateId = () => {
   /**
     Generates an ID using a schema of characters and digits.
 

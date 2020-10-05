@@ -4,5 +4,4 @@ module.exports = {
   env: require("./env"),
   dev: require("./dev"),
   args: require("./args"),
-  algorithms: require("./algorithms")
 }

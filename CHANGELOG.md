@@ -1,3 +1,7 @@
+## 1.131.0
+
+- New room ID generation schema
+
 ## 1.130.0
 
 - updating error pages

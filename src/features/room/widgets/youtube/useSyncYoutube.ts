@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { YoutubeWidgetState, WidgetData } from '../../../../types/room';
 import { PlayState } from './VideoControls';
+import { useSpatialAudioVolume } from '../../../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume';
 
 function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: string | null) {
   if (lastPlayedUTC) {
@@ -158,6 +159,12 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
       clearInterval(interval);
     };
   }, []);
+
+  // change the volume using spatial audio
+  const volume = useSpatialAudioVolume(state.id);
+  React.useEffect(() => {
+    ytPlayerRef.current?.setVolume(volume * 100);
+  }, [volume]);
 
   return {
     videoControlBindings: {

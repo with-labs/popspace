@@ -2,16 +2,16 @@ import React from 'react';
 import Publication from './Publication';
 import { render } from '@testing-library/react';
 import useTrack from '../../hooks/useTrack/useTrack';
-import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
+import { useSpatialAudioVolume } from '../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { Provider } from 'react-redux';
 import store from '../../state/store';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
 
-jest.mock('../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta');
-const mockUseParticipantLocationDelta = useParticipantLocationDelta as jest.Mock<any>;
-mockUseParticipantLocationDelta.mockImplementation(() => ({ distance: 100 }));
+jest.mock('../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume');
+const mockUseSpatialAudioVolume = useSpatialAudioVolume as jest.Mock<any>;
+mockUseSpatialAudioVolume.mockImplementation(() => 0.5);
 
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {

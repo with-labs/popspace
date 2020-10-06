@@ -5,7 +5,6 @@ import brandPalette from './palette';
 import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
 import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
 import { generateShadows } from './shadows';
-import { BackgroundPicker } from '../withComponents/BackgroundPicker';
 
 const silka = {
   fontFamily: 'Silka',
@@ -52,6 +51,12 @@ const createPaletteTheme = (colors: PaletteOptions) => {
     text: {
       primary: brandPalette.ink.main,
     },
+    success: brandPalette.turquoise,
+    error: brandPalette.cherry,
+    common: {
+      white: brandPalette.snow.main,
+      black: brandPalette.ink.main,
+    },
     ...colors,
   };
 
@@ -82,7 +87,6 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         // default to primary color
         color: 'primary',
         // remove some MUI effects
-        disableElevation: true,
         disableRipple: true,
         disableTouchRipple: true,
         // default button to take full container width
@@ -210,6 +214,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           fontSize: typography.pxToRem(16),
         },
         containedPrimary: {
+          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.06)',
           '&$disabled': {
             backgroundColor: palette.primary.light,
             '& > $label': {
@@ -246,7 +251,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       },
       MuiDivider: {
         root: {
-          backgroundColor: `${palette.grey[500]}`,
+          backgroundColor: `${brandPalette.grey[50]}`,
           marginTop: spacing(1.5),
           marginBottom: spacing(1.5),
         },
@@ -254,6 +259,18 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiListItemIcon: {
         root: {
           minWidth: '40px',
+        },
+      },
+      MuiSnackbar: {
+        root: {
+          borderRadius: '6px',
+          textTransform: 'none',
+          padding: '16px 30px',
+          '& *': {
+            lineHeight: 1,
+            fontWeight: 'bold',
+            fontSize: typography.pxToRem(16),
+          },
         },
       },
     },

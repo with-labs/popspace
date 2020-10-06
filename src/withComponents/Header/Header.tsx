@@ -70,7 +70,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={() => (window.location.href = `mailto:${USER_SUPPORT_EMAIL}`)}>
+        <MenuItem onClick={() => openNewTab(`mailto:${USER_SUPPORT_EMAIL}`)}>
           <ListItemIcon>
             <SupportIcon />
           </ListItemIcon>

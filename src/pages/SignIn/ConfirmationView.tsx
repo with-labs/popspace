@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import checkEmailImg from '../../images/CheckEmail.png';
+import { useSnackbar } from 'notistack';
 import styles from './Signin.module.css';
 
 import Api from '../../utils/api';
@@ -14,6 +15,8 @@ interface IConfirmationViewProps {
 
 export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
   const { email } = props;
+  const { enqueueSnackbar } = useSnackbar();
+
   const [error, setError] = useState('');
 
   // TODO: finialize how the error state looks on this page
@@ -28,12 +31,14 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
         // we have sent off the magic link to the user,
         // clear any error
         setError('');
+        enqueueSnackbar('We just sent you new magic link.', { variant: 'success' });
       } else {
         // we have an error
         // TODO: update this once the error messaging from the backend is standarized
         setError(loginRequest.message);
       }
     } else {
+      enqueueSnackbar('An error has occurred', { variant: 'error' });
       setError('Invalid email');
     }
   };

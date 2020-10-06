@@ -30,7 +30,7 @@ module.exports.handler = async (event, context, callback) => {
 
   const user = await accounts.userByEmail(params.email)
   if(!user) {
-    return await util.http.fail(callback, "Unknown email", {invalidEmail: true})
+    return await util.http.fail(callback, "This email address is not associated with an account.", {invalidEmail: true})
   }
 
   const loginRequest = await accounts.createLoginRequest(user)

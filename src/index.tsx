@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 
 import { CssBaseline } from '@material-ui/core';
-import { StylesProvider } from '@material-ui/core/styles';
+import { StylesProvider, makeStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
+import { SnackbarProvider } from 'notistack';
 
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom';
@@ -16,7 +17,6 @@ import { VideoProvider } from './components/VideoProvider';
 import useQuery from './withHooks/useQuery/useQuery';
 
 import { Routes } from './constants/Routes';
-
 import Room from './pages/room';
 import Signup from './pages/signup';
 import JoinRoom from './pages/JoinRoom';
@@ -60,7 +60,7 @@ const connectionOptions: ConnectOptions = {
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
 };
 
-// -------- here is the where we set up the with application
+// -------- here is the where we set up the application
 const NamedRoom = () => {
   const params: any = useParams();
   const roomName = params['room_name'];
@@ -84,38 +84,38 @@ const RootView = () => {
         <Room name={room} error={error} setError={setError} />
       </VideoProvider>
     );
-  } else if (window.localStorage.getItem('__withso_admin')) {
-    // we have the landing page feature flagged. If the user
-    // has the correct flag set, send them to the dash
-    return <Dashboard />;
   } else {
-    // if not going to a room, or have the feature flag,
-    // send the peson back to the product landing page
-    window.location.href = 'https://with.so';
-    return <div />;
+    // send them to the dash
+    return <Dashboard />;
   }
 };
 
-const EnableAdmin = () => {
+// styles to override the default styles
+const useStyles = makeStyles((themeObj) => ({
+  success: {
+    color: `${themeObj.palette.common.black} !important`,
+    backgroundColor: `${themeObj.palette.success.main} !important`,
+  },
+  error: {
+    color: themeObj.palette.success.contrastText,
+    backgroundColor: `${themeObj.palette.error.main} !important`,
+  },
+}));
+
+const SnackbarWrapper = (props: any) => {
+  const { children } = props;
+  const styles = useStyles();
   return (
-    <div style={{ color: 'black' }}>
-      <button
-        onClick={() => {
-          window.localStorage.setItem('__withso_admin', 'true');
-        }}
-      >
-        {' '}
-        Become admin
-      </button>
-      <button
-        onClick={() => {
-          window.localStorage.removeItem('__withso_admin');
-        }}
-      >
-        {' '}
-        Unbecome admin
-      </button>
-    </div>
+    <SnackbarProvider
+      maxSnack={3}
+      classes={{
+        variantSuccess: styles.success,
+        variantError: styles.error,
+      }}
+      hideIconVariant
+    >
+      {children}
+    </SnackbarProvider>
   );
 };
 
@@ -125,52 +125,51 @@ const EnableAdmin = () => {
 ReactDOM.render(
   <StylesProvider injectFirst>
     <MuiThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <AppStateProvider>
-          <Switch>
-            <Route exact path={Routes.ROOT}>
-              <RootView />
-            </Route>
+      <SnackbarWrapper>
+        <CssBaseline />
+        <Router>
+          <AppStateProvider>
+            <Switch>
+              <Route exact path={Routes.ROOT}>
+                <RootView />
+              </Route>
 
-            <Route exact path={Routes.ENABLE_ADMIN}>
-              <EnableAdmin />
-            </Route>
+              <Route exact path={Routes.SIGN_IN}>
+                <Signin />
+              </Route>
 
-            <Route exact path={Routes.SIGN_IN}>
-              <Signin />
-            </Route>
+              {/* commented out since we dont want people to hit this yet
+              <Route exact path={Routes.SIGN_UP}>
+                <Signup />
+              </Route> */}
 
-            <Route exact path={Routes.SIGN_UP}>
-              <Signup />
-            </Route>
+              <Route path={Routes.CLAIM_ROOM}>
+                <FinalizeAccount />
+              </Route>
 
-            <Route path={Routes.CLAIM_ROOM}>
-              <FinalizeAccount />
-            </Route>
+              <Route path={Routes.COMPLETE_SIGNUP}>
+                <VerifyEmail />
+              </Route>
 
-            <Route path={Routes.COMPLETE_SIGNUP}>
-              <VerifyEmail />
-            </Route>
+              <Route path={Routes.JOIN_ROOM}>
+                <JoinRoom />
+              </Route>
 
-            <Route path={Routes.JOIN_ROOM}>
-              <JoinRoom />
-            </Route>
+              <Route path={Routes.INVITE}>
+                <SignupThroughInvite />
+              </Route>
 
-            <Route path={Routes.INVITE}>
-              <SignupThroughInvite />
-            </Route>
+              <Route path={Routes.LOGIN_IN_WITH_EMAIL}>
+                <LoginWithEmail />
+              </Route>
 
-            <Route path={Routes.LOGIN_IN_WITH_EMAIL}>
-              <LoginWithEmail />
-            </Route>
-
-            <Route path="/:room_name">
-              <NamedRoom />
-            </Route>
-          </Switch>
-        </AppStateProvider>
-      </Router>
+              <Route path="/:room_name">
+                <NamedRoom />
+              </Route>
+            </Switch>
+          </AppStateProvider>
+        </Router>
+      </SnackbarWrapper>
     </MuiThemeProvider>
   </StylesProvider>,
   // The Modal componenet requires being bound to root element of app.

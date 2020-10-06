@@ -72,7 +72,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
         )}
       >
         <div className="u-fontP1">
-          You will soon have the ability to create new room, rename rooms, and delete rooms.
+          You will soon have the ability to create new rooms, rename rooms, and delete rooms.
         </div>
         <div className={styles.feedbackLink}>
           <Link href={Links.FEEDBACK} target="_blank" rel="noopener noreferrer">
@@ -87,15 +87,17 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
     <main className={clsx(styles.root, 'u-height100Percent')}>
-      <div className="u-flex u-flexJustifyCenter u-height100Percent">
-        <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
-          <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
-          <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
-            <div className={clsx(styles.text, 'u-fontH1')}>Your rooms</div>
-            <div className={clsx('u-width100Percent')}>
-              {isLoading ? (
-                <CircularProgress />
-              ) : (
+      {isLoading ? (
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter  u-height100Percent">
+          <CircularProgress />
+        </div>
+      ) : (
+        <div className="u-flex u-flexJustifyCenter u-height100Percent">
+          <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
+            <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
+            <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
+              <div className={clsx(styles.text, 'u-fontH1')}>Your rooms</div>
+              <div className={clsx('u-width100Percent')}>
                 <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
                   {[...rooms.owned, ...rooms.member].map((memberRoom) => {
                     return (
@@ -106,11 +108,11 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
                   })}
                   {feedbackItem}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </main>
   );
 };

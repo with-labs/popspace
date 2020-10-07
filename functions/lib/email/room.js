@@ -10,7 +10,7 @@ module.exports = {
   },
 
   sendRoomClaimEmail: async (toEmail, roomName, url) => {
-    const subject = `Your with.so room is ready`
+    const subject = `Claim your room {$roomName}`
     const tags = [{Name: "type", Value: "room_claim"}]
 
     const html = `

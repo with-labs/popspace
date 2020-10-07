@@ -6,7 +6,7 @@ import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme } from '@material-ui/core';
 
-const RoomViewportContext = React.createContext<{
+export const RoomViewportContext = React.createContext<{
   toWorldCoordinate: (screenCoordinate: Vector2) => Vector2;
   getZoom: () => number;
   onObjectDragStart: () => void;

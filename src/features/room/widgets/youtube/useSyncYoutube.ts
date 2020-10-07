@@ -22,7 +22,7 @@ function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: strin
  * 3. updating both the player and the redux store with values that come from our custom video controls.
  */
 export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial<WidgetData>) => any) {
-  const isPlaying = state.data.isPlaying;
+  const isPlaying = state.data.isPlaying || false;
   const playState = isPlaying ? PlayState.Playing : PlayState.Paused;
   const timestamp = state.data.timestamp ?? 0;
   const playStartedTimestampUTC = state.data.playStartedTimestampUTC;
@@ -30,6 +30,7 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
   const ytPlayerRef = React.useRef<YT.Player | null>(null);
   const [realtimeTimestamp, setRealtimeTimestamp] = React.useState(0);
   const [isScrubbing, setScrubbing] = React.useState(false);
+  const [isMuted, setIsMuted] = React.useState(false);
 
   // when the user pauses or plays in the custom video controls,
   // also pause/play in Redux and sync to remote users
@@ -161,10 +162,15 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
   }, []);
 
   // change the volume using spatial audio
-  const volume = useSpatialAudioVolume(state.id);
+  const naturalVolume = useSpatialAudioVolume(state.id);
+  const volume = isMuted ? 0 : naturalVolume;
   React.useEffect(() => {
     ytPlayerRef.current?.setVolume(volume * 100);
   }, [volume]);
+
+  const toggleMuted = React.useCallback(() => {
+    setIsMuted((v) => !v);
+  }, [setIsMuted]);
 
   return {
     videoControlBindings: {
@@ -179,5 +185,8 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
       onPlay: handlePlayerPlay,
       onPause: handlePlayerPause,
     },
+    isMuted,
+    toggleMuted,
+    isPlaying,
   };
 }

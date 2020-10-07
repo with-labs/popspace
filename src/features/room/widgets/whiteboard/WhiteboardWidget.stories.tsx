@@ -1,4 +1,4 @@
-import { WhiteboardWidget, IWhiteboardWidgetProps } from './WhiteboardWidget';
+import { WhiteboardWidget } from './WhiteboardWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { WidgetType } from '../../../../types/room';
@@ -13,23 +13,23 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<IWhiteboardWidgetProps> = (args) => (
+const Template: Story<{}> = (args) => (
   <Box display="flex" flexDirection="column" alignItems="center">
-    <WhiteboardWidget {...args} />
+    <WhiteboardWidget
+      onClose={() => {}}
+      state={{
+        id: 'example',
+        kind: 'widget',
+        participantSid: 'me',
+        isDraft: false,
+        type: WidgetType.Whiteboard,
+        data: {
+          whiteboardId: uuid(),
+        },
+      }}
+    />
   </Box>
 );
 
 export const Default = Template.bind({});
-Default.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: false,
-    type: WidgetType.Whiteboard,
-    data: {
-      whiteboardId: uuid(),
-    },
-  },
-  onClose: () => {},
-};
+Default.args = {};

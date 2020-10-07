@@ -9,6 +9,7 @@ import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
 import { YoutubeWidgetState } from '../../../../types/room';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
+import { MuteButton } from './MuteButton';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -64,7 +65,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
 
   const saveWidget = useSaveWidget(state.id);
 
-  const { videoControlBindings, youtubeBindings } = useSyncYoutube(state, saveWidget);
+  const { videoControlBindings, youtubeBindings, isMuted, isPlaying, toggleMuted } = useSyncYoutube(state, saveWidget);
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
@@ -79,7 +80,9 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
 
   return (
     <WidgetFrame color="cherry">
-      <WidgetTitlebar title="YouTube - beta" onClose={onClose} />
+      <WidgetTitlebar title="YouTube - beta" onClose={onClose}>
+        <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
+      </WidgetTitlebar>
       <Box className={classes.videoContainer}>
         <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />

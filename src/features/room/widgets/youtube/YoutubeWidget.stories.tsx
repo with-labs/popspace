@@ -1,4 +1,4 @@
-import { YoutubeWidget, IYoutubeWidgetProps } from './YoutubeWidget';
+import { YoutubeWidget } from './YoutubeWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { WidgetType } from '../../../../types/room';
@@ -12,41 +12,35 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<IYoutubeWidgetProps> = (args) => (
+const Template: Story<{ isPlaying: boolean; videoId: string; isDraft: boolean }> = (args) => (
   <Box display="flex" flexDirection="column" alignItems="center">
-    <YoutubeWidget {...args} />
+    <YoutubeWidget
+      onClose={() => {}}
+      state={{
+        id: 'example',
+        kind: 'widget',
+        participantSid: 'me',
+        isDraft: args.isDraft,
+        type: WidgetType.YouTube,
+        data: {
+          videoId: args.videoId,
+          playStartedTimestampUTC: null,
+          isPlaying: args.isPlaying,
+        },
+      }}
+    />
   </Box>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: false,
-    type: WidgetType.YouTube,
-    data: {
-      videoId: '-FlxM_0S2lA',
-      playStartedTimestampUTC: null,
-      isPlaying: true,
-    },
-  },
-  onClose: () => {},
+  isPlaying: false,
+  videoId: '-FlxM_0S2lA',
+  isDraft: false,
 };
 
 export const Draft = Template.bind({});
 Draft.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: true,
-    type: WidgetType.YouTube,
-    data: {
-      videoId: '',
-      playStartedTimestampUTC: null,
-    },
-  },
-  onClose: () => {},
+  ...Default.args,
+  isDraft: true,
 };

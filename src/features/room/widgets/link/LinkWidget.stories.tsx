@@ -1,4 +1,4 @@
-import { LinkWidget, ILinkWidgetProps } from './LinkWidget';
+import { LinkWidget } from './LinkWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { WidgetType } from '../../../../types/room';
@@ -12,40 +12,35 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<ILinkWidgetProps> = (args) => (
+const Template: Story<{ url: string; title: string; isDraft: boolean }> = (args) => (
   <Box display="flex" flexDirection="column" alignItems="center">
-    <LinkWidget {...args} />
+    <LinkWidget
+      onClose={() => {}}
+      state={{
+        id: 'example',
+        kind: 'widget',
+        participantSid: 'me',
+        isDraft: args.isDraft,
+        type: WidgetType.Link,
+        data: {
+          title: args.title,
+          url: args.url,
+        },
+      }}
+    />
   </Box>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: false,
-    type: WidgetType.Link,
-    data: {
-      title: 'Google',
-      url: 'https://google.com',
-    },
-  },
-  onClose: () => {},
+  title: 'Google',
+  url: 'https://google.com',
+  isDraft: false,
 };
 
 export const Draft = Template.bind({});
 Draft.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: true,
-    type: WidgetType.Link,
-    data: {
-      title: '',
-      url: '',
-    },
-  },
-  onClose: () => {},
+  title: '',
+  url: '',
+  isDraft: true,
 };

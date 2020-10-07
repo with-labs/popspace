@@ -1,4 +1,4 @@
-import { StickyNoteWidget, IStickyNoteWidgetProps } from './StickyNoteWidget';
+import { StickyNoteWidget } from './StickyNoteWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { WidgetType } from '../../../../types/room';
@@ -12,40 +12,33 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<IStickyNoteWidgetProps> = (args) => (
+const Template: Story<{ text: string; isDraft: boolean }> = (args) => (
   <Box display="flex" flexDirection="column" alignItems="center">
-    <StickyNoteWidget {...args} />
+    <StickyNoteWidget
+      onClose={() => {}}
+      state={{
+        id: 'example',
+        kind: 'widget',
+        participantSid: 'me',
+        isDraft: args.isDraft,
+        type: WidgetType.StickyNote,
+        data: {
+          text: args.text,
+          author: 'me',
+        },
+      }}
+    />
   </Box>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: false,
-    type: WidgetType.StickyNote,
-    data: {
-      text: 'Hello world!',
-      author: 'me',
-    },
-  },
-  onClose: () => {},
+  text: 'Hello world!',
+  isDraft: false,
 };
 
 export const Draft = Template.bind({});
 Draft.args = {
-  state: {
-    id: 'example',
-    kind: 'widget',
-    participantSid: 'me',
-    isDraft: true,
-    type: WidgetType.StickyNote,
-    data: {
-      text: '',
-      author: '',
-    },
-  },
-  onClose: () => {},
+  text: '',
+  isDraft: true,
 };

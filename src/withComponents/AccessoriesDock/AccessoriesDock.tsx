@@ -131,7 +131,9 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
         type: WidgetType.Whiteboard,
         isDraft: false,
         data: {
-          whiteboardId: uuidv4(),
+          whiteboardState: {
+            lines: [],
+          },
         },
       });
     } else {

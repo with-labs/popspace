@@ -53,7 +53,7 @@ export default function JoinRoom() {
         }
         window.location.href = `/${result.roomName}`;
       } else {
-        if (result.errorCode == ERRORS.JOIN_FAIL_NO_SUCH_USER) {
+        if (result.errorCode === ERRORS.JOIN_FAIL_NO_SUCH_USER) {
           setShowSignup(true);
         } else {
           renderError(result);

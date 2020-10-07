@@ -2,16 +2,14 @@
 // code separate
 
 import React, { useState, useEffect } from 'react';
-
 import { styled } from '@material-ui/core/styles';
-
 import JoinRoom from './withComponents/JoinRoom/JoinRoom';
-
 import { useAppState } from './state';
 import useVideoContext from './hooks/useVideoContext/useVideoContext';
+import * as Sentry from '@sentry/react';
+import { CircularProgress } from '@material-ui/core';
 
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-
 import useRoomState from './hooks/useRoomState/useRoomState';
 import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
 import { useRoomMetaContextBackground } from './withHooks/useRoomMetaContextBackground/useRoomMetaContextBackground';
@@ -60,6 +58,7 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { getToken, setError } = useAppState();
   const { connect } = useVideoContext();
   const [isJoining, setIsJoining] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [initialAvatar, setInitialAvatar] = useState('');
 
@@ -81,31 +80,43 @@ export default function AnglesApp(props: AnglesAppProps) {
   };
 
   useEffect(() => {
+    // on page load check to see if a user has a token,
+    // if they do not we will render out the the old login screen
+    // this will be replaced once we move over to user / rethink anon-users
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
     if (sessionTokenExists(sessionToken)) {
+      debugger;
+      // we have a session token
+      // pop the loading spinner
+      setIsLoading(true);
+      // atttempt to get a twilio token from the back end
       Api.loggedInEnterRoom(sessionToken, roomName)
         .then((result: any) => {
           if (result.success) {
             // get the token
             const token = result.token;
             setIsJoining(true);
+
+            // connect using the token
             connect(token)
               .then(() => {
+                setIsLoading(false);
                 setIsJoining(false);
               })
               .catch((e: any) => {
-                console.log('error logging in');
+                setIsLoading(false);
+                Sentry.captureMessage(`cannot connect room ${roomName}`, Sentry.Severity.Warning);
               });
           }
         })
         .catch((e: any) => {
-          console.log('Big Error');
+          setIsLoading(false);
+          // TODO: add more to this error message
+          Sentry.captureMessage(`Error attempting to join room ${roomName}`, Sentry.Severity.Error);
+          setError(e);
         });
-    } else {
-      // token doesnt exit for now we just display the old login screen
-      // this will be replaced once we move over to user / rethink anon-users
     }
-  }, []);
+  }, [connect, roomName, setError]);
 
   const bgStyle: { [key: string]: string } = {
     backgroundPosition: 'center',
@@ -115,22 +126,49 @@ export default function AnglesApp(props: AnglesAppProps) {
 
   return (
     <Container>
-      <Main
-        style={bgStyle}
-        className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
-      >
-        {roomState === 'disconnected' ? (
-          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
-        ) : (
-          <div className="u-flexGrow1 u-width100Percent u-height100Percent">
-            <ErrorBoundary fallback={() => <RoomFallback />}>
-              <Room initialAvatar={initialAvatar} />
-              <ReconnectingNotification />
-              <AccessoriesDock />
-            </ErrorBoundary>
-          </div>
-        )}
-      </Main>
+      {isLoading ? (
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter  u-height100Percent">
+          <CircularProgress />
+        </div>
+      ) : (
+        <Main
+          style={bgStyle}
+          className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
+        >
+          {roomState === 'disconnected' ? (
+            <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
+          ) : (
+            <div className="u-flexGrow1 u-width100Percent u-height100Percent">
+              <ErrorBoundary fallback={() => <RoomFallback />}>
+                <Room initialAvatar={initialAvatar} />
+                <ReconnectingNotification />
+                <AccessoriesDock />
+              </ErrorBoundary>
+            </div>
+          )}
+        </Main>
+      )}
     </Container>
   );
+
+  // return (
+  //   <Container>
+  //     <Main
+  //       style={bgStyle}
+  //       className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
+  //     >
+  //       {roomState === 'disconnected' ? (
+  //         <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
+  //       ) : (
+  //         <div className="u-flexGrow1 u-width100Percent u-height100Percent">
+  //           <ErrorBoundary fallback={() => <RoomFallback />}>
+  //             <Room initialAvatar={initialAvatar} />
+  //             <ReconnectingNotification />
+  //             <AccessoriesDock />
+  //           </ErrorBoundary>
+  //         </div>
+  //       )}
+  //     </Main>
+  //   </Container>
+  // );
 }

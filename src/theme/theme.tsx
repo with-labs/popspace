@@ -46,6 +46,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
     // all themes use this grey, for now.
     grey: brandPalette.grey,
     background: {
+      default: brandPalette.snow.main,
       paper: brandPalette.snow.main,
     },
     text: {

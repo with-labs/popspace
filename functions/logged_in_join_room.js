@@ -90,8 +90,8 @@ module.exports.handler = async (event, context, callback) => {
     ttl: MAX_ALLOWED_SESSION_SECONDS,
   })
 
-  token.identity = `${user.display_name}#!${userUuid4}`;
-  const videoGrant = new VideoGrant({ room: room.id });
+  token.identity = `${user.first_name}#!${userUuid4}`;
+  const videoGrant = new VideoGrant({ room: `${process.env.NODE_ENV}_room.id` });
   token.addGrant(videoGrant);
 
   return await util.http.succeed(callback, {token: token.toJwt()})

@@ -99,7 +99,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
                 <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
                   {[...rooms.owned, ...rooms.member].map((memberRoom) => {
                     return (
-                      <DashboardItem>
+                      <DashboardItem key={memberRoom.id}>
                         <RoomSummary roomName={memberRoom.name} key={memberRoom.id} />
                       </DashboardItem>
                     );

@@ -16,7 +16,7 @@
  * Sept 17, 2020 WQP
  * - Add Sentry logging in error setting callback.
  */
-import React, { createContext, ReactNode } from 'react';
+import React, { createContext, ReactNode, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import {
   CreateLocalTrackOptions,
@@ -68,11 +68,14 @@ interface VideoProviderProps {
 }
 
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
-  const onErrorCallback = (error: TwilioError) => {
-    console.log(`ERROR: ${error.message}`, error);
-    Sentry.captureException(error);
-    onError(error);
-  };
+  const onErrorCallback = useCallback(
+    (error: TwilioError) => {
+      console.log(`ERROR: ${error.message}`, error);
+      Sentry.captureException(error);
+      onError(error);
+    },
+    [onError]
+  );
 
   const {
     localTracks,

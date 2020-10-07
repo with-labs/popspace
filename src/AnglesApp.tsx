@@ -2,16 +2,14 @@
 // code separate
 
 import React, { useState, useEffect } from 'react';
-
 import { styled } from '@material-ui/core/styles';
-
 import JoinRoom from './withComponents/JoinRoom/JoinRoom';
-
 import { useAppState } from './state';
 import useVideoContext from './hooks/useVideoContext/useVideoContext';
+import * as Sentry from '@sentry/react';
+import { CircularProgress } from '@material-ui/core';
 
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-
 import useRoomState from './hooks/useRoomState/useRoomState';
 import { useRoomMetaContext } from './withHooks/useRoomMetaContext/useRoomMetaContext';
 import { useRoomMetaContextBackground } from './withHooks/useRoomMetaContextBackground/useRoomMetaContextBackground';
@@ -24,6 +22,10 @@ import { WithModal } from './withComponents/WithModal/WithModal';
 import { USER_SESSION_TOKEN } from './constants/User';
 import { sessionTokenExists } from './utils/SessionTokenExists';
 import Api from './utils/api';
+import { ErrorPage } from './pages/ErrorPage/ErrorPage';
+import { ErrorTypes } from './constants/ErrorType';
+import { ErrorInfo } from './types';
+import { randomAvatar } from './withComponents/AvatarSelect/options';
 
 const Container = styled('div')({
   display: 'flex',
@@ -60,6 +62,8 @@ export default function AnglesApp(props: AnglesAppProps) {
   const { getToken, setError } = useAppState();
   const { connect } = useVideoContext();
   const [isJoining, setIsJoining] = useState(false);
+  const [isLoading, setIsLoading] = useState(sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
+  const [errorPageInfo, setErroPageInfo] = useState<ErrorInfo>(null!);
 
   const [initialAvatar, setInitialAvatar] = useState('');
 
@@ -81,31 +85,52 @@ export default function AnglesApp(props: AnglesAppProps) {
   };
 
   useEffect(() => {
+    // on page load check to see if a user has a token,
+    // if they do not we will render out the the old login screen
+    // this will be replaced once we move over to user / rethink anon-users
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
     if (sessionTokenExists(sessionToken)) {
+      // we have a session token
+      // pop the loading spinner
+      setIsLoading(true);
+      // atttempt to get a twilio token from the back end
       Api.loggedInEnterRoom(sessionToken, roomName)
         .then((result: any) => {
           if (result.success) {
             // get the token
             const token = result.token;
-            setIsJoining(true);
+            // TODO: set a random avatar for right now, we will replace this with a user pref driven version later
+            setInitialAvatar(randomAvatar().name);
+            // connect using the token
             connect(token)
               .then(() => {
-                setIsJoining(false);
+                // we have connected, show the room
+                setIsLoading(false);
               })
               .catch((e: any) => {
-                console.log('error logging in');
+                setIsLoading(false);
+                // if something fails here, we should fall back to just using the default join room for now
+                Sentry.captureMessage(`cannot connect room ${roomName}`, Sentry.Severity.Warning);
               });
+          } else {
+            // TODO: we will have to fine tune this error messaging once we get back better
+            // error codes from the back end, for now we just show the room doesnt exist page
+            setErroPageInfo({
+              errorType: ErrorTypes.ROOM_NOT_FOUND,
+            });
+            setIsLoading(false);
           }
         })
         .catch((e: any) => {
-          console.log('Big Error');
+          setIsLoading(false);
+          Sentry.captureMessage(`Error attempting to join room ${roomName}`, Sentry.Severity.Error);
+          setErroPageInfo({
+            errorType: ErrorTypes.UNEXPECTED,
+            error: e,
+          });
         });
-    } else {
-      // token doesnt exit for now we just display the old login screen
-      // this will be replaced once we move over to user / rethink anon-users
     }
-  }, []);
+  }, [setError, connect, roomName]);
 
   const bgStyle: { [key: string]: string } = {
     backgroundPosition: 'center',
@@ -113,24 +138,32 @@ export default function AnglesApp(props: AnglesAppProps) {
     backgroundImage: bgImage,
   };
 
-  return (
+  return errorPageInfo ? (
+    <ErrorPage type={errorPageInfo.errorType} errorMessage={errorPageInfo.error?.message} />
+  ) : (
     <Container>
-      <Main
-        style={bgStyle}
-        className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
-      >
-        {roomState === 'disconnected' ? (
-          <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
-        ) : (
-          <div className="u-flexGrow1 u-width100Percent u-height100Percent">
-            <ErrorBoundary fallback={() => <RoomFallback />}>
-              <Room initialAvatar={initialAvatar} />
-              <ReconnectingNotification />
-              <AccessoriesDock />
-            </ErrorBoundary>
-          </div>
-        )}
-      </Main>
+      {isLoading ? (
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter  u-height100Percent">
+          <CircularProgress />
+        </div>
+      ) : (
+        <Main
+          style={bgStyle}
+          className="u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter u-overflowHidden u-positionRelative"
+        >
+          {roomState === 'disconnected' ? (
+            <JoinRoom roomName={roomName} onJoinSubmitHandler={onJoinSubmitHandler} isJoining={isJoining} />
+          ) : (
+            <div className="u-flexGrow1 u-width100Percent u-height100Percent">
+              <ErrorBoundary fallback={() => <RoomFallback />}>
+                <Room initialAvatar={initialAvatar} />
+                <ReconnectingNotification />
+                <AccessoriesDock />
+              </ErrorBoundary>
+            </div>
+          )}
+        </Main>
+      )}
     </Container>
   );
 }

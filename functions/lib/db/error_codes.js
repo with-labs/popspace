@@ -11,10 +11,13 @@ module.exports = {
     TOO_MANY_OWNED_ROOMS: 1,
     ALREADY_INVITED: 2,
     UNKNOWN_ROOM: 3,
-    CLAIM_UNIQUENESS: 4
+    CLAIM_UNIQUENESS: 4,
+    UNAUTHORIZED_ROOM_ACCESSS: "UNAUTHORIZED_ROOM_ACCESSS"
   },
 
   user: {
-    ALREADY_REGISTERED: 1
+    ALREADY_REGISTERED: 1,
+    // We prefer string error codes but thave not yet fully migrated towards them
+    UNAUTHORIZED: "UNAUTHORIZED_USER"
   }
 }

@@ -7,21 +7,25 @@ const Rooms = require("./rooms")
 const Profile = require("./profile")
 
 const init = async () => {
-  return await pg.init()
+  const postgres = await pg.init()
+  db.rooms = new Rooms()
+  db.accounts = new Accounts()
+  return postgres
 }
 
 const cleanup = async () => {
   return await pg.tearDown()
 }
 
-module.exports = {
+const db = {
   pg: pg,
   otp: otp,
   Accounts: Accounts,
   ErrorCodes: ErrorCodes,
   Rooms: Rooms,
   Profile: Profile,
-
   init: init,
   cleanup: cleanup
 }
+
+module.exports = db

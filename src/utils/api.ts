@@ -44,6 +44,11 @@ class Api {
   async resolveRoomClaim(token: any, otp: string, claimId: string) {
     return await this.post('/resolve_room_claim', { token, otp, claimId });
   }
+
+  async loggedInEnterRoom(token: any, roomName: string) {
+    return await this.post('/logged_in_join_room', { token, roomName });
+  }
+
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

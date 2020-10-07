@@ -15,13 +15,11 @@ import { RoomInfo } from '../../types';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo, UserInfo } from '../../types';
+import { sessionTokenExists } from '../../utils/SessionTokenExists';
+
 import styles from './Dashboard.module.css';
 
 interface IDashboardProps {}
-
-const sessionTokenExists = (sessionToken: any) => {
-  return !!sessionToken && sessionToken !== 'undefined' && sessionToken !== 'null';
-};
 
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const history = useHistory();

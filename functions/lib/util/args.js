@@ -4,5 +4,12 @@ module.exports = {
       return email.trim().toLowerCase()
     }
     return email
+  },
+
+  normalizeRoomName: (roomName) => {
+    if(roomName) {
+      return roomName.trim().toLowerCase()
+    }
+    return roomName
   }
 }

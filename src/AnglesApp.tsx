@@ -1,7 +1,7 @@
 // copy of the initial twilio code, changed a few things and wanted to keep the
 // code separate
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { styled } from '@material-ui/core/styles';
 
@@ -21,6 +21,9 @@ import { Room } from './withComponents/Room/Room';
 import { AccessoriesDock } from './withComponents/AccessoriesDock/AccessoriesDock';
 import { ErrorBoundary } from './withComponents/ErrorBoundary/ErrorBoundary';
 import { WithModal } from './withComponents/WithModal/WithModal';
+import { USER_SESSION_TOKEN } from './constants/User';
+import { sessionTokenExists } from './utils/SessionTokenExists';
+import Api from './utils/api';
 
 const Container = styled('div')({
   display: 'flex',
@@ -76,6 +79,33 @@ export default function AnglesApp(props: AnglesAppProps) {
       setIsJoining(false);
     }
   };
+
+  useEffect(() => {
+    const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
+    if (sessionTokenExists(sessionToken)) {
+      Api.loggedInEnterRoom(sessionToken, roomName)
+        .then((result: any) => {
+          if (result.success) {
+            // get the token
+            const token = result.token;
+            setIsJoining(true);
+            connect(token)
+              .then(() => {
+                setIsJoining(false);
+              })
+              .catch((e: any) => {
+                console.log('error logging in');
+              });
+          }
+        })
+        .catch((e: any) => {
+          console.log('Big Error');
+        });
+    } else {
+      // token doesnt exit for now we just display the old login screen
+      // this will be replaced once we move over to user / rethink anon-users
+    }
+  }, []);
 
   const bgStyle: { [key: string]: string } = {
     backgroundPosition: 'center',

@@ -34,6 +34,13 @@ class Rooms extends DbAccess {
     return await db.pg.massive.rooms.findOne({id: id})
   }
 
+  async roomByName(name) {
+    const normalized = util.args.normalizeRoomName(name)
+    const roomNameEntry = await db.pg.massive.room_names.findOne({name: normalized})
+    if(!roomNameEntry) return null;
+    return await db.pg.massive.rooms.findOne({id: roomNameEntry.room_id})
+  }
+
   async preferredNameById(id) {
     const names = await db.pg.massive.room_names.find({
       room_id: id

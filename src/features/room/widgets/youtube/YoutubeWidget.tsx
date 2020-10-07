@@ -43,12 +43,10 @@ const useStyles = makeStyles((theme) => ({
   },
   videoControls: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-
-    backgroundColor: `rgba(0,0,0, 0.2)`,
-    color: theme.palette.common.white,
+    // add the pixels we subtracted above
+    bottom: theme.spacing(2) + 6,
+    left: theme.spacing(2),
+    right: theme.spacing(2),
 
     visibility: 'hidden',
     pointerEvents: 'none',

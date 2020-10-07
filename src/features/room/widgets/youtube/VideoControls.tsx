@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { makeStyles, Tooltip, Box, IconButton, Slider } from '@material-ui/core';
-import { PlayArrow, Pause } from '@material-ui/icons';
+import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@material-ui/core';
+import { PauseOutlined, PlayArrowOutlined } from '@material-ui/icons';
 import clsx from 'clsx';
 
 export enum PlayState {
@@ -20,14 +20,21 @@ export interface IVideoControlsProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    '& > * + *': {
-      marginLeft: theme.spacing(1),
-    },
+    backgroundColor: `rgba(255,255,255, 0.9)`,
+    backdropFilter: `blur(4px)`,
+    color: theme.palette.common.black,
+    borderRadius: 6,
   },
   slider: {
     flex: 1,
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(1.5),
+    color: theme.palette.common.black,
+  },
+  timeDisplay: {
+    fontSize: theme.typography.pxToRem(12),
+    fontWeight: 'bold',
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -68,9 +75,9 @@ export const VideoControls: React.FC<IVideoControlsProps> = ({
   );
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" p={1} className={clsx(classes.root, className)}>
+    <Box display="flex" flexDirection="row" alignItems="center" p={0.5} className={clsx(classes.root, className)}>
       <IconButton onClick={togglePlayState} size="small" color="inherit">
-        {playState === PlayState.Playing ? <Pause /> : <PlayArrow />}
+        {playState === PlayState.Playing ? <PauseOutlined /> : <PlayArrowOutlined />}
       </IconButton>
       <Slider
         ValueLabelComponent={TimestampLabel}
@@ -81,6 +88,7 @@ export const VideoControls: React.FC<IVideoControlsProps> = ({
         className={classes.slider}
         max={duration}
       />
+      <TimeDisplay value={timestamp} className={classes.timeDisplay} />
     </Box>
   );
 };
@@ -103,3 +111,9 @@ const TimestampLabel: React.FC<{ open: boolean; value: number; children: React.R
     </Tooltip>
   );
 };
+
+const TimeDisplay: React.FC<{ value: number; className?: string }> = ({ value, className }) => (
+  <Typography aria-label="current video time" className={className}>
+    {toTimestampString(value)}
+  </Typography>
+);

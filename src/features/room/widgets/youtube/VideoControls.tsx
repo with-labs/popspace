@@ -20,7 +20,7 @@ export interface IVideoControlsProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: `rgba(255,255,255, 0.9)`,
+    backgroundColor: `rgba(255,255,255, 0.8)`,
     backdropFilter: `blur(4px)`,
     color: theme.palette.common.black,
     borderRadius: 6,

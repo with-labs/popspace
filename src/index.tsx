@@ -76,6 +76,7 @@ const RootView = () => {
   const { error, setError } = useAppState();
   const query = useQuery();
   const room: string | null = query.get('r');
+
   // we still support the use o the r query param, so we check if youre
   // trying to get in to a room, if we have it send you to the room
   if (room) {

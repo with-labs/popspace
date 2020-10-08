@@ -205,7 +205,7 @@ const ROOM_WHITELIST_PASSCODES = {
 };
 
 // When developing locally (npm run dev), don't enforce passcode
-const DISABLE_LOCAL_DEV_AUTH = process.env.DISABLE_LOCAL_DEV_AUTH === 'true';
+const DISABLE_LOCAL_DEV_AUTH = false//process.env.DISABLE_LOCAL_DEV_AUTH === 'true';
 
 const headers = {
   'Content-Type': 'application/json'
@@ -256,66 +256,38 @@ module.exports.handler = async (event, context, callback) => {
     let requestBody = JSON.parse(event.body);
     var { user_identity, room_name, passcode } = requestBody;
   } catch {
-    const body = JSON.stringify({
-      error: {
-        message: 'incorrect body data',
-        explanation: 'The JSON body submitted is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 400,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Incorrect body data.`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
 
   // We only allow a room_name that is whitelisted
   if (!room_name || !room_name.length || !ROOM_WHITELIST_PASSCODES[room_name]) {
-    const body = JSON.stringify({
-      error: {
-        message: 'room_name incorrect',
-        explanation: 'The room_name submitted is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 401,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `The room_name submitted is incorrect.`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
 
   // The passcode for each room_name must be correct if not running in local dev mode
   if (!DISABLE_LOCAL_DEV_AUTH && (!passcode || !passcode.length || ROOM_WHITELIST_PASSCODES[room_name] !== passcode)) {
-    const body = JSON.stringify({
-      error: {
-        message: 'passcode incorrect',
-        explanation: 'The passcode used to access this room_name is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 401,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Incorrect passcode`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
 
   // A user_identity a.k.a. user's name must be supplied to join room
   if (!user_identity || !user_identity.length) {
-    const body = JSON.stringify({
-      error: {
-        message: 'missing user_identity',
-        explanation: 'The user_identity parameter is missing.',
-      }
-    });
-    callback(null, {
-      statusCode: 400,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Missing user_identity`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
 
   const userUuid4 = uuidv4();
@@ -333,11 +305,6 @@ module.exports.handler = async (event, context, callback) => {
 
   const videoGrant = new VideoGrant({ room: roomId });
   token.addGrant(videoGrant);
-  const body = JSON.stringify({token: token.toJwt()});
 
-  callback(null, {
-    statusCode: 200,
-    headers,
-    body
-  });
+  return await util.http.succeed(callback, {token: token.toJwt()})
 };

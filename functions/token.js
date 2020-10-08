@@ -1,3 +1,6 @@
+const lib = require("lib")
+lib.util.env.init(require("./env.json"))
+
 const AccessToken = require('twilio').jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
 const uuidv4 = require('uuid').v4;
@@ -162,7 +165,7 @@ const ROOM_WHITELIST_PASSCODES = {
   studio: '128522',
   supernodevc: '857487',
   producthunt: '269170',
-  framer: '995771', 
+  framer: '995771',
   figma: '547569',
   githubocto:'201974',
   motive: '$Motive!20',
@@ -202,7 +205,7 @@ const ROOM_WHITELIST_PASSCODES = {
 };
 
 // When developing locally (npm run dev), don't enforce passcode
-const DISABLE_LOCAL_DEV_AUTH = process.env.DISABLE_LOCAL_DEV_AUTH === 'true';
+const DISABLE_LOCAL_DEV_AUTH = false//process.env.DISABLE_LOCAL_DEV_AUTH === 'true';
 
 const headers = {
   'Content-Type': 'application/json'
@@ -244,97 +247,64 @@ const TWILIO_API_KEYS = {
 const TWILIO_API_KEY_SID =    TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SID :    TWILIO_API_KEYS['development'].TWILIO_API_KEY_SID;
 const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SECRET : TWILIO_API_KEYS['development'].TWILIO_API_KEY_SECRET;
 
-module.exports.handler = (event, context, callback) => {
+module.exports.handler = async (event, context, callback) => {
+  if(util.http.failUnlessPost(event, callback)) return;
+  await lib.init()
 
-  // We only care about POSTs with body data
-  if(event.httpMethod !== 'POST' || !event.body) {
-    callback(null, {
-      statusCode: 200,
-      headers,
-      body: ''
-    });
-  }
-  console.log('1');
-  // Parese JSON body of request and handle errors if malformed
+  // Parsse JSON body of request and handle errors if malformed
   try {
     let requestBody = JSON.parse(event.body);
     var { user_identity, room_name, passcode } = requestBody;
   } catch {
-    const body = JSON.stringify({
-      error: {
-        message: 'incorrect body data',
-        explanation: 'The JSON body submitted is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 400,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Incorrect body data.`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
-  console.log('2');
+
   // We only allow a room_name that is whitelisted
   if (!room_name || !room_name.length || !ROOM_WHITELIST_PASSCODES[room_name]) {
-    const body = JSON.stringify({
-      error: {
-        message: 'room_name incorrect',
-        explanation: 'The room_name submitted is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 401,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `The room_name submitted is incorrect.`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
-  console.log('3');
+
   // The passcode for each room_name must be correct if not running in local dev mode
   if (!DISABLE_LOCAL_DEV_AUTH && (!passcode || !passcode.length || ROOM_WHITELIST_PASSCODES[room_name] !== passcode)) {
-    const body = JSON.stringify({
-      error: {
-        message: 'passcode incorrect',
-        explanation: 'The passcode used to access this room_name is incorrect.',
-      }
-    });
-    callback(null, {
-      statusCode: 401,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Incorrect passcode`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
-  console.log('4');
+
   // A user_identity a.k.a. user's name must be supplied to join room
   if (!user_identity || !user_identity.length) {
-    const body = JSON.stringify({
-      error: {
-        message: 'missing user_identity',
-        explanation: 'The user_identity parameter is missing.',
-      }
-    });
-    callback(null, {
-      statusCode: 400,
-      headers,
-      body
-    });
-    return;
+    return await lib.util.http.fail(
+      callback,
+      `Missing user_identity`,
+      { errorCode: "PLACEHOLDER" }
+    )
   }
-  console.log('5');
+
   const userUuid4 = uuidv4();
   const token = new AccessToken(TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, {
     ttl: MAX_ALLOWED_SESSION_DURATION,
   });
-  console.log('6');
+
   token.identity = `${user_identity}#!${userUuid4}`;
-  const videoGrant = new VideoGrant({ room: room_name });
+
+  let roomId = room_name
+  const room = await lib.db.rooms.roomByName(room_name)
+  if(room) {
+    roomId = `${process.env.NODE_ENV}_${room.id}`
+  }
+
+  const videoGrant = new VideoGrant({ room: roomId });
   token.addGrant(videoGrant);
-  const body = JSON.stringify({token: token.toJwt()});
-  console.log('7');
-  callback(null, {
-    statusCode: 200,
-    headers,
-    body
-  });
+
+  return await util.http.succeed(callback, {token: token.toJwt()})
 };

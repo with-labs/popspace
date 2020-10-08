@@ -24,12 +24,14 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     // clear any errors we have
     setEmailError('');
 
+    const cleanEmail = email.trim();
+
     // check if the email is valid or not
-    const isValid = isEmailValid(email);
+    const isValid = isEmailValid(cleanEmail);
 
     if (isValid) {
       // TODO: fix typing
-      const loginRequest: any = await Api.requestLoginOtp(email);
+      const loginRequest: any = await Api.requestLoginOtp(cleanEmail);
       if (loginRequest.success) {
         // we have sent off the magic link to the user, so render success page
         setShowConfirmation(true);

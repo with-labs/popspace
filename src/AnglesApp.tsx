@@ -132,6 +132,18 @@ export default function AnglesApp(props: AnglesAppProps) {
     }
   }, [setError, connect, roomName]);
 
+  // currently twilio has a call in the useRoom hook that before the video room unloads,
+  // it will disconnect the user when the `beforeunload` event is called. We will do something similar here
+  // for now that once beforeunload is called we will just set our spinner to be true and thus will not see the join page
+  // when the user navigates away from room.
+  useEffect(() => {
+    const onUnload = () => {
+      setIsLoading(true);
+    };
+    window.addEventListener('beforeunload', onUnload);
+    return () => window.removeEventListener('beforeunload', onUnload);
+  }, []);
+
   const bgStyle: { [key: string]: string } = {
     backgroundPosition: 'center',
     backgroundSize: 'cover',

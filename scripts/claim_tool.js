@@ -20,6 +20,12 @@ const lib = require("../functions/lib/index.js")
 const csv = require('csv-parser');
 const fs = require('fs');
 
+const APP_URL = {
+  "development": "http://localhost:8888",
+  "staging": "https://dev.app.with.so",
+  "production": "https://with.so"
+}
+
 async function readCsv(filename) {
   const result = []
   return new Promise((accept, reject) => {
@@ -60,8 +66,8 @@ const claimsFromCsv = async (allowRegistered, path) => {
   console.log(`Importing from ${path}`)
   const data = await readCsv(path)
   for(const row of data) {
-    const email = row['Email Address']
-    const roomName = row['Room name']
+    const email = row['email']
+    const roomName = row['name']
     try {
       console.log("=========================================")
       const claim = await createOneClaim(email, roomName, allowRegistered)
@@ -90,7 +96,7 @@ const claimsFromCsv = async (allowRegistered, path) => {
 const sendUnsent = async (allowRegistered) => {
   const claims = await db.pg.massive.room_claims.find({ emailed_at: null })
   console.log(`About to send ${claims.length} emails...`)
-  const appUrl = "http://localhost:8888"
+  const appUrl = APP_URL[process.env.NODE_ENV]
   for(const claim of claims) {
     if(claim.emailed_at) {
       console.log(`Already sent email to ${claim.email} at ${claim.emailed_at}; skipping`)

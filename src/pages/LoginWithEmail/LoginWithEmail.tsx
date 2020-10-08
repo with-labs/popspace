@@ -6,11 +6,16 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
 import { CircularProgress } from '@material-ui/core';
 import useQuery from '../../withHooks/useQuery/useQuery';
+import { ErrorPage } from '../ErrorPage/ErrorPage';
+import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorInfo } from '../../types';
 
 interface ILoginWithEmailProps {}
 
 export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<ErrorInfo>(null!);
 
   // get the query params from the invite
   const query = useQuery();
@@ -20,30 +25,34 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
   const otp = useMemo(() => query.get('otp'), [query]);
   const uid = useMemo(() => query.get('uid'), [query]);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
   useEffect(() => {
     setIsLoading(true);
     // if opt, or the user id is empty, redirect to root
     if (!otp || !uid) {
-      history.push(`/${Routes.ROOT}`);
+      history.push(Routes.ROOT);
     } else {
       Api.logIn(otp, uid)
         .then((result: any) => {
           setIsLoading(false);
           if (result.success) {
+            // set the session token
             window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
-            history.push(`/${Routes.ROOT}`);
+            // redirect to the root
+            history.push(Routes.ROOT);
           } else {
-            // TODO: make better error experienced
-            setError(result.message);
+            setError({
+              errorType: ErrorTypes.LINK_EXPIRED,
+              error: result,
+            });
           }
         })
         .catch((e: any) => {
           setIsLoading(false);
           Sentry.captureMessage(`Error using room for ${uid}`, Sentry.Severity.Error);
-          setError(e.message);
+          setError({
+            errorType: ErrorTypes.UNEXPECTED,
+            error: e,
+          });
         });
     }
   }, [history, otp, uid]);
@@ -54,9 +63,9 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
         <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
           <CircularProgress />
         </div>
-      ) : (
-        <div>error : {error}</div>
-      )}
+      ) : error ? (
+        <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
+      ) : null}
     </div>
   );
 };

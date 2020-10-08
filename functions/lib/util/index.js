@@ -3,5 +3,5 @@ module.exports = {
   session: require("./session"),
   env: require("./env"),
   dev: require("./dev"),
-  args: require("./args")
+  args: require("./args"),
 }

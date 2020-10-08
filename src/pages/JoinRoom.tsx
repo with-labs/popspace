@@ -33,6 +33,7 @@ export default function JoinRoom() {
       }
       window.location.href = `/${result.roomName}`;
     } else {
+      // invalid link page
       alert(result.message);
     }
   };
@@ -52,10 +53,11 @@ export default function JoinRoom() {
         }
         window.location.href = `/${result.roomName}`;
       } else {
-        if (result.errorCode == ERRORS.JOIN_FAIL_NO_SUCH_USER) {
+        if (result.errorCode === ERRORS.JOIN_FAIL_NO_SUCH_USER) {
           setShowSignup(true);
         } else {
           renderError(result);
+          // same as finalize account
         }
       }
     });

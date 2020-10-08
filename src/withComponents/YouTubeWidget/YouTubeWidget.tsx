@@ -126,7 +126,7 @@ export const YouTubeWidget: React.FC<IYouTubeWidget> = ({ id, dragConstraints, p
           className={styles.videoUrlInput}
           value={videoUrl}
           onChange={(event) => setVideoUrl(event.target.value)}
-          placeholder={'Video Url'}
+          placeholder="Video Url"
           error={formError.length > 0}
           helperText={formError}
           margin="normal"

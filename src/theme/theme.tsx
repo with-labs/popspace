@@ -46,7 +46,17 @@ const createPaletteTheme = (colors: PaletteOptions) => {
     // all themes use this grey, for now.
     grey: brandPalette.grey,
     background: {
+      default: brandPalette.snow.main,
       paper: brandPalette.snow.main,
+    },
+    text: {
+      primary: brandPalette.ink.main,
+    },
+    success: brandPalette.turquoise,
+    error: brandPalette.cherry,
+    common: {
+      white: brandPalette.snow.main,
+      black: brandPalette.ink.main,
     },
     ...colors,
   };
@@ -78,7 +88,6 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         // default to primary color
         color: 'primary',
         // remove some MUI effects
-        disableElevation: true,
         disableRipple: true,
         disableTouchRipple: true,
         // default button to take full container width
@@ -206,6 +215,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           fontSize: typography.pxToRem(16),
         },
         containedPrimary: {
+          boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.06)',
           '&$disabled': {
             backgroundColor: palette.primary.light,
             '& > $label': {
@@ -229,6 +239,39 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiMenu: {
         paper: {
           border: `1px solid ${palette.grey[500]}`,
+          borderRadius: '6px',
+          paddingTop: spacing(1),
+          paddingBottom: spacing(1),
+        },
+      },
+      MuiLink: {
+        root: {
+          fontWeight: 'bold',
+          color: palette.text.primary,
+        },
+      },
+      MuiDivider: {
+        root: {
+          backgroundColor: `${brandPalette.grey[50]}`,
+          marginTop: spacing(1.5),
+          marginBottom: spacing(1.5),
+        },
+      },
+      MuiListItemIcon: {
+        root: {
+          minWidth: '40px',
+        },
+      },
+      MuiSnackbar: {
+        root: {
+          borderRadius: '6px',
+          textTransform: 'none',
+          padding: '16px 30px',
+          '& *': {
+            lineHeight: 1,
+            fontWeight: 'bold',
+            fontSize: typography.pxToRem(16),
+          },
         },
       },
     },

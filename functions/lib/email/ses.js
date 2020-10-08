@@ -18,7 +18,7 @@ class Ses {
   async sendMail(from, to, subject, html, plaintextFallback, tags) {
     return new Promise((resolve, reject) => {
       this.transporter.sendMail({
-        from: from,
+        from: `"The With team" <${from}>`,
         to: to,
         subject: subject,
         html: html,

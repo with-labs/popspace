@@ -1,3 +1,32 @@
+## 1.133.0
+
+- mirgation ui fixes
+
+## 1.132.0
+
+- fixing link strings
+- fixing typos
+
+## 1.131.0
+
+- New room ID generation schema
+
+## 1.130.0
+
+- updating error pages
+- adding in error page images
+- updating dashboard
+
+## 1.129.0
+
+- Add guard on NODE_ENV to prevent Sentry logging in local development environment.
+
+## 1.128.0
+
+- adding in Error pages
+- connecting error pages to api calls
+- general clean up, moving url string to enums
+
 ## 1.127.0
 
 - Move various style configurations into the Material-UI theme

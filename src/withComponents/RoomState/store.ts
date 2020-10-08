@@ -8,14 +8,14 @@ import participantMeta from '../ParticipantMetaProvider/participantMetaReducer';
 import properties from '../RoomMetaProvider/roomMetaReducer';
 
 const appReducer = combineReducers({ huddles, widgets, participantMeta, properties });
+export type RootState = ReturnType<typeof appReducer>;
 
 // This is a technique to replace the state of the Redux store state as seen here:
 // https://stackoverflow.com/questions/35622588/how-to-reset-the-state-of-a-redux-store/35641992#35641992
 // On a PING, we want to replace the state, since that will be like the initial state for a newly entered participant.
-// @ts-ignore
-const rootReducer = (state, action) => {
+const rootReducer = (state: RootState | undefined, action: any) => {
   if (action.type === 'PING') {
-    return action.payload.state;
+    return action.payload.state as RootState;
   }
 
   return appReducer(state, action);

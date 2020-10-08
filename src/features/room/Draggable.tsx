@@ -3,11 +3,12 @@ import { animated, SpringValue, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { makeStyles } from '@material-ui/core';
+import { DragIndicator } from '@material-ui/icons';
 import { useRoomViewport } from './RoomViewport';
 import { useSelector } from 'react-redux';
 import { actions } from './roomSlice';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
-import { Vector2 } from '../../types/spatials';
+import { Vector2, Bounds } from '../../types/spatials';
 import { addVectors, roundVector, subtractVectors } from '../../utils/math';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
@@ -54,10 +55,14 @@ const useStyles = makeStyles({
 
 const DraggableContext = React.createContext<{
   dragHandleProps: ReactEventHandlers;
+  resizeHandleProps: ReactEventHandlers;
   isDraggingAnimatedValue: SpringValue<boolean>;
+  isResizingAnimatedValue: SpringValue<boolean>;
 }>({
   dragHandleProps: {},
+  resizeHandleProps: {},
   isDraggingAnimatedValue: null as any,
+  isResizingAnimatedValue: null as any,
 });
 
 /**
@@ -105,6 +110,17 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     },
     [coordinatedDispatch, id]
   );
+  const onResize = React.useCallback(
+    (newSize: Bounds) => {
+      coordinatedDispatch(
+        actions.resizeObject({
+          id,
+          size: newSize,
+        })
+      );
+    },
+    [coordinatedDispatch, id]
+  );
 
   const viewport = useRoomViewport();
 
@@ -112,7 +128,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     (el: HTMLDivElement | null) => {
       // on the first mount, we measure the size of the content and
       // set that as the initial size in state.
-      if (el) {
+      if (el && !hasBeenMeasured) {
         const width = el.clientWidth;
         const height = el.clientHeight;
         coordinatedDispatch(
@@ -123,19 +139,20 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         );
       }
     },
-    [coordinatedDispatch, id]
+    [hasBeenMeasured, coordinatedDispatch, id]
   );
 
   // This spring gradually interpolates the object into its desired position
   // after a change. That change might happen because the user dragged it,
   // or a new position has come in from the server.
-  const [{ x, y, width, height, grabbing }, set] = useSpring(() => ({
+  const [{ x, y, width, height, grabbing, resizing }, set] = useSpring(() => ({
     // initial values
     x: position.x,
     y: position.y,
     width: measuredWidth,
     height: measuredHeight,
     grabbing: false,
+    resizing: false,
     config: DRAGGABLE_SPRING,
   }));
 
@@ -182,10 +199,14 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         return displacement;
       },
       onDragStart: (state) => {
+        state.event?.preventDefault();
+        state.event?.stopPropagation();
         viewport.onObjectDragStart();
         set({ grabbing: true });
       },
       onDragEnd: (state) => {
+        state.event?.preventDefault();
+        state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ grabbing: false });
       },
@@ -197,8 +218,48 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     }
   );
 
+  const bindResizeHandle = useGesture(
+    {
+      onDrag: (state) => {
+        state.event?.preventDefault();
+        state.event?.stopPropagation();
+        // unlike movement, this only sends updates when the change is complete
+        set({
+          width: width.goal + state.delta[0] * 2,
+          height: height.goal + state.delta[1] * 2,
+        });
+      },
+      onDragStart: (state) => {
+        state.event?.preventDefault();
+        state.event?.stopPropagation();
+        viewport.onObjectDragStart();
+        set({ resizing: true });
+      },
+      onDragEnd: (state) => {
+        state.event?.preventDefault();
+        state.event?.stopPropagation();
+        viewport.onObjectDragEnd();
+        set({ resizing: false });
+        onResize({
+          width: width.goal,
+          height: height.goal,
+        });
+      },
+    },
+    {
+      eventOptions: { capture: true },
+    }
+  );
+
   return (
-    <DraggableContext.Provider value={{ dragHandleProps: bindDragHandle(), isDraggingAnimatedValue: grabbing }}>
+    <DraggableContext.Provider
+      value={{
+        dragHandleProps: bindDragHandle(),
+        isDraggingAnimatedValue: grabbing,
+        resizeHandleProps: bindResizeHandle(),
+        isResizingAnimatedValue: resizing,
+      }}
+    >
       <animated.div
         style={{
           transform: to(
@@ -277,3 +338,21 @@ export function DraggableHandle({
     </animated.div>
   );
 }
+
+export const DraggableResizeHandle: React.FC<{ disabled?: boolean; className?: string }> = ({
+  children,
+  disabled,
+  className,
+}) => {
+  const { resizeHandleProps } = React.useContext(DraggableContext);
+
+  return (
+    <div
+      {...(disabled ? {} : resizeHandleProps)}
+      style={{ cursor: disabled ? 'inherit' : 'se-resize' }}
+      className={className}
+    >
+      {children || <DragIndicator style={{ transform: `rotate(45deg)`, opacity: 0.5 }} />}
+    </div>
+  );
+};

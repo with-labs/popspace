@@ -1,4 +1,4 @@
-import { Box, Link, makeStyles, Tooltip } from '@material-ui/core';
+import { Link, makeStyles, Tooltip } from '@material-ui/core';
 import * as React from 'react';
 import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';

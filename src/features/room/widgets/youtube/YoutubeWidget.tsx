@@ -11,6 +11,7 @@ import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
 import { WidgetContent } from '../WidgetContent';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -32,21 +33,19 @@ const DEFAULT_OPTS = {
 
 const useStyles = makeStyles((theme) => ({
   videoContainer: {
-    // for some reason there's a little gap at the bottom of the iframe,
-    // this removes it.
-    marginBottom: -6,
-    position: 'relative',
-    '&:hover, &:focus': {
-      '& > $videoControls': {
-        visibility: 'visible',
-        pointerEvents: 'initial',
-      },
+    width: '100%',
+    height: '100%',
+    minWidth: 480,
+    minHeight: 270,
+    '& > div': {
+      width: '100%',
+      height: '100%',
     },
   },
   videoControls: {
     position: 'absolute',
     // add the pixels we subtracted above
-    bottom: theme.spacing(2) + 6,
+    bottom: theme.spacing(2),
     left: theme.spacing(2),
     right: theme.spacing(2),
 
@@ -88,6 +87,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
         <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />
       </WidgetContent>
+      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

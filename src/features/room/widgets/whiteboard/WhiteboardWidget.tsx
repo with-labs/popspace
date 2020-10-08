@@ -8,6 +8,7 @@ import { useSaveWidget } from '../useSaveWidget';
 import { CloudDownloadOutlined } from '@material-ui/icons';
 import { useExport } from './useExport';
 import { WidgetContent } from '../WidgetContent';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IWhiteboardWidgetProps {
   state: WhiteboardWidgetState;
@@ -69,6 +70,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
       <WidgetContent className={classes.root}>
         <Whiteboard value={state.data.whiteboardState} onChange={handleWhiteboardChange} ref={ref} />
       </WidgetContent>
+      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

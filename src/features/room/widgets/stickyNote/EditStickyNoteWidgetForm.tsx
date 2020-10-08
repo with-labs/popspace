@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     border: 'none',
     width: '100%',
+    minHeight: 160,
     fontFamily: theme.typography.fontFamily,
     fontSize: theme.typography.pxToRem(14),
     resize: 'none',

@@ -15,7 +15,9 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
       width="100%"
       position="relative"
       minWidth={250}
-      minHeight={120}
+      minHeight={60}
+      display="flex"
+      flexDirection="column"
       className={props.className}
     >
       {props.children}

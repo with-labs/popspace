@@ -129,12 +129,14 @@ const roomSlice = createSlice({
       };
       state.positions[payload.id].position = clamped;
     },
-    resizeObject(state, { payload }: PayloadAction<{ id: string; size: Bounds }>) {
+    resizeObject(state, { payload }: PayloadAction<{ id: string; size: Bounds | null }>) {
       if (!state.positions[payload.id]) return;
-      const clamped = {
-        width: clamp(payload.size.width, 160, 1000),
-        height: clamp(payload.size.height, 160, 1000),
-      };
+      const clamped = payload.size
+        ? {
+            width: clamp(payload.size.width, 92, 1000),
+            height: clamp(payload.size.height, 92, 1000),
+          }
+        : null;
       state.positions[payload.id].size = clamped;
     },
     /** Updates the data associated with a widget */
@@ -144,8 +146,15 @@ const roomSlice = createSlice({
         ...state.widgets[payload.id].data,
         ...payload.data,
       };
-      if (payload.publish) {
+      // if publish is true and we're already a draft,
+      // publish it!
+      if (payload.publish && state.widgets[payload.id].isDraft) {
         state.widgets[payload.id].isDraft = false;
+        if (state.positions[payload.id]) {
+          // also trigger a remeasure on publish, since content will probably
+          // change
+          state.positions[payload.id].size = null;
+        }
       }
     },
     /** Changes the emoji displayed for a participant */

@@ -51,6 +51,10 @@ export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ paren
           participantSid: localParticipant.sid,
         },
         position,
+        size: {
+          width: 200,
+          height: 200,
+        },
       })
     );
   }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipant.sid, toWorldCoordinate]);

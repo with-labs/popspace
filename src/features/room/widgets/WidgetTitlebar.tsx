@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: `10px 10px 0 0`,
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
+    flex: '0 0 auto',
   },
   title: {
     flex: 1,

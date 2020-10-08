@@ -23,9 +23,13 @@ function useParticipant(sid: string) {
 
 const useStyles = makeStyles({
   root: {
-    width: 160,
-    height: 160,
+    width: '100%',
+    height: '100%',
     borderRadius: '100%',
+  },
+  dragHandle: {
+    width: '100%',
+    height: '100%',
   },
 });
 
@@ -66,7 +70,7 @@ export const Person = React.memo<IPersonProps>((props) => {
 
   return (
     <Draggable id={props.id} zIndex={isMe ? 10 : 9}>
-      <DraggableHandle disabled={!isMe}>
+      <DraggableHandle disabled={!isMe} className={classes.dragHandle}>
         <Paper className={classes.root} elevation={6}>
           <ParticipantCircle participant={participant} />
         </Paper>

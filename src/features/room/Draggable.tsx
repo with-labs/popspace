@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { animated, SpringValue, useSpring } from '@react-spring/web';
+import { animated, SpringValue, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { makeStyles } from '@material-ui/core';
@@ -11,6 +11,7 @@ import { Vector2 } from '../../types/spatials';
 import { addVectors, roundVector, subtractVectors } from '../../utils/math';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
+import clsx from 'clsx';
 
 export interface IDraggableProps {
   /**
@@ -38,7 +39,16 @@ const DRAGGABLE_SPRING = {
 const useStyles = makeStyles({
   root: {
     position: 'absolute',
-    willChange: 'transform, left, top',
+    willChange: 'transform',
+  },
+  unmeasuredContentSizer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  contentSizer: {
+    width: '100%',
+    height: '100%',
   },
 });
 
@@ -69,11 +79,18 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
       createSelector(
         (state: RootState) => state.room.positions,
         (_: any, objectId: string) => objectId,
-        (positions, objectId) => positions[objectId]?.position ?? { x: 0, y: 0 }
+        (positions, objectId) =>
+          positions[objectId] ?? {
+            position: { x: 0, y: 0 },
+            size: null,
+          }
       ),
     []
   );
-  const position = useSelector((state: RootState) => positionSelector(state, id));
+  const { position, size } = useSelector((state: RootState) => positionSelector(state, id));
+  const measuredWidth = size?.width || 0;
+  const measuredHeight = size?.height || 0;
+  const hasBeenMeasured = !!size;
 
   // dispatcher for movement changes
   const coordinatedDispatch = useCoordinatedDispatch();
@@ -91,13 +108,33 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
 
   const viewport = useRoomViewport();
 
+  const contentRef = React.useCallback(
+    (el: HTMLDivElement | null) => {
+      // on the first mount, we measure the size of the content and
+      // set that as the initial size in state.
+      if (el) {
+        const width = el.clientWidth;
+        const height = el.clientHeight;
+        coordinatedDispatch(
+          actions.resizeObject({
+            id,
+            size: { width, height },
+          })
+        );
+      }
+    },
+    [coordinatedDispatch, id]
+  );
+
   // This spring gradually interpolates the object into its desired position
   // after a change. That change might happen because the user dragged it,
   // or a new position has come in from the server.
-  const [{ x, y, grabbing }, set] = useSpring(() => ({
+  const [{ x, y, width, height, grabbing }, set] = useSpring(() => ({
     // initial values
     x: position.x,
     y: position.y,
+    width: measuredWidth,
+    height: measuredHeight,
     grabbing: false,
     config: DRAGGABLE_SPRING,
   }));
@@ -107,11 +144,13 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     set({
       x: position.x,
       y: position.y,
+      width: measuredWidth,
+      height: measuredHeight,
     });
-  }, [position.x, position.y, set]);
+  }, [position.x, position.y, measuredWidth, measuredHeight, set]);
 
   // binds drag controls to the underlying element
-  const bind = useGesture(
+  const bindDragHandle = useGesture(
     {
       onDrag: (state) => {
         // prevent a drag event from bubbling up to the canvas
@@ -159,20 +198,23 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
   );
 
   return (
-    <DraggableContext.Provider value={{ dragHandleProps: bind(), isDraggingAnimatedValue: grabbing }}>
+    <DraggableContext.Provider value={{ dragHandleProps: bindDragHandle(), isDraggingAnimatedValue: grabbing }}>
       <animated.div
         style={{
-          // for now, just compute positions of all Draggables from
-          // their center
-          left: x,
-          top: y,
-          transform: `translate(-50%, -50%)`,
+          transform: to(
+            [x, y, width, height],
+            (xv, yv, wv, hv) => `translate(${Math.round(xv - wv / 2)}px, ${Math.round(yv - hv / 2)}px)`
+          ),
+          width,
+          height,
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
         className={styles.root}
       >
-        {children}
+        <div className={clsx(hasBeenMeasured ? styles.contentSizer : styles.unmeasuredContentSizer)} ref={contentRef}>
+          {children}
+        </div>
       </animated.div>
     </DraggableContext.Provider>
   );
@@ -208,7 +250,15 @@ export function useRoomObjectDragHandle() {
  * item which the user can actually click on to drag around. If the whole item is interactive, just
  * wrap it all in DraggableHandle.
  */
-export function DraggableHandle({ children, disabled }: { children: React.ReactElement; disabled?: boolean }) {
+export function DraggableHandle({
+  children,
+  className,
+  disabled,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+}) {
   const { dragHandleProps, isDraggingAnimatedValue } = React.useContext(DraggableContext);
 
   if (!dragHandleProps || !isDraggingAnimatedValue) {
@@ -221,6 +271,7 @@ export function DraggableHandle({ children, disabled }: { children: React.ReactE
     <animated.div
       {...(disabled ? {} : dragHandleProps)}
       style={{ cursor: isDraggingAnimatedValue.to((v) => (disabled ? 'inherit' : v ? 'grabbing' : 'grab')) }}
+      className={className}
     >
       {children}
     </animated.div>

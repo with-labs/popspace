@@ -1,4 +1,4 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import YouTube from 'react-youtube';
 import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
@@ -10,6 +10,7 @@ import { YoutubeWidgetState } from '../../../../types/room';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
+import { WidgetContent } from '../WidgetContent';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -70,23 +71,23 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
       <WidgetFrame color="cherry">
-        <WidgetTitlebar title="YouTube - beta" onClose={onClose} />
-        <Box p={2} width={270}>
+        <WidgetTitlebar title="YouTube" onClose={onClose} />
+        <WidgetContent>
           <EditYoutubeWidgetForm onSave={saveWidget} />
-        </Box>
+        </WidgetContent>
       </WidgetFrame>
     );
   }
 
   return (
     <WidgetFrame color="cherry">
-      <WidgetTitlebar title="YouTube - beta" onClose={onClose}>
+      <WidgetTitlebar title="YouTube" onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
-      <Box className={classes.videoContainer}>
+      <WidgetContent className={classes.videoContainer}>
         <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />
-      </Box>
+      </WidgetContent>
     </WidgetFrame>
   );
 };

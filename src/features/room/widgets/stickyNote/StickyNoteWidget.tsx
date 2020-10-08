@@ -8,6 +8,7 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { AddStickyNoteButton } from './AddStickyNoteButton';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { StickyNoteWidgetState, StickyNoteWidgetData } from '../../../../types/room';
+import { WidgetContent } from '../WidgetContent';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -80,8 +81,6 @@ const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: s
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
-    <Box p={2} width={240}>
-      {children}
-    </Box>
+    <WidgetContent>{children}</WidgetContent>
   </WidgetFrame>
 );

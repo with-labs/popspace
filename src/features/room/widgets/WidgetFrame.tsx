@@ -11,12 +11,15 @@ export interface IWidgetFrameProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 200,
+    width: '100%',
+    height: '100%',
     background: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     borderRadius: 10,
     overflow: 'hidden',
     cursor: 'default',
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 

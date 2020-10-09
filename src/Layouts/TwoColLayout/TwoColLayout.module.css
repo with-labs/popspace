@@ -1,3 +1,4 @@
-.contentPadding {
+.twoColWrapper {
   padding: 32px;
+  flex: 1;
 }

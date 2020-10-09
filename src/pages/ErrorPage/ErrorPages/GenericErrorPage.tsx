@@ -21,7 +21,7 @@ export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
   const { buttonText, onClick, quoteText, title, body, errorMessage, imgSrc, imgAltText } = props;
 
   return (
-    <main className={clsx(styles.root, 'u-flex u-height100Percent u-flexCol')}>
+    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
       <TwoColLayout>
         <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
           <div className={styles.container}>

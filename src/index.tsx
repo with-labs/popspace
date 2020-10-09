@@ -31,12 +31,13 @@ import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 
 import './with.css';
 
-import packageJson from '../package.json';
-
+const version = `with-app@${VERSION || 'unknown'}`;
+// @ts-ignore
+window.__with_version__ = version;
 if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
-    release: 'with-app@' + packageJson.version,
+    release: version,
     normalizeDepth: 10, // Bump this up so we can get the most out of the Redux integration.
   });
 }

@@ -23,7 +23,7 @@ const fs = require('fs');
 const APP_URL = {
   "development": "http://localhost:8888",
   "staging": "https://dev.app.with.so",
-  "production": "https://with.so"
+  "production": "https://app.with.so"
 }
 
 async function readCsv(filename) {

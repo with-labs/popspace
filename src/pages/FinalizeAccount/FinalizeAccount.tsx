@@ -127,7 +127,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
-    <main className="u-flex u-height100Percent u-flexCol">
+    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
       {isLoading ? (
         <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
           <CircularProgress />
@@ -140,10 +140,6 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
               <div className={clsx(styles.container, 'u-flex u-flexCol')}>
                 <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
                 <div className={clsx(styles.text, 'u-fontP1')}>
-                  As an early user, you currently use your With room without it being associated to a user account.
-                  <br />
-                  For security and privacy, rooms are now associated to user accounts.
-                  <br />
                   Please finalize your account {email} to keep access to your room.
                 </div>
                 <form onSubmit={onFormSubmit}>

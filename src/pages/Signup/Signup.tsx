@@ -31,7 +31,7 @@ export const Signup: React.FC<ISignupProps> = (props) => {
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
-    <main className="u-flex u-height100Percent u-flexCol">
+    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
       {isLoading ? (
         <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
           <CircularProgress />

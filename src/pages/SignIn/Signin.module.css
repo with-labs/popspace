@@ -1,3 +1,7 @@
+.root {
+  min-height: 100vh;
+}
+
 .container {
   max-width: 340px;
   height: 100%;

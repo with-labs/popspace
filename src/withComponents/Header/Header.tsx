@@ -109,7 +109,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
   const headerStyles = isFullLength ? styles.headerFull : styles.header;
 
   return (
-    <header className={clsx(headerStyles, 'u-flex u-flexAlignItemsCenter')}>
+    <header className={clsx(styles.headerWrapper, headerStyles, 'u-flex u-flexAlignItemsCenter')}>
       <WithLogo />
       <div className={clsx(styles.text, 'u-fontP1')}>{text}</div>
       <div className={styles.buttonContainer}>{userName ? userMenu : null}</div>

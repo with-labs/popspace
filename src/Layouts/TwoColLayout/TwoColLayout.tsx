@@ -9,10 +9,7 @@ interface ITwoColLayoutProps {
 export const TwoColLayout: React.FC<ITwoColLayoutProps> = ({ children }) => {
   return (
     <div
-      className={clsx(
-        styles.contentPadding,
-        'u-flex u-sm-flexCol u-flexRow u-flexJustifyCenter u-flexAlignItemsCenter u-flexAuto'
-      )}
+      className={clsx(styles.twoColWrapper, 'u-flex u-sm-flexCol u-flexRow u-flexJustifyCenter u-flexAlignItemsCenter')}
     >
       {children}
     </div>

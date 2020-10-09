@@ -1,3 +1,7 @@
+.headerWrapper {
+  flex: 0 0 auto;
+}
+
 .header {
   padding: 16px 32px;
 }

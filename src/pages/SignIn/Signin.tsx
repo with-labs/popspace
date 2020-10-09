@@ -46,7 +46,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   };
 
   return (
-    <main className="u-flex u-height100Percent u-flexCol">
+    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
       <Header />
       {showConfirmation ? (
         <ConfirmationView email={email} />

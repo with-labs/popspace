@@ -182,9 +182,9 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           marginBottom: spacing(1),
         },
         outlined: {
-          transform: 'none',
+          transform: 'translate3d(0,0,0)',
           '&$shrink': {
-            transform: 'none',
+            transform: 'translate3d(0,0,0)',
           },
         },
       },
@@ -192,6 +192,13 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         root: {
           '&$focused': {
             color: brandPalette.turquoise.dark,
+          },
+        },
+      },
+      MuiFormHelperText: {
+        root: {
+          '&$error': {
+            fontWeight: 'bold',
           },
         },
       },
@@ -244,6 +251,11 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           paddingBottom: spacing(1),
         },
       },
+      MuiPaper: {
+        root: {
+          border: `1px solid ${palette.grey[400]}`,
+        },
+      },
       MuiLink: {
         root: {
           fontWeight: 'bold',
@@ -278,6 +290,13 @@ const createPaletteTheme = (colors: PaletteOptions) => {
   });
 };
 
+export enum ThemeName {
+  Mandarin = 'mandarin',
+  Cherry = 'cherry',
+  Turquoise = 'turquoise',
+  Lavender = 'lavender',
+}
+
 // kind of arbitrary color combos below...
 export const mandarin = createPaletteTheme({
   primary: brandPalette.mandarin,
@@ -291,7 +310,7 @@ export const cherry = createPaletteTheme({
   primary: brandPalette.cherry,
   secondary: brandPalette.lavender,
   error: {
-    main: brandPalette.mandarin.dark,
+    main: brandPalette.cherry.dark,
   },
 });
 

@@ -2,7 +2,6 @@
   position: relative;
   height: 100%;
   width: 100%;
-  cursor: default;
   border-radius: 50%;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
   background-color: #fff;
@@ -13,13 +12,12 @@
   border-color: #b9c5ff;
 }
 
-.ParticipantCircle.is-localParticipant {
-  cursor: move;
-}
-
 .ParticipantCircle:hover .ParticipantCircle-menuItem {
   transition: opacity 100ms ease-in-out;
   opacity: 1;
+}
+.ParticipantCircle-menuItem {
+  z-index: 1;
 }
 
 .ParticipantCircle-settings {
@@ -109,6 +107,9 @@
   width: 250px !important; */
   height: 100%;
   width: 100%;
+  /** according to stack overflow this fixes z-index bugs */
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }
 
 .ParticipantCircle-infoOverlay {

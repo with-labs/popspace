@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import styles from './Signup.module.css';
-import Api from '../../utils/api';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 
@@ -10,8 +9,7 @@ import { Header } from '../../withComponents/Header/Header';
 import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
 import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
-import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types';
+import { ErrorInfo } from '../../types/api';
 import { Links } from '../../constants/Links';
 import signinImg from '../../images/SignIn.png';
 
@@ -23,8 +21,8 @@ export const Signup: React.FC<ISignupProps> = (props) => {
   const [email, setEmail] = useState('');
   const [acceptTos, setAcceptTos] = useState(false);
   const [receiveMarketing, setReceiveMarketing] = useState(false);
-  const [error, setError] = useState<ErrorInfo>(null!);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error] = useState<ErrorInfo>(null!);
+  const [isLoading] = useState(false);
 
   const onFormSubmit = () => {};
 

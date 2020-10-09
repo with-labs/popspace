@@ -9,10 +9,8 @@ import { SnackbarProvider } from 'notistack';
 
 import AppStateProvider, { useAppState } from './state';
 import { BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom';
-import { ConnectOptions } from 'twilio-video';
 import { mandarin as theme } from './theme/theme';
-import './types';
-import { VideoProvider } from './components/VideoProvider';
+import './types/twilio';
 
 import useQuery from './withHooks/useQuery/useQuery';
 
@@ -25,7 +23,6 @@ import SignupThroughInvite from './pages/SignupThroughInvite';
 import { Signin } from './pages/SignIn/Signin';
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
-import { Admin } from './pages/Admin/Admin';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 
@@ -42,35 +39,12 @@ if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') 
   });
 }
 
-// See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
-// for available connection options.
-const connectionOptions: ConnectOptions = {
-  bandwidthProfile: {
-    video: {
-      mode: 'collaboration',
-      renderDimensions: {
-        high: { height: 1080, width: 1920 },
-        standard: { height: 90, width: 160 },
-        low: { height: 90, width: 160 },
-      },
-    },
-  },
-  dominantSpeaker: true,
-  maxAudioBitrate: 12000,
-  networkQuality: { local: 1, remote: 1 },
-  preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-};
-
-// -------- here is the where we set up the application
+// -------- here is the where we set up the with application
 const NamedRoom = () => {
   const params: any = useParams();
   const roomName = params['room_name'];
   const { error, setError } = useAppState();
-  return (
-    <VideoProvider options={connectionOptions} onError={setError}>
-      <Room name={roomName} error={error} setError={setError} />
-    </VideoProvider>
-  );
+  return <Room name={roomName} error={error} setError={setError} />;
 };
 
 const RootView = () => {
@@ -81,11 +55,7 @@ const RootView = () => {
   // we still support the use o the r query param, so we check if youre
   // trying to get in to a room, if we have it send you to the room
   if (room) {
-    return (
-      <VideoProvider options={connectionOptions} onError={setError}>
-        <Room name={room} error={error} setError={setError} />
-      </VideoProvider>
-    );
+    return <Room name={room} error={error} setError={setError} />;
   } else {
     // send them to the dash
     return <Dashboard />;

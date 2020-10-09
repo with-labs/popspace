@@ -20,7 +20,7 @@ import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
 import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types';
+import { ErrorInfo } from '../../types/api';
 
 interface IFinalizeAccountProps {}
 

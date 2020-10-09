@@ -3,14 +3,14 @@ import clsx from 'clsx';
 import './index.css';
 
 // todo: update types
-type SuggestionProps = {
+interface ISuggestionProps {
   buttonSrc: any;
   buttonAltText: string;
   classNames?: string;
   onButtonClickHandler?: Function;
-};
+}
 
-const Suggestion = (props: SuggestionProps) => {
+const Suggestion = (props: ISuggestionProps) => {
   const { buttonSrc, buttonAltText, classNames, onButtonClickHandler } = props;
 
   const suggestionRef = useRef<HTMLDivElement>(null);

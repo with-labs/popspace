@@ -13,7 +13,7 @@ interface IDockItem {
   onClickHandler?: () => void;
   hoverText: string;
   classNames?: string;
-  backgoundImage?: string;
+  backgroundImage?: string;
 }
 
 export const DockItem: React.FC<IDockItem> = ({
@@ -22,12 +22,12 @@ export const DockItem: React.FC<IDockItem> = ({
   onClickHandler = () => {},
   hoverText,
   classNames,
-  backgoundImage,
+  backgroundImage,
 }) => {
   const itemBtnContent = imgSrc ? (
     <img className={styles.img} src={imgSrc} alt={imgAltText} />
   ) : (
-    <div className={styles.backgroundImage} style={{ backgroundImage: backgoundImage }} />
+    <div className={styles.backgroundImage} style={{ backgroundImage }} />
   );
 
   return (

@@ -5,14 +5,14 @@
  * samples the audio levels.
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { LocalAudioTrack, RemoteAudioTrack } from 'twilio-video';
+import { actions, selectors } from '../../features/room/roomSlice';
 import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-
-import { useParticipantMeta } from '../useParticipantMeta/useParticipantMeta';
-import { useParticipantMetaContext } from '../../withComponents/ParticipantMetaProvider/useParticipantMetaContext';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
 
 // @ts-ignore TS doesn't think `webkitAudioContext` exists, but it might in certain browsers.
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -35,9 +35,21 @@ export function useLocalVolumeDetection() {
     room: { localParticipant },
     localTracks,
   } = useVideoContext();
-  const { isSpeaking } = useParticipantMeta(localParticipant);
-  const { updateIsSpeaking } = useParticipantMetaContext();
-  const audioTrack = localTracks.find(track => track.kind === 'audio') as LocalAudioTrack;
+  const isSpeaking = useSelector(selectors.createPersonIsSpeakingSelector(localParticipant.sid));
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+  const updateIsSpeaking = useCallback(
+    (newIsSpeaking: boolean) => {
+      coordinatedDispatch(
+        actions.updatePersonIsSpeaking({
+          id: localParticipant.sid,
+          isSpeaking: newIsSpeaking,
+        })
+      );
+    },
+    [coordinatedDispatch, localParticipant.sid]
+  );
+  const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
 
   const [analyser, setAnalyser] = useState<AnalyserNode>();
   const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
@@ -54,7 +66,7 @@ export function useLocalVolumeDetection() {
       // we stop the cloned track that is stored in 'newMediaStream'. It is important that we stop
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
-      const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach(track => track.stop());
+      const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach((track) => track.stop());
       audioTrack.on('stopped', stopAllMediaStreamTracks);
 
       const reinitializeAnalyser = () => {
@@ -106,5 +118,5 @@ export function useLocalVolumeDetection() {
     } else {
       updateIsSpeaking(false);
     }
-  }, [isTrackEnabled, analyser, isSpeaking]); // OK to omit updateIsSpeaking and isSpeakingRef
+  }, [isTrackEnabled, analyser, isSpeaking, updateIsSpeaking]);
 }

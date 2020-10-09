@@ -13,7 +13,7 @@ export function useAVSources() {
   const { localTracks } = useVideoContext();
 
   const updateDevices = useCallback(() => {
-    getMediaDevices().then(mediaDevices => {
+    getMediaDevices().then((mediaDevices) => {
       setDevices(mediaDevices);
     });
   }, []);
@@ -31,7 +31,7 @@ export function useAVSources() {
         navigator.mediaDevices.ondevicechange = () => null;
       }
     };
-  }, []); // Only run effect once. This populates the initial set of devices and sets up the ondevicechange callback.
+  }, [updateDevices]);
 
   // Effect to update device listings when the local tracks change. This is intended to cover the case where the user
   // has not yet granted permission to a audio/video resource, then attempts to enable that resource once already in the
@@ -51,7 +51,7 @@ export function useAVSources() {
   // API is still unappealing due to the Permissions API's experimental and incomplete browser support.
   useEffect(() => {
     updateDevices();
-  }, [localTracks]);
+  }, [localTracks, updateDevices]);
 
   return devices;
 }

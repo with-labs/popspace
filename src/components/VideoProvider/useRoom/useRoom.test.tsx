@@ -41,7 +41,7 @@ describe('the useRoom hook', () => {
   });
 
   it('should publish video tracks that are supplied in a rerender', async () => {
-    const { result, rerender, waitForNextUpdate } = renderHook(props => useRoom(props.tracks, () => {}, {}), {
+    const { result, rerender, waitForNextUpdate } = renderHook((props) => useRoom(props.tracks, () => {}, {}), {
       initialProps: { tracks: [] as LocalTrack[] },
     });
     rerender({ tracks: [{ kind: 'video' } as LocalTrack] });
@@ -87,7 +87,9 @@ describe('the useRoom hook', () => {
     const mockOnError = jest.fn();
     mockVideoConnect.mockImplementationOnce(() => Promise.reject('mockError'));
     const { result } = renderHook(() => useRoom([], mockOnError, {}));
-    await act(() => result.current.connect('token'));
+    await act(async () => {
+      await result.current.connect('token');
+    });
     expect(mockOnError).toHaveBeenCalledWith('mockError');
     expect(result.current.isConnecting).toBe(false);
   });

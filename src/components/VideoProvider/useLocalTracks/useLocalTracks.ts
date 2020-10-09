@@ -12,7 +12,7 @@ import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../constants';
 import { useCallback, useEffect, useState } from 'react';
 import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions, LocalDataTrack } from 'twilio-video';
 
-import { ErrorCallback } from '../../../types';
+import { ErrorCallback } from '../../../types/twilio';
 
 export default function useLocalTracks(onError: ErrorCallback) {
   const [audioTrack, setAudioTrack] = useState<LocalAudioTrack>();

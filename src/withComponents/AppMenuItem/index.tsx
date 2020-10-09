@@ -1,12 +1,12 @@
 import React from 'react';
 import './index.css';
 
-type AppMenuItemProps = {
+interface IAppMenuItemProps {
   name: string;
   desc: string;
-};
+}
 
-const AppMenuItem = ({ name, desc }: AppMenuItemProps) => {
+const AppMenuItem = ({ name, desc }: IAppMenuItemProps) => {
   return (
     <div className="AppMenuItem">
       <div className="AppMenuItem-logo"></div>

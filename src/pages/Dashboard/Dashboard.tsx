@@ -11,12 +11,10 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 import { DashboardItem } from './DashboardItem/DashboardItem';
 import { RoomSummary } from './RoomSummary/RoomSummary';
 import { Header } from '../../withComponents/Header/Header';
-import { RoomInfo } from '../../types';
+import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo, UserInfo } from '../../types';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
-
 import styles from './Dashboard.module.css';
 
 interface IDashboardProps {}

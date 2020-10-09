@@ -16,28 +16,67 @@ import { VideoToggle } from '../VideoToggle/VideoToggle';
 
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 import { Button, TextField } from '@material-ui/core';
+import { actions } from '../../features/room/roomSlice';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useAppState } from '../../state';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
 
-type JoinRoomProps = {
+interface IJoinRoomProps {
   roomName: string;
-  onJoinSubmitHandler: (userName: string, password: string, initialAvatar: string) => void;
-  isJoining: boolean;
-};
+}
 
-const JoinRoom = ({ roomName, onJoinSubmitHandler, isJoining }: JoinRoomProps) => {
+const JoinRoom = ({ roomName }: IJoinRoomProps) => {
+  const { getToken, setError } = useAppState();
+  const { connect } = useVideoContext();
   const [screenName, setScreenName] = useState('');
   const [password, setPassword] = useState('');
   const [initialAvatar, setInitialAvatar] = useState(randomAvatar());
   const [isVideoEnabled] = useLocalVideoToggle();
   const [isSelectingAvatar, toggleIsSelectingAvatar] = useState(false);
 
-  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const [isJoining, setIsJoining] = useState(false);
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+
+  const onSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // TODO input validation and add stuff here
     // We currently dont allow people into a room without a password and dont have
     // any error messaging really hooked up, so only allow them in if username and password
     // are filled out
     if (screenName.length > 0 && password.length > 0) {
-      onJoinSubmitHandler(screenName, password, initialAvatar.name);
+      // check to see if we are already attempting to join a room to prevent
+      // another token request is in progress
+      if (!isJoining) {
+        try {
+          setIsJoining(true);
+          const token = await getToken(screenName, roomName, password);
+          const room = await connect(token);
+          if (!room) {
+            throw new Error('Failed to join room');
+          }
+          // add the user's participant to the room
+          coordinatedDispatch(
+            actions.addPerson({
+              // TODO: move this into the room viewport context to get a viewport-central
+              // location?
+              position: { x: Math.random() * 200, y: Math.random() * 200 },
+              person: {
+                id: room.localParticipant.sid,
+                kind: 'person',
+                avatar: initialAvatar.name,
+                emoji: null,
+                isSpeaking: false,
+                viewingScreenSid: null,
+              },
+            })
+          );
+        } catch (err) {
+          setError(err);
+        }
+        // set isJoining to false after we attempt to connect
+        setIsJoining(false);
+      }
     }
   };
 

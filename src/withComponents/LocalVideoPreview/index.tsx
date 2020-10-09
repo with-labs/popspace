@@ -10,14 +10,14 @@ import './index.css';
 
 import camera from './images/camera.svg';
 
-type LocalVideoPreviewProps = {
+interface ILocalVideoPreviewProps {
   classNames?: string;
-};
+}
 
-const LocalVideoPreview = ({ classNames }: LocalVideoPreviewProps) => {
+const LocalVideoPreview = ({ classNames }: ILocalVideoPreviewProps) => {
   const { localTracks } = useVideoContext();
 
-  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+  const videoTrack = localTracks.find((track) => track.name.includes('camera')) as LocalVideoTrack;
   const placeHolderVideo = (
     <div className={clsx('LocalVideo-placeHolder u-height100Percent', classNames)}>
       <img src={camera} alt="camera_icon" />

@@ -18,7 +18,10 @@ export default function AudioTrack({ track, volume }: AudioTrackProps) {
   }, [track]);
 
   useEffect(() => {
-    ref.current.volume = volume;
+    // sanity check
+    if (!isNaN(volume)) {
+      ref.current.volume = volume;
+    }
   }, [volume]);
 
   return <audio ref={ref} />;

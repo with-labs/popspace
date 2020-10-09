@@ -10,10 +10,8 @@ import VideoTrack from '../VideoTrack/VideoTrack';
 
 import useTrack from '../../hooks/useTrack/useTrack';
 import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
-import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
-import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
 
-import { IVideoTrack } from '../../types';
+import { IVideoTrack } from '../../types/twilio';
 import {
   AudioTrack as IAudioTrack,
   LocalTrackPublication,
@@ -21,6 +19,8 @@ import {
   RemoteTrackPublication,
   Track,
 } from 'twilio-video';
+import { useSelector } from 'react-redux';
+import { selectors } from '../../features/room/roomSlice';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -30,6 +30,11 @@ interface PublicationProps {
   videoPriority?: Track.Priority;
   classNames?: string;
 }
+
+/**
+ * Measured in room world space units - pixels at 100% zoom
+ */
+const MAX_RANGE = 1000;
 
 export default function Publication({
   publication,
@@ -41,8 +46,7 @@ export default function Publication({
 }: PublicationProps) {
   const track = useTrack(publication);
   const distance = useParticipantLocationDelta(participant);
-  const { huddles, localHuddle } = useRoomParties();
-  const { properties } = useRoomMetaContext();
+  const useSpatialAudio = useSelector(selectors.selectUseSpatialAudio);
 
   // The math for calculating the volume of a participant
   // is based on positioning of elements from top, left with a relative
@@ -52,19 +56,16 @@ export default function Publication({
   // and dropping a participant partially "off screen." Those scenarios cause
   // issues with the math needed to create the volume curves. So, I'm forcing
   // the valued between 0 and 1, via Math.min and Math.max
-  const dist = Math.max(Math.min(distance, 1), 0);
+  const dist = Math.max(Math.min(distance, MAX_RANGE), 0) / MAX_RANGE;
 
   // The below limits and calculation derived from cosine curve, linked here
   // https://www.desmos.com/calculator/jobehh1xex
   let volume;
 
   // If spatial audio is turned off for the room, volume is always max
-  if (properties.spatialAudio === 'off') {
+  if (!useSpatialAudio) {
     volume = 1;
     // if localParticipant is in a huddle with participant, participant volume should be max
-  } else if (localHuddle && huddles[localHuddle].some(el => el.sid === participant.sid)) {
-    volume = 1;
-    // If distance reaches the trough or below of the cosine curve, volume muted
   } else if (dist > 0.69) {
     volume = 0;
     // If distance reaches the peak or higher of the cosine curve, volume is max

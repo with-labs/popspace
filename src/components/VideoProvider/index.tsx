@@ -27,7 +27,7 @@ import {
   Room,
   TwilioError,
 } from 'twilio-video';
-import { Callback, ErrorCallback } from '../../types';
+import { Callback, ErrorCallback } from '../../types/twilio';
 import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
 
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
@@ -36,7 +36,6 @@ import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
-import { RoomStateProvider } from '../../withComponents/RoomState/RoomStateProvider';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -49,7 +48,7 @@ export interface IVideoContext {
   room: Room;
   localTracks: (LocalAudioTrack | LocalVideoTrack | LocalDataTrack)[];
   isConnecting: boolean;
-  connect: (token: string) => Promise<void>;
+  connect: (token: string) => Promise<Room | null>;
   onError: ErrorCallback;
   onDisconnect: Callback;
   getLocalVideoTrack: (newOptions?: CreateLocalTrackOptions) => Promise<LocalVideoTrack>;
@@ -106,14 +105,12 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         removeLocalVideoTrack,
       }}
     >
-      <RoomStateProvider>
-        <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
-        {/*
-          The AttachVisibilityHandler component is using the useLocalVideoToggle hook
-          which must be used within the VideoContext Provider.
-        */}
-        <AttachVisibilityHandler />
-      </RoomStateProvider>
+      <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+      {/*
+        The AttachVisibilityHandler component is using the useLocalVideoToggle hook
+        which must be used within the VideoContext Provider.
+      */}
+      <AttachVisibilityHandler />
     </VideoContext.Provider>
   );
 }

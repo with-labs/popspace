@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, HTMLAttributes, useCallback, memo } from 'react';
 import clsx from 'clsx';
 import { Emoji } from 'emoji-mart';
 
@@ -8,35 +8,44 @@ import Publication from '../../components/Publication/Publication';
 import usePublications from '../../hooks/usePublications/usePublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-
 import { LocalParticipant, RemoteParticipant, Track } from 'twilio-video';
-
-import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
-import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
-
 import { Avatar } from '../Avatar/Avatar';
+import { useSelector } from 'react-redux';
+import { actions, selectors } from '../../features/room/roomSlice';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
 
-interface ParticipantCircleProps {
+interface ParticipantCircleProps extends HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
   disableAudio?: boolean;
   enableScreenShare?: boolean;
   videoPriority?: Track.Priority;
-  onClick: () => void;
-  style?: { [key: string]: string | number };
 }
 
-const ParticipantCircle = (props: ParticipantCircleProps) => {
+const ParticipantCircle = memo((props: ParticipantCircleProps) => {
   const sharedScreenBtnRef = useRef<HTMLDivElement>(null);
-  const { participant, disableAudio, enableScreenShare, videoPriority, onClick, style = {} } = props;
-  const meta = useParticipantMeta(participant);
+  const { participant, disableAudio, enableScreenShare, videoPriority, ...rest } = props;
   const [isHovering, setIsHovering] = useState(false);
-  const { updateScreenViewSid } = useParticipantMetaContext();
   const { room } = useVideoContext();
   const publications = usePublications(participant);
   const isLocal = participant === room.localParticipant;
 
+  const person = useSelector(selectors.createPersonSelector(props.participant.sid));
+
   const participantDisplayIdentity = useParticipantDisplayIdentity(participant);
-  const { emoji, avatar: avatarName, isSpeaking } = meta;
+  const { emoji, avatar: avatarName, isSpeaking } = person;
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+  const updateScreenViewSid = useCallback(
+    (screenViewSid: string) => {
+      coordinatedDispatch(
+        actions.updatePersonScreenViewSid({
+          id: room.localParticipant.sid,
+          screenViewSid,
+        })
+      );
+    },
+    [coordinatedDispatch, room.localParticipant.sid]
+  );
 
   let filteredPublications;
 
@@ -107,13 +116,17 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
     <>
       <div
         className={clsx('ParticipantCircle u-flex u-flexJustifyCenter', {
-          'is-localParticipant': isLocal,
           'is-speaking': isSpeaking,
         })}
-        style={style}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-        onClick={() => onClick()}
+        onMouseEnter={(ev: any) => {
+          setIsHovering(true);
+          rest.onMouseEnter?.(ev);
+        }}
+        onMouseLeave={(ev: any) => {
+          setIsHovering(false);
+          rest.onMouseLeave?.(ev);
+        }}
+        {...rest}
       >
         {hasVideoPublication ? null : (
           <div className="ParticipantCircle-avatar">
@@ -136,6 +149,6 @@ const ParticipantCircle = (props: ParticipantCircleProps) => {
       </div>
     </>
   );
-};
+});
 
 export default ParticipantCircle;

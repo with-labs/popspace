@@ -1,29 +1,37 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import { ReactComponent as BackGlyph } from '../../images/glyphs/back.svg';
 import { TextField } from '@material-ui/core';
 import './index.css';
-
-import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
-
 import { options, BackgroundName } from './options';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
+import { actions, selectors } from '../../features/room/roomSlice';
+import { useSelector } from 'react-redux';
 
 export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) => {
-  const { properties, setProperties } = useRoomMetaContext();
   const [customBg, setCustomBg] = useState('');
+
+  const backgroundState = useSelector(selectors.selectBackground);
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+  const setBackground = useCallback(
+    (state: { backgroundName: BackgroundName; customBackgroundUrl?: string }) => {
+      coordinatedDispatch(actions.updateRoomBackground(state));
+    },
+    [coordinatedDispatch]
+  );
 
   const onCustomBackgoundHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setProperties({
-      bg: BackgroundName.Custom,
-      customBG: customBg,
+    setBackground({
+      backgroundName: BackgroundName.Custom,
+      customBackgroundUrl: customBg,
     });
   };
 
   const selectBackground = (bg: BackgroundName) => {
-    setProperties({
-      bg,
-      customBG: '',
+    setBackground({
+      backgroundName: bg,
     });
     setCustomBg('');
   };
@@ -42,7 +50,7 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
               value={customBg}
               onChange={(event) => setCustomBg(event.target.value)}
               className={clsx('BackgroundPicker-customBgImg', {
-                'is-selected': properties.bg === BackgroundName.Custom,
+                'is-selected': backgroundState.backgroundName === BackgroundName.Custom,
               })}
             />
           </form>
@@ -60,7 +68,7 @@ export const BackgroundPicker: React.FC<{ onExit: () => void }> = ({ onExit }) =
                 src={opt.image}
                 alt={`background ${opt.name}`}
                 className={clsx('BackgroundPicker-defaultBgImg u-width100Percent', {
-                  'is-selected': properties.bg === opt.name,
+                  'is-selected': backgroundState.backgroundName === opt.name,
                 })}
               />
             </div>

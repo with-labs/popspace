@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import './index.css';
 
 // todo: update types
-type DropDownMenuProps = {
+interface IDropDownMenuProps {
   buttonSrc: any;
   buttonAltText: string;
   classNames?: string;
@@ -12,9 +12,9 @@ type DropDownMenuProps = {
   isOpenDirectionDown?: boolean;
   isActive: boolean;
   onMenuDisappear?: Function;
-};
+}
 
-const DropDownMenu = (props: DropDownMenuProps) => {
+const DropDownMenu = (props: IDropDownMenuProps) => {
   const {
     buttonSrc,
     buttonAltText,

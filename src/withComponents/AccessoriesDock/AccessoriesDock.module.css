@@ -5,6 +5,7 @@
   bottom: 20px;
   left: 50%;
   transform: translate(-50%, -50%);
+  cursor: default;
 
   background: var(--color-snow);
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.1), 0 0px 0px 1px rgba(0, 0, 0, 0.1);

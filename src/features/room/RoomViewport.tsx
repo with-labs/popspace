@@ -49,6 +49,16 @@ const WHEEL_GESTURE_DAMPING = 4000;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels
 const PAN_BUFFER = 50;
+const VIEWPORT_PAN_SPRING = {
+  tension: 500,
+  friction: 20,
+  mass: 0.1,
+};
+const VIEWPORT_ZOOM_SPRING = {
+  tension: 700,
+  friction: 40,
+  mass: 0.1,
+};
 
 const useStyles = makeStyles<Theme, IRoomViewportProps>({
   viewport: {
@@ -86,15 +96,14 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY, zoom }, setCanvasTransform] = useSpring(() => ({
+  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
+    config: VIEWPORT_PAN_SPRING,
+  }));
+  const [{ zoom }, setZoomSpring] = useSpring(() => ({
     zoom: 1,
-    config: {
-      tension: 200,
-      friction: 50,
-      mass: 1,
-    },
+    config: VIEWPORT_ZOOM_SPRING,
   }));
 
   const toWorldCoordinate = React.useCallback(
@@ -162,8 +171,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       y: centerY.goal,
     });
 
-    setCanvasTransform({
+    setZoomSpring({
       zoom: clamped,
+    });
+    setPanSpring({
       centerX: clampedPan.x,
       centerY: clampedPan.y,
     });
@@ -182,7 +193,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
           y: centerY.goal + y,
         });
 
-        setCanvasTransform({
+        setPanSpring({
           centerX: clamped.x,
           centerY: clamped.y,
         });

@@ -16,6 +16,8 @@ import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo, UserInfo } from '../../types';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
+import { Button } from '@material-ui/core';
+import { WithModal } from '../../withComponents/WithModal/WithModal';
 
 import styles from './Dashboard.module.css';
 
@@ -27,6 +29,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const [error, setError] = useState<ErrorInfo>(null!);
   const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   // run this on mount
   useEffect(() => {
@@ -81,6 +84,10 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     </DashboardItem>
   );
 
+  const onRoomSummaryError = (errorMsg: string) => {
+    setErrorMsg(errorMsg);
+  };
+
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
@@ -100,7 +107,11 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
                   {[...rooms.owned, ...rooms.member].map((memberRoom) => {
                     return (
                       <DashboardItem key={memberRoom.id}>
-                        <RoomSummary roomName={memberRoom.name} key={memberRoom.id} />
+                        <RoomSummary
+                          roomName={memberRoom.name}
+                          key={memberRoom.id}
+                          onErrorHandler={onRoomSummaryError}
+                        />
                       </DashboardItem>
                     );
                   })}
@@ -111,6 +122,15 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           </div>
         </div>
       )}
+      <WithModal isOpen={!!errorMsg}>
+        <div className="u-flex u-flexCol">
+          <h1 className="u-fontH1">A sidenote</h1>
+          <p className="u-fontP1">{errorMsg}</p>
+        </div>
+        <div className="u-flexExpandTop">
+          <Button onClick={() => setErrorMsg('')}>Got it</Button>
+        </div>
+      </WithModal>
     </main>
   );
 };

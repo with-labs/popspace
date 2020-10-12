@@ -80,10 +80,13 @@ export const Room: React.FC<IRoomProps> = ({ initialAvatar }) => {
 
   // Update the local participant's position in the participant meta map. Only do this on first render and when
   // the window dimensions change.
+
+  //TODO: adding in a null check on the participantMeta to prevent the app from blowing up on mobile
+  // seems to introduce a ghost user when joing a room on mobile
   useEffect(() => {
     if (
-      !participantMeta[localParticipant.sid].location ||
-      !(participantMeta[localParticipant.sid].location[0] && participantMeta[localParticipant.sid].location[1])
+      !participantMeta[localParticipant.sid]?.location ||
+      !(participantMeta[localParticipant.sid]?.location[0] && participantMeta[localParticipant.sid]?.location[1])
     ) {
       // Whip up some pseudo random numbers as the initial position of the bubble.
       const left = Math.random() * (windowWidth / 2);

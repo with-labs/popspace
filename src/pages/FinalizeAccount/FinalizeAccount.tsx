@@ -22,6 +22,8 @@ import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 
+import { ClaimConfirmationView } from './ClaimConfirmationView';
+
 interface IFinalizeAccountProps {}
 
 export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
@@ -42,6 +44,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const [receiveMarketing, setReceiveMarketing] = useState(false);
   const [error, setError] = useState<ErrorInfo>(null!);
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [roomName, setRoomName] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,8 +61,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             if (result.newSessionToken) {
               window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
             }
-            // redirect to the room
-            history.push(`/${result.roomName}`);
+            // redirect to the dashboard if someone is already logged in and the room is claimed
+            history.push(Routes.ROOT);
           } else {
             if (result.errorCode === ErrorCodes.CLAIM_FAIL_NO_SUCH_USER) {
               // the room is unclaimed, but the user isnt created,
@@ -67,7 +71,10 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             } else {
               // opt, email, claimId fails
               setIsLoading(false);
-              Sentry.captureMessage(`Error claiming room for ${email}`, Sentry.Severity.Warning);
+              Sentry.captureMessage(
+                `Error claiming room for ${email}: linked expired on load`,
+                Sentry.Severity.Warning
+              );
               setError({
                 errorType: ErrorTypes.LINK_EXPIRED,
                 error: result,
@@ -76,7 +83,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
           }
         })
         .catch((e: any) => {
-          // unexpired error
+          // unexpected error
           setIsLoading(false);
           Sentry.captureMessage(`Error claiming room for ${email}`, Sentry.Severity.Error);
           setError({
@@ -100,7 +107,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     };
 
     if (!otp || !claimId) {
-      Sentry.captureMessage(`Error finializing account for ${email}`, Sentry.Severity.Warning);
+      Sentry.captureMessage(`Error finializing account for ${email}: link expired`, Sentry.Severity.Warning);
       setError({
         errorType: ErrorTypes.LINK_EXPIRED,
       });
@@ -113,10 +120,10 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
         }
-        // redirect to the room
-        history.push(`/${result.roomName}`);
+        setRoomName(result.roomName);
+        setShowConfirmation(true);
       } else {
-        Sentry.captureMessage(`Error finializing account for ${email}`, Sentry.Severity.Error);
+        Sentry.captureMessage(`Error finializing account for ${email} on submit`, Sentry.Severity.Error);
         setError({
           errorType: ErrorTypes.UNEXPECTED,
         });
@@ -129,71 +136,75 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   ) : (
     <main className={clsx(styles.root, 'u-flex u-flexCol')}>
       {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
+        <div className={clsx(styles.loading, 'u-flex u-flexJustifyCenter u-flexAlignItemsCenter')}>
           <CircularProgress />
         </div>
       ) : (
         <>
           <Header />
-          <TwoColLayout>
-            <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-              <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-                <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
-                <div className={clsx(styles.text, 'u-fontP1')}>
-                  Please finalize your account {email} to keep access to your room.
+          {showConfirmation ? (
+            <ClaimConfirmationView roomName={roomName} email={email || ''} />
+          ) : (
+            <TwoColLayout>
+              <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+                <div className={clsx(styles.container, 'u-flex u-flexCol')}>
+                  <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
+                  <div className={clsx(styles.text, 'u-fontP1')}>
+                    Please finalize your account {email} to keep access to your room.
+                  </div>
+                  <form onSubmit={onFormSubmit}>
+                    <div className="u-flex u-sm-flexCol u-flexRow">
+                      <TextField
+                        id="firstName"
+                        value={firstName}
+                        onChange={(event) => setFirstName(event.target.value)}
+                        placeholder="Dorothy"
+                        label="First Name"
+                        className={styles.firstName}
+                      />
+                      <TextField
+                        id="lastName"
+                        value={lastName}
+                        onChange={(event) => setLastName(event.target.value)}
+                        placeholder="Gale"
+                        label="Last Name"
+                        className={styles.lastName}
+                      />
+                    </div>
+                    <div className={styles.checkboxes}>
+                      <CheckboxField
+                        label={
+                          <span>
+                            I agree to the{' '}
+                            <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
+                              Terms of Service
+                            </Link>
+                          </span>
+                        }
+                        checked={acceptTos}
+                        onChange={() => setAcceptTos(!acceptTos)}
+                        name="terms of service checkbox"
+                      />
+                      <CheckboxField
+                        label="It’s ok to send me occasional emails"
+                        checked={receiveMarketing}
+                        onChange={() => setReceiveMarketing(!receiveMarketing)}
+                        name="send me occasional emails checkbox"
+                      />
+                    </div>
+                    <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+                      Finalize my account
+                    </Button>
+                  </form>
                 </div>
-                <form onSubmit={onFormSubmit}>
-                  <div className="u-flex u-sm-flexCol u-flexRow">
-                    <TextField
-                      id="firstName"
-                      value={firstName}
-                      onChange={(event) => setFirstName(event.target.value)}
-                      placeholder="Dorothy"
-                      label="First Name"
-                      className={styles.firstName}
-                    />
-                    <TextField
-                      id="lastName"
-                      value={lastName}
-                      onChange={(event) => setLastName(event.target.value)}
-                      placeholder="Gale"
-                      label="Last Name"
-                      className={styles.lastName}
-                    />
-                  </div>
-                  <div className={styles.checkboxes}>
-                    <CheckboxField
-                      label={
-                        <span>
-                          I agree to the{' '}
-                          <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                            Terms of Service
-                          </Link>
-                        </span>
-                      }
-                      checked={acceptTos}
-                      onChange={() => setAcceptTos(!acceptTos)}
-                      name="terms of service checkbox"
-                    />
-                    <CheckboxField
-                      label="It’s ok to send me occasional emails"
-                      checked={receiveMarketing}
-                      onChange={() => setReceiveMarketing(!receiveMarketing)}
-                      name="send me occasional emails checkbox"
-                    />
-                  </div>
-                  <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-                    Go to my room
-                  </Button>
-                </form>
-              </div>
-            </Column>
-            <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-              <div className={styles.imageContainer}>
-                <img className={styles.image} src={signinImg} alt="sign in" />
-              </div>
-            </Column>
-          </TwoColLayout>
+              </Column>
+              <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
+                <div className={styles.imageContainer}>
+                  <img className={styles.image} src={signinImg} alt="sign in" />
+                </div>
+              </Column>
+            </TwoColLayout>
+          )}
         </>
       )}
     </main>

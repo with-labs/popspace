@@ -43,6 +43,10 @@
   color: var(--color-cherry-bold);
 }
 
+.loading {
+  flex: 1;
+}
+
 @media (min-width: 0px) and (max-width: 639px) {
   .container {
     max-width: 100%;

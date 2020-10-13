@@ -29,10 +29,10 @@ export interface IDraggableProps {
   zIndex?: number;
 }
 
-const draggableSpringConfig = {
-  mass: 1,
-  tension: 500,
-  friction: 30,
+const DRAGGABLE_SPRING = {
+  mass: 0.1,
+  tension: 700,
+  friction: 20,
 };
 
 const useStyles = makeStyles({
@@ -99,7 +99,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     x: position.x,
     y: position.y,
     grabbing: false,
-    config: draggableSpringConfig,
+    config: DRAGGABLE_SPRING,
   }));
 
   // Update the spring when any of the monitored spatial values change

@@ -177,12 +177,22 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
     [dispatch, localParticipantSid]
   );
 
+  const disconnectHandler = useCallback(() => {
+    dispatch(
+      actions.removePerson({
+        id: localParticipantSid,
+      })
+    );
+  }, [dispatch, localParticipantSid]);
+
   useEffect(() => {
     room.on('trackMessage', dataMessageHandler);
+    room.on('disconnect', disconnectHandler);
     return () => {
       room.off('trackMessage', dataMessageHandler);
+      room.off('disconnect', disconnectHandler);
     };
-  }, [room, dataMessageHandler]);
+  }, [room, dataMessageHandler, disconnectHandler]);
 
   // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
   // state to a newly joined remote participant.

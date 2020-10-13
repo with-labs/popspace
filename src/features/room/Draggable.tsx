@@ -11,8 +11,14 @@ import { Vector2, Bounds } from '../../types/spatials';
 import { addVectors, roundVector, subtractVectors, clamp } from '../../utils/math';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
-import clsx from 'clsx';
+import { throttle } from 'lodash';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
+import clsx from 'clsx';
+
+// the time slicing for throttling movement events being sent over the
+// network. Setting this too high will make movement look laggy for peers,
+// but doesn't affect the local experience.
+const MOVE_THROTTLE_PERIOD = 50;
 
 export interface IDraggableProps {
   /**
@@ -128,14 +134,14 @@ export const Draggable: React.FC<IDraggableProps> = ({
   // dispatcher for movement changes
   const coordinatedDispatch = useCoordinatedDispatch();
   const onMove = React.useCallback(
-    (newPosition: Vector2) => {
+    throttle((newPosition: Vector2) => {
       coordinatedDispatch(
         actions.moveObject({
           id,
           position: newPosition,
         })
       );
-    },
+    }, MOVE_THROTTLE_PERIOD),
     [coordinatedDispatch, id]
   );
   const onResize = React.useCallback(
@@ -186,13 +192,16 @@ export const Draggable: React.FC<IDraggableProps> = ({
 
   // Update the spring when any of the monitored spatial values change
   React.useEffect(() => {
-    set({
-      x: position.x,
-      y: position.y,
-      width: measuredWidth,
-      height: measuredHeight,
-    });
-  }, [position.x, position.y, measuredWidth, measuredHeight, set]);
+    // only update position from Redux if we are not dragging right now
+    if (!grabbing.get()) {
+      set({
+        x: position.x,
+        y: position.y,
+        width: measuredWidth,
+        height: measuredHeight,
+      });
+    }
+  }, [position.x, position.y, measuredWidth, measuredHeight, set, grabbing]);
 
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture(
@@ -222,7 +231,14 @@ export const Draggable: React.FC<IDraggableProps> = ({
         }
 
         // report the movement after converting to world coordinates
-        onMove(roundVector(addVectors(worldPosition, displacement)));
+        const finalPosition = roundVector(addVectors(worldPosition, displacement));
+        // send to Redux and peers
+        onMove(finalPosition);
+        // update our local position immediately
+        set({
+          x: finalPosition.x,
+          y: finalPosition.y,
+        });
 
         return displacement;
       },

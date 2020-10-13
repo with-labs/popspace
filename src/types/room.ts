@@ -1,4 +1,5 @@
 import { EmojiData } from 'emoji-mart';
+import { WhiteboardState } from '../withComponents/Whiteboard/Whiteboard';
 
 /**
  * Various kinds of things that can be in rooms
@@ -62,8 +63,7 @@ export type WhiteboardWidgetState = BaseWidgetState & {
   data: WhiteboardWidgetData;
 };
 export type WhiteboardWidgetData = {
-  // corresponds to a session on witeboard.com
-  whiteboardId: string;
+  whiteboardState: WhiteboardState;
 };
 
 export type YoutubeWidgetState = BaseWidgetState & {

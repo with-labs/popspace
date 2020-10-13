@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const stopMousePropagation = (ev: React.MouseEvent | React.PointerEvent) => {
+  ev.stopPropagation();
+};
+
 /**
  * The external window frame of a floating widget. Defines the color
  * palette of the widget as well.
@@ -31,7 +35,16 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = (props) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Paper {...props} className={clsx(classes.root, props.className)} />
+      <Paper
+        {...props}
+        className={clsx(classes.root, props.className)}
+        onMouseDown={stopMousePropagation}
+        onMouseMove={stopMousePropagation}
+        onMouseUp={stopMousePropagation}
+        onPointerDown={stopMousePropagation}
+        onPointerMove={stopMousePropagation}
+        onPointerUp={stopMousePropagation}
+      />
     </ThemeProvider>
   );
 };

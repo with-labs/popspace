@@ -139,11 +139,8 @@ const InnerApp: FC<IAppProps> = (props) => {
                 Sentry.captureMessage(`cannot connect room ${roomName}`, Sentry.Severity.Warning);
               });
           } else {
-            // TODO: we will have to fine tune this error messaging once we get back better
-            // error codes from the back end, for now we just show the room doesnt exist page
-            setErroPageInfo({
-              errorType: ErrorTypes.ROOM_NOT_FOUND,
-            });
+            // TODO: when we have user missions, this should pop the 'request room permission page' for now
+            // just take them to the join room page
             setIsLoading(false);
           }
         })

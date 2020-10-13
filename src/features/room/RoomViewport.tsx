@@ -6,17 +6,14 @@ import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme } from '@material-ui/core';
 
-export const RoomViewportContext = React.createContext<{
+export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2) => Vector2;
   getZoom: () => number;
   onObjectDragStart: () => void;
   onObjectDragEnd: () => void;
-}>({
-  toWorldCoordinate: () => ({ x: 0, y: 0 }),
-  getZoom: () => 1,
-  onObjectDragStart: () => {},
-  onObjectDragEnd: () => {},
-});
+  pan: (delta: Vector2) => void;
+  zoom: (delta: number) => void;
+}>(null);
 
 export function useRoomViewport() {
   const context = React.useContext(RoomViewportContext);
@@ -49,6 +46,16 @@ const WHEEL_GESTURE_DAMPING = 4000;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels
 const PAN_BUFFER = 50;
+const VIEWPORT_PAN_SPRING = {
+  tension: 500,
+  friction: 20,
+  mass: 0.1,
+};
+const VIEWPORT_ZOOM_SPRING = {
+  tension: 700,
+  friction: 40,
+  mass: 0.1,
+};
 
 const useStyles = makeStyles<Theme, IRoomViewportProps>({
   viewport: {
@@ -86,15 +93,14 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY, zoom }, setCanvasTransform] = useSpring(() => ({
+  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
+    config: VIEWPORT_PAN_SPRING,
+  }));
+  const [{ zoom }, setZoomSpring] = useSpring(() => ({
     zoom: 1,
-    config: {
-      tension: 200,
-      friction: 50,
-      mass: 1,
-    },
+    config: VIEWPORT_ZOOM_SPRING,
   }));
 
   const toWorldCoordinate = React.useCallback(
@@ -131,61 +137,76 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [zoom, centerX, centerY, halfWindowWidth, halfWindowHeight]
   );
 
-  function clampPanPosition(panPosition: Vector2) {
-    const scale = zoom.goal;
+  const clampPanPosition = React.useCallback(
+    (panPosition: Vector2) => {
+      const scale = zoom.goal;
 
-    const worldScreenWidth = windowWidth / scale;
-    const worldScreenHeight = windowHeight / scale;
+      const worldScreenWidth = window.innerWidth / scale;
+      const worldScreenHeight = window.innerHeight / scale;
 
-    const panBufferWorldSize = PAN_BUFFER / scale;
+      const panBufferWorldSize = PAN_BUFFER / scale;
 
-    const minX = Math.min(0, -halfCanvasWidth + worldScreenWidth / 2) - panBufferWorldSize;
-    const maxX = Math.max(0, halfCanvasWidth - worldScreenWidth / 2) + panBufferWorldSize;
-    const minY = Math.min(0, -halfCanvasHeight + worldScreenHeight / 2) - panBufferWorldSize;
-    const maxY = Math.max(0, halfCanvasHeight - worldScreenHeight / 2) + panBufferWorldSize;
+      const minX = Math.min(0, -halfCanvasWidth + worldScreenWidth / 2) - panBufferWorldSize;
+      const maxX = Math.max(0, halfCanvasWidth - worldScreenWidth / 2) + panBufferWorldSize;
+      const minY = Math.min(0, -halfCanvasHeight + worldScreenHeight / 2) - panBufferWorldSize;
+      const maxY = Math.max(0, halfCanvasHeight - worldScreenHeight / 2) + panBufferWorldSize;
 
-    return {
-      x: clamp(panPosition.x, minX, maxX),
-      y: clamp(panPosition.y, minY, maxY),
-    };
-  }
+      return {
+        x: clamp(panPosition.x, minX, maxX),
+        y: clamp(panPosition.y, minY, maxY),
+      };
+    },
+    [halfCanvasHeight, halfCanvasWidth, zoom]
+  );
 
-  function doZoom(delta: number) {
-    const currentZoom = zoom.goal;
-    const added = currentZoom + delta;
-    const clamped = clamp(added, minZoom, maxZoom);
+  const doZoom = React.useCallback(
+    (delta: number) => {
+      const currentZoom = zoom.goal;
+      const added = currentZoom + delta;
+      const clamped = clamp(added, minZoom, maxZoom);
 
-    // also update pan position as the user zooms, since
-    // the allowed boundary changes slightly as the zoom changes
-    const clampedPan = clampPanPosition({
-      x: centerX.goal,
-      y: centerY.goal,
-    });
+      // also update pan position as the user zooms, since
+      // the allowed boundary changes slightly as the zoom changes
+      const clampedPan = clampPanPosition({
+        x: centerX.goal,
+        y: centerY.goal,
+      });
 
-    setCanvasTransform({
-      zoom: clamped,
-      centerX: clampedPan.x,
-      centerY: clampedPan.y,
-    });
-  }
+      setZoomSpring({
+        zoom: clamped,
+      });
+      setPanSpring({
+        centerX: clampedPan.x,
+        centerY: clampedPan.y,
+      });
+    },
+    [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring, zoom]
+  );
+
+  const doPan = React.useCallback(
+    (delta: Vector2) => {
+      // when the user drags, we constrain the distance they can
+      // move the canvas to keep it on screen
+      // TODO: figure out how to do this with gesture constraints
+      // instead of hard-constraining the value (advantage: we can
+      // have some elasticity to the boundary collision)
+      const clamped = clampPanPosition({
+        x: centerX.goal - delta.x,
+        y: centerY.goal - delta.y,
+      });
+
+      setPanSpring({
+        centerX: clamped.x,
+        centerY: clamped.y,
+      });
+    },
+    [centerX, centerY, clampPanPosition, setPanSpring]
+  );
 
   const bind = useGesture(
     {
-      onDrag: ({ delta: [x, y] }) => {
-        // when the user drags, we constrain the distance they can
-        // move the canvas to keep it on screen
-        // TODO: figure out how to do this with gesture constraints
-        // instead of hard-constraining the value (advantage: we can
-        // have some elasticity to the boundary collision)
-        const clamped = clampPanPosition({
-          x: centerX.goal + x,
-          y: centerY.goal + y,
-        });
-
-        setCanvasTransform({
-          centerX: clamped.x,
-          centerY: clamped.y,
-        });
+      onDrag: ({ delta: [x, y], event }) => {
+        doPan({ x: -x, y: -y });
       },
       onPinch: ({ offset: [d], event }) => {
         event?.preventDefault();
@@ -229,19 +250,24 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the entire item, so the whole item gets re-rendered. It's a tricky cascade,
   // but keeping that rendering to a minimum really makes a difference for performance.
   // To that end - avoid at all possible making this value change. Right now it
-  // only depends on stable references.
-  const contextValue = React.useMemo(
+  // only depends on stable references. Some of the referenced functions, like
+  // doPan and doZoom, may seem volatile - but they are all just memoized
+  // on stable references to spring values and other things which are not
+  // going to change often, like the size of the room.
+  const infoContextValue = React.useMemo(
     () => ({
       toWorldCoordinate,
       getZoom: zoom.get,
       onObjectDragStart,
       onObjectDragEnd,
+      pan: doPan,
+      zoom: doZoom,
     }),
-    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd]
+    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom]
   );
 
   return (
-    <RoomViewportContext.Provider value={contextValue}>
+    <RoomViewportContext.Provider value={infoContextValue}>
       <animated.div className={styles.viewport} ref={domTarget}>
         <animated.div
           className={styles.canvas}

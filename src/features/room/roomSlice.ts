@@ -45,8 +45,8 @@ export const initialState: RoomState = {
   people: {},
   // TODO: make this changeable
   bounds: {
-    width: 3000,
-    height: 3000,
+    width: 2500,
+    height: 2500,
   },
   background: {
     backgroundName: BackgroundName.Bg1,

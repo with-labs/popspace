@@ -136,11 +136,7 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
             lines: [],
           },
         },
-        {
-          width: 720,
-          height: 480,
-        }
-      );
+      });
     } else {
       // show an error message or something
       // TODO: need to figure out how to display it

@@ -288,15 +288,10 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       },
       MuiSlider: {
         rail: {
-          backgroundColor: palette.grey[200],
+          backgroundColor: palette.grey[500],
           opacity: 1,
         },
-        thumb: {
-          boxShadow: `0 0 0 2px ${palette.background.paper}`,
-          '&:hover': {
-            boxShadow: `0 0 0 6px ${palette.background.paper}`,
-          },
-        },
+        thumb: {},
       },
     },
   });

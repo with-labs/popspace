@@ -2,6 +2,7 @@ import * as React from 'react';
 import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@material-ui/core';
 import { PauseOutlined, PlayArrowOutlined } from '@material-ui/icons';
 import clsx from 'clsx';
+import palette from '../../../../theme/palette';
 
 export enum PlayState {
   Playing,
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1.5),
-    color: theme.palette.common.black,
+    color: palette.cherry.dark,
   },
   timeDisplay: {
     fontSize: theme.typography.pxToRem(12),

@@ -10,6 +10,7 @@ import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
 import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
 import { AccessoriesDock } from '../../withComponents/AccessoriesDock/AccessoriesDock';
+import { ViewportControls } from './controls/viewport/ViewportControls';
 
 interface IRoomProps {}
 
@@ -24,7 +25,16 @@ export const Room: React.FC<IRoomProps> = () => {
 
   return (
     <>
-      <RoomViewport bounds={bounds} backgroundUrl={backgroundUrl} uiContent={<AccessoriesDock />}>
+      <RoomViewport
+        bounds={bounds}
+        backgroundUrl={backgroundUrl}
+        uiContent={
+          <>
+            <AccessoriesDock />
+            <ViewportControls />
+          </>
+        }
+      >
         <ErrorBoundary fallback={() => <WidgetsFallback />}>
           {widgetIds.map((id) => (
             <Widget id={id} key={id} />

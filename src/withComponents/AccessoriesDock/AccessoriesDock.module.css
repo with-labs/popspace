@@ -2,9 +2,8 @@
   padding: 16px;
   height: 72px;
   min-width: 200px;
-  bottom: 20px;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 16px;
+  left: 16px;
   cursor: default;
 
   background: var(--color-snow);

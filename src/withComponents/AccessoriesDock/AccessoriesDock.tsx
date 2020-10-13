@@ -282,7 +282,14 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
           closeSettingsModal={() => setIsSettingsModalOpen(false)}
         />
       </div>
-      <input ref={copyInput} type="text" value={document.location.href} readOnly className={styles.copyInput} />
+      <input
+        ref={copyInput}
+        type="text"
+        value={document.location.href}
+        tabIndex={-1}
+        readOnly
+        className={styles.copyInput}
+      />
     </>
   );
 });

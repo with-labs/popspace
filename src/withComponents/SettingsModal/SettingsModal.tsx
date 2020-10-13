@@ -28,6 +28,7 @@ const emojiMartStyles: CSSProperties = {
   position: 'absolute',
   top: '12px',
   right: '10px',
+  zIndex: 100,
 };
 
 const SettingsModal = (props: SettingsModalProps) => {

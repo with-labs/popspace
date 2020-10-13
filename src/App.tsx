@@ -1,7 +1,7 @@
 // copy of the initial twilio code, changed a few things and wanted to keep the
 // code separate
 
-import React, { useState, useEffect, FC } from 'react';
+import React, { useState, useEffect, FC, useRef } from 'react';
 import useVideoContext from './hooks/useVideoContext/useVideoContext';
 import * as Sentry from '@sentry/react';
 import { CircularProgress } from '@material-ui/core';
@@ -91,16 +91,30 @@ const InnerApp: FC<IAppProps> = (props) => {
   const { setError } = useAppState();
   const { connect } = useVideoContext();
   const [isLoading, setIsLoading] = useState(sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
+  // we track joining state in a synchronous ref - it's important
+  // to ensure we only auto-join once, or things get weird, so this
+  // isn't a useState so that it won't re-render the component and re-trigger
+  // the auto-join itself.
+  const isJoiningRef = useRef(false);
   const [errorPageInfo, setErroPageInfo] = useState<ErrorInfo | null>(null);
   const coordinatedDispatch = useCoordinatedDispatch();
   const classes = useStyles();
 
   useEffect(() => {
+    // Don't auto-join if we are already auto-joining!
+    if (isJoiningRef.current) return;
     // on page load check to see if a user has a token,
     // if they do not we will render out the the old login screen
     // this will be replaced once we move over to user / rethink anon-users
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
     if (sessionTokenExists(sessionToken)) {
+      isJoiningRef.current = true;
+      // capturing the auto-login to help diagnose any
+      // possible future issues with auto-join behaviors
+      Sentry.captureEvent({
+        message: `Auto-joining room ${roomName}`,
+        level: Sentry.Severity.Debug,
+      });
       // we have a session token
       // pop the loading spinner
       setIsLoading(true);
@@ -145,15 +159,18 @@ const InnerApp: FC<IAppProps> = (props) => {
           }
         })
         .catch((e: any) => {
-          setIsLoading(false);
           Sentry.captureMessage(`Error attempting to join room ${roomName}`, Sentry.Severity.Error);
           setErroPageInfo({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,
           });
+        })
+        .finally(() => {
+          isJoiningRef.current = false;
+          setIsLoading(false);
         });
     }
-  }, [setError, connect, roomName, coordinatedDispatch]);
+  }, [setError, connect, roomName, coordinatedDispatch, isJoiningRef]);
 
   // currently twilio has a call in the useRoom hook that before the video room unloads,
   // it will disconnect the user when the `beforeunload` event is called. We will do something similar here

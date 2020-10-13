@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, IconButton, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { ReactComponent as CloseGlyph } from './images/close.svg';
-import { DraggableHandle } from '../Draggable';
+import { DraggableHandle } from '../DraggableHandle';
 
 export type WidgetTitlebarProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string;
@@ -16,12 +16,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: `10px 10px 0 0`,
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
+    flex: '0 0 auto',
   },
   title: {
     flex: 1,
     fontWeight: 'bold',
     fontSize: theme.typography.pxToRem(16),
     marginRight: theme.spacing(1),
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   controls: {
     flexBasis: 'auto',

@@ -1,4 +1,4 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
 import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
@@ -8,6 +8,8 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { AddStickyNoteButton } from './AddStickyNoteButton';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { StickyNoteWidgetState, StickyNoteWidgetData } from '../../../../types/room';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -19,10 +21,10 @@ export interface IStickyNoteWidgetProps {
 
 const useStyles = makeStyles((theme) => ({
   text: {
-    maxHeight: 250,
     overflowY: 'auto',
     overflowWrap: 'anywhere',
     fontSize: theme.typography.pxToRem(14),
+    flex: 1,
   },
   author: {
     whiteSpace: 'nowrap',
@@ -80,8 +82,7 @@ const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: s
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
-    <Box p={2} width={240}>
-      {children}
-    </Box>
+    <WidgetContent>{children}</WidgetContent>
+    <WidgetResizeHandle />
   </WidgetFrame>
 );

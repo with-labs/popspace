@@ -1,4 +1,4 @@
-import { Box, Link, makeStyles, Tooltip } from '@material-ui/core';
+import { Link, makeStyles, Tooltip } from '@material-ui/core';
 import * as React from 'react';
 import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';
@@ -6,6 +6,7 @@ import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditLinkWidgetForm } from './EditLinkWidgetForm';
 import { LinkWidgetState } from '../../../../types/room';
+import { WidgetContent } from '../WidgetContent';
 
 export interface ILinkWidgetProps {
   state: LinkWidgetState;
@@ -39,9 +40,9 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
     return (
       <WidgetFrame color="lavender">
         <WidgetTitlebar title="Add a Link" onClose={onClose} />
-        <Box p={2} width={300} position="relative">
+        <WidgetContent>
           <EditLinkWidgetForm onSave={saveWidget} />
-        </Box>
+        </WidgetContent>
       </WidgetFrame>
     );
   }
@@ -51,7 +52,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
   return (
     <WidgetFrame color="lavender">
       <WidgetTitlebar title="Link" onClose={onClose} />
-      <Box position="relative" width="100%" maxWidth={200} p={2}>
+      <WidgetContent>
         <Tooltip title={state.data.url} placement="bottom">
           <Link
             href={state.data.url}
@@ -63,7 +64,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
             {state.data.title}
           </Link>
         </Tooltip>
-      </Box>
+      </WidgetContent>
     </WidgetFrame>
   );
 };

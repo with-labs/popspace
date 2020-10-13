@@ -6,12 +6,14 @@ import { ColorButton } from './ColorButton';
 import { nanoid } from '@reduxjs/toolkit';
 import palette from '../../theme/palette';
 import { COLORS, ERASER_COLOR, ERASER_WIDTH, STROKE_WIDTH } from './constants';
+import clsx from 'clsx';
 
 export interface IWhiteboardProps {
   value?: WhiteboardState;
   onChange?: (val: WhiteboardState) => any;
   width?: number;
   height?: number;
+  className?: string;
 }
 
 export type DrawingLine = {
@@ -50,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
  * it will store its own state (useful for testing)
  */
 export const Whiteboard = React.forwardRef<{ exportToImageURL: () => string }, IWhiteboardProps>(
-  ({ value: controlledValue, onChange: controlledOnChange, width = 720, height = 480 }, ref) => {
+  ({ value: controlledValue, onChange: controlledOnChange, width = 720, height = 480, className }, ref) => {
     const classes = useStyles();
 
     // a ref to the Konva stage, which we can use to export an image.
@@ -140,7 +142,7 @@ export const Whiteboard = React.forwardRef<{ exportToImageURL: () => string }, I
     const visibleLines = [...finalState.lines, activeLine].filter(Boolean) as DrawingLine[];
 
     return (
-      <div className={classes.root}>
+      <div className={clsx(classes.root, className)}>
         <Stage
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}

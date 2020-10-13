@@ -1,4 +1,4 @@
-import { Box, makeStyles, IconButton } from '@material-ui/core';
+import { makeStyles, IconButton } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar, WidgetTitlebarProps } from '../WidgetTitlebar';
@@ -7,6 +7,7 @@ import { Whiteboard, WhiteboardState } from '../../../../withComponents/Whiteboa
 import { useSaveWidget } from '../useSaveWidget';
 import { CloudDownloadOutlined } from '@material-ui/icons';
 import { useExport } from './useExport';
+import { WidgetContent } from '../WidgetContent';
 
 export interface IWhiteboardWidgetProps {
   state: WhiteboardWidgetState;
@@ -50,9 +51,9 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
           <CloudDownloadOutlined />
         </IconButton>
       </WidgetTitlebar>
-      <Box className={classes.root}>
+      <WidgetContent className={classes.root} disablePadding>
         <Whiteboard value={state.data.whiteboardState} onChange={handleWhiteboardChange} ref={ref} />
-      </Box>
+      </WidgetContent>
     </WidgetFrame>
   );
 };

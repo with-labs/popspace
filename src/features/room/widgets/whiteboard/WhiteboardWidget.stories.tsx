@@ -24,7 +24,9 @@ const Template: Story<{}> = (args) => (
         isDraft: false,
         type: WidgetType.Whiteboard,
         data: {
-          whiteboardId: uuid(),
+          whiteboardState: {
+            lines: [],
+          },
         },
       }}
     />

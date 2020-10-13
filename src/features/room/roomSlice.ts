@@ -5,6 +5,7 @@ import { RootState } from '../../state/store';
 import { clamp } from '../../utils/math';
 import { BackgroundName } from '../../withComponents/BackgroundPicker/options';
 import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/room';
+import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 
 /**
  * Positioning data for an object in a room,
@@ -16,6 +17,7 @@ export type ObjectPositionData = {
    * position based on 100% zoom.
    */
   position: Vector2;
+  size: Bounds | null;
 };
 export type RoomBackgroundState = {
   // FIXME: this could be simplified if we stopped treating our
@@ -62,7 +64,7 @@ const roomSlice = createSlice({
     addWidget: {
       // the user is not required to provide an id for a new widget;
       // it will be generated for them in the action preparation step.
-      prepare(input: { position: Vector2; widget: Omit<WidgetState, 'id'> }) {
+      prepare(input: { position: Vector2; size?: Bounds; widget: Omit<WidgetState, 'id'> }) {
         return {
           payload: {
             ...input,
@@ -79,11 +81,13 @@ const roomSlice = createSlice({
           payload,
         }: PayloadAction<{
           position: Vector2;
+          size?: Bounds;
           widget: WidgetState;
         }>
       ) {
         state.positions[payload.widget.id] = {
           position: payload.position,
+          size: payload.size || null,
         };
 
         state.widgets[payload.widget.id] = payload.widget;
@@ -101,6 +105,8 @@ const roomSlice = createSlice({
     ) {
       state.positions[payload.person.id] = {
         position: payload.position,
+        // always auto-size people
+        size: null,
       };
 
       state.people[payload.person.id] = payload.person;
@@ -123,6 +129,16 @@ const roomSlice = createSlice({
       };
       state.positions[payload.id].position = clamped;
     },
+    resizeObject(state, { payload }: PayloadAction<{ id: string; size: Bounds | null }>) {
+      if (!state.positions[payload.id]) return;
+      const clamped = payload.size
+        ? {
+            width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
+            height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
+          }
+        : null;
+      state.positions[payload.id].size = clamped;
+    },
     /** Updates the data associated with a widget */
     updateWidgetData(state, { payload }: PayloadAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>) {
       if (!state.widgets[payload.id]) return;
@@ -130,8 +146,15 @@ const roomSlice = createSlice({
         ...state.widgets[payload.id].data,
         ...payload.data,
       };
-      if (payload.publish) {
+      // if publish is true and we're already a draft,
+      // publish it!
+      if (payload.publish && state.widgets[payload.id].isDraft) {
         state.widgets[payload.id].isDraft = false;
+        if (state.positions[payload.id]) {
+          // also trigger a remeasure on publish, since content will probably
+          // change
+          state.positions[payload.id].size = null;
+        }
       }
     },
     /** Changes the emoji displayed for a participant */

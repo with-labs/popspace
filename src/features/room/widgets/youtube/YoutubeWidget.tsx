@@ -1,4 +1,4 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import YouTube from 'react-youtube';
 import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
@@ -10,6 +10,8 @@ import { YoutubeWidgetState } from '../../../../types/room';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -31,10 +33,16 @@ const DEFAULT_OPTS = {
 
 const useStyles = makeStyles((theme) => ({
   videoContainer: {
-    // for some reason there's a little gap at the bottom of the iframe,
-    // this removes it.
-    marginBottom: -6,
+    width: '100%',
+    height: '100%',
+    minWidth: 480,
+    minHeight: 270,
     position: 'relative',
+    // this is the best way I can find to target the YouTube player container itself
+    '& > div:first-child': {
+      width: '100%',
+      height: '100%',
+    },
     '&:hover, &:focus': {
       '& > $videoControls': {
         visibility: 'visible',
@@ -44,18 +52,23 @@ const useStyles = makeStyles((theme) => ({
   },
   videoControls: {
     position: 'absolute',
-    // add the pixels we subtracted above
-    bottom: theme.spacing(2) + 6,
+    bottom: theme.spacing(2),
     left: theme.spacing(2),
     right: theme.spacing(2),
 
     visibility: 'hidden',
     pointerEvents: 'none',
 
+    zIndex: 5,
+
     '&:focus-within': {
       visibility: 'visible',
       pointerEvents: 'initial',
     },
+  },
+  video: {
+    width: '100%',
+    height: '100%',
   },
 }));
 
@@ -70,23 +83,24 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
       <WidgetFrame color="cherry">
-        <WidgetTitlebar title="YouTube - beta" onClose={onClose} />
-        <Box p={2} width={270}>
+        <WidgetTitlebar title="YouTube" onClose={onClose} />
+        <WidgetContent>
           <EditYoutubeWidgetForm onSave={saveWidget} />
-        </Box>
+        </WidgetContent>
       </WidgetFrame>
     );
   }
 
   return (
     <WidgetFrame color="cherry">
-      <WidgetTitlebar title="YouTube - beta" onClose={onClose}>
+      <WidgetTitlebar title="YouTube" onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
-      <Box className={classes.videoContainer}>
-        <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} {...youtubeBindings} />
+      <WidgetContent disablePadding className={classes.videoContainer}>
+        <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} className={classes.video} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />
-      </Box>
+      </WidgetContent>
+      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

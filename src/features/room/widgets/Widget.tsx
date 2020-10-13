@@ -9,6 +9,7 @@ import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
 import { WidgetState, WidgetType } from '../../../types/room';
+import { WIDGET_SIZE_RESTRICTIONS } from '../../../constants/room';
 
 export interface IWidgetProps {
   id: string;
@@ -36,8 +37,10 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
     return null;
   }
 
+  const sizeRestrictions = WIDGET_SIZE_RESTRICTIONS[widget.type];
+
   return (
-    <Draggable id={id}>
+    <Draggable id={id} {...sizeRestrictions}>
       <WidgetContent widget={widget} onClose={handleRemove} />
     </Draggable>
   );

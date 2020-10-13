@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 import Modal from 'react-modal';
-import { v4 as uuidv4 } from 'uuid';
 import { BackgroundPicker } from '../BackgroundPicker';
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 import useLocalAudioToggle from '../../hooks/useLocalAudioToggle/useLocalAudioToggle';
@@ -32,6 +31,7 @@ import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplay
 import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
 import { addVectors } from '../../utils/math';
 import { WidgetState, WidgetType } from '../../types/room';
+import { Bounds } from '../../types/spatials';
 
 interface IAccessoriesDockProps {
   classNames?: string;
@@ -53,7 +53,7 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
   // adds a widget to the room, always with the local participant as the owner and
   // centered on screen.
   const addWidget = useCallback(
-    (widget: Omit<WidgetState, 'kind' | 'id' | 'participantSid'>) => {
+    (widget: Omit<WidgetState, 'kind' | 'id' | 'participantSid'>, size?: Bounds) => {
       // get the position in the world which aligns with the center of the
       // user's viewport area
       // add a little fuzziness so multiple widgets of the same type don't stack
@@ -71,6 +71,7 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
       coordinatedDispatch(
         roomSlice.actions.addWidget({
           position,
+          size,
           widget: {
             ...widget,
             kind: 'widget',

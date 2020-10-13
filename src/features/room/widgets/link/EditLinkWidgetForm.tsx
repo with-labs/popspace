@@ -3,6 +3,7 @@ import { Form, Formik } from 'formik';
 import { FormikTextField } from '../../../../withComponents/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
 import { LinkWidgetData } from '../../../../types/room';
+import { makeStyles } from '@material-ui/core';
 
 export interface IEditLinkWidgetFormProps {
   onSave: (data: LinkWidgetData) => any;
@@ -20,10 +21,19 @@ function validateUrl(url: string) {
   }
 }
 
+const useStyles = makeStyles((theme) => ({
+  form: {
+    width: '100%',
+    height: '100%',
+  },
+}));
+
 export const EditLinkWidgetForm: React.FC<IEditLinkWidgetFormProps> = ({ initialValues = EMPTY_VALUES, onSave }) => {
+  const classes = useStyles();
+
   return (
     <Formik initialValues={initialValues} onSubmit={onSave} validateOnMount>
-      <Form>
+      <Form className={classes.form}>
         <FormikTextField name="title" label="Title" margin="normal" required autoFocus />
         <FormikTextField name="url" label="Url" margin="normal" validate={validateUrl} required />
         <FormikSubmitButton>Add a link</FormikSubmitButton>

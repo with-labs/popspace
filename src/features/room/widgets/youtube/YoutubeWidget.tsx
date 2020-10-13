@@ -37,14 +37,21 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     minWidth: 480,
     minHeight: 270,
-    '& > div': {
+    position: 'relative',
+    // this is the best way I can find to target the YouTube player container itself
+    '& > div:first-child': {
       width: '100%',
       height: '100%',
+    },
+    '&:hover, &:focus': {
+      '& > $videoControls': {
+        visibility: 'visible',
+        pointerEvents: 'initial',
+      },
     },
   },
   videoControls: {
     position: 'absolute',
-    // add the pixels we subtracted above
     bottom: theme.spacing(2),
     left: theme.spacing(2),
     right: theme.spacing(2),
@@ -52,10 +59,16 @@ const useStyles = makeStyles((theme) => ({
     visibility: 'hidden',
     pointerEvents: 'none',
 
+    zIndex: 5,
+
     '&:focus-within': {
       visibility: 'visible',
       pointerEvents: 'initial',
     },
+  },
+  video: {
+    width: '100%',
+    height: '100%',
   },
 }));
 
@@ -83,8 +96,8 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
       <WidgetTitlebar title="YouTube" onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
-      <WidgetContent className={classes.videoContainer}>
-        <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} {...youtubeBindings} />
+      <WidgetContent disablePadding className={classes.videoContainer}>
+        <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} className={classes.video} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />
       </WidgetContent>
       <WidgetResizeHandle />

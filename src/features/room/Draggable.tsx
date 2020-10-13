@@ -36,9 +36,19 @@ export interface IDraggableProps {
   minWidth?: number;
   /**
    * For resizeable draggable items, this is the minimum height you
-   * can re size them to.
+   * can resize them to.
    */
   minHeight?: number;
+  /**
+   * For resizeable draggable items, this is the maximum width you
+   * can resize them to
+   */
+  maxWidth?: number;
+  /**
+   * For resizeable draggable items, this is the maximum height you
+   * can resize them to
+   */
+  maxHeight?: number;
 }
 
 const DRAGGABLE_SPRING = {
@@ -88,6 +98,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
   zIndex = 0,
   minWidth = MIN_WIDGET_WIDTH,
   minHeight = MIN_WIDGET_HEIGHT,
+  maxWidth,
+  maxHeight,
 }) => {
   const styles = useStyles();
 
@@ -241,8 +253,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
         state.event?.stopPropagation();
         // unlike movement, this only sends updates when the change is complete
         set({
-          width: clamp(width.goal + state.delta[0] * 2, minWidth, Infinity),
-          height: clamp(height.goal + state.delta[1] * 2, minHeight, Infinity),
+          width: clamp(width.goal + state.delta[0] * 2, minWidth, maxWidth || Infinity),
+          height: clamp(height.goal + state.delta[1] * 2, minHeight, maxHeight || Infinity),
         });
       },
       onDragStart: (state) => {
@@ -297,7 +309,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
           // while we are measuring, because of word-wrapping and other css overflow rules,
           // we want to enforce at least the minimum sizes - otherwise text wraps and creates
           // a taller measurement than we would want
-          style={hasBeenMeasured ? undefined : { minWidth, minHeight }}
+          style={hasBeenMeasured ? undefined : { minWidth, minHeight, maxWidth, maxHeight }}
           ref={contentRef}
         >
           {children}

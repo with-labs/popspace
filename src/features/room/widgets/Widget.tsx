@@ -37,10 +37,10 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
     return null;
   }
 
-  const { minWidth, minHeight } = WIDGET_SIZE_RESTRICTIONS[widget.type];
+  const sizeRestrictions = WIDGET_SIZE_RESTRICTIONS[widget.type];
 
   return (
-    <Draggable id={id} minWidth={minWidth} minHeight={minHeight}>
+    <Draggable id={id} {...sizeRestrictions}>
       <WidgetContent widget={widget} onClose={handleRemove} />
     </Draggable>
   );

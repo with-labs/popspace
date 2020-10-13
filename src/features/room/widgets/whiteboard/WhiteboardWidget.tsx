@@ -8,7 +8,6 @@ import { useSaveWidget } from '../useSaveWidget';
 import { CloudDownloadOutlined } from '@material-ui/icons';
 import { useExport } from './useExport';
 import { WidgetContent } from '../WidgetContent';
-import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IWhiteboardWidgetProps {
   state: WhiteboardWidgetState;
@@ -24,23 +23,8 @@ export interface IWhiteboardWidgetProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  frame: {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    overflow: 'hidden',
-    borderRadius: 10,
-    border: 'none',
-  },
-  matte: {
-    position: 'absolute',
-    overflow: 'hidden',
-    top: -100,
-    bottom: 0,
-    left: -200,
-    right: -200,
-    background: 'white',
+  root: {
+    position: 'relative',
   },
 }));
 
@@ -67,10 +51,9 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
           <CloudDownloadOutlined />
         </IconButton>
       </WidgetTitlebar>
-      <WidgetContent className={classes.root}>
+      <WidgetContent className={classes.root} disablePadding>
         <Whiteboard value={state.data.whiteboardState} onChange={handleWhiteboardChange} ref={ref} />
       </WidgetContent>
-      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

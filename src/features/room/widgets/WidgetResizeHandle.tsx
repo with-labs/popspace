@@ -4,13 +4,13 @@ import { DraggableResizeHandle } from '../DraggableResizeHandle';
 
 export interface IWidgetResizeHandleProps {}
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    right: theme.spacing(0.25),
+    bottom: theme.spacing(0.25),
   },
-});
+}));
 
 export const WidgetResizeHandle: React.FC<IWidgetResizeHandleProps> = (props) => {
   const classes = useStyles();

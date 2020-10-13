@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: theme.typography.pxToRem(16),
     marginRight: theme.spacing(1),
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
   controls: {
     flexBasis: 'auto',

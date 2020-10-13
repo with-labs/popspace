@@ -85,6 +85,8 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
       return onSave({
         videoId: parsed.videoId,
         timestamp: parsed.start || 0,
+        isPlaying: true,
+        playStartedTimestampUTC: new Date().toUTCString(),
       });
     },
     [onSave]

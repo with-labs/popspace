@@ -286,6 +286,13 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           },
         },
       },
+      MuiSlider: {
+        rail: {
+          backgroundColor: palette.grey[500],
+          opacity: 1,
+        },
+        thumb: {},
+      },
     },
   });
 };

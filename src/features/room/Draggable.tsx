@@ -208,8 +208,14 @@ export function useRoomObjectDragHandle() {
  * item which the user can actually click on to drag around. If the whole item is interactive, just
  * wrap it all in DraggableHandle.
  */
-export function DraggableHandle({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) {
+export function DraggableHandle({ children, disabled }: { children: React.ReactElement; disabled?: boolean }) {
   const { dragHandleProps, isDraggingAnimatedValue } = React.useContext(DraggableContext);
+
+  if (!dragHandleProps || !isDraggingAnimatedValue) {
+    // using this component outside of context - this could sometimes be valid, maybe?
+    // just ignore all the drag handle stuff and return the content
+    return children;
+  }
 
   return (
     <animated.div

@@ -72,6 +72,14 @@ export type YoutubeWidgetState = BaseWidgetState & {
 };
 export type YoutubeWidgetData = {
   timestamp?: number;
+  /**
+   * If the video is currently playing,
+   * this records when it started. The client can use
+   * this to compute a more exact timestamp, by adding
+   * the elapsed time since play started to the recorded
+   * timestamp.
+   */
+  playStartedTimestampUTC: string | null;
   isPlaying?: boolean;
   videoId: string;
 };

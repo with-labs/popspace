@@ -169,6 +169,7 @@ export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }
         videoId: '',
         // start the video immediately on create
         isPlaying: true,
+        playStartedTimestampUTC: new Date().toUTCString(),
       },
     });
   };

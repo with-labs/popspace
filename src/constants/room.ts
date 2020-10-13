@@ -1,2 +1,2 @@
-export const PERSON_BUBBLE_SIZE = 160;
-export const TITLEBAR_HEIGHT = 48;
+export const MIN_WIDGET_WIDTH = 160;
+export const MIN_WIDGET_HEIGHT = 98;

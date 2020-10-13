@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, IconButton, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { ReactComponent as CloseGlyph } from './images/close.svg';
-import { DraggableHandle } from '../Draggable';
+import { DraggableHandle } from '../DraggableHandle';
 
 export type WidgetTitlebarProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string;

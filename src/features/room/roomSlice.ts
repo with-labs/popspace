@@ -5,7 +5,7 @@ import { RootState } from '../../state/store';
 import { clamp } from '../../utils/math';
 import { BackgroundName } from '../../withComponents/BackgroundPicker/options';
 import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/room';
-import { PERSON_BUBBLE_SIZE } from '../../constants/room';
+import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 
 /**
  * Positioning data for an object in a room,
@@ -133,8 +133,8 @@ const roomSlice = createSlice({
       if (!state.positions[payload.id]) return;
       const clamped = payload.size
         ? {
-            width: clamp(payload.size.width, 92, 1000),
-            height: clamp(payload.size.height, 92, 1000),
+            width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
+            height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
           }
         : null;
       state.positions[payload.id].size = clamped;

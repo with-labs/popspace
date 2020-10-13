@@ -1,26 +1,44 @@
 import * as React from 'react';
-import { Box } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
+import { animated, to } from '@react-spring/web';
+import clsx from 'clsx';
+import { DraggableContext } from '../Draggable';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;
   className?: string;
 }
 
+const useStyles = makeStyles<Theme, IWidgetContentProps>((theme) => ({
+  root: (props) => ({
+    padding: props.disablePadding ? 0 : theme.spacing(2),
+    overflow: 'hidden',
+    flex: 1,
+    width: '100%',
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+  }),
+}));
+
 export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
+  const classes = useStyles(props);
+  // use the drag context to see if we are dragging or resizing this widget -
+  // if we are, we want to disable pointer events inside the frame so that
+  // iframes and other interactive content don't get triggered as the mouse
+  // moves over them
+  const { isDraggingAnimatedValue, isResizingAnimatedValue } = React.useContext(DraggableContext);
+
   return (
-    <Box
-      p={props.disablePadding ? 0 : 2}
-      overflow="hidden"
-      flex={1}
-      width="100%"
-      position="relative"
-      minWidth={250}
-      minHeight={60}
-      display="flex"
-      flexDirection="column"
-      className={props.className}
+    <animated.div
+      className={clsx(classes.root, props.className)}
+      style={{
+        pointerEvents: to([isDraggingAnimatedValue, isResizingAnimatedValue], (dr, rz) =>
+          dr || rz ? 'none' : 'initial'
+        ),
+      }}
     >
       {props.children}
-    </Box>
+    </animated.div>
   );
 };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
-import { Draggable, DraggableHandle } from '../Draggable';
+import { Draggable } from '../Draggable';
 import ParticipantCircle from '../../../withComponents/ParticipantCircle';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/react';
 import { makeStyles, Paper } from '@material-ui/core';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
+import { DraggableHandle } from '../DraggableHandle';
 
 export interface IPersonProps {
   id: string;
@@ -23,8 +24,8 @@ function useParticipant(sid: string) {
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
-    height: '100%',
+    width: 160,
+    height: 160,
     borderRadius: '100%',
   },
   dragHandle: {
@@ -69,7 +70,7 @@ export const Person = React.memo<IPersonProps>((props) => {
   const isMe = localParticipant.sid === participant.sid;
 
   return (
-    <Draggable id={props.id} zIndex={isMe ? 10 : 9}>
+    <Draggable id={props.id} zIndex={isMe ? 10 : 9} minHeight={160} minWidth={160}>
       <DraggableHandle disabled={!isMe} className={classes.dragHandle}>
         <Paper className={classes.root} elevation={6}>
           <ParticipantCircle participant={participant} />

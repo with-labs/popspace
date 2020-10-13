@@ -3,16 +3,16 @@ import { animated, SpringValue, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { makeStyles } from '@material-ui/core';
-import { DragIndicator } from '@material-ui/icons';
 import { useRoomViewport } from './RoomViewport';
 import { useSelector } from 'react-redux';
 import { actions } from './roomSlice';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { Vector2, Bounds } from '../../types/spatials';
-import { addVectors, roundVector, subtractVectors } from '../../utils/math';
+import { addVectors, roundVector, subtractVectors, clamp } from '../../utils/math';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
 import clsx from 'clsx';
+import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 
 export interface IDraggableProps {
   /**
@@ -29,6 +29,16 @@ export interface IDraggableProps {
    * Optionally, provide a custom z-index for ordering the object
    */
   zIndex?: number;
+  /**
+   * For resizeable draggable items, this is the minimum width you can
+   * resize them to.
+   */
+  minWidth?: number;
+  /**
+   * For resizeable draggable items, this is the minimum height you
+   * can re size them to.
+   */
+  minHeight?: number;
 }
 
 const DRAGGABLE_SPRING = {
@@ -53,7 +63,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DraggableContext = React.createContext<{
+export const DraggableContext = React.createContext<{
   dragHandleProps: ReactEventHandlers;
   resizeHandleProps: ReactEventHandlers;
   isDraggingAnimatedValue: SpringValue<boolean>;
@@ -72,7 +82,13 @@ const DraggableContext = React.createContext<{
  * function you should call, then pass the result directly to the draggable
  * portion of your widget.
  */
-export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 }) => {
+export const Draggable: React.FC<IDraggableProps> = ({
+  id,
+  children,
+  zIndex = 0,
+  minWidth = MIN_WIDGET_WIDTH,
+  minHeight = MIN_WIDGET_HEIGHT,
+}) => {
   const styles = useStyles();
 
   // creating a memoized selector for position, this will hopefully
@@ -129,8 +145,8 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
       // on the first mount, we measure the size of the content and
       // set that as the initial size in state.
       if (el && !hasBeenMeasured) {
-        const width = el.clientWidth;
-        const height = el.clientHeight;
+        const width = Math.max(minWidth, el.clientWidth);
+        const height = Math.max(minHeight, el.clientHeight);
         coordinatedDispatch(
           actions.resizeObject({
             id,
@@ -139,7 +155,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         );
       }
     },
-    [hasBeenMeasured, coordinatedDispatch, id]
+    [hasBeenMeasured, coordinatedDispatch, id, minWidth, minHeight]
   );
 
   // This spring gradually interpolates the object into its desired position
@@ -225,8 +241,8 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         state.event?.stopPropagation();
         // unlike movement, this only sends updates when the change is complete
         set({
-          width: width.goal + state.delta[0] * 2,
-          height: height.goal + state.delta[1] * 2,
+          width: clamp(width.goal + state.delta[0] * 2, minWidth, Infinity),
+          height: clamp(height.goal + state.delta[1] * 2, minHeight, Infinity),
         });
       },
       onDragStart: (state) => {
@@ -273,86 +289,20 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         }}
         className={styles.root}
       >
-        <div className={clsx(hasBeenMeasured ? styles.contentSizer : styles.unmeasuredContentSizer)} ref={contentRef}>
+        <div
+          // Until the content has been measured (or re-measured), we render it in an absolute
+          // positioned overflowing frame to try to estimate its innate size, which we will
+          // use as the new explicit size of the draggable once measuring is complete
+          className={clsx(hasBeenMeasured ? styles.contentSizer : styles.unmeasuredContentSizer)}
+          // while we are measuring, because of word-wrapping and other css overflow rules,
+          // we want to enforce at least the minimum sizes - otherwise text wraps and creates
+          // a taller measurement than we would want
+          style={hasBeenMeasured ? undefined : { minWidth, minHeight }}
+          ref={contentRef}
+        >
           {children}
         </div>
       </animated.div>
     </DraggableContext.Provider>
-  );
-};
-
-export function useRoomObjectDragHandle() {
-  const { dragHandleProps } = React.useContext(DraggableContext);
-
-  const bind = React.useMemo(
-    () => ({
-      ...dragHandleProps,
-      onPointerEnter: (ev: React.PointerEvent<HTMLElement>) => {
-        ev.currentTarget.style.cursor = 'grab';
-      },
-      onPointerLeave: (ev: React.PointerEvent<HTMLElement>) => {
-        ev.currentTarget.style.cursor = 'initial';
-      },
-      onMouseEnter: (ev: React.MouseEvent<HTMLElement>) => {
-        ev.currentTarget.style.cursor = 'grab';
-      },
-      onMouseLeave: (ev: React.MouseEvent<HTMLElement>) => {
-        ev.currentTarget.style.cursor = 'initial';
-      },
-    }),
-    [dragHandleProps]
-  );
-
-  return bind;
-}
-
-/**
- * This component is *required* for use inside a Draggable. It should wrap the portion of the draggable
- * item which the user can actually click on to drag around. If the whole item is interactive, just
- * wrap it all in DraggableHandle.
- */
-export function DraggableHandle({
-  children,
-  className,
-  disabled,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  disabled?: boolean;
-}) {
-  const { dragHandleProps, isDraggingAnimatedValue } = React.useContext(DraggableContext);
-
-  if (!dragHandleProps || !isDraggingAnimatedValue) {
-    // using this component outside of context - this could sometimes be valid, maybe?
-    // just ignore all the drag handle stuff and return the content
-    return children;
-  }
-
-  return (
-    <animated.div
-      {...(disabled ? {} : dragHandleProps)}
-      style={{ cursor: isDraggingAnimatedValue.to((v) => (disabled ? 'inherit' : v ? 'grabbing' : 'grab')) }}
-      className={className}
-    >
-      {children}
-    </animated.div>
-  );
-}
-
-export const DraggableResizeHandle: React.FC<{ disabled?: boolean; className?: string }> = ({
-  children,
-  disabled,
-  className,
-}) => {
-  const { resizeHandleProps } = React.useContext(DraggableContext);
-
-  return (
-    <div
-      {...(disabled ? {} : resizeHandleProps)}
-      style={{ cursor: disabled ? 'inherit' : 'se-resize' }}
-      className={className}
-    >
-      {children || <DragIndicator style={{ transform: `rotate(45deg)`, opacity: 0.5 }} />}
-    </div>
   );
 };

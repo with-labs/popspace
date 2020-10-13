@@ -22,10 +22,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   textarea: {
-    flex: 1,
+    flex: `1 1 160px`,
     border: 'none',
     width: '100%',
-    minHeight: 160,
     fontFamily: theme.typography.fontFamily,
     fontSize: theme.typography.pxToRem(14),
     resize: 'none',

@@ -93,7 +93,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
           <ListItemIcon>
             <DocumentIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Private Policy</span>
+          <span className="u-fontB1">Privacy Policy</span>
         </MenuItem>
         <Divider variant="middle" />
         <MenuItem onClick={onSignoutHandler}>

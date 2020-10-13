@@ -7,6 +7,8 @@ const value = {
   getZoom: () => 1,
   onObjectDragStart: () => {},
   onObjectDragEnd: () => {},
+  pan: () => {},
+  zoom: () => {},
 };
 
 export function withViewport(S: Story) {

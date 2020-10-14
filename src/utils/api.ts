@@ -49,6 +49,14 @@ class Api {
     return await this.post('/logged_in_join_room', { token, roomName });
   }
 
+  async adminCreateAndSendClaimEmail(token: any, email: string, roomName: string) {
+    return await this.post('/admin_create_and_send_claim_email', { token, email, roomName });
+  }
+
+  async adminRoomClaimsData(token: any) {
+    return await this.post('/admin_room_claims_data', { token });
+  }
+
   async post(endpoint: string, data: any) {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

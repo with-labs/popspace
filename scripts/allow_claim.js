@@ -30,6 +30,7 @@ const createClaim = async (email, roomName, allowRegistered, createNewRooms, sen
   const url = await rooms.getClaimUrl(appUrl, claim)
   console.log("Claim URL:", url)
   if(sendEmail) {
+    await rooms.claimUpdateEmailedAt(claim.id)
     await lib.email.room.sendRoomClaimEmail(email, roomName, url)
     console.log("Email sent")
   }

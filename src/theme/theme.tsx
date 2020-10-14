@@ -293,6 +293,13 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         },
         thumb: {},
       },
+      MuiTableBody: {
+        root: {
+          '&> tr:nth-child(odd)': {
+            backgroundColor: `${brandPalette.sand.main}`,
+          },
+        },
+      },
     },
   });
 };

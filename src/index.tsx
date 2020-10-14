@@ -15,6 +15,7 @@ import './types/twilio';
 import useQuery from './withHooks/useQuery/useQuery';
 
 import { Routes } from './constants/Routes';
+import { Admin } from './pages/Admin/Admin';
 import Room from './pages/room';
 import Signup from './pages/signup';
 import JoinRoom from './pages/JoinRoom';
@@ -134,6 +135,10 @@ ReactDOM.render(
 
               <Route path={Routes.LOGIN_IN_WITH_EMAIL}>
                 <LoginWithEmail />
+              </Route>
+
+              <Route path={Routes.ADMIN}>
+                <Admin />
               </Route>
 
               <Route path="/:room_name">

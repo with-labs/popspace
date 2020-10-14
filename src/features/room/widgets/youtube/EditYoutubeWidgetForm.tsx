@@ -3,6 +3,8 @@ import * as React from 'react';
 import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '../../../../withComponents/fieldBindings/FormikTextField';
 import { YoutubeWidgetData } from '../../../../types/room';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 /**
  * Unlike other simpler widgets, the data in the form
@@ -22,9 +24,9 @@ const EMPTY_VALUES: EditYoutubeFormData = {
   url: '',
 };
 
-function validateYoutubeUrl(url: string) {
+function validateYoutubeUrl(url: string, translate: TFunction) {
   if (!extractVideoData(url)) {
-    return 'Please provide a valid YouTube URL';
+    return translate('error.messages.provideValidYoutubeUrl');
   }
 }
 
@@ -74,12 +76,14 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
   initialValues = EMPTY_VALUES,
   onSave,
 }) => {
+  const { t } = useTranslation();
+
   const onSubmit = React.useCallback(
     (values: EditYoutubeFormData) => {
       const parsed = extractVideoData(values.url);
 
       if (!parsed) {
-        throw new Error('Please provide a valid YouTube URL');
+        throw new Error(t('error.messages.provideValidYoutubeUrl'));
       }
 
       return onSave({
@@ -89,7 +93,7 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
         playStartedTimestampUTC: new Date().toUTCString(),
       });
     },
-    [onSave]
+    [onSave, t]
   );
 
   return (
@@ -97,13 +101,13 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
       <Form>
         <FormikTextField
           name="url"
-          label="YouTube Url"
+          label={t('widgets.youtube.urlLabel')}
           required
           margin="normal"
-          validate={validateYoutubeUrl}
+          validate={(url) => validateYoutubeUrl(url, t)}
           autoFocus
         />
-        <FormikSubmitButton>Add a video</FormikSubmitButton>
+        <FormikSubmitButton>{t('widgets.youtube.addBtn')}</FormikSubmitButton>
       </Form>
     </Formik>
   );

@@ -25,6 +25,7 @@ import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
+import './i18n';
 
 import './with.css';
 

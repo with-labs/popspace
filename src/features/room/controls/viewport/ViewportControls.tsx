@@ -4,6 +4,7 @@ import { Box, makeStyles, IconButton, Tooltip } from '@material-ui/core';
 import { ArrowLeft, ArrowRight, ZoomIn, ZoomOut } from '@material-ui/icons';
 import clsx from 'clsx';
 import { useKeyboardControls } from './useKeyboardControls';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_PAN_INCREMENT = 100;
 const DEFAULT_ZOOM_INCREMENT = 0.2;
@@ -40,6 +41,7 @@ export const ViewportControls = React.memo<IViewportControlsProps>(
   ({ className, panIncrement: increment = DEFAULT_PAN_INCREMENT, zoomIncrement = DEFAULT_ZOOM_INCREMENT }) => {
     const classes = useStyles();
     const controls = useRoomViewport();
+    const { t } = useTranslation();
 
     const handleLeft = () => {
       controls.pan({ x: -increment, y: 0 });
@@ -61,16 +63,11 @@ export const ViewportControls = React.memo<IViewportControlsProps>(
     };
 
     const { props: bindKeyboard, isActive } = useKeyboardControls(controls);
+    const toolTip = t('features.room.viewportControlsToolTip');
 
     return (
       <Box className={clsx(classes.root, className)}>
-        <Tooltip
-          disableHoverListener
-          disableFocusListener
-          disableTouchListener
-          open={isActive}
-          title="Arrow keys to pan, +/- to zoom"
-        >
+        <Tooltip disableHoverListener disableFocusListener disableTouchListener open={isActive} title={toolTip}>
           <div
             className={clsx(classes.controlCluster, isActive && classes.controlsActive)}
             aria-label="pan and zoom controls"

@@ -2,6 +2,7 @@ import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
 import { Routes } from '../../../constants/Routes';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PageNotFoundImg from '../images/404_page.png';
 
 interface IPageNotFoundProps {
@@ -11,6 +12,7 @@ interface IPageNotFoundProps {
 export const PageNotFound: React.FC<IPageNotFoundProps> = (props) => {
   const { errorMsg } = props;
   const history = useHistory();
+  const { t } = useTranslation();
 
   const onButtonClick = () => {
     history.push(Routes.ROOT);
@@ -18,14 +20,14 @@ export const PageNotFound: React.FC<IPageNotFoundProps> = (props) => {
 
   return (
     <GenericErrorPage
-      buttonText="Take me Home"
+      buttonText={t('errorPages.takeMeHomeBtn')}
       onClick={onButtonClick}
-      quoteText=""
-      title="Lost in Space?"
-      body="It seems like you landed on the wrong place. We suggest you back to home."
+      quoteText={t('errorPages.pageNotFound.quoteText')}
+      title={t('errorPages.pageNotFound.title')}
+      body={t('errorPages.pageNotFound.body')}
       errorMessage={errorMsg}
       imgSrc={PageNotFoundImg}
-      imgAltText="Page not found"
+      imgAltText={t('errorPages.pageNotFound.altImgText')}
     />
   );
 };

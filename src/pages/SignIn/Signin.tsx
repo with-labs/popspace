@@ -12,12 +12,15 @@ import styles from './Signin.module.css';
 import signinImg from '../../images/SignIn.png';
 import { Button, TextField } from '@material-ui/core';
 
+import { useTranslation } from 'react-i18next';
+
 interface ISigninProps {}
 
 export const Signin: React.FC<ISigninProps> = (props) => {
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const { t } = useTranslation();
 
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,7 +44,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
         setEmailError(loginRequest.message);
       }
     } else {
-      setEmailError('Please provide a valid email.');
+      setEmailError(t('error.messages.provideValidEmail'));
     }
   };
 
@@ -54,28 +57,28 @@ export const Signin: React.FC<ISigninProps> = (props) => {
         <TwoColLayout>
           <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
             <div className={styles.container}>
-              <div className={clsx(styles.title, 'u-fontH1')}>Sign in</div>
+              <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.signin.title')}</div>
               <form onSubmit={onFormSubmit}>
                 <TextField
                   id="SignIn-email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder="dorothy@emerald.so"
-                  label="Email Address"
+                  placeholder={t('pages.signin.email.placeHolder')}
+                  label={t('pages.signin.email.label')}
                   className={styles.emailInput}
                   error={!!emailError}
                   helperText={emailError}
                   margin="normal"
                 />
                 <Button type="submit" disabled={!email.length}>
-                  Sign in
+                  {t('pages.signin.submitButtonText')}
                 </Button>
               </form>
             </div>
           </Column>
           <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
             <div className={styles.imageContainer}>
-              <img className={styles.image} src={signinImg} alt="sign in" />
+              <img className={styles.image} src={signinImg} alt={t('pages.signin.imgAltText')} />
             </div>
           </Column>
         </TwoColLayout>

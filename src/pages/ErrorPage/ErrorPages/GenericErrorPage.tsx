@@ -2,7 +2,6 @@ import React from 'react';
 import clsx from 'clsx';
 import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
-
 import { Button } from '@material-ui/core';
 import styles from './GenericErrorPage.module.css';
 

@@ -6,12 +6,13 @@ import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
-import { YoutubeWidgetState } from '../../../../types/room';
+import { YoutubeWidgetState, WidgetData } from '../../../../types/room';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { useTranslation } from 'react-i18next';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -75,6 +76,7 @@ const useStyles = makeStyles((theme) => ({
 export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose }) => {
   const classes = useStyles();
   const localParticipant = useLocalParticipant();
+  const { t } = useTranslation();
 
   const saveWidget = useSaveWidget(state.id);
 
@@ -83,7 +85,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
       <WidgetFrame color="cherry">
-        <WidgetTitlebar title="YouTube" onClose={onClose} />
+        <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
         <WidgetContent>
           <EditYoutubeWidgetForm onSave={saveWidget} />
         </WidgetContent>
@@ -93,7 +95,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
 
   return (
     <WidgetFrame color="cherry">
-      <WidgetTitlebar title="YouTube" onClose={onClose}>
+      <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding className={classes.videoContainer}>

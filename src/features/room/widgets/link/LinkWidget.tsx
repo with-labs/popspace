@@ -7,6 +7,7 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditLinkWidgetForm } from './EditLinkWidgetForm';
 import { LinkWidgetState } from '../../../../types/room';
 import { WidgetContent } from '../WidgetContent';
+import { useTranslation } from 'react-i18next';
 
 export interface ILinkWidgetProps {
   state: LinkWidgetState;
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const localParticipant = useLocalParticipant();
 
@@ -39,7 +41,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
       <WidgetFrame color="lavender">
-        <WidgetTitlebar title="Add a Link" onClose={onClose} />
+        <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />
         <WidgetContent>
           <EditLinkWidgetForm onSave={saveWidget} />
         </WidgetContent>
@@ -51,7 +53,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
 
   return (
     <WidgetFrame color="lavender">
-      <WidgetTitlebar title="Link" onClose={onClose} />
+      <WidgetTitlebar title={t('widgets.link.publishedTitle')} onClose={onClose} />
       <WidgetContent>
         <Tooltip title={state.data.url} placement="bottom">
           <Link

@@ -3,6 +3,7 @@ import { FastField, Form, Formik } from 'formik';
 import * as React from 'react';
 import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
 import { StickyNoteWidgetData } from '../../../../types/room';
+import { useTranslation } from 'react-i18next';
 
 type RequiredStickyNoteData = Omit<StickyNoteWidgetData, 'author'>;
 
@@ -40,12 +41,20 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
   onSave,
 }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSave}>
       <Form className={classes.form}>
-        <FastField as="textarea" required name="text" placeholder="Note text" className={classes.textarea} autoFocus />
-        <FormikSubmitButton>Add note</FormikSubmitButton>
+      <FastField
+          as="textarea"
+          required
+          name="text"
+          placeholder={t('widgets.stickyNote.textPlaceholder')}
+          className={classes.textarea}
+          autoFocus
+        />
+        <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
       </Form>
     </Formik>
   );

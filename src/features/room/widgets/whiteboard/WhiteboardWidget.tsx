@@ -8,6 +8,7 @@ import { useSaveWidget } from '../useSaveWidget';
 import { CloudDownloadOutlined } from '@material-ui/icons';
 import { useExport } from './useExport';
 import { WidgetContent } from '../WidgetContent';
+import { useTranslation } from 'react-i18next';
 
 export interface IWhiteboardWidgetProps {
   state: WhiteboardWidgetState;
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onClose, titlebarProps }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const update = useSaveWidget(state.id);
 
@@ -46,7 +48,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
 
   return (
     <WidgetFrame color="turquoise">
-      <WidgetTitlebar title="Whiteboard" onClose={onClose} {...titlebarProps}>
+      <WidgetTitlebar title={t('widgets.whiteboard.title')} onClose={onClose} {...titlebarProps}>
         <IconButton size="small" onClick={handleExport}>
           <CloudDownloadOutlined />
         </IconButton>

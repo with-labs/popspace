@@ -2,6 +2,7 @@ import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
 import UnexpectedImg from '../images/Unexpected.png';
 import { Links } from '../../../constants/Links';
+import { useTranslation } from 'react-i18next';
 
 interface IUnexpectedProps {
   errorMsg?: string;
@@ -9,6 +10,7 @@ interface IUnexpectedProps {
 
 export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
   const { errorMsg } = props;
+  const { t } = useTranslation();
 
   const onButtonClick = () => {
     // open a new tab to the feedback page
@@ -17,14 +19,14 @@ export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
 
   return (
     <GenericErrorPage
-      buttonText="Contact Support"
+      buttonText={t('errorPages.contactSupport')}
       onClick={onButtonClick}
-      quoteText=""
-      title="Uh oh!"
-      body="Our bad, something went wrong. We could show you some scary error message but you should just let us know :)"
+      quoteText={t('errorPages.unexpected.quoteText')}
+      title={t('errorPages.unexpected.title')}
+      body={t('errorPages.unexpected.body')}
       errorMessage={errorMsg}
       imgSrc={UnexpectedImg}
-      imgAltText="Unexpected"
+      imgAltText={t('errorPages.unexpected.altImgText')}
     />
   );
 };

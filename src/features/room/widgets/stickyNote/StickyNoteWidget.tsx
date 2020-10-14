@@ -10,6 +10,7 @@ import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { StickyNoteWidgetState, StickyNoteWidgetData } from '../../../../types/room';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { useTranslation } from 'react-i18next';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -36,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onClose }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const localParticipant = useLocalParticipant();
   const localDisplayName = useParticipantDisplayIdentity(localParticipant);
@@ -54,19 +56,19 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <StickyNoteFrame title="Add a Sticky Note" onClose={onClose} widgetId={state.id}>
+      <StickyNoteFrame title={t('widgets.stickyNote.addWidgetTitle')} onClose={onClose} widgetId={state.id}>
         <EditStickyNoteWidgetForm initialValues={state.data} onSave={saveWidget} />
       </StickyNoteFrame>
     );
   }
 
   return (
-    <StickyNoteFrame title="Sticky Note" onClose={onClose} widgetId={state.id}>
+    <StickyNoteFrame title={t('widgets.stickyNote.publishedTitle')} onClose={onClose} widgetId={state.id}>
       <Typography paragraph className={classes.text}>
         {state.data.text}
       </Typography>
       <Typography variant="caption" className={classes.author}>
-        Added by {state.data.author}
+        {t('widgets.stickyNote.addedBy', { author: state.data.author })}
       </Typography>
     </StickyNoteFrame>
   );

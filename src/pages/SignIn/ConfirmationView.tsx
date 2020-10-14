@@ -8,6 +8,7 @@ import styles from './Signin.module.css';
 
 import Api from '../../utils/api';
 import { isEmailValid } from '../../utils/CheckEmail';
+import { useTranslation } from 'react-i18next';
 
 interface IConfirmationViewProps {
   email: string;
@@ -16,6 +17,7 @@ interface IConfirmationViewProps {
 export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
   const { email } = props;
   const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
 
   const [error, setError] = useState('');
 
@@ -31,14 +33,14 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
         // we have sent off the magic link to the user,
         // clear any error
         setError('');
-        enqueueSnackbar('We just sent you new magic link.', { variant: 'success' });
+        enqueueSnackbar(t('pages.confirmationView.snackSuccessMsg'), { variant: 'success' });
       } else {
         // we have an error
         // TODO: update this once the error messaging from the backend is standarized
         setError(loginRequest.message);
       }
     } else {
-      enqueueSnackbar('An error has occurred', { variant: 'error' });
+      enqueueSnackbar(t('pages.confirmationView.snackFailMsg'), { variant: 'error' });
       setError('Invalid email');
     }
   };
@@ -47,7 +49,7 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
     <TwoColLayout>
       <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
         <div className={styles.container}>
-          <div className={clsx(styles.title, 'u-fontH1')}>Check your email</div>
+          <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.confirmationView.title')}</div>
           <div className="u-fontP1">
             We sent a magic link to {email}
             <br />

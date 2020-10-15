@@ -104,6 +104,10 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
     [isPlaying, update]
   );
 
+  // get the current spacial volume state of the player
+  const naturalVolume = useSpatialAudioVolume(state.id);
+  const volume = isMuted ? 0 : naturalVolume;
+
   // when the YT player is in a ready state, immediately synchronize it to the latest
   // redux data
   const handleReady = React.useCallback(
@@ -111,6 +115,9 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
       const p = ev.target;
       ytPlayerRef.current = ev.target;
       if (!p) return;
+
+      // set the current volume based on the spacial audio
+      p.setVolume(volume * 100);
 
       // immediately sync to current timestamp and play state, utilizing
       // the time since the last play event
@@ -126,7 +133,7 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
       // also update our duration value
       setDuration(p.getDuration());
     },
-    [timestamp, isPlaying, playStartedTimestampUTC]
+    [timestamp, isPlaying, playStartedTimestampUTC, volume]
   );
 
   // when the Redux timestamp changes, seek in the YT player too
@@ -162,8 +169,6 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
   }, []);
 
   // change the volume using spatial audio
-  const naturalVolume = useSpatialAudioVolume(state.id);
-  const volume = isMuted ? 0 : naturalVolume;
   React.useEffect(() => {
     ytPlayerRef.current?.setVolume(volume * 100);
   }, [volume]);

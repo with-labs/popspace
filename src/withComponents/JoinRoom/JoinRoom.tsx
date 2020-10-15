@@ -66,7 +66,6 @@ const JoinRoom = ({ roomName }: IJoinRoomProps) => {
                 kind: 'person',
                 avatar: initialAvatar.name,
                 emoji: null,
-                isSpeaking: false,
                 viewingScreenSid: null,
               },
             })

@@ -1,6 +1,5 @@
 import React from 'react';
 import { SharedScreenViewer } from '../../withComponents/SharedScreenViewer/SharedScreenViewer';
-import { useLocalVolumeDetection } from '../../withHooks/useLocalVolumeDetection/useLocalVolumeDetection';
 import { ErrorBoundary } from '../../withComponents/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
@@ -20,8 +19,6 @@ export const Room: React.FC<IRoomProps> = () => {
   const participantIds = useSelector(selectors.selectPeopleIds);
 
   const backgroundUrl = useBackgroundUrl();
-
-  useLocalVolumeDetection();
 
   return (
     <>

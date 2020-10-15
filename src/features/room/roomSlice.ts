@@ -167,11 +167,6 @@ const roomSlice = createSlice({
       if (!state.people[payload.id]) return;
       state.people[payload.id].avatar = payload.avatar;
     },
-    /** Changes the speaking state of a participant */
-    updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
-      if (!state.people[payload.id]) return;
-      state.people[payload.id].isSpeaking = payload.isSpeaking;
-    },
     updateRoomBackground(state, { payload }: PayloadAction<RoomBackgroundState>) {
       state.background = payload;
     },
@@ -201,5 +196,4 @@ export const selectors = {
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
   createPersonScreenViewSidSelector: (personId: string) => (state: RootState) =>
     state.room.people[personId]?.viewingScreenSid,
-  createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.isSpeaking,
 };

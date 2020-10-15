@@ -127,7 +127,6 @@ const InnerApp: FC<IAppProps> = (props) => {
                       // TODO: set a random avatar for right now, we will replace this with a user pref driven version later
                       avatar: randomAvatar().name,
                       emoji: null,
-                      isSpeaking: false,
                       viewingScreenSid: null,
                     },
                   })

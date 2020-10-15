@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Draggable } from '../Draggable';
-import ParticipantCircle from '../../../withComponents/ParticipantCircle';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
 import * as Sentry from '@sentry/react';
@@ -9,6 +8,7 @@ import { makeStyles, Paper } from '@material-ui/core';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
 import { DraggableHandle } from '../DraggableHandle';
+import { PersonBubble } from './PersonBubble';
 
 export interface IPersonProps {
   id: string;
@@ -27,6 +27,7 @@ const useStyles = makeStyles({
     width: 160,
     height: 160,
     borderRadius: '100%',
+    border: 'none',
   },
   dragHandle: {
     width: '100%',
@@ -73,7 +74,7 @@ export const Person = React.memo<IPersonProps>((props) => {
     <Draggable id={props.id} zIndex={isMe ? 10 : 9} minHeight={160} minWidth={160}>
       <DraggableHandle disabled={!isMe} className={classes.dragHandle}>
         <Paper className={classes.root} elevation={6}>
-          <ParticipantCircle participant={participant} />
+          <PersonBubble participant={participant} />
         </Paper>
       </DraggableHandle>
     </Draggable>

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import useLocalAudioToggle from './useLocalAudioToggle';
 import useVideoContext from '../useVideoContext/useVideoContext';
 
@@ -18,6 +18,11 @@ describe('the useLocalAudioToggle hook', () => {
 
     mockUseVideoContext.mockImplementation(() => ({
       localTracks: [mockLocalTrack],
+      room: {
+        localParticipant: {
+          publishTrack: jest.fn(),
+        },
+      },
     }));
 
     const { result } = renderHook(useLocalAudioToggle);
@@ -35,10 +40,17 @@ describe('the useLocalAudioToggle hook', () => {
 
       mockUseVideoContext.mockImplementation(() => ({
         localTracks: [mockLocalTrack],
+        room: {
+          localParticipant: {
+            publishTrack: jest.fn(),
+          },
+        },
       }));
 
       const { result } = renderHook(useLocalAudioToggle);
-      result.current[1]();
+      act(() => {
+        result.current[1]();
+      });
       expect(mockLocalTrack.disable).toHaveBeenCalled();
       expect(mockLocalTrack.enable).not.toHaveBeenCalled();
     });
@@ -53,10 +65,17 @@ describe('the useLocalAudioToggle hook', () => {
 
       mockUseVideoContext.mockImplementation(() => ({
         localTracks: [mockLocalTrack],
+        room: {
+          localParticipant: {
+            publishTrack: jest.fn(),
+          },
+        },
       }));
 
       const { result } = renderHook(useLocalAudioToggle);
-      result.current[1]();
+      act(() => {
+        result.current[1]();
+      });
       expect(mockLocalTrack.disable).not.toHaveBeenCalled();
       expect(mockLocalTrack.enable).toHaveBeenCalled();
     });
@@ -65,10 +84,17 @@ describe('the useLocalAudioToggle hook', () => {
       mockUseVideoContext.mockImplementation(() => ({
         localTracks: [],
         onError: jest.fn(),
+        room: {
+          localParticipant: {
+            publishTrack: jest.fn(),
+          },
+        },
       }));
 
       const { result } = renderHook(useLocalAudioToggle);
-      result.current[1]();
+      act(() => {
+        result.current[1]();
+      });
     });
   });
 });

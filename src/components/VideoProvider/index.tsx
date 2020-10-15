@@ -25,9 +25,8 @@ import {
   LocalVideoTrack,
   LocalDataTrack,
   Room,
-  TwilioError,
 } from 'twilio-video';
-import { Callback, ErrorCallback } from '../../types/twilio';
+import { Callback } from '../../types/twilio';
 import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
 
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
@@ -49,7 +48,7 @@ export interface IVideoContext {
   localTracks: (LocalAudioTrack | LocalVideoTrack | LocalDataTrack)[];
   isConnecting: boolean;
   connect: (token: string) => Promise<Room | null>;
-  onError: ErrorCallback;
+  onError: (err: Error) => void;
   onDisconnect: Callback;
   getLocalVideoTrack: (newOptions?: CreateLocalTrackOptions) => Promise<LocalVideoTrack>;
   getLocalAudioTrack: (deviceId?: string) => Promise<LocalAudioTrack>;
@@ -61,14 +60,14 @@ export const VideoContext = createContext<IVideoContext>(null!);
 
 interface VideoProviderProps {
   options?: ConnectOptions;
-  onError: ErrorCallback;
+  onError: (err: Error) => void;
   onDisconnect?: Callback;
   children: ReactNode;
 }
 
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = useCallback(
-    (error: TwilioError) => {
+    (error: Error) => {
       console.log(`ERROR: ${error.message}`, error);
       Sentry.captureException(error);
       onError(error);

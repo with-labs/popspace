@@ -10,47 +10,98 @@
  */
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../../constants';
 import { useCallback, useEffect, useState } from 'react';
-import Video, { LocalVideoTrack, LocalAudioTrack, CreateLocalTrackOptions, LocalDataTrack } from 'twilio-video';
+import {
+  LocalVideoTrack,
+  LocalAudioTrack,
+  CreateLocalTrackOptions,
+  LocalDataTrack,
+  createLocalAudioTrack,
+  createLocalVideoTrack,
+} from 'twilio-video';
 
-import { ErrorCallback } from '../../../types/twilio';
-
-export default function useLocalTracks(onError: ErrorCallback) {
+export default function useLocalTracks(onError: (err: Error) => void) {
   const [audioTrack, setAudioTrack] = useState<LocalAudioTrack>();
   const [videoTrack, setVideoTrack] = useState<LocalVideoTrack>();
   const [dataTrack, setDataTrack] = useState<LocalDataTrack>();
   const [isAcquiringLocalTracks, setIsAcquiringLocalTracks] = useState(false);
 
-  const getLocalAudioTrack = useCallback((deviceId?: string) => {
-    const options: CreateLocalTrackOptions = {};
+  /**
+   * Creates a local audio track, optionally using the specified device.
+   */
+  const getLocalAudioTrack = useCallback(
+    async (deviceId?: string) => {
+      const options: CreateLocalTrackOptions = {};
 
-    if (deviceId) {
-      options.deviceId = { exact: deviceId };
-    }
+      if (deviceId) {
+        options.deviceId = { exact: deviceId };
+      }
 
-    return Video.createLocalAudioTrack(options).then((newTrack) => {
-      setAudioTrack(newTrack);
-      return newTrack;
-    });
-  }, []);
+      try {
+        return await createLocalAudioTrack(options).then((newTrack) => {
+          setAudioTrack(newTrack);
+          return newTrack;
+        });
+      } catch (err) {
+        let newError: Error;
+        if (err.message === 'Permission denied') {
+          newError = new Error(
+            'It looks like you have denied With access to your microphone. To share audio, you will need to let us use your microphone by updating permissions in your browser.'
+          );
+        } else if (err.message === 'Permission dismissed') {
+          newError = new Error('Please grant microphone access to enable audio.');
+        } else {
+          newError = err;
+        }
+        onError(newError);
+        throw err;
+      }
+    },
+    [onError]
+  );
 
-  const getLocalVideoTrack = useCallback((newOptions?: CreateLocalTrackOptions) => {
-    // In the DeviceSelector and FlipCameraButton components, a new video track is created,
-    // then the old track is unpublished and the new track is published. Unpublishing the old
-    // track and publishing the new track at the same time sometimes causes a conflict when the
-    // track name is 'camera', so here we append a timestamp to the track name to avoid the
-    // conflict.
-    const options: CreateLocalTrackOptions = {
-      ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
-      name: `camera-${Date.now()}`,
-      ...newOptions,
-    };
+  /**
+   * Creates a local video track, optionally using the
+   * specified device.
+   */
+  const getLocalVideoTrack = useCallback(
+    async (newOptions?: CreateLocalTrackOptions) => {
+      // In the DeviceSelector and FlipCameraButton components, a new video track is created,
+      // then the old track is unpublished and the new track is published. Unpublishing the old
+      // track and publishing the new track at the same time sometimes causes a conflict when the
+      // track name is 'camera', so here we append a timestamp to the track name to avoid the
+      // conflict.
+      const options: CreateLocalTrackOptions = {
+        ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
+        name: `camera-${Date.now()}`,
+        ...newOptions,
+      };
 
-    return Video.createLocalVideoTrack(options).then((newTrack) => {
-      setVideoTrack(newTrack);
-      return newTrack;
-    });
-  }, []);
+      try {
+        return await createLocalVideoTrack(options).then((newTrack) => {
+          setVideoTrack(newTrack);
+          return newTrack;
+        });
+      } catch (err) {
+        let newError: Error;
+        if (err.message === 'Permission denied') {
+          newError = new Error(
+            'It looks like you have denied With access to your camera. To share video, you will need to let us use your camera by updating permissions in your browser.'
+          );
+        } else if (err.message === 'Permission dismissed') {
+          newError = new Error('Please grant camera access to enable video.');
+        } else {
+          newError = err;
+        }
+        onError(newError);
+        throw err;
+      }
+    },
+    [onError]
+  );
 
+  /**
+   * Disables the local video track
+   */
   const removeLocalVideoTrack = useCallback(() => {
     if (videoTrack) {
       videoTrack.stop();
@@ -58,38 +109,19 @@ export default function useLocalTracks(onError: ErrorCallback) {
     }
   }, [videoTrack]);
 
+  // on startup, immediately get an audio track - this
+  // is effectively turning the mic on by default.
   useEffect(() => {
     setIsAcquiringLocalTracks(true);
-    Video.createLocalTracks({
-      // Uncomment to make video on by default.
-      // video: {
-      //   ...(DEFAULT_VIDEO_CONSTRAINTS as {}),
-      //   name: `camera-${Date.now()}`,
-      // },
-      audio: true,
-    })
-      .then((tracks) => {
-        const videoTrack = tracks.find((track) => track.kind === 'video');
-        const audioTrack = tracks.find((track) => track.kind === 'audio');
-        if (videoTrack) {
-          setVideoTrack(videoTrack as LocalVideoTrack);
-        }
-        if (audioTrack) {
-          setAudioTrack(audioTrack as LocalAudioTrack);
-        }
+    getLocalAudioTrack()
+      .catch(() => {
+        // this error is logged in getLocalAudioTrack, just thrown
+        // again so that other callers will see it
       })
-      .catch((err) => {
-        const msg =
-          // Currently only attempting to connect audio by default, so let the messaging reflect that.
-          // May need to update the error string if we decide to enable video by default later on.
-          err.message === 'Permission denied' || 'Permission dismissed'
-            ? 'We were unable to connect to your microphone. Please grant microphone access to enable audio.'
-            : 'Something went wrong connecting to your microphone or camera. Please grant access to those devices to enable audio and video.';
-        // @ts-ignore Only an error is required
-        onError(new Error(msg));
-      })
-      .finally(() => setIsAcquiringLocalTracks(false));
-  }, []);
+      .finally(() => {
+        setIsAcquiringLocalTracks(false);
+      });
+  }, [getLocalAudioTrack]);
 
   // Data tracks don't require browser permissions, so set that up independently of the AV tracks.
   useEffect(() => {

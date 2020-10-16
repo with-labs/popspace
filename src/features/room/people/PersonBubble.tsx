@@ -110,9 +110,13 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const [{ isSpeaking }, set] = useSpring(() => ({
       isSpeaking: false,
     }));
-    useAudioVolume(audioTrackPub, (vol) => {
-      set({ isSpeaking: vol > 1 });
-    });
+    const updateIsSpeaking = React.useCallback(
+      (vol: number) => {
+        set({ isSpeaking: vol > 1 });
+      },
+      [set]
+    );
+    useAudioVolume(audioTrackPub, updateIsSpeaking);
 
     return (
       <animated.div

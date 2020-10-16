@@ -4,7 +4,10 @@ import { clamp } from '../../utils/math';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/core';
+import { useKeyboardControls } from './controls/viewport/useKeyboardControls';
+import useMergedRefs from '@react-hook/merged-ref';
+import { useTranslation } from 'react-i18next';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2) => Vector2;
@@ -77,8 +80,17 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
   }),
 });
 
+const keyboardHintStyles: React.CSSProperties = {
+  position: 'fixed',
+  bottom: 8,
+  left: '50%',
+  transform: 'translateX(-50%)',
+};
+
 export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
+  const { t } = useTranslation();
+
   const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiContent } = props;
 
   const domTarget = React.useRef<HTMLDivElement>(null);
@@ -266,9 +278,21 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom]
   );
 
+  const { props: keyControlProps, isActive: isKeyboardActive } = useKeyboardControls({
+    pan: doPan,
+    zoom: doZoom,
+  });
+
+  const viewportRef = useMergedRefs(keyControlProps.ref, domTarget);
+
   return (
     <RoomViewportContext.Provider value={infoContextValue}>
-      <animated.div className={styles.viewport} ref={domTarget}>
+      <animated.div
+        className={styles.viewport}
+        {...keyControlProps}
+        ref={viewportRef}
+        aria-labelledby="keyboard-explainer"
+      >
         <animated.div
           className={styles.canvas}
           style={{
@@ -285,17 +309,24 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
           }}
         >
           {/* 
-          Converts from top-left coords to center-based coords -
-          widgets in the room use center-based coords but their DOM
-          placement still needs to be adjusted because the DOM lays out
-          from top-left. This CSS class just translates the entire
-          container element to the center and allows elements with negative
-          positions to still be visible with overflow: visible.
-         */}
+        Converts from top-left coords to center-based coords -
+        widgets in the room use center-based coords but their DOM
+        placement still needs to be adjusted because the DOM lays out
+        from top-left. This CSS class just translates the entire
+        container element to the center and allows elements with negative
+        positions to still be visible with overflow: visible.
+        */}
           <div className={styles.centeredSpaceTransformer}>{children}</div>
         </animated.div>
       </animated.div>
       {uiContent}
+      <Fade in={isKeyboardActive} style={keyboardHintStyles}>
+        <Box component={Paper} py={1} px={2}>
+          <Typography id="keyboard-explainer" variant="body2">
+            {t('features.room.viewportControlsToolTip')}
+          </Typography>
+        </Box>
+      </Fade>
     </RoomViewportContext.Provider>
   );
 };

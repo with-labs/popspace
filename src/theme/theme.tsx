@@ -314,7 +314,7 @@ export enum ThemeName {
 // kind of arbitrary color combos below...
 export const mandarin = createPaletteTheme({
   primary: brandPalette.mandarin,
-  secondary: brandPalette.lavender,
+  secondary: brandPalette.turquoise,
   error: {
     main: brandPalette.cherry.dark,
   },

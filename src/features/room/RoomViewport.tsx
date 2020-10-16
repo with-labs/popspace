@@ -67,11 +67,11 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     overflow: 'hidden',
     userSelect: 'none',
     cursor: 'move',
+    position: 'relative',
   },
   canvas: {
+    position: 'absolute',
     transformOrigin: 'center center',
-    width: '100%',
-    height: '100%',
     borderRadius: 10,
   },
   centeredSpaceTransformer: ({ bounds }) => ({

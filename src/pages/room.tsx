@@ -10,9 +10,9 @@ interface IRoomProps {
 
 export default function Room(props: IRoomProps) {
   return (
-    <div>
+    <>
       <ErrorDialog dismissError={() => props.setError(null)} error={props.error} />
       <AnglesApp roomName={props.name} />
-    </div>
+    </>
   );
 }

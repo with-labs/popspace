@@ -71,7 +71,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
   return createMuiTheme({
     breakpoints: {
       values: {
-        sm: 0,
+        sm: 440,
         md: 640,
         lg: 960,
       },
@@ -252,8 +252,9 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         },
       },
       MuiPaper: {
-        root: {
-          border: `1px solid ${palette.grey[400]}`,
+        root: {},
+        rounded: {
+          borderRadius: 14,
         },
       },
       MuiLink: {

@@ -66,7 +66,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             // redirect to the dashboard if someone is already logged in and the room is claimed
             history.push(Routes.ROOT);
           } else {
-            if (result.errorCode === ErrorCodes.CLAIM_FAIL_NO_SUCH_USER) {
+            if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
               // the room is unclaimed, but the user isnt created,
               //  so we render the finialize form to finish creating the user
               setIsLoading(false);

@@ -5,21 +5,6 @@ import * as Sentry from '@sentry/react';
 import store from '../../state/store';
 import { actions } from './roomSlice';
 
-/**
- * These are all the types of actions which should be queued if a user
- * is not the first person in a room - they will be replayed after they
- * have received a PING to sync their initial state.
- */
-const QUEUE_ACTION_TYPES = [
-  actions.addWidget.type,
-  actions.addPerson.type,
-  actions.moveObject.type,
-  actions.removePerson.type,
-  actions.removeWidget.type,
-  actions.updatePersonEmoji.type,
-  actions.updatePersonAvatar.type,
-];
-
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
 }
@@ -96,12 +81,7 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
    * In the data track handler where PING actions are processed, if the participant has queued actions, they are
    * re-dispatched to tell the other participants in the room about the local participant's meta.
    */
-  const roomHasLoaded = room.participants !== undefined;
-  const firstInRoom = roomHasLoaded && !room.participants.size;
-
   const hasReceivedPing = useRef(false);
-  const shouldQueueParticipantMetaActions = useRef((!roomHasLoaded || !firstInRoom) && !hasReceivedPing.current);
-  const actionQueue = useRef([]);
 
   // This is what we will use in place of the normal `dispatch` function in the redux store. This is necessary to
   // enable us to send data track messages to the remote participants with the action that was just performed.
@@ -115,15 +95,8 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
         // Then do the remote data track message
         localDT.send(JSON.stringify(action));
       }
-
-      if (shouldQueueParticipantMetaActions.current && action.type !== 'PING') {
-        if (QUEUE_ACTION_TYPES.includes(action.type)) {
-          // @ts-ignore
-          actionQueue.current.push(action);
-        }
-      }
     },
-    [localDT, shouldQueueParticipantMetaActions] // Only need to update this if the data track or the need to queue actions change
+    [localDT]
   );
 
   const localParticipantSid = localParticipant?.sid;
@@ -148,24 +121,6 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
           ) {
             hasReceivedPing.current = true;
             store.dispatch(action);
-
-            // Re-dispatch the pre-PING actions.
-            if (actionQueue.current.length) {
-              shouldQueueParticipantMetaActions.current = false;
-              actionQueue.current.forEach((act) => {
-                dispatch(act);
-
-                // @ts-ignore This is for debugging, no need to type the act obj.
-                if (act.type === actions.updatePersonAvatar.type && !act?.payload?.avatar) {
-                  Sentry.captureMessage(
-                    `Missing avatar in PING action replay for ${localParticipantSid}`,
-                    Sentry.Severity.Debug
-                  );
-                }
-              });
-              // Clear out the action queue
-              actionQueue.current = [];
-            }
           }
         } else {
           store.dispatch(action);
@@ -174,7 +129,7 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
         // Assume JSON parse error. Ignore.
       }
     },
-    [dispatch, localParticipantSid]
+    [localParticipantSid]
   );
 
   const disconnectHandler = useCallback(() => {
@@ -214,9 +169,6 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
               },
             })
           );
-          // if we send a PING to someone else, we should probably sanity-check and make sure
-          // we're not queueing actions anymore
-          shouldQueueParticipantMetaActions.current = false;
         }, 1000);
       }
     },

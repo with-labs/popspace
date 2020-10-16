@@ -1,6 +1,13 @@
-class Api {
-  constructor() {}
+import { ErrorCodes } from '../constants/ErrorCodes';
 
+export type BaseResponse = {
+  success: boolean;
+  message?: string;
+  errorCode?: ErrorCodes;
+  [key: string]: any;
+};
+
+class Api {
   async signup(data: any) {
     return await this.post('/request_create_account', data);
   }
@@ -46,7 +53,15 @@ class Api {
   }
 
   async loggedInEnterRoom(token: any, roomName: string) {
-    return await this.post('/logged_in_join_room', { token, roomName });
+    return await this.post<BaseResponse & { token?: string }>('/logged_in_join_room', { token, roomName });
+  }
+
+  async getToken(identity: string, password: string, roomName: string) {
+    return await this.post<BaseResponse & { token?: string }>(`/token`, {
+      user_identity: identity,
+      room_name: roomName,
+      passcode: password,
+    });
   }
 
   async adminCreateAndSendClaimEmail(token: any, email: string, roomName: string) {
@@ -57,18 +72,18 @@ class Api {
     return await this.post('/admin_room_claims_data', { token });
   }
 
-  async post(endpoint: string, data: any) {
+  async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    return new Promise((resolve, reject) => {
+    return new Promise<Response>((resolve, reject) => {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
           try {
             const jsonResponse = JSON.parse(xhr.response);
             resolve(jsonResponse);
           } catch {
-            resolve({ success: false, message: xhr.response });
+            resolve({ success: false, message: xhr.response } as any);
           }
         }
       };

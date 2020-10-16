@@ -10,6 +10,7 @@ import { Widget } from './widgets/Widget';
 import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
 import { AccessoriesDock } from '../../withComponents/AccessoriesDock/AccessoriesDock';
 import { ViewportControls } from './controls/viewport/ViewportControls';
+import { useRoomPresence } from './useRoomPresence';
 
 interface IRoomProps {}
 
@@ -19,6 +20,8 @@ export const Room: React.FC<IRoomProps> = () => {
   const participantIds = useSelector(selectors.selectPeopleIds);
 
   const backgroundUrl = useBackgroundUrl();
+
+  useRoomPresence();
 
   return (
     <>

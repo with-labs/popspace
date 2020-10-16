@@ -268,7 +268,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `The room_name submitted is incorrect.`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.UNKNOWN_ROOM }
     )
   }
 
@@ -277,7 +277,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Incorrect passcode`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.INCORRECT_ROOM_PASSCODE }
     )
   }
 
@@ -286,7 +286,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Missing user_identity`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.INVALID_USER_IDENTITY }
     )
   }
 

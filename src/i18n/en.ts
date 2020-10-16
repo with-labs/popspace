@@ -93,6 +93,14 @@ export default {
           'With is currently not optimized for mobile. We rather polish the experience before you can use it. Sorry for the inconvenience.',
         imgAltText: 'sign in',
       },
+      room: {
+        joinTitle: 'Joining {{roomName}}',
+        analyticsDisclaimer:
+          "We use analytics software to improve With. Please feel free to come back later, when we've made it optional.",
+        screenNameLabel: 'Desired screen name',
+        roomPasswordLabel: 'Room password',
+        noVideo: 'No video',
+      },
     },
     widgets: {
       link: {
@@ -124,9 +132,15 @@ export default {
         provideValidUrl: 'Please provide a valid URL.',
         provideValidYoutubeUrl: 'Please provide a valid YouTube URL',
         mobileNotOptimized:
-          'With is currently not optimized for mobile. We rather polish the experience before you can use it. Sorry for the inconvenience.',
+          "With is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         chromeOnIosRestrictions:
           'Due to technical restrictions on iOS, With cannot work in Chrome on iOS - please use Safari. Sorry for the inconvenience',
+        noRoomPassword: 'You need a password to join this room',
+        incorrectRoomPassword: 'The password you entered is incorrect',
+        noRoomAccess: "You don't have access to this room. You'll need the password to get in.",
+        unknownRoom: '',
+        joinRoomInvalidScreenName: 'Please provide a valid screen name.',
+        joinRoomUnknownFailure: 'Failed to join room - check your network connection.',
       },
       widgetsFallback: {
         title: 'Accessories error',

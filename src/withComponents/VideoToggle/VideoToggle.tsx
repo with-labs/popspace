@@ -16,9 +16,10 @@ import styles from './VideoToggle.module.css';
 interface IVideoToggleProps {
   compact?: boolean;
   border?: boolean;
+  className?: string;
 }
 
-export const VideoToggle: React.FC<IVideoToggleProps> = ({ compact = false, border = true }) => {
+export const VideoToggle: React.FC<IVideoToggleProps> = ({ compact = false, border = true, className }) => {
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
 
   return (
@@ -28,10 +29,15 @@ export const VideoToggle: React.FC<IVideoToggleProps> = ({ compact = false, bord
       PopperProps={{ disablePortal: true }}
     >
       <motion.div
-        className={clsx('u-cursorPointer u-flex u-positionRelative', styles.toggleButtonBackdrop, {
-          uflexJustifyEnd: isVideoEnabled,
-          [styles['toggleButtonBackdrop-border']]: border,
-        })}
+        className={clsx(
+          'u-cursorPointer u-flex u-positionRelative',
+          styles.toggleButtonBackdrop,
+          {
+            uflexJustifyEnd: isVideoEnabled,
+            [styles['toggleButtonBackdrop-border']]: border,
+          },
+          className
+        )}
         onClick={toggleVideoEnabled}
         animate={isVideoEnabled ? (compact ? 'onCompact' : 'on') : 'off'}
         transition={videoToggleTransition}

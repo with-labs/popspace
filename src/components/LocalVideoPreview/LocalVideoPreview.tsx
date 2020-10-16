@@ -3,10 +3,10 @@ import { LocalVideoTrack } from 'twilio-video';
 import VideoTrack from '../VideoTrack/VideoTrack';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
-export default function LocalVideoPreview() {
+export default function LocalVideoPreview({ className }: { className?: string }) {
   const { localTracks } = useVideoContext();
 
-  const videoTrack = localTracks.find(track => track.name === 'camera') as LocalVideoTrack;
+  const videoTrack = localTracks.find((track) => track.name.includes('camera')) as LocalVideoTrack;
 
-  return videoTrack ? <VideoTrack track={videoTrack} isLocal /> : null;
+  return videoTrack ? <VideoTrack track={videoTrack} isLocal classNames={className} /> : null;
 }

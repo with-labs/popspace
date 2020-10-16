@@ -14,6 +14,7 @@ import { ScreenShareButton } from './ScreenShareButton';
 import { useAudioVolume } from '../../../withHooks/useAudioVolume/useAudioVolume';
 import { useSpring, animated } from '@react-spring/web';
 import palette from '../../../theme/palette';
+import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
@@ -90,6 +91,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     const localParticipant = useLocalParticipant();
     const isLocal = participant.sid === localParticipant.sid;
+    const [isMicOn] = useLocalAudioToggle();
 
     // a list of multimedia tracks this user has shared with peers
     const publications = usePublications(participant);
@@ -112,9 +114,9 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     }));
     const updateIsSpeaking = React.useCallback(
       (vol: number) => {
-        set({ isSpeaking: vol > 1 });
+        set({ isSpeaking: isMicOn && vol > 1 });
       },
-      [set]
+      [set, isMicOn]
     );
     useAudioVolume(audioTrackPub, updateIsSpeaking);
 

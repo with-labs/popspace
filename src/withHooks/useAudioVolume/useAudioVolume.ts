@@ -5,6 +5,9 @@ import useTrack from '../../hooks/useTrack/useTrack';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
 import throttle from 'lodash.throttle';
 
+// Safari and old webkit compat
+const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+
 export function useAudioVolume(
   /**
    * The audio track, local or remote, to monitor.

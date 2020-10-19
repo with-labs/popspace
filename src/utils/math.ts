@@ -38,6 +38,14 @@ export function roundVector(vector: Vector2) {
   };
 }
 
+/** restricts a vector to the bounds of the rectangle defined by min and max */
+export function clampVector(v: Vector2, min: Vector2, max: Vector2) {
+  return {
+    x: clamp(v.x, min.x, max.x),
+    y: clamp(v.y, min.y, max.y),
+  };
+}
+
 export function vectorDistance(v1: Vector2, v2: Vector2) {
   return Math.sqrt(Math.pow(Math.abs(v1.x - v2.x), 2) + Math.pow(Math.abs(v1.y - v2.y), 2));
 }

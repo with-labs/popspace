@@ -214,10 +214,14 @@ export const Draggable: React.FC<IDraggableProps> = ({
         // just to be sure we have the latest stuff.
         const { toWorldCoordinate } = viewport;
 
-        const worldPosition = toWorldCoordinate({
-          x: state.xy[0],
-          y: state.xy[1],
-        });
+        // convert to world position, clamping to room bounds
+        const worldPosition = toWorldCoordinate(
+          {
+            x: state.xy[0],
+            y: state.xy[1],
+          },
+          true
+        );
 
         let displacement: Vector2;
         // if this is the first frame of a new drag

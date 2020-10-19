@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Bounds, Vector2 } from '../../types/spatials';
-import { clamp } from '../../utils/math';
+import { clamp, clampVector } from '../../utils/math';
 import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
@@ -10,7 +10,7 @@ import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
 
 export const RoomViewportContext = React.createContext<null | {
-  toWorldCoordinate: (screenCoordinate: Vector2) => Vector2;
+  toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
   getZoom: () => number;
   onObjectDragStart: () => void;
   onObjectDragEnd: () => void;
@@ -116,7 +116,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   }));
 
   const toWorldCoordinate = React.useCallback(
-    (screenPoint: Vector2) => {
+    (screenPoint: Vector2, clampToBounds: boolean = false) => {
       const scale = 1 / zoom.goal;
       const currentCenterX = centerX.goal;
       const currentCenterY = centerY.goal;
@@ -144,9 +144,24 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: (screenPoint.y - halfWindowHeight) * scale - currentCenterY,
       };
 
+      // restrict the point to the room bounds, if desired
+      if (clampToBounds) {
+        return clampVector(
+          transformedPoint,
+          {
+            x: -halfCanvasWidth,
+            y: -halfCanvasHeight,
+          },
+          {
+            x: halfCanvasWidth,
+            y: halfCanvasHeight,
+          }
+        );
+      }
+
       return transformedPoint;
     },
-    [zoom, centerX, centerY, halfWindowWidth, halfWindowHeight]
+    [zoom.goal, centerX.goal, centerY.goal, halfWindowWidth, halfWindowHeight, halfCanvasWidth, halfCanvasHeight]
   );
 
   const clampPanPosition = React.useCallback(

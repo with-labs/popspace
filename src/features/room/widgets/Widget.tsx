@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { Draggable } from '../Draggable';
 import * as roomSlice from '../roomSlice';
 import { LinkWidget } from './link/LinkWidget';
 import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
@@ -9,7 +8,6 @@ import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
 import { WidgetState, WidgetType } from '../../../types/room';
-import { WIDGET_SIZE_RESTRICTIONS } from '../../../constants/room';
 
 export interface IWidgetProps {
   id: string;
@@ -37,13 +35,7 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
     return null;
   }
 
-  const sizeRestrictions = WIDGET_SIZE_RESTRICTIONS[widget.type];
-
-  return (
-    <Draggable id={id} {...sizeRestrictions}>
-      <WidgetContent widget={widget} onClose={handleRemove} />
-    </Draggable>
-  );
+  return <WidgetContent widget={widget} onClose={handleRemove} />;
 });
 
 interface IWidgetContentProps {

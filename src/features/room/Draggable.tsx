@@ -14,6 +14,7 @@ import { RootState } from '../../state/store';
 import { throttle } from 'lodash';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import clsx from 'clsx';
+import { ResizeObserver } from 'resize-observer';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -55,6 +56,11 @@ export interface IDraggableProps {
    * can resize them to
    */
   maxHeight?: number;
+  /**
+   * Whether the item can be resized by the user, or if it computes
+   * its own size based on contents
+   */
+  isResizable?: boolean;
 }
 
 const DRAGGABLE_SPRING = {
@@ -77,6 +83,11 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
   },
+  unresizableContentSizer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
 });
 
 export const DraggableContext = React.createContext<{
@@ -84,11 +95,13 @@ export const DraggableContext = React.createContext<{
   resizeHandleProps: ReactEventHandlers;
   isDraggingAnimatedValue: SpringValue<boolean>;
   isResizingAnimatedValue: SpringValue<boolean>;
+  disableResize: boolean;
 }>({
   dragHandleProps: {},
   resizeHandleProps: {},
   isDraggingAnimatedValue: null as any,
   isResizingAnimatedValue: null as any,
+  disableResize: false,
 });
 
 /**
@@ -106,6 +119,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
   minHeight = MIN_WIDGET_HEIGHT,
   maxWidth,
   maxHeight,
+  isResizable,
 }) => {
   const styles = useStyles();
 
@@ -126,10 +140,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
       ),
     []
   );
-  const { position, size } = useSelector((state: RootState) => positionSelector(state, id));
+  const { position, size, needsRemeasure: needsResize } = useSelector((state: RootState) =>
+    positionSelector(state, id)
+  );
   const measuredWidth = size?.width || 0;
   const measuredHeight = size?.height || 0;
-  const hasBeenMeasured = !!size;
 
   // dispatcher for movement changes
   const coordinatedDispatch = useCoordinatedDispatch();
@@ -145,7 +160,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
     [coordinatedDispatch, id]
   );
   const onResize = React.useCallback(
-    (newSize: Bounds) => {
+    (newSize: Bounds | null) => {
       coordinatedDispatch(
         actions.resizeObject({
           id,
@@ -157,24 +172,6 @@ export const Draggable: React.FC<IDraggableProps> = ({
   );
 
   const viewport = useRoomViewport();
-
-  const contentRef = React.useCallback(
-    (el: HTMLDivElement | null) => {
-      // on the first mount, we measure the size of the content and
-      // set that as the initial size in state.
-      if (el && !hasBeenMeasured) {
-        const width = Math.max(minWidth, el.clientWidth);
-        const height = Math.max(minHeight, el.clientHeight);
-        coordinatedDispatch(
-          actions.resizeObject({
-            id,
-            size: { width, height },
-          })
-        );
-      }
-    },
-    [hasBeenMeasured, coordinatedDispatch, id, minWidth, minHeight]
-  );
 
   // This spring gradually interpolates the object into its desired position
   // after a change. That change might happen because the user dragged it,
@@ -189,6 +186,41 @@ export const Draggable: React.FC<IDraggableProps> = ({
     resizing: false,
     config: DRAGGABLE_SPRING,
   }));
+
+  const [contentEl, contentRef] = React.useState<HTMLDivElement | null>(null);
+
+  // handles remeasuring the component from its native size when the flag is set in state
+  React.useEffect(() => {
+    if (!contentEl || !needsResize) return;
+
+    // immediately remeasure
+    const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
+    const h = clamp(contentEl.clientHeight, minHeight, maxHeight);
+    onResize({
+      width: w,
+      height: h,
+    });
+  }, [contentEl, needsResize, onResize, minHeight, minWidth, maxWidth, maxHeight]);
+
+  // handles triggering remeasures when content DOM changes for
+  // non-resizable widgets
+  React.useEffect(() => {
+    if (!contentEl || isResizable) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
+      const h = clamp(contentEl.clientHeight, minHeight, maxHeight);
+      onResize({
+        width: w,
+        height: h,
+      });
+    });
+    resizeObserver.observe(contentEl);
+
+    return () => {
+      resizeObserver.unobserve(contentEl);
+    };
+  }, [contentEl, isResizable, minWidth, minHeight, onResize, maxWidth, maxHeight]);
 
   // Update the spring when any of the monitored spatial values change
   React.useEffect(() => {
@@ -247,13 +279,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
         return displacement;
       },
       onDragStart: (state) => {
-        state.event?.preventDefault();
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
         set({ grabbing: true });
       },
       onDragEnd: (state) => {
-        state.event?.preventDefault();
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ grabbing: false });
@@ -269,7 +299,6 @@ export const Draggable: React.FC<IDraggableProps> = ({
   const bindResizeHandle = useGesture(
     {
       onDrag: (state) => {
-        state.event?.preventDefault();
         state.event?.stopPropagation();
         // unlike movement, this only sends updates when the change is complete
         set({
@@ -278,13 +307,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
         });
       },
       onDragStart: (state) => {
-        state.event?.preventDefault();
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
         set({ resizing: true });
       },
       onDragEnd: (state) => {
-        state.event?.preventDefault();
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ resizing: false });
@@ -306,6 +333,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
         isDraggingAnimatedValue: grabbing,
         resizeHandleProps: bindResizeHandle(),
         isResizingAnimatedValue: resizing,
+        disableResize: !isResizable,
       }}
     >
       <animated.div
@@ -325,11 +353,15 @@ export const Draggable: React.FC<IDraggableProps> = ({
           // Until the content has been measured (or re-measured), we render it in an absolute
           // positioned overflowing frame to try to estimate its innate size, which we will
           // use as the new explicit size of the draggable once measuring is complete
-          className={clsx(hasBeenMeasured ? styles.contentSizer : styles.unmeasuredContentSizer)}
+          className={clsx({
+            [styles.contentSizer]: !needsResize && isResizable,
+            [styles.unmeasuredContentSizer]: needsResize && isResizable,
+            [styles.unresizableContentSizer]: !isResizable,
+          })}
           // while we are measuring, because of word-wrapping and other css overflow rules,
           // we want to enforce at least the minimum sizes - otherwise text wraps and creates
           // a taller measurement than we would want
-          style={hasBeenMeasured ? undefined : { minWidth, minHeight, maxWidth, maxHeight }}
+          style={{ minWidth, minHeight, maxWidth, maxHeight }}
           ref={contentRef}
         >
           {children}

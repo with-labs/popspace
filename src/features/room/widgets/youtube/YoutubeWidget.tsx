@@ -6,13 +6,13 @@ import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
-import { YoutubeWidgetState, WidgetData } from '../../../../types/room';
+import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
 import { WidgetContent } from '../WidgetContent';
-import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { useTranslation } from 'react-i18next';
+import { useRemeasureWidget } from '../useRemeasureWidget';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -36,13 +36,14 @@ const useStyles = makeStyles((theme) => ({
   videoContainer: {
     width: '100%',
     height: '100%',
-    minWidth: 480,
-    minHeight: 270,
     position: 'relative',
     // this is the best way I can find to target the YouTube player container itself
     '& > div:first-child': {
       width: '100%',
       height: '100%',
+      position: 'absolute',
+      left: 0,
+      top: 0,
     },
     '&:hover, &:focus': {
       '& > $videoControls': {
@@ -79,22 +80,38 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   const { t } = useTranslation();
 
   const saveWidget = useSaveWidget(state.id);
+  const remeasure = useRemeasureWidget(state.id);
+  const handleSubmit = React.useCallback(
+    (data: YoutubeWidgetData) => {
+      saveWidget(data);
+      remeasure();
+    },
+    [saveWidget, remeasure]
+  );
 
   const { videoControlBindings, youtubeBindings, isMuted, isPlaying, toggleMuted } = useSyncYoutube(state, saveWidget);
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <WidgetFrame color="cherry">
+      <WidgetFrame color="cherry" widgetId={state.id} minWidth={300} minHeight={200} maxWidth={400} maxHeight={300}>
         <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
         <WidgetContent>
-          <EditYoutubeWidgetForm onSave={saveWidget} />
+          <EditYoutubeWidgetForm onSave={handleSubmit} />
         </WidgetContent>
       </WidgetFrame>
     );
   }
 
   return (
-    <WidgetFrame color="cherry">
+    <WidgetFrame
+      color="cherry"
+      widgetId={state.id}
+      isResizable
+      minWidth={480}
+      minHeight={308}
+      maxWidth={1440}
+      maxHeight={900}
+    >
       <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
@@ -102,7 +119,6 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
         <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} className={classes.video} {...youtubeBindings} />
         <VideoControls className={classes.videoControls} {...videoControlBindings} />
       </WidgetContent>
-      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

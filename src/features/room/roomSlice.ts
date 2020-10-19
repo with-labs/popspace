@@ -17,7 +17,8 @@ export type ObjectPositionData = {
    * position based on 100% zoom.
    */
   position: Vector2;
-  size: Bounds | null;
+  size: Bounds;
+  needsRemeasure: boolean;
 };
 export type RoomBackgroundState = {
   // FIXME: this could be simplified if we stopped treating our
@@ -87,7 +88,8 @@ const roomSlice = createSlice({
       ) {
         state.positions[payload.widget.id] = {
           position: payload.position,
-          size: payload.size || null,
+          size: payload.size || { width: 0, height: 0 },
+          needsRemeasure: !payload.size,
         };
 
         state.widgets[payload.widget.id] = payload.widget;
@@ -106,7 +108,8 @@ const roomSlice = createSlice({
       state.positions[payload.person.id] = {
         position: payload.position,
         // always auto-size people
-        size: null,
+        size: { width: 0, height: 0 },
+        needsRemeasure: true,
       };
 
       state.people[payload.person.id] = payload.person;
@@ -131,13 +134,16 @@ const roomSlice = createSlice({
     },
     resizeObject(state, { payload }: PayloadAction<{ id: string; size: Bounds | null }>) {
       if (!state.positions[payload.id]) return;
-      const clamped = payload.size
-        ? {
-            width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
-            height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
-          }
-        : null;
-      state.positions[payload.id].size = clamped;
+      if (payload.size) {
+        const clamped = {
+          width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
+          height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
+        };
+        state.positions[payload.id].size = clamped;
+        state.positions[payload.id].needsRemeasure = false;
+      } else {
+        state.positions[payload.id].needsRemeasure = true;
+      }
     },
     /** Updates the data associated with a widget */
     updateWidgetData(state, { payload }: PayloadAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>) {
@@ -150,11 +156,6 @@ const roomSlice = createSlice({
       // publish it!
       if (payload.publish && state.widgets[payload.id].isDraft) {
         state.widgets[payload.id].isDraft = false;
-        if (state.positions[payload.id]) {
-          // also trigger a remeasure on publish, since content will probably
-          // change
-          state.positions[payload.id].size = null;
-        }
       }
     },
     /** Changes the emoji displayed for a participant */

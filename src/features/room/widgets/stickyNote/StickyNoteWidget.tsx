@@ -9,7 +9,6 @@ import { AddStickyNoteButton } from './AddStickyNoteButton';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { StickyNoteWidgetState, StickyNoteWidgetData } from '../../../../types/room';
 import { WidgetContent } from '../WidgetContent';
-import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { useTranslation } from 'react-i18next';
 
 export interface IStickyNoteWidgetProps {
@@ -21,13 +20,15 @@ export interface IStickyNoteWidgetProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-  text: {
+  scrollContainer: {
     overflowY: 'auto',
-    overflowWrap: 'anywhere',
-    fontSize: theme.typography.pxToRem(14),
     flex: 1,
   },
+  text: {
+    fontSize: theme.typography.pxToRem(14),
+  },
   author: {
+    flex: '0 0 auto',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -64,9 +65,11 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
   return (
     <StickyNoteFrame title={t('widgets.stickyNote.publishedTitle')} onClose={onClose} widgetId={state.id}>
-      <Typography paragraph className={classes.text}>
-        {state.data.text}
-      </Typography>
+      <div className={classes.scrollContainer}>
+        <Typography paragraph className={classes.text}>
+          {state.data.text}
+        </Typography>
+      </div>
       <Typography variant="caption" className={classes.author}>
         {t('widgets.stickyNote.addedBy', { author: state.data.author })}
       </Typography>
@@ -80,11 +83,10 @@ const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: s
   onClose,
   widgetId,
 }) => (
-  <WidgetFrame color="mandarin">
+  <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={600} maxHeight={600}>
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
     <WidgetContent>{children}</WidgetContent>
-    <WidgetResizeHandle />
   </WidgetFrame>
 );

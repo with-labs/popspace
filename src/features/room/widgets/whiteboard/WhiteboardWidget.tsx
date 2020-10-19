@@ -47,7 +47,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   const { ref, handleExport } = useExport();
 
   return (
-    <WidgetFrame color="turquoise">
+    <WidgetFrame color="turquoise" widgetId={state.id} minWidth={720} minHeight={480} maxWidth={720}>
       <WidgetTitlebar title={t('widgets.whiteboard.title')} onClose={onClose} {...titlebarProps}>
         <IconButton size="small" onClick={handleExport}>
           <CloudDownloadOutlined />

@@ -24,7 +24,11 @@ const useResizeHandleStyles = makeStyles((theme) => ({
 
 export const DraggableResizeHandle: React.FC<IDraggableResizeHandleProps> = ({ children, disabled, className }) => {
   const classes = useResizeHandleStyles();
-  const { resizeHandleProps, isResizingAnimatedValue } = React.useContext(DraggableContext);
+  const { resizeHandleProps, isResizingAnimatedValue, disableResize } = React.useContext(DraggableContext);
+
+  if (disableResize) {
+    return null;
+  }
 
   return (
     <animated.div

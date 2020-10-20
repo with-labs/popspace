@@ -11,6 +11,7 @@ export type PersonState = {
   emoji: EmojiData | null | string;
   // FIXME: this seems like user preferences not participant data
   viewingScreenSid: string | null;
+  isSpeaking: boolean;
 };
 
 /** Data common to all types of widgets */

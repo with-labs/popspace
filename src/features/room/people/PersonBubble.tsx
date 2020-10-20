@@ -11,10 +11,9 @@ import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../withComponents/Avatar/Avatar';
 import { Emoji } from 'emoji-mart';
 import { ScreenShareButton } from './ScreenShareButton';
-import { useAudioVolume } from '../../../withHooks/useAudioVolume/useAudioVolume';
 import { useSpring, animated } from '@react-spring/web';
 import palette from '../../../theme/palette';
-import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
+import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
@@ -91,34 +90,28 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     const localParticipant = useLocalParticipant();
     const isLocal = participant.sid === localParticipant.sid;
-    const [isMicOn] = useLocalAudioToggle();
 
     // a list of multimedia tracks this user has shared with peers
     const publications = usePublications(participant);
 
     // Redux data about this user
     const person = useSelector(selectors.createPersonSelector(participant.sid));
-    const { emoji, avatar: avatarName } = person ?? {};
+    const { emoji, avatar: avatarName, isSpeaking } = person ?? {};
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);
 
     // extract audio and/or video publications
-    const audioTrackPub = publications.find((pub) => pub.kind === 'audio') as AudioTrackPublication;
+    const audioTrackPub = publications.find((pub) => pub.kind === 'audio') as AudioTrackPublication | undefined;
     const cameraTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('camera'));
     const screenShareTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('screen'));
 
+    const isMicOn = useIsTrackEnabled(audioTrackPub?.track);
+
     // track whether this user is speaking (updated using audio track volume monitoring)
-    const [{ isSpeaking }, set] = useSpring(() => ({
-      isSpeaking: false,
-    }));
-    const updateIsSpeaking = React.useCallback(
-      (vol: number) => {
-        set({ isSpeaking: isMicOn && vol > 1 });
-      },
-      [set, isMicOn]
-    );
-    useAudioVolume(audioTrackPub, updateIsSpeaking);
+    const animatedProps = useSpring({
+      isSpeaking: isSpeaking && isMicOn,
+    });
 
     return (
       <animated.div
@@ -127,7 +120,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         className={clsx(classes.root, rest.className)}
         style={{
           // change border color when speaking
-          borderColor: isSpeaking.to((v) => (v ? palette.lavender.main : palette.snow.main)) as any,
+          borderColor: animatedProps.isSpeaking.to((v) => (v ? palette.lavender.main : palette.snow.main)) as any,
         }}
       >
         <div className={classes.mainContent}>

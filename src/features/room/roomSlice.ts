@@ -177,6 +177,12 @@ const roomSlice = createSlice({
 
       person.viewingScreenSid = payload.screenViewSid;
     },
+    updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
+      const person = state.people[payload.id];
+      if (!person) return;
+
+      person.isSpeaking = payload.isSpeaking;
+    },
   },
 });
 
@@ -197,4 +203,5 @@ export const selectors = {
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
   createPersonScreenViewSidSelector: (personId: string) => (state: RootState) =>
     state.room.people[personId]?.viewingScreenSid,
+  createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
 };

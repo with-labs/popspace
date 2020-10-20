@@ -11,6 +11,7 @@ import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackground
 import { AccessoriesDock } from '../../withComponents/AccessoriesDock/AccessoriesDock';
 import { ViewportControls } from './controls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
+import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 
 interface IRoomProps {}
 
@@ -22,6 +23,7 @@ export const Room: React.FC<IRoomProps> = () => {
   const backgroundUrl = useBackgroundUrl();
 
   useRoomPresence();
+  useLocalVolumeDetection();
 
   return (
     <>

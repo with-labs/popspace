@@ -59,6 +59,7 @@ describe('useRoomPresence hook', () => {
               avatar: AVATAR,
               emoji: null,
               viewingScreenSid: null,
+              isSpeaking: false,
             },
           })
         );

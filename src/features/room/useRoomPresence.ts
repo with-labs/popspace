@@ -29,6 +29,7 @@ export function useRoomPresence() {
             avatar: randomAvatar().name,
             emoji: null,
             viewingScreenSid: null,
+            isSpeaking: false,
           },
         })
       );

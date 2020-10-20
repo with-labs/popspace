@@ -106,7 +106,6 @@ export function useLocalVolumeDetection() {
         }
 
         const volume = Math.min(21, Math.max(0, Math.log10(values / length / 3) * 14));
-        console.debug(volume);
 
         if (volume > VOLUME_THRESHOLD && !isSpeaking) {
           updateIsSpeaking(true);

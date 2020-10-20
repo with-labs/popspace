@@ -11,7 +11,7 @@ import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../withComponents/Avatar/Avatar';
 import { Emoji } from 'emoji-mart';
 import { ScreenShareButton } from './ScreenShareButton';
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring, animated, config } from '@react-spring/web';
 import palette from '../../../theme/palette';
 import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 
@@ -110,19 +110,12 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     // track whether this user is speaking (updated using audio track volume monitoring)
     const animatedProps = useSpring({
-      isSpeaking: isSpeaking && isMicOn,
+      borderColor: isSpeaking && isMicOn ? palette.lavender.main : palette.snow.main,
+      config: config.stiff,
     });
 
     return (
-      <animated.div
-        {...rest}
-        ref={ref}
-        className={clsx(classes.root, rest.className)}
-        style={{
-          // change border color when speaking
-          borderColor: animatedProps.isSpeaking.to((v) => (v ? palette.lavender.main : palette.snow.main)) as any,
-        }}
-      >
+      <animated.div {...rest} ref={ref} className={clsx(classes.root, rest.className)} style={animatedProps as any}>
         <div className={classes.mainContent}>
           {cameraTrackPub ? (
             <Publication

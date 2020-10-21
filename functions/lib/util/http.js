@@ -27,7 +27,7 @@ const http = {
   },
 
   fail: async (callback, message, data={}) => {
-    // await lib.cleanup()
+    await lib.cleanup()
     data.message = data.message || "Unknown error"
     callback(null, {
       statusCode: 200,
@@ -37,7 +37,7 @@ const http = {
   },
 
   succeed: async (callback, data) => {
-    // await lib.cleanup()
+    await lib.cleanup()
     return callback(null, {
       statusCode: 200,
       headers,

@@ -47,8 +47,11 @@ export interface IRoomViewportProps {
 const PINCH_GESTURE_DAMPING = 4000;
 const WHEEL_GESTURE_DAMPING = 4000;
 // how much "empty space" the user can see at the edge of the world,
-// in viewport pixels
-const PAN_BUFFER = 50;
+// in viewport pixels. Needs to be large enough that the dock and
+// any other UI doesn't overlap items on the edges at all times, so
+// the user can at least pan to a position where they can reach the
+// item.
+const PAN_BUFFER = 100;
 const VIEWPORT_PAN_SPRING = {
   tension: 500,
   friction: 20,

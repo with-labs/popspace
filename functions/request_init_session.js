@@ -24,9 +24,7 @@ module.exports.handler = async (event, context, callback) => {
   await lib.init()
   const middleware = await lib.util.middleware.init()
   await middleware.run(event, context)
-
-  const params = JSON.parse(event.body)
-  params.email = util.args.consolidateEmailString(params.email)
+  context.params.email = util.args.consolidateEmailString(context.params.email)
 
   if(!context.user) {
     return await util.http.fail(callback, "This email address is not associated with an account.", {invalidEmail: true})
@@ -36,6 +34,5 @@ module.exports.handler = async (event, context, callback) => {
   const logInUrl = await accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
   await lib.email.account.sendLoginOtpEmail(params.email, context.user.first_name, logInUrl)
-
   return await util.http.succeed(callback, {});
 }

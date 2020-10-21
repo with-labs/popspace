@@ -57,34 +57,34 @@ class Pg {
           console.log("========== Failed to attach monitor", weirdException)
         }
       }
-      console.log("Donezo")
+      console.log("Initialized postgres")
       return __db
     })
     return __db
   }
 
   async tearDown() {
-    var lock = new AsyncLock();
-    return new Promise((resolve, reject) => {
-      lock.acquire('with_teardown_pg', async (cb) => {
-        if(__db) {
-          try {
-            monitor.detach()
-          } catch(e) {
-            console.log("====== Warning: detaching unattached monitor")
-            // Nothing to do...
-          }
-          // await db.pgp.end()
-          try {
-            await __db.instance.$pool.end()
-          } catch(e) {
-            console.log("===== Warning: end pool multiple times")
-          }
-          __db = null
-          this.massive = null
+    await lock.acquire('with_teardown_pg', async () => {
+      console.log("Acquired tear down lock")
+      if(__db) {
+        try {
+          monitor.detach()
+        } catch(e) {
+          console.log("====== Warning: detaching unattached monitor")
+          // Nothing to do...
         }
-      })
+        try {
+          // await db.pgp.end()
+          await __db.instance.$pool.end()
+        } catch(e) {
+          console.log("===== Warning: end pool multiple times")
+        }
+        __db = null
+        this.massive = null
+      }
+      return true
     })
+    return
   }
 
   async silenceLogs() {

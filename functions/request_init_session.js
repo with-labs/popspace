@@ -22,21 +22,20 @@ module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
   const params = JSON.parse(event.body)
   params.email = util.args.consolidateEmailString(params.email)
 
-  const accounts = new lib.db.Accounts()
-
-  const user = await accounts.userByEmail(params.email)
-  if(!user) {
+  if(!context.user) {
     return await util.http.fail(callback, "This email address is not associated with an account.", {invalidEmail: true})
   }
 
-  const loginRequest = await accounts.createLoginRequest(user)
+  const loginRequest = await accounts.createLoginRequest(context.user)
   const logInUrl = await accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
-  await lib.email.account.sendLoginOtpEmail(params.email, user.first_name, logInUrl)
+  await lib.email.account.sendLoginOtpEmail(params.email, context.user.first_name, logInUrl)
 
   return await util.http.succeed(callback, {});
 }

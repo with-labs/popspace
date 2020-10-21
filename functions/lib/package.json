@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "async-lock": "^1.2.4",
     "aws-sdk": "^2.739.0",
     "crypto-random-string": "^3.2.0",
     "massive": "^6.6.0",

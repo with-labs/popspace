@@ -13,6 +13,10 @@ class Accounts extends DbAccess {
     return `${appUrl}/loginwithemail?otp=${loginRequest.otp}&uid=${loginRequest.user_id}`
   }
 
+  async delete(userId) {
+    return await db.pg.massive.users.update({id: userId}, {deleted_at: this.now()})
+  }
+
   async getLatestAccountCreateRequest(email) {
     const requests = await db.pg.massive.otp_account_create_requests.find({
       email: util.args.consolidateEmailString(email)
@@ -27,11 +31,17 @@ class Accounts extends DbAccess {
   }
 
   async userByEmail(email) {
-    return db.pg.massive.users.findOne({email: util.args.consolidateEmailString(email)})
+    return db.pg.massive.users.findOne({
+      email: util.args.consolidateEmailString(email),
+      deleted_at: null
+    })
   }
 
   async userById(id) {
-    return db.pg.massive.users.findOne({id: id})
+    return db.pg.massive.users.findOne({
+      id: id,
+      deleted_at: null
+    })
   }
 
   /*

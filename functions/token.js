@@ -74,7 +74,6 @@ const ROOM_WHITELIST_PASSCODES = {
   scrumvc: 'scrum2020',
   creativelounge: '430266',
   mobelux: '852112',
-  saamyverse: '669737',
   farmstead: '141547',
   cryptocastle: '830056',
   thelibrary: '932191',

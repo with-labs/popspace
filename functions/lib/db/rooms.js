@@ -164,7 +164,7 @@ class Rooms extends DbAccess {
 
   async tryToCreateClaim(email, roomName, allowRegistered=false, createNewRooms=false, allowTransfer=false) {
     email = lib.util.args.consolidateEmailString(email)
-    const user = await db.pg.massive.users.findOne({ email: email })
+    const user = await db.pg.accounts.userByEmail(email)
     if(user) {
       if(allowRegistered) {
         console.log(`Warning: user ${user.email} already registered.`)

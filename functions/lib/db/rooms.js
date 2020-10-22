@@ -162,9 +162,9 @@ class Rooms extends DbAccess {
     })
   }
 
-  async tryToCreateClaim(email, roomName, allowRegistered=false, createNewRooms=false) {
+  async tryToCreateClaim(email, roomName, allowRegistered=false, createNewRooms=false, allowTransfer=false) {
     email = lib.util.args.consolidateEmailString(email)
-    const user = await db.pg.massive.users.findOne({ email: email })
+    const user = await db.pg.accounts.userByEmail(email)
     if(user) {
       if(allowRegistered) {
         console.log(`Warning: user ${user.email} already registered.`)
@@ -189,10 +189,20 @@ class Rooms extends DbAccess {
     let room = await this.roomById(roomNameEntry.room_id)
     const existingClaim = await db.pg.massive.room_claims.findOne({room_id: room.id})
     if(existingClaim) {
-      return { error: lib.db.ErrorCodes.room.CLAIM_UNIQUENESS }
+      if(allowTransfer) {
+        // Not yet supported
+      } else {
+        return {
+          error: lib.db.ErrorCodes.room.CLAIM_UNIQUENESS,
+          claim: existingClaim,
+          room: room,
+          roomNameEntry: roomNameEntry
+        }
+      }
+    } else {
+      const claim = await this.createClaim(room.id, email)
+      return { claim, room, roomNameEntry }
     }
-    const claim = await this.createClaim(room.id, email)
-    return { claim }
   }
 
   async createClaim(roomId, claimerEmail, expiresAt = null) {

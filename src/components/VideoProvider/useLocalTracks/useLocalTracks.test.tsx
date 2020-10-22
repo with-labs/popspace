@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 /**
  * #WITH_EDIT
  *
@@ -5,47 +6,63 @@
  * - Updated to latest twilio-video starter app code
  * - Added updates for video off by default and local data tracks
  */
+class MockLocalDataTrack {}
+class MockLocalAudioTrack {
+  kind = 'audio';
+  stop = jest.fn();
+}
+class MockLocalVideoTrack {
+  stop = jest.fn();
+  kind = 'video';
+}
+jest.mock('twilio-video', () => ({
+  ...(jest.requireActual('twilio-video') as any),
+  LocalDataTrack: MockLocalDataTrack,
+  LocalVideoTrack: MockLocalVideoTrack,
+  LocalAudioTrack: MockLocalAudioTrack,
+  createLocalAudioTrack: jest.fn().mockResolvedValue(new MockLocalAudioTrack()),
+  createLocalVideoTrack: jest.fn().mockResolvedValue(new MockLocalVideoTrack()),
+}));
 
 import { act, renderHook } from '@testing-library/react-hooks';
 import useLocalTracks from './useLocalTracks';
-import Video, { LocalVideoTrack } from 'twilio-video';
-import { EventEmitter } from 'events';
-
-// WARNING, this is a big no-no, BUT LocalDataTrack is undefined in the unit testing env for some unknown reason.
-// The only way I could get the tests working was to monkey patch LocalDataTrack back into the module.
-import * as TV from 'twilio-video';
-class LDT {}
-// @ts-ignore
-TV.LocalDataTrack = LDT;
+import { LocalVideoTrack, createLocalAudioTrack } from 'twilio-video';
 
 describe('the useLocalTracks hook', () => {
   afterEach(jest.clearAllMocks);
 
-  it('should return an array of tracks and two functions', async () => {
-    const { result, waitForNextUpdate } = renderHook(useLocalTracks);
-    expect(result.current.localTracks).toEqual([expect.any(LDT)]);
-    await waitForNextUpdate();
-    expect(result.current.localTracks).toEqual([expect.any(EventEmitter), expect.any(EventEmitter), expect.any(LDT)]);
+  it('should return an array of tracks and methods to initialize tracks', async () => {
+    const onError = jest.fn();
+    const { result } = renderHook(() => useLocalTracks(onError));
+    // on the first frame, before we initialize audio track, we just have the data track
+    expect(result.current.localTracks).toEqual([expect.any(MockLocalDataTrack)]);
+    // it provides a way to initialize a video track
     expect(result.current.getLocalVideoTrack).toEqual(expect.any(Function));
   });
 
-  it('should create only a audio and video local track by default when loaded', async () => {
-    Date.now = () => 123456;
-    const { waitForNextUpdate } = renderHook(useLocalTracks);
-    await waitForNextUpdate();
-    expect(Video.createLocalTracks).toHaveBeenCalledWith({
-      audio: true,
-    });
+  it('should create an audio track by default when loaded', async () => {
+    const onError = jest.fn();
+    const { waitFor, result } = renderHook(() => useLocalTracks(onError));
+    // wait for effect to complete and create the audio track
+    await waitFor(() => expect(createLocalAudioTrack).toHaveBeenCalled());
+    // after the initial useEffect runs, we have our audio track and data track.
+    expect(result.current.localTracks).toEqual([expect.any(MockLocalAudioTrack), expect.any(MockLocalDataTrack)]);
   });
 
   describe('the removeLocalVideoTrack function', () => {
-    it('should call videoTrack.stop() and remove the videoTrack from state', async () => {
-      const { result, waitForNextUpdate } = renderHook(useLocalTracks);
-      await waitForNextUpdate();
+    it('can add a video track, then remove the video track, which calls videoTrack.stop()', async () => {
+      const onError = jest.fn();
+      const { result } = renderHook(() => useLocalTracks(onError));
+      // initialize a video track
+      await act(async () => {
+        await result.current.getLocalVideoTrack();
+      });
+      // retrieve the video track
       const initialVideoTrack = result.current.localTracks.find((track) => track.kind === 'video') as LocalVideoTrack;
       expect(initialVideoTrack!.stop).not.toHaveBeenCalled();
       expect(initialVideoTrack).toBeTruthy();
 
+      // stop the video track
       act(() => {
         result.current.removeLocalVideoTrack();
       });

@@ -1,14 +1,12 @@
+import React from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import useLocalVideoToggle from './useLocalVideoToggle';
 import useVideoContext from '../useVideoContext/useVideoContext';
 import { EventEmitter } from 'events';
 import { LocalParticipant } from 'twilio-video';
 import { useAppState } from '../../state';
-
-import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
-jest.mock('../../withHooks/useParticipantMeta/useParticipantMeta');
-const mockUseParticipantMeta = useParticipantMeta as jest.Mock<any>;
-mockUseParticipantMeta.mockImplementation(() => ({}));
+import { Provider } from 'react-redux';
+import store from '../../state/store';
 
 jest.mock('../useVideoContext/useVideoContext');
 const mockUseVideoContext = useVideoContext as jest.Mock<any>;
@@ -36,7 +34,9 @@ describe('the useLocalVideoToggle hook', () => {
       room: { localParticipant: {} },
     }));
 
-    const { result } = renderHook(useLocalVideoToggle);
+    const { result } = renderHook(useLocalVideoToggle, {
+      wrapper: (props) => <Provider store={store} {...props} />,
+    });
     expect(result.current).toEqual([true, expect.any(Function)]);
   });
 
@@ -46,7 +46,9 @@ describe('the useLocalVideoToggle hook', () => {
       room: { localParticipant: {} },
     }));
 
-    const { result } = renderHook(useLocalVideoToggle);
+    const { result } = renderHook(useLocalVideoToggle, {
+      wrapper: (props) => <Provider store={store} {...props} />,
+    });
     expect(result.current).toEqual([false, expect.any(Function)]);
   });
 
@@ -60,7 +62,9 @@ describe('the useLocalVideoToggle hook', () => {
         removeLocalVideoTrack: mockRemoveLocalVideoTrack,
       }));
 
-      const { result } = renderHook(useLocalVideoToggle);
+      const { result } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
       result.current[1]();
       expect(mockRemoveLocalVideoTrack).toHaveBeenCalled();
     });
@@ -80,7 +84,9 @@ describe('the useLocalVideoToggle hook', () => {
         removeLocalVideoTrack: () => {},
       }));
 
-      const { result } = renderHook(useLocalVideoToggle);
+      const { result } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
       result.current[1]();
       expect(mockLocalParticipant.unpublishTrack).toHaveBeenCalledWith(mockLocalTrack);
     });
@@ -93,7 +99,9 @@ describe('the useLocalVideoToggle hook', () => {
         room: {},
       }));
 
-      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle);
+      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
       act(() => {
         result.current[1]();
       });
@@ -113,7 +121,9 @@ describe('the useLocalVideoToggle hook', () => {
         room: { localParticipant: mockLocalParticipant },
       }));
 
-      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle);
+      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
       act(() => {
         result.current[1]();
       });
@@ -136,35 +146,15 @@ describe('the useLocalVideoToggle hook', () => {
         room: { localParticipant: mockLocalParticipant },
       }));
 
-      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle);
+      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
       act(() => {
         result.current[1]();
       });
       result.current[1](); // Should be ignored because isPublishing is true
       expect(mockGetLocalVideoTrack).toHaveBeenCalledTimes(1);
       await waitForNextUpdate();
-    });
-
-    it('should call onError when publishTrack throws an error', async () => {
-      const mockGetLocalVideoTrack = jest.fn(() => Promise.resolve('mockTrack'));
-      const mockOnError = jest.fn();
-
-      const mockLocalParticipant = new EventEmitter() as LocalParticipant;
-      mockLocalParticipant.publishTrack = jest.fn(() => Promise.reject(new Error('error')));
-
-      mockUseVideoContext.mockImplementation(() => ({
-        localTracks: [],
-        getLocalVideoTrack: mockGetLocalVideoTrack,
-        room: { localParticipant: mockLocalParticipant },
-        onError: mockOnError,
-      }));
-
-      const { result, waitForNextUpdate } = renderHook(useLocalVideoToggle);
-      act(() => {
-        result.current[1]();
-      });
-      await waitForNextUpdate();
-      expect(mockOnError).toHaveBeenCalledWith(expect.any(Error));
     });
 
     it('should call getLocalVideoTrack with the deviceId of the previously active track', async () => {
@@ -177,7 +167,9 @@ describe('the useLocalVideoToggle hook', () => {
         getLocalVideoTrack: mockGetLocalVideoTrack,
       }));
 
-      const { result, rerender, waitForNextUpdate } = renderHook(useLocalVideoToggle);
+      const { result, rerender, waitForNextUpdate } = renderHook(useLocalVideoToggle, {
+        wrapper: (props) => <Provider store={store} {...props} />,
+      });
 
       // Remove existing track
       result.current[1]();

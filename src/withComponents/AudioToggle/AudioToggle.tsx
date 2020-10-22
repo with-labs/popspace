@@ -13,8 +13,9 @@ import styles from './AudioToggle.module.css';
 
 interface IAudioToggleProps {
   border?: boolean;
+  className?: string;
 }
-export const AudioToggle: React.FC<IAudioToggleProps> = ({ border = true }) => {
+export const AudioToggle: React.FC<IAudioToggleProps> = ({ border = true, className }) => {
   const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
 
   return (
@@ -24,9 +25,14 @@ export const AudioToggle: React.FC<IAudioToggleProps> = ({ border = true }) => {
       PopperProps={{ disablePortal: true }}
     >
       <div
-        className={clsx('u-cursorPointer u-flexAlignItemsCenter u-flexJustifyCenter', styles.toggleButtonBackdrop, {
-          [styles['toggleButtonBackdrop-border']]: border,
-        })}
+        className={clsx(
+          'u-cursorPointer u-flexAlignItemsCenter u-flexJustifyCenter',
+          styles.toggleButtonBackdrop,
+          {
+            [styles['toggleButtonBackdrop-border']]: border,
+          },
+          className
+        )}
       >
         <div
           className={clsx('u-flex u-flexJustifyCenter u-flexAlignItemsCenter', styles.toggleButton, {

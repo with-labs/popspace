@@ -7,6 +7,7 @@ import { USER_SESSION_TOKEN, USER_SUPPORT_EMAIL } from '../../constants/User';
 
 import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
 import { Button } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as DropdownIcon } from '../../images/icons/dropdown.svg';
 import { ReactComponent as SignOutIcon } from '../../images/icons/sign_out.svg';
@@ -23,6 +24,7 @@ interface IHeaderProps {
 export const Header: React.FC<IHeaderProps> = (props) => {
   const { text, userName, isFullLength = false } = props;
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const { t } = useTranslation();
 
   const onMenuOpenHandler = (event: React.MouseEvent<HTMLElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -74,33 +76,33 @@ export const Header: React.FC<IHeaderProps> = (props) => {
           <ListItemIcon>
             <SupportIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Support</span>
+          <span className="u-fontB1">{t('header.support')}</span>
         </MenuItem>
         <MenuItem onClick={() => openNewTab(Links.FEEDBACK)}>
           <ListItemIcon>
             <FeatureIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Feedback</span>
+          <span className="u-fontB1">{t('header.feedback')}</span>
         </MenuItem>
         <Divider variant="middle" />
         <MenuItem onClick={() => openNewTab(Links.TOS)}>
           <ListItemIcon>
             <DocumentIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Terms of Service</span>
+          <span className="u-fontB1">{t('header.tos')}</span>
         </MenuItem>
         <MenuItem onClick={() => openNewTab(Links.PRIVACY_POLICY)}>
           <ListItemIcon>
             <DocumentIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Privacy Policy</span>
+          <span className="u-fontB1">{t('header.privacyPolicy')}</span>
         </MenuItem>
         <Divider variant="middle" />
         <MenuItem onClick={onSignoutHandler}>
           <ListItemIcon>
             <SignOutIcon />
           </ListItemIcon>
-          <span className="u-fontB1">Logout</span>
+          <span className="u-fontB1">{t('header.logout')}</span>
         </MenuItem>
       </Menu>
     </>

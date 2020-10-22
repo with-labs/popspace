@@ -6,9 +6,10 @@ import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 interface IAvatarProps {
   name: string;
   onClick?: () => void;
+  className?: string;
 }
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, onClick }) => {
+export const Avatar: React.FC<IAvatarProps> = ({ name, onClick, className }) => {
   const avatar = useAvatar(name);
 
   // State dictating whether the avatar is in a blinking state.
@@ -35,7 +36,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, onClick }) => {
     // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
     // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div onClick={onClick} className="u-width100Percent u-height100Percent u-positionRelative">
+      <div onClick={onClick} className={className}>
         <img
           className={clsx('u-height100Percent u-width100Percent u-positionAbsolute', {
             'u-visibilityHidden': !isBlinking,

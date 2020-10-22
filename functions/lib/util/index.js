@@ -4,4 +4,6 @@ module.exports = {
   env: require("./env"),
   dev: require("./dev"),
   args: require("./args"),
+  middleware: require("./netlify_middleware"),
+  routes: require("./routes")
 }

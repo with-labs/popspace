@@ -20,7 +20,8 @@ import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
 import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types';
+import { ErrorInfo } from '../../types/api';
+import { useTranslation } from 'react-i18next';
 
 import { ClaimConfirmationView } from './ClaimConfirmationView';
 
@@ -28,6 +29,7 @@ interface IFinalizeAccountProps {}
 
 export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const history = useHistory();
+  const { t } = useTranslation();
 
   // get the query params from the invite
   const query = useQuery();
@@ -64,7 +66,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             // redirect to the dashboard if someone is already logged in and the room is claimed
             history.push(Routes.ROOT);
           } else {
-            if (result.errorCode === ErrorCodes.CLAIM_FAIL_NO_SUCH_USER) {
+            if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
               // the room is unclaimed, but the user isnt created,
               //  so we render the finialize form to finish creating the user
               setIsLoading(false);
@@ -148,26 +150,24 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             <TwoColLayout>
               <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
                 <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-                  <div className={clsx(styles.title, 'u-fontH1')}>Finalize your account</div>
-                  <div className={clsx(styles.text, 'u-fontP1')}>
-                    Please finalize your account {email} to keep access to your room.
-                  </div>
+                  <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.finalizeAccount.title')}</div>
+                  <div className={clsx(styles.text, 'u-fontP1')}>{t('pages.finalizeAccount.body', { email })}</div>
                   <form onSubmit={onFormSubmit}>
                     <div className="u-flex u-sm-flexCol u-flexRow">
                       <TextField
                         id="firstName"
                         value={firstName}
                         onChange={(event) => setFirstName(event.target.value)}
-                        placeholder="Dorothy"
-                        label="First Name"
+                        placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
+                        label={t('pages.finalizeAccount.fistNameLabel')}
                         className={styles.firstName}
                       />
                       <TextField
                         id="lastName"
                         value={lastName}
                         onChange={(event) => setLastName(event.target.value)}
-                        placeholder="Gale"
-                        label="Last Name"
+                        placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
+                        label={t('pages.finalizeAccount.lastNameLabel')}
                         className={styles.lastName}
                       />
                     </div>
@@ -175,32 +175,32 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                       <CheckboxField
                         label={
                           <span>
-                            I agree to the{' '}
+                            {t('pages.finalizeAccount.iAgreeText')}{' '}
                             <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                              Terms of Service
+                              {t('pages.finalizeAccount.termsOfService')}
                             </Link>
                           </span>
                         }
                         checked={acceptTos}
                         onChange={() => setAcceptTos(!acceptTos)}
-                        name="terms of service checkbox"
+                        name={t('pages.finalizeAccount.tosCheckboxName')}
                       />
                       <CheckboxField
-                        label="It’s ok to send me occasional emails"
+                        label={t('pages.finalizeAccount.marketingCheckboxText')}
                         checked={receiveMarketing}
                         onChange={() => setReceiveMarketing(!receiveMarketing)}
-                        name="send me occasional emails checkbox"
+                        name={t('pages.finalizeAccount.martketingCheckboxName')}
                       />
                     </div>
                     <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-                      Finalize my account
+                      {t('pages.finalizeAccount.submitBtnText')}
                     </Button>
                   </form>
                 </div>
               </Column>
               <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
                 <div className={styles.imageContainer}>
-                  <img className={styles.image} src={signinImg} alt="sign in" />
+                  <img className={styles.image} src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
                 </div>
               </Column>
             </TwoColLayout>

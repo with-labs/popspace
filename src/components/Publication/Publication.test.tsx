@@ -1,86 +1,120 @@
 import React from 'react';
 import Publication from './Publication';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import useTrack from '../../hooks/useTrack/useTrack';
-import { useParticipantLocationDelta } from '../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta';
-import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
-import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
+import { useSpatialAudioVolume } from '../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { Provider } from 'react-redux';
+import store from '../../state/store';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
 
-jest.mock('../../withHooks/useParticipantLocationDelta/useParticipantLocationDelta');
-const mockUseParticipantLocationDelta = useParticipantLocationDelta as jest.Mock<any>;
-mockUseParticipantLocationDelta.mockImplementation(() => ({ distance: 1 }));
-
-jest.mock('../../withHooks/useRoomParties/useRoomParties');
-const mockUseRoomParties = useRoomParties as jest.Mock<any>;
-mockUseRoomParties.mockImplementation(() => ({ huddles: [], localHuddle: undefined }));
-
-jest.mock('../../withHooks/useRoomMetaContext/useRoomMetaContext');
-const mockUseRoomMetaContext = useRoomMetaContext as jest.Mock<any>;
-mockUseRoomMetaContext.mockImplementation(() => ({ properties: { spatialAudio: 'off' } }));
+jest.mock('../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume');
+const mockUseSpatialAudioVolume = useSpatialAudioVolume as jest.Mock<any>;
+mockUseSpatialAudioVolume.mockImplementation(() => 0.5);
 
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {
     it('should render a VideoTrack', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'video', name: 'camera' }));
-      const wrapper = shallow(
-        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+      mockUseTrack.mockImplementation(() => ({
+        kind: 'video',
+        name: 'camera',
+        attach: jest.fn(),
+        detach: jest.fn(),
+        setPriority: jest.fn(),
+      }));
+      const wrapper = render(
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+        </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
-      expect(wrapper.find('VideoTrack').length).toBe(1);
+      expect(wrapper.container.querySelectorAll('video').length).toBe(1);
     });
 
-    it('should ignore the "isLocal" prop when track.name is not "camera"', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'video', name: 'screen' }));
-      const wrapper = shallow(
-        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+    it('doesn\'t mirror local videos which aren\'t "camera"', () => {
+      mockUseTrack.mockImplementation(() => ({
+        kind: 'video',
+        name: 'screen',
+        attach: jest.fn(),
+        detach: jest.fn(),
+        setPriority: jest.fn(),
+      }));
+      const wrapper = render(
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+        </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
-      expect(wrapper.find({ isLocal: false }).length).toBe(1);
+      expect(wrapper.container.querySelector('video')?.style.transform).not.toBe('rotateY(180deg)');
     });
 
-    it('should use the "isLocal" prop when track.name is "camera"', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'video', name: 'camera' }));
-      const wrapper = shallow(
-        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+    it('should mirror video when local track is "camera"', () => {
+      mockUseTrack.mockImplementation(() => ({
+        kind: 'video',
+        name: 'camera',
+        attach: jest.fn(),
+        detach: jest.fn(),
+        setPriority: jest.fn(),
+      }));
+      const wrapper = render(
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+        </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
-      expect(wrapper.find({ isLocal: true }).length).toBe(1);
+      expect(wrapper.container.querySelector('video')?.style.transform).toBe('rotateY(180deg)');
     });
   });
   describe('when track.kind is "audio"', () => {
     it('should render an AudioTrack', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'audio', name: 'mic' }));
-      const wrapper = shallow(
-        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+      mockUseTrack.mockImplementation(() => ({
+        kind: 'audio',
+        name: 'mic',
+        attach: jest.fn(),
+        detach: jest.fn(),
+        setPriority: jest.fn(),
+      }));
+      const wrapper = render(
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+        </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
-      expect(wrapper.find('AudioTrack').length).toBe(1);
+      expect(wrapper.container.querySelectorAll('audio').length).toBe(1);
     });
 
     it('should render null when disableAudio is true', () => {
-      mockUseTrack.mockImplementation(() => ({ kind: 'audio', name: 'mic' }));
-      const wrapper = shallow(
-        <Publication
-          isLocal
-          publication={'mockPublication' as any}
-          participant={'mockParticipant' as any}
-          disableAudio={true}
-        />
+      mockUseTrack.mockImplementation(() => ({
+        kind: 'audio',
+        name: 'mic',
+        attach: jest.fn(),
+        detach: jest.fn(),
+        setPriority: jest.fn(),
+      }));
+      const wrapper = render(
+        <Provider store={store}>
+          <Publication
+            isLocal
+            publication={'mockPublication' as any}
+            participant={'mockParticipant' as any}
+            disableAudio={true}
+          />
+        </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
-      expect(wrapper.find('AudioTrack').length).toBe(0);
+      expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
     });
   });
 
   it('should render null when there is no track', () => {
     mockUseTrack.mockImplementation(() => null);
-    const wrapper = shallow(
-      <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+    const wrapper = render(
+      <Provider store={store}>
+        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+      </Provider>
     );
     expect(useTrack).toHaveBeenCalledWith('mockPublication');
-    expect(wrapper.find('*').length).toBe(0);
+    expect(wrapper.container.querySelectorAll('*').length).toBe(0);
   });
 });

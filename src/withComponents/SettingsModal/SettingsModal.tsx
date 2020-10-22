@@ -1,50 +1,59 @@
-import React, { MouseEvent, ReactNode, CSSProperties, useState, useEffect, useRef } from 'react';
+import React, { MouseEvent, ReactNode, CSSProperties, useState, useEffect, useRef, useCallback } from 'react';
 import clsx from 'clsx';
-import Cookie from 'js-cookie';
-
 import 'emoji-mart/css/emoji-mart.css';
-import { Picker, Emoji } from 'emoji-mart';
-import { LocalParticipant, RemoteParticipant } from 'twilio-video';
-
+import { Picker, Emoji, EmojiData } from 'emoji-mart';
 import { ReactComponent as EmojiGlyph } from '../../images/glyphs/emoji.svg';
-
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
-import { EmojiData } from '../ParticipantMetaProvider/participantMetaReducer';
-
 import { WithModal } from '../WithModal/WithModal';
-import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
-import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
 import LocalVideoPreview from '../LocalVideoPreview';
 import { Avatar } from '../Avatar/Avatar';
 import { VideoToggle } from '../VideoToggle/VideoToggle';
 import { AudioToggle } from '../AudioToggle/AudioToggle';
-import { useAVSourcesContext } from '../AVSourcesProvider/useAVSourcesContext';
 import './SettingsModal.css';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
+import { actions, selectors } from '../../features/room/roomSlice';
+import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useSelector } from 'react-redux';
+import { MicSelect } from '../../features/preferences/MicSelect';
+import { CameraSelect } from '../../features/preferences/CameraSelect';
 
 interface SettingsModalProps {
   isSettingsModalOpen: boolean;
   closeSettingsModal: (e: MouseEvent) => void;
   children?: ReactNode;
-  updateEmoji: (emoji: EmojiData) => void;
-  participant: LocalParticipant | RemoteParticipant;
-  emoji?: EmojiData;
 }
 
 const emojiMartStyles: CSSProperties = {
   position: 'absolute',
   top: '12px',
   right: '10px',
+  zIndex: 100,
 };
 
 const SettingsModal = (props: SettingsModalProps) => {
-  const { isSettingsModalOpen, closeSettingsModal, children, updateEmoji, participant, emoji } = props;
+  const { isSettingsModalOpen, closeSettingsModal, children } = props;
   const [isVideoEnabled] = useLocalVideoToggle();
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
-  const { updateActiveCamera, updateActiveMic } = useParticipantMetaContext();
-  const { activeCameraLabel, activeMicLabel, avatar } = useParticipantMeta(participant);
 
-  const { cameras, mics } = useAVSourcesContext();
+  const localParticipant = useLocalParticipant();
+  const localParticipantId = localParticipant?.sid;
+
+  const avatar = useSelector(selectors.createPersonAvatarSelector(localParticipantId));
+  const emoji = useSelector(selectors.createEmojiSelector(localParticipant.sid));
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+  const updateEmoji = useCallback(
+    (newEmoji: EmojiData | string | null) => {
+      coordinatedDispatch(
+        actions.updatePersonEmoji({
+          id: localParticipant.sid,
+          emoji: newEmoji,
+        })
+      );
+    },
+    [coordinatedDispatch, localParticipant.sid]
+  );
 
   const ptAvatar = useAvatar(avatar);
 
@@ -68,8 +77,8 @@ const SettingsModal = (props: SettingsModalProps) => {
     };
   }, [emojiPickerRef, setIsEmojiPickerOpen, isEmojiPickerOpen]);
 
-  function handleEmojiSelect(emoji: any) {
-    updateEmoji(emoji);
+  function handleEmojiSelect(em: any) {
+    updateEmoji(em);
     setIsEmojiPickerOpen(false);
   }
 
@@ -77,22 +86,8 @@ const SettingsModal = (props: SettingsModalProps) => {
     updateEmoji(null);
   }
 
-  const updateCameraSelection = (cameraLabel: string) => {
-    // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
-    // by the user.
-    Cookie.set('vidPref', cameraLabel);
-    updateActiveCamera(cameraLabel);
-  };
-
-  const updateMicSelection = (micLabel: string) => {
-    // Set a cookie so that when devices change we can attempt to start the device that was last explicitly selected
-    // by the user.
-    Cookie.set('micPref', micLabel);
-    updateActiveMic(micLabel);
-  };
-
   return (
-    <div onClick={e => e.stopPropagation()}>
+    <div onClick={(e) => e.stopPropagation()}>
       <WithModal isOpen={isSettingsModalOpen} onCloseHandler={closeSettingsModal} title="Settings">
         <div>
           <div className="u-flex u-sm-flexCol">
@@ -148,37 +143,13 @@ const SettingsModal = (props: SettingsModalProps) => {
               <div className="SettingsModal-grid-colA">Microphone</div>
               <div className="SettingsModal-grid-colB">
                 <div className="SettingsModal-toggle">
-                  <select
-                    className="SettingsModal-select u-width100Percent"
-                    onChange={opt => updateMicSelection(opt.target.value)}
-                    value={activeMicLabel || 'default'}
-                  >
-                    {mics.map(mic => {
-                      return (
-                        <option key={mic.deviceId} value={mic.label}>
-                          {mic.label}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <MicSelect />
                 </div>
               </div>
               <div className="SettingsModal-grid-colA">Camera</div>
               <div className="SettingsModal-grid-colB">
                 <div className="SettingsModal-toggle">
-                  <select
-                    className="SettingsModal-select u-width100Percent"
-                    onChange={opt => updateCameraSelection(opt.target.value)}
-                    value={activeCameraLabel || 'default'}
-                  >
-                    {cameras.map(camera => {
-                      return (
-                        <option key={camera.deviceId} value={camera.label}>
-                          {camera.label}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <CameraSelect />
                 </div>
               </div>
             </div>

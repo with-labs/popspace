@@ -11,13 +11,13 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 import { DashboardItem } from './DashboardItem/DashboardItem';
 import { RoomSummary } from './RoomSummary/RoomSummary';
 import { Header } from '../../withComponents/Header/Header';
-import { RoomInfo } from '../../types';
+import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo, UserInfo } from '../../types';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
 import { Button } from '@material-ui/core';
 import { WithModal } from '../../withComponents/WithModal/WithModal';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Dashboard.module.css';
 
@@ -30,6 +30,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const { t } = useTranslation();
 
   // run this on mount
   useEffect(() => {
@@ -72,28 +73,26 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           'u-height100Percent u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter'
         )}
       >
-        <div className="u-fontP1">
-          You will soon have the ability to create new rooms, rename rooms, and delete rooms.
-        </div>
+        <div className="u-fontP1">{t('pages.dashboard.feedbackItemBodyText')}</div>
         <div className={styles.feedbackLink}>
           <Link href={Links.FEEDBACK} target="_blank" rel="noopener noreferrer">
-            Give us feedback
+            {t('pages.dashboard.feedbackItemLink')}
           </Link>
         </div>
       </div>
     </DashboardItem>
   );
 
-  const onRoomSummaryError = (errorMsg: string) => {
-    setErrorMsg(errorMsg);
+  const onRoomSummaryError = (msg: string) => {
+    setErrorMsg(msg);
   };
 
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
-    <main className={clsx(styles.root, 'u-height100Percent')}>
+    <main className={styles.root}>
       {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter  u-height100Percent">
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
           <CircularProgress />
         </div>
       ) : (
@@ -101,7 +100,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
             <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
             <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
-              <div className={clsx(styles.text, 'u-fontH1')}>Your rooms</div>
+              <div className={clsx(styles.text, 'u-fontH1')}>{t('pages.dashboard.roomsTitle')}</div>
               <div className={clsx('u-width100Percent')}>
                 <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
                   {[...rooms.owned, ...rooms.member].map((memberRoom) => {
@@ -124,11 +123,11 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
       )}
       <WithModal isOpen={!!errorMsg}>
         <div className="u-flex u-flexCol">
-          <h1 className="u-fontH1">A sidenote</h1>
+          <h1 className="u-fontH1">{t('error.noteError.title')}</h1>
           <p className="u-fontP1">{errorMsg}</p>
         </div>
         <div className="u-flexExpandTop">
-          <Button onClick={() => setErrorMsg('')}>Got it</Button>
+          <Button onClick={() => setErrorMsg('')}>{t('error.noteError.btnText')}</Button>
         </div>
       </WithModal>
     </main>

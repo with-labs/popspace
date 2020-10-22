@@ -1,19 +1,20 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { Participant } from 'twilio-video';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { useParticipantMeta } from '../useParticipantMeta/useParticipantMeta';
-import { LocationTuple } from '../../types';
+import { selectors } from '../../features/room/roomSlice';
+import { useLocalParticipant } from '../useLocalParticipant/useLocalParticipant';
+
+const UNKNOWN_POSITION = { x: 0, y: 0 };
 
 /*
  * Compare the location of a given remote participant against the local participant
  * Returns distance
  */
 export function useParticipantLocationDelta(participant: Participant) {
-  const {
-    room: { localParticipant },
-  } = useVideoContext();
-  const [xRp, yRp]: LocationTuple = useParticipantMeta(participant).location || [0, 0];
-  const [xLp, yLp]: LocationTuple = useParticipantMeta(localParticipant).location || [0, 0];
+  const localParticipant = useLocalParticipant();
+
+  const { x: xLp, y: yLp } = useSelector(selectors.createPositionSelector(localParticipant.sid)) || UNKNOWN_POSITION;
+  const { x: xRp, y: yRp } = useSelector(selectors.createPositionSelector(participant.sid)) || UNKNOWN_POSITION;
 
   const distanceData = useMemo(() => {
     const xDelta: number = Math.abs(xLp - xRp);

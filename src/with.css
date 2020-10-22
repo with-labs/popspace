@@ -18,9 +18,8 @@ html {
 
 html,
 body,
-#root,
-#root > div {
-  height: 100%;
+#root {
+  min-height: 100vh;
 }
 
 /* scrollbar width */

@@ -71,7 +71,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
   return createMuiTheme({
     breakpoints: {
       values: {
-        sm: 0,
+        sm: 440,
         md: 640,
         lg: 960,
       },
@@ -182,9 +182,9 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           marginBottom: spacing(1),
         },
         outlined: {
-          transform: 'none',
+          transform: 'translate3d(0,0,0)',
           '&$shrink': {
-            transform: 'none',
+            transform: 'translate3d(0,0,0)',
           },
         },
       },
@@ -192,6 +192,13 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         root: {
           '&$focused': {
             color: brandPalette.turquoise.dark,
+          },
+        },
+      },
+      MuiFormHelperText: {
+        root: {
+          '&$error': {
+            fontWeight: 'bold',
           },
         },
       },
@@ -244,6 +251,12 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           paddingBottom: spacing(1),
         },
       },
+      MuiPaper: {
+        root: {},
+        rounded: {
+          borderRadius: 14,
+        },
+      },
       MuiLink: {
         root: {
           fontWeight: 'bold',
@@ -274,14 +287,35 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           },
         },
       },
+      MuiSlider: {
+        rail: {
+          backgroundColor: palette.grey[500],
+          opacity: 1,
+        },
+        thumb: {},
+      },
+      MuiTableBody: {
+        root: {
+          '&> tr:nth-child(odd)': {
+            backgroundColor: `${brandPalette.sand.main}`,
+          },
+        },
+      },
     },
   });
 };
 
+export enum ThemeName {
+  Mandarin = 'mandarin',
+  Cherry = 'cherry',
+  Turquoise = 'turquoise',
+  Lavender = 'lavender',
+}
+
 // kind of arbitrary color combos below...
 export const mandarin = createPaletteTheme({
   primary: brandPalette.mandarin,
-  secondary: brandPalette.lavender,
+  secondary: brandPalette.turquoise,
   error: {
     main: brandPalette.cherry.dark,
   },
@@ -291,7 +325,7 @@ export const cherry = createPaletteTheme({
   primary: brandPalette.cherry,
   secondary: brandPalette.lavender,
   error: {
-    main: brandPalette.mandarin.dark,
+    main: brandPalette.cherry.dark,
   },
 });
 

@@ -8,6 +8,7 @@
 
 .SettingsModal-grid-colA {
   justify-self: end;
+  text-align: right;
 }
 
 .SettingsModal-grid-colB {
@@ -17,6 +18,7 @@
 .SettingsModal-toggle {
   border-radius: 5px;
   padding: 5px;
+  max-width: 200px;
 }
 
 .SettingsModal-toggle-item {

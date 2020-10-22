@@ -6,26 +6,39 @@
  */
 
 import { LocalAudioTrack } from 'twilio-video';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import useIsTrackEnabled from '../useIsTrackEnabled/useIsTrackEnabled';
 import useVideoContext from '../useVideoContext/useVideoContext';
 
 export default function useLocalAudioToggle() {
-  const { localTracks, onError } = useVideoContext();
+  const {
+    localTracks,
+    getLocalAudioTrack,
+    room: { localParticipant },
+  } = useVideoContext();
   const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
   const isEnabled = useIsTrackEnabled(audioTrack);
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  const toggleAudioEnabled = useCallback(() => {
+  const toggleAudioEnabled = useCallback(async () => {
+    // prevent multiple concurrent publishes
+    if (isPublishing) return;
+
     if (audioTrack) {
       audioTrack.isEnabled ? audioTrack.disable() : audioTrack.enable();
     } else {
-      // Assume that if there is no audio track permission has been denied and report an error.
-      // VideoProvider automatically creates an audio track, so absense of a track means something bad happened or
-      // that permission for microphones was denied.
-      // @ts-ignore
-      onError(new Error('Please grant microphone access to enable audio.'));
+      setIsPublishing(true);
+      try {
+        const track = await getLocalAudioTrack();
+        localParticipant?.publishTrack(track, { priority: 'standard' });
+      } catch (err) {
+        // this error is already reported by the video context.
+        // TODO: move the error handling here?
+      } finally {
+        setIsPublishing(false);
+      }
     }
-  }, [audioTrack]);
+  }, [audioTrack, getLocalAudioTrack, localParticipant, isPublishing]);
 
   return [isEnabled, toggleAudioEnabled] as const;
 }

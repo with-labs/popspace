@@ -93,13 +93,16 @@ const claimsFromCsv = async (allowRegistered, path) => {
   console.log("Import complete")
 }
 
-const sendUnsent = async (allowRegistered) => {
-  const claims = await db.pg.massive.room_claims.find({ emailed_at: null })
+const sendClaims = async (claims, allowEmailed) => {
   console.log(`About to send ${claims.length} emails...`)
   const appUrl = APP_URL[process.env.NODE_ENV]
   for(const claim of claims) {
-    if(claim.emailed_at) {
+    if(claim.emailed_at && !allowEmailed) {
       console.log(`Already sent email to ${claim.email} at ${claim.emailed_at}; skipping`)
+      continue
+    }
+    if(claim.resolved_at) {
+      console.log(`Already claimed ${claim.room_id} for ${claim.email} at ${claim.resolved_at}; skipping`)
       continue
     }
     const url = await rooms.getClaimUrl(appUrl, claim)
@@ -108,29 +111,51 @@ const sendUnsent = async (allowRegistered) => {
     await lib.email.room.sendRoomClaimEmail(claim.email, nameEntry.name, url)
     console.log(`Sent to ${claim.email}`)
   }
-  console.log("Done")
+}
+
+const sendUnsent = async () => {
+  const claims = await db.pg.massive.room_claims.find({ emailed_at: null })
+  return await sendClaims(claims, false)
+}
+
+const sendUnclaimed = async () => {
+  const claims = await db.pg.massive.room_claims.find({ resolved_at: null })
+  return await sendClaims(claims, true)
 }
 
 const run = async () => {
   const optionDefinitions = [
     { name: 'allow-registered', alias: "r", type: Boolean},
-    { name: 'email-claims-from-queue', alias: "q", type: Boolean},
+    { name: 'mode', alias: "m", type: String},
   ]
   const options = commandLineArgs(optionDefinitions)
-
   const allowRegistered = options['allow-registered'] || ALLOW_REGISTERED_DEFAULT
+  const mode  = options['mode']
+
   try {
     await lib.init()
     db.pg.silenceLogs()
-    if(options['email-claims-from-queue']) {
-      await sendUnsent(allowRegistered)
-    } else {
-      // await claimsFromCsv(allowRegistered, `${__dirname}/one_time/data/subscribed_segment_export_5f6de9269c.csv`)
-      await claimsFromCsv(allowRegistered, `${__dirname}/one_time/data/test.csv`)
+    switch(mode) {
+      case 'from_csv':
+        const filename = `${__dirname}/one_time/data/test.csv`
+        //const filename = `${__dirname}/one_time/data/subscribed_segment_export_5f6de9269c.csv`
+        console.log(`Populating database claims from ${filename}`)
+        await claimsFromCsv(allowRegistered, filename)
+        break
+      case 'send_unsent':
+        await sendUnsent(allowRegistered)
+        break
+      case 'send_unclaimed':
+        await sendUnclaimed()
+        break
+      default:
+        console.log("Please provide --mode: 'from_csv', 'send_unsent', 'send_unclaimed'")
+        break
     }
   } catch(e) {
     console.log(e)
   } finally {
+    console.log("Done")
     process.exit(0)
   }
 }

@@ -10,15 +10,15 @@ export default function useSelectedParticipant() {
   return [selectedParticipant, setSelectedParticipant] as const;
 }
 
-type SelectedParticipantProviderProps = {
+interface ISelectedParticipantProviderProps {
   room: Room;
   children: React.ReactNode;
-};
+}
 
-export function SelectedParticipantProvider({ room, children }: SelectedParticipantProviderProps) {
+export function SelectedParticipantProvider({ room, children }: ISelectedParticipantProviderProps) {
   const [selectedParticipant, _setSelectedParticipant] = useState<Participant | null>(null);
   const setSelectedParticipant = (participant: Participant) =>
-    _setSelectedParticipant(prevParticipant => (prevParticipant === participant ? null : participant));
+    _setSelectedParticipant((prevParticipant) => (prevParticipant === participant ? null : participant));
 
   useEffect(() => {
     const onDisconnect = () => _setSelectedParticipant(null);

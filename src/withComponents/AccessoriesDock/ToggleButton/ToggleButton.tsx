@@ -29,7 +29,7 @@ export const ToggleButton: React.FC<IToggleButtonProps> = ({
   children,
 }) => {
   return (
-    <Tooltip title={hoverText} placement="bottom" PopperProps={{ disablePortal: true }}>
+    <Tooltip title={hoverText} placement="bottom">
       <div
         className={clsx(
           styles.toggleBtnContainer,

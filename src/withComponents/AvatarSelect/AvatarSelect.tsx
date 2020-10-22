@@ -24,7 +24,7 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
 
   useEffect(() => {
     selectedAvatar && onAvatarChange(selectedAvatar);
-  }, [selectedAvatar]);
+  }, [onAvatarChange, selectedAvatar]);
 
   const headerControls = (
     <div onClick={handleClose} className={clsx(styles.leaveControl, 'u-cursorPointer u-flex u-flexAlignItemsCenter')}>
@@ -42,7 +42,7 @@ export const AvatarSelect: React.FC<IAvatarSelectProps> = ({
               className={clsx(styles.avatarPreview, 'u-round')}
               style={{ backgroundColor: selectedAvatar.backgroundColor }}
             >
-              <Avatar name={selectedAvatar.name} />
+              <Avatar name={selectedAvatar.name} className="u-width100Percent u-height100Percent u-positionRelative" />
             </div>
           ) : null}
         </div>

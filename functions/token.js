@@ -74,7 +74,6 @@ const ROOM_WHITELIST_PASSCODES = {
   scrumvc: 'scrum2020',
   creativelounge: '430266',
   mobelux: '852112',
-  saamyverse: '669737',
   farmstead: '141547',
   cryptocastle: '830056',
   thelibrary: '932191',
@@ -268,7 +267,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `The room_name submitted is incorrect.`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.UNKNOWN_ROOM }
     )
   }
 
@@ -277,7 +276,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Incorrect passcode`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.INCORRECT_ROOM_PASSCODE }
     )
   }
 
@@ -286,7 +285,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Missing user_identity`,
-      { errorCode: "PLACEHOLDER" }
+      { errorCode: lib.util.http.ERRORS.rooms.INVALID_USER_IDENTITY }
     )
   }
 

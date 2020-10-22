@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
-import { TwilioError } from 'twilio-video';
 import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
 import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth';
 import { User } from 'firebase';
 
 export interface StateContextType {
-  error: TwilioError | null;
-  setError(error: TwilioError | null): void;
+  error: Error | null;
+  setError(error: Error | null): void;
   getToken(name: string, room: string, passcode?: string): Promise<string>;
   user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
   signIn?(passcode?: string): Promise<void>;
@@ -27,7 +26,7 @@ export const StateContext = createContext<StateContextType>(null!);
   is ok to call hooks inside if() statements.
 */
 export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
-  const [error, setError] = useState<TwilioError | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [isFetching, setIsFetching] = useState(false);
 
   let contextValue = {
@@ -54,7 +53,7 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
         const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
         const params = new window.URLSearchParams({ identity, roomName });
 
-        return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
+        return fetch(`${endpoint}?${params}`, { headers }).then((res) => res.text());
       },
     };
   }
@@ -63,11 +62,11 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
     setIsFetching(true);
     return contextValue
       .getToken(name, room, passcode)
-      .then(res => {
+      .then((res) => {
         setIsFetching(false);
         return res;
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err);
         setIsFetching(false);
         return Promise.reject(err);

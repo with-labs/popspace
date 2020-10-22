@@ -5,7 +5,7 @@
  */
 
 import React, { useRef, useEffect } from 'react';
-import { IVideoTrack } from '../../types';
+import { IVideoTrack } from '../../types/twilio';
 import { styled } from '@material-ui/core/styles';
 import { Track } from 'twilio-video';
 

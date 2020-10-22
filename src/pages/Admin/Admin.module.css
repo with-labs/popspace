@@ -1,5 +1,6 @@
 .root {
   background-color: var(--color-sand);
+  min-height: 100vh;
 }
 
 .button {
@@ -10,7 +11,7 @@
   padding: 0 16px;
 }
 
-.table {
+.tableContainer {
   margin-top: 16px;
 }
 

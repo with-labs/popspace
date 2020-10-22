@@ -5,11 +5,13 @@ const Accounts = require("./accounts")
 const ErrorCodes = require("./error_codes")
 const Rooms = require("./rooms")
 const Profile = require("./profile")
+const Magic = require("./magic")
 
 const init = async () => {
   const postgres = await pg.init()
   db.rooms = new Rooms()
   db.accounts = new Accounts()
+  db.magic = new Magic()
   return postgres
 }
 

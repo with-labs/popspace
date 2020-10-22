@@ -8,7 +8,7 @@ import { CircularProgress } from '@material-ui/core';
 import useQuery from '../../withHooks/useQuery/useQuery';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types';
+import { ErrorInfo } from '../../types/api';
 
 interface ILoginWithEmailProps {}
 

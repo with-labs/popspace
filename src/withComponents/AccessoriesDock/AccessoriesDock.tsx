@@ -1,31 +1,15 @@
 import React, { useState, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 import Modal from 'react-modal';
-import { v4 as uuidv4 } from 'uuid';
-
-import useRoomState from '../../hooks/useRoomState/useRoomState';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { useWidgetContext } from '../../withHooks/useWidgetContext/useWidgetContext';
-import { WidgetTypes } from '../WidgetProvider/widgetTypes';
-import { useRoomParties } from '../../withHooks/useRoomParties/useRoomParties';
-import * as widgetOffsets from '../../constants/widgetInitialOffsets';
 import { BackgroundPicker } from '../BackgroundPicker';
-import { useRoomMetaContext } from '../../withHooks/useRoomMetaContext/useRoomMetaContext';
-import { useRoomMetaContextBackground } from '../../withHooks/useRoomMetaContextBackground/useRoomMetaContextBackground';
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 import useLocalAudioToggle from '../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 import useScreenShareToggle from '../../hooks/useScreenShareToggle/useScreenShareToggle';
-import { useParticipantMetaContext } from '../ParticipantMetaProvider/useParticipantMetaContext';
-import { useParticipantMeta } from '../../withHooks/useParticipantMeta/useParticipantMeta';
 import usePublications from '../../hooks/usePublications/usePublications';
-import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
-
 import SettingsModal from '../SettingsModal/SettingsModal';
 import { DockItem } from './DockItem/DockItem';
 import { ToggleButton } from './ToggleButton/ToggleButton';
-
 import styles from './AccessoriesDock.module.css';
-
 import inviteIcon from './images/tray_invite.svg';
 import linkIcon from './images/tray_link.svg';
 import stickyIcon from './images/tray_sticky.svg';
@@ -38,33 +22,75 @@ import { ReactComponent as CameraOffIcon } from './images/camera_OFF.svg';
 import { ReactComponent as CameraOnIcon } from './images/camera_ON.svg';
 import { ReactComponent as SharingOffIcon } from './images/sharing_OFF.svg';
 import { ReactComponent as SharingOnIcon } from './images/sharing_ON.svg';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
+import * as roomSlice from '../../features/room/roomSlice';
+import { useSelector } from 'react-redux';
+import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useRoomViewport } from '../../features/room/RoomViewport';
+import useParticipantDisplayIdentity from '../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
+import { addVectors } from '../../utils/math';
+import { WidgetState, WidgetType } from '../../types/room';
+import { Bounds } from '../../types/spatials';
 
 interface IAccessoriesDockProps {
   classNames?: string;
 }
 
-export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames }) => {
-  const roomState = useRoomState();
-  const [windowWidth, windowHeight] = useWindowSize();
-  const { widgets } = useRoomParties();
-  const { addWidget } = useWidgetContext();
-  const { properties } = useRoomMetaContext();
-  const image: string = useRoomMetaContextBackground(properties);
-  const { updateEmoji } = useParticipantMetaContext();
+export const AccessoriesDock = React.memo<IAccessoriesDockProps>(({ classNames }) => {
+  const localParticipant = useLocalParticipant();
+  // TODO: this won't be needed once we have user persistence
+  const localParticipantName = useParticipantDisplayIdentity(localParticipant);
+
+  // room state details which affect the options in the dock
+  const hasWhiteboard = useSelector(roomSlice.selectors.selectHasWhiteboard);
+
+  const backgroundUrl = useBackgroundUrl();
+
+  const { toWorldCoordinate } = useRoomViewport();
+
+  const coordinatedDispatch = useCoordinatedDispatch();
+  // adds a widget to the room, always with the local participant as the owner and
+  // centered on screen.
+  const addWidget = useCallback(
+    (widget: Omit<WidgetState, 'kind' | 'id' | 'participantSid'>, size?: Bounds) => {
+      // get the position in the world which aligns with the center of the
+      // user's viewport area
+      // add a little fuzziness so multiple widgets of the same type don't stack
+      const position = addVectors(
+        toWorldCoordinate({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+        }),
+        {
+          x: Math.random() * 50 - 25,
+          y: Math.random() * 50 - 25,
+        }
+      );
+
+      coordinatedDispatch(
+        roomSlice.actions.addWidget({
+          position,
+          size,
+          widget: {
+            ...widget,
+            kind: 'widget',
+            participantSid: localParticipant.sid,
+          },
+        })
+      );
+    },
+    [coordinatedDispatch, localParticipant.sid, toWorldCoordinate]
+  );
+
   const copyInput = useRef<HTMLInputElement>(null);
 
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
   const [, toggleIsSharing] = useScreenShareToggle();
 
-  const {
-    room: { localParticipant },
-  } = useVideoContext();
-
-  const meta = useParticipantMeta(localParticipant);
   const publications = usePublications(localParticipant);
 
-  const { emoji } = meta;
   const [isBgPickerOpen, setIsBgPickerOpen] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
@@ -87,39 +113,35 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
     setIsBgPickerOpen(true);
   };
 
-  const calcWidgetInitialLocation = useCallback(
-    (initialOffset) => {
-      return [(windowWidth / 2 - initialOffset) / windowWidth, (windowHeight / 2 - initialOffset) / windowHeight];
-    },
-    [windowWidth, windowHeight]
-  );
-
   // on click, add a link widget to the room
   const onLinkWidgetClick = () => {
-    addWidget(WidgetTypes.Link, localParticipant.sid, {
-      url: '',
-      title: '',
-      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_LINK_INIT_OFFSET),
+    addWidget({
+      type: WidgetType.Link,
+      isDraft: true,
+      data: {
+        url: '',
+        title: '',
+      },
     });
   };
 
   const onWhiteboardWidgetClick = () => {
     // Only add a whiteboard if there are no other whiteboards in the room
-    const isWhiteboardAlreadyInRoom = widgets.some((el) => el.type === WidgetTypes.Whiteboard);
-    if (!isWhiteboardAlreadyInRoom) {
-      // whiteboard size if based on the size of the window, so we have to do some calculation
-      // to ge the initial offset
-      const initialOffset = Math.round(window.innerWidth / (100 / widgetOffsets.WIDGET_WHITEBOARD_INIT_OFFSET)) / 2;
-      addWidget(WidgetTypes.Whiteboard, localParticipant.sid, {
-        whiteboardId: uuidv4(),
-        isPublished: true,
-        location: calcWidgetInitialLocation(initialOffset),
+    if (!hasWhiteboard) {
+      addWidget({
+        type: WidgetType.Whiteboard,
+        isDraft: false,
+        data: {
+          whiteboardState: {
+            lines: [],
+          },
+        },
       });
     } else {
       // show an error message or something
       // TODO: need to figure out how to display it
       setWhiteboardText({
-        descText: 'Can only have one whiteboard at a time',
+        descText: 'You can only have one whiteboard at a time',
       });
       setTimeout(() => {
         setWhiteboardText(defaultWhiteboardText);
@@ -129,19 +151,27 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
 
   // on click, add sticky note widget to the room
   const onStickNoteWidgetClick = () => {
-    addWidget(WidgetTypes.StickyNote, localParticipant.sid, {
-      isPublished: false,
-      text: '',
-      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_STICKY_NOTE_INIT_OFFSET),
+    addWidget({
+      type: WidgetType.StickyNote,
+      isDraft: true,
+      data: {
+        text: '',
+        author: localParticipantName || 'Anonymous',
+      },
     });
   };
 
   // on click, add a youtube video player to room
   const onVideoPlayerWidgetClick = () => {
-    addWidget(WidgetTypes.YouTube, localParticipant.sid, {
-      isPublished: false,
-      videoId: '',
-      location: calcWidgetInitialLocation(widgetOffsets.WIDGET_YOUTUBE_INIT_OFFSET),
+    addWidget({
+      type: WidgetType.YouTube,
+      isDraft: true,
+      data: {
+        videoId: '',
+        // start the video immediately on create
+        isPlaying: true,
+        playStartedTimestampUTC: new Date().toUTCString(),
+      },
     });
   };
 
@@ -162,7 +192,7 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
           classNames={styles.buttonMarginRight}
         />
         <DockItem
-          backgoundImage={image}
+          backgroundImage={`url(${backgroundUrl})`}
           imgAltText="Background Picker"
           onClickHandler={onChangeBackgroundClick}
           hoverText="Change the rooms background."
@@ -254,12 +284,16 @@ export const AccessoriesDock: React.FC<IAccessoriesDockProps> = ({ classNames })
         <SettingsModal
           isSettingsModalOpen={isSettingsModalOpen}
           closeSettingsModal={() => setIsSettingsModalOpen(false)}
-          updateEmoji={updateEmoji}
-          emoji={emoji}
-          participant={localParticipant}
         />
       </div>
-      <input ref={copyInput} type="text" value={document.location.href} readOnly className={styles.copyInput} />
+      <input
+        ref={copyInput}
+        type="text"
+        value={document.location.href}
+        tabIndex={-1}
+        readOnly
+        className={styles.copyInput}
+      />
     </>
   );
-};
+});

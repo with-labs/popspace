@@ -90,9 +90,9 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   return error ? (
     <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
   ) : (
-    <main className={clsx(styles.root, 'u-height100Percent')}>
+    <main className={styles.root}>
       {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter  u-height100Percent">
+        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
           <CircularProgress />
         </div>
       ) : (

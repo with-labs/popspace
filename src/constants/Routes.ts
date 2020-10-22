@@ -9,4 +9,5 @@ export enum Routes {
   INVITE = '/invite',
   COMPLETE_SIGNUP = '/complete_signup',
   LOGIN_IN_WITH_EMAIL = '/loginwithemail',
+  UNSUBSCRIBE = '/unsubscribe',
 }

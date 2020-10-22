@@ -26,6 +26,8 @@ import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
+import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
+
 import './i18n';
 
 import './with.css';
@@ -139,6 +141,10 @@ ReactDOM.render(
 
               <Route path={Routes.ADMIN}>
                 <Admin />
+              </Route>
+
+              <Route path={Routes.UNSUBSCRIBE}>
+                <Unsubscribe />
               </Route>
 
               <Route path="/:room_name">

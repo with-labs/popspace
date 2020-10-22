@@ -72,6 +72,11 @@ class Api {
     return await this.post('/admin_room_claims_data', { token });
   }
 
+  async unsubscribeFromEmail(opt: string, mlid: string) {
+    // TODO: fill this out
+    return true;
+  }
+
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

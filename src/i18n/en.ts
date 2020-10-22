@@ -101,6 +101,13 @@ export default {
         roomPasswordLabel: 'Room password',
         noVideo: 'No video',
       },
+      unsubscribe: {
+        quoteText: '',
+        title: 'You’ve been unsubscribed',
+        body: 'If you have a moment, please let us know why you unsubscribed',
+        button: 'Tell us why',
+        imgAltText: 'Sad Blobby',
+      },
     },
     widgets: {
       link: {
@@ -131,6 +138,7 @@ export default {
         provideValidEmail: 'Please provide a valid email.',
         provideValidUrl: 'Please provide a valid URL.',
         provideValidYoutubeUrl: 'Please provide a valid YouTube URL',
+        malformedUrl: 'Malformed URL. Please check to make sure URL has been properly copied from the email.',
         mobileNotOptimized:
           "With is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         chromeOnIosRestrictions:

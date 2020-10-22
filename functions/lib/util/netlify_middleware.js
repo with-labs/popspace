@@ -17,7 +17,6 @@ const parseParams = async (event, context) => {
 }
 
 const getUser = async (event, context) => {
-  console.log(context.params)
   if(!context.params.token) {
     return false
   }

@@ -72,9 +72,8 @@ class Api {
     return await this.post('/admin_room_claims_data', { token });
   }
 
-  async unsubscribeFromEmail(opt: string, mlid: string) {
-    // TODO: fill this out
-    return true;
+  async unsubscribeFromEmail(otp: string, mlid: string) {
+    return await this.post('/unsubscribe', { otp, mlid });
   }
 
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {

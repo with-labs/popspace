@@ -4,7 +4,8 @@ module.exports = {
   otp: {
     INVALID_OTP: 1,
     EXPIRED_OTP: 2,
-    RESOLVED_OTP: 3
+    RESOLVED_OTP: 3,
+    INVALID_ACTION: "INVALID_ACTION"
   },
 
   room: {
@@ -20,6 +21,7 @@ module.exports = {
     ALREADY_REGISTERED: 1,
     // We prefer string error codes but thave not yet fully migrated towards them
     UNAUTHORIZED: "UNAUTHORIZED_USER",
-    ADMIN_ONLY_RESTRICTED: "ADMIN_ONLY_RESTRICTED"
+    ADMIN_ONLY_RESTRICTED: "ADMIN_ONLY_RESTRICTED",
+    NO_SUCH_USER: "NO_SUCH_USER"
   }
 }

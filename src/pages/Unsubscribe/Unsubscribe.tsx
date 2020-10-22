@@ -77,8 +77,12 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
       Api.unsubscribeFromEmail(otp, mlid)
         .then((result: any) => {
           setIsLoading(false);
-          if (!result.succuess) {
-            // if we have an error, handle it. otherwise just show the page
+          if (!result.success) {
+            // TODO: we could be handling INVALID/EXPIRED/RESOLVED errors separately
+            setError({
+              errorType: ErrorTypes.LINK_EXPIRED,
+              error: { message: '' },
+            });
           }
         })
         .catch((e: any) => {

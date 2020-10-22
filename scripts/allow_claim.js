@@ -4,6 +4,12 @@ const lib = require("../functions/lib/index.js")
 
 const rooms = new db.Rooms()
 
+const APP_URL = {
+  "development": "http://localhost:8888",
+  "staging": "https://dev.app.with.so",
+  "production": "https://app.with.so"
+}
+
 
 const createClaim = async (email, roomName, allowRegistered, createNewRooms, sendEmail=false) => {
   if(!email || !roomName) {
@@ -26,7 +32,7 @@ const createClaim = async (email, roomName, allowRegistered, createNewRooms, sen
 
   console.log("claim created", claim.id, email, roomName)
 
-  const appUrl = "http://localhost:8888"
+  const appUrl = APP_URL[process.env.NODE_ENV]
   const url = await rooms.getClaimUrl(appUrl, claim)
   console.log("Claim URL:", url)
   if(sendEmail) {

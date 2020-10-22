@@ -15,7 +15,10 @@ class Ses {
   }
 
   // tags format: [{Name: "", Value: ""}]
-  async sendMail(from, to, subject, html, plaintextFallback, tags) {
+  async sendMail(from, to, subject, html, plaintextFallback, tags, user) {
+    if(user) {
+      to = `${user.display_name} <${user.email}>`
+    }
     return new Promise((resolve, reject) => {
       this.transporter.sendMail({
         from: `"The With team" <${from}>`,

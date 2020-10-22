@@ -19,7 +19,7 @@ Used to test emails in an actual inbx after they've been created.
 */
 const sendEmail = async (to, emailName, args) => {
   const appUrl = APP_URL[process.env.NODE_ENV]
-  await lib.email.marketing.sendMarketingTest(to, appUrl)
+  await lib.email.marketing[`sendEmail${emailName}`](to, appUrl, args)
 }
 
 const run = async () => {

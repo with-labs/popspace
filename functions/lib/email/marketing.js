@@ -51,7 +51,7 @@ module.exports = {
         Your room just got much bigger! Rooms now extend beyond the edges of your browser window. This gives you more space to conduct a stand up, host a workshop, grab a colleague for a quick chat, or just find a quiet spot where you can focus on your work.
       </p>
       <p style="font-size:16px;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;color:#333;padding:0px 0px 20px 0px;margin:0px;background-color:clear">
-        You can zoom in and out with the computer&#x27;s mouse or trackpad, use the +/- keys, or you can use the zoom controls in the lower right hand corner of your screen.
+        You can zoom in and out with your mouse or trackpad, use the +/- keys, or you can use the zoom controls in the lower right hand corner of your screen.
       </p>
       <p style="font-size:16px;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;color:#333;padding:0px 0px 20px 0px;margin:0px;background-color:clear">
         You can pan around the room by clicking and dragging on the wallpaper or by using the arrow buttons on your keyboard. We&#x27;ve added a physics model to moving and zooming so everything feels natural and smooth. Give it a whirl.
@@ -62,7 +62,7 @@ module.exports = {
         </a>
       </div>
       <div style="padding:0px 0px 20px 0px;background:clear;margin:0px auto;text-align:left;background-color:clear">
-        <h2 style="font-size:18px;font-weight:700;color:#333;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;margin:0px;padding:0px">Youtube spatial audio</h2>
+        <h2 style="font-size:18px;font-weight:700;color:#333;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;margin:0px;padding:0px">YouTube spatial audio</h2>
       </div>
       <p style="font-size:16px;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;color:#333;padding:0px 0px 20px 0px;margin:0px;background-color:clear">
         You now control the volume of YouTube videos by moving closer or further away from the video. You can also mute audio&#8212;for yourself&#8212;with the new mute control in the video&#x27;s title bar.
@@ -87,7 +87,7 @@ module.exports = {
         <h2 style="font-size:18px;font-weight:700;color:#333;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;margin:0px;padding:0px">User accounts</h2>
       </div>
       <p style="font-size:16px;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;color:#333;padding:0px 0px 20px 0px;margin:0px;background-color:clear">
-        We recently introduced user accounts. Thank you to everyone who completed the migration process. If you haven&#x27;t updated your room yet, please check out the instructions we sent in an earlier email.
+        We recently introduced user accounts. Thank you to everyone who completed the migration process.
       </p>
       <p style="font-size:16px;font-family:&#x27;Helvetica Neue&#x27;, Helvetica, Arial, sans-serif;line-height:1.6;color:#333;padding:0px 0px 20px 0px;margin:0px;background-color:clear">
         We will soon allow you to invite other people via email. For now, your guests can still access your room with the same password as before.
@@ -125,17 +125,17 @@ We've got some exciting new updates to With!
 
 The big room
 Your room just got much bigger! Rooms now extend beyond the edges of your browser window. This gives you more space to conduct a stand up, host a workshop, grab a colleague for a quick chat, or just find a quiet spot where you can focus on your work.
-You can zoom in and out with the computer's mouse or trackpad, use the +/- keys, or you can use the zoom controls in the lower right hand corner of your screen.
+You can zoom in and out with your mouse or trackpad, use the +/- keys, or you can use the zoom controls in the lower right hand corner of your screen.
 You can pan around the room by clicking and dragging on the wallpaper or by using the arrow buttons on your keyboard. We've added a physics model to moving and zooming so everything feels natural and smooth. Give it a whirl.
 
-Youtube spatial audio
+YouTube spatial audio
 You now control the volume of YouTube videos by moving closer or further away from the video. You can also mute audio—for yourself—with the new mute control in the video's title bar.
 
 Updated accessories
 You can resize YouTube using the resize handle in the lower right corner, and you can save your whiteboard work with the save icon in our newly rewritten whiteboard accessory.
 
 User accounts
-We recently introduced user accounts. Thank you to everyone who completed the migration process. If you haven't updated your room yet, please check out the instructions we sent in an earlier email.
+We recently introduced user accounts. Thank you to everyone who completed the migration process.
 We will soon allow you to invite other people via email. For now, your guests can still access your room with the same password as before.
 
 -------------------------------
@@ -153,7 +153,7 @@ With Labs, Inc.
 San Francisco, CA 94133
 -----------------------
 Unsubscribe at ${unsubscribeUrl}
-    `
+`
 
     return await lib.email.ses.sendMail(SENDER, user.email, subject, html, plaintextFallback, tags, user)
   }

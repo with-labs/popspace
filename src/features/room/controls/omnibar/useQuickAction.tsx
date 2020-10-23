@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { useAddAccessory } from './useAddAccessory';
 import { WidgetType, WidgetData } from '../../../../types/room';
+import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 export enum QuickActionKind {
   AddAccessory,
@@ -27,7 +30,11 @@ export type QuickAction = AddAccessoryQuickAction;
  * determines which actions are available, as well as what
  * metadata will be associated with those actions.
  */
-function computeOptions(prompt: string): QuickAction[] {
+function useQuickActionOptions(prompt: string, t: TFunction): QuickAction[] {
+  // TODO: remove once we solve the username disappearing problem
+  // by persisting room state and membership
+  const userName = useParticipantDisplayIdentity();
+
   // TODO: other accessory types
   // For now we just have the ability to create a sticky note.
   const actions: QuickAction[] = [];
@@ -38,10 +45,10 @@ function computeOptions(prompt: string): QuickAction[] {
       label: prompt,
       kind: QuickActionKind.AddAccessory,
       accessoryType: WidgetType.StickyNote,
-      displayName: 'Add as Sticky Note',
+      displayName: t('widgets.stickyNote.quickActionTitle'),
       accessoryData: {
         text: prompt,
-        author: '', // this must be filled in later...
+        author: userName || '',
       },
     });
   }
@@ -54,12 +61,14 @@ function getOptionLabel(opt: QuickAction) {
 }
 
 export function useQuickAction() {
+  const { t } = useTranslation();
+
   const [inputValue, setInputValue] = React.useState('');
   const handleInputChange = React.useCallback((ev: any, value: string) => {
     setInputValue(value);
   }, []);
 
-  const options = computeOptions(inputValue);
+  const options = useQuickActionOptions(inputValue, t);
 
   const addAccessory = useAddAccessory();
 

@@ -3,32 +3,34 @@ import { ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
 import { useAddAccessory } from './useAddAccessory';
 import { AccessoryIcon } from '../../../../withComponents/icons/AccessoryIcon';
 import { WidgetType, WidgetData } from '../../../../types/room';
+import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useTranslation } from 'react-i18next';
 
-const names: Record<WidgetType, string> = {
-  [WidgetType.Link]: 'Link',
-  [WidgetType.StickyNote]: 'Sticky Note',
-  [WidgetType.Whiteboard]: 'Whiteboard',
-  [WidgetType.YouTube]: 'YouTube',
+const nameKeys: Record<WidgetType, string> = {
+  [WidgetType.Link]: 'widgets.link.name',
+  [WidgetType.StickyNote]: 'widgets.stickyNote.name',
+  [WidgetType.Whiteboard]: 'widgets.whiteboard.name',
+  [WidgetType.YouTube]: 'widgets.youtube.name',
 };
 
-const accessoryEmptyData: Record<WidgetType, WidgetData> = {
-  [WidgetType.Link]: {
-    title: 'Link',
+const accessoryEmptyData: Record<WidgetType, (...args: any[]) => WidgetData> = {
+  [WidgetType.Link]: () => ({
+    title: '',
     url: '',
-  },
-  [WidgetType.StickyNote]: {
+  }),
+  [WidgetType.StickyNote]: (authorName: string) => ({
     text: '',
-    author: '',
-  },
-  [WidgetType.Whiteboard]: {
+    author: authorName,
+  }),
+  [WidgetType.Whiteboard]: () => ({
     whiteboardState: {
       lines: [],
     },
-  },
-  [WidgetType.YouTube]: {
+  }),
+  [WidgetType.YouTube]: () => ({
     videoId: '',
     playStartedTimestampUTC: null,
-  },
+  }),
 };
 
 export interface IAddAccessoryMenuItemProps {
@@ -38,6 +40,12 @@ export interface IAddAccessoryMenuItemProps {
 
 export const AddAccessoryMenuItem = React.forwardRef<HTMLLIElement, IAddAccessoryMenuItemProps>(
   ({ accessoryType, onClick }, ref) => {
+    const { t } = useTranslation();
+
+    // TODO: remove when we solve the username disappearing problem using
+    // room state and membership persistence
+    const userName = useParticipantDisplayIdentity();
+
     const addWidget = useAddAccessory();
     const handleClick = React.useCallback(() => {
       onClick?.();
@@ -49,7 +57,7 @@ export const AddAccessoryMenuItem = React.forwardRef<HTMLLIElement, IAddAccessor
         // whiteboards publish immediately, they have no draft state.
         addWidget({
           type: accessoryType,
-          initialData: accessoryEmptyData[accessoryType],
+          initialData: accessoryEmptyData[accessoryType](userName),
           publishImmediately: accessoryType === WidgetType.Whiteboard,
           screenCoordinate: {
             x: 300,
@@ -57,14 +65,14 @@ export const AddAccessoryMenuItem = React.forwardRef<HTMLLIElement, IAddAccessor
           },
         });
       });
-    }, [accessoryType, addWidget, onClick]);
+    }, [accessoryType, addWidget, onClick, userName]);
 
     return (
       <MenuItem onClick={handleClick} ref={ref}>
         <ListItemIcon>
           <AccessoryIcon fontSize="default" type={accessoryType} />
         </ListItemIcon>
-        <ListItemText>{names[accessoryType] || ''}</ListItemText>{' '}
+        <ListItemText>{t(nameKeys[accessoryType] || 'widgets.unknown.name')}</ListItemText>{' '}
       </MenuItem>
     );
   }

@@ -111,6 +111,7 @@ export default {
     },
     widgets: {
       link: {
+        name: 'Link',
         addWidgetTitle: 'Add a Link',
         publishedTitle: 'Link',
         titleLabel: 'Title',
@@ -119,20 +120,27 @@ export default {
         errorInvalidUrl: 'Not a URL',
       },
       whiteboard: {
+        name: 'Whiteboard',
         title: 'Whiteboard',
         doubleTapEraserToClear: 'Double tap Eraser to clear',
       },
       youtube: {
+        name: 'YouTube',
         title: 'YouTube',
         urlLabel: 'YouTube Url',
         addBtn: 'Add a video',
       },
       stickyNote: {
+        name: 'Sticky Note',
         textPlaceholder: 'Note text',
         addBtn: 'Add note',
         addedBy: 'Added by {{author}}',
         addWidgetTitle: 'Add a Sticky Note',
         publishedTitle: 'Sticky Note',
+        quickActionTitle: 'Add a Sticky Note',
+      },
+      unknown: {
+        name: 'Accessory',
       },
     },
     error: {
@@ -173,6 +181,11 @@ export default {
       status: {
         placeholder: "What's your status?",
         emojiTitle: 'Pick an emoji',
+      },
+      omnibar: {
+        // TODO: update when we support more quick actions
+        placeholder: 'Add a Sticky Note',
+        label: 'Quick action bar',
       },
     },
   },

@@ -5,11 +5,9 @@ import { AddAccessoryMenu } from './AddAccessoryMenu';
 import { QuickAction } from './QuickAction';
 import { useQuickAction, QuickAction as QuickActionData } from './useQuickAction';
 import { QuickActionEmpty } from './QuickActionEmpty';
+import { useTranslation } from 'react-i18next';
 
 export interface IOmnibarProps {}
-
-// TODO: update this when we support more accessory types
-const PLACEHOLDER = 'Add a Sticky Note';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const Omnibar: React.FC<IOmnibarProps> = (props) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const { autocompleteProps } = useQuickAction();
 
@@ -57,10 +56,10 @@ export const Omnibar: React.FC<IOmnibarProps> = (props) => {
     <Autocomplete<QuickActionData>
       renderInput={(params) => (
         <TextField
-          placeholder={PLACEHOLDER}
+          placeholder={t('features.omnibar.placeholder')}
           aria-haspopup="true"
           aria-controls="quick-accessory-menu"
-          aria-label="Quick action bar"
+          aria-label={t('features.omnibar.label')}
           variant="filled"
           {...params}
           InputProps={{

@@ -41,7 +41,7 @@ export interface IRoomViewportProps {
    * but independent of the canvas transformation (i.e. floating UI content
    * that needs to be within the viewport context for certain information)
    */
-  uiContent: React.ReactNode;
+  uiControls: React.ReactNode;
 }
 
 const PINCH_GESTURE_DAMPING = 4000;
@@ -94,7 +94,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
   const { t } = useTranslation();
 
-  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiContent } = props;
+  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiControls: uiContent } = props;
 
   const domTarget = React.useRef<HTMLDivElement>(null);
 

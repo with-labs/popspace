@@ -7,11 +7,11 @@ import { Person } from './people/Person';
 import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
-import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
-import { AccessoriesDock } from '../../withComponents/AccessoriesDock/AccessoriesDock';
 import { ViewportControls } from './controls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
+import { RoomControls } from './controls/RoomControls';
+import { WallpaperModal } from './wallpaper/WallpaperModal';
 
 interface IRoomProps {}
 
@@ -19,8 +19,7 @@ export const Room: React.FC<IRoomProps> = () => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
   const participantIds = useSelector(selectors.selectPeopleIds);
-
-  const backgroundUrl = useBackgroundUrl();
+  const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
 
   useRoomPresence();
   useLocalVolumeDetection();
@@ -30,9 +29,9 @@ export const Room: React.FC<IRoomProps> = () => {
       <RoomViewport
         bounds={bounds}
         backgroundUrl={backgroundUrl}
-        uiContent={
+        uiControls={
           <>
-            <AccessoriesDock />
+            <RoomControls />
             <ViewportControls />
           </>
         }
@@ -47,6 +46,7 @@ export const Room: React.FC<IRoomProps> = () => {
         ))}
       </RoomViewport>
       <SharedScreenViewer />
+      <WallpaperModal />
     </>
   );
 };

@@ -6,6 +6,10 @@ import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
 import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
 import { generateShadows } from './shadows';
 
+// adds theme values for lab components
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type _aug from '@material-ui/lab/themeAugmentation';
+
 const silka = {
   fontFamily: 'Silka',
   src: `
@@ -14,6 +18,17 @@ const silka = {
     url("/fonts/silka-semibold.woff2") format("woff2"),
     url("/fonts/silka-semibold.woff") format("woff")
   `,
+};
+
+export const mainShadows = {
+  surface: `0px 45px 89px rgba(0, 0, 0, 0.0185187), 0px 14.27px 26.8309px rgba(0, 0, 0, 0.0225848), 0px 6.11599px 11.1442px rgba(0, 0, 0, 0.0264039), 0px 2.11191px 4.03063px rgba(0, 0, 0, 0.04)`,
+  popover: `0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729)`,
+};
+
+export const cornerRadii = {
+  surface: 14,
+  content: 6,
+  innermost: 2,
 };
 
 declare module '@material-ui/core/styles/createMuiTheme' {
@@ -64,7 +79,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
   // only used to extract some MUI theme tools that can be
   // used in the overrides below, such as computed color palettes and
   // font sizing utils
-  const { typography, palette, spacing } = createMuiTheme({
+  const { typography, palette, spacing, transitions } = createMuiTheme({
     palette: finalPalette,
   });
 
@@ -76,6 +91,7 @@ const createPaletteTheme = (colors: PaletteOptions) => {
         lg: 960,
       },
     },
+
     typography: {
       fontFamily: 'Silka',
     },
@@ -100,8 +116,11 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiOutlinedInput: {
         notched: false,
       },
+      MuiFilledInput: {
+        disableUnderline: true,
+      },
       MuiTextField: {
-        variant: 'outlined',
+        variant: 'filled',
         fullWidth: true,
       },
       MuiCheckbox: {
@@ -124,6 +143,17 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       MuiList: {
         // removes the MUI-style padding at the top and bottom of popover lists
         disablePadding: true,
+      },
+      MuiMenu: {
+        getContentAnchorEl: null,
+        anchorOrigin: {
+          horizontal: 'left',
+          vertical: 'bottom',
+        },
+        transformOrigin: {
+          vertical: -8,
+          horizontal: 'left',
+        },
       },
     },
     overrides: {
@@ -172,6 +202,32 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           padding: '14.5px 14px',
         },
       },
+      MuiFilledInput: {
+        root: {
+          borderRadius: 6,
+          borderTopLeftRadius: 6,
+          borderTopRightRadius: 6,
+
+          backgroundColor: brandPalette.grey[50],
+
+          '&:hover': {
+            backgroundColor: brandPalette.grey[100],
+          },
+
+          '&$error': {
+            backgroundColor: brandPalette.cherry.light,
+          },
+        },
+        input: {
+          padding: '14.5px 14px',
+          '&:-webkit-autofill': {
+            borderRadius: 'inherit',
+          },
+        },
+        inputMarginDense: {
+          paddingTop: 6,
+        },
+      },
       MuiInputLabel: {
         formControl: {
           position: 'relative',
@@ -182,6 +238,12 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           marginBottom: spacing(1),
         },
         outlined: {
+          transform: 'translate3d(0,0,0)',
+          '&$shrink': {
+            transform: 'translate3d(0,0,0)',
+          },
+        },
+        filled: {
           transform: 'translate3d(0,0,0)',
           '&$shrink': {
             transform: 'translate3d(0,0,0)',
@@ -230,6 +292,9 @@ const createPaletteTheme = (colors: PaletteOptions) => {
             },
           },
         },
+        outlined: {
+          borderWidth: 2,
+        },
       },
       MuiCircularProgress: {
         colorPrimary: {
@@ -245,16 +310,23 @@ const createPaletteTheme = (colors: PaletteOptions) => {
       },
       MuiMenu: {
         paper: {
-          border: `1px solid ${palette.grey[500]}`,
-          borderRadius: '6px',
-          paddingTop: spacing(1),
-          paddingBottom: spacing(1),
+          borderRadius: 16,
+          padding: spacing(1),
+          boxShadow: mainShadows.popover,
+        },
+      },
+      MuiMenuItem: {
+        root: {
+          borderRadius: 6,
         },
       },
       MuiPaper: {
         root: {},
         rounded: {
           borderRadius: 14,
+        },
+        elevation1: {
+          boxShadow: mainShadows.surface,
         },
       },
       MuiLink: {
@@ -299,6 +371,58 @@ const createPaletteTheme = (colors: PaletteOptions) => {
           '&> tr:nth-child(odd)': {
             backgroundColor: `${brandPalette.sand.main}`,
           },
+        },
+      },
+      MuiToggleButton: {
+        root: {
+          borderRadius: 6,
+          borderWidth: 2,
+          color: palette.grey[900],
+          borderColor: palette.grey[50],
+          backgroundColor: palette.common.white,
+
+          transition: transitions.create(['borderColor', 'color']),
+
+          '&:hover': {
+            borderColor: palette.grey[500],
+            backgroundColor: palette.common.white,
+          },
+
+          '&$selected': {
+            color: brandPalette.turquoise.dark,
+            borderColor: brandPalette.turquoise.main,
+            backgroundColor: palette.common.white,
+
+            '& + &': {
+              // remove the default conjoining of toggle buttons
+              marginLeft: '',
+              borderLeft: '',
+            },
+
+            '&:hover': {
+              borderColor: brandPalette.turquoise.dark,
+              backgroundColor: palette.common.white,
+            },
+          },
+        },
+      },
+      MuiDialog: {
+        paper: {
+          boxShadow: mainShadows.surface,
+          borderRadius: cornerRadii.surface,
+        },
+        paperWidthMd: {
+          maxWidth: 768,
+        },
+      },
+      MuiDialogTitle: {
+        root: {
+          padding: '28px 32px 22px 32px',
+        },
+      },
+      MuiDialogContent: {
+        root: {
+          padding: '0 32px 32px 32px',
         },
       },
     },

@@ -14,7 +14,6 @@ import { RootState } from '../../state/store';
 import { throttle } from 'lodash';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import clsx from 'clsx';
-import { ResizeObserver } from 'resize-observer';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -84,9 +83,7 @@ const useStyles = makeStyles({
     height: '100%',
   },
   unresizableContentSizer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    position: 'relative',
   },
 });
 
@@ -140,9 +137,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
       ),
     []
   );
-  const { position, size, needsRemeasure: needsResize } = useSelector((state: RootState) =>
-    positionSelector(state, id)
-  );
+  const { position, size } = useSelector((state: RootState) => positionSelector(state, id));
+  // if this Draggable is marked as user-resizable, but does not have
+  // a measured size, we will immediately measure the natural size of the
+  // contents.
+  const needsRemeasure = isResizable && !size;
   const measuredWidth = size?.width || 0;
   const measuredHeight = size?.height || 0;
 
@@ -189,9 +188,9 @@ export const Draggable: React.FC<IDraggableProps> = ({
 
   const [contentEl, contentRef] = React.useState<HTMLDivElement | null>(null);
 
-  // handles remeasuring the component from its native size when the flag is set in state
+  // handles remeasuring the component from its native size when the flag is set
   React.useEffect(() => {
-    if (!contentEl || !needsResize) return;
+    if (!contentEl || !needsRemeasure) return;
 
     // immediately remeasure
     const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
@@ -200,27 +199,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
       width: w,
       height: h,
     });
-  }, [contentEl, needsResize, onResize, minHeight, minWidth, maxWidth, maxHeight]);
-
-  // handles triggering remeasures when content DOM changes for
-  // non-resizable widgets
-  React.useEffect(() => {
-    if (!contentEl || isResizable) return;
-
-    const resizeObserver = new ResizeObserver(() => {
-      const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
-      const h = clamp(contentEl.clientHeight, minHeight, maxHeight);
-      onResize({
-        width: w,
-        height: h,
-      });
-    });
-    resizeObserver.observe(contentEl);
-
-    return () => {
-      resizeObserver.unobserve(contentEl);
-    };
-  }, [contentEl, isResizable, minWidth, minHeight, onResize, maxWidth, maxHeight]);
+  }, [contentEl, needsRemeasure, onResize, minHeight, minWidth, maxWidth, maxHeight]);
 
   // Update the spring when any of the monitored spatial values change
   React.useEffect(() => {
@@ -340,10 +319,10 @@ export const Draggable: React.FC<IDraggableProps> = ({
         style={{
           transform: to(
             [x, y, width, height],
-            (xv, yv, wv, hv) => `translate(${Math.round(xv - wv / 2)}px, ${Math.round(yv - hv / 2)}px)`
+            (xv, yv, wv, hv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px) translate(-50%, -50%)`
           ),
-          width,
-          height,
+          width: isResizable ? width : undefined,
+          height: isResizable ? height : undefined,
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
@@ -354,8 +333,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
           // positioned overflowing frame to try to estimate its innate size, which we will
           // use as the new explicit size of the draggable once measuring is complete
           className={clsx({
-            [styles.contentSizer]: !needsResize && isResizable,
-            [styles.unmeasuredContentSizer]: needsResize && isResizable,
+            [styles.contentSizer]: !needsRemeasure && isResizable,
+            [styles.unmeasuredContentSizer]: needsRemeasure && isResizable,
             [styles.unresizableContentSizer]: !isResizable,
           })}
           // while we are measuring, because of word-wrapping and other css overflow rules,

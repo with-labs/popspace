@@ -1,6 +1,7 @@
 import React from 'react';
 import { cherry, lavender, mandarin, turquoise } from '../src/theme/theme';
 import { withMuiTheme } from '@harelpls/storybook-addon-materialui';
+import '../src/i18n';
 
 // all our necessary contexts
 import { Provider } from 'react-redux';
@@ -20,10 +21,6 @@ function withRedux(Story) {
       </CoordinatedDispatchProvider>
     </Provider>
   );
-}
-
-function withLocalParticipant(Story) {
-  return <Story />;
 }
 
 export const decorators = [

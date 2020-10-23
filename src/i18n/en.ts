@@ -149,6 +149,7 @@ export default {
         unknownRoom: '',
         joinRoomInvalidScreenName: 'Please provide a valid screen name.',
         joinRoomUnknownFailure: 'Failed to join room - check your network connection.',
+        supportedFileTypes: '{{fileTypes}} are supported',
       },
       widgetsFallback: {
         title: 'Accessories error',
@@ -163,6 +164,13 @@ export default {
     features: {
       room: {
         viewportControlsToolTip: 'Arrow keys to pan, +/- to zoom',
+        customWallpaperLabel: 'Link to an image',
+        wallpaperSet: 'New wallpaper set!',
+        wallpaperSupportedFileTypes: 'JPG, PNG, WEBP, and GIF',
+      },
+      status: {
+        placeholder: "What's your status?",
+        emojiTitle: 'Pick an emoji',
       },
     },
   },

@@ -55,11 +55,7 @@ describe('useRoomPresence hook', () => {
             position: POSITION,
             person: {
               id: ID,
-              kind: 'person',
               avatar: AVATAR,
-              emoji: null,
-              viewingScreenSid: null,
-              isSpeaking: false,
             },
           })
         );

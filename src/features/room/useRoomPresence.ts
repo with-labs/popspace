@@ -25,11 +25,7 @@ export function useRoomPresence() {
           position: fuzzVector({ x: 0, y: 0 }, 40),
           person: {
             id: sid,
-            kind: 'person',
             avatar: randomAvatar().name,
-            emoji: null,
-            viewingScreenSid: null,
-            isSpeaking: false,
           },
         })
       );

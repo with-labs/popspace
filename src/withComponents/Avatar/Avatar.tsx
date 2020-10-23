@@ -2,14 +2,30 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 import { useAvatar } from '../../withHooks/useAvatar/useAvatar';
+import { makeStyles } from '@material-ui/core';
 
 interface IAvatarProps {
   name: string;
-  onClick?: () => void;
   className?: string;
+  size?: number;
 }
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, onClick, className }) => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    position: 'relative',
+  },
+  image: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: '100%',
+    height: '100%',
+  },
+}));
+
+export const Avatar: React.FC<IAvatarProps> = ({ name, className, size = 100 }) => {
+  const classes = useStyles();
+
   const avatar = useAvatar(name);
 
   // State dictating whether the avatar is in a blinking state.
@@ -36,18 +52,16 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, onClick, className }) => 
     // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
     // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div onClick={onClick} className={className}>
+      <div className={clsx(classes.root, className)} style={{ width: size, height: size }}>
         <img
-          className={clsx('u-height100Percent u-width100Percent u-positionAbsolute', {
-            'u-visibilityHidden': !isBlinking,
-          })}
+          className={classes.image}
+          style={{ visibility: isBlinking ? 'visible' : 'hidden' }}
           src={avatar.blink}
           alt="avatar-blink"
         />
         <img
-          className={clsx('u-height100Percent u-width100Percent u-positionAbsolute', {
-            'u-visibilityHidden': isBlinking,
-          })}
+          className={classes.image}
+          style={{ visibility: isBlinking ? 'hidden' : 'visible' }}
           src={avatar.image}
           alt="avatar"
         />

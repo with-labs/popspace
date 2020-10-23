@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 const fakeLocalParticipant = {
   sid: 'me',
   state: '',
-  identity: 'me',
+  identity: 'me#!',
   networkQualityLevel: null,
   networkQualityStatus: null,
   audioTracks: {},
@@ -19,6 +19,8 @@ const fakeLocalParticipant = {
   setParameters: () => {},
   unpublishTrack: () => {},
   unpublishTracks: () => {},
+
+  on: () => {},
 };
 
 class FakeRoom extends EventEmitter {

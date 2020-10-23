@@ -1,41 +1,50 @@
 import * as React from 'react';
-import { LocalParticipant, RemoteParticipant, Track, AudioTrackPublication } from 'twilio-video';
+import { LocalParticipant, RemoteParticipant, AudioTrackPublication, VideoTrackPublication } from 'twilio-video';
 import { makeStyles, Typography } from '@material-ui/core';
-import usePublications from '../../../hooks/usePublications/usePublications';
-import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
-import { useSelector } from 'react-redux';
-import { selectors } from '../roomSlice';
 import useParticipantDisplayIdentity from '../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../withComponents/Avatar/Avatar';
-import { Emoji } from 'emoji-mart';
 import { ScreenShareButton } from './ScreenShareButton';
 import { useSpring, animated, config } from '@react-spring/web';
 import palette from '../../../theme/palette';
 import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
+import { PersonState } from '../../../types/room';
+import { useAvatar } from '../../../withHooks/useAvatar/useAvatar';
+import { MicOffIcon } from '../../../withComponents/icons/MicOffIcon';
+import { mainShadows, cornerRadii } from '../../../theme/theme';
+import { PersonStatus } from './PersonStatus';
+
+const EXPANDED_SIZE = 280;
+const SMALL_SIZE = 140;
+const AVATAR_SIZE = 130;
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
-  enableScreenShare?: boolean;
-  videoPriority?: Track.Priority;
+  isLocal: boolean;
+  person: PersonState;
+  audioTrack?: AudioTrackPublication;
+  cameraTrack?: VideoTrackPublication;
+  screenShareTrack?: VideoTrackPublication;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 160,
-    height: 160,
-    borderRadius: '100%',
     position: 'relative',
+    backgroundColor: theme.palette.background.paper,
     border: `4px solid ${theme.palette.background.paper}`,
     transition: theme.transitions.create('border-color'),
+    display: 'flex',
+    flexDirection: 'column',
+    boxShadow: mainShadows.surface,
   },
   mainContent: {
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-    borderRadius: '100%',
     pointerEvents: 'none',
+    display: 'flex',
+    flexDirection: 'column',
   },
   video: {
     width: '100%',
@@ -46,113 +55,174 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   avatar: {
-    width: '60%',
-    height: '60%',
-    margin: '12% 20% 28% 20%',
-    position: 'relative',
-  },
-  emoji: {
+    width: '100%',
     position: 'absolute',
-    width: 32,
-    height: 32,
-    left: 6,
-    top: 6,
-    zIndex: 1,
-    padding: 4,
-    borderRadius: '100%',
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: '0 0 8px 0 rgba(0,0,0,0.1)',
-  },
-  screenShare: {
-    position: 'absolute',
-    left: 0,
-    bottom: '30%',
-    borderRadius: 6,
-    maxWidth: 60,
-    transform: 'translate(-50%, -50%)',
-    zIndex: 1,
-  },
-  overlay: {
-    position: 'absolute',
-    bottom: '10%',
     left: '50%',
     transform: 'translateX(-50%)',
+    bottom: 41,
+    borderBottomLeftRadius: cornerRadii.surface,
+    borderBottomRightRadius: cornerRadii.surface,
   },
-  overlayInverted: {
-    color: theme.palette.common.white,
-    textShadow: '0 0 11px rgba(0,0,0,.5)',
+  background: {
+    width: '100%',
+    borderBottomLeftRadius: cornerRadii.surface,
+    borderBottomRightRadius: cornerRadii.surface,
+    overflow: 'hidden',
+  },
+  status: {
+    position: 'absolute',
+    zIndex: 1,
+  },
+  screenShareButton: {
+    position: 'absolute',
+    bottom: 48,
+    transform: 'translateX(-50%)',
+    zIndex: 1,
+    border: `2px solid ${theme.palette.background.paper}`,
+    borderRadius: cornerRadii.content,
+    maxWidth: 60,
+    overflow: 'hidden',
+  },
+  screenShare: {
+    borderRadius: cornerRadii.content,
+  },
+  bottomSection: {
+    backgroundColor: theme.palette.background.paper,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  name: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    textOverflow: 'ellipsis',
+    margin: '0 auto',
+    maxWidth: '80%',
+  },
+  mutedGraphic: {
+    bottom: 4,
+    fontSize: 16,
+    width: 16,
+    height: 16,
+    lineHeight: '1',
+    position: 'absolute',
+  },
+  mutedIcon: {
+    color: theme.palette.error.main,
   },
 }));
 
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
-  ({ participant, enableScreenShare, videoPriority, ...rest }, ref) => {
+  ({ participant, isLocal, person, audioTrack, cameraTrack, screenShareTrack, ...rest }, ref) => {
     const classes = useStyles();
 
-    const localParticipant = useLocalParticipant();
-    const isLocal = participant.sid === localParticipant.sid;
+    const [isHovered, setIsHovered] = React.useState(false);
+    const onHover = React.useCallback(() => setIsHovered(true), []);
+    const onUnHover = React.useCallback(() => setIsHovered(false), []);
 
-    // a list of multimedia tracks this user has shared with peers
-    const publications = usePublications(participant);
+    const isVideoOn = !!cameraTrack;
 
-    // Redux data about this user
-    const person = useSelector(selectors.createPersonSelector(participant.sid));
-    const { emoji, avatar: avatarName, isSpeaking } = person ?? {};
+    const { avatar: avatarName, isSpeaking, emoji, status } = person ?? {};
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);
 
-    // extract audio and/or video publications
-    const audioTrackPub = publications.find((pub) => pub.kind === 'audio') as AudioTrackPublication | undefined;
-    const cameraTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('camera'));
-    const screenShareTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('screen'));
+    const isMicOn = useIsTrackEnabled(audioTrack?.track);
 
-    const isMicOn = useIsTrackEnabled(audioTrackPub?.track);
+    const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: palette.grey[100] };
+
+    const rootStyles = useSpring({
+      borderRadius: isVideoOn ? 32 : '100%',
+      width: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
+      height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
+    });
 
     // track whether this user is speaking (updated using audio track volume monitoring)
-    const animatedProps = useSpring({
+    // this is a separate spring so we can configure the physics to be more responsive
+    const speakingRingStyles = useSpring({
       borderColor: isSpeaking && isMicOn ? palette.lavender.main : palette.snow.main,
       config: config.stiff,
     });
 
+    const graphicStyles = useSpring({
+      height: isVideoOn ? EXPANDED_SIZE - 32 : SMALL_SIZE - 49,
+      backgroundColor,
+    });
+
+    const mutedGraphicStyles = useSpring({
+      right: isVideoOn ? 16 : 58,
+    });
+
+    const bottomSectionStyles = useSpring({
+      lineHeight: isVideoOn ? '32px' : '16px',
+    });
+
+    const statusStyles = useSpring({
+      left: isVideoOn ? 8 : 16,
+      top: isVideoOn ? 8 : 0,
+      x: isVideoOn ? '0%' : '-100%',
+    });
+
     return (
-      <animated.div {...rest} ref={ref} className={clsx(classes.root, rest.className)} style={animatedProps as any}>
-        <div className={classes.mainContent}>
-          {cameraTrackPub ? (
-            <Publication
-              classNames={classes.video}
-              videoPriority={videoPriority}
-              publication={cameraTrackPub}
-              isLocal={isLocal}
-              participant={participant}
-            />
-          ) : (
-            <Avatar className={classes.avatar} name={avatarName} />
-          )}
-          {audioTrackPub && (
+      <animated.div
+        {...rest}
+        ref={ref}
+        className={clsx(classes.root, rest.className)}
+        style={{ ...rootStyles, ...speakingRingStyles } as any}
+        onPointerEnter={onHover}
+        onPointerLeave={onUnHover}
+      >
+        <animated.div className={classes.mainContent} style={{ borderRadius: rootStyles.borderRadius }}>
+          {/* Still a typing issue with react-spring :( */}
+          <animated.div className={classes.background} style={graphicStyles as any}>
+            {cameraTrack && (
+              <Publication
+                classNames={classes.video}
+                publication={cameraTrack}
+                isLocal={isLocal}
+                participant={participant}
+              />
+            )}
+          </animated.div>
+          {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} size={AVATAR_SIZE} />}
+          {audioTrack && (
             <Publication
               classNames={classes.audio}
-              publication={audioTrackPub}
+              publication={audioTrack}
               isLocal={isLocal}
               participant={participant}
               disableAudio={isLocal}
             />
           )}
-          <div className={clsx(classes.overlay, !!cameraTrackPub && classes.overlayInverted)}>
-            <Typography>{displayIdentity}</Typography>
+          <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
+            <Typography className={classes.name}>{displayIdentity}</Typography>
+          </animated.div>
+          {!isMicOn && (
+            <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
+              <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />
+            </animated.div>
+          )}
+        </animated.div>
+        {screenShareTrack && !isLocal && (
+          <div className={classes.screenShareButton}>
+            <ScreenShareButton
+              participant={participant}
+              mediaTrack={screenShareTrack}
+              className={classes.screenShare}
+            />
           </div>
-        </div>
-        {screenShareTrackPub && !isLocal && (
-          <ScreenShareButton
-            className={classes.screenShare}
-            participant={participant}
-            mediaTrack={screenShareTrackPub}
+        )}
+        <animated.div className={classes.status} style={statusStyles}>
+          <PersonStatus
+            personId={person.id}
+            emoji={emoji}
+            status={status}
+            isParentHovered={isHovered}
+            isLocal={isLocal}
           />
-        )}
-        {emoji && (
-          <div className={classes.emoji}>
-            <Emoji emoji={emoji} size={24} />
-          </div>
-        )}
+        </animated.div>
       </animated.div>
     );
   }

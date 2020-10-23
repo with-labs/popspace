@@ -1,0 +1,15 @@
+import * as React from 'react';
+import { ToggleButton } from '@material-ui/lab';
+import useLocalAudioToggle from '../../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
+import { MicOnIcon } from '../../../../withComponents/icons/MicOnIcon';
+import { MicOffIcon } from '../../../../withComponents/icons/MicOffIcon';
+
+export const MicToggle = (props: { className?: string }) => {
+  const [isMicOn, toggleMicOn] = useLocalAudioToggle();
+
+  return (
+    <ToggleButton value="mic" selected={isMicOn} onChange={toggleMicOn} {...props}>
+      {isMicOn ? <MicOnIcon /> : <MicOffIcon />}
+    </ToggleButton>
+  );
+};

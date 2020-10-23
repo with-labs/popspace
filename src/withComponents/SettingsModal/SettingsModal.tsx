@@ -46,7 +46,7 @@ const SettingsModal = (props: SettingsModalProps) => {
   const updateEmoji = useCallback(
     (newEmoji: EmojiData | string | null) => {
       coordinatedDispatch(
-        actions.updatePersonEmoji({
+        actions.updatePersonStatus({
           id: localParticipant.sid,
           emoji: newEmoji,
         })

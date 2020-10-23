@@ -9,6 +9,7 @@ export type PersonState = {
   kind: 'person';
   avatar: string;
   emoji: EmojiData | null | string;
+  status: string | null;
   // FIXME: this seems like user preferences not participant data
   viewingScreenSid: string | null;
   isSpeaking: boolean;

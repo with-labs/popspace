@@ -116,7 +116,7 @@ module.exports = {
     <a style="font-family:&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif!important;font-size:10px;line-height:1.6!important;color:#666;margin:0px;padding:0px" href="${unsubscribeUrl}">Unsubscribe</a>
   </div>
 </div>
-    `
+`
 
     // Seems tabs are included in these strings. We'll need a better way to store them.
     const plaintextFallback = `

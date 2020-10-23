@@ -126,7 +126,8 @@
     "deploy:dev": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build --environment=dev",
     "deploy:prod": "cross-env REACT_APP_SET_AUTH=passcode npm run build && twilio rtc:apps:video:deploy --authentication=passcode --app-directory ./build --environment=prod",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "console": "node --experimental-repl-await ./scripts/console"
   },
   "eslintConfig": {
     "extends": "react-app",

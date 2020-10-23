@@ -11,10 +11,16 @@ export interface IHorizontalCollapseProps {
 function getElementBounds(ref: React.RefObject<HTMLElement>) {
   return new Promise<{ width: number; height: number }>((resolve) => {
     setTimeout(() => {
-      const rect = ref.current?.getBoundingClientRect();
+      // using offsetWidth doesn't take transforms into account - which gets around the issue of how
+      // elements are scaled according to zoom, but their width should be in native pixel units. In
+      // other words, if we use getBoundingClientRect(), we get the fully zoomed "actual" pixel size
+      // of the element, but this pixel size will end up getting the zoom applied *again*, leading
+      // to an exponentially smaller and smaller size as you zoom out.
+      const width = ref.current?.offsetWidth ?? 0;
+      const height = ref.current?.offsetHeight ?? 0;
       resolve({
-        width: rect?.width ?? 0,
-        height: rect?.height ?? 0,
+        width: width ?? 0,
+        height: height ?? 0,
       });
     });
   });

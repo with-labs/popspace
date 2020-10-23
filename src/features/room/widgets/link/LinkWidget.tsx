@@ -26,7 +26,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    fontSize: theme.typography.pxToRem(16),
+    fontSize: theme.typography.pxToRem(13),
+    fontWeight: theme.typography.fontWeightRegular,
+    color: theme.palette.grey[900],
   },
 }));
 
@@ -42,7 +44,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
     return (
       <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={200} maxWidth={300} maxHeight={500}>
         <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />
-        <WidgetContent>
+        <WidgetContent disablePadding>
           <EditLinkWidgetForm onSave={saveWidget} />
         </WidgetContent>
       </WidgetFrame>
@@ -53,7 +55,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
 
   return (
     <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={98} maxWidth={400} maxHeight={300}>
-      <WidgetTitlebar title={t('widgets.link.publishedTitle')} onClose={onClose} />
+      <WidgetTitlebar title={state.data.title || t('widgets.link.title')} onClose={onClose} />
       <WidgetContent>
         <Tooltip title={state.data.url} placement="bottom">
           <Link
@@ -63,7 +65,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
             color="inherit"
             className={classes.link}
           >
-            {state.data.title}
+            {state.data.url}
           </Link>
         </Tooltip>
       </WidgetContent>

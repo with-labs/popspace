@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import palette from '../../../theme/palette';
 
 export interface ICustomWallpaperFormProps {
   onChange: (url: string) => void;
@@ -71,6 +70,11 @@ export const CustomWallpaperForm: React.FC<ICustomWallpaperFormProps> = ({ onCha
 
 const WallpaperSetAnnouncement = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
 
-  return <span style={{ fontWeight: 'bold', color: palette.turquoise.dark }}>{t('features.room.wallpaperSet')}</span>;
+  return (
+    <span style={{ fontWeight: 'bold', color: theme.palette.success.contrastText }}>
+      {t('features.room.wallpaperSet')}
+    </span>
+  );
 };

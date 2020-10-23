@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { useRoomViewport } from '../../RoomViewport';
-import { Box, makeStyles, IconButton } from '@material-ui/core';
+import { Box, makeStyles, IconButton, Fab } from '@material-ui/core';
 import clsx from 'clsx';
+import { PlusIcon } from '../../../../withComponents/icons/PlusIcon';
+import { MinusIcon } from '../../../../withComponents/icons/MinusIcon';
 
 const DEFAULT_ZOOM_INCREMENT = 0.2;
 
@@ -21,29 +23,13 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 12,
 
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
 
     '& > * + *': {
-      marginTop: theme.spacing(2),
+      marginLeft: theme.spacing(2),
     },
   },
-  button: {
-    backgroundColor: theme.palette.background.paper,
-
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
-    },
-    '&:focus': {
-      background: theme.palette.background.paper,
-      boxShadow: `0 0 0 2px ${theme.palette.secondary.dark}`,
-    },
-  },
-  glyph: {
-    width: 24,
-    height: 24,
-    fontSize: 24,
-    lineHeight: '1',
-  },
+  button: {},
 }));
 
 export const ViewportControls = React.memo<IViewportControlsProps>(
@@ -61,28 +47,12 @@ export const ViewportControls = React.memo<IViewportControlsProps>(
     return (
       <Box className={clsx(classes.root, className)}>
         <div className={clsx(classes.controlCluster)}>
-          <IconButton
-            onClick={handleZoomIn}
-            style={{ gridArea: 'zoomIn' }}
-            aria-label="zoom in"
-            size="small"
-            className={classes.button}
-          >
-            <span aria-hidden className={classes.glyph}>
-              +
-            </span>
-          </IconButton>
-          <IconButton
-            onClick={handleZoomOut}
-            style={{ gridArea: 'zoomOut' }}
-            aria-label="zoom out"
-            size="small"
-            className={classes.button}
-          >
-            <span aria-hidden className={classes.glyph}>
-              -
-            </span>
-          </IconButton>
+          <Fab onClick={handleZoomOut} aria-label="zoom out" size="small" className={classes.button}>
+            <MinusIcon aria-hidden fontSize="default" />
+          </Fab>
+          <Fab onClick={handleZoomIn} aria-label="zoom in" size="small" className={classes.button}>
+            <PlusIcon aria-hidden fontSize="default" />
+          </Fab>
         </div>
       </Box>
     );

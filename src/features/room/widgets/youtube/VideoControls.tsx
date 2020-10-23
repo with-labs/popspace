@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@material-ui/core';
-import { PauseOutlined, PlayArrowOutlined } from '@material-ui/icons';
 import clsx from 'clsx';
-import palette from '../../../../theme/palette';
+import { PauseIcon } from '../../../../withComponents/icons/PauseIcon';
+import { PlayIcon } from '../../../../withComponents/icons/PlayIcon';
 
 export enum PlayState {
   Playing,
@@ -21,8 +21,7 @@ export interface IVideoControlsProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: `rgba(255,255,255, 0.8)`,
-    backdropFilter: `blur(4px)`,
+    backgroundColor: theme.palette.background.paper,
     color: theme.palette.common.black,
     borderRadius: 6,
   },
@@ -30,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1.5),
-    color: palette.cherry.dark,
   },
   timeDisplay: {
     fontSize: theme.typography.pxToRem(12),
@@ -78,7 +76,7 @@ export const VideoControls: React.FC<IVideoControlsProps> = ({
   return (
     <Box display="flex" flexDirection="row" alignItems="center" p={0.5} className={clsx(classes.root, className)}>
       <IconButton onClick={togglePlayState} size="small" color="inherit">
-        {playState === PlayState.Playing ? <PauseOutlined /> : <PlayArrowOutlined />}
+        {playState === PlayState.Playing ? <PauseIcon /> : <PlayIcon />}
       </IconButton>
       <Slider
         ValueLabelComponent={TimestampLabel}

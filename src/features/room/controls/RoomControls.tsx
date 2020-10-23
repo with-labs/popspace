@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
   settingsButton: {
     marginLeft: theme.spacing(1),
     // adapted to look like the other toggle buttons
-    padding: 11,
+    width: 40,
+    height: 40,
     color: theme.palette.grey[900],
     minWidth: 0,
     borderColor: theme.palette.grey[50],
@@ -30,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       borderColor: theme.palette.grey[500],
       backgroundColor: theme.palette.common.white,
+    },
+    '&:focus': {
+      borderColor: theme.palette.grey[900],
+    },
+    '&:active': {
+      backgroundColor: theme.palette.grey[50],
     },
   },
   roomMenu: {
@@ -46,7 +53,7 @@ export function RoomControls(props: IRoomControlsProps) {
 
   return (
     <>
-      <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row">
+      <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
         <Omnibar />
         <MediaControls />
         <SettingsButton className={classes.settingsButton} />

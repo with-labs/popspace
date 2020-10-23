@@ -8,10 +8,18 @@ const fakeLocalParticipant = {
   identity: 'me#!',
   networkQualityLevel: null,
   networkQualityStatus: null,
-  audioTracks: {},
-  dataTracks: {},
-  tracks: {},
-  videoTracks: {},
+  audioTracks: {
+    values: () => []
+  },
+  dataTracks: {
+    values: () => []
+  },
+  tracks: {
+    values: () => []
+  },
+  videoTracks: {
+    values: () => []
+  },
   signalingRegion: '',
 
   publishTrack: () => {},
@@ -48,6 +56,7 @@ const value = {
     {
       id: 'fake_data',
       kind: 'data',
+      name: 'fooo',
       maxPacketLifeTime: 0,
       maxRetransmits: 0,
       ordered: false,

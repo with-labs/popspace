@@ -76,7 +76,7 @@ export default function LoginPage() {
       .then(() => {
         history.replace(location?.state?.from || { pathname: '/' });
       })
-      .catch(err => setAuthError(err));
+      .catch((err) => setAuthError(err));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

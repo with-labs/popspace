@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     paddingLeft: theme.spacing(2),
     alignItems: 'center',
+    fontSize: theme.typography.pxToRem(13),
   },
   rootMuted: {
     backgroundColor: theme.palette.background.paper,

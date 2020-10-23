@@ -8,7 +8,6 @@ import {
   FilledInput,
   Menu,
 } from '@material-ui/core';
-import { mainShadows } from '../../../theme/theme';
 import { Emoji, EmojiData, Picker } from 'emoji-mart';
 import { SizeTransition } from '../../../withComponents/SizeTransition/SizeTransition';
 import clsx from 'clsx';
@@ -30,18 +29,18 @@ export interface IPersonStatusProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    borderBottomLeftRadius: 16,
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
+    borderBottomLeftRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: mainShadows.surface,
+    boxShadow: theme.mainShadows.surface,
     padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
   rootEditing: {
-    borderBottomRightRadius: 12,
+    borderBottomRightRadius: theme.shape.borderRadius,
   },
   emoji: {
     fontSize: 18,

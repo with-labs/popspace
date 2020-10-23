@@ -2,6 +2,8 @@ import { Whiteboard } from './Whiteboard';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { Box } from '@material-ui/core';
+import { useWhiteboard } from './useWhiteboard';
+import { WhiteboardTools } from './WhiteboardTools';
 
 export default {
   title: 'components/Whiteboard',
@@ -9,11 +11,11 @@ export default {
   argTypes: {},
 };
 
-const Template: Story<{}> = (args) => {
-  const ref = React.useRef<{ exportToImageURL: () => string }>(null);
+const Preview = () => {
+  const { whiteboardProps, toolsProps, exportToImageURL } = useWhiteboard();
 
   const handleExport = () => {
-    const url = ref.current?.exportToImageURL();
+    const url = exportToImageURL();
     if (!url) {
       console.log('no url!');
       return;
@@ -37,10 +39,13 @@ const Template: Story<{}> = (args) => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Whiteboard {...args} ref={ref} />
+      <Whiteboard {...whiteboardProps} />
+      <WhiteboardTools {...toolsProps} />
       <button onClick={handleExport}>Export</button>
     </Box>
   );
 };
+
+const Template: Story<{}> = () => <Preview />;
 
 export const Default = Template.bind({});

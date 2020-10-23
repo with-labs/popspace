@@ -5,8 +5,7 @@ import * as typeformEmbed from '@typeform/embed';
 import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import { Button, makeStyles } from '@material-ui/core';
-import palette from '../../theme/palette';
+import { Button, makeStyles, CircularProgress, Box } from '@material-ui/core';
 import Api from '../../utils/api';
 import useQuery from '../../withHooks/useQuery/useQuery';
 import { ErrorTypes } from '../../constants/ErrorType';
@@ -21,14 +20,14 @@ interface IUnsubscribeProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: palette.sand.main,
+    backgroundColor: theme.palette.brandColors.sand.regular,
   },
   container: {
     maxWidth: '440px',
   },
   body: {
     marginTop: theme.spacing(2),
-    color: palette.ink.main,
+    color: theme.palette.text.primary,
   },
   imageContainer: {
     maxWidth: '100%',

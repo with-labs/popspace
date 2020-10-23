@@ -18,21 +18,28 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0.5),
   },
   item: {
-    borderRadius: 6,
+    borderRadius: theme.shape.contentBorderRadius,
     overflow: 'hidden',
 
-    transition: theme.transitions.create('box-shadow'),
+    transition: theme.transitions.create(['box-shadow', 'padding']),
 
-    '&:focus:not($itemSelected)': {
-      boxShadow: `0 0 0 4px ${theme.palette.secondary.main}`,
+    '&:focus:not($itemSelected), &:hover:not($itemSelected)': {
+      boxShadow: `0 0 0 4px ${theme.palette.grey[500]}`,
+      padding: 4,
+    },
+    '&:active': {
+      boxShadow: `0 0 0 4px ${theme.palette.grey[900]}`,
+      padding: 4,
     },
   },
   itemSelected: {
     boxShadow: `0 0 0 4px ${theme.palette.secondary.dark}`,
+    padding: 4,
   },
   image: {
     width: '100%',
     height: '100%',
+    borderRadius: theme.shape.contentBorderRadius,
   },
 }));
 

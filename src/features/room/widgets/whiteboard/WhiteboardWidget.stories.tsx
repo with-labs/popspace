@@ -4,7 +4,6 @@ import React from 'react';
 import { WidgetType } from '../../../../types/room';
 import { withViewport } from '../../../../stories/__decorators__/withViewport';
 import { Box } from '@material-ui/core';
-import { v4 as uuid } from 'uuid';
 
 export default {
   title: 'widgets/Whiteboard',
@@ -14,7 +13,7 @@ export default {
 };
 
 const Template: Story<{}> = (args) => (
-  <Box display="flex" flexDirection="column" alignItems="center">
+  <Box display="flex" flexDirection="column" alignItems="flex-start" minHeight={800}>
     <WhiteboardWidget
       onClose={() => {}}
       state={{

@@ -9,7 +9,7 @@ export const SettingsButton = (props: { className?: string }) => {
   return (
     <>
       <Button variant="outlined" onClick={() => setIsOpen((v) => !v)} className={props.className} color="default">
-        <SettingsIcon />
+        <SettingsIcon fontSize="default" color="inherit" />
       </Button>
       <AudioVideoSettingsModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>

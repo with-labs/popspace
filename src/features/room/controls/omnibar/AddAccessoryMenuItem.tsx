@@ -62,7 +62,7 @@ export const AddAccessoryMenuItem = React.forwardRef<HTMLLIElement, IAddAccessor
     return (
       <MenuItem onClick={handleClick} ref={ref}>
         <ListItemIcon>
-          <AccessoryIcon type={accessoryType} />
+          <AccessoryIcon fontSize="default" type={accessoryType} />
         </ListItemIcon>
         <ListItemText>{names[accessoryType] || ''}</ListItemText>{' '}
       </MenuItem>

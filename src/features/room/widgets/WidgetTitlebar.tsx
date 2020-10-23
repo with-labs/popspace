@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Box, IconButton, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { ReactComponent as CloseGlyph } from './images/close.svg';
 import { DraggableHandle } from '../DraggableHandle';
+import { DeleteIcon } from '../../../withComponents/icons/DeleteIcon';
 
-export type WidgetTitlebarProps = React.HTMLAttributes<HTMLDivElement> & {
-  title: string;
+export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
+  title: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
   onClose: () => void;
@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
     flex: '0 0 auto',
+    height: 48,
   },
   title: {
     flex: 1,
@@ -27,8 +28,15 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   controls: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
     flexBasis: 'auto',
     flexShrink: 0,
+    fontSize: theme.typography.pxToRem(18),
+    '& + &': {
+      marginLeft: theme.spacing(0.25),
+    },
   },
 }));
 
@@ -40,8 +48,8 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children,
       <Box
         py={3 / 4}
         pl={2}
-        // smaller padding on right so the X button feels correctly placed
-        pr={1}
+        // smaller padding on right so the delete button feels correctly placed
+        pr="14px"
         display="flex"
         flexDirection="row"
         alignItems="center"
@@ -50,8 +58,8 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children,
         <div className={classes.title}>{title}</div>
         <div className={classes.controls}>{children}</div>
         <div className={classes.controls}>
-          <IconButton onClick={onClose} aria-label="close widget">
-            <CloseGlyph />
+          <IconButton onClick={onClose} size="small" aria-label="close widget" color="inherit">
+            <DeleteIcon fontSize="small" color="inherit" />
           </IconButton>
         </div>
       </Box>

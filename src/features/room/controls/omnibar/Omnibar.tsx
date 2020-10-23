@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(1.5),
   },
   inputRoot: {
+    '&[class*="-focused"]': {
+      boxShadow: theme.focusRings.create(theme.palette.grey[900]),
+      caretColor: theme.palette.grey[900],
+    },
     '&[class*="MuiFilledInput-root"]': {
       // reset the Autocomplete padding change...
       paddingTop: 4,
@@ -34,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
         // inputAdornedStart class here so this padding gets removed if the add
         // button is not shown for whatever reason.
         paddingLeft: theme.spacing(1.5),
+        paddingTop: 0,
+        paddingBottom: 0,
       },
     },
   },

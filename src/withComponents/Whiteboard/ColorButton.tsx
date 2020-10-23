@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Theme, makeStyles, ButtonBase } from '@material-ui/core';
+import { Theme, makeStyles, ButtonBase, IconButton } from '@material-ui/core';
 import { ERASER_COLOR } from './constants';
-import { ReactComponent as Eraser } from './images/eraser.svg';
+import { EraserIcon } from '../icons/EraserIcon';
+import clsx from 'clsx';
 
 export interface IColorButtonProps {
   color: string;
@@ -13,31 +14,56 @@ const useStyles = makeStyles<Theme, IColorButtonProps>((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(1),
-    color: theme.palette.grey[900],
+    color: theme.palette.text.primary,
+    boxShadow: theme.focusRings.idle,
+    borderRadius: '100%',
+    '&:hover:not($active)': {
+      boxShadow: theme.focusRings.create(theme.palette.grey[50]),
+    },
+    '&:active, &:focus:not($active)': {
+      boxShadow: theme.focusRings.create(theme.palette.grey[500]),
+    },
+  },
+  active: {
+    boxShadow: theme.focusRings.create(theme.palette.grey[900]),
+  },
+  eraser: {
+    padding: 2,
+  },
+  color: {
+    padding: 6,
   },
   dot: ({ color }) => ({
-    width: 24,
-    height: 24,
-    borderRadius: 24,
+    width: 12,
+    height: 12,
+    borderRadius: '100%',
     backgroundColor: color,
-  }),
-  indicator: ({ color, active }) => ({
-    visibility: active ? 'visible' : 'hidden',
-    borderBottom: `4px solid ${color}`,
-    width: '100%',
-    height: 1,
-    marginTop: theme.spacing(1),
   }),
 }));
 
 export const ColorButton = React.forwardRef<HTMLButtonElement, IColorButtonProps>((props, ref) => {
   const classes = useStyles(props);
 
+  if (props.color === ERASER_COLOR) {
+    return (
+      <IconButton
+        size="small"
+        onClick={props.onClick}
+        className={clsx(classes.root, classes.eraser, props.active && classes.active)}
+        ref={ref}
+      >
+        <EraserIcon fontSize="small" color="inherit" />
+      </IconButton>
+    );
+  }
+
   return (
-    <ButtonBase onClick={props.onClick} className={classes.root} ref={ref}>
-      {props.color === ERASER_COLOR ? <Eraser /> : <div className={classes.dot} />}
-      <div className={classes.indicator} />
+    <ButtonBase
+      onClick={props.onClick}
+      className={clsx(classes.root, classes.color, props.active && classes.active)}
+      ref={ref}
+    >
+      <div className={classes.dot} />
     </ButtonBase>
   );
 });

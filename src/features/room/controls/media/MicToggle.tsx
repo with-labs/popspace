@@ -9,7 +9,7 @@ export const MicToggle = (props: { className?: string }) => {
 
   return (
     <ToggleButton value="mic" selected={isMicOn} onChange={toggleMicOn} {...props}>
-      {isMicOn ? <MicOnIcon /> : <MicOffIcon />}
+      {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
     </ToggleButton>
   );
 };

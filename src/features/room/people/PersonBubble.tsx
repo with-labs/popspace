@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { LocalParticipant, RemoteParticipant, AudioTrackPublication, VideoTrackPublication } from 'twilio-video';
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import useParticipantDisplayIdentity from '../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../withComponents/Avatar/Avatar';
 import { ScreenShareButton } from './ScreenShareButton';
 import { useSpring, animated, config } from '@react-spring/web';
-import palette from '../../../theme/palette';
 import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../withHooks/useAvatar/useAvatar';
 import { MicOffIcon } from '../../../withComponents/icons/MicOffIcon';
-import { mainShadows, cornerRadii } from '../../../theme/theme';
 import { PersonStatus } from './PersonStatus';
 
 const EXPANDED_SIZE = 280;
@@ -36,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     transition: theme.transitions.create('border-color'),
     display: 'flex',
     flexDirection: 'column',
-    boxShadow: mainShadows.surface,
+    boxShadow: theme.mainShadows.surface,
   },
   mainContent: {
     overflow: 'hidden',
@@ -60,13 +58,13 @@ const useStyles = makeStyles((theme) => ({
     left: '50%',
     transform: 'translateX(-50%)',
     bottom: 41,
-    borderBottomLeftRadius: cornerRadii.surface,
-    borderBottomRightRadius: cornerRadii.surface,
+    borderBottomLeftRadius: theme.shape.borderRadius,
+    borderBottomRightRadius: theme.shape.borderRadius,
   },
   background: {
     width: '100%',
-    borderBottomLeftRadius: cornerRadii.surface,
-    borderBottomRightRadius: cornerRadii.surface,
+    borderBottomLeftRadius: theme.shape.borderRadius,
+    borderBottomRightRadius: theme.shape.borderRadius,
     overflow: 'hidden',
   },
   status: {
@@ -79,12 +77,12 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translateX(-50%)',
     zIndex: 1,
     border: `2px solid ${theme.palette.background.paper}`,
-    borderRadius: cornerRadii.content,
+    borderRadius: theme.shape.contentBorderRadius,
     maxWidth: 60,
     overflow: 'hidden',
   },
   screenShare: {
-    borderRadius: cornerRadii.content,
+    borderRadius: theme.shape.contentBorderRadius,
   },
   bottomSection: {
     backgroundColor: theme.palette.background.paper,
@@ -110,13 +108,14 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
   },
   mutedIcon: {
-    color: theme.palette.error.main,
+    color: theme.palette.error.contrastText,
   },
 }));
 
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
   ({ participant, isLocal, person, audioTrack, cameraTrack, screenShareTrack, ...rest }, ref) => {
     const classes = useStyles();
+    const theme = useTheme();
 
     const [isHovered, setIsHovered] = React.useState(false);
     const onHover = React.useCallback(() => setIsHovered(true), []);
@@ -131,7 +130,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     const isMicOn = useIsTrackEnabled(audioTrack?.track);
 
-    const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: palette.grey[100] };
+    const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
 
     const rootStyles = useSpring({
       borderRadius: isVideoOn ? 32 : '100%',
@@ -142,7 +141,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     // track whether this user is speaking (updated using audio track volume monitoring)
     // this is a separate spring so we can configure the physics to be more responsive
     const speakingRingStyles = useSpring({
-      borderColor: isSpeaking && isMicOn ? palette.lavender.main : palette.snow.main,
+      borderColor: isSpeaking && isMicOn ? theme.palette.brandColors.lavender.regular : theme.palette.background.paper,
       config: config.stiff,
     });
 

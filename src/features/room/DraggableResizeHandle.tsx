@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { animated } from '@react-spring/web';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, useTheme } from '@material-ui/core';
 import { ReactComponent as ResizeHandleIcon } from '../../images/glyphs/resize_handle.svg';
-import palette from '../../theme/palette';
 import { DraggableContext } from './Draggable';
 import clsx from 'clsx';
 
@@ -25,6 +24,7 @@ const useResizeHandleStyles = makeStyles((theme) => ({
 export const DraggableResizeHandle: React.FC<IDraggableResizeHandleProps> = ({ children, disabled, className }) => {
   const classes = useResizeHandleStyles();
   const { resizeHandleProps, isResizingAnimatedValue, disableResize } = React.useContext(DraggableContext);
+  const theme = useTheme();
 
   if (disableResize) {
     return null;
@@ -35,7 +35,7 @@ export const DraggableResizeHandle: React.FC<IDraggableResizeHandleProps> = ({ c
       {...(disabled ? {} : resizeHandleProps)}
       style={{
         cursor: disabled ? 'inherit' : 'se-resize',
-        color: isResizingAnimatedValue.to((v) => (v ? palette.grey[500] : undefined)) as any,
+        color: isResizingAnimatedValue.to((v) => (v ? theme.palette.grey[500] : undefined)) as any,
       }}
       className={clsx(classes.root, className)}
     >

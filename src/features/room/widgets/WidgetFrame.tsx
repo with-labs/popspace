@@ -8,7 +8,7 @@ import { WidgetResizeHandle } from './WidgetResizeHandle';
 export interface IWidgetFrameProps {
   children: React.ReactNode;
   className?: string;
-  color?: 'mandarin' | 'cherry' | 'turquoise' | 'lavender';
+  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow';
   isResizable?: boolean;
   widgetId: string;
   minWidth?: number;

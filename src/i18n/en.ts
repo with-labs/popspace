@@ -116,9 +116,11 @@ export default {
         titleLabel: 'Title',
         urlLabel: 'Url',
         addBtn: 'Add a link',
+        errorInvalidUrl: 'Not a URL',
       },
       whiteboard: {
         title: 'Whiteboard',
+        doubleTapEraserToClear: 'Double tap Eraser to clear',
       },
       youtube: {
         title: 'YouTube',

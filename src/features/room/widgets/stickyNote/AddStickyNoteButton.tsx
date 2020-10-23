@@ -7,8 +7,8 @@ import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantD
 import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
 import * as roomSlice from '../../roomSlice';
 import { useRoomViewport } from '../../RoomViewport';
-import { ReactComponent as PlusGlyph } from '../images/plus.svg';
 import { WidgetType } from '../../../../types/room';
+import { AddIcon } from '../../../../withComponents/icons/AddIcon';
 
 export interface IAddStickyNoteButtonProps {
   /**
@@ -56,8 +56,8 @@ export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ paren
   }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipant.sid, toWorldCoordinate]);
 
   return (
-    <IconButton onClick={handleCreateNew} aria-label="add new note">
-      <PlusGlyph />
+    <IconButton onClick={handleCreateNew} aria-label="add new note" size="small" color="inherit">
+      <AddIcon color="inherit" fontSize="small" />
     </IconButton>
   );
 };

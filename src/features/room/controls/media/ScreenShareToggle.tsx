@@ -9,7 +9,7 @@ export const ScreenShareToggle = (props: { className?: string }) => {
 
   return (
     <ToggleButton value="video" selected={isSharingOn} onChange={toggleSharingOn} {...props}>
-      {isSharingOn ? <SharingOnIcon /> : <SharingOffIcon />}
+      {isSharingOn ? <SharingOnIcon fontSize="default" /> : <SharingOffIcon fontSize="default" />}
     </ToggleButton>
   );
 };

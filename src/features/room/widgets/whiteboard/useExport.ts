@@ -1,16 +1,14 @@
-import { useRef, useCallback } from 'react';
+import { useCallback } from 'react';
 import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 import { useSnackbar } from 'notistack';
 
-export function useExport() {
-  const ref = useRef<{ exportToImageURL: () => string }>(null);
-
+export function useExport(exportToImageURL: () => string) {
   const { room } = useVideoContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const handleExport = useCallback(() => {
-    const url = ref.current?.exportToImageURL();
+    const url = exportToImageURL();
     if (!url) {
       enqueueSnackbar("That didn't work - try again?", { variant: 'error' });
       return;
@@ -31,7 +29,7 @@ export function useExport() {
     a.addEventListener('click', clickHandler, false);
 
     a.click();
-  }, [enqueueSnackbar, room.name]);
+  }, [enqueueSnackbar, exportToImageURL, room.name]);
 
-  return { ref, handleExport };
+  return handleExport;
 }

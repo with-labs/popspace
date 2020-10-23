@@ -4,7 +4,7 @@ import { RoomControls } from './RoomControls';
 import { withViewport } from '../../../stories/__decorators__/withViewport';
 
 export default {
-  title: 'room/Accessories',
+  title: 'room/RoomControls',
   component: RoomControls,
   argTypes: {},
   decorators: [withViewport],

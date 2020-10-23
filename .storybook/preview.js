@@ -8,6 +8,8 @@ import { Provider } from 'react-redux';
 import store from '../src/state/store';
 import { CoordinatedDispatchProvider } from '../src/features/room/CoordinatedDispatchProvider';
 import { withVideo } from './__decorators__/withVideo';
+import { SnackbarProvider } from 'notistack';
+import { HashRouter } from 'react-router-dom';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -23,6 +25,22 @@ function withRedux(Story) {
   );
 }
 
+function withSnackbars(Story) {
+  return (
+    <SnackbarProvider>
+      <Story />
+    </SnackbarProvider>
+  )
+}
+
+function withRouter(Story) {
+  return (
+    <HashRouter>
+      <Story />
+    </HashRouter>
+  )
+}
+
 export const decorators = [
   withMuiTheme({
     mandarin,
@@ -30,6 +48,8 @@ export const decorators = [
     turquoise,
     lavender,
   }),
+  withRouter,
   withRedux,
+  withSnackbars,
   withVideo,
 ];

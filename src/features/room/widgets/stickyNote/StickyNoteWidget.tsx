@@ -24,15 +24,13 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'auto',
     flex: 1,
   },
-  text: {
-    fontSize: theme.typography.pxToRem(14),
-  },
+  text: {},
   author: {
     flex: '0 0 auto',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    color: theme.palette.grey[500],
+    color: theme.palette.grey[900],
   },
 }));
 
@@ -57,7 +55,12 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <StickyNoteFrame title={t('widgets.stickyNote.addWidgetTitle')} onClose={onClose} widgetId={state.id}>
+      <StickyNoteFrame
+        title={t('widgets.stickyNote.addWidgetTitle')}
+        onClose={onClose}
+        widgetId={state.id}
+        disablePadding
+      >
         <EditStickyNoteWidgetForm initialValues={state.data} onSave={saveWidget} />
       </StickyNoteFrame>
     );
@@ -66,7 +69,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   return (
     <StickyNoteFrame title={t('widgets.stickyNote.publishedTitle')} onClose={onClose} widgetId={state.id}>
       <div className={classes.scrollContainer}>
-        <Typography paragraph className={classes.text}>
+        <Typography paragraph variant="body1" className={classes.text}>
           {state.data.text}
         </Typography>
       </div>
@@ -77,16 +80,17 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   );
 };
 
-const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: string }> = ({
+const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: string; disablePadding?: boolean }> = ({
   children,
   title,
   onClose,
   widgetId,
+  disablePadding,
 }) => (
   <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={600} maxHeight={600}>
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
-    <WidgetContent>{children}</WidgetContent>
+    <WidgetContent disablePadding={disablePadding}>{children}</WidgetContent>
   </WidgetFrame>
 );

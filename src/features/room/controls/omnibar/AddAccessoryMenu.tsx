@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { IconButton, makeStyles, Menu } from '@material-ui/core';
-import { PlusIcon } from '../../../../withComponents/icons/PlusIcon';
 import clsx from 'clsx';
 import { AddAccessoryMenuItem } from './AddAccessoryMenuItem';
 import { WidgetType } from '../../../../types/room';
 import palette from '../../../../theme/palette';
+import { PlusLargeIcon } from '../../../../withComponents/icons/PlusLargeIcon';
 
 export interface IAddAccessoryMenuProps {
   className?: string;
@@ -13,33 +13,31 @@ export interface IAddAccessoryMenuProps {
 const useStyles = makeStyles((theme) => ({
   button: {
     backgroundColor: theme.palette.background.paper,
-    padding: 2,
+    padding: 7,
     transition: theme.transitions.create(['color', 'background-color', 'box-shadow']),
+    fontSize: 18,
 
     '&:hover': {
       backgroundColor: theme.palette.background.paper,
-      color: palette.turquoise.dark,
-      boxShadow: `inset 0 0 0 2px ${palette.turquoise.dark}`,
+      color: palette.oregano.bold,
+      boxShadow: `inset 0 0 0 2px ${palette.oregano.bold}`,
     },
     '&:focus': {
       backgroundColor: theme.palette.background.paper,
 
-      color: palette.turquoise.dark,
-      boxShadow: `inset 0 0 0 2px ${palette.turquoise.dark}`,
+      color: palette.oregano.bold,
+      boxShadow: `inset 0 0 0 2px ${palette.oregano.bold}`,
     },
     '&:active': {
-      backgroundColor: palette.turquoise.light,
+      backgroundColor: palette.oregano.light,
 
-      color: palette.turquoise.dark,
-      boxShadow: `inset 0 0 0 2px ${palette.turquoise.dark}`,
+      color: palette.oregano.bold,
+      boxShadow: `inset 0 0 0 2px ${palette.oregano.bold}`,
     },
   },
   buttonOpen: {
-    backgroundColor: palette.turquoise.dark,
-    color: palette.snow.main,
-  },
-  icon: {
-    fontSize: 36,
+    backgroundColor: palette.oregano.bold,
+    color: palette.snow.regular,
   },
 }));
 
@@ -64,7 +62,7 @@ export const AddAccessoryMenu: React.FC<IAddAccessoryMenuProps> = ({ className }
         disableFocusRipple
         disableRipple
       >
-        <PlusIcon className={classes.icon} />
+        <PlusLargeIcon fontSize="inherit" />
       </IconButton>
       <Menu
         anchorEl={targetElement}

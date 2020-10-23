@@ -93,22 +93,22 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   name: {
-    fontSize: 13,
-    fontWeight: 'bold',
+    fontSize: theme.typography.pxToRem(13),
+    fontWeight: theme.typography.fontWeightMedium,
     textOverflow: 'ellipsis',
     margin: '0 auto',
     maxWidth: '80%',
   },
   mutedGraphic: {
     bottom: 4,
-    fontSize: 16,
+    fontSize: theme.typography.pxToRem(16),
     width: 16,
     height: 16,
     lineHeight: '1',
     position: 'absolute',
   },
   mutedIcon: {
-    color: theme.palette.error.contrastText,
+    color: theme.palette.error.dark,
   },
 }));
 

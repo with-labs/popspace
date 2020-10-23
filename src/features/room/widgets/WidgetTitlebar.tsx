@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flex: 1,
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightMedium,
     fontSize: theme.typography.pxToRem(16),
     marginRight: theme.spacing(1),
     textOverflow: 'ellipsis',

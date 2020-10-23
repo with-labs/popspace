@@ -8,11 +8,11 @@ export interface IRoomSettingsMenuItemProps {
   onClick?: () => void;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   text: {
-    fontWeight: 'bold',
+    fontWeight: theme.typography.fontWeightMedium,
   },
-});
+}));
 
 export const RoomSettingsMenuItem = React.forwardRef<HTMLLIElement, IRoomSettingsMenuItemProps>((props, ref) => {
   const classes = useStyles();

@@ -10,15 +10,31 @@ import { generateShadows } from './shadows';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type _aug from '@material-ui/lab/themeAugmentation';
 
-const silka = {
-  fontFamily: 'Silka',
-  src: `
-    url("/fonts/silka-regular.woff2") format("woff2"),
-    url("/fonts/silka-regular.woff") format("woff"),
-    url("/fonts/silka-semibold.woff2") format("woff2"),
-    url("/fonts/silka-semibold.woff") format("woff")
-  `,
-};
+const SEMIBOLD_WEIGHT = 600;
+
+function webfontCollection(weight: string) {
+  return ['eot', 'ttf', 'woff', 'woff2']
+    .map((format) => `url("/fonts/silka-${weight}-webfont.${format}") format("${format}")`)
+    .join(',\n');
+}
+
+const silkaFonts = [
+  {
+    fontFamily: 'Silka',
+    fontWeight: 'normal',
+    src: webfontCollection('regular'),
+  },
+  {
+    fontFamily: 'Silka',
+    fontWeight: SEMIBOLD_WEIGHT,
+    src: webfontCollection('semibold'),
+  },
+  {
+    fontFamily: 'Silka',
+    fontWeight: 'bold',
+    src: webfontCollection('bold'),
+  },
+];
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
@@ -144,7 +160,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
   const { typography, palette, spacing, transitions, shape, mainShadows, focusRings } = createMuiTheme({
     palette: finalPalette,
     typography: {
-      fontSize: 16,
+      fontWeightMedium: SEMIBOLD_WEIGHT,
     },
     shape: {
       borderRadius: 14,
@@ -163,6 +179,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
     },
   });
 
+  console.log(typography.fontSize, typography.pxToRem(16));
+
   const finalShadows = generateShadows();
   finalShadows[1] = mainShadows.surface;
   finalShadows[2] = mainShadows.modal;
@@ -178,9 +196,10 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
 
     typography: {
       fontFamily: 'Silka',
-      fontSize: 16,
+      fontWeightMedium: SEMIBOLD_WEIGHT,
       body1: {
         lineHeight: 22 / 16,
+        fontSize: typography.pxToRem(16),
       },
       body2: {
         fontSize: typography.pxToRem(13),
@@ -294,7 +313,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
     overrides: {
       MuiCssBaseline: {
         '@global': {
-          '@font-face': [silka],
+          '@font-face': silkaFonts,
         },
       },
       MuiFilledInput: {
@@ -419,8 +438,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           textTransform: 'none',
           padding: '11.5px 30px',
           fontSize: typography.pxToRem(16),
-          lineHeight: 22 / 16,
           fontWeight: typography.fontWeightMedium,
+          lineHeight: 22 / 16,
         },
         contained: {
           boxShadow: focusRings.idle,
@@ -715,7 +734,7 @@ export const mandarin = createPaletteTheme({
 
 export const cherry = createPaletteTheme({
   primary: brandPalette.cherry,
-  secondary: brandPalette.lavender,
+  secondary: brandPalette.oregano,
 });
 
 export const lavender = createPaletteTheme({
@@ -725,10 +744,10 @@ export const lavender = createPaletteTheme({
 
 export const oregano = createPaletteTheme({
   primary: brandPalette.oregano,
-  secondary: brandPalette.mandarin,
+  secondary: brandPalette.oregano,
 });
 
 export const snow = createPaletteTheme({
   primary: brandPalette.snow,
-  secondary: brandPalette.lavender,
+  secondary: brandPalette.oregano,
 });

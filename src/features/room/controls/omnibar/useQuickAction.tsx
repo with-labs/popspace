@@ -4,6 +4,7 @@ import { WidgetType, WidgetData } from '../../../../types/room';
 import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
+import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
 
 export enum QuickActionKind {
   AddAccessory,
@@ -33,7 +34,7 @@ export type QuickAction = AddAccessoryQuickAction;
 function useQuickActionOptions(prompt: string, t: TFunction): QuickAction[] {
   // TODO: remove once we solve the username disappearing problem
   // by persisting room state and membership
-  const userName = useParticipantDisplayIdentity();
+  const userName = useParticipantDisplayIdentity(useLocalParticipant());
 
   // TODO: other accessory types
   // For now we just have the ability to create a sticky note.

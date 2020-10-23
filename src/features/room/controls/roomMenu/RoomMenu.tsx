@@ -7,7 +7,6 @@ import { useRoomName } from '../../../../withHooks/useRoomName/useRoomName';
 const useStyles = makeStyles((theme) => ({
   button: {
     height: 40,
-    fontWeight: theme.typography.fontWeightBold,
   },
 }));
 

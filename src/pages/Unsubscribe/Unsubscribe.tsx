@@ -5,14 +5,14 @@ import * as typeformEmbed from '@typeform/embed';
 import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import { Button, makeStyles, CircularProgress, Box } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import palette from '../../theme/palette';
 import Api from '../../utils/api';
 import useQuery from '../../withHooks/useQuery/useQuery';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import * as Sentry from '@sentry/react';
+import { Page } from '../../Layouts/Page/Page';
 
 import { Routes } from '../../constants/Routes';
 import SadBlobby from './images/sadblobby.png';
@@ -21,14 +21,7 @@ interface IUnsubscribeProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-    width: '100%',
     backgroundColor: palette.sand.main,
-  },
-  loading: {
-    height: '100%',
   },
   container: {
     maxWidth: '440px',
@@ -110,33 +103,25 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
     typeFormPopUp.open();
   };
 
-  return error ? (
-    <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-  ) : (
-    <main className={classes.root}>
-      {isLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} className={classes.loading}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <TwoColLayout>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-            <div className={classes.container}>
-              <div>{t('pages.unsubscribe.quoteText')}</div>
-              <div className="u-fontH0">{t('pages.unsubscribe.title')}</div>
-              <div className={clsx(classes.body, 'u-fontP1')}>{t('pages.unsubscribe.body')}</div>
-              <Button className={classes.button} onClick={onClickHandler}>
-                {t('pages.unsubscribe.button')}
-              </Button>
-            </div>
-          </Column>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-            <div className={classes.imageContainer}>
-              <img className={classes.image} src={SadBlobby} alt={t('pages.unsubscribe.imgAltText')} />
-            </div>
-          </Column>
-        </TwoColLayout>
-      )}
-    </main>
+  return (
+    <Page isLoading={isLoading} error={error} className={classes.root}>
+      <TwoColLayout>
+        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+          <div className={classes.container}>
+            <div>{t('pages.unsubscribe.quoteText')}</div>
+            <div className="u-fontH0">{t('pages.unsubscribe.title')}</div>
+            <div className={clsx(classes.body, 'u-fontP1')}>{t('pages.unsubscribe.body')}</div>
+            <Button className={classes.button} onClick={onClickHandler}>
+              {t('pages.unsubscribe.button')}
+            </Button>
+          </div>
+        </Column>
+        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
+          <div className={classes.imageContainer}>
+            <img className={classes.image} src={SadBlobby} alt={t('pages.unsubscribe.imgAltText')} />
+          </div>
+        </Column>
+      </TwoColLayout>
+    </Page>
   );
 };

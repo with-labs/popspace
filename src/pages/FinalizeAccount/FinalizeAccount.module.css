@@ -1,7 +1,3 @@
-.root {
-  min-height: 100vh;
-}
-
 .container {
   max-width: 340px;
 }
@@ -41,10 +37,6 @@
 .errorMsg {
   margin-top: 8px;
   color: var(--color-cherry-bold);
-}
-
-.loading {
-  flex: 1;
 }
 
 @media (min-width: 0px) and (max-width: 639px) {

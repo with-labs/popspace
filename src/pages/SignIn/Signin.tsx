@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
+import { Page } from '../../Layouts/Page/Page';
 
 import { Header } from '../../withComponents/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
@@ -49,7 +50,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   };
 
   return (
-    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
+    <Page>
       <Header />
       {showConfirmation ? (
         <ConfirmationView email={email} />
@@ -83,6 +84,6 @@ export const Signin: React.FC<ISigninProps> = (props) => {
           </Column>
         </TwoColLayout>
       )}
-    </main>
+    </Page>
   );
 };

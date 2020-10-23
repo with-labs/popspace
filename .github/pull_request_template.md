@@ -7,7 +7,10 @@
 - [ ] Pass CI tests
 - [ ] Get at least 1 review approval
 
-## BEFORE YOU MERGE
+## BEFORE YOU MERGE TO DEV
 
 - [ ] Use "Squash and Merge" strategy
 - [ ] Ensure the commit message is meaningful as a change log for your PR!
+
+## BEFORE YUO MERGE TO PRODUCTION
+- [] use "merge pull request" strategy. do not squash commits for prod releases.

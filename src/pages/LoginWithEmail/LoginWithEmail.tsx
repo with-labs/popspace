@@ -4,11 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { Routes } from '../../constants/Routes';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
-import { CircularProgress } from '@material-ui/core';
 import useQuery from '../../withHooks/useQuery/useQuery';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
+import { Page } from '../../Layouts/Page/Page';
 
 interface ILoginWithEmailProps {}
 
@@ -57,15 +56,5 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
     }
   }, [history, otp, uid]);
 
-  return (
-    <div>
-      {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
-          <CircularProgress />
-        </div>
-      ) : error ? (
-        <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-      ) : null}
-    </div>
-  );
+  return <Page isLoading={isLoading} error={error} />;
 };

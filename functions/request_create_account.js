@@ -17,19 +17,20 @@ module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return;
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const params = JSON.parse(event.body)
-  const accounts = new lib.db.Accounts()
+  const params = context.params
 
   // Make sure we don't distinguish emails just by whitespace
   params.email = util.args.consolidateEmailString(params.email)
-  const existingUser = await accounts.userByEmail(params.email)
+  const existingUser = await db.accounts.userByEmail(params.email)
 
   if(existingUser) {
     return await lib.util.http.fail(callback, "Email already registered. Please log in!")
   }
 
-  const existingCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
+  const existingCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
 
   if(existingCreateRequest) {
     if(!lib.db.otp.isExpired(existingCreateRequest)) {
@@ -37,8 +38,8 @@ module.exports.handler = async (event, context, callback) => {
     }
   }
 
-  const createRequest = await accounts.tryToCreateAccountRequest(params)
-  const signupUrl = accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
+  const createRequest = await db.accounts.tryToCreateAccountRequest(params)
+  const signupUrl = db.accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
   await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
   return await lib.util.http.succeed(callback, {});

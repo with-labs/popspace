@@ -11,16 +11,16 @@ module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const params = JSON.parse(event.body)
+  const params = context.params
   params.email = util.args.consolidateEmailString(params.email)
-
-  const accounts = new lib.db.Accounts()
 
   const otp = params.otp;
   const email = params.email;
 
-  const result = await accounts.findAndResolveAccountCreateRequest(email, otp)
+  const result = await db.accounts.findAndResolveAccountCreateRequest(email, otp)
   if(result.error != null) {
     return await lib.db.otp.handleAuthFailure(result.error, callback)
   }
@@ -29,8 +29,8 @@ module.exports.handler = async (event, context, callback) => {
   const rooms = new lib.db.Rooms()
   await rooms.generateRoom(userId)
 
-  const session = await accounts.createSession(userId);
-  const token = accounts.tokenFromSession(session)
+  const session = await db.accounts.createSession(userId);
+  const token = db.accounts.tokenFromSession(session)
 
   return await util.http.succeed(callback, {token: token});
 }

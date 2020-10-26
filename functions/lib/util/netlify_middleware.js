@@ -6,6 +6,7 @@ let initialized = false
 let middleware = null
 
 const allowReturnFromEmptyEventLoop = async (event, context) => {
+  // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
   context.callbackWaitsForEmptyEventLoop = false
   return false
 }
@@ -20,12 +21,12 @@ const getUser = async (event, context) => {
   if(!context.params.token) {
     return false
   }
-  const session = await accounts.sessionFromToken(params.token)
+  const session = await db.accounts.sessionFromToken(context.params.token)
   if(!session) {
     return false
   }
   const userId = parseInt(session.user_id)
-  const user = await accounts.userById(userId)
+  const user = await db.accounts.userById(userId)
   if(!user) {
     return false
   }

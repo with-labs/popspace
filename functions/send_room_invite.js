@@ -6,18 +6,18 @@ module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const accounts = new lib.db.Accounts()
-  const user = await lib.util.http.verifySessionAndGetUser(event, callback, accounts)
+  const user = context.user
 
   if(!user) {
     return await lib.util.http.fail(callback, "Must be logged in")
   }
 
-  const params = JSON.parse(event.body)
+  const params = context.params
   params.email = util.args.consolidateEmailString(params.email)
-  const rooms = new lib.db.Rooms()
-  const room = await rooms.roomById(params.roomId)
+  const room = await lib.db.rooms.roomById(params.roomId)
   if(!room) {
     return await lib.util.http.fail(callback, "Non-existent room")
   }
@@ -30,7 +30,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(callback, "Can not invite yourself")
   }
 
-  const invitee = await accounts.userByEmail(params.email)
+  const invitee = await lib.db.accounts.userByEmail(params.email)
   if(invitee) {
     const alreadyMember = await rooms.isMember(invitee.id, room.id)
     if(alreadyMember) {

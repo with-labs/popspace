@@ -249,6 +249,8 @@ const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
   // Parsse JSON body of request and handle errors if malformed
   try {

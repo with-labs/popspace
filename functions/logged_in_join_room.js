@@ -54,8 +54,10 @@ module.exports.handler = async (event, context, callback) => {
 
   if(util.http.failUnlessPost(event, callback)) return;
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const body = JSON.parse(event.body)
+  const body = context.params
   const roomName = body.roomName
   const room = await lib.db.rooms.roomByName(roomName)
 
@@ -67,7 +69,7 @@ module.exports.handler = async (event, context, callback) => {
     )
   }
 
-  const user = await lib.util.http.verifySessionAndGetUser(event, callback, lib.db.accounts)
+  const user = context.user
   if(!user) {
     return await lib.util.http.fail(
       callback,

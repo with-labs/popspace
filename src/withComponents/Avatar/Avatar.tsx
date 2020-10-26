@@ -7,23 +7,30 @@ import { makeStyles } from '@material-ui/core';
 interface IAvatarProps {
   name: string;
   className?: string;
-  size?: number;
+  size?: number | string;
+  baseImageClassName?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
+    overflow: 'visible',
+  },
+  baseImage: {
+    position: 'relative',
+    width: '100%',
+    // idk why this is needed to align them, they're the same size...
+    bottom: -4,
   },
   image: {
     position: 'absolute',
     left: 0,
-    top: 0,
+    bottom: 0,
     width: '100%',
-    height: '100%',
   },
 }));
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, className, size = 100 }) => {
+export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size = 100 }) => {
   const classes = useStyles();
 
   const avatar = useAvatar(name);
@@ -52,18 +59,18 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, size = 100 }) 
     // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
     // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div className={clsx(classes.root, className)} style={{ width: size, height: size }}>
+      <div className={clsx(classes.root, className)} style={{ width: size }}>
+        <img
+          className={clsx(classes.baseImage, baseImageClassName)}
+          style={{ visibility: isBlinking ? 'hidden' : 'visible' }}
+          src={avatar.image}
+          alt="avatar"
+        />
         <img
           className={classes.image}
           style={{ visibility: isBlinking ? 'visible' : 'hidden' }}
           src={avatar.blink}
           alt="avatar-blink"
-        />
-        <img
-          className={classes.image}
-          style={{ visibility: isBlinking ? 'hidden' : 'visible' }}
-          src={avatar.image}
-          alt="avatar"
         />
       </div>
     );

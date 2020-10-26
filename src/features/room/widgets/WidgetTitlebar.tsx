@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
+    overflow: 'hidden',
   },
   controls: {
     display: 'flex',

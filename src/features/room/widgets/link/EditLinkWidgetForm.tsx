@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     flex: '1 1 100px',
     width: '100%',
     resize: 'none',
+    padding: 0,
   },
 }));
 
@@ -63,7 +64,7 @@ export const EditLinkWidgetForm: React.FC<IEditLinkWidgetFormProps> = ({ initial
           // error will display inside submit button (showErrorInside)
           disableErrorState
         />
-        <Box mt={1} mx={2} mb={2}>
+        <Box mt={1}>
           <FormikSubmitButton showErrorInside>{t('widgets.link.addBtn')}</FormikSubmitButton>
         </Box>
       </Form>

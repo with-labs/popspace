@@ -250,6 +250,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
       },
       MuiIconButton: {
         color: 'inherit',
+        disableFocusRipple: true,
+        disableTouchRipple: true,
+        disableRipple: true,
       },
       MuiSvgIcon: {
         fontSize: 'inherit',
@@ -481,6 +484,18 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
         },
         outlined: {
           borderWidth: 2,
+        },
+      },
+      MuiIconButton: {
+        root: {
+          boxShadow: focusRings.idle,
+          transition: transitions.create(['box-shadow', 'background-color', 'color']),
+          '&:focus, &$focused': {
+            boxShadow: focusRings.primary,
+          },
+          '&:active': {
+            backgroundColor: palette.grey[50],
+          },
         },
       },
       MuiCircularProgress: {

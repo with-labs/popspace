@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Box, IconButton, makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { DraggableHandle } from '../DraggableHandle';
 import { DeleteIcon } from '../../../withComponents/icons/DeleteIcon';
+import { WidgetTitlebarButton } from './WidgetTitlebarButton';
+import { useTranslation } from 'react-i18next';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;
@@ -35,13 +37,14 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     fontSize: theme.typography.pxToRem(18),
     '& + &': {
-      marginLeft: theme.spacing(0.25),
+      marginLeft: theme.spacing(0.5),
     },
   },
 }));
 
 export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children, className, onClose, ...rest }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <DraggableHandle>
@@ -58,9 +61,9 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children,
         <div className={classes.title}>{title}</div>
         <div className={classes.controls}>{children}</div>
         <div className={classes.controls}>
-          <IconButton onClick={onClose} size="small" aria-label="close widget" color="inherit">
+          <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
             <DeleteIcon fontSize="small" color="inherit" />
-          </IconButton>
+          </WidgetTitlebarButton>
         </div>
       </Box>
     </DraggableHandle>

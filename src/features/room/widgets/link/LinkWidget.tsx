@@ -44,7 +44,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
     return (
       <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={200} maxWidth={300} maxHeight={500}>
         <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />
-        <WidgetContent disablePadding>
+        <WidgetContent>
           <EditLinkWidgetForm onSave={saveWidget} />
         </WidgetContent>
       </WidgetFrame>

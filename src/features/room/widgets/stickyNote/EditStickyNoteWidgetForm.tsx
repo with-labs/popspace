@@ -1,5 +1,5 @@
 import { makeStyles, Box } from '@material-ui/core';
-import { FastField, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
 import { StickyNoteWidgetData } from '../../../../types/room';
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flex: `1 1 160px`,
     width: '100%',
     resize: 'none',
+    padding: 0,
   },
 }));
 
@@ -48,7 +49,7 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
           autoFocus
           disableErrorState
         />
-        <Box mt={1} mx={2} mb={2}>
+        <Box mt={1}>
           <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
         </Box>
       </Form>

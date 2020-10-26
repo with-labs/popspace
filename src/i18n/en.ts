@@ -123,6 +123,7 @@ export default {
         name: 'Whiteboard',
         title: 'Whiteboard',
         doubleTapEraserToClear: 'Double tap Eraser to clear',
+        export: 'Save whiteboard as an image',
       },
       youtube: {
         name: 'YouTube',
@@ -138,9 +139,14 @@ export default {
         addWidgetTitle: 'Add a Sticky Note',
         publishedTitle: 'Sticky Note',
         quickActionTitle: 'Add a Sticky Note',
+        quickAddButton: 'Add another note',
       },
       unknown: {
         name: 'Accessory',
+      },
+      common: {
+        close: 'Remove accessory',
+        mutedForYou: 'Muted for you',
       },
     },
     error: {

@@ -1,4 +1,4 @@
-import { makeStyles, IconButton, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
@@ -13,6 +13,7 @@ import { useWhiteboard } from '../../../../withComponents/Whiteboard/useWhiteboa
 import { WhiteboardTools } from '../../../../withComponents/Whiteboard/WhiteboardTools';
 import { WhiteboardState } from '../../../../withComponents/Whiteboard/types';
 import { ERASER_COLOR } from '../../../../withComponents/Whiteboard/constants';
+import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 
 export interface IWhiteboardWidgetProps {
   state: WhiteboardWidgetState;
@@ -61,9 +62,9 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   return (
     <WidgetFrame color="snow" widgetId={state.id} minWidth={720} minHeight={480} maxWidth={720}>
       <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />} onClose={onClose}>
-        <IconButton size="small" onClick={handleExport}>
+        <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />
-        </IconButton>
+        </WidgetTitlebarButton>
       </WidgetTitlebar>
       <WidgetContent className={classes.root} disablePadding>
         <Whiteboard {...whiteboardProps} />

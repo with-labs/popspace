@@ -55,12 +55,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <StickyNoteFrame
-        title={t('widgets.stickyNote.addWidgetTitle')}
-        onClose={onClose}
-        widgetId={state.id}
-        disablePadding
-      >
+      <StickyNoteFrame title={t('widgets.stickyNote.addWidgetTitle')} onClose={onClose} widgetId={state.id}>
         <EditStickyNoteWidgetForm initialValues={state.data} onSave={saveWidget} />
       </StickyNoteFrame>
     );

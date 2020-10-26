@@ -12,5 +12,5 @@
 - [ ] Use "Squash and Merge" strategy
 - [ ] Ensure the commit message is meaningful as a change log for your PR!
 
-## BEFORE YUO MERGE TO PRODUCTION
-- [] use "merge pull request" strategy. do not squash commits for prod releases.
+## BEFORE YOU MERGE TO PRODUCTION
+- [ ] use "merge pull request" strategy. do not squash commits for prod releases.

@@ -138,6 +138,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
     });
 
+    const mainContentStyles = useSpring({
+      // reduce border radius to align based on border width
+      borderRadius: isVideoOn ? 28 : '100%',
+    });
+
     // track whether this user is speaking (updated using audio track volume monitoring)
     // this is a separate spring so we can configure the physics to be more responsive
     const speakingRingStyles = useSpring({
@@ -173,7 +178,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         onPointerEnter={onHover}
         onPointerLeave={onUnHover}
       >
-        <animated.div className={classes.mainContent} style={{ borderRadius: rootStyles.borderRadius }}>
+        <animated.div className={classes.mainContent} style={mainContentStyles}>
           {/* Still a typing issue with react-spring :( */}
           <animated.div className={classes.background} style={graphicStyles as any}>
             {cameraTrack && (

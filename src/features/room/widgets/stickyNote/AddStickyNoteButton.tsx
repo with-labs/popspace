@@ -1,4 +1,3 @@
-import { IconButton } from '@material-ui/core';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { addVectors } from '../../../../utils/math';
@@ -9,6 +8,8 @@ import * as roomSlice from '../../roomSlice';
 import { useRoomViewport } from '../../RoomViewport';
 import { WidgetType } from '../../../../types/room';
 import { AddIcon } from '../../../../withComponents/icons/AddIcon';
+import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
+import { useTranslation } from 'react-i18next';
 
 export interface IAddStickyNoteButtonProps {
   /**
@@ -21,6 +22,7 @@ export interface IAddStickyNoteButtonProps {
 }
 
 export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ parentId }) => {
+  const { t } = useTranslation();
   const localParticipant = useLocalParticipant();
   const localDisplayName = useParticipantDisplayIdentity(localParticipant);
 
@@ -56,8 +58,8 @@ export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ paren
   }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipant.sid, toWorldCoordinate]);
 
   return (
-    <IconButton onClick={handleCreateNew} aria-label="add new note" size="small" color="inherit">
+    <WidgetTitlebarButton onClick={handleCreateNew} aria-label={t('widgets.stickyNote.quickAddButton')}>
       <AddIcon color="inherit" fontSize="small" />
-    </IconButton>
+    </WidgetTitlebarButton>
   );
 };

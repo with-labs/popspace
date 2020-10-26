@@ -2,6 +2,7 @@ import * as React from 'react';
 import { IconButton, makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 export interface IMuteButtonProps {
   isMuted: boolean;
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const MuteButton: React.FC<IMuteButtonProps> = (props) => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const textStyles = useSpring({
     width: props.isMuted ? 100 : 0,
@@ -37,7 +39,7 @@ export const MuteButton: React.FC<IMuteButtonProps> = (props) => {
   return (
     <div className={clsx(classes.root, props.isMuted && classes.rootMuted, props.className)}>
       <animated.div style={{ overflow: 'hidden', textOverflow: 'clip', whiteSpace: 'nowrap', ...textStyles }}>
-        Muted for you
+        {t('widgets.common.mutedForYou')}
       </animated.div>
       <IconButton size="small" onClick={props.onClick}>
         {props.isPlaying ? props.isMuted ? <StoppedEqualizer /> : <PlayingEqualizer /> : <PausedEqualizer />}

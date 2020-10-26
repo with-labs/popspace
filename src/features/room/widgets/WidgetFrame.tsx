@@ -22,8 +22,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
     background: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    borderRadius: 10,
     overflow: 'hidden',
     cursor: 'default',
     display: 'flex',
@@ -64,6 +62,7 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({
       <ThemeProvider theme={theme}>
         <Paper
           {...props}
+          elevation={1}
           style={{
             minWidth,
             minHeight,

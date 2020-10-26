@@ -6,8 +6,15 @@ import { createSelector } from '@reduxjs/toolkit';
 import { vectorDistance } from '../../utils/math';
 import { useMemo } from 'react';
 
-// in world space coordinates
-const MAX_RANGE = 1000;
+// in world space coordinates - this is the farthest possible distance
+// you can hear someone / something from - even if very faintly.
+// To allow people to find quiet spaces, we probably want this to be
+// no larger than 3/4 the room size, maybe smaller
+const MAX_RANGE = 900;
+
+function computeVolumeFalloff(percentOfMaxRange: number) {
+  return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);
+}
 
 export function useSpatialAudioVolume(objectId: string) {
   const useSpatialAudio = useSelector(selectors.selectUseSpatialAudio);
@@ -44,18 +51,12 @@ export function useSpatialAudioVolume(objectId: string) {
   if (!useSpatialAudio) {
     volume = 1;
     // if localParticipant is in a huddle with participant, participant volume should be max
-  } else if (dist > 0.69) {
-    volume = 0;
-    // If distance reaches the peak or higher of the cosine curve, volume is max
-  } else if (dist < 0.167) {
-    volume = 1;
-    // If 'else' block reached, calculate volume based on cosine curve
   } else {
     // The equation used here is arbitrary. It was selected because the curve
     // it produces matches the design team's desire for how user's experince
     // audio in the space of the room. Look at the link above to see the
     // curve generated (desmos.com link).
-    volume = Math.cos(6 * dist - 1) / 2 + 0.5;
+    volume = computeVolumeFalloff(dist);
   }
 
   return volume;

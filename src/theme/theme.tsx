@@ -179,8 +179,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
     },
   });
 
-  console.log(typography.fontSize, typography.pxToRem(16));
-
   const finalShadows = generateShadows();
   finalShadows[1] = mainShadows.surface;
   finalShadows[2] = mainShadows.modal;

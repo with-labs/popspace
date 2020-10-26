@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
 import { Link, Box } from '@material-ui/core';
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 
@@ -48,7 +48,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           } else {
             // we dont have a valid token, so redirect to sign in and remove old token
             localStorage.removeItem(USER_SESSION_TOKEN);
-            history.push(Routes.SIGN_IN);
+            history.push(RouteNames.SIGN_IN);
           }
         })
         .catch((e: any) => {
@@ -61,7 +61,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
         });
     } else {
       // we arent logged in so redirect to the sign in page
-      history.push(Routes.SIGN_IN);
+      history.push(RouteNames.SIGN_IN);
     }
   }, [history]);
 

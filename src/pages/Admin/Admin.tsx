@@ -5,7 +5,7 @@ import { Button, TextField } from '@material-ui/core';
 import { Header } from '../../withComponents/Header/Header';
 import * as Sentry from '@sentry/react';
 import Api from '../../utils/api';
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 
@@ -35,7 +35,7 @@ export const Admin: React.FC<IAdminProps> = (props) => {
           if (result.success && result.profile.user.admin) {
             setIsLoading(false);
           } else {
-            history.push(Routes.ROOT);
+            history.push(RouteNames.ROOT);
           }
         })
         .catch((e: any) => {
@@ -48,7 +48,7 @@ export const Admin: React.FC<IAdminProps> = (props) => {
         });
     } else {
       // we arent logged in so redirect to the sign in page
-      history.push(Routes.SIGN_IN);
+      history.push(RouteNames.SIGN_IN);
     }
   }, [history, sessionToken]);
 

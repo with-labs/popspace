@@ -1,4 +1,4 @@
-export enum Routes {
+export enum RouteNames {
   ROOT = '/',
   SIGN_UP = '/signup',
   SIGN_IN = '/signin',

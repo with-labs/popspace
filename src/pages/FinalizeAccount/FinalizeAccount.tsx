@@ -10,7 +10,7 @@ import useQuery from '../../withHooks/useQuery/useQuery';
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
 
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { USER_SESSION_TOKEN } from '../../constants/User';
@@ -53,7 +53,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     setIsLoading(true);
     // if opt, email , or the claim id is empty, redirect to root
     if (!otp || !email || !claimId) {
-      history.push(Routes.ROOT);
+      history.push(RouteNames.ROOT);
     } else {
       // check to see if the room has already been claimed
       const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
@@ -64,7 +64,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
               window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
             }
             // redirect to the dashboard if someone is already logged in and the room is claimed
-            history.push(Routes.ROOT);
+            history.push(RouteNames.ROOT);
           } else {
             if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
               // the room is unclaimed, but the user isnt created,

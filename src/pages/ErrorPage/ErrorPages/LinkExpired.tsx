@@ -1,6 +1,6 @@
 import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
-import { Routes } from '../../../constants/Routes';
+import { RouteNames } from '../../../constants/RouteNames';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LinkBrokenImg from '../images/Link_Broken.png';
@@ -15,7 +15,7 @@ export const LinkExpired: React.FC<ILinkExpiredProps> = (props) => {
   const { t } = useTranslation();
 
   const onButtonClick = () => {
-    history.push(Routes.ROOT);
+    history.push(RouteNames.ROOT);
   };
 
   return (

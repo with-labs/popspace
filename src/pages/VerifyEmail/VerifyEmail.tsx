@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
 import useQuery from '../../withHooks/useQuery/useQuery';
@@ -25,14 +25,14 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
   useEffect(() => {
     setIsLoading(true);
     if (!otp || !email) {
-      history.push(Routes.ROOT);
+      history.push(RouteNames.ROOT);
     } else {
       Api.completeSignup(otp, email)
         .then((result: any) => {
           setIsLoading(false);
           if (result.succuess) {
             window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
-            history.push(Routes.ROOT);
+            history.push(RouteNames.ROOT);
           } else {
             setError({
               errorType: ErrorTypes.LINK_EXPIRED,

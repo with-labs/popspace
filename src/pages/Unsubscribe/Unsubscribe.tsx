@@ -13,7 +13,7 @@ import { ErrorInfo } from '../../types/api';
 import * as Sentry from '@sentry/react';
 import { Page } from '../../Layouts/Page/Page';
 
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import SadBlobby from './images/sadblobby.png';
 
 interface IUnsubscribeProps {}
@@ -95,7 +95,7 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
       mode: 'popup',
       autoClose: 3,
       onClose: () => {
-        history.push(Routes.ROOT);
+        history.push(RouteNames.ROOT);
       },
     });
 

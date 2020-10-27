@@ -6,7 +6,7 @@ import { LinkWidget } from './link/LinkWidget';
 import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
 import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
-import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { WidgetState, WidgetType } from '../../../types/room';
 
 export interface IWidgetProps {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { selectors } from '../roomSlice';
-import { Avatar } from '../../../withComponents/Avatar/Avatar';
+import { Avatar } from '../../../components/Avatar/Avatar';
 
 export interface IPersonAvatarProps {
   personId: string;

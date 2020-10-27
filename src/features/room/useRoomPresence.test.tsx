@@ -6,13 +6,13 @@ import { createStore } from 'redux';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { fuzzVector } from '../../utils/math';
 import { actions } from './roomSlice';
-import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
-import { randomAvatar } from '../../withComponents/AvatarSelect/options';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { randomAvatar } from '../../components/AvatarSelect/options';
 
 jest.mock('./CoordinatedDispatchProvider');
 jest.mock('../../utils/math');
-jest.mock('../../withComponents/AvatarSelect/options');
-jest.mock('../../withHooks/useLocalParticipant/useLocalParticipant');
+jest.mock('../../components/AvatarSelect/options');
+jest.mock('../../hooks/useLocalParticipant/useLocalParticipant');
 
 const POSITION = { x: 10, y: -5 };
 (fuzzVector as jest.Mock).mockReturnValue(POSITION);

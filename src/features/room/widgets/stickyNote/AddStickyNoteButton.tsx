@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { addVectors } from '../../../../utils/math';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
 import * as roomSlice from '../../roomSlice';
 import { useRoomViewport } from '../../RoomViewport';
 import { WidgetType } from '../../../../types/room';
-import { AddIcon } from '../../../../withComponents/icons/AddIcon';
+import { AddIcon } from '../../../../components/icons/AddIcon';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
 

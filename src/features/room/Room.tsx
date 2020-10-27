@@ -1,6 +1,6 @@
 import React from 'react';
-import { SharedScreenViewer } from '../../withComponents/SharedScreenViewer/SharedScreenViewer';
-import { ErrorBoundary } from '../../withComponents/ErrorBoundary/ErrorBoundary';
+import { SharedScreenViewer } from '../../components/SharedScreenViewer/SharedScreenViewer';
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
 import { Person } from './people/Person';

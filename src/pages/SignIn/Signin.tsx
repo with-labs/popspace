@@ -4,7 +4,7 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Page } from '../../Layouts/Page/Page';
 
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
 import Api from '../../utils/api';

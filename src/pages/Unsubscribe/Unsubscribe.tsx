@@ -7,7 +7,7 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, CircularProgress, Box } from '@material-ui/core';
 import Api from '../../utils/api';
-import useQuery from '../../withHooks/useQuery/useQuery';
+import useQuery from '../../hooks/useQuery/useQuery';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import * as Sentry from '@sentry/react';

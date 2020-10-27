@@ -1,7 +1,7 @@
 import { MenuItem, TextField } from '@material-ui/core';
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useAVSources } from '../../withHooks/useAVSources/useAVSources';
+import { useAVSources } from '../../hooks/useAVSources/useAVSources';
 import * as preferences from './preferencesSlice';
 
 export interface ICameraSelectProps {

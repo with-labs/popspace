@@ -6,11 +6,10 @@ import { WallpaperGrid } from './WallpaperGrid';
 import { CustomWallpaperForm } from './CustomWallpaperForm';
 import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
 import { useTranslation } from 'react-i18next';
-
-import { Modal } from '../../../withComponents/Modal/Modal';
-import { ModalPane } from '../../../withComponents/Modal/ModalPane';
-import { ModalTitleBar } from '../../../withComponents/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../withComponents/Modal/ModalContentWrapper';
+import { Modal } from '../../../components/Modal/Modal';
+import { ModalPane } from '../../../components/Modal/ModalPane';
+import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 
 export const WallpaperModal = () => {
   const { t } = useTranslation();

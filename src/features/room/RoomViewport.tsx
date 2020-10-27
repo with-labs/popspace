@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { clamp, clampVector } from '../../utils/math';
-import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/core';

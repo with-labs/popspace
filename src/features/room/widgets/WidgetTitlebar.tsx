@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Box, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { DraggableHandle } from '../DraggableHandle';
-import { DeleteIcon } from '../../../withComponents/icons/DeleteIcon';
+import { DeleteIcon } from '../../../components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
 

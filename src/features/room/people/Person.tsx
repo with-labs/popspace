@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Draggable } from '../Draggable';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
-import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import * as Sentry from '@sentry/react';
 import { makeStyles } from '@material-ui/core';
 import { createSelector } from '@reduxjs/toolkit';

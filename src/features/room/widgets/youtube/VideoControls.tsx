@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@material-ui/core';
 import clsx from 'clsx';
-import { PauseIcon } from '../../../../withComponents/icons/PauseIcon';
-import { PlayIcon } from '../../../../withComponents/icons/PlayIcon';
+import { PauseIcon } from '../../../../components/icons/PauseIcon';
+import { PlayIcon } from '../../../../components/icons/PlayIcon';
 
 export enum PlayState {
   Playing,

@@ -1,5 +1,5 @@
 import { EmojiData } from 'emoji-mart';
-import { WhiteboardState } from '../withComponents/Whiteboard/types';
+import { WhiteboardState } from '../components/Whiteboard/types';
 
 /**
  * Various kinds of things that can be in rooms

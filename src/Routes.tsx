@@ -10,9 +10,9 @@ import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
-import { useRoomName } from './withHooks/useRoomName/useRoomName';
+import { useRoomName } from './hooks/useRoomName/useRoomName';
 import { useAppState } from './state';
-import useQuery from './withHooks/useQuery/useQuery';
+import useQuery from './hooks/useQuery/useQuery';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 export interface IRoutesProps {}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { WithModal } from '../../withComponents/WithModal/WithModal';
+import { WithModal } from '../../components/WithModal/WithModal';
 import { useTranslation } from 'react-i18next';
 
 export const WidgetsFallback = () => {

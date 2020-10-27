@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
 import { useAddAccessory } from './useAddAccessory';
-import { AccessoryIcon } from '../../../../withComponents/icons/AccessoryIcon';
+import { AccessoryIcon } from '../../../../components/icons/AccessoryIcon';
 import { WidgetType, WidgetData } from '../../../../types/room';
-import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useTranslation } from 'react-i18next';
 
 const nameKeys: Record<WidgetType, string> = {

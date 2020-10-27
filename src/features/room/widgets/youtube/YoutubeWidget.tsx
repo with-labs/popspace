@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import YouTube from 'react-youtube';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';

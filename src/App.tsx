@@ -5,7 +5,7 @@ import { mandarin as theme } from './theme/theme';
 import { BrowserRouter as Router } from 'react-router-dom';
 import AppStateProvider from './state';
 import { Routes } from './Routes';
-import { useAnalyticsUserIdentity } from './withHooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
+import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
 
 export interface IAppProps {}
 

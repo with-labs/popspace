@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import JoinRoom from '../withComponents/JoinRoom/JoinRoom';
+import JoinRoom from '../components/JoinRoom/JoinRoom';
 import ReconnectingNotification from '../components/ReconnectingNotification/ReconnectingNotification';
 import { Room } from '../features/room/Room';
-import { ErrorBoundary } from '../withComponents/ErrorBoundary/ErrorBoundary';
-import { WithModal } from '../withComponents/WithModal/WithModal';
+import { ErrorBoundary } from '../components/ErrorBoundary/ErrorBoundary';
+import { WithModal } from '../components/WithModal/WithModal';
 import useRoomState from '../hooks/useRoomState/useRoomState';
 import { Provider } from 'react-redux';
 import store from '../state/store';
@@ -14,7 +14,7 @@ import { VideoProvider } from '../components/VideoProvider';
 import { ConnectOptions } from 'twilio-video';
 import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
 import { MediaDeviceSynchronizer } from '../features/preferences/MediaDeviceSynchronizer';
-import { useCanEnterRoom } from '../withHooks/useCanEnterRoom/useCanEnterRoom';
+import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.

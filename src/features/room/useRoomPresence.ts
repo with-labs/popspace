@@ -1,10 +1,10 @@
-import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectors, actions } from './roomSlice';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { fuzzVector } from '../../utils/math';
-import { randomAvatar } from '../../withComponents/AvatarSelect/options';
+import { randomAvatar } from '../../components/AvatarSelect/options';
 
 /**
  * Enforces that the active local user is always

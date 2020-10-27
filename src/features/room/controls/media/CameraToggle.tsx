@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import { CameraOnIcon } from '../../../../withComponents/icons/CameraOnIcon';
-import { CameraOffIcon } from '../../../../withComponents/icons/CameraOffIcon';
+import { CameraOnIcon } from '../../../../components/icons/CameraOnIcon';
+import { CameraOffIcon } from '../../../../components/icons/CameraOffIcon';
 import useLocalVideoToggle from '../../../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 export const CameraToggle = (props: { className?: string }) => {

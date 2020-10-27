@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useAddAccessory } from './useAddAccessory';
 import { WidgetType, WidgetData } from '../../../../types/room';
-import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 
 export enum QuickActionKind {
   AddAccessory,

@@ -5,9 +5,9 @@ import styles from './Signup.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
-import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
+import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorInfo } from '../../types/api';
 import { Links } from '../../constants/Links';

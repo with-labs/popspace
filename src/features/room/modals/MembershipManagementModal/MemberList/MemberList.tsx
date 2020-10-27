@@ -15,9 +15,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { DeleteIcon } from '../../../../../withComponents/icons/DeleteIcon';
-import { EmailIcon } from '../../../../../withComponents/icons/EmailIcon';
-import { OptionsIcon } from '../../../../../withComponents/icons/OptionsIcon';
+import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
+import { EmailIcon } from '../../../../../components/icons/EmailIcon';
+import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
 
 interface IMemberListProps {
   members: any[];

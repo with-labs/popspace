@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
-import { FormikTextField } from '../../../../withComponents/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
 import { YoutubeWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';

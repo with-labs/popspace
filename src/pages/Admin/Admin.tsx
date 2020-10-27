@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import * as Sentry from '@sentry/react';
 import Api from '../../utils/api';
 import { RouteNames } from '../../constants/RouteNames';

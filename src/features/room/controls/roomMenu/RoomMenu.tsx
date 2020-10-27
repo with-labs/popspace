@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Button, Menu, makeStyles } from '@material-ui/core';
-import { DropdownIcon } from '../../../../withComponents/icons/DropdownIcon';
+import { DropdownIcon } from '../../../../components/icons/DropdownIcon';
 import { RoomSettingsMenuItem } from './RoomSettingsMenuItem';
-import { useRoomName } from '../../../../withHooks/useRoomName/useRoomName';
+import { useRoomName } from '../../../../hooks/useRoomName/useRoomName';
 
 const useStyles = makeStyles((theme) => ({
   button: {

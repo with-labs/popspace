@@ -18,7 +18,7 @@ import {
   RemoteTrackPublication,
   Track,
 } from 'twilio-video';
-import { useSpatialAudioVolume } from '../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;

@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { AddAccessoryMenuItem } from './AddAccessoryMenuItem';
 import { WidgetType } from '../../../../types/room';
 import palette from '../../../../theme/palette';
-import { PlusLargeIcon } from '../../../../withComponents/icons/PlusLargeIcon';
+import { PlusLargeIcon } from '../../../../components/icons/PlusLargeIcon';
 
 export interface IAddAccessoryMenuProps {
   className?: string;

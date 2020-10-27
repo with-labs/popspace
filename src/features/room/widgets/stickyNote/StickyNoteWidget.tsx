@@ -1,7 +1,7 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';

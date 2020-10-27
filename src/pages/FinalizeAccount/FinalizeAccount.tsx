@@ -5,7 +5,7 @@ import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import useQuery from '../../withHooks/useQuery/useQuery';
+import useQuery from '../../hooks/useQuery/useQuery';
 
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
@@ -15,10 +15,10 @@ import { Links } from '../../constants/Links';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
 import { Button, TextField, Link } from '@material-ui/core';
-import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
+import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation } from 'react-i18next';

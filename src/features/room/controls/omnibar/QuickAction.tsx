@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ListItemIcon, ListItemText } from '@material-ui/core';
 import { QuickAction as QuickActionData, QuickActionKind, AddAccessoryQuickAction } from './useQuickAction';
-import { AccessoryIcon } from '../../../../withComponents/icons/AccessoryIcon';
+import { AccessoryIcon } from '../../../../components/icons/AccessoryIcon';
 
 export interface IQuickActionProps {
   value: QuickActionData;

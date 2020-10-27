@@ -1,10 +1,10 @@
 import { makeStyles, Box } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
+import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { StickyNoteWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
-import { FormikBorderlessTextarea } from '../../../../withComponents/fieldBindings/FormikBorderlessTextarea';
+import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
 
 type RequiredStickyNoteData = Omit<StickyNoteWidgetData, 'author'>;
 

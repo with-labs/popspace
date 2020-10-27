@@ -9,14 +9,14 @@ import {
   Menu,
 } from '@material-ui/core';
 import { Emoji, EmojiData, Picker } from 'emoji-mart';
-import { SizeTransition } from '../../../withComponents/SizeTransition/SizeTransition';
+import { SizeTransition } from '../../../components/SizeTransition/SizeTransition';
 import clsx from 'clsx';
-import { EmojiIcon } from '../../../withComponents/icons/EmojiIcon';
+import { EmojiIcon } from '../../../components/icons/EmojiIcon';
 import { useTranslation } from 'react-i18next';
 import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
 import { actions } from '../roomSlice';
 import 'emoji-mart/css/emoji-mart.css';
-import { CloseIcon } from '../../../withComponents/icons/CloseIcon';
+import { CloseIcon } from '../../../components/icons/CloseIcon';
 
 export interface IPersonStatusProps {
   emoji?: string | EmojiData | null;

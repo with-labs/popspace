@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
-import useQuery from '../../withHooks/useQuery/useQuery';
+import useQuery from '../../hooks/useQuery/useQuery';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';

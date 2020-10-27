@@ -10,12 +10,12 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { DashboardItem } from './DashboardItem/DashboardItem';
 import { RoomSummary } from './RoomSummary/RoomSummary';
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
 import { Button } from '@material-ui/core';
-import { WithModal } from '../../withComponents/WithModal/WithModal';
+import { WithModal } from '../../components/WithModal/WithModal';
 import { useTranslation } from 'react-i18next';
 import { Page } from '../../Layouts/Page/Page';
 

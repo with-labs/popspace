@@ -5,13 +5,12 @@ import { CameraSelect } from './CameraSelect';
 import { MicSelect } from './MicSelect';
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 import { PersonAvatar } from '../room/people/PersonAvatar';
-import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { useTranslation } from 'react-i18next';
-
-import { Modal } from '../../withComponents/Modal/Modal';
-import { ModalPane } from '../../withComponents/Modal/ModalPane';
-import { ModalTitleBar } from '../../withComponents/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../withComponents/Modal/ModalContentWrapper';
+import { Modal } from '../../components/Modal/Modal';
+import { ModalPane } from '../../components/Modal/ModalPane';
+import { ModalTitleBar } from '../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../components/Modal/ModalContentWrapper';
 
 export interface IAudioVideoSettingsModalProps {
   isOpen: boolean;

@@ -3,16 +3,16 @@ import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { WhiteboardWidgetState } from '../../../../types/room';
-import { Whiteboard } from '../../../../withComponents/Whiteboard/Whiteboard';
+import { Whiteboard } from '../../../../components/Whiteboard/Whiteboard';
 import { useSaveWidget } from '../useSaveWidget';
 import { useExport } from './useExport';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { SaveIcon } from '../../../../withComponents/icons/SaveIcon';
-import { useWhiteboard } from '../../../../withComponents/Whiteboard/useWhiteboard';
-import { WhiteboardTools } from '../../../../withComponents/Whiteboard/WhiteboardTools';
-import { WhiteboardState } from '../../../../withComponents/Whiteboard/types';
-import { ERASER_COLOR } from '../../../../withComponents/Whiteboard/constants';
+import { SaveIcon } from '../../../../components/icons/SaveIcon';
+import { useWhiteboard } from '../../../../components/Whiteboard/useWhiteboard';
+import { WhiteboardTools } from '../../../../components/Whiteboard/WhiteboardTools';
+import { WhiteboardState } from '../../../../components/Whiteboard/types';
+import { ERASER_COLOR } from '../../../../components/Whiteboard/constants';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 
 export interface IWhiteboardWidgetProps {

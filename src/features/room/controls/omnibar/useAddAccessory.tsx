@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { addVectors } from '../../../../utils/math';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
 import { useRoomViewport } from '../../RoomViewport';
 import { actions as roomActions } from '../../roomSlice';

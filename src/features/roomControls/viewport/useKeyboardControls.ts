@@ -1,4 +1,4 @@
-import { Vector2 } from '../../../../types/spatials';
+import { Vector2 } from '../../../types/spatials';
 import { useRef, useEffect, useState, useCallback, KeyboardEvent } from 'react';
 
 const CONTROLLED_KEYS = ['=', '+', '-', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];

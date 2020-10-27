@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useRoomViewport } from '../../RoomViewport';
+import { useRoomViewport } from '../../room/RoomViewport';
 import { Box, makeStyles, IconButton, Fab } from '@material-ui/core';
 import clsx from 'clsx';
-import { PlusIcon } from '../../../../components/icons/PlusIcon';
-import { MinusIcon } from '../../../../components/icons/MinusIcon';
+import { PlusIcon } from '../../../components/icons/PlusIcon';
+import { MinusIcon } from '../../../components/icons/MinusIcon';
 
 const DEFAULT_ZOOM_INCREMENT = 0.2;
 

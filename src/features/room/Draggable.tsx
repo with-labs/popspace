@@ -102,6 +102,10 @@ export const DraggableContext = React.createContext<{
   disableResize: false,
 });
 
+const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.KeyboardEvent) => {
+  ev.stopPropagation();
+};
+
 /**
  * A Draggable is a generic container for any element within a Room which
  * can be moved or resized. Wrap any other component in Draggable to make
@@ -352,6 +356,14 @@ export const Draggable: React.FC<IDraggableProps> = ({
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
         className={styles.root}
+        onMouseDown={stopPropagation}
+        onMouseMove={stopPropagation}
+        onMouseUp={stopPropagation}
+        onPointerDown={stopPropagation}
+        onPointerMove={stopPropagation}
+        onPointerUp={stopPropagation}
+        onKeyDown={stopPropagation}
+        onKeyUp={stopPropagation}
       >
         <div
           // Until the content has been measured (or re-measured), we render it in an absolute

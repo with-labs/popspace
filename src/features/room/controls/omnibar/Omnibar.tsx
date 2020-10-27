@@ -3,7 +3,8 @@ import { makeStyles, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AddAccessoryMenu } from './AddAccessoryMenu';
 import { QuickAction } from './QuickAction';
-import { useQuickAction, QuickAction as QuickActionData } from './useQuickAction';
+import { useQuickAction } from './quickActions/useQuickAction';
+import { QuickAction as QuickActionData } from './quickActions/types';
 import { QuickActionEmpty } from './QuickActionEmpty';
 import { useTranslation } from 'react-i18next';
 

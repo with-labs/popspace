@@ -125,6 +125,7 @@ export default {
         urlLabel: 'Url',
         addBtn: 'Add a link',
         errorInvalidUrl: 'Not a URL',
+        quickActionTitle: 'Add a Link',
       },
       whiteboard: {
         name: 'Whiteboard',
@@ -137,6 +138,7 @@ export default {
         title: 'YouTube',
         urlLabel: 'YouTube Url',
         addBtn: 'Add a video',
+        quickActionTitle: 'Add a Video',
       },
       stickyNote: {
         name: 'Sticky Note',
@@ -197,7 +199,7 @@ export default {
       },
       omnibar: {
         // TODO: update when we support more quick actions
-        placeholder: 'Add a Sticky Note',
+        placeholder: 'Type or paste to add',
         label: 'Quick action bar',
       },
     },

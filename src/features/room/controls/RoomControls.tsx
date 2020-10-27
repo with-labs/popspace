@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function RoomControls(props: IRoomControlsProps) {
+export const RoomControls = React.memo<IRoomControlsProps>((props) => {
   const classes = useStyles();
 
   return (
@@ -63,4 +63,4 @@ export function RoomControls(props: IRoomControlsProps) {
       </Box>
     </>
   );
-}
+});

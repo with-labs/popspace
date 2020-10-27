@@ -1,4 +1,4 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, nanoid, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { EmojiData } from 'emoji-mart';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { RootState } from '../../state/store';
@@ -191,10 +191,9 @@ const roomSlice = createSlice({
       person.viewingScreenSid = payload.screenViewSid;
     },
     updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
-      const person = state.people[payload.id];
-      if (!person) return;
+      if (!state.people[payload.id]) return;
 
-      person.isSpeaking = payload.isSpeaking;
+      state.people[payload.id].isSpeaking = payload.isSpeaking;
     },
     setIsWallpaperModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isWallpaperModalOpen = payload.isOpen;
@@ -204,11 +203,16 @@ const roomSlice = createSlice({
 
 export const { actions, reducer } = roomSlice;
 
+const selectWidgets = (state: RootState) => state.room.widgets;
+const selectPeople = (state: RootState) => state.room.people;
+
 export const selectors = {
   createPositionSelector: (objectId: string) => (state: RootState) => state.room.positions[objectId]?.position || null,
-  selectWidgetIds: (state: RootState) => Object.keys(state.room.widgets),
+  // memoized so that an identical widgets map doesn't produce different arrays from Object.keys
+  selectWidgetIds: createSelector(selectWidgets, (widgets) => Object.keys(widgets)),
   createWidgetSelector: (widgetId: string) => (state: RootState) => state.room.widgets[widgetId] || null,
-  selectPeopleIds: (state: RootState) => Object.keys(state.room.people),
+  // memoized so that an identical people map doesn't produce different arrays from Object.keys
+  selectPeopleIds: createSelector(selectPeople, (people) => Object.keys(people)),
   createPersonSelector: (participantId: string) => (state: RootState) => state.room.people[participantId] || null,
   selectRoomBounds: (state: RootState) => state.room.bounds,
   selectHasWhiteboard: (state: RootState) =>

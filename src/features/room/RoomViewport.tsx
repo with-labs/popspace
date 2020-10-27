@@ -16,6 +16,8 @@ export const RoomViewportContext = React.createContext<null | {
   onObjectDragEnd: () => void;
   pan: (delta: Vector2) => void;
   zoom: (delta: number) => void;
+  width: number;
+  height: number;
 }>(null);
 
 export function useRoomViewport() {
@@ -292,8 +294,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onObjectDragEnd,
       pan: doPan,
       zoom: doZoom,
+      width: bounds.width,
+      height: bounds.height,
     }),
-    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom]
+    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height]
   );
 
   const { props: keyControlProps, isActive: isKeyboardActive } = useKeyboardControls({

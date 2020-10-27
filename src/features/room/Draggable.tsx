@@ -14,6 +14,7 @@ import { RootState } from '../../state/store';
 import { throttle } from 'lodash';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import clsx from 'clsx';
+import { AutoPan } from './AutoPan';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -214,6 +215,31 @@ export const Draggable: React.FC<IDraggableProps> = ({
     }
   }, [position.x, position.y, measuredWidth, measuredHeight, set, grabbing]);
 
+  const grabDisplacementRef = React.useRef<Vector2 | null>(null);
+
+  // create a private instance of AutoPan to control the automatic panning behavior
+  // that occurs as the user drags an item near the edge of the screen.
+  const autoPan = React.useMemo(() => new AutoPan(viewport.pan), [viewport.pan]);
+  // we subscribe to auto-pan events so we can update the position
+  // of the object as the viewport moves
+  const { toWorldCoordinate } = viewport;
+  React.useEffect(() => {
+    const handleAutoPan = ({ cursorPosition }: { cursorPosition: Vector2 }) => {
+      // all we have to do to move the object as the screen auto-pans is re-trigger a
+      // move event with the same cursor position - since the view itself has moved 'below' us,
+      // the same cursor position produces the new world position.
+      const worldPosition = toWorldCoordinate(cursorPosition, true);
+      // report the movement after converting to world coordinates
+      const finalPosition = roundVector(addVectors(worldPosition, grabDisplacementRef.current || { x: 0, y: 0 }));
+      onMove(finalPosition);
+      set(finalPosition);
+    };
+    autoPan.on('pan', handleAutoPan);
+    return () => {
+      autoPan.off('pan', handleAutoPan);
+    };
+  }, [autoPan, toWorldCoordinate, onMove, set]);
+
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture(
     {
@@ -221,12 +247,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
         // prevent a drag event from bubbling up to the canvas
         state.event?.stopPropagation();
 
-        // waiting to reference these properties until this handler is called,
-        // just to be sure we have the latest stuff.
-        const { toWorldCoordinate } = viewport;
-
         // convert to world position, clamping to room bounds
-        const worldPosition = toWorldCoordinate(
+        const worldPosition = viewport.toWorldCoordinate(
           {
             x: state.xy[0],
             y: state.xy[1],
@@ -239,10 +261,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
         if (state.first) {
           // capture the initial displacement between the cursor and the
           // object's center to add to each subsequent position
-          displacement = subtractVectors(position, worldPosition);
+          grabDisplacementRef.current = subtractVectors(position, worldPosition);
+          displacement = grabDisplacementRef.current;
         } else {
           // if it's not the first frame, use the memoized value from the previous frame
-          displacement = state.memo || { x: 0, y: 0 };
+          displacement = grabDisplacementRef.current || { x: 0, y: 0 };
         }
 
         // report the movement after converting to world coordinates
@@ -255,17 +278,19 @@ export const Draggable: React.FC<IDraggableProps> = ({
           y: finalPosition.y,
         });
 
-        return displacement;
+        autoPan.update({ x: state.xy[0], y: state.xy[1] });
       },
       onDragStart: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
         set({ grabbing: true });
+        autoPan.start({ x: state.xy[0], y: state.xy[1] });
       },
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ grabbing: false });
+        autoPan.stop();
       },
     },
     {

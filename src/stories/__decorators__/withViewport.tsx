@@ -9,6 +9,8 @@ const value = {
   onObjectDragEnd: () => {},
   pan: () => {},
   zoom: () => {},
+  width: 1000,
+  height: 1000,
 };
 
 export function withViewport(S: Story) {

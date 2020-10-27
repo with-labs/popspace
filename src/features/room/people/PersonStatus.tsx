@@ -176,9 +176,21 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
   );
 };
 
+const useStatusDisplayStyles = makeStyles({
+  root: {
+    paddingLeft: 8,
+    maxWidth: 200,
+    textAlign: 'left',
+    display: 'block',
+    width: 'max-content',
+    maxHeight: '2.5em',
+    textOverflow: 'ellipsis',
+  },
+});
 const StatusDisplay = ({ children }: { children: string }) => {
+  const classes = useStatusDisplayStyles();
   return (
-    <Typography variant="body2" style={{ paddingLeft: 8, textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+    <Typography variant="body2" className={classes.root}>
       {children}
     </Typography>
   );

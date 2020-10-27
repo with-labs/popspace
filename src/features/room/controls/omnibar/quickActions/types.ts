@@ -12,13 +12,13 @@ type BaseQuickAction = {
    */
   displayName: string;
   /**
-   * Confidence indicates, on a general scale, how likely this action
+   * Confidence indicates, on a 0-10 scale, how likely this action
    * is to be the one the user intended. More specific actions (like,
    * if they pasted a YouTube link specifically) should be graded highly,
    * less specific actions (like pasting in random text to create a sticky
    * note) should be graded lower.
    */
-  confidence: number;
+  confidence: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 };
 
 export type AddAccessoryQuickAction = BaseQuickAction & {

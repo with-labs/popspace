@@ -1,46 +1,19 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, makeStyles, Typography, IconButton } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectors as roomSelectors, actions as roomActions, actions } from '../roomSlice';
 import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
 import { WallpaperGrid } from './WallpaperGrid';
 import { CustomWallpaperForm } from './CustomWallpaperForm';
 import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
-import { CloseIcon } from '../../../withComponents/icons/CloseIcon';
+import { useTranslation } from 'react-i18next';
 
-const useStyles = makeStyles((theme) => ({
-  contentContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-    },
-  },
-  content: {
-    overflowY: 'auto',
-    width: 340,
-    height: 340,
-    '& + &': {
-      marginLeft: theme.spacing(2),
-    },
-
-    [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(2),
-      marginLeft: 'auto',
-    },
-  },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-}));
+import { Modal } from '../../../withComponents/Modal/Modal';
+import { ModalPane } from '../../../withComponents/Modal/ModalPane';
+import { ModalTitleBar } from '../../../withComponents/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../withComponents/Modal/ModalContentWrapper';
 
 export const WallpaperModal = () => {
-  const classes = useStyles();
-
+  const { t } = useTranslation();
   const isOpen = useSelector(roomSelectors.selectIsWallpaperModalOpen);
 
   const wallpaperUrl = useSelector(roomSelectors.selectWallpaperUrl);
@@ -61,21 +34,16 @@ export const WallpaperModal = () => {
   const customWallpaperUrl = builtinWallpaperUrl ? null : wallpaperUrl;
 
   return (
-    <Dialog maxWidth="md" fullWidth open={isOpen} onClose={onClose}>
-      <DialogTitle>
-        <Typography variant="h6">Room wallpaper</Typography>
-        <IconButton className={classes.closeButton} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent className={classes.contentContainer}>
-        <div className={classes.content}>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalTitleBar title={t('modals.wallpaperModal.title')} onClose={onClose} />
+      <ModalContentWrapper>
+        <ModalPane>
           <WallpaperGrid onChange={setWallpaper} value={builtinWallpaperUrl} />
-        </div>
-        <div className={classes.content}>
+        </ModalPane>
+        <ModalPane>
           <CustomWallpaperForm value={customWallpaperUrl} onChange={setWallpaper} />
-        </div>
-      </DialogContent>
-    </Dialog>
+        </ModalPane>
+      </ModalContentWrapper>
+    </Modal>
   );
 };

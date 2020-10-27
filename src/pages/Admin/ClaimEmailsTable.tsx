@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
-import { Button, TextField, CircularProgress } from '@material-ui/core';
-import { Header } from '../../withComponents/Header/Header';
-import * as Sentry from '@sentry/react';
+import { Button, CircularProgress } from '@material-ui/core';
 import Api from '../../utils/api';
-import { RouteNames } from '../../constants/RouteNames';
 import { ErrorPage } from '../ErrorPage/ErrorPage';
-import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 
 import Table from '@material-ui/core/Table';

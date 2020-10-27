@@ -61,8 +61,12 @@ class Api {
     return await this.post('/create_room', { token });
   }
 
-  async roomInvite(token: any, roomId: any, email: any) {
-    return await this.post('/send_room_invite', { token, roomId, email });
+  async sendRoomInvite(token: any, roomName: any, email: any) {
+    return await this.post('/send_room_invite', { token, roomName, email });
+  }
+
+  async cancelRoomInvite(token: any, roomName: any, email: any) {
+    // TODO fill this out
   }
 
   async resolveRoomInvite(token: any, otp: string, inviteId: string) {
@@ -103,6 +107,14 @@ class Api {
 
   async unsubscribeFromEmail(otp: string, mlid: string) {
     return await this.post('/unsubscribe', { otp, mlid });
+  }
+
+  async getRoomMembers(token: any, roomName: string) {
+    //TODO: fill this out
+  }
+
+  async removeRoomMember(token: any, memberId: string) {
+    //TODO: fill this out
   }
 
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {

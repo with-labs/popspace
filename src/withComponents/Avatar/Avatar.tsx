@@ -17,10 +17,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'visible',
   },
   baseImage: {
-    position: 'relative',
+    position: 'absolute',
     width: '100%',
-    // idk why this is needed to align them, they're the same size...
-    bottom: -4,
+    bottom: 0,
   },
   image: {
     position: 'absolute',
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size = 100 }) => {
+export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size }) => {
   const classes = useStyles();
 
   const avatar = useAvatar(name);
@@ -59,7 +58,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
     // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
     // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div className={clsx(classes.root, className)} style={{ width: size }}>
+      <div className={clsx(classes.root, className)} style={size ? { width: size } : {}}>
         <img
           className={clsx(classes.baseImage, baseImageClassName)}
           style={{ visibility: isBlinking ? 'hidden' : 'visible' }}

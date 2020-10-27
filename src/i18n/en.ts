@@ -7,6 +7,13 @@ export default {
       privacyPolicy: 'Privacy Policy',
       logout: 'Logout',
     },
+    common: {
+      emailInput: {
+        placeHolder: 'dorothy@emerald.so',
+        label: 'Email Address',
+      },
+      cancel: 'Cancel',
+    },
     errorPages: {
       takeMeHomeBtn: 'Take me Home',
       contactSupportBtn: 'Contact Support',
@@ -192,6 +199,29 @@ export default {
         // TODO: update when we support more quick actions
         placeholder: 'Add a Sticky Note',
         label: 'Quick action bar',
+      },
+    },
+    modals: {
+      inviteUserModal: {
+        title: 'Manage members',
+        inviteBtn: 'Invite',
+        noInvitesLeft: 'No invites left',
+        invitesLeft: '{{count}} invite left',
+        invitesLeft_plural: '{{count}} invites left',
+        getStarted: 'Get started by inviting some people!',
+        resendInvite: 'Resend Invite',
+        deleteInvite: 'Cancel Invite',
+        removeUser: 'Remove User',
+        removeUserTitle: 'Remove {{user}} from {{room}}',
+        removeUserBody:
+          'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
+        removeUserBtn: 'Remove {{user}}',
+      },
+      wallpaperModal: {
+        title: 'Room wallpaper',
+      },
+      avModal: {
+        title: 'Audio &amp; Video',
       },
     },
   },

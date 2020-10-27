@@ -1,12 +1,17 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, Grid, makeStyles, Typography, IconButton } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import LocalVideoPreview from '../../components/LocalVideoPreview/LocalVideoPreview';
 import { CameraSelect } from './CameraSelect';
 import { MicSelect } from './MicSelect';
 import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 import { PersonAvatar } from '../room/people/PersonAvatar';
 import { useLocalParticipant } from '../../withHooks/useLocalParticipant/useLocalParticipant';
-import { CloseIcon } from '../../withComponents/icons/CloseIcon';
+import { useTranslation } from 'react-i18next';
+
+import { Modal } from '../../withComponents/Modal/Modal';
+import { ModalPane } from '../../withComponents/Modal/ModalPane';
+import { ModalTitleBar } from '../../withComponents/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../withComponents/Modal/ModalContentWrapper';
 
 export interface IAudioVideoSettingsModalProps {
   isOpen: boolean;
@@ -15,6 +20,7 @@ export interface IAudioVideoSettingsModalProps {
 
 const useStyles = makeStyles((theme) => ({
   videoPreviewContainer: {
+    height: '100%',
     position: 'relative',
     '& > video': {
       position: 'absolute',
@@ -25,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   videoPreviewSizer: {
-    paddingTop: '100%',
     width: '100%',
   },
   avatar: {
@@ -36,45 +41,33 @@ const useStyles = makeStyles((theme) => ({
     transform: 'translate(-50%, -50%)',
     position: 'absolute',
   },
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
 }));
 
-export const AudioVideoSettingsModal: React.FC<IAudioVideoSettingsModalProps> = (props) => {
+export const AudioVideoSettingsModal: React.FC<IAudioVideoSettingsModalProps> = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const [isVideoEnabled] = useLocalVideoToggle();
   const localParticipant = useLocalParticipant();
 
   return (
-    <Dialog open={props.isOpen} onClose={props.onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        <Typography variant="h6">Audio &amp; Video</Typography>
-        <IconButton className={classes.closeButton} onClick={props.onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={3}>
-          <Grid item sm={12} md={6}>
-            <div className={classes.videoPreviewContainer}>
-              {isVideoEnabled ? (
-                <LocalVideoPreview />
-              ) : (
-                <PersonAvatar personId={localParticipant?.sid} className={classes.avatar} />
-              )}
-              <div className={classes.videoPreviewSizer} />
-            </div>
-          </Grid>
-          <Grid item sm={12} md={6}>
-            <MicSelect margin="normal" label="Microphone" />
-            <CameraSelect margin="normal" label="Camera" />
-          </Grid>
-        </Grid>
-      </DialogContent>
-    </Dialog>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalTitleBar title={t('modals.avModal.title')} onClose={onClose} />
+      <ModalContentWrapper>
+        <ModalPane>
+          <div className={classes.videoPreviewContainer}>
+            {isVideoEnabled ? (
+              <LocalVideoPreview />
+            ) : (
+              <PersonAvatar personId={localParticipant?.sid} className={classes.avatar} />
+            )}
+            <div className={classes.videoPreviewSizer} />
+          </div>
+        </ModalPane>
+        <ModalPane>
+          <MicSelect margin="normal" label="Microphone" />
+          <CameraSelect margin="normal" label="Camera" />
+        </ModalPane>
+      </ModalContentWrapper>
+    </Modal>
   );
 };

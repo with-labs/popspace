@@ -1,9 +1,9 @@
 import { QuickAction, QuickActionKind } from './types';
 import { useTranslation } from 'react-i18next';
-import useParticipantDisplayIdentity from '../../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import { useLocalParticipant } from '../../../../../hooks/useLocalParticipant/useLocalParticipant';
-import { WidgetType } from '../../../../../types/room';
-import { parseYoutubeLink } from '../../../../../utils/youtube';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import { WidgetType } from '../../../../types/room';
+import { parseYoutubeLink } from '../../../../utils/youtube';
 
 function useStickyNoteQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();

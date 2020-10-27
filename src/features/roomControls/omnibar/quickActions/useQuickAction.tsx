@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useAddAccessory } from '../useAddAccessory';
 import { QuickAction, QuickActionKind } from './types';
 import { useQuickActionOptions } from './useQuickActionOptions';
-import { useCoordinatedDispatch } from '../../../CoordinatedDispatchProvider';
-import { actions } from '../../../roomSlice';
-import { useLocalParticipant } from '../../../../../hooks/useLocalParticipant/useLocalParticipant';
+import { useCoordinatedDispatch } from '../../../room/CoordinatedDispatchProvider';
+import { actions } from '../../../room/roomSlice';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 
 export function useQuickAction() {
   const [inputValue, setInputValue] = React.useState('');

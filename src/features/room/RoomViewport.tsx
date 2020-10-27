@@ -5,7 +5,7 @@ import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/core';
-import { useKeyboardControls } from './controls/viewport/useKeyboardControls';
+import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
 

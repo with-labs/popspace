@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { actions as roomActions } from '../../roomSlice';
-import { SettingsIcon } from '../../../../components/icons/SettingsIcon';
+import { actions as roomActions } from '../../room/roomSlice';
+import { SettingsIcon } from '../../../components/icons/SettingsIcon';
 
 export interface IRoomSettingsMenuItemProps {
   onClick?: () => void;

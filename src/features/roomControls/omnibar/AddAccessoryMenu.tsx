@@ -2,9 +2,9 @@ import * as React from 'react';
 import { IconButton, makeStyles, Menu } from '@material-ui/core';
 import clsx from 'clsx';
 import { AddAccessoryMenuItem } from './AddAccessoryMenuItem';
-import { WidgetType } from '../../../../types/room';
-import palette from '../../../../theme/palette';
-import { PlusLargeIcon } from '../../../../components/icons/PlusLargeIcon';
+import { WidgetType } from '../../../types/room';
+import palette from '../../../theme/palette';
+import { PlusLargeIcon } from '../../../components/icons/PlusLargeIcon';
 
 export interface IAddAccessoryMenuProps {
   className?: string;

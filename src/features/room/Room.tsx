@@ -7,10 +7,10 @@ import { Person } from './people/Person';
 import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
-import { ViewportControls } from './controls/viewport/ViewportControls';
+import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
-import { RoomControls } from './controls/RoomControls';
+import { RoomControls } from '../roomControls/RoomControls';
 import { WallpaperModal } from './wallpaper/WallpaperModal';
 
 interface IRoomProps {}

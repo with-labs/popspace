@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { RoomControls } from './RoomControls';
-import { withViewport } from '../../../stories/__decorators__/withViewport';
+import { withViewport } from '../../stories/__decorators__/withViewport';
 
 export default {
   title: 'room/RoomControls',

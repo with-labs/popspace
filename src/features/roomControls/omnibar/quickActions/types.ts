@@ -1,4 +1,4 @@
-import { WidgetType, WidgetData } from '../../../../../types/room';
+import { WidgetType, WidgetData } from '../../../../types/room';
 
 export enum QuickActionKind {
   AddAccessory,

@@ -196,6 +196,7 @@ export default {
       status: {
         placeholder: "What's your status?",
         emojiTitle: 'Pick an emoji',
+        quickActionTitle: 'Set your status',
       },
       omnibar: {
         // TODO: update when we support more quick actions

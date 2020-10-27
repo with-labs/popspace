@@ -97,6 +97,7 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
   // to see it happen. So we wait for the tab to be foregrounded
   const [statusVisibilityExpired, setStatusVisibilityExpired] = React.useState(false);
   React.useEffect(() => {
+    console.log(status);
     if (!status) {
       setStatusVisibilityExpired(true);
       return;
@@ -150,13 +151,16 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
     );
   }
 
+  const displayedStatus = (status && (isStatusExpanded ? status : '...')) || null;
+  console.log(displayedStatus);
+
   const statusContent = (
     <>
       <div className={classes.emoji}>
         {!!status || !!emoji ? <Emoji emoji={emoji || 'speech_balloon'} size={18} /> : <EmojiIcon fontSize="inherit" />}
       </div>
-      <SizeTransition transitionKey={!!status ? (isStatusExpanded ? status : '...') : null}>
-        {!!status ? <StatusDisplay>{isStatusExpanded ? status : '...'}</StatusDisplay> : null}
+      <SizeTransition transitionKey={displayedStatus}>
+        {!!displayedStatus ? <StatusDisplay>{displayedStatus}</StatusDisplay> : null}
       </SizeTransition>
     </>
   );
@@ -217,6 +221,10 @@ function useStatusEditing({
   const [inputValue, setInputValue] = React.useState(currentStatus || '');
   // also controls menu open state
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  React.useEffect(() => {
+    setInputValue(currentStatus || '');
+  }, [currentStatus]);
 
   const coordinatedDispatch = useCoordinatedDispatch();
   const updateStatus = React.useCallback(

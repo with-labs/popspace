@@ -2,6 +2,9 @@ import * as React from 'react';
 import { useAddAccessory } from '../useAddAccessory';
 import { QuickAction, QuickActionKind } from './types';
 import { useQuickActionOptions } from './useQuickActionOptions';
+import { useCoordinatedDispatch } from '../../../CoordinatedDispatchProvider';
+import { actions } from '../../../roomSlice';
+import { useLocalParticipant } from '../../../../../hooks/useLocalParticipant/useLocalParticipant';
 
 export function useQuickAction() {
   const [inputValue, setInputValue] = React.useState('');
@@ -11,7 +14,11 @@ export function useQuickAction() {
 
   const options = useQuickActionOptions(inputValue);
 
+  const localParticipant = useLocalParticipant();
+  const localParticipantSid = localParticipant?.sid;
+
   const addAccessory = useAddAccessory();
+  const coordinatedDispatch = useCoordinatedDispatch();
 
   const handleSelection = React.useCallback(
     (ev: any, value: QuickAction | null) => {
@@ -31,9 +38,17 @@ export function useQuickAction() {
             publishImmediately: true,
           });
           break;
+        case QuickActionKind.SetStatus:
+          coordinatedDispatch(
+            actions.updatePersonStatus({
+              id: localParticipantSid,
+              status: value.status,
+            })
+          );
+          break;
       }
     },
-    [addAccessory]
+    [addAccessory, localParticipantSid, coordinatedDispatch]
   );
 
   return {

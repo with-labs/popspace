@@ -12,7 +12,7 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
   // by persisting room state and membership
   const userName = useParticipantDisplayIdentity(useLocalParticipant());
 
-  if (!!prompt) {
+  if (!!prompt.trim()) {
     // any text can be added to a sticky note.
     return [
       {
@@ -20,10 +20,10 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
         accessoryType: WidgetType.StickyNote,
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
-          text: prompt,
+          text: prompt.trim(),
           author: userName || '',
         },
-        confidence: 1,
+        confidence: 2,
       },
     ];
   }
@@ -86,13 +86,33 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
   return [];
 }
 
+function useStatusQuickActions(prompt: string): QuickAction[] {
+  const { t } = useTranslation();
+
+  if (!!prompt?.trim()) {
+    return [
+      {
+        kind: QuickActionKind.SetStatus,
+        status: prompt.trim(),
+        displayName: t('features.status.quickActionTitle'),
+        confidence: 1,
+      },
+    ];
+  }
+
+  return [];
+}
+
 /**
  * This function processes the input the user typed and
  * determines which actions are available, as well as what
  * metadata will be associated with those actions.
  */
 export function useQuickActionOptions(prompt: string): QuickAction[] {
-  return [...useStickyNoteQuickActions(prompt), ...useLinkQuickActions(prompt), ...useYoutubeQuickActions(prompt)].sort(
-    (a, b) => b.confidence - a.confidence
-  );
+  return [
+    ...useStickyNoteQuickActions(prompt),
+    ...useLinkQuickActions(prompt),
+    ...useYoutubeQuickActions(prompt),
+    ...useStatusQuickActions(prompt),
+  ].sort((a, b) => b.confidence - a.confidence);
 }

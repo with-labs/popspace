@@ -2,8 +2,7 @@ import { WidgetType, WidgetData } from '../../../../../types/room';
 
 export enum QuickActionKind {
   AddAccessory,
-  // TODO:
-  // SetStatus,
+  SetStatus,
 }
 
 type BaseQuickAction = {
@@ -27,8 +26,13 @@ export type AddAccessoryQuickAction = BaseQuickAction & {
   accessoryData: WidgetData;
 };
 
+export type SetStatusQuickAction = BaseQuickAction & {
+  kind: QuickActionKind.SetStatus;
+  status: string;
+};
+
 // TODO: union other types of actions into this discriminated union type
-export type QuickAction = AddAccessoryQuickAction;
+export type QuickAction = AddAccessoryQuickAction | SetStatusQuickAction;
 
 /**
  * A quick action provider is a function that generates valid quick

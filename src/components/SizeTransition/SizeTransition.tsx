@@ -8,7 +8,7 @@ export interface IHorizontalCollapseProps {
   transitionKey?: string | number | null;
 }
 
-function getElementBounds(ref: React.RefObject<HTMLElement>) {
+function getElementBounds(ref: React.RefObject<HTMLElement> | null) {
   return new Promise<{ width: number; height: number }>((resolve) => {
     setTimeout(() => {
       // using offsetWidth doesn't take transforms into account - which gets around the issue of how
@@ -16,8 +16,8 @@ function getElementBounds(ref: React.RefObject<HTMLElement>) {
       // other words, if we use getBoundingClientRect(), we get the fully zoomed "actual" pixel size
       // of the element, but this pixel size will end up getting the zoom applied *again*, leading
       // to an exponentially smaller and smaller size as you zoom out.
-      const width = ref.current?.offsetWidth ?? 0;
-      const height = ref.current?.offsetHeight ?? 0;
+      const width = ref?.current?.offsetWidth ?? 0;
+      const height = ref?.current?.offsetHeight ?? 0;
       resolve({
         width: width ?? 0,
         height: height ?? 0,
@@ -38,21 +38,28 @@ const useStyles = makeStyles({
   },
 });
 
+// the number of refs here is the number of concurrent
+// transitions this component can render. 4 should be
+// enough unless the content changes very rapidly...
+const baseRefs = [
+  React.createRef<HTMLDivElement>(),
+  React.createRef<HTMLDivElement>(),
+  React.createRef<HTMLDivElement>(),
+  React.createRef<HTMLDivElement>(),
+];
+
 /** Animates changes in content horizontal size */
 export const SizeTransition: React.FC<IHorizontalCollapseProps> = ({ children, transitionKey = uuid() }) => {
   const classes = useStyles();
   const outerRef = React.useRef<HTMLDivElement>(null);
   // this holds a ref to the previous contents, and the current ones -
   // we will need to measure both at different times.
-  const refs = React.useRef<[React.RefObject<HTMLDivElement>, React.RefObject<HTMLDivElement>]>([
-    React.createRef(),
-    React.createRef(),
-  ]);
+  const refs = React.useRef<Array<React.RefObject<HTMLDivElement>>>(baseRefs);
 
   const transition = useTransition(children, {
     enter: (_, idx) => async (next) => {
-      const ref = refs.current[idx];
-      const { width, height } = ref ? await getElementBounds(ref) : { width: 0, height: 0 };
+      let ref = refs.current[idx];
+      const { width, height } = await getElementBounds(ref);
 
       if (width || height) {
         await next({ width, height, opacity: 1, overflow: 'hidden' });

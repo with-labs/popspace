@@ -97,7 +97,6 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
   // to see it happen. So we wait for the tab to be foregrounded
   const [statusVisibilityExpired, setStatusVisibilityExpired] = React.useState(false);
   React.useEffect(() => {
-    console.log(status);
     if (!status) {
       setStatusVisibilityExpired(true);
       return;
@@ -152,7 +151,6 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
   }
 
   const displayedStatus = (status && (isStatusExpanded ? status : '...')) || null;
-  console.log(displayedStatus);
 
   const statusContent = (
     <>

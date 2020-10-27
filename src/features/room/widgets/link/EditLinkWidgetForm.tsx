@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { LinkWidgetData } from '../../../../types/room';
 import { makeStyles, Box } from '@material-ui/core';
@@ -19,7 +18,10 @@ const EMPTY_VALUES: LinkWidgetData = {
 };
 
 function validateUrl(url: string, translate: TFunction) {
-  if (!/^(?:http(s)?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/.test(url.trim())) {
+  try {
+    // will throw for an invalid url
+    new URL(url.trim());
+  } catch (err) {
     return translate('widgets.link.errorInvalidUrl');
   }
 }

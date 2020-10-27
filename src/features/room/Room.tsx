@@ -12,6 +12,7 @@ import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { WallpaperModal } from './wallpaper/WallpaperModal';
+import { MembershipManagementModal } from './modals/MembershipManagementModal/MembershipManagementModal';
 
 interface IRoomProps {}
 
@@ -59,6 +60,7 @@ export const Room: React.FC<IRoomProps> = () => {
       <WallpaperModal />
       <LocalVolumeDetector />
       <RoomPresenceDetector />
+      <MembershipManagementModal />
     </>
   );
 };

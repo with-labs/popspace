@@ -224,7 +224,7 @@ export default {
         title: 'Room wallpaper',
       },
       avModal: {
-        title: 'Audio &amp; Video',
+        title: 'Audio & Video',
       },
     },
   },

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectors as roomSelectors, actions as roomActions } from '../../roomSlice';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { Form, Formik } from 'formik';
@@ -27,10 +29,7 @@ const EMPTY_VALUES: MembershipFormData = {
   inviteeEmail: '',
 };
 
-interface IMembershipManagementModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+interface IMembershipManagementModalProps {}
 
 const useStyles = makeStyles((theme) => ({
   getStarted: {
@@ -64,7 +63,9 @@ function validateEmail(email: string, translate: TFunction) {
 }
 
 export const MembershipManagementModal: React.FC<IMembershipManagementModalProps> = (props) => {
-  const { isOpen, onClose } = props;
+  const dispatch = useDispatch();
+  const isOpen = useSelector(roomSelectors.selectIsMembershipModalOpen);
+
   const { t } = useTranslation();
   const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +76,9 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
   const [inviteCount, setInviteCount] = useState(Math.floor(Math.random() * Math.floor(3)));
   const [members, setMembers] = useState([]);
 
-  const onCloseHandler = () => {};
+  const onCloseHandler = () => {
+    dispatch(roomActions.setIsMembershipModalOpen({ isOpen: false }));
+  };
 
   const onSubmitHandler = (values: MembershipFormData) => {
     if (sessionTokenExists(sessionToken) && roomName) {

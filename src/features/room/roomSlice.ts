@@ -38,6 +38,7 @@ interface RoomState {
   wallpaperUrl: string;
   useSpatialAudio: boolean;
   isWallpaperModalOpen: boolean;
+  isMembershipModalOpen: boolean;
 }
 
 /** Use for testing only, please. */
@@ -53,6 +54,7 @@ export const initialState: RoomState = {
   wallpaperUrl: BUILT_IN_WALLPAPERS[0],
   useSpatialAudio: true,
   isWallpaperModalOpen: false,
+  isMembershipModalOpen: false,
 };
 
 const roomSlice = createSlice({
@@ -198,6 +200,9 @@ const roomSlice = createSlice({
     setIsWallpaperModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isWallpaperModalOpen = payload.isOpen;
     },
+    setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isMembershipModalOpen = payload.isOpen;
+    },
   },
 });
 
@@ -225,4 +230,5 @@ export const selectors = {
     state.room.people[personId]?.viewingScreenSid,
   createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
   selectIsWallpaperModalOpen: (state: RootState) => state.room.isWallpaperModalOpen,
+  selectIsMembershipModalOpen: (state: RootState) => state.room.isMembershipModalOpen,
 };

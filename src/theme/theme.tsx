@@ -9,6 +9,7 @@ import { generateShadows } from './shadows';
 // adds theme values for lab components
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type _aug from '@material-ui/lab/themeAugmentation';
+import { DropdownIcon } from '../components/icons/DropdownIcon';
 
 const SEMIBOLD_WEIGHT = 600;
 
@@ -223,6 +224,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
         lineHeight: 22 / 16,
         fontWeight: typography.fontWeightMedium,
       },
+      button: {
+        fontSize: typography.pxToRem(16),
+        fontWeight: typography.fontWeightMedium,
+        lineHeight: 22 / 16,
+      },
     },
     shadows: finalShadows,
     mainShadows,
@@ -289,10 +295,19 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           },
           getContentAnchorEl: null,
         },
+        IconComponent: DropdownIcon,
       },
       MuiList: {
         // removes the MUI-style padding at the top and bottom of popover lists
         disablePadding: true,
+      },
+      MuiListItem: {
+        disableGutters: true,
+      },
+      MuiListItemText: {
+        // helpful for customizing the look/feel of regular vs. dense, without
+        // fighting the inner typography span
+        disableTypography: true,
       },
       MuiMenu: {
         getContentAnchorEl: null,
@@ -304,6 +319,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           vertical: -8,
           horizontal: 'left',
         },
+      },
+      MuiMenuItem: {
+        disableGutters: true,
       },
       MuiToggleButton: {
         disableFocusRipple: true,
@@ -336,7 +354,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
             backgroundColor: palette.error.light,
           },
 
-          '&:focus, &$focused, &$focusVisible': {
+          '&:focus, &$focused': {
             boxShadow: focusRings.primary,
             backgroundColor: palette.background.paper,
             caretColor: palette.secondary.contrastText,
@@ -438,9 +456,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           borderRadius: shape.contentBorderRadius,
           textTransform: 'none',
           padding: '11.5px 30px',
-          fontSize: typography.pxToRem(16),
-          fontWeight: typography.fontWeightMedium,
-          lineHeight: 22 / 16,
         },
         contained: {
           boxShadow: focusRings.idle,
@@ -537,13 +552,80 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
       MuiMenu: {
         paper: {
           borderRadius: shape.borderRadius,
-          padding: spacing(1),
+          padding: spacing(1.5),
           boxShadow: mainShadows.modal,
         },
       },
       MuiMenuItem: {
         root: {
           borderRadius: shape.contentBorderRadius,
+          paddingLeft: spacing(1),
+          paddingRight: spacing(1),
+          '& + &': {
+            marginTop: spacing(0.5),
+          },
+          '&$selected, &:hover, &$selected:hover': {
+            backgroundColor: palette.grey[50],
+          },
+          '&:active': {
+            backgroundColor: palette.grey[500],
+          },
+        },
+      },
+      MuiListItem: {
+        root: {
+          '&$disabled': {
+            opacity: 1,
+            color: palette.grey[700],
+          },
+
+          // since there's no prop option to disable ripple, this
+          // will have to do
+          '& > span[class*=MuiTouchRipple]': {
+            display: 'none',
+          },
+        },
+      },
+      MuiListItemIcon: {
+        root: {
+          fontSize: 24,
+          minWidth: 24,
+          justifyContent: 'center',
+          color: 'inherit',
+        },
+      },
+      MuiListItemText: {
+        root: {
+          fontSize: typography.pxToRem(16),
+          lineHeight: 22 / 16,
+          fontWeight: typography.fontWeightMedium,
+
+          '&:not(:first-child)': {
+            marginLeft: spacing(1),
+          },
+          '&:not(:last-child)': {
+            marginRight: spacing(1),
+          },
+        },
+        dense: {
+          fontSize: typography.pxToRem(13),
+          lineHeight: 16 / 13,
+          fontWeight: typography.fontWeightMedium,
+        },
+      },
+      MuiSelect: {
+        selectMenu: {},
+        iconFilled: {
+          right: 12,
+          fontSize: 24,
+          top: 12,
+          transition: transitions.create(['transform']),
+        },
+        filled: {
+          // for some reason MUI doubles up on this, so we need to also
+          '&$filled': {
+            paddingRight: 36,
+          },
         },
       },
       MuiPaper: {
@@ -580,11 +662,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           backgroundColor: palette.grey[50],
           marginTop: spacing(1.5),
           marginBottom: spacing(1.5),
-        },
-      },
-      MuiListItemIcon: {
-        root: {
-          minWidth: '40px',
         },
       },
       MuiSnackbar: {

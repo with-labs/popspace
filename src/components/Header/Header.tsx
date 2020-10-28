@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import styles from './Header.module.css';
-import { Menu, MenuItem, Divider, ListItemIcon } from '@material-ui/core';
+import { Menu, MenuItem, Divider, ListItemIcon, ListItemText } from '@material-ui/core';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN, USER_SUPPORT_EMAIL } from '../../constants/User';
 
@@ -76,33 +76,33 @@ export const Header: React.FC<IHeaderProps> = (props) => {
           <ListItemIcon>
             <SupportIcon />
           </ListItemIcon>
-          <span className="u-fontB1">{t('header.support')}</span>
+          <ListItemText primary={t('header.support')} />
         </MenuItem>
         <MenuItem onClick={() => openNewTab(Links.FEEDBACK)}>
           <ListItemIcon>
             <FeatureIcon />
           </ListItemIcon>
-          <span className="u-fontB1">{t('header.feedback')}</span>
+          <ListItemText primary={t('header.feedback')} />
         </MenuItem>
         <Divider variant="middle" />
         <MenuItem onClick={() => openNewTab(Links.TOS)}>
           <ListItemIcon>
             <DocumentIcon />
           </ListItemIcon>
-          <span className="u-fontB1">{t('header.tos')}</span>
+          <ListItemText primary={t('header.tos')} />
         </MenuItem>
         <MenuItem onClick={() => openNewTab(Links.PRIVACY_POLICY)}>
           <ListItemIcon>
             <DocumentIcon />
           </ListItemIcon>
-          <span className="u-fontB1">{t('header.privacyPolicy')}</span>
+          <ListItemText primary={t('header.privacyPolicy')} />
         </MenuItem>
         <Divider variant="middle" />
         <MenuItem onClick={onSignoutHandler}>
           <ListItemIcon>
             <SignOutIcon />
           </ListItemIcon>
-          <span className="u-fontB1">{t('header.logout')}</span>
+          <ListItemText primary={t('header.logout')} />
         </MenuItem>
       </Menu>
     </>

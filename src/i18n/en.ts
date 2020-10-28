@@ -203,6 +203,12 @@ export default {
         placeholder: 'Type or paste to add',
         label: 'Quick action bar',
       },
+      roomMenu: {
+        goToDashboard: 'Go to Dashboard',
+        contactUs: 'Contact Us',
+        voteOnFeatures: 'Vote on Features',
+        roomWallpaper: 'Room Wallpaper',
+      },
     },
     modals: {
       inviteUserModal: {

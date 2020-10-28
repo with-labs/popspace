@@ -1,22 +1,15 @@
 import * as React from 'react';
-import { MenuItem, ListItemIcon, ListItemText, makeStyles } from '@material-ui/core';
+import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { actions as roomActions } from '../../room/roomSlice';
 import { SettingsIcon } from '../../../components/icons/SettingsIcon';
 
-export interface IRoomSettingsMenuItemProps {
+export interface IRoomWallpaperMenuItemProps {
   onClick?: () => void;
+  children: React.ReactNode;
 }
 
-const useStyles = makeStyles((theme) => ({
-  text: {
-    fontWeight: theme.typography.fontWeightMedium,
-  },
-}));
-
-export const RoomSettingsMenuItem = React.forwardRef<HTMLLIElement, IRoomSettingsMenuItemProps>((props, ref) => {
-  const classes = useStyles();
-
+export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpaperMenuItemProps>((props, ref) => {
   // we don't want to sync this state to peers.
   const dispatch = useDispatch();
 
@@ -31,7 +24,7 @@ export const RoomSettingsMenuItem = React.forwardRef<HTMLLIElement, IRoomSetting
       <ListItemIcon>
         <SettingsIcon />
       </ListItemIcon>
-      <ListItemText primaryTypographyProps={{ className: classes.text }}>Room Settings</ListItemText>
+      <ListItemText primary={props.children} />
     </MenuItem>
   );
 });

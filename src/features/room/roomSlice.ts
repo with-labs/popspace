@@ -203,6 +203,13 @@ const roomSlice = createSlice({
     setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isMembershipModalOpen = payload.isOpen;
     },
+    /**
+     * !! never call this with coordinated dispatch - only ever
+     * use regular dispatch - clears local room state after leaving!
+     */
+    leave() {
+      return initialState;
+    },
   },
 });
 

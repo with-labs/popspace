@@ -14,7 +14,10 @@ global.lib.db = require("./db/index.js")
 global.lib.email = require("./email/index.js")
 
 
-lib.init = async () => {
+lib.init = async (appUrl) => {
+  global.gcfg = {
+    appUrl: () => (appUrl)
+  }
   await lib.db.init()
 }
 

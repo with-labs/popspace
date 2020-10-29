@@ -10,6 +10,7 @@ const startConsole = async () => {
   for(key of Object.keys(global)) {
     replServer.context[key] = global[key];
   }
+  replServer.context.require = require
 }
 
 startConsole()

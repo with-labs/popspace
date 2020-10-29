@@ -16,6 +16,7 @@
     "db:migrate": "./node_modules/.bin/node-pg-migrate --config-file db/pg/config.js up -m db/pg/migrations",
     "db:unmigrate": "./node_modules/.bin/node-pg-migrate --config-file db/pg/config.js down -m db/pg/migrations",
     "db:new_migration": "./node_modules/.bin/node-pg-migrate --config-file db/pg/config.js create -m db/pg/migrations",
-    "db:unmigrate_all": "./node_modules/.bin/node-pg-migrate --config-file db/pg/config.js down 10000 -m db/pg/migrations"
+    "db:unmigrate_all": "./node_modules/.bin/node-pg-migrate --config-file db/pg/config.js down 10000 -m db/pg/migrations",
+    "console": "node --experimental-repl-await ../../scripts/console"
   }
 }

@@ -1,0 +1,30 @@
+name: Browser Integration Tests
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+jobs:
+  cypress-run:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Wait for Netlify Preview Check
+        uses: 'WyriHaximus/github-action-wait-for-status@v1.2'
+        with:
+          ignoreActions: cypress-run
+          checkInterval: 60
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Wait for Netlify Preview Availability
+        uses: jakepartusch/wait-for-netlify-action@v1.2
+        id: wait-for-200
+        with:
+          site_name: 'with-app'
+          # wait 10 minutes (in seconds)
+          max_timeout: 600
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          config: 'baseUrl=${{ steps.wait-for-200.outputs.url }}'

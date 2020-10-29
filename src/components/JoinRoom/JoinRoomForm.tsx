@@ -27,6 +27,7 @@ export const JoinRoomForm: React.FC<IJoinRoomFormProps> = ({ onSubmit, ...props 
             required
             label={t('pages.room.screenNameLabel')}
             margin="normal"
+            id="joinRoom-username"
           />
           <FormikTextField
             type="password"
@@ -35,6 +36,7 @@ export const JoinRoomForm: React.FC<IJoinRoomFormProps> = ({ onSubmit, ...props 
             required
             label={t('pages.room.roomPasswordLabel')}
             margin="normal"
+            id="joinRoom-password"
           />
           <FormikSubmitButton>Join</FormikSubmitButton>
           <Typography variant="body2" style={{ marginTop: 16 }}>

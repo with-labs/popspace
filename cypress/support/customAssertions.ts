@@ -1,4 +1,4 @@
-const pixelmatch = require('pixelmatch');
+import pixelmatch from 'pixelmatch';
 
 function compareVideoElements(videoEl1, videoEl2) {
   const { videoHeight, videoWidth } = videoEl1.videoWidth > videoEl2.videoWidth ? videoEl2 : videoEl1;
@@ -22,7 +22,7 @@ function compareVideoElements(videoEl1, videoEl2) {
   const imageData2 = context2.getImageData(0, 0, videoWidth, videoHeight).data;
 
   // If either frame is 100% black, return a result that will fail the test
-  if (imageData1.every(i => i === 0) || imageData2.every(i => i === 0)) {
+  if (imageData1.every((i) => i === 0) || imageData2.every((i) => i === 0)) {
     return videoHeight * videoWidth; // 100% of pixels are incorrect
   }
 

@@ -177,6 +177,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         style={{ ...rootStyles, ...speakingRingStyles } as any}
         onPointerEnter={onHover}
         onPointerLeave={onUnHover}
+        data-test-person={displayIdentity}
       >
         <animated.div className={classes.mainContent} style={mainContentStyles}>
           {/* Still a typing issue with react-spring :( */}

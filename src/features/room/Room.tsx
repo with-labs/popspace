@@ -46,6 +46,7 @@ export const Room: React.FC<IRoomProps> = () => {
             <ViewportControls />
           </>
         }
+        data-test-room
       >
         <ErrorBoundary fallback={() => <WidgetsFallback />}>
           {widgetIds.map((id) => (

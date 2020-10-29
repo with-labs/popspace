@@ -11,6 +11,8 @@ const ROOM_WHITELIST_PASSCODES = {
   dev: '92cd6c0cdd0b323ab88329e9f12cb17c',
   staging: '9a6db12a137c7f51c5dc7127aab6defc',
   prod: 'cdd021c453d076ecf6d2234d6851d4e1',
+  // don't delete this - our tests use
+  integrationtestroomdonotdelete: 'pnBBZ6XJdDUXxgnMdGtQUfjY',
   jesse: 'a500fb1d401a0de1e10a238249e9620a',
   wyatt: '1b4764c939a00359a88c22c35809e640',
   brent: 'eb3ed78b2bb6a0ca2491df488f4cd632',

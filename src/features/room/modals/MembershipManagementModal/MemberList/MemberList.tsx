@@ -11,13 +11,12 @@ import {
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
-  Avatar,
-  Typography,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
 import { EmailIcon } from '../../../../../components/icons/EmailIcon';
 import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
+import { MemberListAvatar } from './MemberListAvatar';
 
 interface IMemberListProps {
   members: any[];
@@ -26,6 +25,15 @@ interface IMemberListProps {
 const useStyles = makeStyles((theme) => ({
   memberList: {
     width: '100%',
+  },
+  deleteColor: {
+    color: theme.palette.brandColors.cherry.bold,
+  },
+  activeTextColor: {
+    color: theme.palette.brandColors.ink.regular,
+  },
+  inactiveTextColor: {
+    color: theme.palette.brandColors.slate.ink,
   },
 }));
 
@@ -72,9 +80,18 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
           return (
             <ListItem key={member.email}>
               <ListItemAvatar>
-                <Avatar></Avatar>
+                <MemberListAvatar avatarName={member.avatar_url} />
               </ListItemAvatar>
-              <ListItemText primary={member.display_name} secondary={member.email} />
+              {/* we want the mulit-line text for this, so re-enable Typography*/}
+              <ListItemText
+                primary={member.display_name || t('modals.inviteUserModal.invitedUser')}
+                secondary={member.email}
+                disableTypography={false}
+                classes={{
+                  primary: member.has_accepted ? classes.activeTextColor : classes.inactiveTextColor,
+                  secondary: classes.inactiveTextColor,
+                }}
+              />
               <ListItemSecondaryAction>
                 <div>
                   <IconButton edge="end" aria-label="member_options" onClick={(e) => onMenuOpenHandler(e, index)}>
@@ -96,30 +113,28 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {selectedMember?.accepted ? (
-          <>
-            <MenuItem onClick={removeUserHandler}>
-              <ListItemIcon>
-                <DeleteIcon color="error" />
-              </ListItemIcon>
-              <Typography color="error">{t('modals.inviteUserModal.removeUser')}</Typography>
-            </MenuItem>
-          </>
+        {selectedMember?.has_accepted ? (
+          <MenuItem onClick={removeUserHandler}>
+            <ListItemIcon>
+              <DeleteIcon className={classes.deleteColor} />
+            </ListItemIcon>
+            <ListItemText primary={t('modals.inviteUserModal.removeUser')} className={classes.deleteColor} />
+          </MenuItem>
         ) : (
-          <>
+          <div>
             <MenuItem onClick={inviteResendHandler}>
               <ListItemIcon>
                 <EmailIcon />
               </ListItemIcon>
-              <Typography>{t('modals.inviteUserModal.resendInvite')}</Typography>
+              <ListItemText primary={t('modals.inviteUserModal.resendInvite')} />
             </MenuItem>
             <MenuItem onClick={cancelInviteHandler}>
               <ListItemIcon>
-                <DeleteIcon color="error" />
+                <DeleteIcon className={classes.deleteColor} />
               </ListItemIcon>
-              <Typography color="error">{t('modals.inviteUserModal.deleteInvite')}</Typography>
+              <ListItemText primary={t('modals.inviteUserModal.deleteInvite')} className={classes.deleteColor} />
             </MenuItem>
-          </>
+          </div>
         )}
       </Menu>
     </Box>

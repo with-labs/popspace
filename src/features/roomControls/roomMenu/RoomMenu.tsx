@@ -1,7 +1,17 @@
 import * as React from 'react';
-import { Button, Menu, makeStyles, Divider, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+  Button,
+  Menu,
+  makeStyles,
+  Divider,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
+import { ManageMembershipMenuItem } from './ManageMembershipMenuItem';
 import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
 import { EmailIcon } from '../../../components/icons/EmailIcon';
@@ -41,6 +51,10 @@ export const RoomMenu = () => {
         {/* TODO: User Settings item here */}
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
+        {/* hide this option until we want to have it out there */}
+        {/* <ListSubheader>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>
+        <ManageMembershipMenuItem onClick={onClose}>{t('features.roomMenu.addAndManage')}</ManageMembershipMenuItem>
+        <Divider /> */}
         <Link to={Links.FEEDBACK} disableStyling>
           <MenuItem>
             <ListItemIcon>

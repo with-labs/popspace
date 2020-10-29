@@ -208,6 +208,8 @@ export default {
         contactUs: 'Contact Us',
         voteOnFeatures: 'Vote on Features',
         roomWallpaper: 'Room Wallpaper',
+        roomMembersTitle: 'Room members',
+        addAndManage: 'Add & Manage',
       },
     },
     modals: {
@@ -225,6 +227,7 @@ export default {
         removeUserBody:
           'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
         removeUserBtn: 'Remove {{user}}',
+        invitedUser: 'Invited user',
       },
       wallpaperModal: {
         title: 'Room wallpaper',

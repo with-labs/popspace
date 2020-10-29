@@ -54,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
+  inviteText: {
+    width: 172,
+    textAlign: 'center',
+  },
 }));
 
 function validateEmail(email: string, translate: TFunction) {
@@ -97,18 +101,18 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
     // can we cache this result?
 
     // get the current membership list
-    if (sessionTokenExists(sessionToken) && roomName) {
+    if (isOpen && sessionTokenExists(sessionToken) && roomName) {
       setIsLoading(true);
       Api.getRoomMembers(sessionToken, roomName)
         .then((result: any) => {
           setIsLoading(false);
-          //TODO fill this out with Alekesi
+          setMembers(result.result);
         })
         .catch((e: any) => {
           setIsLoading(false);
         });
     }
-  }, [sessionToken, roomName]);
+  }, [isOpen, sessionToken, roomName]);
 
   return (
     <Modal onClose={onCloseHandler} isOpen={isOpen}>
@@ -150,7 +154,13 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
               flexShrink={0}
               flexBasis="auto"
             >
-              {isLoading ? <CircularProgress /> : <Typography>{t('modals.inviteUserModal.getStarted')}</Typography>}
+              {isLoading ? (
+                <CircularProgress />
+              ) : (
+                <Typography variant="body1" className={classes.inviteText}>
+                  {t('modals.inviteUserModal.getStarted')}
+                </Typography>
+              )}
             </Box>
           )}
         </ModalPane>

@@ -11,4 +11,7 @@ module.exports = {
   snapshotSerializers: ['enzyme-to-json/serializer'],
   setupFiles: ['<rootDir>/src/setupTests.ts'],
   reporters: ['default', 'jest-junit'],
+  // commonsense option to reset mocks between test runs so no
+  // mock invocations carry over
+  clearMocks: true
 };

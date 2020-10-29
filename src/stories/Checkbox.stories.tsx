@@ -13,7 +13,18 @@ const Template: Story<CheckboxProps> = (args) => <Checkbox {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {};
 
+export const PrimaryChecked = Template.bind({});
+PrimaryChecked.args = {
+  checked: true,
+};
+
 export const Disabled = Template.bind({});
 Disabled.args = {
   disabled: true,
+};
+
+export const DisabledChecked = Template.bind({});
+DisabledChecked.args = {
+  disabled: true,
+  checked: true,
 };

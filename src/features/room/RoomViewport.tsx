@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { clamp, clampVector } from '../../utils/math';
-import useWindowSize from '../../withHooks/useWindowSize/useWindowSize';
+import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/core';
-import { useKeyboardControls } from './controls/viewport/useKeyboardControls';
+import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,8 @@ export const RoomViewportContext = React.createContext<null | {
   onObjectDragEnd: () => void;
   pan: (delta: Vector2) => void;
   zoom: (delta: number) => void;
+  width: number;
+  height: number;
 }>(null);
 
 export function useRoomViewport() {
@@ -41,7 +43,7 @@ export interface IRoomViewportProps {
    * but independent of the canvas transformation (i.e. floating UI content
    * that needs to be within the viewport context for certain information)
    */
-  uiContent: React.ReactNode;
+  uiControls: React.ReactNode;
 }
 
 const PINCH_GESTURE_DAMPING = 4000;
@@ -94,7 +96,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
   const { t } = useTranslation();
 
-  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiContent } = props;
+  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiControls: uiContent } = props;
 
   const domTarget = React.useRef<HTMLDivElement>(null);
 
@@ -292,8 +294,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onObjectDragEnd,
       pan: doPan,
       zoom: doZoom,
+      width: bounds.width,
+      height: bounds.height,
     }),
-    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom]
+    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height]
   );
 
   const { props: keyControlProps, isActive: isKeyboardActive } = useKeyboardControls({

@@ -2,13 +2,15 @@ import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Draggable } from '../Draggable';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
-import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import * as Sentry from '@sentry/react';
-import { makeStyles, Paper } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
 import { DraggableHandle } from '../DraggableHandle';
 import { PersonBubble } from './PersonBubble';
+import usePublications from '../../../hooks/usePublications/usePublications';
+import { VideoTrackPublication, AudioTrackPublication } from 'twilio-video';
 
 export interface IPersonProps {
   id: string;
@@ -24,9 +26,6 @@ function useParticipant(sid: string) {
 
 const useStyles = makeStyles({
   root: {
-    width: 160,
-    height: 160,
-    borderRadius: '100%',
     border: 'none',
   },
   dragHandle: {
@@ -64,18 +63,35 @@ export const Person = React.memo<IPersonProps>((props) => {
     }
   }, [participant, person.id]);
 
+  // a list of multimedia tracks this user has shared with peers
+  const publications = usePublications(participant);
+
   if (!participant) {
     return null;
   }
 
   const isMe = localParticipant.sid === participant.sid;
 
+  // extract audio and/or video publications
+  const audioTrackPub = publications.find((pub) => pub.kind === 'audio') as AudioTrackPublication | undefined;
+  const cameraTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('camera')) as
+    | VideoTrackPublication
+    | undefined;
+  const screenShareTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('screen')) as
+    | VideoTrackPublication
+    | undefined;
+
   return (
-    <Draggable id={props.id} zIndex={isMe ? 10 : 9} minHeight={160} minWidth={160}>
+    <Draggable id={props.id} zIndex={isMe ? 10 : 9} minHeight={140} minWidth={140}>
       <DraggableHandle disabled={!isMe} className={classes.dragHandle}>
-        <Paper className={classes.root} elevation={6}>
-          <PersonBubble participant={participant} />
-        </Paper>
+        <PersonBubble
+          participant={participant}
+          person={person}
+          isLocal={isMe}
+          audioTrack={audioTrackPub}
+          cameraTrack={cameraTrackPub}
+          screenShareTrack={screenShareTrackPub}
+        />
       </DraggableHandle>
     </Draggable>
   );

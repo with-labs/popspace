@@ -14,8 +14,10 @@ module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const user = await lib.util.http.verifySessionAndGetUser(event, callback, lib.db.accounts)
+  const user = context.user
   if(!user || !user.admin) {
     return await lib.util.http.fail(
       callback,

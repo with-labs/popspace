@@ -13,7 +13,7 @@ export default {
 };
 
 const Template: Story<{ text: string; isDraft: boolean }> = (args) => (
-  <Box display="flex" flexDirection="column" alignItems="center">
+  <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight={500}>
     <StickyNoteWidget
       onClose={() => {}}
       state={{

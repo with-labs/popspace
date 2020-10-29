@@ -3,22 +3,22 @@ import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
+import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import useQuery from '../../withHooks/useQuery/useQuery';
+import useQuery from '../../hooks/useQuery/useQuery';
 
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
 
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
-import { Button, TextField, Link, CircularProgress } from '@material-ui/core';
-import { CheckboxField } from '../../withComponents/CheckboxField/CheckboxField';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
+import { Button, TextField, Link } from '@material-ui/core';
+import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation } from 'react-i18next';
@@ -53,7 +53,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     setIsLoading(true);
     // if opt, email , or the claim id is empty, redirect to root
     if (!otp || !email || !claimId) {
-      history.push(Routes.ROOT);
+      history.push(RouteNames.ROOT);
     } else {
       // check to see if the room has already been claimed
       const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
@@ -64,7 +64,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
               window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
             }
             // redirect to the dashboard if someone is already logged in and the room is claimed
-            history.push(Routes.ROOT);
+            history.push(RouteNames.ROOT);
           } else {
             if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
               // the room is unclaimed, but the user isnt created,
@@ -133,80 +133,70 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     }
   };
 
-  return error ? (
-    <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-  ) : (
-    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
-      {isLoading ? (
-        <div className={clsx(styles.loading, 'u-flex u-flexJustifyCenter u-flexAlignItemsCenter')}>
-          <CircularProgress />
-        </div>
+  return (
+    <Page isLoading={isLoading} error={error}>
+      <Header />
+      {showConfirmation ? (
+        <ClaimConfirmationView roomName={roomName} email={email || ''} />
       ) : (
-        <>
-          <Header />
-          {showConfirmation ? (
-            <ClaimConfirmationView roomName={roomName} email={email || ''} />
-          ) : (
-            <TwoColLayout>
-              <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-                <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-                  <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.finalizeAccount.title')}</div>
-                  <div className={clsx(styles.text, 'u-fontP1')}>{t('pages.finalizeAccount.body', { email })}</div>
-                  <form onSubmit={onFormSubmit}>
-                    <div className="u-flex u-sm-flexCol u-flexRow">
-                      <TextField
-                        id="firstName"
-                        value={firstName}
-                        onChange={(event) => setFirstName(event.target.value)}
-                        placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
-                        label={t('pages.finalizeAccount.fistNameLabel')}
-                        className={styles.firstName}
-                      />
-                      <TextField
-                        id="lastName"
-                        value={lastName}
-                        onChange={(event) => setLastName(event.target.value)}
-                        placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
-                        label={t('pages.finalizeAccount.lastNameLabel')}
-                        className={styles.lastName}
-                      />
-                    </div>
-                    <div className={styles.checkboxes}>
-                      <CheckboxField
-                        label={
-                          <span>
-                            {t('pages.finalizeAccount.iAgreeText')}{' '}
-                            <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                              {t('pages.finalizeAccount.termsOfService')}
-                            </Link>
-                          </span>
-                        }
-                        checked={acceptTos}
-                        onChange={() => setAcceptTos(!acceptTos)}
-                        name={t('pages.finalizeAccount.tosCheckboxName')}
-                      />
-                      <CheckboxField
-                        label={t('pages.finalizeAccount.marketingCheckboxText')}
-                        checked={receiveMarketing}
-                        onChange={() => setReceiveMarketing(!receiveMarketing)}
-                        name={t('pages.finalizeAccount.martketingCheckboxName')}
-                      />
-                    </div>
-                    <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-                      {t('pages.finalizeAccount.submitBtnText')}
-                    </Button>
-                  </form>
+        <TwoColLayout>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+            <div className={clsx(styles.container, 'u-flex u-flexCol')}>
+              <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.finalizeAccount.title')}</div>
+              <div className={clsx(styles.text, 'u-fontP1')}>{t('pages.finalizeAccount.body', { email })}</div>
+              <form onSubmit={onFormSubmit}>
+                <div className="u-flex u-sm-flexCol u-flexRow">
+                  <TextField
+                    id="firstName"
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                    placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
+                    label={t('pages.finalizeAccount.fistNameLabel')}
+                    className={styles.firstName}
+                  />
+                  <TextField
+                    id="lastName"
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
+                    label={t('pages.finalizeAccount.lastNameLabel')}
+                    className={styles.lastName}
+                  />
                 </div>
-              </Column>
-              <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-                <div className={styles.imageContainer}>
-                  <img className={styles.image} src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
+                <div className={styles.checkboxes}>
+                  <CheckboxField
+                    label={
+                      <span>
+                        {t('pages.finalizeAccount.iAgreeText')}{' '}
+                        <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
+                          {t('pages.finalizeAccount.termsOfService')}
+                        </Link>
+                      </span>
+                    }
+                    checked={acceptTos}
+                    onChange={() => setAcceptTos(!acceptTos)}
+                    name={t('pages.finalizeAccount.tosCheckboxName')}
+                  />
+                  <CheckboxField
+                    label={t('pages.finalizeAccount.marketingCheckboxText')}
+                    checked={receiveMarketing}
+                    onChange={() => setReceiveMarketing(!receiveMarketing)}
+                    name={t('pages.finalizeAccount.martketingCheckboxName')}
+                  />
                 </div>
-              </Column>
-            </TwoColLayout>
-          )}
-        </>
+                <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+                  {t('pages.finalizeAccount.submitBtnText')}
+                </Button>
+              </form>
+            </div>
+          </Column>
+          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
+            <div className={styles.imageContainer}>
+              <img className={styles.image} src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
+            </div>
+          </Column>
+        </TwoColLayout>
       )}
-    </main>
+    </Page>
   );
 };

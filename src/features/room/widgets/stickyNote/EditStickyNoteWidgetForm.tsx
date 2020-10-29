@@ -1,9 +1,10 @@
-import { makeStyles } from '@material-ui/core';
-import { FastField, Form, Formik } from 'formik';
+import { makeStyles, Box } from '@material-ui/core';
+import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { FormikSubmitButton } from '../../../../withComponents/fieldBindings/FormikSubmitButton';
+import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { StickyNoteWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
+import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
 
 type RequiredStickyNoteData = Omit<StickyNoteWidgetData, 'author'>;
 
@@ -24,15 +25,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textarea: {
     flex: `1 1 160px`,
-    border: 'none',
     width: '100%',
-    fontFamily: theme.typography.fontFamily,
-    fontSize: theme.typography.pxToRem(14),
     resize: 'none',
-    '&:focus': {
-      // FIXME: this could use better accessibility
-      outline: 'none',
-    },
+    padding: 0,
   },
 }));
 
@@ -46,15 +41,17 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
   return (
     <Formik initialValues={initialValues} onSubmit={onSave}>
       <Form className={classes.form}>
-      <FastField
-          as="textarea"
+        <FormikBorderlessTextarea
           required
           name="text"
           placeholder={t('widgets.stickyNote.textPlaceholder')}
           className={classes.textarea}
           autoFocus
+          disableErrorState
         />
-        <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
+        <Box mt={1}>
+          <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
+        </Box>
       </Form>
     </Formik>
   );

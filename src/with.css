@@ -28,17 +28,23 @@ body,
 }
 /* scrollbar Track */
 *::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
+  background: #ffffff;
   border-radius: 10px;
 }
 /* scrollbar Handle */
 *::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
+  background: #f4f5f8;
   border-radius: 10px;
+}
+*::-webkit-scrollbar-track:hover {
+  background: #f4f5f8;
 }
 /* scrollbar Handle on hover */
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
+  background: #e2e5ee;
+}
+*::-webkit-scrollbar-thumb:active {
+  box-shadow: inset 0 0 0 2px #bec3d7;
 }
 
 /* Set the z-index of the modal overlay to ensure it's above everything else */

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import { actions } from '../roomSlice';
-import { useLocalParticipant } from '../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { RemoteTrackPublication, RemoteParticipant, LocalTrackPublication, LocalParticipant } from 'twilio-video';
 import { ButtonBase, makeStyles } from '@material-ui/core';
 import Publication from '../../../components/Publication/Publication';

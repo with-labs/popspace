@@ -2,14 +2,14 @@ import React from 'react';
 import Publication from './Publication';
 import { render } from '@testing-library/react';
 import useTrack from '../../hooks/useTrack/useTrack';
-import { useSpatialAudioVolume } from '../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { Provider } from 'react-redux';
 import store from '../../state/store';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
 
-jest.mock('../../withHooks/useSpatialAudioVolume/useSpatialAudioVolume');
+jest.mock('../../hooks/useSpatialAudioVolume/useSpatialAudioVolume');
 const mockUseSpatialAudioVolume = useSpatialAudioVolume as jest.Mock<any>;
 mockUseSpatialAudioVolume.mockImplementation(() => 0.5);
 

@@ -1,11 +1,11 @@
-import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, nanoid, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { EmojiData } from 'emoji-mart';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { RootState } from '../../state/store';
 import { clamp } from '../../utils/math';
-import { BackgroundName } from '../../withComponents/BackgroundPicker/options';
 import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/room';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
+import { BUILT_IN_WALLPAPERS } from '../../constants/wallpapers';
 
 /**
  * Positioning data for an object in a room,
@@ -17,14 +17,12 @@ export type ObjectPositionData = {
    * position based on 100% zoom.
    */
   position: Vector2;
-  size: Bounds;
-  needsRemeasure: boolean;
-};
-export type RoomBackgroundState = {
-  // FIXME: this could be simplified if we stopped treating our
-  // provided backgrounds as special and just referred to them by URL.
-  backgroundName: string;
-  customBackgroundUrl?: string;
+  /**
+   * User-resizable objects will need to set their size in state so it can
+   * be synchronized with others. Non-user-resizable objects will not define
+   * a size, and allow their contents to size themselves.
+   */
+  size?: Bounds;
 };
 
 /**
@@ -37,8 +35,10 @@ interface RoomState {
   /** Position data is keyed on the id of the widget or participant */
   positions: Record<string, ObjectPositionData>;
   bounds: Bounds;
-  background: RoomBackgroundState;
+  wallpaperUrl: string;
   useSpatialAudio: boolean;
+  isWallpaperModalOpen: boolean;
+  isMembershipModalOpen: boolean;
 }
 
 /** Use for testing only, please. */
@@ -51,10 +51,10 @@ export const initialState: RoomState = {
     width: 2500,
     height: 2500,
   },
-  background: {
-    backgroundName: BackgroundName.Bg1,
-  },
+  wallpaperUrl: BUILT_IN_WALLPAPERS[0],
   useSpatialAudio: true,
+  isWallpaperModalOpen: false,
+  isMembershipModalOpen: false,
 };
 
 const roomSlice = createSlice({
@@ -88,8 +88,7 @@ const roomSlice = createSlice({
       ) {
         state.positions[payload.widget.id] = {
           position: payload.position,
-          size: payload.size || { width: 0, height: 0 },
-          needsRemeasure: !payload.size,
+          size: payload.size,
         };
 
         state.widgets[payload.widget.id] = payload.widget;
@@ -102,17 +101,26 @@ const roomSlice = createSlice({
         payload,
       }: PayloadAction<{
         position: Vector2;
-        person: PersonState;
+        person: {
+          id: string;
+          avatar: string;
+          emoji?: EmojiData | string;
+          status?: string;
+        };
       }>
     ) {
       state.positions[payload.person.id] = {
         position: payload.position,
-        // always auto-size people
-        size: { width: 0, height: 0 },
-        needsRemeasure: true,
       };
 
-      state.people[payload.person.id] = payload.person;
+      state.people[payload.person.id] = {
+        kind: 'person',
+        isSpeaking: false,
+        status: null,
+        emoji: null,
+        viewingScreenSid: null,
+        ...payload.person,
+      };
     },
     removeWidget(state, { payload }: PayloadAction<{ id: string }>) {
       delete state.widgets[payload.id];
@@ -132,7 +140,7 @@ const roomSlice = createSlice({
       };
       state.positions[payload.id].position = clamped;
     },
-    resizeObject(state, { payload }: PayloadAction<{ id: string; size: Bounds | null }>) {
+    resizeObject(state, { payload }: PayloadAction<{ id: string; size?: Bounds | null }>) {
       if (!state.positions[payload.id]) return;
       if (payload.size) {
         const clamped = {
@@ -140,9 +148,8 @@ const roomSlice = createSlice({
           height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
         };
         state.positions[payload.id].size = clamped;
-        state.positions[payload.id].needsRemeasure = false;
       } else {
-        state.positions[payload.id].needsRemeasure = true;
+        state.positions[payload.id].size = undefined;
       }
     },
     /** Updates the data associated with a widget */
@@ -159,17 +166,25 @@ const roomSlice = createSlice({
       }
     },
     /** Changes the emoji displayed for a participant */
-    updatePersonEmoji(state, { payload }: PayloadAction<{ id: string; emoji: EmojiData | string | null }>) {
+    updatePersonStatus(
+      state,
+      { payload }: PayloadAction<{ id: string; emoji?: EmojiData | string | null; status?: string | null }>
+    ) {
       if (!state.people[payload.id]) return;
-      state.people[payload.id].emoji = payload.emoji;
+      if (payload.emoji !== undefined) {
+        state.people[payload.id].emoji = payload.emoji;
+      }
+      if (payload.status !== undefined) {
+        state.people[payload.id].status = payload.status;
+      }
     },
     /** Changes the avatar displayed for a participant */
     updatePersonAvatar(state, { payload }: PayloadAction<{ id: string; avatar: string }>) {
       if (!state.people[payload.id]) return;
       state.people[payload.id].avatar = payload.avatar;
     },
-    updateRoomBackground(state, { payload }: PayloadAction<RoomBackgroundState>) {
-      state.background = payload;
+    updateRoomWallpaper(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
+      state.wallpaperUrl = payload.wallpaperUrl;
     },
     updatePersonScreenViewSid(state, { payload }: PayloadAction<{ id: string; screenViewSid: string }>) {
       const person = state.people[payload.id];
@@ -178,30 +193,49 @@ const roomSlice = createSlice({
       person.viewingScreenSid = payload.screenViewSid;
     },
     updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
-      const person = state.people[payload.id];
-      if (!person) return;
+      if (!state.people[payload.id]) return;
 
-      person.isSpeaking = payload.isSpeaking;
+      state.people[payload.id].isSpeaking = payload.isSpeaking;
+    },
+    setIsWallpaperModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isWallpaperModalOpen = payload.isOpen;
+    },
+    setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isMembershipModalOpen = payload.isOpen;
+    },
+    /**
+     * !! never call this with coordinated dispatch - only ever
+     * use regular dispatch - clears local room state after leaving!
+     */
+    leave() {
+      return initialState;
     },
   },
 });
 
 export const { actions, reducer } = roomSlice;
 
+const selectWidgets = (state: RootState) => state.room.widgets;
+const selectPeople = (state: RootState) => state.room.people;
+
 export const selectors = {
   createPositionSelector: (objectId: string) => (state: RootState) => state.room.positions[objectId]?.position || null,
-  selectWidgetIds: (state: RootState) => Object.keys(state.room.widgets),
+  // memoized so that an identical widgets map doesn't produce different arrays from Object.keys
+  selectWidgetIds: createSelector(selectWidgets, (widgets) => Object.keys(widgets)),
   createWidgetSelector: (widgetId: string) => (state: RootState) => state.room.widgets[widgetId] || null,
-  selectPeopleIds: (state: RootState) => Object.keys(state.room.people),
+  // memoized so that an identical people map doesn't produce different arrays from Object.keys
+  selectPeopleIds: createSelector(selectPeople, (people) => Object.keys(people)),
   createPersonSelector: (participantId: string) => (state: RootState) => state.room.people[participantId] || null,
   selectRoomBounds: (state: RootState) => state.room.bounds,
   selectHasWhiteboard: (state: RootState) =>
     Object.values(state.room.widgets).some((widget) => widget.type === WidgetType.Whiteboard),
-  selectBackground: (state: RootState) => state.room.background,
+  selectWallpaperUrl: (state: RootState) => state.room.wallpaperUrl,
   createEmojiSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.emoji,
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
   createPersonScreenViewSidSelector: (personId: string) => (state: RootState) =>
     state.room.people[personId]?.viewingScreenSid,
   createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
+  selectIsWallpaperModalOpen: (state: RootState) => state.room.isWallpaperModalOpen,
+  selectIsMembershipModalOpen: (state: RootState) => state.room.isMembershipModalOpen,
 };

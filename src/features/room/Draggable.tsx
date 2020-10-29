@@ -14,7 +14,7 @@ import { RootState } from '../../state/store';
 import { throttle } from 'lodash';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import clsx from 'clsx';
-import { ResizeObserver } from 'resize-observer';
+import { AutoPan } from './AutoPan';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -84,9 +84,7 @@ const useStyles = makeStyles({
     height: '100%',
   },
   unresizableContentSizer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
+    position: 'relative',
   },
 });
 
@@ -103,6 +101,10 @@ export const DraggableContext = React.createContext<{
   isResizingAnimatedValue: null as any,
   disableResize: false,
 });
+
+const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.KeyboardEvent) => {
+  ev.stopPropagation();
+};
 
 /**
  * A Draggable is a generic container for any element within a Room which
@@ -140,9 +142,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
       ),
     []
   );
-  const { position, size, needsRemeasure: needsResize } = useSelector((state: RootState) =>
-    positionSelector(state, id)
-  );
+  const { position, size } = useSelector((state: RootState) => positionSelector(state, id));
+  // if this Draggable is marked as user-resizable, but does not have
+  // a measured size, we will immediately measure the natural size of the
+  // contents.
+  const needsRemeasure = isResizable && !size;
   const measuredWidth = size?.width || 0;
   const measuredHeight = size?.height || 0;
 
@@ -189,9 +193,9 @@ export const Draggable: React.FC<IDraggableProps> = ({
 
   const [contentEl, contentRef] = React.useState<HTMLDivElement | null>(null);
 
-  // handles remeasuring the component from its native size when the flag is set in state
+  // handles remeasuring the component from its native size when the flag is set
   React.useEffect(() => {
-    if (!contentEl || !needsResize) return;
+    if (!contentEl || !needsRemeasure) return;
 
     // immediately remeasure
     const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
@@ -200,27 +204,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
       width: w,
       height: h,
     });
-  }, [contentEl, needsResize, onResize, minHeight, minWidth, maxWidth, maxHeight]);
-
-  // handles triggering remeasures when content DOM changes for
-  // non-resizable widgets
-  React.useEffect(() => {
-    if (!contentEl || isResizable) return;
-
-    const resizeObserver = new ResizeObserver(() => {
-      const w = clamp(contentEl.clientWidth, minWidth, maxWidth);
-      const h = clamp(contentEl.clientHeight, minHeight, maxHeight);
-      onResize({
-        width: w,
-        height: h,
-      });
-    });
-    resizeObserver.observe(contentEl);
-
-    return () => {
-      resizeObserver.unobserve(contentEl);
-    };
-  }, [contentEl, isResizable, minWidth, minHeight, onResize, maxWidth, maxHeight]);
+  }, [contentEl, needsRemeasure, onResize, minHeight, minWidth, maxWidth, maxHeight]);
 
   // Update the spring when any of the monitored spatial values change
   React.useEffect(() => {
@@ -235,6 +219,31 @@ export const Draggable: React.FC<IDraggableProps> = ({
     }
   }, [position.x, position.y, measuredWidth, measuredHeight, set, grabbing]);
 
+  const grabDisplacementRef = React.useRef<Vector2 | null>(null);
+
+  // create a private instance of AutoPan to control the automatic panning behavior
+  // that occurs as the user drags an item near the edge of the screen.
+  const autoPan = React.useMemo(() => new AutoPan(viewport.pan), [viewport.pan]);
+  // we subscribe to auto-pan events so we can update the position
+  // of the object as the viewport moves
+  const { toWorldCoordinate } = viewport;
+  React.useEffect(() => {
+    const handleAutoPan = ({ cursorPosition }: { cursorPosition: Vector2 }) => {
+      // all we have to do to move the object as the screen auto-pans is re-trigger a
+      // move event with the same cursor position - since the view itself has moved 'below' us,
+      // the same cursor position produces the new world position.
+      const worldPosition = toWorldCoordinate(cursorPosition, true);
+      // report the movement after converting to world coordinates
+      const finalPosition = roundVector(addVectors(worldPosition, grabDisplacementRef.current || { x: 0, y: 0 }));
+      onMove(finalPosition);
+      set(finalPosition);
+    };
+    autoPan.on('pan', handleAutoPan);
+    return () => {
+      autoPan.off('pan', handleAutoPan);
+    };
+  }, [autoPan, toWorldCoordinate, onMove, set]);
+
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture(
     {
@@ -242,12 +251,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
         // prevent a drag event from bubbling up to the canvas
         state.event?.stopPropagation();
 
-        // waiting to reference these properties until this handler is called,
-        // just to be sure we have the latest stuff.
-        const { toWorldCoordinate } = viewport;
-
         // convert to world position, clamping to room bounds
-        const worldPosition = toWorldCoordinate(
+        const worldPosition = viewport.toWorldCoordinate(
           {
             x: state.xy[0],
             y: state.xy[1],
@@ -260,10 +265,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
         if (state.first) {
           // capture the initial displacement between the cursor and the
           // object's center to add to each subsequent position
-          displacement = subtractVectors(position, worldPosition);
+          grabDisplacementRef.current = subtractVectors(position, worldPosition);
+          displacement = grabDisplacementRef.current;
         } else {
           // if it's not the first frame, use the memoized value from the previous frame
-          displacement = state.memo || { x: 0, y: 0 };
+          displacement = grabDisplacementRef.current || { x: 0, y: 0 };
         }
 
         // report the movement after converting to world coordinates
@@ -276,17 +282,19 @@ export const Draggable: React.FC<IDraggableProps> = ({
           y: finalPosition.y,
         });
 
-        return displacement;
+        autoPan.update({ x: state.xy[0], y: state.xy[1] });
       },
       onDragStart: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
         set({ grabbing: true });
+        autoPan.start({ x: state.xy[0], y: state.xy[1] });
       },
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ grabbing: false });
+        autoPan.stop();
       },
     },
     {
@@ -340,22 +348,30 @@ export const Draggable: React.FC<IDraggableProps> = ({
         style={{
           transform: to(
             [x, y, width, height],
-            (xv, yv, wv, hv) => `translate(${Math.round(xv - wv / 2)}px, ${Math.round(yv - hv / 2)}px)`
+            (xv, yv, wv, hv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px) translate(-50%, -50%)`
           ),
-          width,
-          height,
+          width: isResizable ? width : undefined,
+          height: isResizable ? height : undefined,
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
         className={styles.root}
+        onMouseDown={stopPropagation}
+        onMouseMove={stopPropagation}
+        onMouseUp={stopPropagation}
+        onPointerDown={stopPropagation}
+        onPointerMove={stopPropagation}
+        onPointerUp={stopPropagation}
+        onKeyDown={stopPropagation}
+        onKeyUp={stopPropagation}
       >
         <div
           // Until the content has been measured (or re-measured), we render it in an absolute
           // positioned overflowing frame to try to estimate its innate size, which we will
           // use as the new explicit size of the draggable once measuring is complete
           className={clsx({
-            [styles.contentSizer]: !needsResize && isResizable,
-            [styles.unmeasuredContentSizer]: needsResize && isResizable,
+            [styles.contentSizer]: !needsRemeasure && isResizable,
+            [styles.unmeasuredContentSizer]: needsRemeasure && isResizable,
             [styles.unresizableContentSizer]: !isResizable,
           })}
           // while we are measuring, because of word-wrapping and other css overflow rules,

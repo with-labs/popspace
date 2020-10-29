@@ -7,6 +7,25 @@ export type BaseResponse = {
   [key: string]: any;
 };
 
+export type ApiUser = {
+  admin: boolean;
+  avatar_url: string | null;
+  created_at: string;
+  deleted_at: string;
+  display_name: string;
+  email: string;
+  first_name: string;
+  id: string;
+  last_name: string;
+  newsletter_opt_in: boolean;
+};
+export type ApiRoom = {
+  id: string;
+  name: string;
+  owner_id: string;
+  priority_level: number;
+};
+
 class Api {
   async signup(data: any) {
     return await this.post('/request_create_account', data);
@@ -25,15 +44,29 @@ class Api {
   }
 
   async getProfile(token: any) {
-    return await this.post('/user_profile', { token });
+    return await this.post<
+      BaseResponse & {
+        profile?: {
+          user: ApiUser;
+          rooms: {
+            owned: ApiRoom[];
+            member: ApiRoom[];
+          };
+        };
+      }
+    >('/user_profile', { token });
   }
 
   async createRoom(token: any) {
     return await this.post('/create_room', { token });
   }
 
-  async roomInvite(token: any, roomId: any, email: any) {
-    return await this.post('/send_room_invite', { token, roomId, email });
+  async sendRoomInvite(token: any, roomName: any, email: any) {
+    return await this.post('/send_room_invite', { token, roomName, email });
+  }
+
+  async cancelRoomInvite(token: any, roomName: any, email: any) {
+    // TODO fill this out
   }
 
   async resolveRoomInvite(token: any, otp: string, inviteId: string) {
@@ -76,6 +109,14 @@ class Api {
     return await this.post('/unsubscribe', { otp, mlid });
   }
 
+  async getRoomMembers(token: any, roomName: string) {
+    //TODO: fill this out
+  }
+
+  async removeRoomMember(token: any, memberId: string) {
+    //TODO: fill this out
+  }
+
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);
@@ -87,7 +128,7 @@ class Api {
             const jsonResponse = JSON.parse(xhr.response);
             resolve(jsonResponse);
           } catch {
-            resolve({ success: false, message: xhr.response } as any);
+            resolve({ success: false, message: 'Unexpected error' } as any);
           }
         }
       };

@@ -1,48 +1,48 @@
+export type WithColorPalette = {
+  light?: string;
+  regular: string;
+  bold?: string;
+  ink?: string;
+};
+
 export default {
-  grey: {
-    50: '#F3F4F7',
-    100: '#E8E9ED',
-    200: '#DDDEE4',
-    300: '#D1D3DA',
-    400: '#C6C8D0',
-    500: '#c6c8cF',
-    600: '#B0B3BD',
-    700: '#A4A8B3',
-    800: '#999DAA',
-    900: '#8E92A0',
-    A100: '#ffffff',
-    A200: '#ffffff',
-    A400: '#f7f9ff',
-    A700: '#dee4ff',
-    contrastDefaultColor: 'dark',
+  slate: {
+    light: '#F4F5F8',
+    regular: '#E2E5EE',
+    bold: '#BEC3D7',
+    ink: '#949CBA',
   },
   mandarin: {
-    light: '#fff7cc',
-    main: '#ffd873',
-    dark: '#f3a110',
+    light: '#FFE5A1',
+    regular: '#FFCB45',
+    bold: '#F3A110',
+    ink: '#7C4F00',
   },
   lavender: {
-    light: '#e8efff',
-    main: '#aebae4',
-    dark: '#636c8b',
+    light: '#EEECFF',
+    regular: '#D9D6FF',
+    bold: '#9F97FF',
+    ink: '#544BCB',
   },
   cherry: {
-    light: '#ffe2df',
-    main: '#ff9f96',
-    dark: '#ff7467',
+    light: '#FFD5D1',
+    regular: '#FFB5AF',
+    bold: '#EE6659',
+    ink: '#9C2F08',
   },
-  turquoise: {
-    light: '#e5fdf4',
-    main: '#8ae1d9',
-    dark: '#61beb5',
+  oregano: {
+    light: '#CDF7F3',
+    regular: '#ABF1EA',
+    bold: '#6DCBC2',
+    ink: '#0F9D90',
   },
   sand: {
-    main: '#fff8f0',
+    regular: '#fff8f0',
   },
   snow: {
-    main: '#ffffff',
+    regular: '#ffffff',
   },
   ink: {
-    main: '#333333',
+    regular: '#333333',
   },
 };

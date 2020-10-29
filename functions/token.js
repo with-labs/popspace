@@ -141,7 +141,6 @@ const ROOM_WHITELIST_PASSCODES = {
   fortus: '654292',
   startups: '898843',
   the_studio: '221260',
-  ourcult: '866970',
   tally: '856183',
   coachbob: '310984',
   watercooler: '274601',
@@ -249,6 +248,8 @@ const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_
 module.exports.handler = async (event, context, callback) => {
   if(util.http.failUnlessPost(event, callback)) return;
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
   // Parsse JSON body of request and handle errors if malformed
   try {

@@ -2,6 +2,7 @@
 
 // the name of the session token in local storage
 export const USER_SESSION_TOKEN = '__session_token';
+export const USER_ONBOARDING = '__onboarding';
 
 export const USER_SUPPORT_EMAIL = 'support@with.so';
 

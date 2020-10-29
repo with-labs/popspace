@@ -13,7 +13,7 @@ export default {
 };
 
 const Template: Story<{ url: string; title: string; isDraft: boolean }> = (args) => (
-  <Box display="flex" flexDirection="column" alignItems="center">
+  <Box display="flex" flexDirection="column" alignItems="center" minHeight={500}>
     <LinkWidget
       onClose={() => {}}
       state={{

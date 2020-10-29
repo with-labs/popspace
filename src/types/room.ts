@@ -1,5 +1,5 @@
 import { EmojiData } from 'emoji-mart';
-import { WhiteboardState } from '../withComponents/Whiteboard/Whiteboard';
+import { WhiteboardState } from '../components/Whiteboard/types';
 
 /**
  * Various kinds of things that can be in rooms
@@ -9,6 +9,7 @@ export type PersonState = {
   kind: 'person';
   avatar: string;
   emoji: EmojiData | null | string;
+  status: string | null;
   // FIXME: this seems like user preferences not participant data
   viewingScreenSid: string | null;
   isSpeaking: boolean;

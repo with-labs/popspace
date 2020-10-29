@@ -3,21 +3,21 @@ import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
-import { CircularProgress, Link } from '@material-ui/core';
-import { Routes } from '../../constants/Routes';
+import { Link, Box } from '@material-ui/core';
+import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { DashboardItem } from './DashboardItem/DashboardItem';
 import { RoomSummary } from './RoomSummary/RoomSummary';
-import { Header } from '../../withComponents/Header/Header';
+import { Header } from '../../components/Header/Header';
 import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
 import { Button } from '@material-ui/core';
-import { WithModal } from '../../withComponents/WithModal/WithModal';
+import { WithModal } from '../../components/WithModal/WithModal';
 import { useTranslation } from 'react-i18next';
+import { Page } from '../../Layouts/Page/Page';
 
 import styles from './Dashboard.module.css';
 
@@ -48,7 +48,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           } else {
             // we dont have a valid token, so redirect to sign in and remove old token
             localStorage.removeItem(USER_SESSION_TOKEN);
-            history.push(Routes.SIGN_IN);
+            history.push(RouteNames.SIGN_IN);
           }
         })
         .catch((e: any) => {
@@ -61,7 +61,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
         });
     } else {
       // we arent logged in so redirect to the sign in page
-      history.push(Routes.SIGN_IN);
+      history.push(RouteNames.SIGN_IN);
     }
   }, [history]);
 
@@ -87,40 +87,28 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     setErrorMsg(msg);
   };
 
-  return error ? (
-    <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-  ) : (
-    <main className={styles.root}>
-      {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
-          <CircularProgress />
-        </div>
-      ) : (
-        <div className="u-flex u-flexJustifyCenter u-height100Percent">
-          <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
-            <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
-            <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
-              <div className={clsx(styles.text, 'u-fontH1')}>{t('pages.dashboard.roomsTitle')}</div>
-              <div className={clsx('u-width100Percent')}>
-                <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
-                  {[...rooms.owned, ...rooms.member].map((memberRoom) => {
-                    return (
-                      <DashboardItem key={memberRoom.id}>
-                        <RoomSummary
-                          roomName={memberRoom.name}
-                          key={memberRoom.id}
-                          onErrorHandler={onRoomSummaryError}
-                        />
-                      </DashboardItem>
-                    );
-                  })}
-                  {feedbackItem}
-                </div>
+  return (
+    <Page isLoading={isLoading} error={error}>
+      <Box display="flex" justifyContent="center" flexGrow={1}>
+        <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
+          <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
+          <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
+            <div className={clsx(styles.text, 'u-fontH1')}>{t('pages.dashboard.roomsTitle')}</div>
+            <div className={clsx('u-width100Percent')}>
+              <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
+                {[...rooms.owned, ...rooms.member].map((memberRoom) => {
+                  return (
+                    <DashboardItem key={memberRoom.id}>
+                      <RoomSummary roomName={memberRoom.name} key={memberRoom.id} onErrorHandler={onRoomSummaryError} />
+                    </DashboardItem>
+                  );
+                })}
+                {feedbackItem}
               </div>
             </div>
           </div>
         </div>
-      )}
+      </Box>
       <WithModal isOpen={!!errorMsg}>
         <div className="u-flex u-flexCol">
           <h1 className="u-fontH1">{t('error.noteError.title')}</h1>
@@ -130,6 +118,6 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           <Button onClick={() => setErrorMsg('')}>{t('error.noteError.btnText')}</Button>
         </div>
       </WithModal>
-    </main>
+    </Page>
   );
 };

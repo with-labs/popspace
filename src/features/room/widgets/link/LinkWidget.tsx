@@ -1,6 +1,6 @@
 import { Link, makeStyles, Tooltip } from '@material-ui/core';
 import * as React from 'react';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
@@ -26,7 +26,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    fontSize: theme.typography.pxToRem(16),
+    fontSize: theme.typography.pxToRem(13),
+    fontWeight: theme.typography.fontWeightRegular,
+    color: theme.palette.grey[900],
   },
 }));
 
@@ -53,7 +55,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
 
   return (
     <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={98} maxWidth={400} maxHeight={300}>
-      <WidgetTitlebar title={t('widgets.link.publishedTitle')} onClose={onClose} />
+      <WidgetTitlebar title={state.data.title || t('widgets.link.title')} onClose={onClose} />
       <WidgetContent>
         <Tooltip title={state.data.url} placement="bottom">
           <Link
@@ -63,7 +65,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
             color="inherit"
             className={classes.link}
           >
-            {state.data.title}
+            {state.data.url}
           </Link>
         </Tooltip>
       </WidgetContent>

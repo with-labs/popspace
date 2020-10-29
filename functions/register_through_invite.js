@@ -2,16 +2,16 @@ const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
 
-const tryToSetUpNewAccount = async (params, accounts) => {
-  let existingAccountCreateRequest = await accounts.getLatestAccountCreateRequest(params.email)
+const tryToSetUpNewAccount = async (params) => {
+  let existingAccountCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
   if(existingAccountCreateRequest) {
-    const resolve = await accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
+    const resolve = await db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
     if(!resolve.error) {
       return resolve
     }
   }
-  const createRequest = await accounts.tryToCreateAccountRequest(params)
-  return await accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
+  const createRequest = await db.accounts.tryToCreateAccountRequest(params)
+  return await db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
 }
 
 /**
@@ -26,8 +26,10 @@ module.exports.handler = async (event, context, callback) => {
   if(lib.util.http.failUnlessPost(event, callback)) return;
 
   await lib.init()
+  const middleware = await lib.util.middleware.init()
+  await middleware.run(event, context)
 
-  const body = JSON.parse(event.body)
+  const body = context.params
   const params = body.data
   const otp = body.otp
   const inviteId = body.inviteId
@@ -35,20 +37,18 @@ module.exports.handler = async (event, context, callback) => {
 
   params.email = util.args.consolidateEmailString(params.email)
 
-  const rooms = new lib.db.Rooms()
-  const invite = await rooms.inviteById(inviteId)
+  const invite = await db.rooms.inviteById(inviteId)
   if(!invite) {
     return await lib.util.http.fail(callback, "Invalid room invitation")
   }
-  const verification = rooms.isValidInvitation(invite, params.email, otp)
+  const verification = db.rooms.isValidInvitation(invite, params.email, otp)
   if(verification.error) {
     // refuse to create user if the invitation is not valid
     return await lib.db.otp.handleAuthFailure(verification.error, callback)
   }
 
-  const accounts = new lib.db.Accounts()
   let user = null
-  const existingUser = await accounts.userByEmail(params.email)
+  const existingUser = await db.accounts.userByEmail(params.email)
   if(existingUser) {
     // This is a registration endpoint, so something must have gone wrong if we hit this.
     // However, if the invite OTP is correct, if verifies access of the caller to the email.
@@ -56,27 +56,27 @@ module.exports.handler = async (event, context, callback) => {
     user = existingUser
   } else {
     // Make sure to create the user before resolving the invitation
-    const accountCreate = await tryToSetUpNewAccount(params, accounts)
+    const accountCreate = await tryToSetUpNewAccount(params)
     if(accountCreate.error != null)  {
       return await lib.db.otp.handleAuthFailure(accountCreate.error, callback)
     }
     user = accountCreate.newUser
-    await rooms.generateRoom(user.id)
+    await db.rooms.generateRoom(user.id)
   }
 
-  const resolve = await rooms.resolveInvitation(invite, user, otp)
+  const resolve = await db.rooms.resolveInvitation(invite, user, otp)
   if(resolve.error) {
     return await lib.db.otp.handleAuthFailure(resolve.error, callback)
   }
 
   const response = {}
-  const shouldIssueToken = await accounts.needsNewSessionToken(sessionToken, user)
+  const shouldIssueToken = await db.accounts.needsNewSessionToken(sessionToken, user)
   if(shouldIssueToken) {
-    const session = await accounts.createSession(user.id)
-    response.newSessionToken = accounts.tokenFromSession(session)
+    const session = await db.accounts.createSession(user.id)
+    response.newSessionToken = db.accounts.tokenFromSession(session)
   }
 
-  const roomNameEntry = await rooms.preferredNameById(invite.room_id)
+  const roomNameEntry = await db.rooms.preferredNameById(invite.room_id)
   response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);

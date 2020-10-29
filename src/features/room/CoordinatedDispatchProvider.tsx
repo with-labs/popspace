@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { useLocalDataTrack } from '../../withHooks/useLocalDataTrack/useLocalDataTrack';
+import { useLocalDataTrack } from '../../hooks/useLocalDataTrack/useLocalDataTrack';
 import * as Sentry from '@sentry/react';
 import store from '../../state/store';
 import { actions } from './roomSlice';

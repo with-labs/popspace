@@ -7,6 +7,13 @@ export default {
       privacyPolicy: 'Privacy Policy',
       logout: 'Logout',
     },
+    common: {
+      emailInput: {
+        placeHolder: 'dorothy@emerald.so',
+        label: 'Email Address',
+      },
+      cancel: 'Cancel',
+    },
     errorPages: {
       takeMeHomeBtn: 'Take me Home',
       contactSupportBtn: 'Contact Support',
@@ -111,26 +118,44 @@ export default {
     },
     widgets: {
       link: {
+        name: 'Link',
         addWidgetTitle: 'Add a Link',
         publishedTitle: 'Link',
         titleLabel: 'Title',
         urlLabel: 'Url',
         addBtn: 'Add a link',
+        errorInvalidUrl: 'Not a URL',
+        quickActionTitle: 'Add a Link',
       },
       whiteboard: {
+        name: 'Whiteboard',
         title: 'Whiteboard',
+        doubleTapEraserToClear: 'Double tap Eraser to clear',
+        export: 'Save whiteboard as an image',
       },
       youtube: {
+        name: 'YouTube',
         title: 'YouTube',
         urlLabel: 'YouTube Url',
         addBtn: 'Add a video',
+        quickActionTitle: 'Add a Video',
       },
       stickyNote: {
+        name: 'Sticky Note',
         textPlaceholder: 'Note text',
         addBtn: 'Add note',
         addedBy: 'Added by {{author}}',
         addWidgetTitle: 'Add a Sticky Note',
         publishedTitle: 'Sticky Note',
+        quickActionTitle: 'Add a Sticky Note',
+        quickAddButton: 'Add another note',
+      },
+      unknown: {
+        name: 'Accessory',
+      },
+      common: {
+        close: 'Remove accessory',
+        mutedForYou: 'Muted for you',
       },
     },
     error: {
@@ -149,6 +174,7 @@ export default {
         unknownRoom: '',
         joinRoomInvalidScreenName: 'Please provide a valid screen name.',
         joinRoomUnknownFailure: 'Failed to join room - check your network connection.',
+        supportedFileTypes: '{{fileTypes}} are supported',
       },
       widgetsFallback: {
         title: 'Accessories error',
@@ -163,6 +189,71 @@ export default {
     features: {
       room: {
         viewportControlsToolTip: 'Arrow keys to pan, +/- to zoom',
+        customWallpaperLabel: 'Link to an image',
+        wallpaperSet: 'New wallpaper set!',
+        wallpaperSupportedFileTypes: 'JPG, PNG, WEBP, and GIF',
+      },
+      status: {
+        placeholder: "What's your status?",
+        emojiTitle: 'Pick an emoji',
+        quickActionTitle: 'Set your status',
+      },
+      omnibar: {
+        // TODO: update when we support more quick actions
+        placeholder: 'Type or paste to add',
+        label: 'Quick action bar',
+      },
+      roomMenu: {
+        goToDashboard: 'Go to Dashboard',
+        contactUs: 'Contact Us',
+        voteOnFeatures: 'Vote on Features',
+        roomWallpaper: 'Room Wallpaper',
+      },
+    },
+    modals: {
+      inviteUserModal: {
+        title: 'Manage members',
+        inviteBtn: 'Invite',
+        noInvitesLeft: 'No invites left',
+        invitesLeft: '{{count}} invite left',
+        invitesLeft_plural: '{{count}} invites left',
+        getStarted: 'Get started by inviting some people!',
+        resendInvite: 'Resend Invite',
+        deleteInvite: 'Cancel Invite',
+        removeUser: 'Remove User',
+        removeUserTitle: 'Remove {{user}} from {{room}}',
+        removeUserBody:
+          'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
+        removeUserBtn: 'Remove {{user}}',
+      },
+      wallpaperModal: {
+        title: 'Room wallpaper',
+      },
+      avModal: {
+        title: 'Audio & Video',
+      },
+      onboardingModal: {
+        title: 'Welcome to With!',
+        nextBtnText: 'Next',
+        PreviousText: 'Previous',
+        finishText: 'Got it!',
+        step1: {
+          title: 'step 1',
+          text: 'Lorem ipsum dolor sit amet,',
+          altText: 'alt 1',
+        },
+        step2: {
+          title: 'step 2',
+          text:
+            '2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut gravida neque. Ut turpis orci, imperdiet in molestie ornare, rhoncus venenatis justo. Morbi eget urna erat. Ut cursus ullamcorper fringilla. Aliquam vel quam imperdiet lacus posuere elementum in at felis. Donec finibus velit a justo mollis, vel pulvinar justo mollis. In ut diam scelerisque lorem viverra luctus. Sed consectetur odio tellus, in fringilla justo porttitor nec. Vivamus id nibh vestibulum, ornare tellus ac, tempor risus. Duis tempor euismod cursus. Suspendisse nec lacus augue. Morbi ut orci posuere, lobortis nulla ut, commodo lectus. Quisque id purus pellentesque, tempor elit eu, tincidunt tellus. Vivamus dapibus nibh quis scelerisque dignissim. Nulla turpis magna, tristique elementum iaculis sit amet, ornare quis elit. Vestibulum sodales euismod pulvinar. Fusce cursus tortor id condimentum euismod. Sed finibus blandit enim at elementum. Quisque consectetur elementum ipsum in sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam tempor, nulla at pellentesque iaculis, urna mi mattis erat, in pretium libero dolor maximus leo. Proin interdum a erat a tincidunt.',
+          altText: 'alt 2',
+        },
+        step3: {
+          title: 'step 3',
+          text:
+            '3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut gravida neque. Ut turpis orci, imperdiet in molestie ornare, rhoncus venenatis justo. Morbi eget urna erat. Ut cursus ullamcorper fringilla. Aliquam vel quam imperdiet lacus posuere elementum in at felis. Donec finibus velit a justo mollis, vel pulvinar justo mollis. In ut diam scelerisque lorem viverra luctus. Sed consectetur odio tellus, in fringilla justo porttitor nec. Vivamus id nibh vestibulum, ornare tellus ac, tempor risus. Duis tempor euismod cursus. Suspendisse nec lacus augue. Morbi ut orci posuere, lobortis nulla ut, commodo lectus. Quisque id purus pellentesque, tempor elit eu, tincidunt tellus. Vivamus dapibus nibh quis scelerisque dignissim. Nulla turpis magna, tristique elementum iaculis sit amet, ornare quis elit. Vestibulum sodales euismod pulvinar. Fusce cursus tortor id condimentum euismod. Sed finibus blandit enim at elementum. Quisque consectetur elementum ipsum in sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam tempor, nulla at pellentesque iaculis, urna mi mattis erat, in pretium libero dolor maximus leo. Proin interdum a erat a tincidunt.',
+          altText: 'alt 3',
+        },
       },
     },
   },

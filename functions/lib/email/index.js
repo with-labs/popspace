@@ -2,5 +2,6 @@ module.exports = {
   ses: require("./ses"),
   account: require("./account"),
   room: require("./room"),
-  marketing: require("./marketing")
+  marketing: require("./marketing"),
+  named: require("./named")
 }

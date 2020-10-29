@@ -1,4 +1,5 @@
 const pg = require("./pg/pg")
+const dynamo = require("./dynamodb/dynamo.js")
 const otp = require("./otp")
 
 const Accounts = require("./accounts")
@@ -8,19 +9,21 @@ const Profile = require("./profile")
 const Magic = require("./magic")
 
 const init = async () => {
-  const postgres = await pg.init()
+  await pg.init()
+  await dynamo.init()
   db.rooms = new Rooms()
   db.accounts = new Accounts()
   db.magic = new Magic()
-  return postgres
 }
 
 const cleanup = async () => {
-  return await pg.tearDown()
+  await pg.tearDown()
+  await db.dynamo.cleanup()
 }
 
 const db = {
   pg: pg,
+  dynamo: dynamo,
   otp: otp,
   Accounts: Accounts,
   ErrorCodes: ErrorCodes,

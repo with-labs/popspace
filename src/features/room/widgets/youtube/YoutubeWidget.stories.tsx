@@ -13,7 +13,7 @@ export default {
 };
 
 const Template: Story<{ isPlaying: boolean; videoId: string; isDraft: boolean }> = (args) => (
-  <Box display="flex" flexDirection="column" alignItems="center">
+  <Box display="flex" flexDirection="column" alignItems="flex-start" minHeight={500}>
     <YoutubeWidget
       onClose={() => {}}
       state={{

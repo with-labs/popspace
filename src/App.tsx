@@ -1,122 +1,60 @@
-// copy of the initial twilio code, changed a few things and wanted to keep the
-// code separate
+import * as React from 'react';
+import { makeStyles, StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
+import { mandarin as theme } from './theme/theme';
+import { BrowserRouter as Router } from 'react-router-dom';
+import AppStateProvider from './state';
+import { Routes } from './Routes';
+import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
 
-import React, { FC } from 'react';
-import { CircularProgress } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import JoinRoom from './withComponents/JoinRoom/JoinRoom';
-import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
-import { Room } from './features/room/Room';
-import { ErrorBoundary } from './withComponents/ErrorBoundary/ErrorBoundary';
-import { WithModal } from './withComponents/WithModal/WithModal';
-import useRoomState from './hooks/useRoomState/useRoomState';
-import { Provider } from 'react-redux';
-import store from './state/store';
-import { VideoProvider } from './components/VideoProvider';
-import { ConnectOptions } from 'twilio-video';
-import { useAppState } from './state';
-import { CoordinatedDispatchProvider } from './features/room/CoordinatedDispatchProvider';
-import { MediaDeviceSynchronizer } from './features/preferences/MediaDeviceSynchronizer';
-import { useCanEnterRoom } from './withHooks/useCanEnterRoom/useCanEnterRoom';
+export interface IAppProps {}
 
-// See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
-// for available connection options.
-const connectionOptions: ConnectOptions = {
-  bandwidthProfile: {
-    video: {
-      mode: 'collaboration',
-      renderDimensions: {
-        high: { height: 1080, width: 1920 },
-        standard: { height: 90, width: 160 },
-        low: { height: 90, width: 160 },
-      },
-    },
+// styles to override the default styles
+const useStyles = makeStyles((themeObj) => ({
+  success: {
+    color: `${themeObj.palette.common.black} !important`,
+    backgroundColor: `${themeObj.palette.success.main} !important`,
   },
-  dominantSpeaker: true,
-  maxAudioBitrate: 12000,
-  networkQuality: { local: 1, remote: 1 },
-  preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-};
-
-interface IAppProps {
-  roomName: string;
-}
-
-const useStyles = makeStyles(() => ({
-  backdrop: {
-    backgroundImage: `url(/backgrounds/landing.jpg)`,
-    width: '100vw',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  roomWrapper: {
-    width: '100vw',
-    height: '100vh',
-    overflow: 'hidden',
-    display: 'flex',
-    flexDirection: 'column',
+  error: {
+    color: themeObj.palette.success.contrastText,
+    backgroundColor: `${themeObj.palette.error.main} !important`,
   },
 }));
 
-const RoomFallback = () => {
+const SnackbarWrapper = (props: any) => {
+  const { children } = props;
+  const styles = useStyles();
   return (
-    <WithModal isOpen={true}>
-      <h1 className="u-fontH1">Well, this is awkward...</h1>
-      <p className="u-fontP1">
-        An unexpected error has occurred. Please try refreshing the page and rejoining the room.
-      </p>
-    </WithModal>
+    <SnackbarProvider
+      maxSnack={3}
+      classes={{
+        variantSuccess: styles.success,
+        variantError: styles.error,
+      }}
+      hideIconVariant
+    >
+      {children}
+    </SnackbarProvider>
   );
 };
 
-const InnerApp: FC<IAppProps> = ({ roomName }) => {
-  const classes = useStyles();
-
-  const roomState = useRoomState();
-
-  const canEnterRoom = useCanEnterRoom();
-
-  if (roomState === 'disconnected') {
-    return (
-      <div className={classes.backdrop}>
-        <JoinRoom roomName={roomName} />
-      </div>
-    );
-  }
-
-  if (!canEnterRoom) {
-    // still waiting on additional setup after join - this usually means there
-    // are already people in the room and we are waiting on an initial state snapshot.
-    // In the future this might wait on a state hydration from the server.
-    return (
-      <div className={classes.backdrop}>
-        <CircularProgress style={{ margin: 'auto' }} />
-      </div>
-    );
-  }
+export const App: React.FC<IAppProps> = () => {
+  // on load, if the user is logged in, identify them to various
+  // tooling
+  useAnalyticsUserIdentity();
 
   return (
-    <div className={classes.roomWrapper}>
-      <ErrorBoundary fallback={() => <RoomFallback />}>
-        <Room />
-        <ReconnectingNotification />
-      </ErrorBoundary>
-      <MediaDeviceSynchronizer />
-    </div>
+    <StylesProvider injectFirst>
+      <MuiThemeProvider theme={theme}>
+        <SnackbarWrapper>
+          <CssBaseline />
+          <Router>
+            <AppStateProvider>
+              <Routes />
+            </AppStateProvider>
+          </Router>
+        </SnackbarWrapper>
+      </MuiThemeProvider>
+    </StylesProvider>
   );
 };
-
-export default function App(props: IAppProps) {
-  const { setError } = useAppState();
-  return (
-    <Provider store={store}>
-      <VideoProvider options={connectionOptions} onError={setError}>
-        <CoordinatedDispatchProvider>
-          <InnerApp {...props} />
-        </CoordinatedDispatchProvider>
-      </VideoProvider>
-    </Provider>
-  );
-}

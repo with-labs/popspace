@@ -1,38 +1,48 @@
 import React from 'react';
-import { SharedScreenViewer } from '../../withComponents/SharedScreenViewer/SharedScreenViewer';
-import { ErrorBoundary } from '../../withComponents/ErrorBoundary/ErrorBoundary';
+import { SharedScreenViewer } from '../../components/SharedScreenViewer/SharedScreenViewer';
+import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
 import { Person } from './people/Person';
 import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
-import { useBackgroundUrl } from '../../withHooks/useBackgroundUrl/useBackgroundUrl';
-import { AccessoriesDock } from '../../withComponents/AccessoriesDock/AccessoriesDock';
-import { ViewportControls } from './controls/viewport/ViewportControls';
+import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
+import { RoomControls } from '../roomControls/RoomControls';
+import { WallpaperModal } from './wallpaper/WallpaperModal';
+import { MembershipManagementModal } from './modals/MembershipManagementModal/MembershipManagementModal';
 
 interface IRoomProps {}
+
+// creating a separate component for these so that they won't trigger
+// re-renders of the entire Room
+// TODO: improve re-render triggering on these hooks.
+const LocalVolumeDetector = () => {
+  useLocalVolumeDetection();
+  return null;
+};
+
+const RoomPresenceDetector = () => {
+  useRoomPresence();
+  return null;
+};
 
 export const Room: React.FC<IRoomProps> = () => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
   const participantIds = useSelector(selectors.selectPeopleIds);
-
-  const backgroundUrl = useBackgroundUrl();
-
-  useRoomPresence();
-  useLocalVolumeDetection();
+  const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
 
   return (
     <>
       <RoomViewport
         bounds={bounds}
         backgroundUrl={backgroundUrl}
-        uiContent={
+        uiControls={
           <>
-            <AccessoriesDock />
+            <RoomControls />
             <ViewportControls />
           </>
         }
@@ -47,6 +57,10 @@ export const Room: React.FC<IRoomProps> = () => {
         ))}
       </RoomViewport>
       <SharedScreenViewer />
+      <WallpaperModal />
+      <LocalVolumeDetector />
+      <RoomPresenceDetector />
+      <MembershipManagementModal />
     </>
   );
 };

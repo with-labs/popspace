@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
-import { Routes } from '../../constants/Routes';
+import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
-import { CircularProgress } from '@material-ui/core';
-import useQuery from '../../withHooks/useQuery/useQuery';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
+import useQuery from '../../hooks/useQuery/useQuery';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
+import { Page } from '../../Layouts/Page/Page';
 
 interface IVerifyEmailProps {}
 
@@ -26,14 +25,14 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
   useEffect(() => {
     setIsLoading(true);
     if (!otp || !email) {
-      history.push(Routes.ROOT);
+      history.push(RouteNames.ROOT);
     } else {
       Api.completeSignup(otp, email)
         .then((result: any) => {
           setIsLoading(false);
           if (result.succuess) {
             window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
-            history.push(Routes.ROOT);
+            history.push(RouteNames.ROOT);
           } else {
             setError({
               errorType: ErrorTypes.LINK_EXPIRED,
@@ -52,15 +51,5 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
     }
   }, [history, otp, email]);
 
-  return (
-    <div>
-      {isLoading ? (
-        <div className="u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-height100Percent">
-          <CircularProgress />
-        </div>
-      ) : error ? (
-        <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-      ) : null}
-    </div>
-  );
+  return <Page isLoading={isLoading} error={error} />;
 };

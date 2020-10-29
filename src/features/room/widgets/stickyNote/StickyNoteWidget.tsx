@@ -1,7 +1,7 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { useLocalParticipant } from '../../../../withHooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../../withHooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
@@ -25,14 +25,14 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   text: {
-    fontSize: theme.typography.pxToRem(14),
+    whiteSpace: 'pre-wrap',
   },
   author: {
     flex: '0 0 auto',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    color: theme.palette.grey[500],
+    color: theme.palette.grey[900],
   },
 }));
 
@@ -66,7 +66,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   return (
     <StickyNoteFrame title={t('widgets.stickyNote.publishedTitle')} onClose={onClose} widgetId={state.id}>
       <div className={classes.scrollContainer}>
-        <Typography paragraph className={classes.text}>
+        <Typography paragraph variant="body1" className={classes.text}>
           {state.data.text}
         </Typography>
       </div>
@@ -77,16 +77,17 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   );
 };
 
-const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: string }> = ({
+const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: string; disablePadding?: boolean }> = ({
   children,
   title,
   onClose,
   widgetId,
+  disablePadding,
 }) => (
-  <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={600} maxHeight={600}>
+  <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={400} maxHeight={600}>
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
-    <WidgetContent>{children}</WidgetContent>
+    <WidgetContent disablePadding={disablePadding}>{children}</WidgetContent>
   </WidgetFrame>
 );

@@ -27,7 +27,12 @@ const http = {
   },
 
   fail: async (callback, message, data={}) => {
-    await lib.cleanup()
+    // Note: currently testing a style of lambda context-reuse
+    // that should not require resource cleanup after relaunch
+    // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
+    // https://stackoverflow.com/questions/41621776/why-does-aws-lambda-function-always-time-out
+    // https://www.serverlesslife.com/AWS_Serverless_Common_Mistakes_Communication_with_Other_Systems.html
+    // await lib.cleanup()
     data.message = data.message || "Unknown error"
     callback(null, {
       statusCode: 200,
@@ -37,34 +42,13 @@ const http = {
   },
 
   succeed: async (callback, data) => {
-    await lib.cleanup()
+    // await lib.cleanup()
     return callback(null, {
       statusCode: 200,
       headers,
       body: JSON.stringify(Object.assign(data, {success: true}))
     });
   },
-
-  async verifySessionAndGetUser(event, callback, accounts) {
-    // TODO: transition to a middleware style,
-    // where the params are only parsed once
-    // Get rid of passing in accounts; there should be some global way
-    // the db is initialized
-    const params = JSON.parse(event.body)
-    if(!params.token) {
-      return lib.util.http.fail(callback, "Must be logged in")
-    }
-    const session = await accounts.sessionFromToken(params.token)
-    if(!session) {
-      return lib.util.http.fail(callback, "Authentication failed")
-    }
-    const userId = parseInt(session.user_id)
-    const user = await accounts.userById(userId)
-    if(!user) {
-      return lib.util.http.fail(callback, "Authentication failed")
-    }
-    return user
-  }
 
 }
 

@@ -80,6 +80,13 @@ class Dynamo {
     })
   }
 
+  async deleteEmailEntirely(name) {
+    const emailHistory = await this.getEmailVersionHistory(name)
+    for(const emailEntry of emailHistory) {
+      await this.deleteEmail(name, emailEntry.version)
+    }
+  }
+
   async createOrUpdateEmail(name, subject, html, plaintext) {
     let version = 0
     try {

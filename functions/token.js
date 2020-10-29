@@ -141,7 +141,6 @@ const ROOM_WHITELIST_PASSCODES = {
   fortus: '654292',
   startups: '898843',
   the_studio: '221260',
-  ourcult: '866970',
   tally: '856183',
   coachbob: '310984',
   watercooler: '274601',

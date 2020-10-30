@@ -127,6 +127,10 @@ class Api {
     //TODO: fill this out
   }
 
+  async updateUserInformation(token: any, data: { [key: string]: any }) {
+    // TODO: fill this out
+  }
+
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

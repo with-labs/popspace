@@ -15,11 +15,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     overflow: 'visible',
+    display: 'flex',
+    flexDirection: 'column',
   },
   baseImage: {
-    position: 'absolute',
     width: '100%',
-    bottom: 0,
+    marginTop: 'auto',
   },
   image: {
     position: 'absolute',
@@ -58,7 +59,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
     // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
     // browsers will still not fetch an image until it is rendered (Firefox, at least.)
     return (
-      <div className={clsx(classes.root, className)} style={size ? { width: size } : {}}>
+      <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>
         <img
           className={clsx(classes.baseImage, baseImageClassName)}
           style={{ visibility: isBlinking ? 'hidden' : 'visible' }}

@@ -72,7 +72,6 @@ const DRAGGABLE_SPRING = {
 const useStyles = makeStyles({
   root: {
     position: 'absolute',
-    willChange: 'transform',
   },
   unmeasuredContentSizer: {
     position: 'absolute',
@@ -186,6 +185,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
     y: position.y,
     width: measuredWidth,
     height: measuredHeight,
+    willChange: 'none',
     grabbing: false,
     resizing: false,
     config: DRAGGABLE_SPRING,
@@ -287,13 +287,13 @@ export const Draggable: React.FC<IDraggableProps> = ({
       onDragStart: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
-        set({ grabbing: true });
+        set({ grabbing: true, willChange: 'transform' });
         autoPan.start({ x: state.xy[0], y: state.xy[1] });
       },
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
-        set({ grabbing: false });
+        set({ grabbing: false, willChange: 'initial' });
         autoPan.stop();
       },
     },
@@ -348,7 +348,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
         style={{
           transform: to(
             [x, y, width, height],
-            (xv, yv, wv, hv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px) translate(-50%, -50%)`
+            (xv, yv, wv, hv) => `translate3d(${Math.round(xv)}px, ${Math.round(yv)}px, 0px) translate3d(-50%, -50%, 0)`
           ),
           width: isResizable ? width : undefined,
           height: isResizable ? height : undefined,

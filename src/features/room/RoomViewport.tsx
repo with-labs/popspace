@@ -96,7 +96,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
   const { t } = useTranslation();
 
-  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiControls, ...rest } = props;
+  const { children, bounds, minZoom = 1 / 4, maxZoom = 2, backgroundUrl, uiControls, ...rest } = props;
 
   const domTarget = React.useRef<HTMLDivElement>(null);
 
@@ -110,13 +110,15 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
+  const [{ centerX, centerY, isPanning }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
+    isPanning: false,
     config: VIEWPORT_PAN_SPRING,
   }));
-  const [{ zoom }, setZoomSpring] = useSpring(() => ({
+  const [{ zoom, isZooming }, setZoomSpring] = useSpring(() => ({
     zoom: 1,
+    isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
   }));
 
@@ -223,8 +225,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       // instead of hard-constraining the value (advantage: we can
       // have some elasticity to the boundary collision)
       const clamped = clampPanPosition({
-        x: centerX.goal - delta.x,
-        y: centerY.goal - delta.y,
+        x: centerX.goal - delta.x / zoom.goal,
+        y: centerY.goal - delta.y / zoom.goal,
       });
 
       setPanSpring({
@@ -232,7 +234,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         centerY: clamped.y,
       });
     },
-    [centerX, centerY, clampPanPosition, setPanSpring]
+    [centerX, centerY, clampPanPosition, setPanSpring, zoom]
   );
 
   const bind = useGesture(
@@ -240,13 +242,31 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onDrag: ({ delta: [x, y], event }) => {
         doPan({ x: -x, y: -y });
       },
+      onDragStart: () => {
+        setPanSpring({ isPanning: true });
+      },
+      onDragEnd: () => {
+        setPanSpring({ isPanning: false });
+      },
       onPinch: ({ offset: [d], event }) => {
         event?.preventDefault();
         doZoom(d / PINCH_GESTURE_DAMPING);
       },
+      onPinchStart: () => {
+        setZoomSpring({ isZooming: true });
+      },
+      onPinchEnd: () => {
+        setZoomSpring({ isZooming: false });
+      },
       onWheel: ({ movement: [x, y], event }) => {
         event?.preventDefault();
         doZoom(-y / WHEEL_GESTURE_DAMPING);
+      },
+      onWheelStart: () => {
+        setZoomSpring({ isZooming: true });
+      },
+      onWheelEnd: () => {
+        setZoomSpring({ isZooming: false });
       },
     },
     {
@@ -329,6 +349,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
             height: bounds.height,
             backgroundImage: `url(${backgroundUrl})` as any,
             backgroundSize: 'cover',
+            willChange: to([isPanning, isZooming], (pv, zv) => (pv || zv ? 'transform' : 'initial')),
           }}
         >
           {/* 

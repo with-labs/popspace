@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { PersonBubble } from './PersonBubble';
 import { Box } from '@material-ui/core';
 import { LocalVideoTrack, LocalVideoTrackPublication, LocalAudioTrack, LocalAudioTrackPublication } from 'twilio-video';
+import { options } from '../../../components/AvatarSelect/options';
 
 export default {
   title: 'components/PersonBubble',
@@ -12,6 +13,12 @@ export default {
     videoOn: 'boolean',
     emoji: 'string',
     status: 'string',
+    avatar: {
+      control: {
+        type: 'select',
+        options: options.map((opt) => opt.name),
+      },
+    },
   },
 };
 
@@ -89,6 +96,7 @@ function Demo({
   isLocal,
   emoji,
   status,
+  avatar,
 }: {
   isLocal: boolean;
   isMuted: boolean;
@@ -96,6 +104,7 @@ function Demo({
   screenShareOn: boolean;
   emoji?: string;
   status?: string;
+  avatar?: string;
 }) {
   const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | undefined>(undefined);
   const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | undefined>(undefined);
@@ -118,7 +127,10 @@ function Demo({
       });
   }, [videoOn, isMuted, screenShareOn]);
 
-  const person = isLocal ? localPerson : remotePerson;
+  const person = {
+    ...(isLocal ? localPerson : remotePerson),
+    avatar: avatar || 'puppy',
+  };
 
   return (
     <Box

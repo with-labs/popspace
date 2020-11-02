@@ -111,10 +111,24 @@ class Api {
 
   async getRoomMembers(token: any, roomName: string) {
     //TODO: fill this out
+    return {
+      result: [
+        { display_name: 'test name 1', email: 'test1@test.com', user_id: 1, avatar_url: '', has_accepted: true },
+        { display_name: 'test name 2', email: 'test2@test.com', user_id: 2, avatar_url: '', has_accepted: true },
+        { display_name: 'test name 3', email: 'test3@test.com', user_id: 3, avatar_url: '', has_accepted: true },
+        { display_name: '', email: 'test4@test.com', user_id: 4, avatar_url: '', has_accepted: false },
+        { display_name: '', email: 'test5@test.com', user_id: 5, avatar_url: '', has_accepted: false },
+        { display_name: '', email: 'test6@test.com', user_id: 6, avatar_url: '', has_accepted: false },
+      ],
+    };
   }
 
   async removeRoomMember(token: any, memberId: string) {
     //TODO: fill this out
+  }
+
+  async updateUserInformation(token: any, data: { [key: string]: any }) {
+    // TODO: fill this out
   }
 
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {

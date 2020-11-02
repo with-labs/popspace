@@ -22,8 +22,8 @@ export const ModalTitleBar: React.FC<WidgetTitlebarProps> = ({ title, className,
   const classes = useStyles();
 
   return (
-    <DialogTitle>
-      <Typography variant="h6">{title}</Typography>
+    <DialogTitle disableTypography>
+      <Typography variant="h2">{title}</Typography>
       {onClose ? (
         <IconButton className={clsx(classes.closeButton, className)} onClick={onClose}>
           <CloseIcon />

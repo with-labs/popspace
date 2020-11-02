@@ -1,7 +1,17 @@
 import * as React from 'react';
-import { Button, Menu, makeStyles, Divider, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+  Button,
+  Menu,
+  makeStyles,
+  Divider,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
+import { ManageMembershipMenuItem } from './ManageMembershipMenuItem';
 import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
 import { EmailIcon } from '../../../components/icons/EmailIcon';
@@ -10,6 +20,7 @@ import { Link } from '../../../components/Link/Link';
 import { Links } from '../../../constants/Links';
 import { USER_SUPPORT_EMAIL } from '../../../constants/User';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
+import { UserSettingsMenuItem } from './UserSettingsMenuItem';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -39,8 +50,13 @@ export const RoomMenu = () => {
       </Button>
       <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={onClose}>
         {/* TODO: User Settings item here */}
+        <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
+        {/* hide this option until we want to have it out there */}
+        {/* <ListSubheader>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>
+        <ManageMembershipMenuItem onClick={onClose}>{t('features.roomMenu.addAndManage')}</ManageMembershipMenuItem>
+        <Divider /> */}
         <Link to={Links.FEEDBACK} disableStyling>
           <MenuItem>
             <ListItemIcon>

@@ -39,6 +39,7 @@ interface RoomState {
   useSpatialAudio: boolean;
   isWallpaperModalOpen: boolean;
   isMembershipModalOpen: boolean;
+  isUserSettingsModalOpen: boolean;
 }
 
 /** Use for testing only, please. */
@@ -55,6 +56,7 @@ export const initialState: RoomState = {
   useSpatialAudio: true,
   isWallpaperModalOpen: false,
   isMembershipModalOpen: false,
+  isUserSettingsModalOpen: false,
 };
 
 const roomSlice = createSlice({
@@ -203,6 +205,9 @@ const roomSlice = createSlice({
     setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isMembershipModalOpen = payload.isOpen;
     },
+    setIsUserSettingsModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isUserSettingsModalOpen = payload.isOpen;
+    },
     /**
      * !! never call this with coordinated dispatch - only ever
      * use regular dispatch - clears local room state after leaving!
@@ -238,4 +243,5 @@ export const selectors = {
   createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
   selectIsWallpaperModalOpen: (state: RootState) => state.room.isWallpaperModalOpen,
   selectIsMembershipModalOpen: (state: RootState) => state.room.isMembershipModalOpen,
+  selectIsUserSettingsModalOpen: (state: RootState) => state.room.isUserSettingsModalOpen,
 };

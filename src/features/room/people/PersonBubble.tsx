@@ -15,7 +15,6 @@ import { PersonStatus } from './PersonStatus';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
-const AVATAR_SIZE = 130;
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
@@ -60,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 41,
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
   },
   background: {
     width: '100%',
@@ -177,6 +177,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         style={{ ...rootStyles, ...speakingRingStyles } as any}
         onPointerEnter={onHover}
         onPointerLeave={onUnHover}
+        data-test-person={displayIdentity}
       >
         <animated.div className={classes.mainContent} style={mainContentStyles}>
           {/* Still a typing issue with react-spring :( */}
@@ -190,7 +191,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               />
             )}
           </animated.div>
-          {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} size={AVATAR_SIZE} />}
+          {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} />}
           {audioTrack && (
             <Publication
               classNames={classes.audio}

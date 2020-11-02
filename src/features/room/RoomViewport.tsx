@@ -96,7 +96,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
   const { t } = useTranslation();
 
-  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiControls: uiContent } = props;
+  const { children, bounds, minZoom = 1 / 4, maxZoom = 1, backgroundUrl, uiControls, ...rest } = props;
 
   const domTarget = React.useRef<HTMLDivElement>(null);
 
@@ -314,6 +314,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         {...keyControlProps}
         ref={viewportRef}
         aria-labelledby="keyboard-explainer"
+        {...rest}
       >
         <animated.div
           className={styles.canvas}
@@ -341,7 +342,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
           <div className={styles.centeredSpaceTransformer}>{children}</div>
         </animated.div>
       </animated.div>
-      {uiContent}
+      {uiControls}
       <Fade in={isKeyboardActive} style={keyboardHintStyles}>
         <Box component={Paper} py={1} px={2}>
           <Typography id="keyboard-explainer" variant="body2">

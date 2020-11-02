@@ -1,0 +1,20 @@
+name: Unit Tests
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+jobs:
+  unit-tests:
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - run: npm ci
+      - run: npm run test:ci
+        env:
+          CI: true

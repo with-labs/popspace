@@ -1,4 +1,4 @@
-export default function detectSound(audioEl) {
+export default function detectSound(audioEl: any) {
   const stream = audioEl.captureStream();
   const audioContext = new AudioContext();
   const source = audioContext.createMediaStreamSource(stream);
@@ -6,17 +6,17 @@ export default function detectSound(audioEl) {
   analyser.fftSize = 2048;
   source.connect(analyser);
   let results = [];
-  let reqId = 0;
+  let reqId: NodeJS.Timeout;
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     function detect() {
       const samples = new Uint8Array(analyser.fftSize);
       analyser.getByteTimeDomainData(samples);
-      results.push(samples.some(i => i !== 128));
+      results.push(samples.some((i) => i !== 128));
       if (results.length > 50) {
         source.disconnect();
         clearTimeout(reqId);
-        resolve(results.some(result => result));
+        resolve(results.some((result) => result));
       } else {
         reqId = setTimeout(detect, 50);
       }

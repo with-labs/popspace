@@ -207,7 +207,10 @@ export default {
         goToDashboard: 'Go to Dashboard',
         contactUs: 'Contact Us',
         voteOnFeatures: 'Vote on Features',
-        roomWallpaper: 'Room Wallpaper',
+        roomWallpaper: 'Wallpaper',
+        roomMembersTitle: 'Room members',
+        addAndManage: 'Add & Manage',
+        userSettings: 'User Settings',
       },
     },
     modals: {
@@ -225,9 +228,10 @@ export default {
         removeUserBody:
           'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
         removeUserBtn: 'Remove {{user}}',
+        invitedUser: 'Invited user',
       },
       wallpaperModal: {
-        title: 'Room wallpaper',
+        title: 'Wallpaper',
       },
       avModal: {
         title: 'Audio & Video',
@@ -253,6 +257,14 @@ export default {
           text:
             '3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut gravida neque. Ut turpis orci, imperdiet in molestie ornare, rhoncus venenatis justo. Morbi eget urna erat. Ut cursus ullamcorper fringilla. Aliquam vel quam imperdiet lacus posuere elementum in at felis. Donec finibus velit a justo mollis, vel pulvinar justo mollis. In ut diam scelerisque lorem viverra luctus. Sed consectetur odio tellus, in fringilla justo porttitor nec. Vivamus id nibh vestibulum, ornare tellus ac, tempor risus. Duis tempor euismod cursus. Suspendisse nec lacus augue. Morbi ut orci posuere, lobortis nulla ut, commodo lectus. Quisque id purus pellentesque, tempor elit eu, tincidunt tellus. Vivamus dapibus nibh quis scelerisque dignissim. Nulla turpis magna, tristique elementum iaculis sit amet, ornare quis elit. Vestibulum sodales euismod pulvinar. Fusce cursus tortor id condimentum euismod. Sed finibus blandit enim at elementum. Quisque consectetur elementum ipsum in sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam tempor, nulla at pellentesque iaculis, urna mi mattis erat, in pretium libero dolor maximus leo. Proin interdum a erat a tincidunt.',
           altText: 'alt 3',
+        },
+      },
+      userSettingsModal: {
+        title: 'User settings',
+        displayNameInput: {
+          placeholder: 'Dorthy',
+          label: 'Display Name',
+          helperText: 'Ability to change your display name coming soon!',
         },
       },
     },

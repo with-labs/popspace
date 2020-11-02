@@ -764,6 +764,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           boxShadow: mainShadows.surface,
           borderRadius: shape.borderRadius,
         },
+        paperWidthXs: {
+          // this is to support the xs break point option
+          // for alert style dialogs, since we currently
+          // dont have xs or xl breakpoints
+          maxWidth: 360,
+        },
       },
       MuiDialogTitle: {
         root: {
@@ -771,6 +777,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
         },
       },
       MuiDialogContent: {
+        root: {
+          padding: '0 32px 32px 32px',
+        },
+      },
+      MuiDialogActions: {
         root: {
           padding: '0 32px 32px 32px',
         },

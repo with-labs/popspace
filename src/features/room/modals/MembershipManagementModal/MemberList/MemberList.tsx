@@ -11,12 +11,23 @@ import {
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
+  Button,
+  Typography,
+  ThemeProvider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
 import { EmailIcon } from '../../../../../components/icons/EmailIcon';
 import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
 import { MemberListAvatar } from './MemberListAvatar';
+
+import { Modal } from '../../../../../components/Modal/Modal';
+import { ModalActions } from '../../../../../components/Modal/ModalActions';
+import { ModalTitleBar } from '../../../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../../../components/Modal/ModalContentWrapper';
+import { useRoomName } from '../../../../../hooks/useRoomName/useRoomName';
+
+import { cherry, snow } from '../../../../../theme/theme';
 
 interface IMemberListProps {
   members: any[];
@@ -35,14 +46,20 @@ const useStyles = makeStyles((theme) => ({
   inactiveTextColor: {
     color: theme.palette.brandColors.slate.ink,
   },
+  buttonMargin: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
+  const roomName = useRoomName();
   const classes = useStyles();
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   //TODO: update types
   const [selectedMember, setSelectedMember] = useState<null | any>();
   const { t } = useTranslation();
+
+  const [confirmIsOpen, setConfirmIsOpen] = useState(false);
 
   const onMenuOpenHandler = (event: React.MouseEvent<HTMLElement>, memberIndex: number) => {
     // close any existing menu we have
@@ -71,6 +88,12 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
 
   const removeUserHandler = () => {
     setMenuAnchorEl(null);
+    setConfirmIsOpen(true);
+  };
+
+  const confirmRemoveUserHandler = () => {
+    // TODO: finalize what we need todo here
+    setConfirmIsOpen(false);
   };
 
   return (
@@ -137,6 +160,28 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
           </div>
         )}
       </Menu>
+      <Modal isOpen={confirmIsOpen} onClose={() => setConfirmIsOpen(false)} maxWidth="xs">
+        <ModalTitleBar
+          title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name, room: roomName })}
+        />
+        <ModalContentWrapper>
+          <Typography variant="body1">
+            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.display_name, room: roomName })}
+          </Typography>
+        </ModalContentWrapper>
+        <ModalActions>
+          <ThemeProvider theme={cherry}>
+            <Button onClick={confirmRemoveUserHandler} color="primary">
+              {t('modals.inviteUserModal.removeConfirmButton', { user: selectedMember?.display_name })}
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={snow}>
+            <Button onClick={() => setConfirmIsOpen(false)} className={classes.buttonMargin}>
+              {t('common.cancel')}
+            </Button>
+          </ThemeProvider>
+        </ModalActions>
+      </Modal>
     </Box>
   );
 };

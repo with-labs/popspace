@@ -229,6 +229,10 @@ export default {
           'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
         removeUserBtn: 'Remove {{user}}',
         invitedUser: 'Invited user',
+        removeConfirmTitle: 'Remove {{user}} from {{room}}?',
+        removeConfirmDesc:
+          'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
+        removeConfirmButton: 'Remove {{user}}',
       },
       wallpaperModal: {
         title: 'Wallpaper',

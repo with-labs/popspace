@@ -106,6 +106,7 @@ export const ScreenSharePreview = React.memo(
       x: 0,
       y: 0,
       display: hasShareAccessory ? 'none' : 'flex',
+      cursor: 'pointer',
       config: SPRINGS.RESPONSIVE,
     }));
 
@@ -134,6 +135,7 @@ export const ScreenSharePreview = React.memo(
             setRootStyles({
               x: ev.movement[0],
               y: ev.movement[1],
+              cursor: 'grabbing',
             });
             setVideoStyles({
               // a visual indicator for the user of the tear-off action intention

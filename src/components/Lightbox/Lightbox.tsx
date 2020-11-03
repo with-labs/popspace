@@ -4,6 +4,7 @@ import { Modal, makeStyles } from '@material-ui/core';
 export interface ILightboxProps {
   open: boolean;
   onClose?: () => void;
+  onClick?: () => void;
 }
 
 const useStyles = makeStyles(() => ({
@@ -19,12 +20,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const Lightbox: React.FC<ILightboxProps> = ({ open, onClose, children }) => {
+export const Lightbox: React.FC<ILightboxProps> = ({ open, onClose, children, onClick }) => {
   const classes = useStyles();
 
   return (
     <Modal open={open} onClose={onClose} className={classes.modal} BackdropProps={{ className: classes.backdrop }}>
-      <div className={classes.content}>{children}</div>
+      <div className={classes.content} onClick={onClick}>
+        {children}
+      </div>
     </Modal>
   );
 };

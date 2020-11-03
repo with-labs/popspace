@@ -160,7 +160,7 @@ export const ScreenShare: React.FC<IScreenShareProps> = ({
 
   if (isFullscreen) {
     return (
-      <Lightbox open onClose={onFullscreenExit}>
+      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit}>
         {video}
       </Lightbox>
     );

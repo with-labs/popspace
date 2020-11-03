@@ -7,7 +7,7 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, CircularProgress, Box } from '@material-ui/core';
 import Api from '../../utils/api';
-import useQuery from '../../hooks/useQuery/useQuery';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import * as Sentry from '@sentry/react';
@@ -52,7 +52,7 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   const [error, setError] = useState<ErrorInfo>(null!);
 
   // get the query params from the url
-  const query = useQuery();
+  const query = useQueryParams();
 
   const otp = useMemo(() => query.get('otp'), [query]);
   const mlid = useMemo(() => query.get('mlid'), [query]);

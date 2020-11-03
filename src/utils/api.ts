@@ -1,4 +1,5 @@
 import { ErrorCodes } from '../constants/ErrorCodes';
+import { getSessionToken } from './getSessionToken';
 
 export type BaseResponse = {
   success: boolean;
@@ -135,6 +136,10 @@ class Api {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    const token = getSessionToken();
+    if (token) {
+      xhr.setRequestHeader('Authorization', `Bearer ${btoa(token)}`);
+    }
     return new Promise<Response>((resolve, reject) => {
       xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {

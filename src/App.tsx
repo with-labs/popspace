@@ -6,6 +6,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import AppStateProvider from './state';
 import { Routes } from './Routes';
 import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
+import { FlaggProvider } from 'flagg/dist/react';
+import { featureFlags } from './featureFlags';
+import { ReactQueryCacheProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query-devtools';
+import { queryCache } from './queryCache';
 
 export interface IAppProps {}
 
@@ -44,17 +49,24 @@ export const App: React.FC<IAppProps> = () => {
   useAnalyticsUserIdentity();
 
   return (
-    <StylesProvider injectFirst>
-      <MuiThemeProvider theme={theme}>
-        <SnackbarWrapper>
-          <CssBaseline />
-          <Router>
-            <AppStateProvider>
-              <Routes />
-            </AppStateProvider>
-          </Router>
-        </SnackbarWrapper>
-      </MuiThemeProvider>
-    </StylesProvider>
+    <>
+      <ReactQueryCacheProvider queryCache={queryCache}>
+        <FlaggProvider featureFlags={featureFlags}>
+          <StylesProvider injectFirst>
+            <MuiThemeProvider theme={theme}>
+              <SnackbarWrapper>
+                <CssBaseline />
+                <Router>
+                  <AppStateProvider>
+                    <Routes />
+                  </AppStateProvider>
+                </Router>
+              </SnackbarWrapper>
+            </MuiThemeProvider>
+          </StylesProvider>
+        </FlaggProvider>
+      </ReactQueryCacheProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </>
   );
 };

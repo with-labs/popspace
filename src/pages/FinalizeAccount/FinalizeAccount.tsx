@@ -5,7 +5,7 @@ import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import useQuery from '../../hooks/useQuery/useQuery';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 
 import Api from '../../utils/api';
 import * as Sentry from '@sentry/react';
@@ -32,7 +32,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const { t } = useTranslation();
 
   // get the query params from the invite
-  const query = useQuery();
+  const query = useQueryParams();
 
   // pull out the information we need from query string
   //if we dont have the params, redirect to root

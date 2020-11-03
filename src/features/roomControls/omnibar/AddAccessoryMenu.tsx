@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const supportedAccessories = [WidgetType.StickyNote, WidgetType.Link, WidgetType.YouTube, WidgetType.Whiteboard];
+
 export const AddAccessoryMenu: React.FC<IAddAccessoryMenuProps> = ({ className }) => {
   const classes = useStyles();
 
@@ -71,7 +73,7 @@ export const AddAccessoryMenu: React.FC<IAddAccessoryMenuProps> = ({ className }
         transformOrigin={{ vertical: -8, horizontal: 16 }}
         id="add-accessory-menu"
       >
-        {Object.values(WidgetType).map((accessoryType) => (
+        {supportedAccessories.map((accessoryType) => (
           <AddAccessoryMenuItem accessoryType={accessoryType as WidgetType} key={accessoryType} onClick={handleClose} />
         ))}
       </Menu>

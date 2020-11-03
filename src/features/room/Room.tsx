@@ -1,5 +1,4 @@
 import React from 'react';
-import { SharedScreenViewer } from '../../components/SharedScreenViewer/SharedScreenViewer';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
@@ -58,7 +57,6 @@ export const Room: React.FC<IRoomProps> = () => {
           <Person id={id} key={id} />
         ))}
       </RoomViewport>
-      <SharedScreenViewer />
       <WallpaperModal />
       <LocalVolumeDetector />
       <RoomPresenceDetector />

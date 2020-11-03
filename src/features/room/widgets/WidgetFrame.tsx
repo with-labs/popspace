@@ -3,18 +3,12 @@ import { Paper, makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
 import { Draggable } from '../Draggable';
-import { WidgetResizeHandle } from './WidgetResizeHandle';
 
 export interface IWidgetFrameProps {
   children: React.ReactNode;
   className?: string;
-  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow';
-  isResizable?: boolean;
+  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow' | 'slate';
   widgetId: string;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -33,41 +27,15 @@ const useStyles = makeStyles((theme) => ({
  * The external window frame of a floating widget. Defines the color
  * palette of the widget as well.
  */
-export const WidgetFrame: React.FC<IWidgetFrameProps> = ({
-  isResizable,
-  widgetId,
-  minWidth,
-  minHeight,
-  maxWidth,
-  maxHeight,
-  ...props
-}) => {
+export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ widgetId, ...props }) => {
   const classes = useStyles();
 
   const theme = themes[props.color || 'lavender'];
 
   return (
-    <Draggable
-      id={widgetId}
-      isResizable={isResizable}
-      minWidth={minWidth}
-      minHeight={minHeight}
-      maxWidth={maxWidth}
-      maxHeight={maxHeight}
-    >
+    <Draggable id={widgetId}>
       <ThemeProvider theme={theme}>
-        <Paper
-          {...props}
-          elevation={1}
-          style={{
-            minWidth,
-            minHeight,
-            maxWidth,
-            maxHeight,
-          }}
-          className={clsx(classes.root, props.className)}
-        />
-        {isResizable && <WidgetResizeHandle />}
+        <Paper {...props} elevation={1} className={clsx(classes.root, props.className)} />
       </ThemeProvider>
     </Draggable>
   );

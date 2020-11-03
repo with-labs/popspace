@@ -40,6 +40,7 @@ const localPerson = {
   viewingScreenSid: null,
   isSpeaking: false,
   status: null,
+  isSharingScreen: false,
 };
 
 const remoteParticipant = {
@@ -60,6 +61,7 @@ const remotePerson = {
   viewingScreenSid: null,
   isSpeaking: false,
   status: null,
+  isSharingScreen: true,
 };
 
 function createFakeVideoTrackPublication(stream: MediaStream) {
@@ -92,7 +94,6 @@ function createFakeAudioTrackPublication(stream: MediaStream, muted: boolean) {
 function Demo({
   isMuted,
   videoOn,
-  screenShareOn,
   isLocal,
   emoji,
   status,
@@ -101,14 +102,12 @@ function Demo({
   isLocal: boolean;
   isMuted: boolean;
   videoOn: boolean;
-  screenShareOn: boolean;
   emoji?: string;
   status?: string;
   avatar?: string;
 }) {
   const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | undefined>(undefined);
   const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | undefined>(undefined);
-  const [screenShareVideo, setScreenShareVideo] = useState<LocalVideoTrackPublication | undefined>(undefined);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -120,12 +119,9 @@ function Demo({
         if (videoOn) {
           setLocalVideo(createFakeVideoTrackPublication(s) as any);
         }
-        if (screenShareOn) {
-          setScreenShareVideo(createFakeVideoTrackPublication(s) as any);
-        }
         setLocalAudio(createFakeAudioTrackPublication(s, isMuted) as any);
       });
-  }, [videoOn, isMuted, screenShareOn]);
+  }, [videoOn, isMuted]);
 
   const person = {
     ...(isLocal ? localPerson : remotePerson),
@@ -152,7 +148,6 @@ function Demo({
         isLocal={isLocal}
         cameraTrack={videoOn ? localVideo : undefined}
         audioTrack={localAudio}
-        screenShareTrack={screenShareVideo}
       />
     </Box>
   );
@@ -162,7 +157,6 @@ const Template: Story<{
   isLocal: boolean;
   videoOn: boolean;
   isMuted: boolean;
-  screenShareOn: boolean;
   emoji?: string;
   status?: string;
 }> = (args) => <Demo {...args} />;
@@ -172,7 +166,6 @@ Local.args = {
   isLocal: true,
   videoOn: false,
   isMuted: false,
-  screenShareOn: false,
   emoji: undefined,
   status: undefined,
 };
@@ -182,7 +175,6 @@ Remote.args = {
   isLocal: false,
   isMuted: false,
   videoOn: false,
-  screenShareOn: false,
   emoji: undefined,
   status: undefined,
 };
@@ -192,7 +184,6 @@ TheWorks.args = {
   isLocal: false,
   isMuted: true,
   videoOn: true,
-  screenShareOn: true,
   emoji: 'santa',
   status: 'Hello world!',
 };

@@ -1,18 +1,17 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import YouTube from 'react-youtube';
 import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
 import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
-import { VideoControls } from './VideoControls';
-import { useSyncYoutube } from './useSyncYoutube';
 import { MuteButton } from './MuteButton';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { useRemeasureWidget } from '../useRemeasureWidget';
+import { WidgetResizeContainer } from '../WidgetResizeContainer';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { YouTubePlayer } from './YouTubePlayer';
 
 export interface IYoutubeWidgetProps {
   state: YoutubeWidgetState;
@@ -22,28 +21,15 @@ export interface IYoutubeWidgetProps {
   onClose: () => void;
 }
 
-// number of seconds we allow YT players to be out of sync by
-const DEFAULT_OPTS = {
-  width: '480',
-  height: '270',
-  playerVars: {
-    // turn off native controls, we have our own
-    controls: 0 as const,
-  },
-};
-
 const useStyles = makeStyles((theme) => ({
   videoContainer: {
-    width: '100%',
-    height: '100%',
     position: 'relative',
     // this is the best way I can find to target the YouTube player container itself
     '& > div:first-child': {
       width: '100%',
       height: '100%',
-      position: 'absolute',
-      left: 0,
-      top: 0,
+      minWidth: 480,
+      minHeight: 270,
     },
     '&:hover, &:focus': {
       '& > $videoControls': {
@@ -80,44 +66,46 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   const { t } = useTranslation();
 
   const saveWidget = useSaveWidget(state.id);
-  const remeasure = useRemeasureWidget(state.id);
-  const handleSubmit = React.useCallback(
-    (data: YoutubeWidgetData) => {
-      saveWidget(data);
-      remeasure();
-    },
-    [saveWidget, remeasure]
-  );
 
-  const { videoControlBindings, youtubeBindings, isMuted, isPlaying, toggleMuted } = useSyncYoutube(state, saveWidget);
+  const [isMuted, setIsMuted] = React.useState(false);
+  const toggleMuted = () => setIsMuted((v) => !v);
+
+  const [isPlaying, setIsPlaying] = React.useState(!!state.data.isPlaying);
+
+  const handleVideoChange = (data: Partial<YoutubeWidgetData>) => {
+    saveWidget(data);
+    setIsPlaying(!!data.isPlaying);
+  };
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <WidgetFrame color="cherry" widgetId={state.id} minWidth={300} minHeight={200} maxWidth={400} maxHeight={300}>
+      <WidgetFrame color="cherry" widgetId={state.id}>
         <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
         <WidgetContent>
-          <EditYoutubeWidgetForm onSave={handleSubmit} />
+          <EditYoutubeWidgetForm onSave={saveWidget} />
         </WidgetContent>
       </WidgetFrame>
     );
   }
 
   return (
-    <WidgetFrame
-      color="cherry"
-      widgetId={state.id}
-      isResizable
-      minWidth={480}
-      minHeight={308}
-      maxWidth={1440}
-      maxHeight={900}
-    >
+    <WidgetFrame color="cherry" widgetId={state.id}>
       <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
-      <WidgetContent disablePadding className={classes.videoContainer}>
-        <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} className={classes.video} {...youtubeBindings} />
-        <VideoControls className={classes.videoControls} {...videoControlBindings} />
+      <WidgetContent disablePadding>
+        <WidgetResizeContainer
+          widgetId={state.id}
+          minWidth={480}
+          minHeight={270}
+          maxWidth={1440}
+          maxHeight={900}
+          className={classes.videoContainer}
+          mode="scale"
+        >
+          <YouTubePlayer state={state} onChange={handleVideoChange} isMuted={isMuted} />
+          <WidgetResizeHandle />
+        </WidgetResizeContainer>
       </WidgetContent>
     </WidgetFrame>
   );

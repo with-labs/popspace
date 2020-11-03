@@ -8,6 +8,7 @@ import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { WidgetState, WidgetType } from '../../../types/room';
+import { ScreenShareWidget } from './screenShare/ScreenShareWidget';
 
 export interface IWidgetProps {
   id: string;
@@ -57,5 +58,7 @@ const WidgetContent = React.memo<IWidgetContentProps>(({ widget, onClose }) => {
       return <WhiteboardWidget state={widget} onClose={onClose} />;
     case WidgetType.YouTube:
       return <YoutubeWidget state={widget} onClose={onClose} />;
+    case WidgetType.ScreenShare:
+      return <ScreenShareWidget state={widget} onClose={onClose} />;
   }
 });

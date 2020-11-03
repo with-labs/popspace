@@ -120,7 +120,7 @@ const roomSlice = createSlice({
         isSpeaking: false,
         status: null,
         emoji: null,
-        viewingScreenSid: null,
+        isSharingScreen: false,
         ...payload.person,
       };
     },
@@ -185,14 +185,12 @@ const roomSlice = createSlice({
       if (!state.people[payload.id]) return;
       state.people[payload.id].avatar = payload.avatar;
     },
+    updatePersonIsSharingScreen(state, { payload }: PayloadAction<{ id: string; isSharingScreen: boolean }>) {
+      if (!state.people[payload.id]) return;
+      state.people[payload.id].isSharingScreen = payload.isSharingScreen;
+    },
     updateRoomWallpaper(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
       state.wallpaperUrl = payload.wallpaperUrl;
-    },
-    updatePersonScreenViewSid(state, { payload }: PayloadAction<{ id: string; screenViewSid: string }>) {
-      const person = state.people[payload.id];
-      if (!person) return;
-
-      person.viewingScreenSid = payload.screenViewSid;
     },
     updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
       if (!state.people[payload.id]) return;
@@ -238,8 +236,6 @@ export const selectors = {
   createEmojiSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.emoji,
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
-  createPersonScreenViewSidSelector: (personId: string) => (state: RootState) =>
-    state.room.people[personId]?.viewingScreenSid,
   createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
   selectIsWallpaperModalOpen: (state: RootState) => state.room.isWallpaperModalOpen,
   selectIsMembershipModalOpen: (state: RootState) => state.room.isMembershipModalOpen,

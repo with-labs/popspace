@@ -5,13 +5,14 @@ import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayI
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../components/Avatar/Avatar';
-import { ScreenShareButton } from './ScreenShareButton';
 import { useSpring, animated, config } from '@react-spring/web';
 import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { PersonStatus } from './PersonStatus';
+import { ScreenSharePreview } from './ScreenSharePreview';
+import { DraggableHandle } from '../DraggableHandle';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
@@ -22,7 +23,6 @@ export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement>
   person: PersonState;
   audioTrack?: AudioTrackPublication;
   cameraTrack?: VideoTrackPublication;
-  screenShareTrack?: VideoTrackPublication;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     boxShadow: theme.mainShadows.surface,
+  },
+  handle: {
+    overflow: 'hdiden',
+    width: '100%',
+    height: '100%',
   },
   mainContent: {
     overflow: 'hidden',
@@ -71,17 +76,18 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     zIndex: 1,
   },
-  screenShareButton: {
+  screenSharePreviewContainer: {
     position: 'absolute',
     bottom: 48,
     transform: 'translateX(-50%)',
     zIndex: 1,
-    border: `2px solid ${theme.palette.background.paper}`,
-    borderRadius: theme.shape.contentBorderRadius,
-    maxWidth: 60,
-    overflow: 'hidden',
+    minWidth: 24,
+    maxWidth: 72,
+    height: 40,
+    overflow: 'visible',
   },
-  screenShare: {
+  screenSharePreview: {
+    border: `2px solid ${theme.palette.background.paper}`,
     borderRadius: theme.shape.contentBorderRadius,
   },
   bottomSection: {
@@ -113,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
-  ({ participant, isLocal, person, audioTrack, cameraTrack, screenShareTrack, ...rest }, ref) => {
+  ({ participant, isLocal, person, audioTrack, cameraTrack, ...rest }, ref) => {
     const classes = useStyles();
     const theme = useTheme();
 
@@ -123,7 +129,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     const isVideoOn = !!cameraTrack;
 
-    const { avatar: avatarName, isSpeaking, emoji, status } = person ?? {};
+    const { avatar: avatarName, isSpeaking, emoji, status, isSharingScreen } = person ?? {};
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);
@@ -179,46 +185,39 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         onPointerLeave={onUnHover}
         data-test-person={displayIdentity}
       >
-        <animated.div className={classes.mainContent} style={mainContentStyles}>
-          {/* Still a typing issue with react-spring :( */}
-          <animated.div className={classes.background} style={graphicStyles as any}>
-            {cameraTrack && (
+        <DraggableHandle disabled={!isLocal} className={classes.handle}>
+          <animated.div className={classes.mainContent} style={mainContentStyles}>
+            {/* Still a typing issue with react-spring :( */}
+            <animated.div className={classes.background} style={graphicStyles as any}>
+              {cameraTrack && (
+                <Publication
+                  classNames={classes.video}
+                  publication={cameraTrack}
+                  isLocal={isLocal}
+                  participant={participant}
+                />
+              )}
+            </animated.div>
+            {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} />}
+            {audioTrack && (
               <Publication
-                classNames={classes.video}
-                publication={cameraTrack}
+                classNames={classes.audio}
+                publication={audioTrack}
                 isLocal={isLocal}
                 participant={participant}
+                disableAudio={isLocal}
               />
             )}
-          </animated.div>
-          {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} />}
-          {audioTrack && (
-            <Publication
-              classNames={classes.audio}
-              publication={audioTrack}
-              isLocal={isLocal}
-              participant={participant}
-              disableAudio={isLocal}
-            />
-          )}
-          <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
-            <Typography className={classes.name}>{displayIdentity}</Typography>
-          </animated.div>
-          {!isMicOn && (
-            <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
-              <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />
+            <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
+              <Typography className={classes.name}>{displayIdentity}</Typography>
             </animated.div>
-          )}
-        </animated.div>
-        {screenShareTrack && !isLocal && (
-          <div className={classes.screenShareButton}>
-            <ScreenShareButton
-              participant={participant}
-              mediaTrack={screenShareTrack}
-              className={classes.screenShare}
-            />
-          </div>
-        )}
+            {!isMicOn && (
+              <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
+                <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />
+              </animated.div>
+            )}
+          </animated.div>
+        </DraggableHandle>
         <animated.div className={classes.status} style={statusStyles}>
           <PersonStatus
             personId={person.id}
@@ -228,6 +227,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             isLocal={isLocal}
           />
         </animated.div>
+        {isSharingScreen && (
+          <div className={classes.screenSharePreviewContainer}>
+            <ScreenSharePreview participantSid={participant.sid} className={classes.screenSharePreview} />
+          </div>
+        )}
       </animated.div>
     );
   }

@@ -84,7 +84,7 @@ const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: s
   widgetId,
   disablePadding,
 }) => (
-  <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={400} maxHeight={600}>
+  <WidgetFrame color="mandarin" widgetId={widgetId}>
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>

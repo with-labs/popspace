@@ -150,6 +150,13 @@ export default {
         quickActionTitle: 'Add a Sticky Note',
         quickAddButton: 'Add another note',
       },
+      screenShare: {
+        name: 'Screen Share',
+        title: "{{username}}'s screen",
+        titleLocalUser: 'Your screen',
+        titleEmpty: 'Share a screen',
+        emptyMessage: 'Click the # above to start sharing',
+      },
       unknown: {
         name: 'Accessory',
       },

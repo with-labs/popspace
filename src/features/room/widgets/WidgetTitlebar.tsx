@@ -10,7 +10,8 @@ export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'ti
   title: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
-  onClose: () => void;
+  /** If not provided, no close button will be rendered. */
+  onClose?: () => void;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -61,11 +62,13 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children,
       >
         <div className={classes.title}>{title}</div>
         <div className={classes.controls}>{children}</div>
-        <div className={classes.controls}>
-          <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
-            <DeleteIcon fontSize="small" color="inherit" />
-          </WidgetTitlebarButton>
-        </div>
+        {onClose && (
+          <div className={classes.controls}>
+            <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
+              <DeleteIcon fontSize="small" color="inherit" />
+            </WidgetTitlebarButton>
+          </div>
+        )}
       </Box>
     </DraggableHandle>
   );

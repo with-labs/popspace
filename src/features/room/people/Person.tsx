@@ -77,22 +77,16 @@ export const Person = React.memo<IPersonProps>((props) => {
   const cameraTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('camera')) as
     | VideoTrackPublication
     | undefined;
-  const screenShareTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('screen')) as
-    | VideoTrackPublication
-    | undefined;
 
   return (
-    <Draggable id={props.id} zIndex={isMe ? 10 : 9} minHeight={140} minWidth={140}>
-      <DraggableHandle disabled={!isMe} className={classes.dragHandle}>
-        <PersonBubble
-          participant={participant}
-          person={person}
-          isLocal={isMe}
-          audioTrack={audioTrackPub}
-          cameraTrack={cameraTrackPub}
-          screenShareTrack={screenShareTrackPub}
-        />
-      </DraggableHandle>
+    <Draggable id={props.id} zIndex={isMe ? 10 : 9}>
+      <PersonBubble
+        participant={participant}
+        person={person}
+        isLocal={isMe}
+        audioTrack={audioTrackPub}
+        cameraTrack={cameraTrackPub}
+      />
     </Draggable>
   );
 });

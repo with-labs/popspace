@@ -42,7 +42,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={200} maxWidth={300} maxHeight={500}>
+      <WidgetFrame color="lavender" widgetId={state.id}>
         <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />
         <WidgetContent>
           <EditLinkWidgetForm onSave={saveWidget} />
@@ -54,7 +54,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
   // TODO: edit a published widget
 
   return (
-    <WidgetFrame color="lavender" widgetId={state.id} minWidth={250} minHeight={98} maxWidth={400} maxHeight={300}>
+    <WidgetFrame color="lavender" widgetId={state.id}>
       <WidgetTitlebar title={state.data.title || t('widgets.link.title')} onClose={onClose} />
       <WidgetContent>
         <Tooltip title={state.data.url} placement="bottom">

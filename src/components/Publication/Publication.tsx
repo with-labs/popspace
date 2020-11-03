@@ -27,6 +27,7 @@ interface PublicationProps {
   disableAudio?: boolean;
   videoPriority?: Track.Priority;
   classNames?: string;
+  id?: string;
 }
 
 export default function Publication({
@@ -36,6 +37,7 @@ export default function Publication({
   disableAudio,
   videoPriority,
   classNames,
+  id,
 }: PublicationProps) {
   const track = useTrack(publication);
 
@@ -51,10 +53,11 @@ export default function Publication({
           priority={videoPriority}
           isLocal={track.name.startsWith('camera') && isLocal}
           classNames={classNames}
+          id={id}
         />
       );
     case 'audio':
-      return disableAudio ? null : <AudioTrack track={track as IAudioTrack} volume={volume} />;
+      return disableAudio ? null : <AudioTrack track={track as IAudioTrack} volume={volume} id={id} />;
     default:
       return null;
   }

@@ -60,7 +60,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   const handleExport = useExport(exportToImageURL);
 
   return (
-    <WidgetFrame color="snow" widgetId={state.id} minWidth={720} minHeight={480} maxWidth={720}>
+    <WidgetFrame color="snow" widgetId={state.id}>
       <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />} onClose={onClose}>
         <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />

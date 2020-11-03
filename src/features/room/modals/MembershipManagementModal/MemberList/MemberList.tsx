@@ -11,6 +11,9 @@ import {
   ListItemAvatar,
   ListItemText,
   ListItemSecondaryAction,
+  Button,
+  Typography,
+  ThemeProvider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
@@ -18,8 +21,20 @@ import { EmailIcon } from '../../../../../components/icons/EmailIcon';
 import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
 import { MemberListAvatar } from './MemberListAvatar';
 
+import { Modal } from '../../../../../components/Modal/Modal';
+import { ModalActions } from '../../../../../components/Modal/ModalActions';
+import { ModalTitleBar } from '../../../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../../../components/Modal/ModalContentWrapper';
+
+import { cherry, snow } from '../../../../../theme/theme';
+import { USER_SESSION_TOKEN } from '../../../../../constants/User';
+import Api from '../../../../../utils/api';
+import { ErrorModal } from '../../ErrorModal/ErrorModal';
+
 interface IMemberListProps {
   members: any[];
+  onMemberRemove: (member: any) => void;
+  roomName: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -35,14 +50,21 @@ const useStyles = makeStyles((theme) => ({
   inactiveTextColor: {
     color: theme.palette.brandColors.slate.ink,
   },
+  buttonMargin: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
-export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
+export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomName }) => {
   const classes = useStyles();
+  const [error, setError] = useState(null);
+
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   //TODO: update types
   const [selectedMember, setSelectedMember] = useState<null | any>();
   const { t } = useTranslation();
+
+  const [confirmIsOpen, setConfirmIsOpen] = useState(false);
 
   const onMenuOpenHandler = (event: React.MouseEvent<HTMLElement>, memberIndex: number) => {
     // close any existing menu we have
@@ -61,16 +83,39 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
     setMenuAnchorEl(null);
   };
 
-  const inviteResendHandler = () => {
+  const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
+
+  const inviteResendHandler = async () => {
     setMenuAnchorEl(null);
+    const result: any = await Api.sendRoomInvite(sessionToken, roomName, selectedMember.email);
+    // TODO: Success notification
+    // We don't need to update the list of members,
+    // unless we care about the state of rows, since a new invite has not been added
   };
 
-  const cancelInviteHandler = () => {
+  const cancelInviteHandler = async () => {
     setMenuAnchorEl(null);
+    const result: any = await Api.cancelRoomInvite(sessionToken, roomName, selectedMember.email);
+    if (result.success) {
+      onMemberRemove(selectedMember);
+    } else {
+      setError(result);
+    }
   };
 
   const removeUserHandler = () => {
     setMenuAnchorEl(null);
+    setConfirmIsOpen(true);
+  };
+
+  const confirmRemoveUserHandler = async () => {
+    setConfirmIsOpen(false);
+    const result: any = await Api.removeRoomMember(sessionToken, roomName, selectedMember.email);
+    if (result.success) {
+      onMemberRemove(selectedMember);
+    } else {
+      setError(result);
+    }
   };
 
   return (
@@ -137,6 +182,29 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
           </div>
         )}
       </Menu>
+      <Modal isOpen={confirmIsOpen} onClose={() => setConfirmIsOpen(false)} maxWidth="xs">
+        <ModalTitleBar
+          title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name, room: roomName })}
+        />
+        <ModalContentWrapper>
+          <Typography variant="body1">
+            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.display_name, room: roomName })}
+          </Typography>
+        </ModalContentWrapper>
+        <ModalActions>
+          <ThemeProvider theme={cherry}>
+            <Button onClick={confirmRemoveUserHandler} color="primary">
+              {t('modals.inviteUserModal.removeConfirmButton', { user: selectedMember?.display_name })}
+            </Button>
+          </ThemeProvider>
+          <ThemeProvider theme={snow}>
+            <Button onClick={() => setConfirmIsOpen(false)} className={classes.buttonMargin}>
+              {t('common.cancel')}
+            </Button>
+          </ThemeProvider>
+        </ModalActions>
+      </Modal>
+      <ErrorModal open={!!error} error={error!} onClose={() => setError(null)} />
     </Box>
   );
 };

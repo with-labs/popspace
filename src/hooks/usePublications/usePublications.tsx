@@ -3,8 +3,16 @@ import { LocalTrackPublication, Participant, RemoteTrackPublication } from 'twil
 
 type TrackPublication = LocalTrackPublication | RemoteTrackPublication;
 
-export default function usePublications(participant?: Participant) {
-  const [publications, setPublications] = useState<TrackPublication[]>([]);
+// FIXME: re-storing publications in state just to be notified when they change
+// seems inefficient - perhaps Observables could help here?
+export default function usePublications(participant?: Participant | null) {
+  const [publications, setPublications] = useState<TrackPublication[]>(() => {
+    // prevents the publications state from being empty on first mount even if participant is already loaded
+    if (participant) {
+      return Array.from(participant.tracks.values()) as TrackPublication[];
+    }
+    return [];
+  });
 
   useEffect(() => {
     if (!participant) {

@@ -12,8 +12,10 @@ import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import { useRoomName } from './hooks/useRoomName/useRoomName';
 import { useAppState } from './state';
-import useQuery from './hooks/useQuery/useQuery';
+import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Redirect, Route, Switch } from 'react-router-dom';
+import { AdminRoute } from './components/AdminRoute/AdminRoute';
+import { FlaggAdmin } from 'flagg/dist/react';
 
 export interface IRoutesProps {}
 
@@ -31,7 +33,7 @@ const NamedRoom = () => {
 
 const RootView = () => {
   const { error, setError } = useAppState();
-  const query = useQuery();
+  const query = useQueryParams();
   const room: string | null = query.get('r');
 
   // we still support the use o the r query param, so we check if youre
@@ -80,9 +82,13 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <LoginWithEmail />
       </Route>
 
-      <Route path={RouteNames.ADMIN}>
+      <AdminRoute path={RouteNames.ADMIN}>
         <Admin />
-      </Route>
+      </AdminRoute>
+      <AdminRoute
+        path={RouteNames.FEATURE_FLAGS}
+        render={({ history }) => <FlaggAdmin onDone={() => history.push('/')} />}
+      />
 
       <Route path={RouteNames.UNSUBSCRIBE}>
         <Unsubscribe />

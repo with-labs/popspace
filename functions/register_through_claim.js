@@ -37,13 +37,7 @@ const tryToSetUpNewAccount = async (params) => {
  * This will create an account_create_request, resolve it, and resolve the invite,
  * and return a session.
  */
-module.exports.handler = async (event, context, callback) => {
-  // We only care about POSTs with body data
-  if(lib.util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
 
   const body = context.params
   const params = body.data
@@ -55,7 +49,11 @@ module.exports.handler = async (event, context, callback) => {
 
   const claim = await db.pg.massive.room_claims.findOne({id: claimId})
   if(!claim) {
-    return await lib.util.http.fail(callback, "Invalid room claim")
+    return await lib.util.http.fail(
+      callback,
+      "Invalid room claim",
+      { errorCode: lib.db.ErrorCodes.room.INVALID_ROOM_CLAIM }
+    )
   }
 
   // claims have the exact same verification logic as invites
@@ -99,4 +97,4 @@ module.exports.handler = async (event, context, callback) => {
   response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);
-}
+})

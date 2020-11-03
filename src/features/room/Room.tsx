@@ -1,5 +1,4 @@
 import React from 'react';
-import { SharedScreenViewer } from '../../components/SharedScreenViewer/SharedScreenViewer';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
@@ -30,40 +29,43 @@ const RoomPresenceDetector = () => {
   return null;
 };
 
-export const Room: React.FC<IRoomProps> = () => {
+export const Room: React.FC<IRoomProps> = () => (
+  <>
+    <RoomViewportWrapper />
+    <WallpaperModal />
+    <LocalVolumeDetector />
+    <RoomPresenceDetector />
+    <MembershipManagementModal />
+    <UserSettingsModal />
+  </>
+);
+
+const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
   const participantIds = useSelector(selectors.selectPeopleIds);
   const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
 
   return (
-    <>
-      <RoomViewport
-        bounds={bounds}
-        backgroundUrl={backgroundUrl}
-        uiControls={
-          <>
-            <RoomControls />
-            <ViewportControls />
-          </>
-        }
-        data-test-room
-      >
-        <ErrorBoundary fallback={() => <WidgetsFallback />}>
-          {widgetIds.map((id) => (
-            <Widget id={id} key={id} />
-          ))}
-        </ErrorBoundary>
-        {participantIds.map((id) => (
-          <Person id={id} key={id} />
+    <RoomViewport
+      bounds={bounds}
+      backgroundUrl={backgroundUrl}
+      uiControls={
+        <>
+          <RoomControls />
+          <ViewportControls />
+        </>
+      }
+      data-test-room
+    >
+      <ErrorBoundary fallback={() => <WidgetsFallback />}>
+        {widgetIds.map((id) => (
+          <Widget id={id} key={id} />
         ))}
-      </RoomViewport>
-      <SharedScreenViewer />
-      <WallpaperModal />
-      <LocalVolumeDetector />
-      <RoomPresenceDetector />
-      <MembershipManagementModal />
-      <UserSettingsModal />
-    </>
+      </ErrorBoundary>
+      {participantIds.map((id) => (
+        <Person id={id} key={id} />
+      ))}
+    </RoomViewport>
   );
-};
+});

@@ -10,13 +10,7 @@ const validExistingClaim = (claimResult, email, roomName) => {
           claimResult.roomNameEntry.name == roomName
 }
 
-module.exports.handler = async (event, context, callback) => {
-  if(lib.util.http.failUnlessPost(event, callback)) return
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const user = context.user
   if(!user || !user.admin) {
     return await lib.util.http.fail(
@@ -46,7 +40,6 @@ module.exports.handler = async (event, context, callback) => {
     await lib.db.rooms.claimUpdateEmailedAt(claimResult.claim.id)
     await lib.email.room.sendRoomClaimEmail(params.email, params.roomName, url)
   } catch(e) {
-    console.log(e)
     return await lib.util.http.fail(callback,
       "Unable to send email",
       { errorCode: lib.db.ErrorCodes.UNEXPECTER_ERROR }
@@ -54,4 +47,4 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   return await lib.util.http.succeed(callback, { })
-}
+})

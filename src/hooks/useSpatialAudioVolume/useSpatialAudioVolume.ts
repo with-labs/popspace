@@ -10,7 +10,7 @@ import { useMemo } from 'react';
 // you can hear someone / something from - even if very faintly.
 // To allow people to find quiet spaces, we probably want this to be
 // no larger than 3/4 the room size, maybe smaller
-const MAX_RANGE = 900;
+const MAX_RANGE = 1200;
 
 function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);

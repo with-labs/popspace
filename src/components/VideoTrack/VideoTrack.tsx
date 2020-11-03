@@ -20,9 +20,10 @@ interface VideoTrackProps {
   isLocal?: boolean;
   priority?: Track.Priority;
   classNames?: string;
+  id?: string;
 }
 
-export default function VideoTrack({ track, isLocal, priority, classNames }: VideoTrackProps) {
+export default function VideoTrack({ track, isLocal, priority, classNames, id }: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null!);
 
   useEffect(() => {
@@ -44,5 +45,5 @@ export default function VideoTrack({ track, isLocal, priority, classNames }: Vid
   // The local video track is mirrored.
   const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
 
-  return <Video ref={ref} style={style} className={classNames} />;
+  return <Video ref={ref} style={style} className={classNames} id={id} />;
 }

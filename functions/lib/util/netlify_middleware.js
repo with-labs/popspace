@@ -17,11 +17,18 @@ const parseParams = async (event, context) => {
   return false
 }
 
+const base64Decode = (str) => Buffer.from(str, 'base64').toString('utf-8');
+
 const getUser = async (event, context) => {
-  if(!context.params.token) {
+  // support Authorization header with a bearer token,
+  // fallback to a `token` field on a POST body
+  const authHeader = event.headers.authorization || event.headers.Authorization;
+  const token = (authHeader && authHeader.startsWith('Bearer')) ? base64Decode(authHeader.replace('Bearer ', '')) : context.params.token;
+
+  if(!token) {
     return false
   }
-  const session = await db.accounts.sessionFromToken(context.params.token)
+  const session = await db.accounts.sessionFromToken(token)
   if(!session) {
     return false
   }

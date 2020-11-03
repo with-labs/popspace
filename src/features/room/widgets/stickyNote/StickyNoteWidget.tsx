@@ -10,6 +10,8 @@ import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { StickyNoteWidgetState, StickyNoteWidgetData } from '../../../../types/room';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
+import { WidgetResizeContainer } from '../WidgetResizeContainer';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -20,6 +22,10 @@ export interface IStickyNoteWidgetProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   scrollContainer: {
     overflowY: 'auto',
     flex: 1,
@@ -57,14 +63,24 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
-      <StickyNoteFrame title={t('widgets.stickyNote.addWidgetTitle')} onClose={onClose} widgetId={state.id}>
+      <StickyNoteFrame
+        title={t('widgets.stickyNote.addWidgetTitle')}
+        onClose={onClose}
+        widgetId={state.id}
+        contentClassName={classes.content}
+      >
         <EditStickyNoteWidgetForm initialValues={state.data} onSave={saveWidget} />
       </StickyNoteFrame>
     );
   }
 
   return (
-    <StickyNoteFrame title={t('widgets.stickyNote.publishedTitle')} onClose={onClose} widgetId={state.id}>
+    <StickyNoteFrame
+      title={t('widgets.stickyNote.publishedTitle')}
+      onClose={onClose}
+      widgetId={state.id}
+      contentClassName={classes.content}
+    >
       <div className={classes.scrollContainer}>
         <Typography paragraph variant="body1" className={classes.text}>
           {state.data.text}
@@ -77,17 +93,28 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   );
 };
 
-const StickyNoteFrame: React.FC<{ title: string; onClose: () => any; widgetId: string; disablePadding?: boolean }> = ({
-  children,
-  title,
-  onClose,
-  widgetId,
-  disablePadding,
-}) => (
-  <WidgetFrame color="mandarin" widgetId={widgetId} minWidth={250} minHeight={120} maxWidth={400} maxHeight={600}>
+const StickyNoteFrame: React.FC<{
+  title: string;
+  onClose: () => any;
+  widgetId: string;
+  disablePadding?: boolean;
+  contentClassName?: string;
+}> = ({ children, title, onClose, widgetId, disablePadding, contentClassName }) => (
+  <WidgetFrame color="mandarin" widgetId={widgetId}>
     <WidgetTitlebar title={title} onClose={onClose}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
-    <WidgetContent disablePadding={disablePadding}>{children}</WidgetContent>
+    <WidgetResizeContainer
+      widgetId={widgetId}
+      mode="free"
+      minWidth={250}
+      minHeight={80}
+      maxWidth={400}
+      maxHeight={800}
+      className={contentClassName}
+    >
+      <WidgetContent disablePadding={disablePadding}>{children}</WidgetContent>
+      <WidgetResizeHandle />
+    </WidgetResizeContainer>
   </WidgetFrame>
 );

@@ -1,70 +1,39 @@
-import { useState, useCallback, useRef } from 'react';
-import useVideoContext from '../useVideoContext/useVideoContext';
-import { LogLevels, Track, LocalVideoTrackPublication } from 'twilio-video';
-
-interface MediaStreamTrackPublishOptions {
-  name?: string;
-  priority: Track.Priority;
-  logLevel: LogLevels;
-}
+import { useCallback, useMemo } from 'react';
+import { createSelector } from '@reduxjs/toolkit';
+import { RootState } from '../../state/store';
+import { useSelector } from 'react-redux';
+import { useLocalParticipant } from '../useLocalParticipant/useLocalParticipant';
+import { useCoordinatedDispatch } from '../../features/room/CoordinatedDispatchProvider';
+import { actions } from '../../features/room/roomSlice';
 
 export default function useScreenShareToggle() {
-  const { room, onError } = useVideoContext();
-  const [isSharing, setIsSharing] = useState(false);
-  const stopScreenShareRef = useRef<() => void>(null!);
+  const localParticpant = useLocalParticipant();
 
-  const sharePub = Array.from(room.localParticipant.tracks.values()).find((track) => track.trackName === 'screen');
+  const isSharingScreenSelector = useMemo(
+    () =>
+      createSelector(
+        (state: RootState) => state.room.people,
+        (_: any, personId: string) => personId,
+        (people, personId) => {
+          if (!people[personId]) return false;
+          return people[personId].isSharingScreen;
+        }
+      ),
+    []
+  );
 
-  const toggleScreenShare = useCallback(() => {
-    if (!sharePub) {
-      navigator.mediaDevices
-        .getDisplayMedia({
-          audio: false,
-          video: {
-            frameRate: 10,
-            height: 1080,
-            width: 1920,
-          },
-        })
-        .then((stream) => {
-          const track = stream.getTracks()[0];
+  const isSharingScreen = useSelector((state: RootState) => isSharingScreenSelector(state, localParticpant.sid));
 
-          // All video tracks are published with 'low' priority. This works because the video
-          // track that is displayed in the 'MainParticipant' component will have it's priority
-          // set to 'high' via track.setPriority()
-          room.localParticipant
-            .publishTrack(track, {
-              name: 'screen', // Tracks can be named to easily find them later
-              priority: 'high',
-            } as MediaStreamTrackPublishOptions)
-            .then((trackPublication) => {
-              stopScreenShareRef.current = () => {
-                room.localParticipant.unpublishTrack(track);
-                // TODO: remove this if the SDK is updated to emit this event
-                room.localParticipant.emit('trackUnpublished', trackPublication);
-                track.stop();
-                setIsSharing(false);
-              };
+  const coordinatedDispatch = useCoordinatedDispatch();
 
-              track.onended = stopScreenShareRef.current;
-              setIsSharing(true);
-            })
-            .catch(onError);
-        })
-        .catch((error) => {
-          // Don't display an error if the user closes the screen share dialog
-          if (error.name !== 'AbortError' && error.name !== 'NotAllowedError') {
-            onError(error);
-          }
-        });
-    } else {
-      const pub = room.localParticipant.unpublishTrack(sharePub.track) as LocalVideoTrackPublication;
-      // TODO: remove this if the SDK is updated to emit this event
-      room.localParticipant.emit('trackUnpublished', pub);
-      pub.track.stop();
-      setIsSharing(false);
-    }
-  }, [room, onError, sharePub]);
+  const toggle = useCallback(() => {
+    coordinatedDispatch(
+      actions.updatePersonIsSharingScreen({
+        id: localParticpant.sid,
+        isSharingScreen: !isSharingScreen,
+      })
+    );
+  }, [coordinatedDispatch, localParticpant.sid, isSharingScreen]);
 
-  return [!!sharePub, toggleScreenShare] as const;
+  return [isSharingScreen, toggle] as const;
 }

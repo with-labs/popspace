@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectors as roomSelectors, actions as roomActions } from '../../roomSlice';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { makeStyles, Box, Typography, CircularProgress } from '@material-ui/core';
 import { Modal } from '../../../../components/Modal/Modal';
 import { ModalPane } from '../../../../components/Modal/ModalPane';
@@ -16,6 +16,7 @@ import Api from '../../../../utils/api';
 import { useRoomName } from '../../../../hooks/useRoomName/useRoomName';
 import { USER_SESSION_TOKEN } from '../../../../constants/User';
 import { sessionTokenExists } from '../../../../utils/SessionTokenExists';
+import { ErrorModal } from '../ErrorModal/ErrorModal';
 
 import { MemberList } from './MemberList/MemberList';
 
@@ -66,9 +67,12 @@ function validateEmail(email: string, translate: TFunction) {
   }
 }
 
+const MAX_INVITE_COUNT = 20;
+
 export const MembershipManagementModal: React.FC<IMembershipManagementModalProps> = (props) => {
   const dispatch = useDispatch();
   const isOpen = useSelector(roomSelectors.selectIsMembershipModalOpen);
+  const [error, setError] = useState(null);
 
   const { t } = useTranslation();
   const classes = useStyles();
@@ -76,22 +80,32 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
   const roomName = useRoomName();
   const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
 
-  // temp var, will be replaced with data once we hook up stuf
-  const [inviteCount, setInviteCount] = useState(Math.floor(Math.random() * Math.floor(3)));
+  const [inviteCount, setInviteCount] = useState(0);
   const [members, setMembers] = useState([]);
 
   const onCloseHandler = () => {
     dispatch(roomActions.setIsMembershipModalOpen({ isOpen: false }));
   };
 
-  const onSubmitHandler = (values: MembershipFormData) => {
+  const updateMembers = (newMembers: []) => {
+    setInviteCount(MAX_INVITE_COUNT - newMembers.length);
+    setMembers(newMembers);
+  };
+
+  const onSubmitHandler = (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
     if (sessionTokenExists(sessionToken) && roomName) {
-      Api.sendRoomInvite(sessionToken, '', values.inviteeEmail)
+      Api.sendRoomInvite(sessionToken, roomName, values.inviteeEmail)
         .then((result: any) => {
-          //TODO fill this out with Alekesi
+          if (result.success) {
+            const newMembers: any = [...members, result.newMember];
+            updateMembers(newMembers);
+          } else {
+            setError(result);
+          }
         })
         .catch((e: any) => {});
     }
+    actions.resetForm();
   };
 
   useEffect(() => {
@@ -105,8 +119,12 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
       setIsLoading(true);
       Api.getRoomMembers(sessionToken, roomName)
         .then((result: any) => {
-          setIsLoading(false);
-          setMembers(result.result);
+          if (result.success) {
+            setIsLoading(false);
+            updateMembers(result.result);
+          } else {
+            setError(result);
+          }
         })
         .catch((e: any) => {
           setIsLoading(false);
@@ -114,57 +132,70 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
     }
   }, [isOpen, sessionToken, roomName]);
 
+  const onMemberRemove = (member: any) => {
+    const newMembers: [] = [];
+    for (let i = 0; i < members.length; i++) {
+      if (members[i] !== member) {
+        newMembers.push(members[i]);
+      }
+    }
+    setMembers(newMembers);
+  };
+
   return (
-    <Modal onClose={onCloseHandler} isOpen={isOpen}>
-      <ModalTitleBar title={t('modals.inviteUserModal.title')} onClose={onCloseHandler} />
-      <ModalContentWrapper>
-        <ModalPane className={classes.imgPane}>
-          <img src={membersImg} alt="Members" className={classes.image} />
-        </ModalPane>
-        <ModalPane>
-          <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
-            <Form>
-              <Box display="flex" flexDirection="row">
-                <FormikTextField
-                  className={classes.emailField}
-                  name="inviteeEmail"
-                  placeholder={t('common.emailInput.placeHolder')}
-                  label={t('common.emailInput.label')}
-                  margin="normal"
-                  validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
-                  helperText={t(
-                    inviteCount === 0 ? 'modals.inviteUserModal.noInvitesLeft' : 'modals.inviteUserModal.invitesLeft',
-                    { count: inviteCount }
-                  )}
-                />
-                <FormikSubmitButton className={classes.submitBtn}>
-                  {t('modals.inviteUserModal.inviteBtn')}
-                </FormikSubmitButton>
+    <>
+      <Modal onClose={onCloseHandler} isOpen={isOpen}>
+        <ModalTitleBar title={t('modals.inviteUserModal.title')} onClose={onCloseHandler} />
+        <ModalContentWrapper>
+          <ModalPane className={classes.imgPane}>
+            <img src={membersImg} alt="Members" className={classes.image} />
+          </ModalPane>
+          <ModalPane>
+            <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
+              <Form>
+                <Box display="flex" flexDirection="row">
+                  <FormikTextField
+                    className={classes.emailField}
+                    name="inviteeEmail"
+                    placeholder={t('common.emailInput.placeHolder')}
+                    label={t('common.emailInput.label')}
+                    margin="normal"
+                    validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
+                    helperText={t(
+                      inviteCount === 0 ? 'modals.inviteUserModal.noInvitesLeft' : 'modals.inviteUserModal.invitesLeft',
+                      { count: inviteCount }
+                    )}
+                  />
+                  <FormikSubmitButton className={classes.submitBtn}>
+                    {t('modals.inviteUserModal.inviteBtn')}
+                  </FormikSubmitButton>
+                </Box>
+              </Form>
+            </Formik>
+            {members.length > 0 && roomName ? (
+              <MemberList members={members} onMemberRemove={onMemberRemove} roomName={roomName} />
+            ) : (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                flexGrow={1}
+                flexShrink={0}
+                flexBasis="auto"
+              >
+                {isLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <Typography variant="body1" className={classes.inviteText}>
+                    {t('modals.inviteUserModal.getStarted')}
+                  </Typography>
+                )}
               </Box>
-            </Form>
-          </Formik>
-          {members.length > 0 ? (
-            <MemberList members={members} />
-          ) : (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              flexGrow={1}
-              flexShrink={0}
-              flexBasis="auto"
-            >
-              {isLoading ? (
-                <CircularProgress />
-              ) : (
-                <Typography variant="body1" className={classes.inviteText}>
-                  {t('modals.inviteUserModal.getStarted')}
-                </Typography>
-              )}
-            </Box>
-          )}
-        </ModalPane>
-      </ModalContentWrapper>
-    </Modal>
+            )}
+          </ModalPane>
+        </ModalContentWrapper>
+      </Modal>
+      <ErrorModal open={!!error} error={error!} onClose={() => setError(null)} />
+    </>
   );
 };

@@ -7,13 +7,7 @@ lib.util.env.init(require("./env.json"))
  * Returns the session string, which can be stored on the front end for
  * future authorization.
  */
-module.exports.handler = async (event, context, callback) => {
-  if(util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const otp = context.params.otp;
   const uid = context.params.uid;
 
@@ -26,4 +20,4 @@ module.exports.handler = async (event, context, callback) => {
   const token = db.accounts.tokenFromSession(session)
 
   return await util.http.succeed(callback, {token: token});
-}
+})

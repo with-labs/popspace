@@ -10,9 +10,8 @@ export type PersonState = {
   avatar: string;
   emoji: EmojiData | null | string;
   status: string | null;
-  // FIXME: this seems like user preferences not participant data
-  viewingScreenSid: string | null;
   isSpeaking: boolean;
+  isSharingScreen: boolean;
 };
 
 /** Data common to all types of widgets */
@@ -32,6 +31,7 @@ export enum WidgetType {
   StickyNote = 'STICKY_NOTE',
   Whiteboard = 'WHITEBOARD',
   YouTube = 'YOU_TUBE',
+  ScreenShare = 'SCREEN_SHARE',
 }
 
 export type LinkWidgetState = BaseWidgetState & {
@@ -85,8 +85,28 @@ export type YoutubeWidgetData = {
   videoId: string;
 };
 
-export type WidgetState = LinkWidgetState | StickyNoteWidgetState | WhiteboardWidgetState | YoutubeWidgetState;
-export type WidgetData = LinkWidgetData | StickyNoteWidgetData | WhiteboardWidgetData | YoutubeWidgetData;
+export type ScreenShareWidgetState = BaseWidgetState & {
+  type: WidgetType.ScreenShare;
+  data: ScreenShareWidgetData;
+};
+export type ScreenShareWidgetData = {
+  /**
+   * No data for this widget.
+   */
+};
+
+export type WidgetState =
+  | LinkWidgetState
+  | StickyNoteWidgetState
+  | WhiteboardWidgetState
+  | YoutubeWidgetState
+  | ScreenShareWidgetState;
+export type WidgetData =
+  | LinkWidgetData
+  | StickyNoteWidgetData
+  | WhiteboardWidgetData
+  | YoutubeWidgetData
+  | ScreenShareWidgetData;
 
 export type RoomEntity = PersonState | WidgetState;
 export type RoomEntityKind = RoomEntity['kind'];

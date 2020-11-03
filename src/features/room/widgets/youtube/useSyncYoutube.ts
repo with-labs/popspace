@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { YoutubeWidgetState, WidgetData } from '../../../../types/room';
+import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
 import { PlayState } from './VideoControls';
 import { useSpatialAudioVolume } from '../../../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 
@@ -21,7 +21,17 @@ function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: strin
  * 2. updating the Redux store with values that come from the player itself
  * 3. updating both the player and the redux store with values that come from our custom video controls.
  */
-export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial<WidgetData>) => any) {
+export function useSyncYoutube({
+  state,
+  onChange,
+  onLoad,
+  isMuted,
+}: {
+  state: YoutubeWidgetState;
+  onChange: (data: Partial<YoutubeWidgetData>) => any;
+  onLoad?: () => void;
+  isMuted?: boolean;
+}) {
   const isPlaying = state.data.isPlaying || false;
   const playState = isPlaying ? PlayState.Playing : PlayState.Paused;
   const timestamp = state.data.timestamp ?? 0;
@@ -30,19 +40,18 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
   const ytPlayerRef = React.useRef<YT.Player | null>(null);
   const [realtimeTimestamp, setRealtimeTimestamp] = React.useState(0);
   const [isScrubbing, setScrubbing] = React.useState(false);
-  const [isMuted, setIsMuted] = React.useState(false);
 
   // when the user pauses or plays in the custom video controls,
   // also pause/play in Redux and sync to remote users
   const onPlayStateChanged = React.useCallback(
     (s: PlayState, time: number) => {
-      update({
+      onChange({
         isPlaying: s === PlayState.Playing,
         playStartedTimestampUTC: s === PlayState.Playing ? new Date().toUTCString() : null,
         timestamp: time,
       });
     },
-    [update]
+    [onChange]
   );
 
   // when the user moves the scrubber on the custom video controls,
@@ -55,13 +64,13 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
 
       // don't sent it to others until the user has released the scrubber handle
       if (!scrubbing) {
-        update({
+        onChange({
           timestamp: time,
           playStartedTimestampUTC: playState === PlayState.Playing ? new Date().toUTCString() : null,
         });
       }
     },
-    [update, playState]
+    [onChange, playState]
   );
 
   // when the YT player is playing, update Redux to play too and
@@ -75,13 +84,13 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
         return;
       }
 
-      update({
+      onChange({
         isPlaying: true,
         timestamp: player.getCurrentTime(),
         playStartedTimestampUTC: new Date().toUTCString(),
       });
     },
-    [isPlaying, update]
+    [isPlaying, onChange]
   );
 
   // when the YT player is paused, update Redux to be paused too and record
@@ -95,13 +104,13 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
         return;
       }
 
-      update({
+      onChange({
         isPlaying: false,
         timestamp: player.getCurrentTime(),
         playStartedTimestampUTC: null,
       });
     },
-    [isPlaying, update]
+    [isPlaying, onChange]
   );
 
   // get the current spacial volume state of the player
@@ -132,8 +141,11 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
 
       // also update our duration value
       setDuration(p.getDuration());
+
+      // finally, invoke the load handler if provided
+      onLoad?.();
     },
-    [timestamp, isPlaying, playStartedTimestampUTC, volume]
+    [timestamp, isPlaying, playStartedTimestampUTC, volume, onLoad]
   );
 
   // when the Redux timestamp changes, seek in the YT player too
@@ -173,10 +185,6 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
     ytPlayerRef.current?.setVolume(volume * 100);
   }, [volume]);
 
-  const toggleMuted = React.useCallback(() => {
-    setIsMuted((v) => !v);
-  }, [setIsMuted]);
-
   return {
     videoControlBindings: {
       onPlayStateChanged,
@@ -190,8 +198,6 @@ export function useSyncYoutube(state: YoutubeWidgetState, update: (data: Partial
       onPlay: handlePlayerPlay,
       onPause: handlePlayerPause,
     },
-    isMuted,
-    toggleMuted,
     isPlaying,
   };
 }

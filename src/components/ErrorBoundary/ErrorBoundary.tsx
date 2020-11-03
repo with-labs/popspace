@@ -7,7 +7,7 @@ interface IErrorBoundaryProps {
 
 // Callback for the Sentry ErrorBoundary component that will log errors to the browser console in development mode.
 const devOnError = (error: Error, componentStack: string) => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     console.error(error, componentStack);
   }
 };

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { DraggableResizeHandle } from '../DraggableResizeHandle';
+import { ResizeHandle } from '../../../components/ResizeContainer/ResizeHandle';
 
 export interface IWidgetResizeHandleProps {}
 
@@ -15,5 +15,5 @@ const useStyles = makeStyles((theme) => ({
 export const WidgetResizeHandle: React.FC<IWidgetResizeHandleProps> = (props) => {
   const classes = useStyles();
 
-  return <DraggableResizeHandle className={classes.root} />;
+  return <ResizeHandle className={classes.root} />;
 };

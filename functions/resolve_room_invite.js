@@ -7,13 +7,7 @@ lib.util.env.init(require("./env.json"))
  * Further, checks whether the provided session is valid, and whether the user
  * matches the invite user. Issues a new session if necessary.
  */
-module.exports.handler = async (event, context, callback) => {
-  if(util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const params = context.params
   const otp = params.otp
   const inviteId = params.inviteId
@@ -21,7 +15,11 @@ module.exports.handler = async (event, context, callback) => {
 
   const invite = await db.rooms.inviteById(inviteId)
   if(!invite) {
-    return await lib.util.http.fail(callback, "Invalid room invitation")
+    return await lib.util.http.fail(
+      callback,
+      "Invalid room invitation",
+      { errorCode: lib.db.ErrorCodes.room.INVALID_INVITE }
+    )
   }
   let user = await db.accounts.userByEmail(invite.email)
 
@@ -67,4 +65,4 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   return await util.http.succeed(callback, result)
-}
+})

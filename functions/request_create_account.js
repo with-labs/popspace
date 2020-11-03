@@ -12,14 +12,7 @@ Sign up flow
 */
 
 
-module.exports.handler = async (event, context, callback) => {
-  // We only care about POSTs with body data
-  if(lib.util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const params = context.params
 
   // Make sure we don't distinguish emails just by whitespace
@@ -27,14 +20,22 @@ module.exports.handler = async (event, context, callback) => {
   const existingUser = await db.accounts.userByEmail(params.email)
 
   if(existingUser) {
-    return await lib.util.http.fail(callback, "Email already registered. Please log in!")
+    return await lib.util.http.fail(
+      callback,
+      "Email already registered. Please log in!",
+      { errorCode: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+    )
   }
 
   const existingCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
 
   if(existingCreateRequest) {
     if(!lib.db.otp.isExpired(existingCreateRequest)) {
-      return await lib.util.http.fail(callback, "Email already registered. Check your email for a verification link.")
+      return await lib.util.http.fail(
+        callback,
+        "Email already registered. Check your email for a verification link.",
+        { errorCode: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+      )
     }
   }
 
@@ -43,4 +44,4 @@ module.exports.handler = async (event, context, callback) => {
   await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
 
   return await lib.util.http.succeed(callback, {});
-}
+})

@@ -118,7 +118,7 @@ function createFocusRing(color: string) {
  *
  * @param colors Color palette configuration
  */
-const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: WithColorPalette }) => {
+const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   const finalPalette: PaletteOptions = {
     // all themes use this grey, for now.
     grey: {
@@ -151,7 +151,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
       black: brandPalette.ink.regular,
     },
     primary: toMuiColorPalette(colors.primary),
-    secondary: toMuiColorPalette(colors.secondary),
+    secondary: toMuiColorPalette(brandPalette.oregano),
     brandColors: brandPalette,
   };
 
@@ -174,7 +174,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
       modal: `0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729)`,
     },
     focusRings: {
-      primary: createFocusRing(colors.secondary.ink || brandPalette.oregano.ink),
+      primary: createFocusRing(brandPalette.oregano.ink),
       create: createFocusRing,
       idle: `inset 0 0 0 0 transparent`,
     },
@@ -503,7 +503,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
         root: {
           boxShadow: focusRings.idle,
           transition: transitions.create(['box-shadow', 'background-color', 'color']),
-          '&:focus, &$focused': {
+          '&:focus': {
             boxShadow: focusRings.primary,
           },
           '&:active': {
@@ -764,6 +764,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
           boxShadow: mainShadows.surface,
           borderRadius: shape.borderRadius,
         },
+        paperWidthXs: {
+          // this is to support the xs break point option
+          // for alert style dialogs, since we currently
+          // dont have xs or xl breakpoints
+          maxWidth: 360,
+        },
       },
       MuiDialogTitle: {
         root: {
@@ -771,6 +777,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary: With
         },
       },
       MuiDialogContent: {
+        root: {
+          padding: '0 32px 32px 32px',
+        },
+      },
+      MuiDialogActions: {
         root: {
           padding: '0 32px 32px 32px',
         },
@@ -819,25 +830,24 @@ export enum ThemeName {
 // kind of arbitrary color combos below...
 export const mandarin = createPaletteTheme({
   primary: brandPalette.mandarin,
-  secondary: brandPalette.oregano,
 });
 
 export const cherry = createPaletteTheme({
   primary: brandPalette.cherry,
-  secondary: brandPalette.oregano,
 });
 
 export const lavender = createPaletteTheme({
   primary: brandPalette.lavender,
-  secondary: brandPalette.oregano,
 });
 
 export const oregano = createPaletteTheme({
   primary: brandPalette.oregano,
-  secondary: brandPalette.oregano,
 });
 
 export const snow = createPaletteTheme({
   primary: brandPalette.snow,
-  secondary: brandPalette.oregano,
+});
+
+export const slate = createPaletteTheme({
+  primary: brandPalette.slate,
 });

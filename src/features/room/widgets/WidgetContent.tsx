@@ -27,15 +27,13 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
   // if we are, we want to disable pointer events inside the frame so that
   // iframes and other interactive content don't get triggered as the mouse
   // moves over them
-  const { isDraggingAnimatedValue, isResizingAnimatedValue } = React.useContext(DraggableContext);
+  const { isDraggingAnimatedValue } = React.useContext(DraggableContext);
 
   return (
     <animated.div
       className={clsx(classes.root, props.className)}
       style={{
-        pointerEvents: to([isDraggingAnimatedValue, isResizingAnimatedValue], (dr, rz) =>
-          dr || rz ? 'none' : 'initial'
-        ),
+        pointerEvents: to([isDraggingAnimatedValue], (dr) => (dr ? 'none' : 'initial')),
       }}
     >
       {props.children}

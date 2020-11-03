@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
 import * as Sentry from '@sentry/react';
-import useQuery from '../../hooks/useQuery/useQuery';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
@@ -17,7 +17,7 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
   const [error, setError] = useState<ErrorInfo>(null!);
 
   // get the query params from the url
-  const query = useQuery();
+  const query = useQueryParams();
 
   const otp = useMemo(() => query.get('otp'), [query]);
   const email = useMemo(() => query.get('email'), [query]);

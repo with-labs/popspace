@@ -6,14 +6,14 @@ import { WidgetType, WidgetData } from '../../../types/room';
 import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useTranslation } from 'react-i18next';
 
-const nameKeys: Record<WidgetType, string> = {
+const nameKeys: Partial<Record<WidgetType, string>> = {
   [WidgetType.Link]: 'widgets.link.name',
   [WidgetType.StickyNote]: 'widgets.stickyNote.name',
   [WidgetType.Whiteboard]: 'widgets.whiteboard.name',
   [WidgetType.YouTube]: 'widgets.youtube.name',
 };
 
-const accessoryEmptyData: Record<WidgetType, (...args: any[]) => WidgetData> = {
+const accessoryEmptyData: Partial<Record<WidgetType, (...args: any[]) => WidgetData>> = {
   [WidgetType.Link]: () => ({
     title: '',
     url: '',
@@ -54,15 +54,14 @@ export const AddAccessoryMenuItem = React.forwardRef<HTMLLIElement, IAddAccessor
       // focus element back to the button, before the widget is mounted and steals focus (for example,
       // most widget create forms have an autoFocus input)
       setTimeout(() => {
+        const initialDataFn = accessoryEmptyData[accessoryType];
+        // unsupported accessory types
+        if (!initialDataFn) return;
         // whiteboards publish immediately, they have no draft state.
         addWidget({
           type: accessoryType,
-          initialData: accessoryEmptyData[accessoryType](userName),
+          initialData: initialDataFn(userName),
           publishImmediately: accessoryType === WidgetType.Whiteboard,
-          screenCoordinate: {
-            x: 300,
-            y: 300,
-          },
         });
       });
     }, [accessoryType, addWidget, onClick, userName]);

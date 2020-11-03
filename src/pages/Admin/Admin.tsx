@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
-import { useHistory } from 'react-router-dom';
 import { Button, TextField } from '@material-ui/core';
 import { Header } from '../../components/Header/Header';
-import * as Sentry from '@sentry/react';
 import Api from '../../utils/api';
-import { RouteNames } from '../../constants/RouteNames';
-import { ErrorTypes } from '../../constants/ErrorType';
-import { ErrorInfo } from '../../types/api';
 
 import { USER_SESSION_TOKEN } from '../../constants/User';
-import { sessionTokenExists } from '../../utils/SessionTokenExists';
 
 import styles from './Admin.module.css';
 import { ClaimEmailsTable } from './ClaimEmailsTable';
@@ -18,39 +12,11 @@ import { Page } from '../../Layouts/Page/Page';
 
 interface IAdminProps {}
 
-export const Admin: React.FC<IAdminProps> = (props) => {
-  const history = useHistory();
+export const Admin: React.FC<IAdminProps> = () => {
   const [email, setEmail] = useState('');
   const [roomName, setRoomName] = useState('');
-  const [users] = useState<{ email: string; room: string }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ErrorInfo>(null!);
 
   const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
-
-  useEffect(() => {
-    if (sessionTokenExists(sessionToken)) {
-      Api.getProfile(sessionToken)
-        .then((result: any) => {
-          if (result.success && result.profile.user.admin) {
-            setIsLoading(false);
-          } else {
-            history.push(RouteNames.ROOT);
-          }
-        })
-        .catch((e: any) => {
-          setIsLoading(false);
-          Sentry.captureMessage(`Error calling api call getProfile on admin page`, Sentry.Severity.Error);
-          setError({
-            errorType: ErrorTypes.UNEXPECTED,
-            error: e,
-          });
-        });
-    } else {
-      // we arent logged in so redirect to the sign in page
-      history.push(RouteNames.SIGN_IN);
-    }
-  }, [history, sessionToken]);
 
   const sendEmail = async (email: string, roomName: string) => {
     const result: any = await Api.adminCreateAndSendClaimEmail(sessionToken, email, roomName);
@@ -66,12 +32,8 @@ export const Admin: React.FC<IAdminProps> = (props) => {
     sendEmail(email, roomName);
   };
 
-  const resendEmail = async (email: string, roomName: string) => {
-    sendEmail(email, roomName);
-  };
-
   return (
-    <Page isLoading={isLoading} error={error}>
+    <Page>
       <Header text="Admin" />
       <div className="u-flex u-flexJustifyCenter">
         <div className="u-flex u-flexCol u-size4of5">
@@ -100,7 +62,7 @@ export const Admin: React.FC<IAdminProps> = (props) => {
               </Button>
             </div>
           </form>
-          <ClaimEmailsTable sessionToken={sessionToken} resendEmail={resendEmail} />
+          <ClaimEmailsTable sessionToken={sessionToken} resendEmail={sendEmail} />
         </div>
       </div>
     </Page>

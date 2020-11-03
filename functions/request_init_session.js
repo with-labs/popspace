@@ -17,18 +17,16 @@ Log in flow
 /**
  * Send a magic link to the provided email which will initiate a session.
  */
-module.exports.handler = async (event, context, callback) => {
-  // We only care about POSTs with body data
-  if(util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const email = util.args.consolidateEmailString(context.params.email)
   const user = await db.accounts.userByEmail(email)
 
   if(!user) {
-    return await util.http.fail(callback, "This email address is not associated with an account.", {invalidEmail: true})
+    return await util.http.fail(
+      callback,
+      "This email address is not associated with an account.",
+      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+    )
   }
 
   const loginRequest = await db.accounts.createLoginRequest(user)
@@ -36,4 +34,4 @@ module.exports.handler = async (event, context, callback) => {
 
   await lib.email.account.sendLoginOtpEmail(email, user.first_name, logInUrl)
   return await util.http.succeed(callback, {});
-}
+})

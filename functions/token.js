@@ -247,12 +247,7 @@ const TWILIO_API_KEYS = {
 const TWILIO_API_KEY_SID =    TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SID :    TWILIO_API_KEYS['development'].TWILIO_API_KEY_SID;
 const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SECRET : TWILIO_API_KEYS['development'].TWILIO_API_KEY_SECRET;
 
-module.exports.handler = async (event, context, callback) => {
-  if(util.http.failUnlessPost(event, callback)) return;
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   // Parsse JSON body of request and handle errors if malformed
   try {
     let requestBody = JSON.parse(event.body);
@@ -270,7 +265,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `The room_name submitted is incorrect.`,
-      { errorCode: lib.util.http.ERRORS.rooms.UNKNOWN_ROOM }
+      { errorCode: lib.db.ErrorCodes.rooms.UNKNOWN_ROOM }
     )
   }
 
@@ -279,7 +274,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Incorrect passcode`,
-      { errorCode: lib.util.http.ERRORS.rooms.INCORRECT_ROOM_PASSCODE }
+      { errorCode: lib.db.ErrorCodes.rooms.INCORRECT_ROOM_PASSCODE }
     )
   }
 
@@ -288,7 +283,7 @@ module.exports.handler = async (event, context, callback) => {
     return await lib.util.http.fail(
       callback,
       `Missing user_identity`,
-      { errorCode: lib.util.http.ERRORS.rooms.INVALID_USER_IDENTITY }
+      { errorCode: lib.db.ErrorCodes.rooms.INVALID_USER_IDENTITY }
     )
   }
 
@@ -309,4 +304,4 @@ module.exports.handler = async (event, context, callback) => {
   token.addGrant(videoGrant);
 
   return await util.http.succeed(callback, {token: token.toJwt()})
-};
+});

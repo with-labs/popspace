@@ -13,6 +13,8 @@ export default {
         label: 'Email Address',
       },
       cancel: 'Cancel',
+      error: 'Error',
+      confirm: 'Got it',
     },
     errorPages: {
       takeMeHomeBtn: 'Take me Home',
@@ -191,6 +193,50 @@ export default {
       noteError: {
         title: 'A sidenote',
         btnText: 'Got it',
+      },
+      api: {
+        TOO_MANY_OWNED_ROOMS: {
+          message: 'TOO_MANY_OWNED_ROOMS',
+        },
+        ALREADY_INVITED: {
+          message: 'ALREADY_INVITED',
+        },
+        UNKNOWN_ROOM: {
+          message: 'UNKNOWN_ROOM',
+        },
+        CLAIM_UNIQUENESS: {
+          message: 'CLAIM_UNIQUENESS',
+        },
+        CANT_INVITE_SELF: {
+          message: 'CANT_INVITE_SELF',
+        },
+        INVALID_ROOM_CLAIM: {
+          message: 'INVALID_ROOM_CLAIM',
+        },
+        UNAUTHORIZED_ROOM_ACCESSS: {
+          message: 'UNAUTHORIZED_ROOM_ACCESSS',
+        },
+        ALREADY_CLAIMED: {
+          message: 'ALREADY_CLAIMED',
+        },
+        INVALID_INVITE: {
+          message: 'INVALID_INVITE',
+        },
+        TOO_MANY_INVITES: {
+          message: 'TOO_MANY_INVITES',
+        },
+        ALREADY_REGISTERED: {
+          message: 'ALREADY_REGISTERED',
+        },
+        UNAUTHORIZED: {
+          message: 'UNAUTHORIZED',
+        },
+        ADMIN_ONLY_RESTRICTED: {
+          message: 'ADMIN_ONLY_RESTRICTED',
+        },
+        NO_SUCH_USER: {
+          message: 'NO_SUCH_USER',
+        },
       },
     },
     features: {

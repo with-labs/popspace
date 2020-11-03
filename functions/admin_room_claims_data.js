@@ -1,13 +1,7 @@
 const lib = require("lib");
 const env = lib.util.env.init(require("./env.json"))
 
-module.exports.handler = async (event, context, callback) => {
-  if(lib.util.http.failUnlessPost(event, callback)) return
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const user = context.user
   if(!user || !user.admin) {
     return await lib.util.http.fail(
@@ -28,4 +22,4 @@ module.exports.handler = async (event, context, callback) => {
   `)
 
   return await lib.util.http.succeed(callback, { data: claimData })
-}
+})

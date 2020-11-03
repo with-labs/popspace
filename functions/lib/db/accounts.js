@@ -37,11 +37,13 @@ class Accounts extends DbAccess {
     })
   }
 
+  async usersByEmails(emails) {
+    const consolidatedEmails = emails.map((e) => (util.args.consolidateEmailString(e)))
+    return db.pg.massive.users.find({email: consolidatedEmails, deleted_at: null})
+  }
+
   async userById(id) {
-    return db.pg.massive.users.findOne({
-      id: id,
-      deleted_at: null
-    })
+    return db.pg.massive.users.findOne({id: id, deleted_at: null})
   }
 
   /*

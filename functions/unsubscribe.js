@@ -4,14 +4,7 @@ lib.util.env.init(require("./env.json"))
 /**
   Verifies unsubscribe magic link
 */
-module.exports.handler = async (event, context, callback) => {
-  // We only care about POSTs with body data
-  if(util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const magicLinkId = context.params.mlid
   const otp = context.params.otp
   const request = await lib.db.magic.magicLinkById(magicLinkId)
@@ -22,4 +15,4 @@ module.exports.handler = async (event, context, callback) => {
   }
 
   return await util.http.succeed(callback, { });
-}
+})

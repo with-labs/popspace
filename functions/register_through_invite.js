@@ -21,13 +21,7 @@ const tryToSetUpNewAccount = async (params) => {
  * This will create an account_create_request, resolve it, and resolve the invite,
  * and return a session.
  */
-module.exports.handler = async (event, context, callback) => {
-  // We only care about POSTs with body data
-  if(lib.util.http.failUnlessPost(event, callback)) return;
-
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
 
   const body = context.params
   const params = body.data
@@ -39,7 +33,11 @@ module.exports.handler = async (event, context, callback) => {
 
   const invite = await db.rooms.inviteById(inviteId)
   if(!invite) {
-    return await lib.util.http.fail(callback, "Invalid room invitation")
+    return await lib.util.http.fail(
+      callback,
+      "Invalid room invitation",
+      { errorCode: lib.db.ErrorCodes.room.INVALID_INVITE }
+    )
   }
   const verification = db.rooms.isValidInvitation(invite, params.email, otp)
   if(verification.error) {
@@ -80,4 +78,4 @@ module.exports.handler = async (event, context, callback) => {
   response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);
-}
+})

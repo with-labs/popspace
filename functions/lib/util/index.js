@@ -5,5 +5,6 @@ module.exports = {
   dev: require("./dev"),
   args: require("./args"),
   middleware: require("./netlify_middleware"),
-  routes: require("./routes")
+  routes: require("./routes"),
+  netlify: require("./netlify")
 }

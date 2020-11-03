@@ -50,13 +50,7 @@ const canEnterRoom = async (user, room) => {
   return await lib.db.rooms.isMember(user.id, room.id)
 }
 
-module.exports.handler = async (event, context, callback) => {
-
-  if(util.http.failUnlessPost(event, callback)) return;
-  await lib.init()
-  const middleware = await lib.util.middleware.init()
-  await middleware.run(event, context)
-
+module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const body = context.params
   const roomName = body.roomName
   const room = await lib.db.rooms.roomByName(roomName)
@@ -97,4 +91,4 @@ module.exports.handler = async (event, context, callback) => {
   token.addGrant(videoGrant);
 
   return await util.http.succeed(callback, {token: token.toJwt()})
-}
+})

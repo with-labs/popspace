@@ -10,26 +10,9 @@ class Rooms extends DbAccess {
     super()
   }
 
-  async getInviteUrl(appUrl, invite) {
-    // The inivite can happen for existing users, as well as for new users.
-    // For new users, it'd be nice if users immediately went to the signup page -
-    // however, if the new user registers before the click the invite, we wouldn't
-    // like to render the signup page, and so a check is inevitable as they land on it.
-    // Thus, it's not really possible to immediately render a signup page for new users,
-    // and we must always check whether the user exists before rendering that page.
-    const email = util.args.consolidateEmailString(invite.email)
-    return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}`
-  }
-
-  async getClaimUrl(appUrl, claim) {
-    const email = util.args.consolidateEmailString(claim.email)
-    return `${appUrl}/claim_room?otp=${claim.otp}&cid=${claim.id}&email=${email}`
-  }
-
-  async inviteById(id) {
-    return await db.pg.massive.room_invitations.findOne({id: id})
-  }
-
+  /****************************************/
+  /************* ROOM     *****************/
+  /****************************************/
   async roomById(id) {
     return await db.pg.massive.rooms.findOne({id: id})
   }
@@ -71,32 +54,6 @@ class Rooms extends DbAccess {
     return this.namedRoomsListToMostPreferredList(namedRooms)[0]
   }
 
-  async isMember(userId, roomId) {
-    const membership = await db.pg.massive.room_memberships.findOne({user_id: userId, room_id: roomId})
-    if(!membership) {
-      return false
-    }
-    const current = this.timestamptzStillCurrent(membership.expires_at)
-    const revoked = this.timestamptzHasPassed(membership.revoked_at)
-    return current && !revoked
-  }
-
-  /*
-    Since rooms can have multiple routes/names,
-    we may want to convert lists of duplicate rooms with all their names
-    into lists that contain just 1 entry for each room - the most preferred name.
-  */
-  namedRoomsListToMostPreferredList(roomList) {
-    let bestById = {}
-    for(const room of roomList) {
-      const previousBest = bestById[room.id]
-      if(!previousBest || room.priority_level > previousBest.priority_level) {
-        bestById[room.id] = room
-      }
-    }
-    return Object.values(bestById)
-  }
-
   async getOwnedRooms(userId) {
     return await db.pg.massive.query(`
       SELECT
@@ -115,6 +72,7 @@ class Rooms extends DbAccess {
   }
 
   async getMemberRooms(userId) {
+    // I.e. rooms you're a member in
     return await db.pg.massive.query(`
       SELECT
         room_names.room_id AS id,
@@ -137,8 +95,112 @@ class Rooms extends DbAccess {
     `, [userId])
   }
 
+  async tryToGenerateRoom(userId) {
+    const canGenerate = await this.underMaxOwnedRoomLimit(userId)
+    if(!canGenerate) {
+      return { error : lib.db.ErrorCodes.room.TOO_MANY_OWNED_ROOMS }
+    }
+    // We may want to add a lock here to avoid race conditions:
+    // the check passed, a new request is sent, also passes checks,
+    // 2 rooms are created
+    return await this.generateRoom(userId)
+  }
+
+  async generateRoom(userId) {
+    // NOTE:
+    // We want to maintain a relatively low room id string collision rate
+    // Collision rate is a product of the randomness space and # of taken slots
+    // with a 36-char alphabet of length 5, we get 36^5 or 6 * 10^7 unique ids
+    // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
+    // i.e. 600k rooms
+    // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
+    let idString = ids.generateId()
+    let isUnique = await this.isUniqueIdString(idString)
+    while(!isUnique) {
+      // TODO: alert if too many collisions
+      idString = ids.generateId()
+      isUnique = await this.isUniqueIdString(idString)
+    }
+    return await this.createRoomWithName(idString, userId)
+  }
+
+  async createRoomWithName(name, ownerId=null, priorityLevel = 0, isVanity=false) {
+    return await db.pg.massive.withTransaction(async (tx) => {
+      const room = await tx.rooms.insert({
+        owner_id: ownerId
+      })
+      const generatedName = await tx.room_names.insert({
+        room_id: room.id,
+        name: name,
+        priority_level: priorityLevel,
+        is_vanity: isVanity
+      })
+      return {
+        room: room,
+        nameEntry: generatedName
+      }
+    })
+  }
+
+
+  /*
+    Since rooms can have multiple routes/names,
+    we may want to convert lists of duplicate rooms with all their names
+    into lists that contain just 1 entry for each room - the most preferred name.
+  */
+  namedRoomsListToMostPreferredList(roomList) {
+    let bestById = {}
+    for(const room of roomList) {
+      const previousBest = bestById[room.id]
+      if(!previousBest || room.priority_level > previousBest.priority_level) {
+        bestById[room.id] = room
+      }
+    }
+    return Object.values(bestById)
+  }
+
+  /****************************************/
+  /************* INVITES *****************/
+  /****************************************/
+  async getInviteUrl(appUrl, invite) {
+    // The inivite can happen for existing users, as well as for new users.
+    // For new users, it'd be nice if users immediately went to the signup page -
+    // however, if the new user registers before the click the invite, we wouldn't
+    // like to render the signup page, and so a check is inevitable as they land on it.
+    // Thus, it's not really possible to immediately render a signup page for new users,
+    // and we must always check whether the user exists before rendering that page.
+    const email = util.args.consolidateEmailString(invite.email)
+    return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}`
+  }
+
+  async getRoomInvites(roomId) {
+    return await db.pg.massive.room_invitations.find({
+      room_id: roomId,
+      resolved_at: null,
+      revoked_at: null
+    }, {
+      order: [{
+        field: "created_at",
+        direction: "desc"
+      }]
+    })
+  }
+
+  async inviteById(id) {
+    return await db.pg.massive.room_invitations.findOne({id: id})
+  }
+
+  async activeInvitesByEmailAndRoomId(email, roomId) {
+    return await db.pg.massive.room_invitations.find({
+      email: email,
+      room_id: roomId,
+      revoked_at: null
+    })
+  }
+
   async latestRoomInvitation(roomId, inviteeEmail) {
     const invitations = await db.pg.massive.room_invitations.find({
+      revoked_at: null,
       room_id: roomId,
       email: util.args.consolidateEmailString(inviteeEmail)
     }, {
@@ -157,9 +219,98 @@ class Rooms extends DbAccess {
       email: util.args.consolidateEmailString(inviteeEmail),
       otp: lib.db.otp.generate(),
       issued_at: this.now(),
-      expires_at: lib.db.otp.standardExpiration(),
+      expires_at: lib.db.otp.expirationInNDays(30),
       membership_duration_millis: STANDARD_MEMBERSHIP_DURATION_MILLIS
     })
+  }
+
+  isValidInvitation(invitation, email, otp) {
+    const verification = lib.db.otp.verify(invitation, otp)
+    if(verification.error != null) {
+      return verification
+    }
+    if(util.args.consolidateEmailString(invitation.email) != util.args.consolidateEmailString(email)) {
+      return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
+    }
+    return { isValid: true, error: null }
+  }
+
+  async revokeInvitation(invitationId) {
+    return await db.pg.massive.room_invitations.update(
+      {id: invitationId},
+      {revoked_at: this.now()}
+    )
+  }
+
+  async resolveInvitation(invitation, user, otp) {
+    const verification = this.isValidInvitation(invitation, user.email, otp)
+    if(verification.error != null) {
+      return verification
+    }
+
+    try {
+      let expires_at = null // non-expiring memberships by default
+      if(invitation.membership_duration_millis && invitation.membership_duration_millis > 0) {
+        expires_at = this.timestamptzPlusMillis(invitation.issued_at, invitation.membership_duration_millis)
+      }
+
+      const membership = await db.pg.massive.withTransaction(async (tx) => {
+        await tx.room_invitations.update({id: invitation.id}, {resolved_at: this.now()})
+        return await tx.room_memberships.insert({
+          room_id: invitation.room_id,
+          user_id: user.id,
+          invitation_id: invitation.id,
+          began_at: this.now(),
+          expires_at: expires_at
+        })
+      })
+
+      return { membership }
+    } catch(e) {
+      // TODO: ERROR_LOGGING
+      return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
+    }
+  }
+
+  /****************************************/
+  /************* MEMBERSHIPS **************/
+  /****************************************/
+  async isMember(userId, roomId) {
+    const membership = await db.pg.massive.room_memberships.findOne({user_id: userId, room_id: roomId})
+    if(!membership) {
+      return false
+    }
+    const current = this.timestamptzStillCurrent(membership.expires_at)
+    const revoked = this.timestamptzHasPassed(membership.revoked_at)
+    return current && !revoked
+  }
+
+  async getRoomMembers(roomId) {
+    const memberships = await db.pg.massive.room_memberships.find({
+      room_id: roomId,
+      revoked_at: null
+    })
+    const userIds = memberships.map((m) => (m.user_id))
+    return await db.pg.massive.users.find({id: userIds})
+  }
+
+  async revokeMembership(roomId, userId) {
+    return await db.pg.massive.room_memberships.update(
+      {
+        user_id: userId,
+        room_id: roomId,
+        revoked_at: null
+      },
+      {revoked_at: this.now()}
+    )
+  }
+
+  /****************************************/
+  /************* CLAIMS *******************/
+  /****************************************/
+  async getClaimUrl(appUrl, claim) {
+    const email = util.args.consolidateEmailString(claim.email)
+    return `${appUrl}/claim_room?otp=${claim.otp}&cid=${claim.id}&email=${email}`
   }
 
   async tryToCreateClaim(email, roomName, allowRegistered=false, createNewRooms=false, allowTransfer=false) {
@@ -219,47 +370,6 @@ class Rooms extends DbAccess {
     return await db.pg.massive.room_claims.update({id: claimId}, {emailed_at: this.now()})
   }
 
-  isValidInvitation(invitation, email, otp) {
-    const verification = lib.db.otp.verify(invitation, otp)
-    if(verification.error != null) {
-      return verification
-    }
-    if(util.args.consolidateEmailString(invitation.email) != util.args.consolidateEmailString(email)) {
-      return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
-    }
-    return { isValid: true, error: null }
-  }
-
-  async resolveInvitation(invitation, user, otp) {
-    const verification = this.isValidInvitation(invitation, user.email, otp)
-    if(verification.error != null) {
-      return verification
-    }
-
-    try {
-      let expires_at = null // non-expiring memberships by default
-      if(invitation.membership_duration_millis && invitation.membership_duration_millis > 0) {
-        expires_at = this.timestamptzPlusMillis(invitation.issued_at, invitation.membership_duration_millis)
-      }
-
-      const membership = await db.pg.massive.withTransaction(async (tx) => {
-        await tx.room_invitations.update({id: invitation.id}, {resolved_at: this.now()})
-        return await tx.room_memberships.insert({
-          room_id: invitation.room_id,
-          user_id: user.id,
-          invitation_id: invitation.id,
-          began_at: this.now(),
-          expires_at: expires_at
-        })
-      })
-
-      return { membership }
-    } catch(e) {
-      // TODO: ERROR_LOGGING
-      return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
-    }
-  }
-
   async resolveClaim(claim, user, otp) {
     const verification = this.isValidInvitation(claim, user.email, otp)
     if(verification.error != null) {
@@ -276,54 +386,6 @@ class Rooms extends DbAccess {
       // TODO: ERROR_LOGGING
       return { error: lib.db.ErrorCodes.UNEXPECTER_ERROR }
     }
-  }
-
-
-  async tryToGenerateRoom(userId) {
-    const canGenerate = await this.underMaxOwnedRoomLimit(userId)
-    if(!canGenerate) {
-      return { error : lib.db.ErrorCodes.room.TOO_MANY_OWNED_ROOMS }
-    }
-    // We may want to add a lock here to avoid race conditions:
-    // the check passed, a new request is sent, also passes checks,
-    // 2 rooms are created
-    return await this.generateRoom(userId)
-  }
-
-  async generateRoom(userId) {
-    // NOTE:
-    // We want to maintain a relatively low room id string collision rate
-    // Collision rate is a product of the randomness space and # of taken slots
-    // with a 36-char alphabet of length 5, we get 36^5 or 6 * 10^7 unique ids
-    // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
-    // i.e. 600k rooms
-    // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
-    let idString = ids.generateId()
-    let isUnique = await this.isUniqueIdString(idString)
-    while(!isUnique) {
-      // TODO: alert if too many collisions
-      idString = ids.generateId()
-      isUnique = await this.isUniqueIdString(idString)
-    }
-    return await this.createRoomWithName(idString, userId)
-  }
-
-  async createRoomWithName(name, ownerId=null, priorityLevel = 0, isVanity=false) {
-    return await db.pg.massive.withTransaction(async (tx) => {
-      const room = await tx.rooms.insert({
-        owner_id: ownerId
-      })
-      const generatedName = await tx.room_names.insert({
-        room_id: room.id,
-        name: name,
-        priority_level: priorityLevel,
-        is_vanity: isVanity
-      })
-      return {
-        room: room,
-        nameEntry: generatedName
-      }
-    })
   }
 
   // Private

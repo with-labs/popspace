@@ -25,12 +25,16 @@ import { Modal } from '../../../../../components/Modal/Modal';
 import { ModalActions } from '../../../../../components/Modal/ModalActions';
 import { ModalTitleBar } from '../../../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../../../components/Modal/ModalContentWrapper';
-import { useRoomName } from '../../../../../hooks/useRoomName/useRoomName';
 
 import { cherry, snow } from '../../../../../theme/theme';
+import { USER_SESSION_TOKEN } from '../../../../../constants/User';
+import Api from '../../../../../utils/api';
+import { ErrorModal } from '../../ErrorModal/ErrorModal';
 
 interface IMemberListProps {
   members: any[];
+  onMemberRemove: (member: any) => void;
+  roomName: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,9 +55,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
-  const roomName = useRoomName();
+export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomName }) => {
   const classes = useStyles();
+  const [error, setError] = useState(null);
+
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   //TODO: update types
   const [selectedMember, setSelectedMember] = useState<null | any>();
@@ -78,12 +83,24 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
     setMenuAnchorEl(null);
   };
 
-  const inviteResendHandler = () => {
+  const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
+
+  const inviteResendHandler = async () => {
     setMenuAnchorEl(null);
+    const result: any = await Api.sendRoomInvite(sessionToken, roomName, selectedMember.email);
+    // TODO: Success notification
+    // We don't need to update the list of members,
+    // unless we care about the state of rows, since a new invite has not been added
   };
 
-  const cancelInviteHandler = () => {
+  const cancelInviteHandler = async () => {
     setMenuAnchorEl(null);
+    const result: any = await Api.cancelRoomInvite(sessionToken, roomName, selectedMember.email);
+    if (result.success) {
+      onMemberRemove(selectedMember);
+    } else {
+      setError(result);
+    }
   };
 
   const removeUserHandler = () => {
@@ -91,9 +108,14 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
     setConfirmIsOpen(true);
   };
 
-  const confirmRemoveUserHandler = () => {
-    // TODO: finalize what we need todo here
+  const confirmRemoveUserHandler = async () => {
     setConfirmIsOpen(false);
+    const result: any = await Api.removeRoomMember(sessionToken, roomName, selectedMember.email);
+    if (result.success) {
+      onMemberRemove(selectedMember);
+    } else {
+      setError(result);
+    }
   };
 
   return (
@@ -182,6 +204,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members }) => {
           </ThemeProvider>
         </ModalActions>
       </Modal>
+      <ErrorModal open={!!error} error={error!} onClose={() => setError(null)} />
     </Box>
   );
 };

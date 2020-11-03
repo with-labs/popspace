@@ -62,12 +62,20 @@ class Api {
     return await this.post('/create_room', { token });
   }
 
-  async sendRoomInvite(token: any, roomName: any, email: any) {
+  async sendRoomInvite(token: any, roomName: string, email: string) {
     return await this.post('/send_room_invite', { token, roomName, email });
   }
 
-  async cancelRoomInvite(token: any, roomName: any, email: any) {
-    // TODO fill this out
+  async cancelRoomInvite(token: any, roomName: string, email: string) {
+    return await this.post('/revoke_room_invites_and_membership', { token, roomName, email });
+  }
+
+  async removeRoomMember(token: any, roomName: string, email: string) {
+    return await this.post('/revoke_room_invites_and_membership', { token, roomName, email });
+  }
+
+  async getRoomMembers(token: any, roomName: string) {
+    return await this.post('/room_get_members', { token, roomName });
   }
 
   async resolveRoomInvite(token: any, otp: string, inviteId: string) {
@@ -108,28 +116,6 @@ class Api {
 
   async unsubscribeFromEmail(otp: string, mlid: string) {
     return await this.post('/unsubscribe', { otp, mlid });
-  }
-
-  async getRoomMembers(token: any, roomName: string) {
-    //TODO: fill this out
-    return {
-      result: [
-        { display_name: 'test name 1', email: 'test1@test.com', user_id: 1, avatar_url: '', has_accepted: true },
-        { display_name: 'test name 2', email: 'test2@test.com', user_id: 2, avatar_url: '', has_accepted: true },
-        { display_name: 'test name 3', email: 'test3@test.com', user_id: 3, avatar_url: '', has_accepted: true },
-        { display_name: '', email: 'test4@test.com', user_id: 4, avatar_url: '', has_accepted: false },
-        { display_name: '', email: 'test5@test.com', user_id: 5, avatar_url: '', has_accepted: false },
-        { display_name: '', email: 'test6@test.com', user_id: 6, avatar_url: '', has_accepted: false },
-      ],
-    };
-  }
-
-  async removeRoomMember(token: any, memberId: string) {
-    //TODO: fill this out
-  }
-
-  async updateUserInformation(token: any, data: { [key: string]: any }) {
-    // TODO: fill this out
   }
 
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {

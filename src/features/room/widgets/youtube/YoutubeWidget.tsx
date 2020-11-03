@@ -70,11 +70,10 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   const [isMuted, setIsMuted] = React.useState(false);
   const toggleMuted = () => setIsMuted((v) => !v);
 
-  const [isPlaying, setIsPlaying] = React.useState(!!state.data.isPlaying);
+  const isPlaying = !!state.data.isPlaying;
 
   const handleVideoChange = (data: Partial<YoutubeWidgetData>) => {
     saveWidget(data);
-    setIsPlaying(!!data.isPlaying);
   };
 
   if (state.isDraft && state.participantSid === localParticipant.sid) {

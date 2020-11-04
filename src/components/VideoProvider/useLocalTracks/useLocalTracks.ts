@@ -30,7 +30,10 @@ export default function useLocalTracks(onError: (err: Error) => void) {
    */
   const getLocalAudioTrack = useCallback(
     async (deviceId?: string) => {
-      const options: CreateLocalTrackOptions = {};
+      const options: CreateLocalTrackOptions = {
+        noiseSuppression: true,
+        echoCancellation: true,
+      };
 
       if (deviceId) {
         options.deviceId = { exact: deviceId };

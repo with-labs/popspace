@@ -32,8 +32,8 @@ describe('redux roomSlice state', () => {
         room: result,
       } as any)
     ).toEqual({
-      x: 1250,
-      y: 1250,
+      x: 1200,
+      y: 1200,
     });
   });
 });

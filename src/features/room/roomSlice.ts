@@ -49,8 +49,8 @@ export const initialState: RoomState = {
   people: {},
   // TODO: make this changeable
   bounds: {
-    width: 2500,
-    height: 2500,
+    width: 2400,
+    height: 2400,
   },
   wallpaperUrl: BUILT_IN_WALLPAPERS[0],
   useSpatialAudio: true,

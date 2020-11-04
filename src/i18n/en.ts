@@ -265,6 +265,11 @@ export default {
         addAndManage: 'Add & Manage',
         userSettings: 'User Settings',
       },
+      mediaControls: {
+        micToggle: 'Toggle voice',
+        videoToggle: 'Toggle video',
+        screenShareToggle: 'Toggle screen share',
+      },
     },
     modals: {
       inviteUserModal: {

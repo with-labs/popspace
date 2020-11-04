@@ -328,6 +328,10 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         disableRipple: true,
         disableTouchRipple: true,
       },
+      MuiTooltip: {
+        // delay appearance by 500ms
+        enterDelay: 500,
+      },
     },
     overrides: {
       MuiCssBaseline: {
@@ -813,6 +817,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         sizeSmall: {
           width: 32,
           height: 32,
+        },
+      },
+      MuiTooltip: {
+        tooltip: {
+          backgroundColor: palette.grey[900],
         },
       },
     },

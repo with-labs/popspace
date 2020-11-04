@@ -110,13 +110,13 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY, isPanning }, setPanSpring] = useSpring(() => ({
+  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
     isPanning: false,
     config: VIEWPORT_PAN_SPRING,
   }));
-  const [{ zoom, isZooming }, setZoomSpring] = useSpring(() => ({
+  const [{ zoom }, setZoomSpring] = useSpring(() => ({
     zoom: 1,
     isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
@@ -355,7 +355,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
             height: bounds.height,
             backgroundImage: `url(${backgroundUrl})` as any,
             backgroundSize: 'cover',
-            willChange: to([isPanning, isZooming], (pv, zv) => (pv || zv ? 'transform' : 'initial')),
+            willChange: 'transform' as any,
           }}
         >
           {/* 

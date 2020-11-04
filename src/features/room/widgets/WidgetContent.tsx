@@ -33,7 +33,7 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
     <animated.div
       className={clsx(classes.root, props.className)}
       style={{
-        pointerEvents: to([isDraggingAnimatedValue], (dr) => (dr ? 'none' : 'initial')),
+        pointerEvents: to([isDraggingAnimatedValue], (dr) => (dr ? 'none' : undefined)) as any,
       }}
     >
       {props.children}

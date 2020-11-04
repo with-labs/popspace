@@ -237,36 +237,17 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [centerX, centerY, clampPanPosition, setPanSpring, zoom]
   );
 
-  const bind = useGesture(
+  // active is required to prevent default behavior, which
+  // we want to do for zoom.
+  const bindActiveGestures = useGesture(
     {
-      onDrag: ({ delta: [x, y], event }) => {
-        doPan({ x: -x, y: -y });
-      },
-      onDragStart: () => {
-        setPanSpring({ isPanning: true });
-      },
-      onDragEnd: () => {
-        setPanSpring({ isPanning: false });
-      },
       onPinch: ({ offset: [d], event }) => {
         event?.preventDefault();
         doZoom(d / PINCH_GESTURE_DAMPING);
       },
-      onPinchStart: () => {
-        setZoomSpring({ isZooming: true });
-      },
-      onPinchEnd: () => {
-        setZoomSpring({ isZooming: false });
-      },
       onWheel: ({ movement: [x, y], event }) => {
         event?.preventDefault();
         doZoom(-y / WHEEL_GESTURE_DAMPING);
-      },
-      onWheelStart: () => {
-        setZoomSpring({ isZooming: true });
-      },
-      onWheelEnd: () => {
-        setZoomSpring({ isZooming: false });
       },
     },
     {
@@ -277,11 +258,35 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     }
   );
 
+  const bindPassiveGestures = useGesture({
+    onDrag: ({ delta: [x, y], event }) => {
+      doPan({ x: -x, y: -y });
+    },
+    onDragStart: () => {
+      setPanSpring({ isPanning: true });
+    },
+    onDragEnd: () => {
+      setPanSpring({ isPanning: false });
+    },
+    onPinchStart: () => {
+      setZoomSpring({ isZooming: true });
+    },
+    onPinchEnd: () => {
+      setZoomSpring({ isZooming: false });
+    },
+    onWheelStart: () => {
+      setZoomSpring({ isZooming: true });
+    },
+    onWheelEnd: () => {
+      setZoomSpring({ isZooming: false });
+    },
+  });
+
   // bind our gesture handlers to the global window
   // TODO: this won't be needed in the next major react-spring release
   React.useEffect(() => {
-    bind();
-  }, [bind]);
+    bindActiveGestures();
+  }, [bindActiveGestures]);
 
   const onObjectDragStart = React.useCallback(() => {
     if (!domTarget.current) return;
@@ -334,6 +339,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         {...keyControlProps}
         ref={viewportRef}
         aria-labelledby="keyboard-explainer"
+        {...bindPassiveGestures()}
         {...rest}
       >
         <animated.div

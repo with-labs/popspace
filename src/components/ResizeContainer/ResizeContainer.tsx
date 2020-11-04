@@ -280,7 +280,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
           style={{
             width,
             height,
-            pointerEvents: resizing.to((v) => (v ? 'none' : 'initial')),
+            pointerEvents: resizing.to((v) => (v ? 'none' : undefined)) as any,
           }}
         >
           <div

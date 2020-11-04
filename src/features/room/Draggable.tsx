@@ -53,6 +53,8 @@ export const DraggableContext = React.createContext<{
 
 const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.KeyboardEvent) => {
   ev.stopPropagation();
+  ev.nativeEvent.stopImmediatePropagation();
+  ev.nativeEvent.stopPropagation();
 };
 
 /**
@@ -208,6 +210,31 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
     }
   );
 
+  // empty drag hack - if the user initiates a drag gesture
+  // within the widget, don't let it bubble up to the viewport
+  const bindRoot = useGesture(
+    {
+      onDragStart: (state) => {
+        state.event?.stopPropagation();
+        viewport.onObjectDragStart();
+      },
+      onDragEnd: (state) => {
+        state.event?.stopPropagation();
+        viewport.onObjectDragEnd();
+      },
+    },
+    {
+      eventOptions: {
+        // we specifically don't want to capture here - that would
+        // possibly override internal gestures within the draggable object.
+        // this is just a layer to prevent any unbound gestures which initiate
+        // within a draggable object (like whiteboard) from bubbling
+        // up to the viewport and being used for pan/zoom
+        capture: false,
+      },
+    }
+  );
+
   return (
     <DraggableContext.Provider
       value={{
@@ -225,14 +252,9 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
         className={styles.root}
-        onMouseDown={stopPropagation}
-        onMouseMove={stopPropagation}
-        onMouseUp={stopPropagation}
-        onPointerDown={stopPropagation}
-        onPointerMove={stopPropagation}
-        onPointerUp={stopPropagation}
         onKeyDown={stopPropagation}
         onKeyUp={stopPropagation}
+        {...bindRoot()}
       >
         {children}
       </animated.div>

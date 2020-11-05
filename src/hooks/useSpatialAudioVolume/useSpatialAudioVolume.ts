@@ -16,15 +16,21 @@ function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);
 }
 
-export function useSpatialAudioVolume(objectId: string) {
+/**
+ * Compute the audio volume based on the position of an object relative to the
+ * active person.
+ *
+ * @param objectId The ID of any object in the room state - widget or person
+ */
+export function useSpatialAudioVolume(objectId?: string) {
   const useSpatialAudio = useSelector(selectors.selectUseSpatialAudio);
   const localParticipant = useLocalParticipant();
   const positionSelector = useMemo(
     () =>
       createSelector(
         (state: RootState) => state.room.positions,
-        (_: any, id: string) => id,
-        (positions, id) => positions[id]?.position ?? { x: 0, y: 0 }
+        (_: any, id?: string) => id,
+        (positions, id) => (id && positions[id]?.position) || { x: 0, y: 0 }
       ),
     []
   );

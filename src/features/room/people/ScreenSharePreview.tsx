@@ -216,6 +216,8 @@ export const ScreenSharePreview = React.memo(
             className={classes.screenShare}
             placeholderClassName={classes.screenSharePlaceholder}
             onStreamEnd={handleStreamEnd}
+            objectId={participantSid}
+            muted={!isFullscreen}
           />
         </Box>
       </animated.div>

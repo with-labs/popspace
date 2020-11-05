@@ -4,10 +4,8 @@ import { Draggable } from '../Draggable';
 import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import * as Sentry from '@sentry/react';
-import { makeStyles } from '@material-ui/core';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
-import { DraggableHandle } from '../DraggableHandle';
 import { PersonBubble } from './PersonBubble';
 import usePublications from '../../../hooks/usePublications/usePublications';
 import { VideoTrackPublication, AudioTrackPublication } from 'twilio-video';
@@ -24,20 +22,8 @@ function useParticipant(sid: string) {
   return all.find((p) => p.sid === sid);
 }
 
-const useStyles = makeStyles({
-  root: {
-    border: 'none',
-  },
-  dragHandle: {
-    width: '100%',
-    height: '100%',
-  },
-});
-
 export const Person = React.memo<IPersonProps>((props) => {
   const localParticipant = useLocalParticipant();
-
-  const classes = useStyles();
 
   // constructing a memoized selector for a person by ID
   const personSelector = React.useMemo(

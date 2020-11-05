@@ -195,7 +195,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
                   classNames={classes.video}
                   publication={cameraTrack}
                   isLocal={isLocal}
-                  participant={participant}
+                  objectId={participant.sid}
                 />
               )}
             </animated.div>
@@ -205,7 +205,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
                 classNames={classes.audio}
                 publication={audioTrack}
                 isLocal={isLocal}
-                participant={participant}
+                objectId={participant.sid}
                 disableAudio={isLocal}
               />
             )}

@@ -25,7 +25,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
         </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
@@ -42,7 +42,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
         </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
@@ -59,7 +59,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
         </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
@@ -77,7 +77,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
         </Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
@@ -97,7 +97,7 @@ describe('the Publication component', () => {
           <Publication
             isLocal
             publication={'mockPublication' as any}
-            participant={'mockParticipant' as any}
+            objectId={'mockParticipant'}
             disableAudio={true}
           />
         </Provider>
@@ -111,7 +111,7 @@ describe('the Publication component', () => {
     mockUseTrack.mockImplementation(() => null);
     const wrapper = render(
       <Provider store={store}>
-        <Publication isLocal publication={'mockPublication' as any} participant={'mockParticipant' as any} />
+        <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
       </Provider>
     );
     expect(useTrack).toHaveBeenCalledWith('mockPublication');

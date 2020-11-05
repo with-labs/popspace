@@ -11,12 +11,14 @@ export interface IScreenShareViewerProps {
   isFullscreen: boolean;
   onFullscreenExit: () => void;
   onShareEnd: () => void;
+  widgetId: string;
+  muted: boolean;
 }
 
 /**
  *
  */
-export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEnd, ...props }) => {
+export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEnd, widgetId, ...props }) => {
   const { t } = useTranslation();
 
   const { remeasure } = useResizeContext();
@@ -53,6 +55,7 @@ export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEn
   return (
     <ScreenShare
       {...props}
+      objectId={widgetId}
       onSourceChange={handleSourceChange}
       emptyMessage={emptyWithIcon}
       id={`${props.participantSid}-screenShare`}

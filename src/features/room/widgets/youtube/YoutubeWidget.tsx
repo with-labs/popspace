@@ -6,7 +6,7 @@ import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
 import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
-import { MuteButton } from './MuteButton';
+import { MuteButton } from '../MuteButton';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';

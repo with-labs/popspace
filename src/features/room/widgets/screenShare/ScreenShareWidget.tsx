@@ -17,6 +17,10 @@ import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
 import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
 import { actions } from '../../roomSlice';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
+import { MuteButton } from '../MuteButton';
+import { useScreenSharePublication } from '../../../../hooks/useScreenShare/useScreenShare';
+import usePublications from '../../../../hooks/usePublications/usePublications';
+import { SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../../../constants/User';
 
 export interface IScreenShareWidgetProps {
   state: ScreenShareWidgetState;
@@ -50,6 +54,8 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const onExitFullscreen = React.useCallback(() => setIsFullscreen(false), []);
 
+  const [isLocalMuted, setIsLocalMuted] = React.useState(false);
+
   const coordinatedDispatch = useCoordinatedDispatch();
   const onStopSharing = React.useCallback(() => {
     coordinatedDispatch(
@@ -61,6 +67,9 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
     onClose();
   }, [sharingUserId, coordinatedDispatch, onClose]);
 
+  const publications = usePublications(user);
+  const isSharingAudio = publications.some((p) => p.trackName === SCREEN_SHARE_AUDIO_TRACK_NAME);
+
   const title = !sharingUserId
     ? t('widgets.screenShare.titleEmpty')
     : isLocal
@@ -70,6 +79,10 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
   return (
     <WidgetFrame color="slate" widgetId={state.id}>
       <WidgetTitlebar title={title}>
+        {/* Remote users can mute the stream for themselves */}
+        {isSharingAudio && !isLocal && (
+          <MuteButton isMuted={isLocalMuted} isPlaying onClick={() => setIsLocalMuted((v) => !v)} />
+        )}
         {isLocal && (
           <WidgetTitlebarButton onClick={onClose}>
             <MinimizeIcon />
@@ -101,6 +114,8 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
             isFullscreen={isFullscreen}
             onFullscreenExit={onExitFullscreen}
             onShareEnd={onClose}
+            widgetId={state.id}
+            muted={isLocalMuted}
           />
           <WidgetResizeHandle />
         </WidgetResizeContainer>

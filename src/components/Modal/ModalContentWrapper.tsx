@@ -1,8 +1,10 @@
 import React from 'react';
 import { DialogContent, Box, makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 
 interface IModalContentWrapperProps {
   children: React.ReactNode;
+  className?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const ModalContentWrapper: React.FC<IModalContentWrapperProps> = ({ children }) => {
+export const ModalContentWrapper: React.FC<IModalContentWrapperProps> = ({ children, className }) => {
   const styles = useStyles();
   return (
     <Box
@@ -26,7 +28,7 @@ export const ModalContentWrapper: React.FC<IModalContentWrapperProps> = ({ child
       flexBasis={'auto'}
       justifyContent="center"
       alignItems="center"
-      className={styles.content}
+      className={clsx(styles.content, className)}
     >
       {children}
     </Box>

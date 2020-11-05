@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { makeStyles, ButtonBase } from '@material-ui/core';
-import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
+import { makeStyles, ButtonBase, Typography } from '@material-ui/core';
+import { wallPaperOptions } from './WallpaperOptions';
 import clsx from 'clsx';
+import { sentenceCase } from 'change-case';
 
 export interface IWallpaperGridProps {
   onChange: (wallpaperUrl: string) => void;
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     borderRadius: theme.shape.contentBorderRadius,
   },
+  title: {
+    marginTop: theme.spacing(1),
+    textAlign: 'center',
+  },
 }));
 
 export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ onChange, value }) => {
@@ -48,15 +53,19 @@ export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ onChange, value }
 
   return (
     <div className={classes.root}>
-      {BUILT_IN_WALLPAPERS.map((url, idx) => (
-        <ButtonBase
-          key={url}
-          onClick={() => onChange(url)}
-          className={clsx(classes.item, url === value && classes.itemSelected)}
-          aria-label={`Default wallpaper ${idx + 1}`}
-        >
-          <img className={classes.image} src={url} alt={`Default wallpaper ${idx + 1}`} />
-        </ButtonBase>
+      {wallPaperOptions.map((wallpaper, idx) => (
+        <div key={wallpaper.url}>
+          <ButtonBase
+            onClick={() => onChange(wallpaper.url)}
+            className={clsx(classes.item, wallpaper.url === value && classes.itemSelected)}
+            aria-label={wallpaper.name}
+          >
+            <img className={classes.image} src={wallpaper.url} alt={wallpaper.name} />
+          </ButtonBase>
+          <Typography variant="body2" className={classes.title}>
+            {sentenceCase(wallpaper.name)}
+          </Typography>
+        </div>
       ))}
     </div>
   );

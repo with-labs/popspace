@@ -5,7 +5,7 @@ import { RootState } from '../../state/store';
 import { clamp } from '../../utils/math';
 import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/room';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
-import { BUILT_IN_WALLPAPERS } from '../../constants/wallpapers';
+import { wallPaperOptions } from '../roomControls/wallpaper/WallpaperOptions';
 
 /**
  * Positioning data for an object in a room,
@@ -49,7 +49,7 @@ export const initialState: RoomState = {
     width: 2400,
     height: 2400,
   },
-  wallpaperUrl: BUILT_IN_WALLPAPERS[0],
+  wallpaperUrl: wallPaperOptions[0].url,
   useSpatialAudio: true,
 };
 

@@ -5,12 +5,12 @@ import { selectors as controlsSelectors, actions as controlsActions } from '../r
 import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { WallpaperGrid } from './WallpaperGrid';
 import { CustomWallpaperForm } from './CustomWallpaperForm';
-import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { wallPaperOptions } from './WallpaperOptions';
 
 export const WallpaperModal = () => {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ export const WallpaperModal = () => {
   const onClose = () => dispatch(controlsActions.setIsWallpaperModalOpen({ isOpen: false }));
 
   // separate built-in from custom values
-  const builtinWallpaperUrl = BUILT_IN_WALLPAPERS.includes(wallpaperUrl) ? wallpaperUrl : null;
+  const builtinWallpaperUrl = wallPaperOptions.some((w) => w.url === wallpaperUrl) ? wallpaperUrl : null;
   const customWallpaperUrl = builtinWallpaperUrl ? null : wallpaperUrl;
 
   return (

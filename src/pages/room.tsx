@@ -41,7 +41,6 @@ interface IAppProps {
 
 const useStyles = makeStyles(() => ({
   backdrop: {
-    backgroundImage: `url(/backgrounds/landing.jpg)`,
     width: '100vw',
     height: '100vh',
     display: 'flex',

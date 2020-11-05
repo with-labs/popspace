@@ -7,6 +7,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { actions } from '../../room/roomSlice';
 import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
+import { wallPaperOptions } from './WallpaperOptions';
 
 jest.mock('../../room/CoordinatedDispatchProvider', () => ({
   useCoordinatedDispatch: jest.fn().mockReturnValue(jest.fn()),
@@ -31,11 +32,11 @@ describe('WallpaperModal component', () => {
       wrapper: (p) => <Provider store={mockStore} {...p} />,
     });
 
-    fireEvent.click(result.getByLabelText('Default wallpaper 3'));
+    fireEvent.click(result.getByLabelText(wallPaperOptions[2].name));
 
     expect(mockDispatch).toHaveBeenCalledWith(
       // index 2, because our label indices start at 1
-      actions.updateRoomWallpaper({ wallpaperUrl: BUILT_IN_WALLPAPERS[2] })
+      actions.updateRoomWallpaper({ wallpaperUrl: wallPaperOptions[2].url })
     );
   });
 

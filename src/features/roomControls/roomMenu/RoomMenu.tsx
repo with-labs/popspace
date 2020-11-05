@@ -12,6 +12,7 @@ import {
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ManageMembershipMenuItem } from './ManageMembershipMenuItem';
+import { ChangelogMenuItem } from './ChangelogMenuItem';
 import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
 import { EmailIcon } from '../../../components/icons/EmailIcon';
@@ -81,6 +82,7 @@ export const RoomMenu = () => {
         </Link>
         <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
         <Divider />
+        <ChangelogMenuItem onClick={onClose}>{t('features.roomMenu.changelog')}</ChangelogMenuItem>
         <Link to={Links.TOS} disableStyling>
           <MenuItem dense>
             <ListItemText primary={t('header.tos')} />

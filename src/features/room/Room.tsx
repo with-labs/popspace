@@ -13,6 +13,7 @@ import { RoomControls } from '../roomControls/RoomControls';
 import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
 import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
+import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 
 interface IRoomProps {}
 
@@ -37,6 +38,7 @@ export const Room: React.FC<IRoomProps> = () => (
     <RoomPresenceDetector />
     <MembershipManagementModal />
     <UserSettingsModal />
+    <ChangelogModal />
   </>
 );
 

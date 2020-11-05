@@ -264,6 +264,7 @@ export default {
         roomMembersTitle: 'Room members',
         addAndManage: 'Add & Manage',
         userSettings: 'User Settings',
+        changelog: "What's new?",
       },
       mediaControls: {
         micToggle: 'Toggle voice',
@@ -328,6 +329,9 @@ export default {
           label: 'Display Name',
           helperText: 'Ability to change your display name coming soon!',
         },
+      },
+      changelogModal: {
+        title: "What's new?",
       },
     },
   },

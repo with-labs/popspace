@@ -113,7 +113,11 @@ const roomSlice = createSlice({
     },
     /** adds a person at the specified position */
     addPerson: {
-      prepare: prepareSyncAction,
+      prepare: (a) =>
+        prepareSyncAction<{
+          position: Vector2;
+          person: { id: string; avatar: string; emoji?: EmojiData | string; status?: string };
+        }>(a),
       reducer(
         state,
         {
@@ -143,7 +147,7 @@ const roomSlice = createSlice({
       },
     },
     removeWidget: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.widgets[payload.id];
         delete state.positions[payload.id];
@@ -151,7 +155,7 @@ const roomSlice = createSlice({
       },
     },
     removePerson: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.people[payload.id];
         delete state.positions[payload.id];
@@ -159,7 +163,7 @@ const roomSlice = createSlice({
     },
     /** Updates the position of any object in the room by ID */
     moveObject: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; position: Vector2 }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; position: Vector2 }>) {
         if (!state.positions[payload.id]) return;
         // restrict the position to the bounds of the room
@@ -171,7 +175,7 @@ const roomSlice = createSlice({
       },
     },
     resizeObject: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; size?: Bounds | null }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; size?: Bounds | null }>) {
         if (!state.positions[payload.id]) return;
         if (payload.size) {
@@ -197,7 +201,7 @@ const roomSlice = createSlice({
     },
     /** Updates the data associated with a widget */
     updateWidgetData: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>) {
         if (!state.widgets[payload.id]) return;
         state.widgets[payload.id].data = {
@@ -213,7 +217,7 @@ const roomSlice = createSlice({
     },
     /** Changes the emoji displayed for a participant */
     updatePersonStatus: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; emoji?: EmojiData | string | null; status?: string | null }>(a),
       reducer(
         state,
         { payload }: PayloadAction<{ id: string; emoji?: EmojiData | string | null; status?: string | null }>
@@ -229,31 +233,56 @@ const roomSlice = createSlice({
     },
     /** Changes the avatar displayed for a participant */
     updatePersonAvatar: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; avatar: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; avatar: string }>) {
         if (!state.people[payload.id]) return;
         state.people[payload.id].avatar = payload.avatar;
       },
     },
     updatePersonIsSharingScreen: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; isSharingScreen: boolean }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; isSharingScreen: boolean }>) {
         if (!state.people[payload.id]) return;
         state.people[payload.id].isSharingScreen = payload.isSharingScreen;
       },
     },
     updateRoomWallpaper: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ wallpaperUrl: string }>(a),
       reducer(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
         state.wallpaperUrl = payload.wallpaperUrl;
       },
     },
     updatePersonIsSpeaking: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string; isSpeaking: boolean }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
         if (!state.people[payload.id]) return;
 
         state.people[payload.id].isSpeaking = payload.isSpeaking;
+      },
+    },
+    /**
+     * Import room data, including widgets and their positions, wallpaper, and other
+     * settings - and overwrite existing stuff. People and their positions remain
+     * intact.
+     */
+    importRoom: {
+      prepare: (a) => prepareSyncAction<Omit<RoomState, 'people'>>(a),
+      reducer(state, { payload }: PayloadAction<Omit<RoomState, 'people'>>) {
+        // cache people and their associated position data
+        const { people, positions } = state;
+        const peoplePositions = Object.keys(people).reduce((acc, personId) => {
+          acc[personId] = positions[personId];
+          return acc;
+        }, {} as Record<string, ObjectPositionData>);
+        // merge with the rest of the incoming state
+        return {
+          ...payload,
+          positions: {
+            ...payload.positions,
+            ...peoplePositions,
+          },
+          people,
+        };
       },
     },
     /**

@@ -11,10 +11,22 @@ import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { wallPaperOptions } from './WallpaperOptions';
+import { RoomExportButton } from './RoomExportButton';
+import { RoomImportButton } from './RoomImportButton';
+import { makeStyles } from '@material-ui/core';
+import { FeatureFlag } from '../../../components/FeatureFlag/FeatureFlag';
 
-export const WallpaperModal = () => {
+const useStyles = makeStyles((theme) => ({
+  button: {
+    marginTop: theme.spacing(1),
+  },
+}));
+
+export const RoomSettingsModal = () => {
   const { t } = useTranslation();
-  const isOpen = useSelector(controlsSelectors.selectIsWallpaperModalOpen);
+  const classes = useStyles();
+
+  const isOpen = useSelector(controlsSelectors.selectIsRoomSettingsModalOpen);
 
   const wallpaperUrl = useSelector(roomSelectors.selectWallpaperUrl);
 
@@ -27,7 +39,7 @@ export const WallpaperModal = () => {
     [coordinatedDispatch]
   );
 
-  const onClose = () => dispatch(controlsActions.setIsWallpaperModalOpen({ isOpen: false }));
+  const onClose = () => dispatch(controlsActions.setIsRoomSettingsModalOpen({ isOpen: false }));
 
   // separate built-in from custom values
   const builtinWallpaperUrl = wallPaperOptions.some((w) => w.url === wallpaperUrl) ? wallpaperUrl : null;
@@ -42,6 +54,10 @@ export const WallpaperModal = () => {
         </ModalPane>
         <ModalPane>
           <CustomWallpaperForm value={customWallpaperUrl} onChange={setWallpaper} />
+          <FeatureFlag flagName="exportRoom">
+            <RoomExportButton className={classes.button} />
+            <RoomImportButton className={classes.button} />
+          </FeatureFlag>
         </ModalPane>
       </ModalContentWrapper>
     </Modal>

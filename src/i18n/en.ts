@@ -274,6 +274,8 @@ export default {
         customWallpaperLabel: 'Link to an image',
         wallpaperSet: 'New wallpaper set!',
         wallpaperSupportedFileTypes: 'JPG, PNG, WEBP, and GIF',
+        export: 'Save room to file',
+        import: 'Load room from file',
       },
       status: {
         placeholder: "What's your status?",
@@ -290,7 +292,7 @@ export default {
         goToDashboard: 'Go to Dashboard',
         contactUs: 'Contact Us',
         voteOnFeatures: 'Vote on Features',
-        roomWallpaper: 'Wallpaper',
+        roomWallpaper: 'Room settings',
         roomMembersTitle: 'Room members',
         addAndManage: 'Invite people',
         userSettings: 'User Settings',

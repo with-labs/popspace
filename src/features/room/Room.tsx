@@ -10,7 +10,7 @@ import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
-import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
+import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
@@ -34,7 +34,7 @@ const RoomPresenceDetector = () => {
 export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
-    <WallpaperModal />
+    <RoomSettingsModal />
     <LocalVolumeDetector />
     <RoomPresenceDetector />
     <MembershipManagementModal />

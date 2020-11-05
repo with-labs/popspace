@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../state/store';
 
 const initialState = {
-  isWallpaperModalOpen: false,
+  isRoomSettingsModalOpen: false,
   isMembershipModalOpen: false,
   isUserSettingsModalOpen: false,
   isChangelogModalOpen: false,
@@ -13,8 +13,8 @@ export const roomControlsSlice = createSlice({
   name: 'roomControls',
   initialState,
   reducers: {
-    setIsWallpaperModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
-      state.isWallpaperModalOpen = payload.isOpen;
+    setIsRoomSettingsModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isRoomSettingsModalOpen = payload.isOpen;
     },
     setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isMembershipModalOpen = payload.isOpen;
@@ -33,7 +33,7 @@ export const roomControlsSlice = createSlice({
 
 export const { actions, reducer } = roomControlsSlice;
 
-const selectIsWallpaperModalOpen = (state: RootState) => state.roomControls.isWallpaperModalOpen;
+const selectIsRoomSettingsModalOpen = (state: RootState) => state.roomControls.isRoomSettingsModalOpen;
 const selectIsMembershipModalOpen = (state: RootState) => state.roomControls.isMembershipModalOpen;
 const selectIsUserSettingsModalOpen = (state: RootState) => state.roomControls.isUserSettingsModalOpen;
 const selectIsChangelogModalOpen = (state: RootState) => state.roomControls.isChangelogModalOpen;
@@ -42,7 +42,7 @@ const selectIsOnboardingModalOpen = (state: RootState) => state.roomControls.isO
 export const selectors = {
   selectIsMembershipModalOpen,
   selectIsUserSettingsModalOpen,
-  selectIsWallpaperModalOpen,
   selectIsChangelogModalOpen,
   selectIsOnboardingModalOpen,
+  selectIsRoomSettingsModalOpen,
 };

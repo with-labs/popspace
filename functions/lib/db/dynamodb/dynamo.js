@@ -7,8 +7,8 @@ class Dynamo {
 
   async init() {
     this.dynamo = new Aws.DynamoDB({
-      accessKeyId: process.env.AWS_APP_ACCESS_KEY,
-      secretAccessKey: process.env.AWS_APP_SECRET_KEY,
+      accessKeyId: process.env.WITH_DYNAMO_DB_ACCESS_KEY,
+      secretAccessKey: process.env.WITH_DYNAMO_DB_SECRET_KEY,
       region: process.env.WITH_DYNAMO_DB_REGION
     });
     this.documentClient = new Aws.DynamoDB.DocumentClient({service: this.dynamo});

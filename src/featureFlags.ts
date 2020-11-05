@@ -1,4 +1,4 @@
-import { flagg, sessionStore } from 'flagg';
+import { flagg, localStore } from 'flagg';
 
 const flagDefinitions = {
   roomMembers: {},
@@ -7,6 +7,6 @@ const flagDefinitions = {
 export type FeatureFlagName = keyof typeof flagDefinitions;
 
 export const featureFlags = flagg({
-  store: sessionStore(),
+  store: localStore(),
   definitions: flagDefinitions,
 });

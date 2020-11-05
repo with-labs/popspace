@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors as roomSelectors, actions as roomActions, actions } from '../roomSlice';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
+import { selectors as roomSelectors, actions as roomActions } from '../../room/roomSlice';
+import { selectors as controlsSelectors, actions as controlsActions } from '../roomControlsSlice';
+import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { WallpaperGrid } from './WallpaperGrid';
 import { CustomWallpaperForm } from './CustomWallpaperForm';
 import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
@@ -13,7 +14,7 @@ import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapp
 
 export const WallpaperModal = () => {
   const { t } = useTranslation();
-  const isOpen = useSelector(roomSelectors.selectIsWallpaperModalOpen);
+  const isOpen = useSelector(controlsSelectors.selectIsWallpaperModalOpen);
 
   const wallpaperUrl = useSelector(roomSelectors.selectWallpaperUrl);
 
@@ -21,12 +22,12 @@ export const WallpaperModal = () => {
   const coordinatedDispatch = useCoordinatedDispatch();
   const setWallpaper = React.useCallback(
     (url: string) => {
-      coordinatedDispatch(actions.updateRoomWallpaper({ wallpaperUrl: url }));
+      coordinatedDispatch(roomActions.updateRoomWallpaper({ wallpaperUrl: url }));
     },
     [coordinatedDispatch]
   );
 
-  const onClose = () => dispatch(roomActions.setIsWallpaperModalOpen({ isOpen: false }));
+  const onClose = () => dispatch(controlsActions.setIsWallpaperModalOpen({ isOpen: false }));
 
   // separate built-in from custom values
   const builtinWallpaperUrl = BUILT_IN_WALLPAPERS.includes(wallpaperUrl) ? wallpaperUrl : null;

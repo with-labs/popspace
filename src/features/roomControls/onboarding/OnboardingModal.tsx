@@ -5,13 +5,13 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Box, Typography, Button, ThemeProvider } from '@material-ui/core';
-import { Modal } from '../../../../components/Modal/Modal';
-import { ModalPane } from '../../../../components/Modal/ModalPane';
-import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
-import { snow } from '../../../../theme/theme';
+import { Modal } from '../../../components/Modal/Modal';
+import { ModalPane } from '../../../components/Modal/ModalPane';
+import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { snow } from '../../../theme/theme';
 import Cookie from 'js-cookie';
-import { USER_ONBOARDING } from '../../../../constants/User';
+import { USER_ONBOARDING } from '../../../constants/User';
 
 import testimg from './images/test.jpg';
 

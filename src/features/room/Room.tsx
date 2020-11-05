@@ -10,9 +10,9 @@ import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
-import { WallpaperModal } from './wallpaper/WallpaperModal';
-import { MembershipManagementModal } from './modals/MembershipManagementModal/MembershipManagementModal';
-import { UserSettingsModal } from './modals/UserSettingsModal/UserSettingsModal';
+import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
+import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
+import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 
 interface IRoomProps {}
 

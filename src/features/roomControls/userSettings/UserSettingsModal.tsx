@@ -1,22 +1,20 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors as roomSelectors, actions as roomActions } from '../../roomSlice';
+import { selectors as controlsSelectors, actions as controlsActions } from '../roomControlsSlice';
+import { selectors as roomSelectors, actions as roomActions } from '../../room/roomSlice';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
 import { Form, Formik } from 'formik';
 import { Box } from '@material-ui/core';
-import { Modal } from '../../../../components/Modal/Modal';
-import { ModalPane } from '../../../../components/Modal/ModalPane';
-import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import Api from '../../../../utils/api';
-import { sessionTokenExists } from '../../../../utils/SessionTokenExists';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
-import { useAuth } from '../../../../hooks/useAuth/useAuth';
+import { Modal } from '../../../components/Modal/Modal';
+import { ModalPane } from '../../../components/Modal/ModalPane';
+import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
+import { sessionTokenExists } from '../../../utils/SessionTokenExists';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
+import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
+import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
+import { useAuth } from '../../../hooks/useAuth/useAuth';
 
 import { AvatarGrid } from './AvatarGrid';
 
@@ -30,7 +28,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
   const dispatch = useDispatch();
   const coordinatedDispatch = useCoordinatedDispatch();
   const { t } = useTranslation();
-  const isOpen = useSelector(roomSelectors.selectIsUserSettingsModalOpen);
+  const isOpen = useSelector(controlsSelectors.selectIsUserSettingsModalOpen);
   const { sessionToken } = useAuth();
 
   // get the current users information
@@ -43,7 +41,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
   const displayIdentity = useParticipantDisplayIdentity(localParticipant);
 
   const onCloseHandler = () => {
-    dispatch(roomActions.setIsUserSettingsModalOpen({ isOpen: false }));
+    dispatch(controlsActions.setIsUserSettingsModalOpen({ isOpen: false }));
   };
 
   const onSubmitHandler = (values: UserSettingFormData) => {
@@ -85,7 +83,6 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                   placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
                   label={t('modals.userSettingsModal.displayNameInput.label')}
                   margin="normal"
-                  validate={(displayName) => {}}
                   helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
                   disabled={true}
                 />

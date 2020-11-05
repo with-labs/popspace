@@ -2,13 +2,13 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { WallpaperModal } from './WallpaperModal';
 // mocked
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
+import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
-import { actions } from '../roomSlice';
+import { actions } from '../../room/roomSlice';
 import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
 
-jest.mock('../CoordinatedDispatchProvider', () => ({
+jest.mock('../../room/CoordinatedDispatchProvider', () => ({
   useCoordinatedDispatch: jest.fn().mockReturnValue(jest.fn()),
 }));
 
@@ -18,8 +18,10 @@ const mockDispatch = useCoordinatedDispatch() as jest.Mock;
 describe('WallpaperModal component', () => {
   it('can set wallpaper from built-ins', async () => {
     const mockStore = createStore(() => ({
-      room: {
+      roomControls: {
         isWallpaperModalOpen: true,
+      },
+      room: {
         wallpaperUrl: null,
       },
     }));
@@ -39,8 +41,10 @@ describe('WallpaperModal component', () => {
 
   it('can set wallpaper from custom url', async () => {
     const mockStore = createStore(() => ({
-      room: {
+      roomControls: {
         isWallpaperModalOpen: true,
+      },
+      room: {
         wallpaperUrl: null,
       },
     }));
@@ -64,8 +68,10 @@ describe('WallpaperModal component', () => {
 
   it('only accepts certain filetypes', async () => {
     const mockStore = createStore(() => ({
-      room: {
+      roomControls: {
         isWallpaperModalOpen: true,
+      },
+      room: {
         wallpaperUrl: null,
       },
     }));

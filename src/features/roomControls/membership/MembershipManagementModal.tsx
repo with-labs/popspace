@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectors as roomSelectors, actions as roomActions } from '../../roomSlice';
+import { selectors as controlsSelectors, actions as controlsActions } from '../roomControlsSlice';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { makeStyles, Box, Typography, CircularProgress } from '@material-ui/core';
-import { Modal } from '../../../../components/Modal/Modal';
-import { ModalPane } from '../../../../components/Modal/ModalPane';
-import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { isEmailValid } from '../../../../utils/CheckEmail';
-import Api from '../../../../utils/api';
-import { useRoomName } from '../../../../hooks/useRoomName/useRoomName';
-import { USER_SESSION_TOKEN } from '../../../../constants/User';
-import { sessionTokenExists } from '../../../../utils/SessionTokenExists';
-import { ErrorModal } from '../ErrorModal/ErrorModal';
+import { Modal } from '../../../components/Modal/Modal';
+import { ModalPane } from '../../../components/Modal/ModalPane';
+import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
+import { isEmailValid } from '../../../utils/CheckEmail';
+import Api from '../../../utils/api';
+import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
+import { USER_SESSION_TOKEN } from '../../../constants/User';
+import { sessionTokenExists } from '../../../utils/SessionTokenExists';
+import { ErrorModal } from '../../room/modals/ErrorModal/ErrorModal';
 
 import { MemberList } from './MemberList/MemberList';
 
@@ -71,7 +71,7 @@ const MAX_INVITE_COUNT = 20;
 
 export const MembershipManagementModal: React.FC<IMembershipManagementModalProps> = (props) => {
   const dispatch = useDispatch();
-  const isOpen = useSelector(roomSelectors.selectIsMembershipModalOpen);
+  const isOpen = useSelector(controlsSelectors.selectIsMembershipModalOpen);
   const [error, setError] = useState(null);
 
   const { t } = useTranslation();
@@ -84,7 +84,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
   const [members, setMembers] = useState([]);
 
   const onCloseHandler = () => {
-    dispatch(roomActions.setIsMembershipModalOpen({ isOpen: false }));
+    dispatch(controlsActions.setIsMembershipModalOpen({ isOpen: false }));
   };
 
   const updateMembers = (newMembers: []) => {

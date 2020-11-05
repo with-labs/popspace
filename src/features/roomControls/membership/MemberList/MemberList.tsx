@@ -16,20 +16,20 @@ import {
   ThemeProvider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
-import { EmailIcon } from '../../../../../components/icons/EmailIcon';
-import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
+import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
+import { EmailIcon } from '../../../../components/icons/EmailIcon';
+import { OptionsIcon } from '../../../../components/icons/OptionsIcon';
 import { MemberListAvatar } from './MemberListAvatar';
 
-import { Modal } from '../../../../../components/Modal/Modal';
-import { ModalActions } from '../../../../../components/Modal/ModalActions';
-import { ModalTitleBar } from '../../../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../../../components/Modal/ModalContentWrapper';
+import { Modal } from '../../../../components/Modal/Modal';
+import { ModalActions } from '../../../../components/Modal/ModalActions';
+import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
 
-import { cherry, snow } from '../../../../../theme/theme';
-import { USER_SESSION_TOKEN } from '../../../../../constants/User';
-import Api from '../../../../../utils/api';
-import { ErrorModal } from '../../ErrorModal/ErrorModal';
+import { cherry, snow } from '../../../../theme/theme';
+import { USER_SESSION_TOKEN } from '../../../../constants/User';
+import Api from '../../../../utils/api';
+import { ErrorModal } from '../../../room/modals/ErrorModal/ErrorModal';
 
 interface IMemberListProps {
   members: any[];

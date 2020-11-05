@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { actions as roomActions } from '../../room/roomSlice';
+import { actions as controlsActions } from '../roomControlsSlice';
 import { AddIcon } from '../../../components/icons/AddIcon';
 
 export interface IManageMembershipMenuItemProps {
@@ -18,7 +18,7 @@ export const ManageMembershipMenuItem = React.forwardRef<HTMLLIElement, IManageM
       <MenuItem
         ref={ref}
         onClick={() => {
-          dispatch(roomActions.setIsMembershipModalOpen({ isOpen: true }));
+          dispatch(controlsActions.setIsMembershipModalOpen({ isOpen: true }));
           props.onClick?.();
         }}
       >

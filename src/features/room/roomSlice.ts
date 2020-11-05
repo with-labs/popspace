@@ -37,9 +37,6 @@ interface RoomState {
   bounds: Bounds;
   wallpaperUrl: string;
   useSpatialAudio: boolean;
-  isWallpaperModalOpen: boolean;
-  isMembershipModalOpen: boolean;
-  isUserSettingsModalOpen: boolean;
 }
 
 /** Use for testing only, please. */
@@ -54,10 +51,24 @@ export const initialState: RoomState = {
   },
   wallpaperUrl: BUILT_IN_WALLPAPERS[0],
   useSpatialAudio: true,
-  isWallpaperModalOpen: false,
-  isMembershipModalOpen: false,
-  isUserSettingsModalOpen: false,
 };
+
+/**
+ * Here's how it works - this entire slice of state is synced between all participants via WebRTC data channels.
+ * To enable synchronization we mark actions as "sync: true" in their payloads. This indicates to our dispatch
+ * wrapper that they should be sent over the network to peers.
+ *
+ * In order to add this field to each action, we have a simple reusable 'prepare' function which is applied to each
+ * key-reducer in the slice below. Read more about action prepare steps:
+ * https://redux-toolkit.js.org/api/createSlice#customizing-generated-action-creators
+ */
+
+const prepareSyncAction = <T>(initialPayload: T) => ({
+  payload: {
+    ...initialPayload,
+    sync: true,
+  },
+});
 
 const roomSlice = createSlice({
   name: 'room',
@@ -75,6 +86,7 @@ const roomSlice = createSlice({
               id: nanoid(),
               ...input.widget,
             } as WidgetState,
+            sync: true,
           },
         };
       },
@@ -97,118 +109,142 @@ const roomSlice = createSlice({
       },
     },
     /** adds a person at the specified position */
-    addPerson(
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        position: Vector2;
-        person: {
-          id: string;
-          avatar: string;
-          emoji?: EmojiData | string;
-          status?: string;
+    addPerson: {
+      prepare: prepareSyncAction,
+      reducer(
+        state,
+        {
+          payload,
+        }: PayloadAction<{
+          position: Vector2;
+          person: {
+            id: string;
+            avatar: string;
+            emoji?: EmojiData | string;
+            status?: string;
+          };
+        }>
+      ) {
+        state.positions[payload.person.id] = {
+          position: payload.position,
         };
-      }>
-    ) {
-      state.positions[payload.person.id] = {
-        position: payload.position,
-      };
 
-      state.people[payload.person.id] = {
-        kind: 'person',
-        isSpeaking: false,
-        status: null,
-        emoji: null,
-        isSharingScreen: false,
-        ...payload.person,
-      };
+        state.people[payload.person.id] = {
+          kind: 'person',
+          isSpeaking: false,
+          status: null,
+          emoji: null,
+          isSharingScreen: false,
+          ...payload.person,
+        };
+      },
     },
-    removeWidget(state, { payload }: PayloadAction<{ id: string }>) {
-      delete state.widgets[payload.id];
-      delete state.positions[payload.id];
+    removeWidget: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string }>) {
+        delete state.widgets[payload.id];
+        delete state.positions[payload.id];
+      },
     },
-    removePerson(state, { payload }: PayloadAction<{ id: string }>) {
-      delete state.people[payload.id];
-      delete state.positions[payload.id];
+    removePerson: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string }>) {
+        delete state.people[payload.id];
+        delete state.positions[payload.id];
+      },
     },
     /** Updates the position of any object in the room by ID */
-    moveObject(state, { payload }: PayloadAction<{ id: string; position: Vector2 }>) {
-      if (!state.positions[payload.id]) return;
-      // restrict the position to the bounds of the room
-      const clamped = {
-        x: clamp(payload.position.x, -state.bounds.width / 2, state.bounds.width / 2),
-        y: clamp(payload.position.y, -state.bounds.height / 2, state.bounds.height / 2),
-      };
-      state.positions[payload.id].position = clamped;
-    },
-    resizeObject(state, { payload }: PayloadAction<{ id: string; size?: Bounds | null }>) {
-      if (!state.positions[payload.id]) return;
-      if (payload.size) {
+    moveObject: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; position: Vector2 }>) {
+        if (!state.positions[payload.id]) return;
+        // restrict the position to the bounds of the room
         const clamped = {
-          width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
-          height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
+          x: clamp(payload.position.x, -state.bounds.width / 2, state.bounds.width / 2),
+          y: clamp(payload.position.y, -state.bounds.height / 2, state.bounds.height / 2),
         };
-        state.positions[payload.id].size = clamped;
-      } else {
-        state.positions[payload.id].size = undefined;
-      }
+        state.positions[payload.id].position = clamped;
+      },
+    },
+    resizeObject: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; size?: Bounds | null }>) {
+        if (!state.positions[payload.id]) return;
+        if (payload.size) {
+          const clamped = {
+            width: clamp(payload.size.width, MIN_WIDGET_WIDTH, Infinity),
+            height: clamp(payload.size.height, MIN_WIDGET_HEIGHT, Infinity),
+          };
+          state.positions[payload.id].size = clamped;
+        } else {
+          state.positions[payload.id].size = undefined;
+        }
+      },
     },
     /** Updates the data associated with a widget */
-    updateWidgetData(state, { payload }: PayloadAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>) {
-      if (!state.widgets[payload.id]) return;
-      state.widgets[payload.id].data = {
-        ...state.widgets[payload.id].data,
-        ...payload.data,
-      };
-      // if publish is true and we're already a draft,
-      // publish it!
-      if (payload.publish && state.widgets[payload.id].isDraft) {
-        state.widgets[payload.id].isDraft = false;
-      }
+    updateWidgetData: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; data: Partial<WidgetData>; publish?: boolean }>) {
+        if (!state.widgets[payload.id]) return;
+        state.widgets[payload.id].data = {
+          ...state.widgets[payload.id].data,
+          ...payload.data,
+        };
+        // if publish is true and we're already a draft,
+        // publish it!
+        if (payload.publish && state.widgets[payload.id].isDraft) {
+          state.widgets[payload.id].isDraft = false;
+        }
+      },
     },
     /** Changes the emoji displayed for a participant */
-    updatePersonStatus(
-      state,
-      { payload }: PayloadAction<{ id: string; emoji?: EmojiData | string | null; status?: string | null }>
-    ) {
-      if (!state.people[payload.id]) return;
-      if (payload.emoji !== undefined) {
-        state.people[payload.id].emoji = payload.emoji;
-      }
-      if (payload.status !== undefined) {
-        state.people[payload.id].status = payload.status;
-      }
+    updatePersonStatus: {
+      prepare: prepareSyncAction,
+      reducer(
+        state,
+        { payload }: PayloadAction<{ id: string; emoji?: EmojiData | string | null; status?: string | null }>
+      ) {
+        if (!state.people[payload.id]) return;
+        if (payload.emoji !== undefined) {
+          state.people[payload.id].emoji = payload.emoji;
+        }
+        if (payload.status !== undefined) {
+          state.people[payload.id].status = payload.status;
+        }
+      },
     },
     /** Changes the avatar displayed for a participant */
-    updatePersonAvatar(state, { payload }: PayloadAction<{ id: string; avatar: string }>) {
-      if (!state.people[payload.id]) return;
-      state.people[payload.id].avatar = payload.avatar;
+    updatePersonAvatar: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; avatar: string }>) {
+        if (!state.people[payload.id]) return;
+        state.people[payload.id].avatar = payload.avatar;
+      },
     },
-    updatePersonIsSharingScreen(state, { payload }: PayloadAction<{ id: string; isSharingScreen: boolean }>) {
-      if (!state.people[payload.id]) return;
-      state.people[payload.id].isSharingScreen = payload.isSharingScreen;
+    updatePersonIsSharingScreen: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; isSharingScreen: boolean }>) {
+        if (!state.people[payload.id]) return;
+        state.people[payload.id].isSharingScreen = payload.isSharingScreen;
+      },
     },
-    updateRoomWallpaper(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
-      state.wallpaperUrl = payload.wallpaperUrl;
+    updateRoomWallpaper: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
+        state.wallpaperUrl = payload.wallpaperUrl;
+      },
     },
-    updatePersonIsSpeaking(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
-      if (!state.people[payload.id]) return;
+    updatePersonIsSpeaking: {
+      prepare: prepareSyncAction,
+      reducer(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
+        if (!state.people[payload.id]) return;
 
-      state.people[payload.id].isSpeaking = payload.isSpeaking;
-    },
-    setIsWallpaperModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
-      state.isWallpaperModalOpen = payload.isOpen;
-    },
-    setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
-      state.isMembershipModalOpen = payload.isOpen;
-    },
-    setIsUserSettingsModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
-      state.isUserSettingsModalOpen = payload.isOpen;
+        state.people[payload.id].isSpeaking = payload.isSpeaking;
+      },
     },
     /**
-     * !! never call this with coordinated dispatch - only ever
-     * use regular dispatch - clears local room state after leaving!
+     * This action is special - it clears the local room state slice. It won't be broadcast
+     * to other peers - this is just a reset for when you leave the room.
      */
     leave() {
       return initialState;
@@ -237,7 +273,4 @@ export const selectors = {
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
   createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
-  selectIsWallpaperModalOpen: (state: RootState) => state.room.isWallpaperModalOpen,
-  selectIsMembershipModalOpen: (state: RootState) => state.room.isMembershipModalOpen,
-  selectIsUserSettingsModalOpen: (state: RootState) => state.room.isUserSettingsModalOpen,
 };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { actions as roomActions } from '../../room/roomSlice';
+import { actions as controlsActions } from '../roomControlsSlice';
 import { SettingsIcon } from '../../../components/icons/SettingsIcon';
 
 export interface IRoomWallpaperMenuItemProps {
@@ -17,7 +17,7 @@ export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpa
     <MenuItem
       ref={ref}
       onClick={() => {
-        dispatch(roomActions.setIsWallpaperModalOpen({ isOpen: true }));
+        dispatch(controlsActions.setIsWallpaperModalOpen({ isOpen: true }));
         props.onClick?.();
       }}
     >

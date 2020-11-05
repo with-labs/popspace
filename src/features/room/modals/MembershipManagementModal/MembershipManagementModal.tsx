@@ -139,7 +139,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
         newMembers.push(members[i]);
       }
     }
-    setMembers(newMembers);
+    updateMembers(newMembers);
   };
 
   return (

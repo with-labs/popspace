@@ -95,7 +95,6 @@ const claimsFromCsv = async (allowRegistered, path) => {
 
 const sendClaims = async (claims, allowEmailed) => {
   console.log(`About to send ${claims.length} emails...`)
-  const appUrl = APP_URL[process.env.NODE_ENV]
   for(const claim of claims) {
     if(claim.emailed_at && !allowEmailed) {
       console.log(`Already sent email to ${claim.email} at ${claim.emailed_at}; skipping`)
@@ -105,7 +104,7 @@ const sendClaims = async (claims, allowEmailed) => {
       console.log(`Already claimed ${claim.room_id} for ${claim.email} at ${claim.resolved_at}; skipping`)
       continue
     }
-    const url = await rooms.getClaimUrl(appUrl, claim)
+    const url = await rooms.getClaimUrl(global.gcfg.appUrl(), claim)
     const nameEntry = await rooms.preferredNameById(claim.room_id)
     await rooms.claimUpdateEmailedAt(claim.id)
     await lib.email.room.sendRoomClaimEmail(claim.email, nameEntry.name, url)
@@ -133,7 +132,7 @@ const run = async () => {
   const mode  = options['mode']
 
   try {
-    await lib.init()
+    await lib.init(APP_URL[process.env.NODE_ENV])
     db.pg.silenceLogs()
     switch(mode) {
       case 'from_csv':

@@ -1,34 +1,61 @@
 const SENDER = 'notify@with.so'
 
+const getEmail = async (name) => {
+  const email = await db.dynamo.getLatestEmail(name)
+  if(!email) {
+    throw `No such email: ${name}`
+  }
+  return email
+}
+
+const appUrl = () => {
+  return `${global.gcfg.appUrl()}`
+}
+
+const templateInArgs = (template, arg) => {
+  return eval(`\`${template}\``)
+}
+
+const fetchAndProcessEmail = async (emailName, arg) => {
+  const email = await getEmail(emailName)
+  return {
+    subject: templateInArgs(email.subject, arg),
+    html: templateInArgs(email.html, arg),
+    plaintext: templateInArgs(email.plaintext, arg),
+    name: emailName
+  }
+}
+
+const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
+  const e = await fetchAndProcessEmail(emailName, arg)
+  const tags = [{Name: "type", Value: emailName}]
+  return await lib.email.ses.sendMail(SENDER, toEmailAddress, e.subject, e.html, e.plaintext, tags)
+}
+
 class NamedEmails {
   async sendNamedUserMarketingEmail(name, userId, arg={}) {
-    const email = await db.dynamo.getLatestEmail(name)
-    if(!email) {
-      throw `No such email: ${name}`
-    }
     const user = await db.accounts.userById(userId)
     if(!user) {
       throw "No such user"
     }
-
     const magicLink = await db.magic.createUnsubscribe(user.id)
-
     arg.firstName = user.first_name
     arg.email = user.email
-    arg.appUrl = `${global.gcfg.appUrl()}/`
-    arg.ctaUrl = `${global.gcfg.appUrl()}/${util.routes.static.dashboard()}`
+    arg.appUrl = appUrl()
+    arg.ctaUrl = `${arg.appUrl}/${util.routes.static.dashboard()}`
     arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(gcfg.appUrl(), magicLink)
-
-    const tags = [{Name: "type", Value: name}]
-    const subject = eval(`\`${email.subject}\``)
-    const html = eval(`\`${email.html}\``)
-    const plaintext = eval(`\`${email.plaintext}\``)
-
-    return await lib.email.ses.sendMail(SENDER, user.email, subject, html, plaintext, tags)
+    await fetchEmailAndSend(name, user.email, arg)
   }
 
   async sendWhatsNew(userId) {
     return await this.sendNamedUserMarketingEmail("marketing", userId)
+  }
+
+  async sendRoomStatusEmail(name, toEmail, roomName, arg={}) {
+    const email = await getEmail(name)
+    arg.roomName = roomName
+    arg.appUrl = appUrl()
+    await fetchEmailAndSend(name, toEmail, arg)
   }
 }
 

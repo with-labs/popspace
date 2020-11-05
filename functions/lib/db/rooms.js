@@ -159,6 +159,14 @@ class Rooms extends DbAccess {
     return Object.values(bestById)
   }
 
+  async ownerByRoomName(roomName) {
+    const room = await this.roomByName(roomName)
+    if(room) {
+      const owner = await db.accounts.userById(room.owner_id)
+      return owner
+    }
+  }
+
   /****************************************/
   /************* INVITES *****************/
   /****************************************/
@@ -276,13 +284,16 @@ class Rooms extends DbAccess {
   /************* MEMBERSHIPS **************/
   /****************************************/
   async isMember(userId, roomId) {
-    const membership = await db.pg.massive.room_memberships.findOne({user_id: userId, room_id: roomId})
+    const membership = await db.pg.massive.room_memberships.findOne({
+      user_id: userId,
+      room_id: roomId,
+      revoked_at: null
+    })
     if(!membership) {
       return false
     }
     const current = this.timestamptzStillCurrent(membership.expires_at)
-    const revoked = this.timestamptzHasPassed(membership.revoked_at)
-    return current && !revoked
+    return current
   }
 
   async getRoomMembers(roomId) {

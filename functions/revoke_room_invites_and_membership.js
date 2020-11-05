@@ -12,15 +12,15 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Can't find room: ${context.params.roomName}`,
-      { errorCode: util.http.ERRORS.room.UNKNOWN_ROOM }
+      { errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
     )
   }
 
   if(!roomOwner || roomOwner.id != room.owner_id) {
     return await lib.util.http.fail(
       callback,
-      "Must be signed in to manage rooms.",
-      { errorCode: util.http.ERRORS.user.UNAUTHORIZED }
+      "Must be logged in as room owner.",
+      { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED }
     )
   }
 

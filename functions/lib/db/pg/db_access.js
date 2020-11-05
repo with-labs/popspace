@@ -16,13 +16,15 @@ class DbAccess {
   }
 
   timestamptzStillCurrent(timestamptz) {
-    // null = never expire
-    return !timestamptz || (moment(timestamptz).valueOf() < moment.utc().valueOf())
+    // timestamptz = A moment in the future that should
+    // be ahead of the present => greater comparison
+    return !timestamptz || (moment(timestamptz).valueOf() > moment.utc().valueOf())
   }
 
   timestamptzHasPassed(timestamptz) {
-    // null = hasn't passed
-    return timestamptz && !this.timestamptzStillCurrent(timestamptz)
+    // timestamptz = A moment in time in the past that is
+    // before now => less comparison
+    return timestamptz && (moment(timestamptz).valueOf() < moment.utc().valueOf())
   }
 }
 

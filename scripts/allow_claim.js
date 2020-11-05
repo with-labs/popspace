@@ -15,7 +15,7 @@ const createClaim = async (email, roomName, allowRegistered, createNewRooms, sen
   if(!email || !roomName) {
     throw("--email and --room-name required arguments")
   }
-  await lib.init()
+  await lib.init(APP_URL[process.env.NODE_ENV])
 
   const result = await rooms.tryToCreateClaim(email, roomName, allowRegistered, createNewRooms, sendEmail)
 
@@ -31,9 +31,7 @@ const createClaim = async (email, roomName, allowRegistered, createNewRooms, sen
   const claim = result.claim
 
   console.log("claim created", claim.id, email, roomName)
-
-  const appUrl = APP_URL[process.env.NODE_ENV]
-  const url = await rooms.getClaimUrl(appUrl, claim)
+  const url = await rooms.getClaimUrl(global.gcfg.appUrl(), claim)
   console.log("Claim URL:", url)
   if(sendEmail) {
     await rooms.claimUpdateEmailedAt(claim.id)

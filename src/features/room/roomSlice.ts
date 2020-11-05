@@ -5,7 +5,7 @@ import { RootState } from '../../state/store';
 import { clamp } from '../../utils/math';
 import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/room';
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
-import { wallPaperOptions } from '../roomControls/wallpaper/WallpaperOptions';
+import { wallPaperOptions } from '../roomControls/roomSettings/WallpaperOptions';
 
 /**
  * Positioning data for an object in a room,
@@ -267,19 +267,31 @@ const roomSlice = createSlice({
      */
     importRoom: {
       prepare: (a) => prepareSyncAction<Omit<RoomState, 'people'>>(a),
-      reducer(state, { payload }: PayloadAction<Omit<RoomState, 'people'>>) {
-        // cache people and their associated position data
-        const { people, positions } = state;
-        const peoplePositions = Object.keys(people).reduce((acc, personId) => {
+      reducer(state, { payload }: PayloadAction<Omit<RoomState, 'people'> & { sync: boolean }>) {
+        // cache people and their associated position data, as well as draft widgets -
+        // we don't want the action of importing to close a draft someone was working on.
+        const { people, positions, widgets } = state;
+        const draftWidgets = Object.entries(widgets).reduce((acc, [id, s]) => {
+          if (!s.isDraft) return acc;
+          acc[id] = s;
+          return acc;
+        }, {} as Record<string, WidgetState>);
+        const persistedIds = [...Object.keys(draftWidgets), ...Object.keys(people)];
+        const preservedPositions = persistedIds.reduce((acc, personId) => {
           acc[personId] = positions[personId];
           return acc;
         }, {} as Record<string, ObjectPositionData>);
-        // merge with the rest of the incoming state
+        // merge with the rest of the incoming state - except the 'sync' prop
+        const { sync, ...incomingState } = payload;
         return {
-          ...payload,
+          ...incomingState,
+          widgets: {
+            ...incomingState.widgets,
+            ...draftWidgets,
+          },
           positions: {
             ...payload.positions,
-            ...peoplePositions,
+            ...preservedPositions,
           },
           people,
         };

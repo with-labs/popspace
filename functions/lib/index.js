@@ -12,16 +12,19 @@ global.lib = {}
 global.lib.util = require("./util/index.js")
 global.lib.db = require("./db/index.js")
 global.lib.email = require("./email/index.js")
+global.lib.s3 = require("./s3/s3.js")
 
 lib.init = async (appUrl) => {
   global.gcfg = {
-    appUrl: () => (appUrl)
+    appUrl: () => appUrl
   }
   await lib.db.init()
+  await lib.s3.init()
 }
 
-lib.cleanup = async() => {
+lib.cleanup = async () => {
   await lib.db.cleanup()
+  await lib.s3.cleanup()
 }
 
 global.util = lib.util

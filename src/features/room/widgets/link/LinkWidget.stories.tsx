@@ -12,8 +12,14 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<{ url: string; title: string; isDraft: boolean }> = (args) => (
-  <Box display="flex" flexDirection="column" alignItems="center" minHeight={500}>
+const Template: Story<{
+  url: string;
+  title: string;
+  isDraft: boolean;
+  mediaUrl?: string;
+  mediaContentType?: string;
+}> = (args) => (
+  <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight={500}>
     <LinkWidget
       onClose={() => {}}
       state={{
@@ -25,6 +31,8 @@ const Template: Story<{ url: string; title: string; isDraft: boolean }> = (args)
         data: {
           title: args.title,
           url: args.url,
+          mediaUrl: args.mediaUrl,
+          mediaContentType: args.mediaContentType,
         },
       }}
     />
@@ -43,4 +51,12 @@ Draft.args = {
   title: '',
   url: '',
   isDraft: true,
+};
+
+export const Media = Template.bind({});
+Media.args = {
+  title: 'shaq.gif',
+  url: 'https://i.imgur.com/vP2tUvM.gif',
+  mediaUrl: 'https://i.imgur.com/vP2tUvM.gif',
+  mediaContentType: 'image/gif',
 };

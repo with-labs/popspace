@@ -21,6 +21,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.contrastText,
     flex: '0 0 auto',
     height: 48,
+    // smaller padding on right so the delete button feels correctly placed
+    padding: `6px 14px 6px 16px`,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   title: {
     flex: 1,
@@ -49,27 +54,16 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children,
   const { t } = useTranslation();
 
   return (
-    <DraggableHandle>
-      <Box
-        py={3 / 4}
-        pl={2}
-        // smaller padding on right so the delete button feels correctly placed
-        pr="14px"
-        display="flex"
-        flexDirection="row"
-        alignItems="center"
-        className={clsx(classes.root, className)}
-      >
-        <div className={classes.title}>{title}</div>
-        <div className={classes.controls}>{children}</div>
-        {onClose && (
-          <div className={classes.controls}>
-            <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
-              <DeleteIcon fontSize="small" color="inherit" />
-            </WidgetTitlebarButton>
-          </div>
-        )}
-      </Box>
+    <DraggableHandle className={clsx(classes.root, className)}>
+      <div className={classes.title}>{title}</div>
+      <div className={classes.controls}>{children}</div>
+      {onClose && (
+        <div className={classes.controls}>
+          <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
+            <DeleteIcon fontSize="small" color="inherit" />
+          </WidgetTitlebarButton>
+        </div>
+      )}
     </DraggableHandle>
   );
 };

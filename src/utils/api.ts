@@ -119,6 +119,46 @@ class Api {
     return await this.post('/unsubscribe', { otp, mlid });
   }
 
+  async getRoomFileUploadUrl(fileName: string, contentType: string) {
+    return await this.post<BaseResponse & { uploadUrl: string; downloadUrl: string }>('/get_room_file_upload_url', {
+      fileName,
+      contentType,
+    });
+  }
+
+  async uploadRoomContentFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+
+    const sessionToken = getSessionToken();
+    if (!sessionToken) {
+      throw new Error('Authentication required');
+    }
+
+    try {
+      const result = await fetch(`/.netlify/functions/upload_room_content_file`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${btoa(sessionToken)}`,
+        },
+      });
+
+      if (result.ok) {
+        const body = await result.json();
+        return body;
+      } else {
+        const body = await result.text();
+        console.error(`File upload failed`, result, body);
+        return { success: false, message: 'Unexpected error' };
+      }
+    } catch (err) {
+      console.error(err);
+      return { success: false, message: 'Unexpected error' };
+    }
+  }
+
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

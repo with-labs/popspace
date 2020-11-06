@@ -201,6 +201,8 @@ export default {
         joinRoomUnknownFailure: 'Failed to join room - check your network connection.',
         supportedFileTypes: '{{fileTypes}} are supported',
         invalidEmail: 'Invalid email.',
+        mediaNotSupported: 'Unsupported media type',
+        fileDropUnknownFailure: 'Upload failed - please try again',
       },
       widgetsFallback: {
         title: 'Accessories error',

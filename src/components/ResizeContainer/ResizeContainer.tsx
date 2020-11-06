@@ -179,7 +179,10 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
       if (!contentRef.current || !needsRemeasure) return;
 
       const naturalWidth = contentRef.current.clientWidth;
-      const naturalHeight = contentRef.current.clientHeight;
+      // FIXME: figure out why this height is measured slightly wrong -
+      // has to do with whatever is causing all heights in absolute positioned
+      // containers to be off
+      const naturalHeight = contentRef.current.clientHeight - 4;
 
       const aspect = naturalWidth / naturalHeight;
       setOriginalAspectRatio(aspect);
@@ -277,6 +280,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
       <ResizeContainerContext.Provider value={contextValue}>
         <animated.div
           className={classes.root}
+          data-resizable-container
           style={{
             width,
             height,
@@ -296,6 +300,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
             // a taller measurement than we would want
             style={{ minWidth, minHeight, maxWidth, maxHeight }}
             ref={contentRef}
+            data-content-sizer
           >
             {children}
           </div>

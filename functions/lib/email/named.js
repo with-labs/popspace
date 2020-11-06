@@ -22,14 +22,15 @@ const fetchAndProcessEmail = async (emailName, arg) => {
     subject: templateInArgs(email.subject, arg),
     html: templateInArgs(email.html, arg),
     plaintext: templateInArgs(email.plaintext, arg),
-    name: emailName
+    name: emailName,
+    version: email.version
   }
 }
 
 const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
   const e = await fetchAndProcessEmail(emailName, arg)
   const tags = [{Name: "type", Value: emailName}]
-  return await lib.email.ses.sendMail(SENDER, toEmailAddress, e.subject, e.html, e.plaintext, tags)
+  return await lib.email.ses.sendMail(e.name, e.version, SENDER, toEmailAddress, e.subject, e.html, e.plaintext, tags)
 }
 
 class NamedEmails {

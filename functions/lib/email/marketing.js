@@ -155,6 +155,6 @@ San Francisco, CA 94133
 Unsubscribe at ${unsubscribeUrl}
 `
 
-    return await lib.email.ses.sendMail(SENDER, user.email, subject, html, plaintextFallback, tags, user)
+    return await lib.email.ses.sendMail("whatsnew", -1, SENDER, user.email, subject, html, plaintextFallback, tags, user)
   }
 }

@@ -23,6 +23,7 @@ scripts/one_time/data
 .env.production.local
 .env
 env.json
+tmp
 
 npm-debug.log*
 yarn-debug.log*

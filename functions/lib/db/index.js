@@ -22,6 +22,7 @@ const cleanup = async () => {
 }
 
 const db = {
+  time: require("./time"),
   pg: pg,
   dynamo: dynamo,
   otp: otp,

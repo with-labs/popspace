@@ -17,8 +17,7 @@ const createClaim = async (email, roomName, allowRegistered, createNewRooms, sen
   }
   await lib.init(APP_URL[process.env.NODE_ENV])
 
-  const result = await rooms.tryToCreateClaim(email, roomName, allowRegistered, createNewRooms, sendEmail)
-
+  const result = await rooms.tryToCreateClaim(email, roomName, allowRegistered, createNewRooms)
   switch(result.error) {
     case lib.db.ErrorCodes.user.ALREADY_REGISTERED:
       throw ("specify --allow-registered=true to create claims for registered users")

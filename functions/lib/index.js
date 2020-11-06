@@ -13,7 +13,6 @@ global.lib.util = require("./util/index.js")
 global.lib.db = require("./db/index.js")
 global.lib.email = require("./email/index.js")
 
-
 lib.init = async (appUrl) => {
   global.gcfg = {
     appUrl: () => (appUrl)
@@ -27,5 +26,6 @@ lib.cleanup = async() => {
 
 global.util = lib.util
 global.db = lib.db
+global.log = util.log
 
 module.exports = lib

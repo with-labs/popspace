@@ -6,5 +6,6 @@ module.exports = {
   args: require("./args"),
   middleware: require("./netlify_middleware"),
   routes: require("./routes"),
-  netlify: require("./netlify")
+  netlify: require("./netlify"),
+  log: require("./log")
 }

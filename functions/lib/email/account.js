@@ -44,7 +44,7 @@ class AccountEmails {
     const html = signInHtml(firstName, url)
     const plaintextFallback = `To finish your signup process and log in, please open the following url: ${url}`
     const tags = [{Name: "type", Value: "signup"}]
-    return await lib.email.ses.sendMail(SENDER, toEmail, subject, html, plaintextFallback, tags)
+    return await lib.email.ses.sendMail("signup_otp", -1, SENDER, toEmail, subject, html, plaintextFallback, tags)
   }
 
   async sendLoginOtpEmail(toEmail, firstName, url) {
@@ -62,7 +62,7 @@ class AccountEmails {
       San Francisco, CA 94133\n
     `
     const tags = [{Name: "type", Value: "login"}]
-    return await lib.email.ses.sendMail(SENDER, toEmail, subject, html, plaintextFallback, tags)
+    return await lib.email.ses.sendMail("signin", -1, SENDER, toEmail, subject, html, plaintextFallback, tags)
   }
 
 }

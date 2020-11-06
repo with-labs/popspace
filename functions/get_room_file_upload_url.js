@@ -1,4 +1,5 @@
 const lib = require("lib")
+const env = lib.util.env.init(require("./env.json"))
 const { v4 } = require("uuid")
 
 module.exports.handler = util.netlify.postEndpoint(

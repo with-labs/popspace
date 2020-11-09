@@ -12,3 +12,5 @@ export const MIC_DEVICE_COOKIE = 'micId';
 
 export const SCREEN_SHARE_TRACK_NAME = 'screen';
 export const SCREEN_SHARE_AUDIO_TRACK_NAME = 'screen-audio';
+export const CAMERA_TRACK_NAME = 'camera';
+export const MIC_TRACK_NAME = 'microphone';

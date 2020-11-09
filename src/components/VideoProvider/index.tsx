@@ -1,21 +1,3 @@
-/**
- * #WITH_EDIT
- *
- * Add RoomStateProvider.
- * `localTracks` context property can now include LocalDataTracks.
- *
- * Aug 6, 2020 WQP
- * - updated to latest twilio-video starter app.
- *
- * Aug 27, 2020 WQP
- * - Add onError to useLocalTracks.
- *
- * Aug 30, 2020 WQP
- * - Add AttachVisibilityHandler, per starter app.
- *
- * Sept 17, 2020 WQP
- * - Add Sentry logging in error setting callback.
- */
 import React, { createContext, ReactNode, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import {
@@ -27,8 +9,6 @@ import {
   Room,
 } from 'twilio-video';
 import { Callback } from '../../types/twilio';
-import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
-
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
 import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
@@ -104,7 +84,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         removeLocalVideoTrack,
       }}
     >
-      <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+      {children}
       {/*
         The AttachVisibilityHandler component is using the useLocalVideoToggle hook
         which must be used within the VideoContext Provider.

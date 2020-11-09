@@ -799,7 +799,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           border: `2px solid ${palette.background.paper}`,
           backgroundColor: palette.background.paper,
           color: palette.grey[900],
-          '&$focused, &:focus, &$focusVisible': {
+          '&:focus, &$focusVisible': {
             borderColor: palette.secondary.dark,
           },
           '&:hover': {

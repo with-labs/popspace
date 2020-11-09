@@ -82,8 +82,18 @@ export function useScreenSharePublication({
         video: true,
         // if the user allows audio, an audio stream track will also be created
         audio: {
-          // sure, why not?
-          echoCancellation: true,
+          channelCount: 2,
+          // echo cancellation doesn't make sense for desktop audio
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+          sampleRate: 48000,
+          // @ts-ignore
+          googEchoCancellation: false,
+          // @ts-ignore
+          googNoiseSuppression: false,
+          // @ts-ignore
+          googAutoGainControl: false
         },
       });
       const videoTrack = stream.getVideoTracks()[0];

@@ -19,7 +19,7 @@ export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
 
   return (
     <GenericErrorPage
-      buttonText={t('errorPages.contactSupport')}
+      buttonText={t('errorPages.contactSupportBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.unexpected.quoteText')}
       title={t('errorPages.unexpected.title')}

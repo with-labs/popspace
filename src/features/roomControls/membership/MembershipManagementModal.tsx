@@ -17,10 +17,12 @@ import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/SessionTokenExists';
 import { ErrorModal } from '../../room/modals/ErrorModal/ErrorModal';
+import * as Sentry from '@sentry/react';
+import { ErrorCodes } from '../../../constants/ErrorCodes';
+import { BaseResponse } from '../../../utils/api';
 
 import { MemberList } from './MemberList/MemberList';
-
-import membersImg from './images/members.png';
+import membersImg from './images/ManageMembers.png';
 
 export type MembershipFormData = {
   inviteeEmail: string;
@@ -72,7 +74,7 @@ const MAX_INVITE_COUNT = 20;
 export const MembershipManagementModal: React.FC<IMembershipManagementModalProps> = (props) => {
   const dispatch = useDispatch();
   const isOpen = useSelector(controlsSelectors.selectIsMembershipModalOpen);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<BaseResponse | null>(null);
 
   const { t } = useTranslation();
   const classes = useStyles();
@@ -103,17 +105,18 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
             setError(result);
           }
         })
-        .catch((e: any) => {});
+        .catch((e: any) => {
+          Sentry.captureMessage(`Error membership modal send invite`, Sentry.Severity.Error);
+          setError({
+            success: false,
+            errorCode: ErrorCodes.UNEXPECTED,
+          });
+        });
     }
     actions.resetForm();
   };
 
   useEffect(() => {
-    // TODO: what happens if the user has an expired session token?
-    // do we redirect to login?, just never open the modal?
-    // will we need to make this call every time we open it or
-    // can we cache this result?
-
     // get the current membership list
     if (isOpen && sessionTokenExists(sessionToken) && roomName) {
       setIsLoading(true);
@@ -128,6 +131,11 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
         })
         .catch((e: any) => {
           setIsLoading(false);
+          Sentry.captureMessage(`Error membership modal get room members`, Sentry.Severity.Error);
+          setError({
+            success: false,
+            errorCode: ErrorCodes.UNEXPECTED,
+          });
         });
     }
   }, [isOpen, sessionToken, roomName]);

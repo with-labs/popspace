@@ -674,11 +674,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           textTransform: 'none',
           padding: '16px 30px',
           maxWidth: 400,
-          '& *': {
-            lineHeight: typography.h3.lineHeight,
-            fontWeight: typography.h3.fontWeight,
-            fontSize: typography.h3.fontSize,
-          },
         },
       },
       MuiSlider: {

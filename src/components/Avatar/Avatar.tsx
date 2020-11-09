@@ -9,6 +9,7 @@ interface IAvatarProps {
   className?: string;
   size?: number | string;
   baseImageClassName?: string;
+  useFallback?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size }) => {
+export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size, useFallback = false }) => {
   const classes = useStyles();
 
   const avatar = useAvatar(name);
@@ -72,6 +73,14 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
           src={avatar.blink}
           alt="avatar-blink"
         />
+      </div>
+    );
+  } else if (useFallback && name) {
+    // this allows us to pass in an avater that isnt part of the avatar list while
+    // also keeping the same behavior
+    return (
+      <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>
+        <img className={clsx(classes.baseImage, baseImageClassName)} src={name} alt="avatar" />
       </div>
     );
   }

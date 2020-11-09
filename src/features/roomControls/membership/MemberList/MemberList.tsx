@@ -14,6 +14,7 @@ import {
   Button,
   Typography,
   ThemeProvider,
+  CircularProgress,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
@@ -30,6 +31,24 @@ import { cherry, snow } from '../../../../theme/theme';
 import { USER_SESSION_TOKEN } from '../../../../constants/User';
 import Api from '../../../../utils/api';
 import { ErrorModal } from '../../../room/modals/ErrorModal/ErrorModal';
+import { useSnackbar } from 'notistack';
+import { BaseResponse } from '../../../../utils/api';
+import * as Sentry from '@sentry/react';
+import { ErrorCodes } from '../../../../constants/ErrorCodes';
+
+import BlobbyUninvitedImg from '../images/Blobby_Uninvited.png';
+import MollyUninvitedImg from '../images/Molly_Uninvited.png';
+import TillyUninvitedImg from '../images/Tilly_Uninvited.png';
+
+const uninvitedAvatars = [BlobbyUninvitedImg, MollyUninvitedImg, TillyUninvitedImg];
+
+export type UserListMemberInfo = {
+  avatar_url: string | null;
+  display_name: string | null;
+  email: string;
+  has_accepted: boolean;
+  user_id: string | null;
+};
 
 interface IMemberListProps {
   members: any[];
@@ -57,11 +76,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomName }) => {
   const classes = useStyles();
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<BaseResponse | null>(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const [isBusy, setIsBusy] = useState(false);
 
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  //TODO: update types
-  const [selectedMember, setSelectedMember] = useState<null | any>();
+  const [selectedMember, setSelectedMember] = useState<UserListMemberInfo>({
+    avatar_url: null,
+    display_name: null,
+    email: '',
+    has_accepted: false,
+    user_id: null,
+  });
   const { t } = useTranslation();
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
@@ -71,6 +97,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     setMenuAnchorEl(null);
     // get the selected member from the members list
     const currentMember = members[memberIndex];
+
     // if current member is null, we wont open the menu
     if (currentMember) {
       setSelectedMember(currentMember);
@@ -86,21 +113,43 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
 
   const inviteResendHandler = async () => {
-    setMenuAnchorEl(null);
-    const result: any = await Api.sendRoomInvite(sessionToken, roomName, selectedMember.email);
-    // TODO: Success notification
-    // We don't need to update the list of members,
-    // unless we care about the state of rows, since a new invite has not been added
+    try {
+      setMenuAnchorEl(null);
+      setIsBusy(true);
+      const result: BaseResponse = await Api.sendRoomInvite(sessionToken, roomName, selectedMember.email);
+      if (result.success) {
+        enqueueSnackbar(t('modals.inviteUserModal.resendInviteSuccess'), { variant: 'success' });
+      } else {
+        setError(result);
+      }
+    } catch (err) {
+      Sentry.captureMessage(`Error memberlist invite resend handler`, Sentry.Severity.Error);
+      setError({
+        success: false,
+        errorCode: ErrorCodes.UNEXPECTED,
+      });
+    }
+    setIsBusy(false);
   };
 
   const cancelInviteHandler = async () => {
-    setMenuAnchorEl(null);
-    const result: any = await Api.cancelRoomInvite(sessionToken, roomName, selectedMember.email);
-    if (result.success) {
-      onMemberRemove(selectedMember);
-    } else {
-      setError(result);
+    try {
+      setMenuAnchorEl(null);
+      setIsBusy(true);
+      const result: BaseResponse = await Api.cancelRoomInvite(sessionToken, roomName, selectedMember.email);
+      if (result.success) {
+        onMemberRemove(selectedMember);
+      } else {
+        setError(result);
+      }
+    } catch (err) {
+      Sentry.captureMessage(`Error memberlist cancel invite handler`, Sentry.Severity.Error);
+      setError({
+        success: false,
+        errorCode: ErrorCodes.UNEXPECTED,
+      });
     }
+    setIsBusy(false);
   };
 
   const removeUserHandler = () => {
@@ -109,23 +158,37 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   };
 
   const confirmRemoveUserHandler = async () => {
-    setConfirmIsOpen(false);
-    const result: any = await Api.removeRoomMember(sessionToken, roomName, selectedMember.email);
-    if (result.success) {
-      onMemberRemove(selectedMember);
-    } else {
-      setError(result);
+    try {
+      setConfirmIsOpen(false);
+      setIsBusy(true);
+      const result: BaseResponse = await Api.removeRoomMember(sessionToken, roomName, selectedMember.email);
+      if (result.success) {
+        onMemberRemove(selectedMember);
+      } else {
+        setError(result);
+      }
+    } catch (err) {
+      Sentry.captureMessage(`Error memberlist remove handler`, Sentry.Severity.Error);
+      setError({
+        success: false,
+        errorCode: ErrorCodes.UNEXPECTED,
+      });
     }
+    setIsBusy(false);
   };
 
   return (
     <Box overflow="auto">
       <List className={classes.memberList}>
         {members.map((member, index) => {
+          const avatarUrl = member.has_accepted
+            ? member.avatar_url
+            : uninvitedAvatars[Math.floor(Math.random() * uninvitedAvatars.length)];
+
           return (
             <ListItem key={member.email}>
               <ListItemAvatar>
-                <MemberListAvatar avatarName={member.avatar_url} />
+                <MemberListAvatar avatarName={avatarUrl} />
               </ListItemAvatar>
               {/* we want the mulit-line text for this, so re-enable Typography*/}
               <ListItemText
@@ -139,9 +202,13 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
               />
               <ListItemSecondaryAction>
                 <div>
-                  <IconButton edge="end" aria-label="member_options" onClick={(e) => onMenuOpenHandler(e, index)}>
-                    <OptionsIcon />
-                  </IconButton>
+                  {selectedMember?.user_id === member.user_id && isBusy ? (
+                    <CircularProgress />
+                  ) : (
+                    <IconButton edge="end" aria-label="member_options" onClick={(e) => onMenuOpenHandler(e, index)}>
+                      <OptionsIcon />
+                    </IconButton>
+                  )}
                 </div>
               </ListItemSecondaryAction>
             </ListItem>

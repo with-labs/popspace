@@ -7,6 +7,7 @@ import { useAppState } from '../../state';
 import { useTranslation } from 'react-i18next';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
+import clsx from 'clsx';
 
 interface IJoinRoomProps {
   roomName: string;
@@ -24,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: theme.typography.pxToRem(16),
     marginLeft: theme.spacing(2),
+  },
+  backdrop: {
+    width: '100vw',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  loadedBackground: {
+    backgroundColor: theme.palette.brandColors.sand.regular,
   },
 }));
 
@@ -75,21 +86,23 @@ const JoinRoom = ({ roomName }: IJoinRoomProps) => {
   }
 
   return (
-    <Container className={classes.container} maxWidth="sm">
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Box component={Paper} p={4}>
-          <Box display="flex" flexDirection="row" alignItems="baseline" mb={2}>
-            <WithLogo className={classes.logo} />
-            <Typography variant="h2" className={classes.title}>
-              {t('pages.room.joinTitle', { roomName })}
-            </Typography>
+    <div className={clsx(classes.backdrop, { [classes['loadedBackground']]: !loading })}>
+      <Container className={classes.container} maxWidth="sm">
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Box component={Paper} p={4}>
+            <Box display="flex" flexDirection="row" alignItems="baseline" mb={2}>
+              <WithLogo className={classes.logo} />
+              <Typography variant="h2" className={classes.title}>
+                {t('pages.room.joinTitle', { roomName })}
+              </Typography>
+            </Box>
+            <JoinRoomForm onSubmit={handlePasswordJoin} />
           </Box>
-          <JoinRoomForm onSubmit={handlePasswordJoin} />
-        </Box>
-      )}
-    </Container>
+        )}
+      </Container>
+    </div>
   );
 };
 

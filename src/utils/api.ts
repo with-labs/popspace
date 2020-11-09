@@ -20,6 +20,7 @@ export type ApiUser = {
   last_name: string;
   newsletter_opt_in: boolean;
 };
+
 export type ApiRoom = {
   id: string;
   name: string;

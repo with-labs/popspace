@@ -65,7 +65,7 @@ export const MemberListAvatar: React.FC<IMemberListAvatarProps> = ({ avatarName 
     <div className={classes.root}>
       <div className={classes.mainContent}>
         <div className={classes.background} style={{ backgroundColor }} />
-        <Avatar className={classes.avatar} name={avatarName} />
+        <Avatar className={classes.avatar} name={avatarName} useFallback={true} />
         <div className={classes.bottomSection} />
       </div>
     </div>

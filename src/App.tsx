@@ -24,6 +24,11 @@ const useStyles = makeStyles((themeObj) => ({
     color: themeObj.palette.success.contrastText,
     backgroundColor: `${themeObj.palette.error.main} !important`,
   },
+  snackBarFonts: {
+    lineHeight: themeObj.typography.h3.lineHeight,
+    fontWeight: themeObj.typography.h3.fontWeight,
+    fontSize: themeObj.typography.h3.fontSize,
+  },
 }));
 
 const SnackbarWrapper = (props: any) => {
@@ -37,6 +42,7 @@ const SnackbarWrapper = (props: any) => {
         variantError: styles.error,
       }}
       hideIconVariant
+      className={styles.snackBarFonts}
     >
       {children}
     </SnackbarProvider>

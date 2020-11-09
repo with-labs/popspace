@@ -1,0 +1,55 @@
+.container {
+  max-width: 340px;
+}
+
+.imageContainer {
+  max-width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  max-width: 600px;
+  display: block;
+}
+
+.checkboxes {
+  margin-top: 20px;
+}
+
+.button {
+  margin-top: 40px;
+}
+
+.title {
+  margin-bottom: 10px;
+}
+
+.text {
+  margin-bottom: 40px;
+}
+
+.firstName {
+  margin-right: 20px;
+}
+
+.errorMsg {
+  margin-top: 8px;
+  color: var(--color-cherry-bold);
+}
+
+@media (min-width: 0px) and (max-width: 639px) {
+  .container {
+    max-width: 100%;
+  }
+
+  .firstName {
+    margin-right: 0px;
+    margin-bottom: 16px;
+  }
+
+  .lastName {
+    margin-top: 10px;
+  }
+}

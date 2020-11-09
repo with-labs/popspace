@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import clsx from 'clsx';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -75,11 +76,7 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
   const canEnterRoom = useCanEnterRoom();
 
   if (roomState === 'disconnected') {
-    return (
-      <div className={classes.backdrop}>
-        <JoinRoom roomName={roomName} />
-      </div>
-    );
+    return <JoinRoom roomName={roomName} />;
   }
 
   if (!canEnterRoom) {

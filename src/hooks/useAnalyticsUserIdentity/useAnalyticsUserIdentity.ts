@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
-import { useQuery } from 'react-query';
-import { ApiUser } from '../../utils/api';
+import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
 
 export function useAnalyticsUserIdentity() {
-  const { data } = useQuery<{ profile?: { user: ApiUser } }>('/user_profile');
-  const profile = data?.profile;
+  const profile = useCurrentUserProfile();
 
   useEffect(() => {
     if (profile) {

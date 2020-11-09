@@ -63,7 +63,9 @@ export default {
       },
       confirmationView: {
         title: 'Check your email',
-        bodyText: 'We sent a magic link to {{email}}',
+        bodyText:
+          "We sent a magic link to {{email}}<br/><br/> Click on the link in the email and you will be automatically logged in.<br/><br/>If you didn’t receive the email, you can <3>request a new link</3>. Don't forget to check your spam folder!",
+        requestNewLinkText: 'request a new link',
         imgAltText: 'Check email image',
         snackSuccessMsg: 'We just sent you new magic link.',
         snackFailMsg: 'An error has occurred.',
@@ -89,8 +91,7 @@ export default {
         marketingCheckboxText: 'It’s ok to send me occasional emails',
         submitBtnText: 'Finalize my account',
         imgAltText: 'sign in',
-        iAgreeText: 'I agree to the',
-        termsOfService: 'Terms of Service',
+        tosCheck: 'I agree to the <1>Terms of Service</1>',
       },
       claimConfirmationView: {
         title: 'Your room has been claimed',
@@ -116,6 +117,21 @@ export default {
         body: 'If you have a moment, please let us know why you unsubscribed',
         button: 'Tell us why',
         imgAltText: 'Sad Blobby',
+      },
+      joinRoom: {
+        title: 'Finalize your account',
+        body: 'Please finalize your account {{email}} to join the room {{roomName}}.',
+        firstNamePlaceholder: 'Dorothy',
+        fistNameLabel: 'First Name',
+        lastNamePlaceholder: 'Gale',
+        lastNameLabel: 'Last Name',
+        tosCheckboxName: 'terms of service checkbox',
+        tosCheckboxText: '',
+        martketingCheckboxName: 'send me occasional emails checkbox',
+        marketingCheckboxText: 'It’s ok to send me occasional emails',
+        submitBtnText: 'Finalize my account',
+        imgAltText: 'sign in',
+        tosCheck: 'I agree to the <1>Terms of Service</1>',
       },
     },
     widgets: {
@@ -184,6 +200,7 @@ export default {
         joinRoomInvalidScreenName: 'Please provide a valid screen name.',
         joinRoomUnknownFailure: 'Failed to join room - check your network connection.',
         supportedFileTypes: '{{fileTypes}} are supported',
+        invalidEmail: 'Invalid email.',
       },
       widgetsFallback: {
         title: 'Accessories error',
@@ -195,48 +212,58 @@ export default {
         btnText: 'Got it',
       },
       api: {
+        // TODO: update error messages, right now we will just use the fallback messages
+        // from the server and display those to the user
+        // uncomment message and add your string to have these messages display
         TOO_MANY_OWNED_ROOMS: {
-          message: 'TOO_MANY_OWNED_ROOMS',
+          //message: 'TOO_MANY_OWNED_ROOMS',
         },
         ALREADY_INVITED: {
-          message: 'ALREADY_INVITED',
+          //message: 'ALREADY_INVITED',
         },
         UNKNOWN_ROOM: {
-          message: 'UNKNOWN_ROOM',
+          //message: 'UNKNOWN_ROOM',
         },
         CLAIM_UNIQUENESS: {
-          message: 'CLAIM_UNIQUENESS',
+          //message: 'CLAIM_UNIQUENESS',
         },
         CANT_INVITE_SELF: {
-          message: 'CANT_INVITE_SELF',
+          //message: 'CANT_INVITE_SELF',
         },
         INVALID_ROOM_CLAIM: {
-          message: 'INVALID_ROOM_CLAIM',
+          //message: 'INVALID_ROOM_CLAIM',
         },
         UNAUTHORIZED_ROOM_ACCESSS: {
-          message: 'UNAUTHORIZED_ROOM_ACCESSS',
+          //message: 'UNAUTHORIZED_ROOM_ACCESSS',
         },
         ALREADY_CLAIMED: {
-          message: 'ALREADY_CLAIMED',
+          //message: 'ALREADY_CLAIMED',
         },
         INVALID_INVITE: {
-          message: 'INVALID_INVITE',
+          //message: 'INVALID_INVITE',
         },
         TOO_MANY_INVITES: {
-          message: 'TOO_MANY_INVITES',
+          //message: 'TOO_MANY_INVITES',
         },
         ALREADY_REGISTERED: {
-          message: 'ALREADY_REGISTERED',
+          //message: 'ALREADY_REGISTERED',
         },
         UNAUTHORIZED: {
-          message: 'UNAUTHORIZED',
+          //message: 'UNAUTHORIZED',
         },
         ADMIN_ONLY_RESTRICTED: {
-          message: 'ADMIN_ONLY_RESTRICTED',
+          //message: 'ADMIN_ONLY_RESTRICTED',
         },
         NO_SUCH_USER: {
-          message: 'NO_SUCH_USER',
+          //message: 'NO_SUCH_USER',
         },
+        UNEXPECTED: {
+          message: 'Something unexpected has happened. Please try again later.',
+        },
+        INVALID_ROOM_PERMISSIONS: {},
+        LINK_EXPIRED: {},
+        PAGE_NOT_FOUND: {},
+        ROOM_NOT_FOUND: {},
       },
     },
     features: {
@@ -292,6 +319,7 @@ export default {
         removeConfirmDesc:
           'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
         removeConfirmButton: 'Remove {{user}}',
+        resendInviteSuccess: 'Invite re-sent',
       },
       wallpaperModal: {
         title: 'Wallpaper',

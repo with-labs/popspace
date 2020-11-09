@@ -23,6 +23,7 @@ import { USER_SUPPORT_EMAIL } from '../../../constants/User';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
 import { useFeatureFlag } from 'flagg';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
+import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -38,8 +39,11 @@ export const RoomMenu = () => {
   const onClose = () => setAnchorEl(null);
 
   const roomName = useRoomName();
+  const currentUserProfile = useCurrentUserProfile();
 
   const [hasRoomMembers] = useFeatureFlag('roomMembers');
+
+  const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 
   return (
     <>
@@ -57,7 +61,7 @@ export const RoomMenu = () => {
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
         {/* hide this option until we want to have it out there */}
-        {hasRoomMembers && (
+        {hasRoomMembers && isRoomOwner && (
           <>
             <ListSubheader>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>
             <ManageMembershipMenuItem onClick={onClose}>{t('features.roomMenu.addAndManage')}</ManageMembershipMenuItem>

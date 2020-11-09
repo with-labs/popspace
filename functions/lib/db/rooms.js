@@ -178,7 +178,8 @@ class Rooms extends DbAccess {
     // Thus, it's not really possible to immediately render a signup page for new users,
     // and we must always check whether the user exists before rendering that page.
     const email = util.args.consolidateEmailString(invite.email)
-    return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}`
+    const roomNameEntry = await this.preferredNameById(invite.room_id)
+    return `${appUrl}/join_room?otp=${invite.otp}&iid=${invite.id}&email=${email}&room=${roomNameEntry.name}`
   }
 
   async getRoomInvites(roomId) {

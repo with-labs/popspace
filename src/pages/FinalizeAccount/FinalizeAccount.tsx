@@ -21,7 +21,7 @@ import { Button, TextField, Link } from '@material-ui/core';
 import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 
 import { ClaimConfirmationView } from './ClaimConfirmationView';
 
@@ -167,10 +167,12 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                   <CheckboxField
                     label={
                       <span>
-                        {t('pages.finalizeAccount.iAgreeText')}{' '}
-                        <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                          {t('pages.finalizeAccount.termsOfService')}
-                        </Link>
+                        <Trans i18nKey="pages.joinRoom.tosCheck">
+                          I agree to the{' '}
+                          <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
+                            Terms of Service
+                          </Link>
+                        </Trans>
                       </span>
                     }
                     checked={acceptTos}

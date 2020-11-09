@@ -44,7 +44,7 @@ export const Person = React.memo<IPersonProps>((props) => {
     if (person.id && !participant) {
       Sentry.captureMessage(
         `Error displaying person with SID ${person.id}: no media participant found`,
-        Sentry.Severity.Error
+        Sentry.Severity.Debug
       );
     }
   }, [participant, person.id]);

@@ -30,7 +30,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Unknown email. Please sign up.",
-      { errorCode: util.http.ERRORS.rooms.JOIN_FAIL_NO_SUCH_USER }
+      { errorCode: lib.db.ErrorCodes.room.JOIN_FAIL_NO_SUCH_USER }
     )
   }
 

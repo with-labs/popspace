@@ -18,8 +18,8 @@ This script is used for sending any of the emails we currently have.
 
 Used to test emails in an actual inbx after they've been created.
 */
-const sendEmail = async (emailName, userId, args, production) => {
-  await lib.email.named.sendNamedUserMarketingEmail(emailName, userId, args)
+const sendEmail = async (emailName, toEmail, args, production) => {
+  await lib.email.named.sendNamedUserMarketingEmail(emailName, toEmail, args)
 }
 
 const awaitUserInput = async () => {
@@ -48,12 +48,10 @@ const sendMarketingBlast = async (emailName, args, production) => {
   if(confirmation != "Yes") {
     return
   }
-
-  const promises = targets.map(async (t) => {
-    console.log(`Sending to ${t.email}`)
-    await sendEmail(emailName, t.email, args, production)
-  })
-  return Promise.all(promises)
+  for(const target of targets) {
+    console.log(`Sending to ${target.email}`)
+    await sendEmail(emailName, target.email, args, production)
+  }
 }
 
 const run = async () => {

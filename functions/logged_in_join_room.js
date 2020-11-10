@@ -59,7 +59,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Room not found: ${roomName}`,
-      { errorCode: util.http.ERRORS.rooms.UNKNOWN_ROOM }
+      { errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
     )
   }
 
@@ -68,7 +68,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Must be logged in to join room`,
-      { errorCode: util.http.ERRORS.user.UNAUTHORIZED }
+      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
     )
   }
 
@@ -77,7 +77,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Unauthorized access`,
-      { errorCode: util.http.ERRORS.room.UNAUTHORIZED_ROOM_ACCESSS }
+      { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESSS }
     )
   }
 

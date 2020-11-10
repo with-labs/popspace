@@ -41,7 +41,7 @@ class NamedEmails {
     }
     const magicLink = await db.magic.createUnsubscribe(user.id)
     arg.firstName = user.first_name
-    arg.email = email
+    arg.email = user.email
     arg.appUrl = appUrl()
     arg.ctaUrl = `${arg.appUrl}/${util.routes.static.dashboard()}`
     arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(gcfg.appUrl(), magicLink)

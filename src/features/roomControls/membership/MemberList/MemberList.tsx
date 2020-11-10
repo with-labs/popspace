@@ -227,12 +227,13 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
           </MenuItem>
         ) : (
           <div>
-            <MenuItem onClick={inviteResendHandler}>
+            {/* TODO: commenting this out until we fix resend email on the backend */}
+            {/* <MenuItem onClick={inviteResendHandler}>
               <ListItemIcon>
                 <EmailIcon />
               </ListItemIcon>
               <ListItemText primary={t('modals.inviteUserModal.resendInvite')} />
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={cancelInviteHandler}>
               <ListItemIcon>
                 <DeleteIcon className={classes.deleteColor} />

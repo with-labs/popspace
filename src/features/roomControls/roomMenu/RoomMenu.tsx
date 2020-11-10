@@ -21,7 +21,6 @@ import { Link } from '../../../components/Link/Link';
 import { Links } from '../../../constants/Links';
 import { USER_SUPPORT_EMAIL } from '../../../constants/User';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
-import { useFeatureFlag } from 'flagg';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
@@ -41,8 +40,6 @@ export const RoomMenu = () => {
   const roomName = useRoomName();
   const currentUserProfile = useCurrentUserProfile();
 
-  const [hasRoomMembers] = useFeatureFlag('roomMembers');
-
   const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 
   return (
@@ -60,8 +57,7 @@ export const RoomMenu = () => {
         <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
-        {/* hide this option until we want to have it out there */}
-        {hasRoomMembers && isRoomOwner && (
+        {isRoomOwner && (
           <div>
             {/* disabling sticky subheaders for now since we dont have the member list showing up in it */}
             <ListSubheader disableSticky={true}>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>

@@ -59,7 +59,9 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
       return await lib.db.otp.handleAuthFailure(accountCreate.error, callback)
     }
     user = accountCreate.newUser
-    await db.rooms.generateRoom(user.id)
+    // Note: we want to give people a free room when they join,
+    // but only after we're ready for rapid growth
+    // await db.rooms.generateRoom(user.id)
   }
 
   const resolve = await db.rooms.resolveInvitation(invite, user, otp)

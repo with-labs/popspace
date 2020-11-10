@@ -20,8 +20,9 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   }
 
   const userId = result.newUser.id
-  const rooms = new lib.db.Rooms()
-  await rooms.generateRoom(userId)
+  // Note: we want to start giving away free rooms on signup
+  // after we're better equipped to handle growth
+  // await db.rooms.generateRoom(userId)
 
   const session = await db.accounts.createSession(userId);
   const token = db.accounts.tokenFromSession(session)

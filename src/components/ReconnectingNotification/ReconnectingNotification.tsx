@@ -9,7 +9,7 @@ import useRoomState from '../../hooks/useRoomState/useRoomState';
 
 const useStyles = makeStyles((theme) => ({
   snackbar: {
-    backgroundColor: theme.palette.brandColors.oregano.light,
+    backgroundColor: theme.palette.success.light,
   },
   message: {
     display: 'flex',

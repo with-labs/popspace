@@ -5,10 +5,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   if(!context.user) {
     return await lib.util.http.succeed(callback, { profile: null })
   }
-
-  const rooms = new lib.db.Rooms()
   const profile = new lib.db.Profile(context.user)
-  const userProfile = await profile.userProfile(rooms)
-
+  const userProfile = await profile.userProfile()
   return await lib.util.http.succeed(callback, { profile: userProfile })
 })

@@ -3,15 +3,15 @@ module.exports = class {
     this.user = user
   }
 
-  async userProfile(rooms) {
-    const ownedRooms = await rooms.getOwnedRooms(this.user.id)
-    const memberRooms = await rooms.getMemberRooms(this.user.id)
+  async userProfile() {
+    const ownedRooms = await db.rooms.getOwnedRooms(this.user.id)
+    const memberRooms = await db.rooms.getMemberRooms(this.user.id)
 
     return {
       user: this.user,
       rooms: {
-        owned: rooms.namedRoomsListToMostPreferredList(ownedRooms),
-        member: rooms.namedRoomsListToMostPreferredList(memberRooms)
+        owned: db.rooms.namedRoomsListToMostPreferredList(ownedRooms),
+        member: db.rooms.namedRoomsListToMostPreferredList(memberRooms)
       }
     }
   }

@@ -88,6 +88,8 @@ class Rooms extends DbAccess {
             room_memberships.room_id = rooms.id
           WHERE
             room_memberships.user_id = $1
+            AND
+            room_memberships.revoked_at IS NULL
         ) AS rooms_and_memberships
         LEFT OUTER JOIN
           room_names

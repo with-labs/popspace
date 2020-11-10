@@ -22,7 +22,7 @@ export function useRoomPresence() {
     if (!isInRoom) {
       dispatch(
         actions.addPerson({
-          position: fuzzVector({ x: 0, y: 0 }, 40),
+          position: fuzzVector({ x: 0, y: 0 }, 100),
           person: {
             id: sid,
             avatar: randomAvatar().name,

@@ -1,44 +1,16 @@
-/**
- * ##WITH_EDIT
- *
- * Aug 28, 2020 WQP
- * - Add messaging for when there is not microphone access.
- */
-
-import { LocalAudioTrack } from 'twilio-video';
-import { useCallback, useState } from 'react';
-import useIsTrackEnabled from '../useIsTrackEnabled/useIsTrackEnabled';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import { useCallback } from 'react';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 export default function useLocalAudioToggle() {
-  const {
-    localTracks,
-    getLocalAudioTrack,
-    room: { localParticipant },
-  } = useVideoContext();
-  const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
-  const isEnabled = useIsTrackEnabled(audioTrack);
-  const [isPublishing, setIsPublishing] = useState(false);
+  const { audioTrack, startAudio, stopAudio } = useLocalTracks();
 
   const toggleAudioEnabled = useCallback(async () => {
-    // prevent multiple concurrent publishes
-    if (isPublishing) return;
-
     if (audioTrack) {
-      audioTrack.isEnabled ? audioTrack.disable() : audioTrack.enable();
+      stopAudio();
     } else {
-      setIsPublishing(true);
-      try {
-        const track = await getLocalAudioTrack();
-        localParticipant?.publishTrack(track, { priority: 'standard' });
-      } catch (err) {
-        // this error is already reported by the video context.
-        // TODO: move the error handling here?
-      } finally {
-        setIsPublishing(false);
-      }
+      await startAudio();
     }
-  }, [audioTrack, getLocalAudioTrack, localParticipant, isPublishing]);
+  }, [audioTrack, startAudio, stopAudio]);
 
-  return [isEnabled, toggleAudioEnabled] as const;
+  return [!!audioTrack, toggleAudioEnabled] as const;
 }

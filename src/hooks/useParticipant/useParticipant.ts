@@ -5,5 +5,5 @@ export function useParticipant(participantId: string | null) {
   const participants = useParticipants();
   const localParticipant = useLocalParticipant();
 
-  return [...participants, localParticipant].find((p) => p.sid === participantId) ?? null;
+  return [...participants, localParticipant].find((p) => p?.sid === participantId) ?? null;
 }

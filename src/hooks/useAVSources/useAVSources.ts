@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
 
 import { getMediaDevices } from '../../utils/mediaSources';
-import useVideoContext from '../useVideoContext/useVideoContext';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 export function useAVSources() {
   const [devices, setDevices] = useState<{
@@ -10,7 +10,7 @@ export function useAVSources() {
     speakers: MediaDeviceInfo[];
   }>({ cameras: [], mics: [], speakers: [] });
 
-  const { localTracks } = useVideoContext();
+  const localTracks = useLocalTracks();
 
   const updateDevices = useCallback(() => {
     getMediaDevices().then((mediaDevices) => {

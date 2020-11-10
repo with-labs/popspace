@@ -10,13 +10,15 @@ import useVideoContext from '../useVideoContext/useVideoContext';
 
 export default function useParticipants() {
   const { room } = useVideoContext();
-  const [participants, setParticipants] = useState(room.participants ? Array.from(room.participants.values()) : []);
+  const [participants, setParticipants] = useState(room?.participants ? Array.from(room.participants.values()) : []);
 
   useEffect(() => {
+    if (!room) return;
+
     const participantConnected = (participant: RemoteParticipant) =>
-      setParticipants(prevParticipants => [...prevParticipants, participant]);
+      setParticipants((prevParticipants) => [...prevParticipants, participant]);
     const participantDisconnected = (participant: RemoteParticipant) =>
-      setParticipants(prevParticipants => prevParticipants.filter(p => p !== participant));
+      setParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
     room.on('participantConnected', participantConnected);
     room.on('participantDisconnected', participantDisconnected);
     return () => {

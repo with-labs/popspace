@@ -1,8 +1,7 @@
 import { MenuItem, TextField } from '@material-ui/core';
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useAVSources } from '../../hooks/useAVSources/useAVSources';
-import * as preferences from './preferencesSlice';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 export interface ICameraSelectProps {
   label?: string;
@@ -12,18 +11,15 @@ export interface ICameraSelectProps {
 
 export const CameraSelect: React.FC<ICameraSelectProps> = (props) => {
   const { cameras } = useAVSources();
-
-  const activeCameraId = useSelector(preferences.selectors.selectActiveCameraId) || cameras[0]?.deviceId || '';
-
-  const dispatch = useDispatch();
+  const { cameraDeviceId, setCameraDeviceId } = useLocalTracks();
 
   return (
     <TextField
       select
       {...props}
-      value={activeCameraId}
+      value={cameraDeviceId}
       onChange={(ev) => {
-        dispatch(preferences.actions.setActiveCamera({ deviceId: ev.target.value }));
+        setCameraDeviceId(ev.target.value);
       }}
     >
       {cameras.map((cam) => (

@@ -3,9 +3,11 @@ import { useEffect } from 'react';
 import { Callback } from '../../../types/twilio';
 import * as Sentry from '@sentry/react';
 
-export default function useHandleRoomDisconnectionErrors(room: Room, onError: Callback) {
+export default function useHandleRoomDisconnectionErrors(room: Room | null, onError: Callback) {
   useEffect(() => {
-    const onDisconnected = (room: Room, error: TwilioError) => {
+    if (!room) return;
+
+    const onDisconnected = (_: Room, error: TwilioError) => {
       if (error) {
         Sentry.captureEvent(error);
         onError(error);

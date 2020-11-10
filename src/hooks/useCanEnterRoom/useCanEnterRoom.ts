@@ -9,7 +9,7 @@ export function useCanEnterRoom() {
   const isFirstInRoom = numberOfOthers === 0;
 
   // this flag will get set whenever we receive a PING from another participant
-  const hasReceivedPing = useSelector((state: RootState) => state.__unsafe.receivedPing);
+  const hasReceivedPing = useSelector((state: RootState) => state.room.syncedFromPeer);
 
   const canEnterRoom = isFirstInRoom || hasReceivedPing;
 

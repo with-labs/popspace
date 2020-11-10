@@ -1,8 +1,7 @@
 import { MenuItem, TextField } from '@material-ui/core';
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useAVSources } from '../../hooks/useAVSources/useAVSources';
-import * as preferences from './preferencesSlice';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 export interface IMicSelectProps {
   label?: string;
@@ -12,18 +11,15 @@ export interface IMicSelectProps {
 
 export const MicSelect: React.FC<IMicSelectProps> = (props) => {
   const { mics } = useAVSources();
-
-  const activeMicId = useSelector(preferences.selectors.selectActiveMicId) || mics[0]?.deviceId || '';
-
-  const dispatch = useDispatch();
+  const { micDeviceId, setMicDeviceId } = useLocalTracks();
 
   return (
     <TextField
       select
       {...props}
-      value={activeMicId}
+      value={micDeviceId}
       onChange={(ev) => {
-        dispatch(preferences.actions.setActiveMic({ deviceId: ev.target.value }));
+        setMicDeviceId(ev.target.value);
       }}
     >
       {mics.map((mic) => (

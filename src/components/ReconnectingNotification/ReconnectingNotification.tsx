@@ -7,9 +7,9 @@ import { SnackbarContent } from '@material-ui/core';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   snackbar: {
-    backgroundColor: '#6db1ff',
+    backgroundColor: theme.palette.brandColors.oregano.light,
   },
   message: {
     display: 'flex',
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   icon: {
     marginRight: '0.8em',
   },
-});
+}));
 
 export default function ReconnectingNotification() {
   const classes = useStyles();

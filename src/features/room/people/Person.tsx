@@ -7,8 +7,8 @@ import * as Sentry from '@sentry/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
 import { PersonBubble } from './PersonBubble';
-import usePublications from '../../../hooks/usePublications/usePublications';
-import { VideoTrackPublication, AudioTrackPublication } from 'twilio-video';
+import { useNamedTrack } from '../../../hooks/useNamedTrack/useNamedTrack';
+import { MIC_TRACK_NAME, CAMERA_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../constants/User';
 
 const MAX_Z_INDEX = 2147483647;
 
@@ -21,7 +21,7 @@ function useParticipant(sid: string) {
   const localParticipant = useLocalParticipant();
 
   const all = [localParticipant, ...remoteParticipants];
-  return all.find((p) => p.sid === sid);
+  return all.find((p) => p?.sid === sid) ?? null;
 }
 
 export const Person = React.memo<IPersonProps>((props) => {
@@ -51,20 +51,15 @@ export const Person = React.memo<IPersonProps>((props) => {
     }
   }, [participant, person.id]);
 
-  // a list of multimedia tracks this user has shared with peers
-  const publications = usePublications(participant);
+  const isMe = localParticipant?.sid === participant?.sid;
+
+  const audioTrackPub = useNamedTrack(participant, MIC_TRACK_NAME);
+  const cameraTrackPub = useNamedTrack(participant, CAMERA_TRACK_NAME);
+  const screenShareVideoTrackPub = useNamedTrack(participant, SCREEN_SHARE_TRACK_NAME);
 
   if (!participant) {
     return null;
   }
-
-  const isMe = localParticipant.sid === participant.sid;
-
-  // extract audio and/or video publications
-  const audioTrackPub = publications.find((pub) => pub.kind === 'audio') as AudioTrackPublication | undefined;
-  const cameraTrackPub = publications.find((pub) => pub.kind === 'video' && pub.trackName.includes('camera')) as
-    | VideoTrackPublication
-    | undefined;
 
   return (
     <Draggable id={props.id} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}>
@@ -74,6 +69,7 @@ export const Person = React.memo<IPersonProps>((props) => {
         isLocal={isMe}
         audioTrack={audioTrackPub}
         cameraTrack={cameraTrackPub}
+        screenShareTrack={screenShareVideoTrackPub}
       />
     </Draggable>
   );

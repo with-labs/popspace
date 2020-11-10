@@ -25,6 +25,7 @@ export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEn
   const remeasureTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const handleSourceChange = React.useCallback(
     (newPub: RemoteTrackPublication | LocalTrackPublication | null) => {
+      console.log(newPub);
       remeasureTimeoutRef.current = setTimeout(remeasure, 20);
       if (!newPub) {
         onShareEnd();
@@ -59,7 +60,6 @@ export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEn
       onSourceChange={handleSourceChange}
       emptyMessage={emptyWithIcon}
       id={`${props.participantSid}-screenShare`}
-      keepPublishedOnUnmount
     />
   );
 };

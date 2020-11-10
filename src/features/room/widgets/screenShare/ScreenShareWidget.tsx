@@ -14,13 +14,11 @@ import { ScreenShareViewer } from './ScreenShareViewer';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { Fullscreen } from '@material-ui/icons';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
-import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
-import { actions } from '../../roomSlice';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
-import { useScreenSharePublication } from '../../../../hooks/useScreenShare/useScreenShare';
 import usePublications from '../../../../hooks/usePublications/usePublications';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../../../constants/User';
+import { useLocalTracks } from '../../../../components/LocalTracksProvider/useLocalTracks';
 
 export interface IScreenShareWidgetProps {
   state: ScreenShareWidgetState;
@@ -56,16 +54,11 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
 
   const [isLocalMuted, setIsLocalMuted] = React.useState(false);
 
-  const coordinatedDispatch = useCoordinatedDispatch();
+  const { stopScreenShare } = useLocalTracks();
   const onStopSharing = React.useCallback(() => {
-    coordinatedDispatch(
-      actions.updatePersonIsSharingScreen({
-        id: sharingUserId,
-        isSharingScreen: false,
-      })
-    );
+    stopScreenShare();
     onClose();
-  }, [sharingUserId, coordinatedDispatch, onClose]);
+  }, [stopScreenShare, onClose]);
 
   const publications = usePublications(user);
   const isSharingAudio = publications.some((p) => p.trackName === SCREEN_SHARE_AUDIO_TRACK_NAME);

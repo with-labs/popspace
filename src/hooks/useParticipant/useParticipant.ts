@@ -1,9 +1,7 @@
-import useParticipants from '../useParticipants/useParticipants';
-import { useLocalParticipant } from '../useLocalParticipant/useLocalParticipant';
+import useVideoContext from '../useVideoContext/useVideoContext';
 
 export function useParticipant(participantId: string | null) {
-  const participants = useParticipants();
-  const localParticipant = useLocalParticipant();
+  const { allParticipants } = useVideoContext();
 
-  return [...participants, localParticipant].find((p) => p?.sid === participantId) ?? null;
+  return allParticipants.find((p) => p?.sid === participantId) ?? null;
 }

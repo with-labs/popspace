@@ -5,7 +5,7 @@ function findTrack(participant: LocalParticipant | RemoteParticipant, trackName:
   const tracks = participant.tracks;
   let found: LocalTrackPublication | RemoteTrackPublication | null = null;
   for (const t of tracks.values()) {
-    if (t.trackName === trackName) {
+    if (t.trackName.startsWith(trackName)) {
       found = t;
     }
   }
@@ -37,12 +37,12 @@ export function useNamedPublication(participant: LocalParticipant | RemotePartic
     if (!participant) return;
 
     const handlePublish = (pub: LocalTrackPublication | RemoteTrackPublication) => {
-      if (pub.trackName === trackName) {
+      if (pub.trackName.startsWith(trackName)) {
         setTrack(pub);
       }
     };
     const handleUnpublish = (pub: LocalTrackPublication | RemoteTrackPublication) => {
-      if (pub.trackName === trackName) {
+      if (pub.trackName.startsWith(trackName)) {
         setTrack(null);
       }
     };

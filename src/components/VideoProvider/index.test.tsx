@@ -21,6 +21,7 @@ jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
 jest.mock('./useHandleOnDisconnect/useHandleOnDisconnect');
 jest.mock('./useLocalTrackPublications/useLocalTrackPublications');
 jest.mock('../../hooks/useLocalVideoToggle/useLocalVideoToggle', () => () => [true, jest.fn()]);
+jest.mock('./useAllParticipants/useAllParticipants', () => ({ useAllParticipants: () => [] }));
 
 describe('the VideoProvider component', () => {
   it('should correctly return the Video Context object', () => {
@@ -38,6 +39,7 @@ describe('the VideoProvider component', () => {
       onError: expect.any(Function),
       onDisconnect: mockOnDisconnect,
       connect: expect.any(Function),
+      allParticipants: [],
     });
     expect(useRoom).toHaveBeenCalledWith(expect.any(Function), {
       dominantSpeaker: true,

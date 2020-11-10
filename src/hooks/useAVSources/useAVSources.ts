@@ -8,13 +8,17 @@ export function useAVSources() {
     cameras: MediaDeviceInfo[];
     mics: MediaDeviceInfo[];
     speakers: MediaDeviceInfo[];
-  }>({ cameras: [], mics: [], speakers: [] });
+    initialized: boolean;
+  }>({ cameras: [], mics: [], speakers: [], initialized: false });
 
   const localTracks = useLocalTracks();
 
   const updateDevices = useCallback(() => {
     getMediaDevices().then((mediaDevices) => {
-      setDevices(mediaDevices);
+      setDevices({
+        ...mediaDevices,
+        initialized: true,
+      });
     });
   }, []);
 

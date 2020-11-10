@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { LocalDataTrack } from 'twilio-video';
 import { useLocalMediaTrack } from './useLocalMediaTrack';
 import { useScreenShareTracks } from './useScreenShareTracks';
@@ -39,6 +39,12 @@ export function useLocalTracksState(onError: (err: Error) => void) {
   });
   // there's never really any reason to change this track. It's always there and active.
   const [dataTrack] = useState<LocalDataTrack>(() => new LocalDataTrack());
+
+  // Start the mic track on load - but only on first load
+  const initialStartAudio = useRef(startAudio);
+  useEffect(() => {
+    initialStartAudio.current();
+  }, []);
 
   return useMemo(
     () => ({

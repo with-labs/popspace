@@ -10,14 +10,19 @@ export interface IMicSelectProps {
 }
 
 export const MicSelect: React.FC<IMicSelectProps> = (props) => {
-  const { mics } = useAVSources();
+  const { mics, initialized } = useAVSources();
   const { micDeviceId, setMicDeviceId } = useLocalTracks();
+
+  // avoid rendering before the options are loaded
+  if (!initialized) {
+    return <TextField disabled />;
+  }
 
   return (
     <TextField
       select
       {...props}
-      value={micDeviceId}
+      value={micDeviceId ?? null}
       onChange={(ev) => {
         setMicDeviceId(ev.target.value);
       }}

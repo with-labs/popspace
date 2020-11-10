@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Draggable } from '../Draggable';
-import useParticipants from '../../../hooks/useParticipants/useParticipants';
 import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import * as Sentry from '@sentry/react';
 import { createSelector } from '@reduxjs/toolkit';
@@ -9,19 +8,12 @@ import { RootState } from '../../../state/store';
 import { PersonBubble } from './PersonBubble';
 import { useNamedPublication } from '../../../hooks/useNamedPublication/useNamedPublication';
 import { MIC_TRACK_NAME, CAMERA_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../constants/User';
+import { useParticipant } from '../../../hooks/useParticipant/useParticipant';
 
 const MAX_Z_INDEX = 2147483647;
 
 export interface IPersonProps {
   id: string;
-}
-
-function useParticipant(sid: string) {
-  const remoteParticipants = useParticipants();
-  const localParticipant = useLocalParticipant();
-
-  const all = [localParticipant, ...remoteParticipants];
-  return all.find((p) => p?.sid === sid) ?? null;
 }
 
 export const Person = React.memo<IPersonProps>((props) => {

@@ -7,28 +7,35 @@ import {
   SCREEN_SHARE_AUDIO_TRACK_NAME,
   SCREEN_SHARE_TRACK_NAME,
 } from '../../../constants/User';
+import { v4 } from 'uuid';
 
 function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalDataTrack | null, trackName: string) {
   useEffect(() => {
     if (!room) return;
 
     if (track) {
-      // this may look ridiculous but it works around a weird TypeScript overloading bug.
+      let publishedPromise: Promise<any>;
       if (track instanceof LocalDataTrack) {
-        room.localParticipant.publishTrack(track);
+        publishedPromise = room.localParticipant.publishTrack(track);
       } else {
-        room.localParticipant.publishTrack(track, {
-          name: trackName,
+        publishedPromise = room.localParticipant.publishTrack(track, {
+          name: `${trackName}-${v4()}`,
           logLevel: 'info',
         });
       }
+      return () => {
+        publishedPromise.then(() => {
+          try {
+            const pub = room.localParticipant.unpublishTrack(track);
+            if (pub) {
+              room.localParticipant.emit('trackUnpublished', pub);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      };
     }
-    return () => {
-      if (track) {
-        const pub = room.localParticipant.unpublishTrack(track);
-        room.localParticipant.emit('trackUnpublished', pub);
-      }
-    };
   }, [track, room, trackName]);
 }
 

@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
-import { ConnectOptions, Room } from 'twilio-video';
+import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
@@ -8,6 +8,7 @@ import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useRoom from './useRoom/useRoom';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
+import { useAllParticipants } from './useAllParticipants/useAllParticipants';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -22,6 +23,7 @@ export interface IVideoContext {
   connect: (token: string) => Promise<Room | null>;
   onError: (err: Error) => void;
   onDisconnect: Callback;
+  allParticipants: (LocalParticipant | RemoteParticipant)[];
 }
 
 export const VideoContext = createContext<IVideoContext>(null!);
@@ -50,6 +52,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
   useHandleRoomDisconnectionErrors(room, onError);
   useHandleTrackPublicationFailed(room, onError);
   useHandleOnDisconnect(room, onDisconnect);
+  const allParticipants = useAllParticipants(room);
 
   return (
     <VideoContext.Provider
@@ -59,6 +62,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         onError: onErrorCallback,
         onDisconnect,
         connect,
+        allParticipants,
       }}
     >
       {children}

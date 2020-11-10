@@ -55,7 +55,7 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
             <Trans i18nKey="pages.confirmationView.bodyText" values={{ email: email }}>
               We sent a magic link to {{ email }}
               Click on the link in the email and you will be automatically logged in. If you didn’t receive the email,
-              you can{' '}
+              you can
               <button className={clsx(styles.buttonLink, 'u-fontP1 u-fontBold')} onClick={handleResendLink}>
                 request a new link
               </button>

@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import clsx from 'clsx';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';

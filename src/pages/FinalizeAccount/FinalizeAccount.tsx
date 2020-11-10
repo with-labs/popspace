@@ -168,7 +168,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                     label={
                       <span>
                         <Trans i18nKey="pages.joinRoom.tosCheck">
-                          I agree to the{' '}
+                          I agree to the
                           <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
                             Terms of Service
                           </Link>

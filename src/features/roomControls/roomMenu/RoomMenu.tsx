@@ -62,11 +62,12 @@ export const RoomMenu = () => {
         <Divider />
         {/* hide this option until we want to have it out there */}
         {hasRoomMembers && isRoomOwner && (
-          <>
-            <ListSubheader>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>
+          <div>
+            {/* disabling sticky subheaders for now since we dont have the member list showing up in it */}
+            <ListSubheader disableSticky={true}>{t('features.roomMenu.roomMembersTitle')}</ListSubheader>
             <ManageMembershipMenuItem onClick={onClose}>{t('features.roomMenu.addAndManage')}</ManageMembershipMenuItem>
             <Divider />
-          </>
+          </div>
         )}
         <Link to={Links.FEEDBACK} disableStyling>
           <MenuItem>

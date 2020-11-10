@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './JoinRoom.module.css';
@@ -161,7 +161,7 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
                   label={
                     <span>
                       <Trans i18nKey="pages.joinRoom.tosCheck">
-                        I agree to the{' '}
+                        I agree to the
                         <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
                           Terms of Service
                         </Link>

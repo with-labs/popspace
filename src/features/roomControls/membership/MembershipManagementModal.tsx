@@ -94,26 +94,26 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
     setMembers(newMembers);
   };
 
-  const onSubmitHandler = (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
-    if (sessionTokenExists(sessionToken) && roomName) {
-      Api.sendRoomInvite(sessionToken, roomName, values.inviteeEmail)
-        .then((result: any) => {
-          if (result.success) {
-            const newMembers: any = [...members, result.newMember];
-            updateMembers(newMembers);
-          } else {
-            setError(result);
-          }
-        })
-        .catch((e: any) => {
-          Sentry.captureMessage(`Error membership modal send invite`, Sentry.Severity.Error);
-          setError({
-            success: false,
-            errorCode: ErrorCodes.UNEXPECTED,
-          });
-        });
+  const onSubmitHandler = async (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
+    try {
+      if (sessionTokenExists(sessionToken) && roomName) {
+        const result: BaseResponse = await Api.sendRoomInvite(sessionToken, roomName, values.inviteeEmail);
+        if (result.success) {
+          const newMembers: any = [...members, result.newMember];
+          updateMembers(newMembers);
+        } else {
+          setError(result);
+        }
+      }
+    } catch (e) {
+      Sentry.captureMessage(`Error membership modal send invite`, Sentry.Severity.Error);
+      setError({
+        success: false,
+        errorCode: ErrorCodes.UNEXPECTED,
+      });
+    } finally {
+      actions.resetForm();
     }
-    actions.resetForm();
   };
 
   useEffect(() => {

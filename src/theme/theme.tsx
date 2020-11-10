@@ -517,7 +517,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiCircularProgress: {
         colorPrimary: {
-          color: palette.brandColors.lavender.ink,
+          color: palette.brandColors.slate.ink,
         },
       },
       MuiCheckbox: {
@@ -578,6 +578,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiListItem: {
         root: {
+          paddingBottom: 0,
+          paddingTop: 0,
           '&$disabled': {
             opacity: 1,
             color: palette.grey[700],
@@ -817,6 +819,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiTooltip: {
         tooltip: {
           backgroundColor: palette.grey[900],
+        },
+      },
+      MuiListItemAvatar: {
+        root: {
+          minWidth: 40,
         },
       },
     },

@@ -36,12 +36,6 @@ import { BaseResponse } from '../../../../utils/api';
 import * as Sentry from '@sentry/react';
 import { ErrorCodes } from '../../../../constants/ErrorCodes';
 
-import BlobbyUninvitedImg from '../images/Blobby_Uninvited.png';
-import MollyUninvitedImg from '../images/Molly_Uninvited.png';
-import TillyUninvitedImg from '../images/Tilly_Uninvited.png';
-
-const uninvitedAvatars = [BlobbyUninvitedImg, MollyUninvitedImg, TillyUninvitedImg];
-
 export type UserListMemberInfo = {
   avatar_url: string | null;
   display_name: string | null;
@@ -128,8 +122,9 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
       });
+    } finally {
+      setIsBusy(false);
     }
-    setIsBusy(false);
   };
 
   const cancelInviteHandler = async () => {
@@ -148,8 +143,9 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
       });
+    } finally {
+      setIsBusy(false);
     }
-    setIsBusy(false);
   };
 
   const removeUserHandler = () => {
@@ -173,22 +169,19 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
       });
+    } finally {
+      setIsBusy(false);
     }
-    setIsBusy(false);
   };
 
   return (
     <Box overflow="auto">
       <List className={classes.memberList}>
         {members.map((member, index) => {
-          const avatarUrl = member.has_accepted
-            ? member.avatar_url
-            : uninvitedAvatars[Math.floor(Math.random() * uninvitedAvatars.length)];
-
           return (
             <ListItem key={member.email}>
               <ListItemAvatar>
-                <MemberListAvatar avatarName={avatarUrl} />
+                <MemberListAvatar avatarName={member.avatar_url} hasAccepted={member.has_accepted} />
               </ListItemAvatar>
               {/* we want the mulit-line text for this, so re-enable Typography*/}
               <ListItemText
@@ -202,7 +195,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
               />
               <ListItemSecondaryAction>
                 <div>
-                  {selectedMember?.user_id === member.user_id && isBusy ? (
+                  {selectedMember?.email === member.email && isBusy ? (
                     <CircularProgress />
                   ) : (
                     <IconButton edge="end" aria-label="member_options" onClick={(e) => onMenuOpenHandler(e, index)}>

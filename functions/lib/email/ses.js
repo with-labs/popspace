@@ -38,7 +38,9 @@ class Ses {
       return await db.pg.massive.ses_email_messages.update({id: emailMessage.id}, {
         aws_responded_at: db.time.now(),
         response: info.response,
-        message_id: info.messageId
+        // messageId has the @us-east-2.amazonses.com suffix which we don't want,
+        // since the SNS message we'll get later won't include it
+        message_id: info.response
       })
     }
   }

@@ -21,8 +21,8 @@ describe('useCanEnterRoom hook', () => {
 
     // initialize a redux store
     const state = {
-      __unsafe: {
-        receivedPing: false,
+      room: {
+        syncedFromPeer: false,
       },
     };
     const store = createStore(() => state);
@@ -47,8 +47,8 @@ describe('useCanEnterRoom hook', () => {
 
     // initialize a redux store
     const state = {
-      __unsafe: {
-        receivedPing: true,
+      room: {
+        syncedFromPeer: true,
       },
     };
     const store = createStore(() => state);
@@ -73,8 +73,8 @@ describe('useCanEnterRoom hook', () => {
 
     // initialize a redux store
     const state = {
-      __unsafe: {
-        receivedPing: false,
+      room: {
+        syncedFromPeer: false,
       },
     };
     const store = createStore(() => state);

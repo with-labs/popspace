@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../../state/store';
 import { PersonBubble } from './PersonBubble';
-import { useNamedTrack } from '../../../hooks/useNamedTrack/useNamedTrack';
+import { useNamedPublication } from '../../../hooks/useNamedPublication/useNamedPublication';
 import { MIC_TRACK_NAME, CAMERA_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../constants/User';
 
 const MAX_Z_INDEX = 2147483647;
@@ -53,9 +53,9 @@ export const Person = React.memo<IPersonProps>((props) => {
 
   const isMe = localParticipant?.sid === participant?.sid;
 
-  const audioTrackPub = useNamedTrack(participant, MIC_TRACK_NAME);
-  const cameraTrackPub = useNamedTrack(participant, CAMERA_TRACK_NAME);
-  const screenShareVideoTrackPub = useNamedTrack(participant, SCREEN_SHARE_TRACK_NAME);
+  const audioTrackPub = useNamedPublication(participant, MIC_TRACK_NAME);
+  const cameraTrackPub = useNamedPublication(participant, CAMERA_TRACK_NAME);
+  const screenShareVideoTrackPub = useNamedPublication(participant, SCREEN_SHARE_TRACK_NAME);
 
   if (!participant) {
     return null;

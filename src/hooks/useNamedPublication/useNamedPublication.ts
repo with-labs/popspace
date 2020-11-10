@@ -15,7 +15,7 @@ function findTrack(participant: LocalParticipant | RemoteParticipant, trackName:
 /**
  * Monitors track publications for any participant and returns a track by name, if it exists (or null).
  */
-export function useNamedTrack(participant: LocalParticipant | RemoteParticipant | null, trackName: string) {
+export function useNamedPublication(participant: LocalParticipant | RemoteParticipant | null, trackName: string) {
   // providing an initializer so this immediately has the track if we begin with an initialized participant
   const [track, setTrack] = useState<LocalTrackPublication | RemoteTrackPublication | null>(() => {
     if (!participant) return null;

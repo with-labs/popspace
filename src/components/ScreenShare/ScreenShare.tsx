@@ -4,7 +4,7 @@ import Publication from '../Publication/Publication';
 import { ScreenSharePlaceholder } from './ScreenSharePlaceholder';
 import { Lightbox } from '../Lightbox/Lightbox';
 import { useParticipant } from '../../hooks/useParticipant/useParticipant';
-import { useNamedTrack } from '../../hooks/useNamedTrack/useNamedTrack';
+import { useNamedPublication } from '../../hooks/useNamedPublication/useNamedPublication';
 import { SCREEN_SHARE_TRACK_NAME, SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../constants/User';
 
 export interface IScreenShareProps {
@@ -43,8 +43,8 @@ export const ScreenShare: React.FC<IScreenShareProps> = ({
   objectId,
 }) => {
   const participant = useParticipant(participantSid);
-  const videoPub = useNamedTrack(participant, SCREEN_SHARE_TRACK_NAME);
-  const audioPub = useNamedTrack(participant, SCREEN_SHARE_AUDIO_TRACK_NAME);
+  const videoPub = useNamedPublication(participant, SCREEN_SHARE_TRACK_NAME);
+  const audioPub = useNamedPublication(participant, SCREEN_SHARE_AUDIO_TRACK_NAME);
 
   React.useEffect(() => {
     onSourceChange?.(videoPub);

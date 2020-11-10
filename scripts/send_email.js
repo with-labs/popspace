@@ -51,7 +51,7 @@ const sendMarketingBlast = async (emailName, args, production) => {
 
   const promises = targets.map(async (t) => {
     console.log(`Sending to ${t.email}`)
-    await sendEmail(emailName, t.id, args, production)
+    await sendEmail(emailName, t.email, args, production)
   })
   return Promise.all(promises)
 }
@@ -86,7 +86,7 @@ const run = async () => {
     if(isMarketingBlast) {
       await sendMarketingBlast(emailName, args, options.production)
     } else {
-      await sendEmail(to, emailName, args, options.production)
+      await sendEmail(emailName, to, args, options.production)
     }
   } catch(e) {
     console.log(e)

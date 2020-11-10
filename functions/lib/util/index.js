@@ -7,5 +7,6 @@ module.exports = {
   middleware: require("./netlify_middleware"),
   routes: require("./routes"),
   netlify: require("./netlify"),
-  log: require("./log")
+  log: require("./log"),
+  aws: require("./aws")
 }

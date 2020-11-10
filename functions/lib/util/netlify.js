@@ -8,5 +8,15 @@ module.exports = {
       await middleware.run(event, context)
       await onReady(event, context, callback)
     }
+  },
+
+  publicPostEndpoint: (onReady) => {
+    // no authentication required
+    return async (event, context, callback) => {
+      if(util.http.failUnlessPost(event, callback)) return;
+
+      await lib.init()
+      await onReady(event, context, callback)
+    }
   }
 }

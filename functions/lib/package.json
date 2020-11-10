@@ -9,7 +9,8 @@
     "nodemailer": "^6.4.11",
     "pg": "^8.3.0",
     "pg-monitor": "^1.4.1",
-    "redis": "^3.0.2"
+    "redis": "^3.0.2",
+    "sns-validator": "^0.3.4"
   },
   "main": "index.js",
   "scripts": {

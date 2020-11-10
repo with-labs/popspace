@@ -34,26 +34,25 @@ const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
 }
 
 class NamedEmails {
-  async sendNamedUserMarketingEmail(name, userId, arg={}) {
-    const user = await db.accounts.userById(userId)
+  async sendNamedUserMarketingEmail(name, email, arg={}) {
+    const user = await db.accounts.userByEmail(email)
     if(!user) {
       throw "No such user"
     }
     const magicLink = await db.magic.createUnsubscribe(user.id)
     arg.firstName = user.first_name
-    arg.email = user.email
+    arg.email = email
     arg.appUrl = appUrl()
     arg.ctaUrl = `${arg.appUrl}/${util.routes.static.dashboard()}`
     arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(gcfg.appUrl(), magicLink)
     await fetchEmailAndSend(name, user.email, arg)
   }
 
-  async sendWhatsNew(userId) {
-    return await this.sendNamedUserMarketingEmail("marketing", userId)
+  async sendWhatsNew(email) {
+    return await this.sendNamedUserMarketingEmail("marketing", email)
   }
 
   async sendRoomStatusEmail(name, toEmail, roomName, arg={}) {
-    const email = await getEmail(name)
     arg.roomName = roomName
     arg.appUrl = appUrl()
     await fetchEmailAndSend(name, toEmail, arg)

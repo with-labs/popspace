@@ -1,5 +1,5 @@
-let nodemailer = require('nodemailer');
-let aws = require('aws-sdk');
+const nodemailer = require('nodemailer');
+const aws = require('aws-sdk');
 
 class Ses {
   constructor() {
@@ -14,7 +14,7 @@ class Ses {
     })
   }
 
-  async logSesSendResponse(emailMessage, err, info) {
+  async logSesSendResponse(emailMessage, to, err, info) {
     /*
       info example:
       { envelope: { from: 'with.dev@with.so', to: [ 'alexey@with.so' ] },
@@ -58,6 +58,11 @@ class Ses {
     if(user) {
       to = `${user.display_name} <${user.email}>`
     }
+    const headers = {}
+    if(process.env.NODE_ENV == "production") {
+      // track send/open data only in production for now
+      headers['X-SES-CONFIGURATION-SET'] = 'with_ses'
+    }
     return new Promise(async (resolve, reject) => {
       const emailMessage = await this.logSesRequest(emailName, version, from, to)
       this.transporter.sendMail({
@@ -68,9 +73,10 @@ class Ses {
         text: plaintextFallback,
         ses: {
           Tags: tags
-        }
+        },
+        headers: headers
       }, async (err, info) => {
-        await this.logSesSendResponse(emailMessage, err, info)
+        await this.logSesSendResponse(emailMessage, to, err, info)
         if(err) {
           reject(err)
         } else {

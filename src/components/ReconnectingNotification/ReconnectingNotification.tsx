@@ -6,6 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { SnackbarContent } from '@material-ui/core';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
+import { RoomState } from '../../constants/twilio';
 
 const useStyles = makeStyles((theme) => ({
   snackbar: {
@@ -25,7 +26,7 @@ export default function ReconnectingNotification() {
   const roomState = useRoomState();
 
   return (
-    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={roomState === 'reconnecting'}>
+    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={roomState === RoomState.Reconnecting}>
       <SnackbarContent
         className={classes.snackbar}
         message={

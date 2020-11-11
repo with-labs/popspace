@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Room, RemoteParticipant } from 'twilio-video';
+import { RoomEvent } from '../../../constants/twilio';
 
 export function useAllParticipants(room: Room | null) {
   const [remoteParticipants, setRemoteParticipants] = useState(
@@ -15,11 +16,11 @@ export function useAllParticipants(room: Room | null) {
       setRemoteParticipants((prevParticipants) => [...prevParticipants, participant]);
     const participantDisconnected = (participant: RemoteParticipant) =>
       setRemoteParticipants((prevParticipants) => prevParticipants.filter((p) => p !== participant));
-    room.on('participantConnected', participantConnected);
-    room.on('participantDisconnected', participantDisconnected);
+    room.on(RoomEvent.ParticipantConnected, participantConnected);
+    room.on(RoomEvent.ParticipantDisconnected, participantDisconnected);
     return () => {
-      room.off('participantConnected', participantConnected);
-      room.off('participantDisconnected', participantDisconnected);
+      room.off(RoomEvent.ParticipantConnected, participantConnected);
+      room.off(RoomEvent.ParticipantDisconnected, participantDisconnected);
     };
   }, [room]);
 

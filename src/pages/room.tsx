@@ -15,6 +15,7 @@ import { ConnectOptions } from 'twilio-video';
 import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
 import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
 import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
+import { RoomState } from '../constants/twilio';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -75,7 +76,7 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
 
   const canEnterRoom = useCanEnterRoom();
 
-  if (roomState === 'disconnected') {
+  if (roomState === RoomState.Disconnected) {
     return <JoinRoom roomName={roomName} />;
   }
 

@@ -3,6 +3,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import store from '../../state/store';
 import { actions } from './roomSlice';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
+import { RoomEvent } from '../../constants/twilio';
 
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
@@ -106,13 +107,13 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
       }
     };
 
-    room.on('trackMessage', dataMessageHandler);
-    room.on('disconnected', disconnectHandler);
-    room.on('trackPublished', trackPublishedHandler);
+    room.on(RoomEvent.TrackMessage, dataMessageHandler);
+    room.on(RoomEvent.Disconnected, disconnectHandler);
+    room.on(RoomEvent.TrackPublished, trackPublishedHandler);
     return () => {
-      room.off('trackMessage', dataMessageHandler);
-      room.off('disconnected', disconnectHandler);
-      room.off('trackPublished', trackPublishedHandler);
+      room.off(RoomEvent.TrackMessage, dataMessageHandler);
+      room.off(RoomEvent.Disconnected, disconnectHandler);
+      room.off(RoomEvent.TrackPublished, trackPublishedHandler);
     };
   }, [room, dataMessageHandler, dispatch, localParticipantSid, localDT]);
 

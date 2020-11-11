@@ -10,6 +10,8 @@ import { PersonBubble } from './PersonBubble';
 import usePublications from '../../../hooks/usePublications/usePublications';
 import { VideoTrackPublication, AudioTrackPublication } from 'twilio-video';
 
+const MAX_Z_INDEX = 2147483647;
+
 export interface IPersonProps {
   id: string;
 }
@@ -65,7 +67,7 @@ export const Person = React.memo<IPersonProps>((props) => {
     | undefined;
 
   return (
-    <Draggable id={props.id} zIndex={isMe ? 10 : 9}>
+    <Draggable id={props.id} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}>
       <PersonBubble
         participant={participant}
         person={person}

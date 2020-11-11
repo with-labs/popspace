@@ -35,6 +35,14 @@ export interface IDraggableProps {
    * Optionally, provide a custom z-index for ordering the object
    */
   zIndex?: number;
+  /**
+   * Optional callback to listen for drag end events
+   */
+  onDragEnd?: () => void;
+  /**
+   * Optional callback to listen for drag start events
+   */
+  onDragStart?: () => void;
 }
 
 const useStyles = makeStyles({
@@ -64,7 +72,7 @@ const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.Keybo
  * function you should call, then pass the result directly to the draggable
  * portion of your widget.
  */
-export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 }) => {
+export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0, onDragEnd, onDragStart }) => {
   const styles = useStyles();
 
   // creating a memoized selector for position, this will hopefully
@@ -195,12 +203,14 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0 
         viewport.onObjectDragStart();
         set({ grabbing: true, willChange: 'transform' });
         autoPan.start({ x: state.xy[0], y: state.xy[1] });
+        onDragStart?.();
       },
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
         set({ grabbing: false, willChange: 'initial' });
         autoPan.stop();
+        onDragEnd?.();
       },
     },
     {

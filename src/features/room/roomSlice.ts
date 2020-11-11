@@ -34,6 +34,7 @@ interface RoomState {
   people: Record<string, PersonState>;
   /** Position data is keyed on the id of the widget or participant */
   positions: Record<string, ObjectPositionData>;
+  zOrder: string[];
   bounds: Bounds;
   wallpaperUrl: string;
   useSpatialAudio: boolean;
@@ -42,6 +43,7 @@ interface RoomState {
 /** Use for testing only, please. */
 export const initialState: RoomState = {
   positions: {},
+  zOrder: [],
   widgets: {},
   people: {},
   // TODO: make this changeable
@@ -104,7 +106,7 @@ const roomSlice = createSlice({
           position: payload.position,
           size: payload.size,
         };
-
+        state.zOrder.push(payload.widget.id);
         state.widgets[payload.widget.id] = payload.widget;
       },
     },
@@ -144,6 +146,7 @@ const roomSlice = createSlice({
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.widgets[payload.id];
         delete state.positions[payload.id];
+        state.zOrder = state.zOrder.filter((id) => id !== payload.id);
       },
     },
     removePerson: {
@@ -179,6 +182,16 @@ const roomSlice = createSlice({
         } else {
           state.positions[payload.id].size = undefined;
         }
+      },
+    },
+    bringToFront: {
+      prepare: (a) => prepareSyncAction<{ id: string }>(a),
+      reducer(state, { payload }: PayloadAction<{ id: string }>) {
+        const index = state.zOrder.indexOf(payload.id);
+        if (index === -1) return;
+
+        state.zOrder.splice(index, 1);
+        state.zOrder.push(payload.id);
       },
     },
     /** Updates the data associated with a widget */

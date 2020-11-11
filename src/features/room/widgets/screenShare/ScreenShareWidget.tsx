@@ -16,9 +16,9 @@ import { Fullscreen } from '@material-ui/icons';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
-import usePublications from '../../../../hooks/usePublications/usePublications';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../../../constants/User';
 import { useLocalTracks } from '../../../../components/LocalTracksProvider/useLocalTracks';
+import { useNamedPublication } from '../../../../hooks/useNamedPublication/useNamedPublication';
 
 export interface IScreenShareWidgetProps {
   state: ScreenShareWidgetState;
@@ -60,8 +60,8 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
     onClose();
   }, [stopScreenShare, onClose]);
 
-  const publications = usePublications(user);
-  const isSharingAudio = publications.some((p) => p.trackName === SCREEN_SHARE_AUDIO_TRACK_NAME);
+  const audioTrack = useNamedPublication(user, SCREEN_SHARE_AUDIO_TRACK_NAME);
+  const isSharingAudio = !!audioTrack;
 
   const title = !sharingUserId
     ? t('widgets.screenShare.titleEmpty')

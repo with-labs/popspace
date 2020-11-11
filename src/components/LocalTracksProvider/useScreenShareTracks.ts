@@ -45,8 +45,8 @@ export function useScreenShareTracks({
       }
 
       const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-      const videoTrack = stream.getVideoTracks()[0];
-      const audioTrack = stream.getAudioTracks()[0];
+      const videoTrack = stream.getVideoTracks()[0] ?? null;
+      const audioTrack = stream.getAudioTracks()[0] ?? null;
 
       setTracks({
         screenShareVideoTrack: videoTrack,

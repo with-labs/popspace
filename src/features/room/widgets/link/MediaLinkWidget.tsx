@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     height: 'auto',
     objectFit: 'cover',
     borderRadius: theme.shape.borderRadius,
+    display: 'block',
     '&:focus': {
       outline: 'none',
       boxShadow: theme.focusRings.primary,

@@ -203,6 +203,8 @@ export default {
         invalidEmail: 'Invalid email.',
         mediaNotSupported: 'Unsupported media type',
         fileDropUnknownFailure: 'Upload failed - please try again',
+        catastrophicMediaError:
+          'Something went very wrong while activating your media device. Try refreshing the page to see if that helps.',
       },
       widgetsFallback: {
         title: 'Accessories error',

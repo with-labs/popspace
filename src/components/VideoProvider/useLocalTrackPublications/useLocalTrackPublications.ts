@@ -8,35 +8,51 @@ import {
   SCREEN_SHARE_TRACK_NAME,
 } from '../../../constants/User';
 import { v4 } from 'uuid';
+import { useAppState } from '../../../state';
+import { useTranslation } from 'react-i18next';
 
 function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalDataTrack | null, trackName: string) {
+  const { setError } = useAppState();
+  const { t } = useTranslation();
+
   useEffect(() => {
     if (!room) return;
 
     if (track) {
       let publishedPromise: Promise<any>;
+      const timeout = setTimeout(() => {
+        setError(new Error(t('error.messages.catastrophicMediaError')));
+      }, 10000);
+      const stopTimeout = () => clearTimeout(timeout);
       if (track instanceof LocalDataTrack) {
-        publishedPromise = room.localParticipant.publishTrack(track);
+        publishedPromise = room.localParticipant.publishTrack(track).finally(stopTimeout);
       } else {
-        publishedPromise = room.localParticipant.publishTrack(track, {
-          name: `${trackName}-${v4()}`,
-          logLevel: 'info',
-        });
+        publishedPromise = room.localParticipant
+          .publishTrack(track, {
+            name: `${trackName}-${v4()}`,
+            logLevel: 'info',
+          })
+          .finally(stopTimeout);
       }
       return () => {
-        publishedPromise.then(() => {
-          try {
-            const pub = room.localParticipant.unpublishTrack(track);
-            if (pub) {
-              room.localParticipant.emit('trackUnpublished', pub);
+        stopTimeout();
+        publishedPromise
+          .then(() => {
+            try {
+              const pub = room.localParticipant.unpublishTrack(track);
+              if (pub) {
+                room.localParticipant.emit('trackUnpublished', pub);
+              }
+            } catch (err) {
+              console.error(err);
             }
-          } catch (err) {
-            console.error(err);
-          }
-        });
+          })
+          .catch((err) => {
+            setError(err);
+          });
       };
     }
-  }, [track, room, trackName]);
+  }, [track, room, trackName, setError, t]);
 }
 
 export function useLocalTrackPublications(room: Room | null) {

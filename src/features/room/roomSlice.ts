@@ -152,7 +152,7 @@ const roomSlice = createSlice({
       },
     },
     removePerson: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.people[payload.id];
         delete state.positions[payload.id];

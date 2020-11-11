@@ -15,6 +15,7 @@ import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModa
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 
 interface IRoomProps {}
 
@@ -26,11 +27,17 @@ const LocalVolumeDetector = () => {
   return null;
 };
 
+const CleanupDisconnectedPeople = React.memo(() => {
+  useCleanupDisconnectedPeople();
+  return null;
+});
+
 export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
     <WallpaperModal />
     <LocalVolumeDetector />
+    <CleanupDisconnectedPeople />
     <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />

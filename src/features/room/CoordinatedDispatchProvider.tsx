@@ -3,8 +3,6 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import store from '../../state/store';
 import { actions } from './roomSlice';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
-import useRoomState from '../../hooks/useRoomState/useRoomState';
-import { RemoteParticipant } from 'twilio-video';
 
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
@@ -108,29 +106,13 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
       }
     };
 
-    /**
-     * Peers might not always be able to report their own disconnection -
-     * this should allow remaining members to keep their state in sync and
-     * remove 'ghost' peers from Redux
-     */
-    const handlePeerDisconnected = (peer: RemoteParticipant) => {
-      console.debug(`${peer.sid} disconnected`);
-      dispatch(
-        actions.removePerson({
-          id: peer.sid,
-        })
-      );
-    };
-
     room.on('trackMessage', dataMessageHandler);
     room.on('disconnected', disconnectHandler);
     room.on('trackPublished', trackPublishedHandler);
-    room.on('participantDisconnected', handlePeerDisconnected);
     return () => {
       room.off('trackMessage', dataMessageHandler);
       room.off('disconnected', disconnectHandler);
       room.off('trackPublished', trackPublishedHandler);
-      room.off('participantDisconnected', handlePeerDisconnected);
     };
   }, [room, dataMessageHandler, dispatch, localParticipantSid, localDT]);
 

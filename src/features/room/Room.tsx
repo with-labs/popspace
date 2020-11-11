@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
 import { ViewportControls } from '../roomControls/viewport/ViewportControls';
-import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
@@ -15,6 +14,7 @@ import { MembershipManagementModal } from '../roomControls/membership/Membership
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 interface IRoomProps {}
 
@@ -26,17 +26,11 @@ const LocalVolumeDetector = () => {
   return null;
 };
 
-const RoomPresenceDetector = () => {
-  useRoomPresence();
-  return null;
-};
-
 export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
     <WallpaperModal />
     <LocalVolumeDetector />
-    <RoomPresenceDetector />
     <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />
@@ -47,8 +41,9 @@ export const Room: React.FC<IRoomProps> = () => (
 const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
-  const participantIds = useSelector(selectors.selectPeopleIds);
   const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
+
+  const { allParticipants } = useVideoContext();
 
   return (
     <RoomViewport
@@ -67,8 +62,8 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
           <Widget id={id} key={id} />
         ))}
       </ErrorBoundary>
-      {participantIds.map((id) => (
-        <Person id={id} key={id} />
+      {allParticipants.map((participant) => (
+        <Person participant={participant} key={participant.sid} />
       ))}
     </RoomViewport>
   );

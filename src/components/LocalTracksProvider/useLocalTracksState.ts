@@ -4,6 +4,7 @@ import { useLocalMediaTrack } from './useLocalMediaTrack';
 import { useScreenShareTracks } from './useScreenShareTracks';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { usePreferredDevices } from './usePreferredDevices';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Each user can have exactly one of each kind of track:
@@ -21,6 +22,7 @@ import { usePreferredDevices } from './usePreferredDevices';
  *
  */
 export function useLocalTracksState(onError: (err: Error) => void) {
+  const { t } = useTranslation();
   const { cameraDeviceId, micDeviceId, setCameraDeviceId, setMicDeviceId } = usePreferredDevices();
 
   const [audioTrack, startAudio, stopAudio] = useLocalMediaTrack(
@@ -29,13 +31,21 @@ export function useLocalTracksState(onError: (err: Error) => void) {
     {},
     {
       onError,
+      permissionDismissedMessage: t('error.media.audioPermissionDismissed'),
+      permissionDeniedMessage: t('error.media.audioPermissionDenied'),
     }
   );
   const [videoTrack, startVideo, stopVideo] = useLocalMediaTrack('video', cameraDeviceId, DEFAULT_VIDEO_CONSTRAINTS, {
     onError,
+    permissionDismissedMessage: t('error.media.videoPermissionDismissed'),
+    permissionDeniedMessage: t('error.media.videoPermissionDenied'),
   });
   const [{ screenShareVideoTrack, screenShareAudioTrack }, startScreenShare, stopScreenShare] = useScreenShareTracks({
     onError,
+    // unlike the others, the screen share dialog currently reports "Cancel" as "Denied" not "Dismissed", so
+    // we keep using the dismissed language.
+    permissionDismissedMessage: t('error.media.screenSharePermissionDismissed'),
+    permissionDeniedMessage: t('error.media.screenSharePermissionDismissed'),
   });
   // there's never really any reason to change this track. It's always there and active.
   const [dataTrack] = useState<LocalDataTrack>(() => new LocalDataTrack());

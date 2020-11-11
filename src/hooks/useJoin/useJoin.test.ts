@@ -34,7 +34,7 @@ describe('useJoin hook', () => {
       result.current[0]();
     });
 
-    expect(mockApi.loggedInEnterRoom).toHaveBeenCalledWith('fake session', 'roomName');
+    expect(mockApi.loggedInEnterRoom).toHaveBeenCalledWith('roomName');
     // it's loading
     expect(result.current[1].loading).toBe(true);
 

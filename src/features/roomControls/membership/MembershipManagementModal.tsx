@@ -97,7 +97,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
   const onSubmitHandler = async (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
     try {
       if (sessionTokenExists(sessionToken) && roomName) {
-        const result: BaseResponse = await Api.sendRoomInvite(sessionToken, roomName, values.inviteeEmail);
+        const result: BaseResponse = await Api.sendRoomInvite(roomName, values.inviteeEmail);
         if (result.success) {
           const newMembers: any = [...members, result.newMember];
           updateMembers(newMembers);
@@ -120,7 +120,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
     // get the current membership list
     if (isOpen && sessionTokenExists(sessionToken) && roomName) {
       setIsLoading(true);
-      Api.getRoomMembers(sessionToken, roomName)
+      Api.getRoomMembers(roomName)
         .then((result: any) => {
           if (result.success) {
             setIsLoading(false);

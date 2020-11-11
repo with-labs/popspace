@@ -53,8 +53,7 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
       history.push(RouteNames.ROOT);
     } else {
       // check to see if the room has already been claimed
-      const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
-      Api.resolveRoomInvite(existingToken, otp, inviteId)
+      Api.resolveRoomInvite(otp, inviteId)
         .then((result: any) => {
           if (result.success) {
             if (result.newSessionToken) {
@@ -95,7 +94,6 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
 
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
 
     const data = {
       firstName,
@@ -114,7 +112,7 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
         errorType: ErrorTypes.LINK_EXPIRED,
       });
     } else {
-      const result: any = await Api.registerThroughInvite(existingToken, data, otp, inviteId);
+      const result: any = await Api.registerThroughInvite(data, otp, inviteId);
       if (result.success) {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);

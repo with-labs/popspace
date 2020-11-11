@@ -45,7 +45,7 @@ class Api {
     return await this.post('/resolve_init_session', { otp, uid });
   }
 
-  async getProfile(token: any) {
+  async getProfile() {
     return await this.post<
       BaseResponse & {
         profile?: {
@@ -56,47 +56,47 @@ class Api {
           };
         };
       }
-    >('/user_profile', { token });
+    >('/user_profile', {});
   }
 
-  async createRoom(token: any) {
-    return await this.post('/create_room', { token });
+  async createRoom() {
+    return await this.post('/create_room', {});
   }
 
-  async sendRoomInvite(token: any, roomName: string, email: string) {
-    return await this.post('/send_room_invite', { token, roomName, email });
+  async sendRoomInvite(roomName: string, email: string) {
+    return await this.post('/send_room_invite', { roomName, email });
   }
 
-  async cancelRoomInvite(token: any, roomName: string, email: string) {
-    return await this.post('/revoke_room_invites_and_membership', { token, roomName, email });
+  async cancelRoomInvite(roomName: string, email: string) {
+    return await this.post('/revoke_room_invites_and_membership', { roomName, email });
   }
 
-  async removeRoomMember(token: any, roomName: string, email: string) {
-    return await this.post('/revoke_room_invites_and_membership', { token, roomName, email });
+  async removeRoomMember(roomName: string, email: string) {
+    return await this.post('/revoke_room_invites_and_membership', { roomName, email });
   }
 
-  async getRoomMembers(token: any, roomName: string) {
-    return await this.post('/room_get_members', { token, roomName });
+  async getRoomMembers(roomName: string) {
+    return await this.post('/room_get_members', { roomName });
   }
 
-  async resolveRoomInvite(token: any, otp: string, inviteId: string) {
-    return await this.post('/resolve_room_invite', { token, otp, inviteId });
+  async resolveRoomInvite(otp: string, inviteId: string) {
+    return await this.post('/resolve_room_invite', { otp, inviteId });
   }
 
-  async registerThroughInvite(token: any, data: any, otp: string, inviteId: string) {
-    return await this.post('/register_through_invite', { token, data, otp, inviteId });
+  async registerThroughInvite(data: any, otp: string, inviteId: string) {
+    return await this.post('/register_through_invite', { data, otp, inviteId });
   }
 
-  async registerThroughClaim(token: any, data: any, otp: string, claimId: string) {
-    return await this.post('/register_through_claim', { token, data, otp, claimId });
+  async registerThroughClaim(data: any, otp: string, claimId: string) {
+    return await this.post('/register_through_claim', { data, otp, claimId });
   }
 
-  async resolveRoomClaim(token: any, otp: string, claimId: string) {
-    return await this.post('/resolve_room_claim', { token, otp, claimId });
+  async resolveRoomClaim(otp: string, claimId: string) {
+    return await this.post('/resolve_room_claim', { otp, claimId });
   }
 
-  async loggedInEnterRoom(token: any, roomName: string) {
-    return await this.post<BaseResponse & { token?: string }>('/logged_in_join_room', { token, roomName });
+  async loggedInEnterRoom(roomName: string) {
+    return await this.post<BaseResponse & { token?: string }>('/logged_in_join_room', { roomName });
   }
 
   async getToken(identity: string, password: string, roomName: string) {
@@ -107,12 +107,12 @@ class Api {
     });
   }
 
-  async adminCreateAndSendClaimEmail(token: any, email: string, roomName: string) {
-    return await this.post('/admin_create_and_send_claim_email', { token, email, roomName });
+  async adminCreateAndSendClaimEmail(email: string, roomName: string) {
+    return await this.post('/admin_create_and_send_claim_email', { email, roomName });
   }
 
-  async adminRoomClaimsData(token: any) {
-    return await this.post('/admin_room_claims_data', { token });
+  async adminRoomClaimsData() {
+    return await this.post('/admin_room_claims_data', {});
   }
 
   async unsubscribeFromEmail(otp: string, mlid: string) {
@@ -124,39 +124,6 @@ class Api {
       fileName,
       contentType,
     });
-  }
-
-  async uploadRoomContentFile(file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-
-    const sessionToken = getSessionToken();
-    if (!sessionToken) {
-      throw new Error('Authentication required');
-    }
-
-    try {
-      const result = await fetch(`/.netlify/functions/upload_room_content_file`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${btoa(sessionToken)}`,
-        },
-      });
-
-      if (result.ok) {
-        const body = await result.json();
-        return body;
-      } else {
-        const body = await result.text();
-        console.error(`File upload failed`, result, body);
-        return { success: false, message: 'Unexpected error' };
-      }
-    } catch (err) {
-      console.error(err);
-      return { success: false, message: 'Unexpected error' };
-    }
   }
 
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {

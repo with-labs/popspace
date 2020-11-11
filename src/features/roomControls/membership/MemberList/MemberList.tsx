@@ -18,7 +18,6 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
-import { EmailIcon } from '../../../../components/icons/EmailIcon';
 import { OptionsIcon } from '../../../../components/icons/OptionsIcon';
 import { MemberListAvatar } from './MemberListAvatar';
 
@@ -28,7 +27,6 @@ import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
 
 import { cherry, snow } from '../../../../theme/theme';
-import { USER_SESSION_TOKEN } from '../../../../constants/User';
 import Api from '../../../../utils/api';
 import { ErrorModal } from '../../../room/modals/ErrorModal/ErrorModal';
 import { useSnackbar } from 'notistack';
@@ -104,13 +102,11 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     setMenuAnchorEl(null);
   };
 
-  const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
-
   const inviteResendHandler = async () => {
     try {
       setMenuAnchorEl(null);
       setIsBusy(true);
-      const result: BaseResponse = await Api.sendRoomInvite(sessionToken, roomName, selectedMember.email);
+      const result: BaseResponse = await Api.sendRoomInvite(roomName, selectedMember.email);
       if (result.success) {
         enqueueSnackbar(t('modals.inviteUserModal.resendInviteSuccess'), { variant: 'success' });
       } else {
@@ -131,7 +127,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     try {
       setMenuAnchorEl(null);
       setIsBusy(true);
-      const result: BaseResponse = await Api.cancelRoomInvite(sessionToken, roomName, selectedMember.email);
+      const result: BaseResponse = await Api.cancelRoomInvite(roomName, selectedMember.email);
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {
@@ -157,7 +153,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     try {
       setConfirmIsOpen(false);
       setIsBusy(true);
-      const result: BaseResponse = await Api.removeRoomMember(sessionToken, roomName, selectedMember.email);
+      const result: BaseResponse = await Api.removeRoomMember(roomName, selectedMember.email);
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {

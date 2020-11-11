@@ -56,8 +56,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
       history.push(RouteNames.ROOT);
     } else {
       // check to see if the room has already been claimed
-      const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
-      Api.resolveRoomClaim(existingToken, otp, claimId)
+      Api.resolveRoomClaim(otp, claimId)
         .then((result: any) => {
           if (result.success) {
             if (result.newSessionToken) {
@@ -98,7 +97,6 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
 
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const existingToken = window.localStorage.getItem(USER_SESSION_TOKEN);
 
     const data = {
       firstName,
@@ -117,7 +115,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
       // Note: currently for alpha users or users we send invites out to, this registers the room
       // to their account. There will be a seperate api endpoint for when we do this same flow via user invites
       // 9-28-2020
-      const result: any = await Api.registerThroughClaim(existingToken, data, otp, claimId);
+      const result: any = await Api.registerThroughClaim(data, otp, claimId);
       if (result.success) {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);

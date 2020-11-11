@@ -2,6 +2,7 @@ import React from 'react';
 import Api from '../utils/api';
 import { useLocation } from 'react-router-dom';
 import Signup from './signup';
+import { USER_SESSION_TOKEN } from '../constants/User';
 
 export default function SignupThroughInvite() {
   const query = new URLSearchParams(useLocation().search);
@@ -11,12 +12,11 @@ export default function SignupThroughInvite() {
 
   const signUpAndJoinRoom = async (data: any) => {
     // If the user signed up by other means, we allow this link to work
-    const existingToken = window.localStorage.getItem('__session_token');
-    const result: any = await Api.registerThroughInvite(existingToken, data, otp, inviteId);
+    const result: any = await Api.registerThroughInvite(data, otp, inviteId);
     if (result.success) {
       console.log(result);
       if (result.newSessionToken) {
-        window.localStorage.setItem('__session_token', result.newSessionToken);
+        window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
       }
       // window.location.href = `/${result.roomName}`;
     } else {

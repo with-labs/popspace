@@ -1,8 +1,5 @@
-// WIP
-// TODO: we need to update Typography varients, so the title is the proper h2 in legato
-// Do we need to disable closing on clicking off of the modal for
-
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Box, Typography, Button, ThemeProvider } from '@material-ui/core';
 import { Modal } from '../../../components/Modal/Modal';
@@ -10,10 +7,17 @@ import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { snow } from '../../../theme/theme';
-import Cookie from 'js-cookie';
 import { USER_ONBOARDING } from '../../../constants/User';
+import { BackIcon } from '../../../components/icons/BackIcon';
+import { ForwardIcon } from '../../../components/icons/ForwardIcon';
+import { selectors as controlSelectors, actions as controlsActions } from '../roomControlsSlice';
+import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
+import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
-import testimg from './images/test.jpg';
+import onboardingImg1 from './images/onboarding_1.png';
+import onboardingImg2 from './images/onboarding_2.png';
+import onboardingImg3 from './images/onboarding_3.png';
+import onboardingImg4 from './images/onboarding_4.png';
 
 interface IOnboardingModalProps {}
 
@@ -21,16 +25,28 @@ interface IOnboardingModalProps {}
 // onboarding steps static for now.
 const onboardingSteps = [
   {
-    img: testimg,
+    img: onboardingImg1,
     altText: 'modals.onboardingModal.step1.altText',
     title: 'modals.onboardingModal.step1.title',
     text: 'modals.onboardingModal.step1.text',
   },
   {
-    img: testimg,
+    img: onboardingImg2,
     altText: 'modals.onboardingModal.step1.altText',
     title: 'modals.onboardingModal.step2.title',
     text: 'modals.onboardingModal.step2.text',
+  },
+  {
+    img: onboardingImg3,
+    altText: 'modals.onboardingModal.step3.altText',
+    title: 'modals.onboardingModal.step3.title',
+    text: 'modals.onboardingModal.step3.text',
+  },
+  {
+    img: onboardingImg4,
+    altText: 'modals.onboardingModal.step4.altText',
+    title: 'modals.onboardingModal.step4.title',
+    text: 'modals.onboardingModal.step4.text',
   },
 ];
 
@@ -48,37 +64,56 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'scroll',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    whiteSpace: 'pre-line',
   },
   btnSpacing: {
-    marginRight: theme.spacing(2),
+    marginRight: 'auto',
+  },
+  btnContainer: {
+    height: '45px',
+  },
+  btnIcon: {
+    height: 24,
+    width: 24,
   },
 }));
 
 export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
+  const dispatch = useDispatch();
+  const isOpen = useSelector(controlSelectors.selectIsOnboardingModalOpen);
   const { t } = useTranslation();
   const classes = useStyles();
-
-  const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  const roomName = useRoomName();
+  const currentUserProfile = useCurrentUserProfile();
+
+  const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 
   useEffect(() => {
     // check to see if the user has completed the onboarding or not,
-    // if not display the modal
-    const completedOnboarding = Cookie.get(USER_ONBOARDING);
+
+    // TODO: change this to be driven by the backend so that a user
+    // will only have to see onboarding once per account
+    const completedOnboarding = localStorage.getItem(USER_ONBOARDING);
     if (!completedOnboarding) {
-      setIsOpen(true);
+      dispatch(controlsActions.setIsOnboardingModalOpen({ isOpen: true }));
     }
-  }, [setIsOpen]);
+  }, [dispatch]);
 
   const onCloseHandler = () => {
     // set a local cookie if the user has completed
-    Cookie.set(USER_ONBOARDING, 'completed');
-    setIsOpen(false);
+    localStorage.setItem(USER_ONBOARDING, 'completed');
+    dispatch(controlsActions.setIsOnboardingModalOpen({ isOpen: false }));
   };
 
   const nextStep = () => {
     if (currentStep + 1 < onboardingSteps.length) {
       setCurrentStep(currentStep + 1);
+    } else if (isRoomOwner) {
+      // if its the room owner, close the modal and open the membership mangement modal
+      onCloseHandler();
+      dispatch(controlsActions.setIsMembershipModalOpen({ isOpen: true }));
     } else {
       // we have hit the end, just call the close handler
       onCloseHandler();
@@ -91,9 +126,11 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
     }
   };
 
+  const endButtonText = isRoomOwner ? 'modals.onboardingModal.finishInvite' : 'modals.onboardingModal.finishText';
+
   return (
     <Modal onClose={onCloseHandler} isOpen={isOpen}>
-      <ModalTitleBar title={t('modals.onboardingModal.title')} onClose={onCloseHandler} />
+      <ModalTitleBar title={t(onboardingSteps[currentStep].title)} onClose={onCloseHandler} />
       <ModalContentWrapper>
         <ModalPane>
           <img
@@ -104,20 +141,22 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
         </ModalPane>
         <ModalPane>
           <Box className={classes.infoPane} display="flex" flexDirection="column">
-            <Typography variant="h6">{t(onboardingSteps[currentStep].title)}</Typography>
-            <Typography className={classes.bodyText}>{t(onboardingSteps[currentStep].text)}</Typography>
-            <Box display="flex" flexDirection="row">
+            <Typography className={classes.bodyText} variant="body1">
+              {t(onboardingSteps[currentStep].text)}
+            </Typography>
+            <Box display="flex" flexDirection="row" className={classes.btnContainer}>
               <ThemeProvider theme={snow}>
-                <Button className={classes.btnSpacing} disabled={currentStep === 0} onClick={prevStep}>
-                  {t('modals.onboardingModal.PreviousText')}
+                <Button
+                  className={classes.btnSpacing}
+                  disabled={currentStep === 0}
+                  onClick={prevStep}
+                  fullWidth={false}
+                >
+                  <BackIcon fontSize="default" />
                 </Button>
               </ThemeProvider>
-              <Button onClick={nextStep}>
-                {t(
-                  currentStep === onboardingSteps.length - 1
-                    ? 'modals.onboardingModal.finishText'
-                    : 'modals.onboardingModal.nextBtnText'
-                )}
+              <Button onClick={nextStep} fullWidth={false}>
+                {currentStep === onboardingSteps.length - 1 ? t(endButtonText) : <ForwardIcon fontSize="default" />}
               </Button>
             </Box>
           </Box>

@@ -6,6 +6,7 @@ const initialState = {
   isMembershipModalOpen: false,
   isUserSettingsModalOpen: false,
   isChangelogModalOpen: false,
+  isOnboardingModalOpen: false,
 };
 
 export const roomControlsSlice = createSlice({
@@ -24,6 +25,9 @@ export const roomControlsSlice = createSlice({
     setIsChangelogModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isChangelogModalOpen = payload.isOpen;
     },
+    setIsOnboardingModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
+      state.isOnboardingModalOpen = payload.isOpen;
+    },
   },
 });
 
@@ -33,10 +37,12 @@ const selectIsWallpaperModalOpen = (state: RootState) => state.roomControls.isWa
 const selectIsMembershipModalOpen = (state: RootState) => state.roomControls.isMembershipModalOpen;
 const selectIsUserSettingsModalOpen = (state: RootState) => state.roomControls.isUserSettingsModalOpen;
 const selectIsChangelogModalOpen = (state: RootState) => state.roomControls.isChangelogModalOpen;
+const selectIsOnboardingModalOpen = (state: RootState) => state.roomControls.isOnboardingModalOpen;
 
 export const selectors = {
   selectIsMembershipModalOpen,
   selectIsUserSettingsModalOpen,
   selectIsWallpaperModalOpen,
   selectIsChangelogModalOpen,
+  selectIsOnboardingModalOpen,
 };

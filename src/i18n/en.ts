@@ -289,7 +289,7 @@ export default {
         voteOnFeatures: 'Vote on Features',
         roomWallpaper: 'Wallpaper',
         roomMembersTitle: 'Room members',
-        addAndManage: 'Add & Manage',
+        addAndManage: 'Invite people',
         userSettings: 'User Settings',
         changelog: "What's new?",
       },
@@ -301,7 +301,7 @@ export default {
     },
     modals: {
       inviteUserModal: {
-        title: 'Manage members',
+        title: 'Invite people to {{roomName}}',
         inviteBtn: 'Invite',
         noInvitesLeft: 'No invites left',
         invitesLeft: '{{count}} invite left',
@@ -328,26 +328,33 @@ export default {
         title: 'Audio & Video',
       },
       onboardingModal: {
-        title: 'Welcome to With!',
         nextBtnText: 'Next',
         PreviousText: 'Previous',
-        finishText: 'Got it!',
+        finishText: 'Start using With',
+        finishInvite: 'Start inviting people',
         step1: {
-          title: 'step 1',
-          text: 'Lorem ipsum dolor sit amet,',
-          altText: 'alt 1',
+          title: 'Welcome',
+          text:
+            'Thanks for being an Alpha user.\n\nThere are still many things we need to build, and many things we need to learn.\n\nLet us show you around!',
+          altText: 'Welcome img',
         },
         step2: {
-          title: 'step 2',
+          title: 'A spatial place',
           text:
-            '2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut gravida neque. Ut turpis orci, imperdiet in molestie ornare, rhoncus venenatis justo. Morbi eget urna erat. Ut cursus ullamcorper fringilla. Aliquam vel quam imperdiet lacus posuere elementum in at felis. Donec finibus velit a justo mollis, vel pulvinar justo mollis. In ut diam scelerisque lorem viverra luctus. Sed consectetur odio tellus, in fringilla justo porttitor nec. Vivamus id nibh vestibulum, ornare tellus ac, tempor risus. Duis tempor euismod cursus. Suspendisse nec lacus augue. Morbi ut orci posuere, lobortis nulla ut, commodo lectus. Quisque id purus pellentesque, tempor elit eu, tincidunt tellus. Vivamus dapibus nibh quis scelerisque dignissim. Nulla turpis magna, tristique elementum iaculis sit amet, ornare quis elit. Vestibulum sodales euismod pulvinar. Fusce cursus tortor id condimentum euismod. Sed finibus blandit enim at elementum. Quisque consectetur elementum ipsum in sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam tempor, nulla at pellentesque iaculis, urna mi mattis erat, in pretium libero dolor maximus leo. Proin interdum a erat a tincidunt.',
-          altText: 'alt 2',
+            'In With, audio is based on proximity. You can drag your avatar and get closer to others to hear them clearly.\n\nYou can pan and zoom in the room using your mouse, keyboard, or trackpad.',
+          altText: 'Spacial audio img',
         },
         step3: {
-          title: 'step 3',
+          title: 'Be present on your terms',
           text:
-            '3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut gravida neque. Ut turpis orci, imperdiet in molestie ornare, rhoncus venenatis justo. Morbi eget urna erat. Ut cursus ullamcorper fringilla. Aliquam vel quam imperdiet lacus posuere elementum in at felis. Donec finibus velit a justo mollis, vel pulvinar justo mollis. In ut diam scelerisque lorem viverra luctus. Sed consectetur odio tellus, in fringilla justo porttitor nec. Vivamus id nibh vestibulum, ornare tellus ac, tempor risus. Duis tempor euismod cursus. Suspendisse nec lacus augue. Morbi ut orci posuere, lobortis nulla ut, commodo lectus. Quisque id purus pellentesque, tempor elit eu, tincidunt tellus. Vivamus dapibus nibh quis scelerisque dignissim. Nulla turpis magna, tristique elementum iaculis sit amet, ornare quis elit. Vestibulum sodales euismod pulvinar. Fusce cursus tortor id condimentum euismod. Sed finibus blandit enim at elementum. Quisque consectetur elementum ipsum in sollicitudin. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam tempor, nulla at pellentesque iaculis, urna mi mattis erat, in pretium libero dolor maximus leo. Proin interdum a erat a tincidunt.',
-          altText: 'alt 3',
+            'You can turn on your camera to engage heads-up, or choose a fun character to take the pressure off.\n\nSet a status to let others know what you’re up to, or hide in a corner to focus!',
+          altText: 'AV img',
+        },
+        step4: {
+          title: 'Accessorize',
+          text:
+            'Type or paste anything into the Omnibar and it will suggest the best accessories to add to the room.\n\nSticky notes, web links, whiteboards, and YouTube videos are currently available.',
+          altText: 'Accessory img',
         },
       },
       userSettingsModal: {

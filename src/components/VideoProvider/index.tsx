@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useCallback, useEffect } from 'react';
+import React, { createContext, ReactNode, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
 import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';
@@ -9,6 +9,7 @@ import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/u
 import useRoom from './useRoom/useRoom';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
 import { useAllParticipants } from './useAllParticipants/useAllParticipants';
+import { useHackReconnection } from './useHackReconnection/useHackReconnection';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -52,6 +53,8 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
   useHandleRoomDisconnectionErrors(room, onError);
   useHandleTrackPublicationFailed(room, onError);
   useHandleOnDisconnect(room, onDisconnect);
+  useHackReconnection(room);
+
   const allParticipants = useAllParticipants(room);
 
   return (

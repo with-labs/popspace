@@ -108,7 +108,7 @@ class Rooms extends DbAccess {
     return await this.generateRoom(userId)
   }
 
-  async generateRoom(userId) {
+  async generateRoomId() {
     // NOTE:
     // We want to maintain a relatively low room id string collision rate
     // Collision rate is a product of the randomness space and # of taken slots
@@ -123,6 +123,11 @@ class Rooms extends DbAccess {
       idString = ids.generateId()
       isUnique = await this.isUniqueIdString(idString)
     }
+    return idString
+  }
+
+  async generateRoom(userId) {
+    const idString = await this.generateRoomId()
     return await this.createRoomWithName(idString, userId)
   }
 

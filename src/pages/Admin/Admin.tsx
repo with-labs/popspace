@@ -53,11 +53,7 @@ export const Admin: React.FC<IAdminProps> = () => {
                 label="Room Name"
                 className={clsx(styles.field, 'u-sm-sizeFull')}
               />
-              <Button
-                className={clsx(styles.button, 'u-sm-sizeFull')}
-                type="submit"
-                disabled={email.length === 0 || roomName.length === 0}
-              >
+              <Button className={clsx(styles.button, 'u-sm-sizeFull')} type="submit" disabled={email.length === 0}>
                 Send invite
               </Button>
             </div>

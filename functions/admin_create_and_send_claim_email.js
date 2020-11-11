@@ -22,6 +22,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
   const params = JSON.parse(event.body)
   params.email = util.args.consolidateEmailString(params.email)
+  params.roomName = params.roomName || await db.rooms.generateRoomId()
 
   const allowRegistered = true
   const createNewRooms = true

@@ -3,6 +3,7 @@ import Api from '../utils/api';
 import { useLocation } from 'react-router-dom';
 import Signup from './signup';
 import { USER_SESSION_TOKEN } from '../constants/User';
+import { logger } from '../utils/logger';
 
 export default function SignupThroughInvite() {
   const query = new URLSearchParams(useLocation().search);
@@ -14,7 +15,7 @@ export default function SignupThroughInvite() {
     // If the user signed up by other means, we allow this link to work
     const result: any = await Api.registerThroughInvite(data, otp, inviteId);
     if (result.success) {
-      console.log(result);
+      logger.debug(result);
       if (result.newSessionToken) {
         window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
       }

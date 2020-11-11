@@ -5,6 +5,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { actions } from './roomSlice';
+import { logger } from '../../utils/logger';
 
 export function useCleanupDisconnectedPeople() {
   const selectPeopleIds = useMemo(
@@ -27,7 +28,7 @@ export function useCleanupDisconnectedPeople() {
   useEffect(() => {
     for (const id of peopleIds) {
       if (!allParticipantIds.has(id)) {
-        console.debug(`Cleaning up disconnected peer: ${id}`);
+        logger.debug(`Cleaning up disconnected peer: ${id}`);
         dispatch(actions.removePerson({ id }));
       }
     }

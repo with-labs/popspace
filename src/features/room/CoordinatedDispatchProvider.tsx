@@ -4,6 +4,7 @@ import store from '../../state/store';
 import { actions } from './roomSlice';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 import { RoomEvent } from '../../constants/twilio';
+import { logger } from '../../utils/logger';
 
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
@@ -83,7 +84,7 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
      * then clear out your own room state
      */
     const disconnectHandler = () => {
-      console.debug('disconnected');
+      logger.debug('disconnected');
       dispatch(
         actions.removePerson({
           id: localParticipantSid,

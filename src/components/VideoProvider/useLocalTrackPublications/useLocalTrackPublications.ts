@@ -10,6 +10,7 @@ import {
 import { v4 } from 'uuid';
 import { useAppState } from '../../../state';
 import { useTranslation } from 'react-i18next';
+import { logger } from '../../../utils/logger';
 
 function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalDataTrack | null, trackName: string) {
   const { setError } = useAppState();
@@ -44,7 +45,7 @@ function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalD
                 room.localParticipant.emit('trackUnpublished', pub);
               }
             } catch (err) {
-              console.error(err);
+              logger.error(err);
             }
           })
           .catch((err) => {

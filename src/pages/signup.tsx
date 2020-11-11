@@ -2,6 +2,7 @@
 import React from 'react';
 import { styled } from '@material-ui/core/styles';
 import Api from '../utils/api';
+import { logger } from '../utils/logger';
 
 const Main = styled('main')({
   height: '100%',
@@ -38,7 +39,6 @@ export default function Signup(props: any) {
   };
 
   const onCheckboxChange = (event: any) => {
-    console.log(event.target.id);
     const checkbox = event.target;
     const id = event.target.id;
   };
@@ -68,7 +68,7 @@ export default function Signup(props: any) {
       }
     } else {
       alert(`Invalid fields: ${JSON.stringify(Object.keys(validation.invalidFields))}`);
-      console.log(validation);
+      logger.debug(validation);
     }
   };
 

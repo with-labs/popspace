@@ -10,6 +10,7 @@ import useRoom from './useRoom/useRoom';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
 import { useAllParticipants } from './useAllParticipants/useAllParticipants';
 import { useHackReconnection } from './useHackReconnection/useHackReconnection';
+import { logger } from '../../utils/logger';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -39,7 +40,7 @@ interface VideoProviderProps {
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = useCallback(
     (error: Error) => {
-      console.log(`ERROR: ${error.message}`, error);
+      logger.log(`ERROR: ${error.message}`, error);
       Sentry.captureException(error);
       onError(error);
     },

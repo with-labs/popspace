@@ -125,6 +125,8 @@
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
+    "test:watch": "jest --watch --bail",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx}",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",

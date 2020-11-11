@@ -12,7 +12,7 @@ export function useCanEnterRoom() {
 
   // if you were ever the first person in the room, you are good - even if more
   // people join later.
-  const [wasFirstInRoom, setWasFirstInRoom] = useState(false);
+  const [wasFirstInRoom, setWasFirstInRoom] = useState(isFirstInRoom);
   useEffect(() => {
     if (isFirstInRoom) setWasFirstInRoom(true);
   }, [isFirstInRoom]);

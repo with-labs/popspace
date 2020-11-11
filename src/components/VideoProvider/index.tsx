@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useCallback } from 'react';
+import React, { createContext, ReactNode, useCallback, useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';

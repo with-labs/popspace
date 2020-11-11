@@ -184,4 +184,44 @@ describe('useCanEnterRoom hook', () => {
 
     expect(result.current).toBe(true);
   });
+
+  it('eventually says yes if we time out waiting for a ping from peers', async () => {
+    jest.useFakeTimers();
+
+    (useVideoContext as jest.Mock).mockReturnValue({
+      room: {
+        participants: {
+          size: 1,
+        },
+      },
+    });
+
+    const state = {
+      room: {
+        syncedFromPeer: false,
+      },
+    };
+    const store = createStore(() => state);
+
+    const { result, rerender } = renderHook(() => useCanEnterRoom(), {
+      wrapper: (p) => <Provider store={store} {...p} />,
+    });
+
+    expect(result.current).toBe(false);
+
+    act(() => {
+      jest.advanceTimersToNextTimer();
+    });
+
+    expect(result.current).toBe(true);
+
+    // test that it resets forced entry state when room changes
+    (useVideoContext as jest.Mock).mockReturnValue({
+      room: null,
+    });
+
+    rerender();
+
+    expect(result.current).toBe(false);
+  });
 });

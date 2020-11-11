@@ -20,7 +20,7 @@ function useZIndex(widgetId: string) {
   const selectZIndex = React.useMemo(
     () =>
       createSelector(
-        (state: RootState) => state.room.zOrder,
+        (state: RootState) => state.room.zOrder || [],
         (_: any, id: string) => id,
         (zOrder, id) => {
           const index = zOrder.indexOf(id);

@@ -179,10 +179,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
       if (!contentRef.current || !needsRemeasure) return;
 
       const naturalWidth = contentRef.current.clientWidth;
-      // FIXME: figure out why this height is measured slightly wrong -
-      // has to do with whatever is causing all heights in absolute positioned
-      // containers to be off
-      const naturalHeight = contentRef.current.clientHeight - 4;
+      const naturalHeight = contentRef.current.clientHeight;
 
       const aspect = naturalWidth / naturalHeight;
       setOriginalAspectRatio(aspect);

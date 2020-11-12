@@ -14,6 +14,7 @@ import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
 import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
+import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 
 interface IRoomProps {}
 
@@ -39,6 +40,7 @@ export const Room: React.FC<IRoomProps> = () => (
     <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />
+    <OnboardingModal />
   </>
 );
 

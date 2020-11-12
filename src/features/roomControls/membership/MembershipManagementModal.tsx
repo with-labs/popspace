@@ -153,7 +153,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
   return (
     <>
       <Modal onClose={onCloseHandler} isOpen={isOpen}>
-        <ModalTitleBar title={t('modals.inviteUserModal.title')} onClose={onCloseHandler} />
+        <ModalTitleBar title={t('modals.inviteUserModal.title', { roomName: roomName })} onClose={onCloseHandler} />
         <ModalContentWrapper>
           <ModalPane className={classes.imgPane}>
             <img src={membersImg} alt="Members" className={classes.image} />

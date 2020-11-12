@@ -187,7 +187,7 @@ const roomSlice = createSlice({
     bringToFront: {
       prepare: (a) => prepareSyncAction<{ id: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
-        const index = state.zOrder.indexOf(payload.id);
+        const index = state.zOrder ? state.zOrder.indexOf(payload.id) : -1;
         if (index === -1) return;
 
         state.zOrder.splice(index, 1);

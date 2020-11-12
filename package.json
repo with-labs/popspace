@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/with-labs/with_streamer#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jest": "^26.6.3",
     "ws": "^7.4.0"

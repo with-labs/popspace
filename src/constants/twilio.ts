@@ -29,3 +29,8 @@ export enum RoomEvent {
   TrackUnsubscribed = 'trackUnsubscribed',
   DominantSpeakerChanged = 'dominantSpeakerChanged',
 }
+
+export enum ParticipantState {
+  Connected = 'connected',
+  Reconnecting = 'reconnecting',
+}

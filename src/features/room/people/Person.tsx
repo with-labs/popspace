@@ -28,7 +28,7 @@ export const Person = React.memo<IPersonProps>(({ participant }) => {
   }
 
   return (
-    <Draggable id={props.id} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}>
+    <Draggable id={participant.sid} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}>
       <PersonBubble
         participant={participant}
         person={person}

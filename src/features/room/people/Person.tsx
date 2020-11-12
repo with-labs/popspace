@@ -6,6 +6,8 @@ import { useNamedPublication } from '../../../hooks/useNamedPublication/useNamed
 import { MIC_TRACK_NAME, CAMERA_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../constants/User';
 import { LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { useEnforcedPersonSelector } from './useEnforcedPersonSelector';
+import { useParticipantState } from '../../../hooks/useParticipantState/useParticipantState';
+import { ParticipantState } from '../../../constants/twilio';
 
 const MAX_Z_INDEX = 2147483647;
 
@@ -17,13 +19,16 @@ export const Person = React.memo<IPersonProps>(({ participant }) => {
   const localParticipant = useLocalParticipant();
   const person = useEnforcedPersonSelector(participant.sid);
 
+  const participantState = useParticipantState(participant);
+
   const isMe = localParticipant?.sid === participant?.sid;
 
   const audioTrackPub = useNamedPublication(participant, MIC_TRACK_NAME);
   const cameraTrackPub = useNamedPublication(participant, CAMERA_TRACK_NAME);
   const screenShareVideoTrackPub = useNamedPublication(participant, SCREEN_SHARE_TRACK_NAME);
 
-  if (!participant || !person) {
+  // hide users in an inconsistent connection state
+  if (!person || participantState !== ParticipantState.Connected) {
     return null;
   }
 

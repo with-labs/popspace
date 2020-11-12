@@ -257,10 +257,10 @@ const roomSlice = createSlice({
     leave() {
       return initialState;
     },
-    syncFromPeer(lastState, action: PayloadAction<RoomState>) {
+    syncFromPeer(lastState, action: PayloadAction<{ state: RoomState; recipient: string }>) {
       if (lastState.syncedFromPeer) return lastState;
       return {
-        ...action.payload,
+        ...action.payload.state,
         syncedFromPeer: true,
       };
     },

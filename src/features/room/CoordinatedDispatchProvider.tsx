@@ -5,6 +5,7 @@ import { actions } from './roomSlice';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 import { RoomEvent } from '../../constants/twilio';
 import { logger } from '../../utils/logger';
+import { RemoteParticipant } from 'twilio-video';
 
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
@@ -63,6 +64,20 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
             hasReceivedPing.current = true;
             store.dispatch(action);
           }
+          // BACKWARDS COMPAT: you can delete this after we launch Twilio fixes sometime around 2020/11/16
+          // translate the old "PING" into the new syncFromPeer
+          store.dispatch(
+            actions.syncFromPeer({
+              // the old PING action sent the entire state, we just keep the room key now
+              state: action.payload.state.room,
+              recipient: action.payload.recipient,
+            })
+          );
+        } else if (action.type === actions.syncFromPeer.type) {
+          // only sync state intended for us
+          if (action.payload.recipient === localParticipantSid) {
+            store.dispatch(action);
+          }
         } else {
           store.dispatch(action);
         }
@@ -95,7 +110,7 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
 
     // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
     // state to a newly joined remote participant.
-    const trackPublishedHandler = (pub: any, pt: any) => {
+    const trackPublishedHandler = (pub: any, pt: RemoteParticipant) => {
       // Send a ping to the other remotes when you see another remote data track published. This will sync the local
       // huddles state to the newly joined remote participant.
       if (pub.kind === 'data') {
@@ -103,7 +118,14 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
         setTimeout(() => {
           // we only sync the room state.
           const { room: roomState } = store.getState();
-          localDT.send(JSON.stringify(actions.syncFromPeer(roomState)));
+          localDT.send(
+            JSON.stringify(
+              actions.syncFromPeer({
+                state: roomState,
+                recipient: pt.sid,
+              })
+            )
+          );
         }, 1000);
       }
     };
@@ -111,10 +133,21 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
     room.on(RoomEvent.TrackMessage, dataMessageHandler);
     room.on(RoomEvent.Disconnected, disconnectHandler);
     room.on(RoomEvent.TrackPublished, trackPublishedHandler);
+
+    // for debugging
+    const logConnected = (pt: RemoteParticipant) => logger.debug(`${pt.sid} connected`);
+    room.on(RoomEvent.ParticipantConnected, logConnected);
+    const logReconnected = (pt: RemoteParticipant) => logger.debug(`${pt.sid} reconnected`);
+    room.on(RoomEvent.ParticipantReconnected, logReconnected);
+    const logReconnecting = (pt: RemoteParticipant) => logger.debug(`${pt.sid} reconnecting`);
+    room.on(RoomEvent.ParticipantReconnecting, logReconnecting);
     return () => {
       room.off(RoomEvent.TrackMessage, dataMessageHandler);
       room.off(RoomEvent.Disconnected, disconnectHandler);
       room.off(RoomEvent.TrackPublished, trackPublishedHandler);
+      room.off(RoomEvent.ParticipantConnected, logConnected);
+      room.off(RoomEvent.ParticipantReconnected, logReconnected);
+      room.off(RoomEvent.ParticipantReconnecting, logReconnecting);
     };
   }, [room, dataMessageHandler, dispatch, localParticipantSid, localDT]);
 

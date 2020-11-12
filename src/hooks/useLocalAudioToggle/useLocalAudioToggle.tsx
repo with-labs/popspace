@@ -1,25 +1,44 @@
-import { useCallback, useRef } from 'react';
-import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
+/**
+ * ##WITH_EDIT
+ *
+ * Aug 28, 2020 WQP
+ * - Add messaging for when there is not microphone access.
+ */
+
+import { LocalAudioTrack } from 'twilio-video';
+import { useCallback, useState } from 'react';
+import useIsTrackEnabled from '../useIsTrackEnabled/useIsTrackEnabled';
+import useVideoContext from '../useVideoContext/useVideoContext';
 
 export default function useLocalAudioToggle() {
-  const { audioTrack, startAudio, stopAudio } = useLocalTracks();
-  const busyRef = useRef(false);
+  const {
+    localTracks,
+    getLocalAudioTrack,
+    room: { localParticipant },
+  } = useVideoContext();
+  const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
+  const isEnabled = useIsTrackEnabled(audioTrack);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const toggleAudioEnabled = useCallback(async () => {
-    if (audioTrack) {
-      stopAudio();
-    } else {
-      // prevent simultaneous invocation
-      if (busyRef.current) return;
+    // prevent multiple concurrent publishes
+    if (isPublishing) return;
 
-      busyRef.current = true;
+    if (audioTrack) {
+      audioTrack.isEnabled ? audioTrack.disable() : audioTrack.enable();
+    } else {
+      setIsPublishing(true);
       try {
-        await startAudio();
+        const track = await getLocalAudioTrack();
+        localParticipant?.publishTrack(track, { priority: 'standard' });
+      } catch (err) {
+        // this error is already reported by the video context.
+        // TODO: move the error handling here?
       } finally {
-        busyRef.current = false;
+        setIsPublishing(false);
       }
     }
-  }, [audioTrack, startAudio, stopAudio]);
+  }, [audioTrack, getLocalAudioTrack, localParticipant, isPublishing]);
 
-  return [!!audioTrack, toggleAudioEnabled] as const;
+  return [isEnabled, toggleAudioEnabled] as const;
 }

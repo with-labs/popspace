@@ -13,7 +13,6 @@ import { Vector2 } from '../../../types/spatials';
  */
 export function useAddAccessory() {
   const user = useLocalParticipant();
-  const userSid = user?.sid;
 
   const viewport = useRoomViewport();
 
@@ -39,21 +38,19 @@ export function useAddAccessory() {
         y: Math.random() * 50 - 25,
       });
 
-      if (userSid) {
-        dispatch(
-          roomActions.addWidget({
-            position,
-            widget: {
-              kind: 'widget',
-              type,
-              participantSid: userSid,
-              data: initialData,
-              isDraft: !publishImmediately,
-            },
-          })
-        );
-      }
+      dispatch(
+        roomActions.addWidget({
+          position,
+          widget: {
+            kind: 'widget',
+            type,
+            participantSid: user.sid,
+            data: initialData,
+            isDraft: !publishImmediately,
+          },
+        })
+      );
     },
-    [dispatch, userSid, viewport]
+    [dispatch, user.sid, viewport]
   );
 }

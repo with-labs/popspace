@@ -106,9 +106,8 @@ function Demo({
   status?: string;
   avatar?: string;
 }) {
-  const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | null>(null);
-  const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | null>(null);
-  const [localScreenShare, setLocalScreenShare] = useState<LocalVideoTrackPublication | null>(null);
+  const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | undefined>(undefined);
+  const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | undefined>(undefined);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -119,10 +118,6 @@ function Demo({
       .then((s) => {
         if (videoOn) {
           setLocalVideo(createFakeVideoTrackPublication(s) as any);
-          setLocalScreenShare(createFakeVideoTrackPublication(s) as any);
-        } else {
-          setLocalVideo(null);
-          setLocalScreenShare(null);
         }
         setLocalAudio(createFakeAudioTrackPublication(s, isMuted) as any);
       });
@@ -151,9 +146,8 @@ function Demo({
           status: status ?? person.status,
         }}
         isLocal={isLocal}
-        cameraTrack={localVideo}
+        cameraTrack={videoOn ? localVideo : undefined}
         audioTrack={localAudio}
-        screenShareTrack={localScreenShare}
       />
     </Box>
   );

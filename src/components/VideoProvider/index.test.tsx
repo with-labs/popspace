@@ -3,25 +3,25 @@ import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Room, TwilioError } from 'twilio-video';
 import { VideoProvider } from './index';
+import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
-import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Provider } from 'react-redux';
 import store from '../../state/store';
 
 const mockRoom = new EventEmitter() as Room;
 const mockOnDisconnect = jest.fn();
-jest.mock('./useRoom/useRoom', () => jest.fn(() => ({ room: mockRoom, isConnecting: false, connect: jest.fn() })));
+jest.mock('./useRoom/useRoom', () => jest.fn(() => ({ room: mockRoom, isConnecting: false })));
+jest.mock('./useLocalTracks/useLocalTracks', () =>
+  jest.fn(() => ({ localTracks: [{ name: 'mockTrack' }], getLocalVideoTrack: jest.fn() }))
+);
 jest.mock('./useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors');
 jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
 jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
 jest.mock('./useHandleOnDisconnect/useHandleOnDisconnect');
-jest.mock('./useLocalTrackPublications/useLocalTrackPublications');
-jest.mock('../../hooks/useLocalVideoToggle/useLocalVideoToggle', () => () => [true, jest.fn()]);
-jest.mock('./useAllParticipants/useAllParticipants', () => ({ useAllParticipants: () => [] }));
 
 describe('the VideoProvider component', () => {
   it('should correctly return the Video Context object', () => {
@@ -35,16 +35,16 @@ describe('the VideoProvider component', () => {
     const { result } = renderHook(useVideoContext, { wrapper });
     expect(result.current).toEqual({
       isConnecting: false,
+      localTracks: [{ name: 'mockTrack' }],
       room: mockRoom,
       onError: expect.any(Function),
       onDisconnect: mockOnDisconnect,
-      connect: expect.any(Function),
-      allParticipants: [],
+      getLocalVideoTrack: expect.any(Function),
     });
-    expect(useRoom).toHaveBeenCalledWith(expect.any(Function), {
+    expect(useRoom).toHaveBeenCalledWith([{ name: 'mockTrack' }], expect.any(Function), {
       dominantSpeaker: true,
     });
-    expect(useLocalTrackPublications).toHaveBeenCalled();
+    expect(useLocalTracks).toHaveBeenCalled();
     expect(useHandleRoomDisconnectionErrors).toHaveBeenCalledWith(mockRoom, expect.any(Function));
     expect(useHandleTrackPublicationFailed).toHaveBeenCalledWith(mockRoom, expect.any(Function));
     expect(useHandleOnDisconnect).toHaveBeenCalledWith(mockRoom, mockOnDisconnect);

@@ -1,25 +1,24 @@
 import { useEffect, useState } from 'react';
 import useVideoContext from '../useVideoContext/useVideoContext';
-import { RoomState, RoomEvent } from '../../constants/twilio';
+
+type RoomStateType = 'disconnected' | 'connected' | 'reconnecting';
 
 export default function useRoomState() {
   const { room } = useVideoContext();
-  const [state, setState] = useState<RoomState>(RoomState.Disconnected);
+  const [state, setState] = useState<RoomStateType>('disconnected');
 
   useEffect(() => {
-    if (!room) return;
-
-    const setRoomState = () => setState((room.state || RoomState.Disconnected) as RoomState);
+    const setRoomState = () => setState((room.state || 'disconnected') as RoomStateType);
     setRoomState();
     room
-      .on(RoomEvent.Disconnected, setRoomState)
-      .on(RoomEvent.Reconnected, setRoomState)
-      .on(RoomEvent.Reconnecting, setRoomState);
+      .on('disconnected', setRoomState)
+      .on('reconnected', setRoomState)
+      .on('reconnecting', setRoomState);
     return () => {
       room
-        .off(RoomEvent.Disconnected, setRoomState)
-        .off(RoomEvent.Reconnected, setRoomState)
-        .off(RoomEvent.Reconnecting, setRoomState);
+        .off('disconnected', setRoomState)
+        .off('reconnected', setRoomState)
+        .off('reconnecting', setRoomState);
     };
   }, [room]);
 

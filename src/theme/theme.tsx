@@ -10,7 +10,6 @@ import { generateShadows } from './shadows';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type _aug from '@material-ui/lab/themeAugmentation';
 import { DropdownIcon } from '../components/icons/DropdownIcon';
-import shadows from '@material-ui/core/styles/shadows';
 
 const SEMIBOLD_WEIGHT = 600;
 
@@ -159,7 +158,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   // only used to extract some MUI theme tools that can be
   // used in the overrides below, such as computed color palettes and
   // font sizing utils
-  const { typography, palette, spacing, transitions, shape, mainShadows, focusRings, zIndex } = createMuiTheme({
+  const { typography, palette, spacing, transitions, shape, mainShadows, focusRings } = createMuiTheme({
     palette: finalPalette,
     typography: {
       fontWeightMedium: SEMIBOLD_WEIGHT,
@@ -332,9 +331,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiTooltip: {
         // delay appearance by 500ms
         enterDelay: 500,
-      },
-      MuiSnackbarContent: {
-        elevation: 1,
       },
     },
     overrides: {
@@ -678,28 +674,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         root: {
           borderRadius: shape.borderRadius,
           textTransform: 'none',
-          zIndex: zIndex.snackbar,
-          boxShadow: mainShadows.surface,
-        },
-      },
-      MuiSnackbarContent: {
-        root: {
-          padding: `${spacing(2)}px ${spacing(3)}px`,
-          fontSize: typography.pxToRem(16),
-          lineHeight: 22 / 16,
-          fontWeight: typography.fontWeightMedium,
-          minWidth: 272,
-          backgroundColor: palette.background.paper,
-          color: palette.text.primary,
-          boxShadow: 'none',
-        },
-      },
-      MuiAlert: {
-        root: {
-          padding: `${spacing(2)}px ${spacing(3)}px`,
-          fontSize: typography.pxToRem(16),
-          lineHeight: 22 / 16,
-          fontWeight: typography.fontWeightMedium,
+          padding: '16px 30px',
+          maxWidth: 400,
         },
       },
       MuiSlider: {
@@ -823,7 +799,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           border: `2px solid ${palette.background.paper}`,
           backgroundColor: palette.background.paper,
           color: palette.grey[900],
-          '&:focus, &$focusVisible': {
+          '&$focused, &:focus, &$focusVisible': {
             borderColor: palette.secondary.dark,
           },
           '&:hover': {

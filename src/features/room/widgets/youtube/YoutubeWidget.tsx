@@ -76,7 +76,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
     saveWidget(data);
   };
 
-  if (state.isDraft && state.participantSid === localParticipant?.sid) {
+  if (state.isDraft && state.participantSid === localParticipant.sid) {
     return (
       <WidgetFrame color="cherry" widgetId={state.id}>
         <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />

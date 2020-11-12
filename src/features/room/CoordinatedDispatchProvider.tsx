@@ -1,10 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useLocalDataTrack } from '../../hooks/useLocalDataTrack/useLocalDataTrack';
 import store from '../../state/store';
 import { actions } from './roomSlice';
-import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
-import { RoomEvent } from '../../constants/twilio';
-import { logger } from '../../utils/logger';
 
 interface ICoordinatedDispatchContext {
   dispatch: (action: Action) => void;
@@ -22,8 +20,8 @@ export type Action = { type: string; payload: any };
  */
 export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
   const { room } = useVideoContext();
-  const { localParticipant } = room || {};
-  const { dataTrack: localDT } = useLocalTracks();
+  const { localParticipant } = room;
+  const localDT = useLocalDataTrack();
   const hasReceivedPing = useRef(false);
 
   // This is what we will use in place of the normal `dispatch` function in the redux store. This is necessary to
@@ -32,7 +30,7 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
     (action: Action) => {
       store.dispatch(action);
 
-      if (action.payload?.sync) {
+      if (action.payload.sync) {
         // Then do the remote data track message
         localDT.send(JSON.stringify(action));
       }
@@ -73,29 +71,27 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
     [localParticipantSid]
   );
 
-  /**
-   * Handles various subscriptions related to keeping all the Redux stores in sync
-   */
+  const disconnectHandler = useCallback(() => {
+    dispatch(
+      actions.removePerson({
+        id: localParticipantSid,
+      })
+    );
+  }, [dispatch, localParticipantSid]);
+
   useEffect(() => {
-    if (!room) return;
-
-    /**
-     * When you disconnect, you should try to remove yourself from peers' Redux stores,
-     * then clear out your own room state
-     */
-    const disconnectHandler = () => {
-      logger.debug('disconnected');
-      dispatch(
-        actions.removePerson({
-          id: localParticipantSid,
-        })
-      );
-      dispatch(actions.leave());
+    room.on('trackMessage', dataMessageHandler);
+    room.on('disconnect', disconnectHandler);
+    return () => {
+      room.off('trackMessage', dataMessageHandler);
+      room.off('disconnect', disconnectHandler);
     };
+  }, [room, dataMessageHandler, disconnectHandler]);
 
-    // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
-    // state to a newly joined remote participant.
-    const trackPublishedHandler = (pub: any, pt: any) => {
+  // Handler to call when we see a new data track published. This is intended to start the process of syncing the local
+  // state to a newly joined remote participant.
+  const trackPublishedHandler = useCallback(
+    (pub, pt) => {
       // Send a ping to the other remotes when you see another remote data track published. This will sync the local
       // huddles state to the newly joined remote participant.
       if (pub.kind === 'data') {
@@ -103,20 +99,28 @@ export const CoordinatedDispatchProvider: React.FC = ({ children }) => {
         setTimeout(() => {
           // we only sync the room state.
           const { room: roomState } = store.getState();
-          localDT.send(JSON.stringify(actions.syncFromPeer(roomState)));
+          localDT.send(
+            JSON.stringify({
+              type: 'PING',
+              payload: {
+                state: { room: roomState },
+                recipient: pt.sid,
+                replyto: localParticipant.sid,
+              },
+            })
+          );
         }, 1000);
       }
-    };
+    },
+    [localDT, localParticipant]
+  );
 
-    room.on(RoomEvent.TrackMessage, dataMessageHandler);
-    room.on(RoomEvent.Disconnected, disconnectHandler);
-    room.on(RoomEvent.TrackPublished, trackPublishedHandler);
+  useEffect(() => {
+    room.on('trackPublished', trackPublishedHandler);
     return () => {
-      room.off(RoomEvent.TrackMessage, dataMessageHandler);
-      room.off(RoomEvent.Disconnected, disconnectHandler);
-      room.off(RoomEvent.TrackPublished, trackPublishedHandler);
+      room.off('trackPublished', trackPublishedHandler);
     };
-  }, [room, dataMessageHandler, dispatch, localParticipantSid, localDT]);
+  });
 
   return <CoordinatedDispatchContext.Provider value={{ dispatch }}>{children}</CoordinatedDispatchContext.Provider>;
 };

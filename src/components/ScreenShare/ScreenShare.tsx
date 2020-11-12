@@ -1,15 +1,23 @@
 import * as React from 'react';
-import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
+import { useParticipant } from '../../hooks/useParticipant/useParticipant';
+import usePublications from '../../hooks/usePublications/usePublications';
+import {
+  RemoteTrackPublication,
+  LocalTrackPublication,
+  LocalVideoTrackPublication,
+  LocalAudioTrackPublication,
+} from 'twilio-video';
+import { SCREEN_SHARE_TRACK_NAME, SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../constants/User';
 import Publication from '../Publication/Publication';
 import { ScreenSharePlaceholder } from './ScreenSharePlaceholder';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { Lightbox } from '../Lightbox/Lightbox';
-import { useParticipant } from '../../hooks/useParticipant/useParticipant';
-import { useNamedPublication } from '../../hooks/useNamedPublication/useNamedPublication';
-import { SCREEN_SHARE_TRACK_NAME, SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../constants/User';
+import { useScreenSharePublication } from '../../hooks/useScreenShare/useScreenShare';
 
 export interface IScreenShareProps {
   participantSid: string | null;
   onSourceChange?: (publication: RemoteTrackPublication | LocalTrackPublication | null) => void;
+  onStreamEnd?: () => void;
   className?: string;
   placeholderClassName?: string;
   emptyMessage?: React.ReactNode;
@@ -22,6 +30,13 @@ export interface IScreenShareProps {
    * you can pass its ID to enable spatial audio.
    */
   objectId?: string;
+  /**
+   * For advanced use cases - normally this component is declarative
+   * and stops the stream when it is unmounted, but if you want to keep
+   * the video stream published after this component is gone, pass `true`.
+   * Be sure to clean it up when you're done with it though.
+   */
+  keepPublishedOnUnmount?: boolean;
 }
 
 /**
@@ -32,23 +47,31 @@ export interface IScreenShareProps {
  */
 export const ScreenShare: React.FC<IScreenShareProps> = ({
   participantSid,
+  onSourceChange,
   className,
   emptyMessage,
   id,
   isFullscreen,
   onFullscreenExit,
   placeholderClassName,
-  onSourceChange,
+  keepPublishedOnUnmount = false,
+  onStreamEnd,
   muted,
   objectId,
 }) => {
-  const participant = useParticipant(participantSid);
-  const videoPub = useNamedPublication(participant, SCREEN_SHARE_TRACK_NAME);
-  const audioPub = useNamedPublication(participant, SCREEN_SHARE_AUDIO_TRACK_NAME);
+  const { participant, videoPub, audioPub, ready } = useScreenSharePublication({
+    participantSid,
+    keepPublishedOnUnmount,
+    onStreamEnd,
+  });
 
   React.useEffect(() => {
-    onSourceChange?.(videoPub);
-  }, [videoPub, onSourceChange]);
+    // don't notify of stream change if the streams haven't
+    // even been initialized yet (i.e. the initial `null` blank state)
+    if (!ready) return;
+
+    onSourceChange?.(videoPub || null);
+  }, [onSourceChange, videoPub, ready]);
 
   if (!participant || !videoPub) {
     return <ScreenSharePlaceholder className={placeholderClassName || className} message={emptyMessage} />;

@@ -24,7 +24,6 @@ export interface IAddStickyNoteButtonProps {
 export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ parentId }) => {
   const { t } = useTranslation();
   const localParticipant = useLocalParticipant();
-  const localParticipantSid = localParticipant?.sid;
   const localDisplayName = useParticipantDisplayIdentity(localParticipant);
 
   const { toWorldCoordinate } = useRoomViewport();
@@ -40,25 +39,23 @@ export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ paren
           y: window.innerHeight / 2,
         });
 
-    if (localParticipantSid) {
-      coordinatedDispatch(
-        roomSlice.actions.addWidget({
-          widget: {
-            kind: 'widget',
-            type: WidgetType.StickyNote,
-            data: {
-              title: '',
-              text: '',
-              author: localDisplayName || 'Anonymous',
-            },
-            isDraft: true,
-            participantSid: localParticipantSid,
+    coordinatedDispatch(
+      roomSlice.actions.addWidget({
+        widget: {
+          kind: 'widget',
+          type: WidgetType.StickyNote,
+          data: {
+            title: '',
+            text: '',
+            author: localDisplayName || 'Anonymous',
           },
-          position,
-        })
-      );
-    }
-  }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipantSid, toWorldCoordinate]);
+          isDraft: true,
+          participantSid: localParticipant.sid,
+        },
+        position,
+      })
+    );
+  }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipant.sid, toWorldCoordinate]);
 
   return (
     <WidgetTitlebarButton onClick={handleCreateNew} aria-label={t('widgets.stickyNote.quickAddButton')}>

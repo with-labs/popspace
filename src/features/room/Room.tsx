@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
@@ -7,16 +7,14 @@ import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
 import { ViewportControls } from '../roomControls/viewport/ViewportControls';
+import { useRoomPresence } from './useRoomPresence';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { WallpaperModal } from '../roomControls/wallpaper/WallpaperModal';
 import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
-import { ParticipantState } from '../../constants/twilio';
 
 interface IRoomProps {}
 
@@ -28,17 +26,17 @@ const LocalVolumeDetector = () => {
   return null;
 };
 
-const CleanupDisconnectedPeople = React.memo(() => {
-  useCleanupDisconnectedPeople();
+const RoomPresenceDetector = () => {
+  useRoomPresence();
   return null;
-});
+};
 
 export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
     <WallpaperModal />
     <LocalVolumeDetector />
-    <CleanupDisconnectedPeople />
+    <RoomPresenceDetector />
     <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />
@@ -49,13 +47,8 @@ export const Room: React.FC<IRoomProps> = () => (
 const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
+  const participantIds = useSelector(selectors.selectPeopleIds);
   const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
-
-  const { allParticipants } = useVideoContext();
-  // only show participants who are actually connected
-  const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
-    allParticipants,
-  ]);
 
   return (
     <RoomViewport
@@ -74,8 +67,8 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
           <Widget id={id} key={id} />
         ))}
       </ErrorBoundary>
-      {connectedParticipants.map((participant) => (
-        <Person participant={participant} key={participant.sid} />
+      {participantIds.map((id) => (
+        <Person id={id} key={id} />
       ))}
     </RoomViewport>
   );

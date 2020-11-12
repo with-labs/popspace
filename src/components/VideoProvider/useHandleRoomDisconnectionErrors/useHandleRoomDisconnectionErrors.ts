@@ -1,23 +1,19 @@
 import { Room, TwilioError } from 'twilio-video';
 import { useEffect } from 'react';
+
 import { Callback } from '../../../types/twilio';
-import * as Sentry from '@sentry/react';
-import { RoomEvent } from '../../../constants/twilio';
 
-export default function useHandleRoomDisconnectionErrors(room: Room | null, onError: Callback) {
+export default function useHandleRoomDisconnectionErrors(room: Room, onError: Callback) {
   useEffect(() => {
-    if (!room) return;
-
-    const onDisconnected = (_: Room, error: TwilioError) => {
+    const onDisconnected = (room: Room, error: TwilioError) => {
       if (error) {
-        Sentry.captureEvent(error);
         onError(error);
       }
     };
 
-    room.on(RoomEvent.Disconnected, onDisconnected);
+    room.on('disconnected', onDisconnected);
     return () => {
-      room.off(RoomEvent.Disconnected, onDisconnected);
+      room.off('disconnected', onDisconnected);
     };
   }, [room, onError]);
 }

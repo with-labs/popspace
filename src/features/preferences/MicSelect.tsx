@@ -1,7 +1,8 @@
 import { MenuItem, TextField } from '@material-ui/core';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useAVSources } from '../../hooks/useAVSources/useAVSources';
-import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
+import * as preferences from './preferencesSlice';
 
 export interface IMicSelectProps {
   label?: string;
@@ -10,21 +11,19 @@ export interface IMicSelectProps {
 }
 
 export const MicSelect: React.FC<IMicSelectProps> = (props) => {
-  const { mics, initialized } = useAVSources();
-  const { micDeviceId, setMicDeviceId } = useLocalTracks();
+  const { mics } = useAVSources();
 
-  // avoid rendering before the options are loaded
-  if (!initialized) {
-    return <TextField disabled />;
-  }
+  const activeMicId = useSelector(preferences.selectors.selectActiveMicId) || mics[0]?.deviceId || '';
+
+  const dispatch = useDispatch();
 
   return (
     <TextField
       select
       {...props}
-      value={micDeviceId ?? null}
+      value={activeMicId}
       onChange={(ev) => {
-        setMicDeviceId(ev.target.value);
+        dispatch(preferences.actions.setActiveMic({ deviceId: ev.target.value }));
       }}
     >
       {mics.map((mic) => (

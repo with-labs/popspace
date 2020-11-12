@@ -66,7 +66,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
       <ModalTitleBar title={t('modals.userSettingsModal.title')} onClose={onCloseHandler} />
       <ModalContentWrapper>
         <ModalPane>
-          <AvatarGrid onChange={setAvatar} value={avatarName ?? null} />
+          <AvatarGrid onChange={setAvatar} value={avatarName} />
         </ModalPane>
         <ModalPane>
           <Formik

@@ -34,7 +34,7 @@ export function useSpatialAudioVolume(objectId?: string) {
       ),
     []
   );
-  const localUserPosition = useSelector((state: RootState) => positionSelector(state, localParticipant?.sid));
+  const localUserPosition = useSelector((state: RootState) => positionSelector(state, localParticipant.sid));
   const otherPosition = useSelector((state: RootState) => positionSelector(state, objectId));
 
   const distance = vectorDistance(localUserPosition, otherPosition);

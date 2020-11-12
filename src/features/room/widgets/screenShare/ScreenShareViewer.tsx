@@ -4,7 +4,6 @@ import { useResizeContext } from '../../../../components/ResizeContainer/ResizeC
 import { ScreenShare } from '../../../../components/ScreenShare/ScreenShare';
 import { SharingOffIcon } from '../../../../components/icons/SharingOffIcon';
 import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
-import { logger } from '../../../../utils/logger';
 
 export interface IScreenShareViewerProps {
   className?: string;
@@ -60,6 +59,7 @@ export const ScreenShareViewer: React.FC<IScreenShareViewerProps> = ({ onShareEn
       onSourceChange={handleSourceChange}
       emptyMessage={emptyWithIcon}
       id={`${props.participantSid}-screenShare`}
+      keepPublishedOnUnmount
     />
   );
 };

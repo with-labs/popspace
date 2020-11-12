@@ -11,6 +11,7 @@ export type PersonState = {
   emoji: EmojiData | null | string;
   status: string | null;
   isSpeaking: boolean;
+  isSharingScreen: boolean;
 };
 
 /** Data common to all types of widgets */

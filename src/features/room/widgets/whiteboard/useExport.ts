@@ -4,7 +4,6 @@ import { useSnackbar } from 'notistack';
 
 export function useExport(exportToImageURL: () => string) {
   const { room } = useVideoContext();
-  const roomName = room?.name;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -17,7 +16,7 @@ export function useExport(exportToImageURL: () => string) {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = `whiteboard_${roomName}_${new Date().toString()}.png`;
+    a.download = `whiteboard_${room.name}_${new Date().toString()}.png`;
 
     const clickHandler = () => {
       setTimeout(() => {
@@ -30,7 +29,7 @@ export function useExport(exportToImageURL: () => string) {
     a.addEventListener('click', clickHandler, false);
 
     a.click();
-  }, [enqueueSnackbar, exportToImageURL, roomName]);
+  }, [enqueueSnackbar, exportToImageURL, room.name]);
 
   return handleExport;
 }

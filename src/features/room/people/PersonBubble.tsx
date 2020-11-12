@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  LocalParticipant,
-  RemoteParticipant,
-  AudioTrackPublication,
-  VideoTrackPublication,
-  RemoteTrackPublication,
-  LocalTrackPublication,
-} from 'twilio-video';
+import { LocalParticipant, RemoteParticipant, AudioTrackPublication, VideoTrackPublication } from 'twilio-video';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import clsx from 'clsx';
@@ -28,9 +21,8 @@ export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement>
   participant: LocalParticipant | RemoteParticipant;
   isLocal: boolean;
   person: PersonState;
-  audioTrack: RemoteTrackPublication | LocalTrackPublication | null;
-  cameraTrack: RemoteTrackPublication | LocalTrackPublication | null;
-  screenShareTrack: RemoteTrackPublication | LocalTrackPublication | null;
+  audioTrack?: AudioTrackPublication;
+  cameraTrack?: VideoTrackPublication;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -128,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
-  ({ participant, isLocal, person, audioTrack, cameraTrack, screenShareTrack, ...rest }, ref) => {
+  ({ participant, isLocal, person, audioTrack, cameraTrack, ...rest }, ref) => {
     const classes = useStyles();
     const theme = useTheme();
 
@@ -137,13 +129,13 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const onUnHover = React.useCallback(() => setIsHovered(false), []);
 
     const isVideoOn = !!cameraTrack;
-    const isMicOn = !!audioTrack;
-    const isSharingScreen = !!screenShareTrack;
 
-    const { avatar: avatarName, isSpeaking, emoji, status } = person ?? {};
+    const { avatar: avatarName, isSpeaking, emoji, status, isSharingScreen } = person ?? {};
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);
+
+    const isMicOn = useIsTrackEnabled(audioTrack?.track);
 
     const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
 

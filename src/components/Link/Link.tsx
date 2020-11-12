@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { Link as MuiLink, LinkProps as MuiLinkProps, makeStyles } from '@material-ui/core';
-import { logger } from '../../utils/logger';
 
 export interface ILinkProps extends Omit<RouterLinkProps, 'color'> {
   color?: MuiLinkProps['color'];
@@ -47,7 +46,7 @@ export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, ...props })
   const isInvalidConfig = (isAbsoluteURL || newTab) && typeof props.to !== 'string' && typeof props.to !== 'undefined';
   React.useEffect(() => {
     if (isInvalidConfig) {
-      logger.error(`You can't use a newTab Link with a complex to prop`);
+      console.error(`You can't use a newTab Link with a complex to prop`);
     }
   }, [isInvalidConfig]);
 

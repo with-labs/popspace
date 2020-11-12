@@ -1,8 +1,6 @@
 import React from 'react';
 import { VideoContext } from '../../src/components/VideoProvider';
-import { LocalTracksProvider } from '../../src/components/LocalTracksProvider/LocalTracksProvider';
 import { EventEmitter } from 'events';
-import AppStateProvider from '../../src/state';
 
 const fakeLocalParticipant = {
   sid: 'me',
@@ -11,16 +9,16 @@ const fakeLocalParticipant = {
   networkQualityLevel: null,
   networkQualityStatus: null,
   audioTracks: {
-    values: () => [],
+    values: () => []
   },
   dataTracks: {
-    values: () => [],
+    values: () => []
   },
   tracks: {
-    values: () => [],
+    values: () => []
   },
   videoTracks: {
-    values: () => [],
+    values: () => []
   },
   signalingRegion: '',
 
@@ -78,12 +76,8 @@ const value = {
 
 export function withVideo(Story) {
   return (
-    <AppStateProvider>
-      <LocalTracksProvider>
-        <VideoContext.Provider value={value}>
-          <Story />
-        </VideoContext.Provider>
-      </LocalTracksProvider>
-    </AppStateProvider>
+    <VideoContext.Provider value={value}>
+      <Story />
+    </VideoContext.Provider>
   );
 }

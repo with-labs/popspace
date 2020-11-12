@@ -1,21 +1,26 @@
 import * as React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { useEnforcedPersonSelector } from './useEnforcedPersonSelector';
+import { useRoomPresence } from './useRoomPresence';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { fuzzVector } from '../../../utils/math';
-import { actions } from '../roomSlice';
-import { randomAvatar } from '../../../components/AvatarSelect/options';
+import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
+import { fuzzVector } from '../../utils/math';
+import { actions } from './roomSlice';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { randomAvatar } from '../../components/AvatarSelect/options';
 
-jest.mock('../CoordinatedDispatchProvider');
-jest.mock('../../../utils/math');
-jest.mock('../../../components/AvatarSelect/options');
-
-const ID = 'me';
+jest.mock('./CoordinatedDispatchProvider');
+jest.mock('../../utils/math');
+jest.mock('../../components/AvatarSelect/options');
+jest.mock('../../hooks/useLocalParticipant/useLocalParticipant');
 
 const POSITION = { x: 10, y: -5 };
 (fuzzVector as jest.Mock).mockReturnValue(POSITION);
+
+const ID = 'foo';
+(useLocalParticipant as jest.Mock).mockReturnValue({
+  sid: ID,
+});
 
 const AVATAR = 'bar';
 (randomAvatar as jest.Mock).mockReturnValue({
@@ -25,7 +30,7 @@ const AVATAR = 'bar';
 const mockDispatch = jest.fn();
 (useCoordinatedDispatch as jest.Mock).mockReturnValue(mockDispatch);
 
-describe('useEnforcedPersonSelector hook', () => {
+describe('useRoomPresence hook', () => {
   afterEach(() => {
     mockDispatch.mockClear();
   });
@@ -40,7 +45,7 @@ describe('useEnforcedPersonSelector hook', () => {
     const store = createStore(() => state);
 
     it('adds you to the room', async () => {
-      const { waitFor } = renderHook(() => useEnforcedPersonSelector(ID), {
+      const { waitFor } = renderHook(() => useRoomPresence(), {
         wrapper: (p) => <Provider store={store} {...p} />,
       });
 
@@ -55,26 +60,6 @@ describe('useEnforcedPersonSelector hook', () => {
           })
         );
       });
-    });
-  });
-
-  describe('if you are in the room', () => {
-    const state = {
-      room: {
-        people: {
-          [ID]: { foo: 'bar' },
-        },
-      },
-    };
-    const store = createStore(() => state);
-
-    it('returns your data', async () => {
-      const { result } = renderHook(() => useEnforcedPersonSelector(ID), {
-        wrapper: (p) => <Provider store={store} {...p} />,
-      });
-
-      expect(result.current).toEqual({ foo: 'bar' });
-      expect(mockDispatch).not.toHaveBeenCalled();
     });
   });
 });

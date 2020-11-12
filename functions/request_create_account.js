@@ -41,7 +41,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
   const createRequest = await db.accounts.tryToCreateAccountRequest(params)
   const signupUrl = db.accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
-  await lib.email.account.sendSignupOtpEmail(params.email, params.firstName, signupUrl)
+  await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
 
   return await lib.util.http.succeed(callback, {});
 })

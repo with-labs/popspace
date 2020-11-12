@@ -57,7 +57,7 @@ export const AudioVideoSettingsModal: React.FC<IAudioVideoSettingsModalProps> = 
             {isVideoEnabled ? (
               <LocalVideoPreview />
             ) : (
-              <PersonAvatar personId={localParticipant?.sid} className={classes.avatar} />
+              localParticipant && <PersonAvatar personId={localParticipant.sid} className={classes.avatar} />
             )}
             <div className={classes.videoPreviewSizer} />
           </div>

@@ -38,6 +38,7 @@ interface RoomState {
   bounds: Bounds;
   wallpaperUrl: string;
   useSpatialAudio: boolean;
+  syncedFromPeer: boolean;
 }
 
 /** Use for testing only, please. */
@@ -53,6 +54,7 @@ export const initialState: RoomState = {
   },
   wallpaperUrl: wallPaperOptions[0].url,
   useSpatialAudio: true,
+  syncedFromPeer: false,
 };
 
 /**
@@ -136,7 +138,6 @@ const roomSlice = createSlice({
           isSpeaking: false,
           status: null,
           emoji: null,
-          isSharingScreen: false,
           ...payload.person,
         };
       },
@@ -150,7 +151,7 @@ const roomSlice = createSlice({
       },
     },
     removePerson: {
-      prepare: prepareSyncAction,
+      prepare: (a) => prepareSyncAction<{ id: string }>(a),
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.people[payload.id];
         delete state.positions[payload.id];
@@ -234,13 +235,6 @@ const roomSlice = createSlice({
         state.people[payload.id].avatar = payload.avatar;
       },
     },
-    updatePersonIsSharingScreen: {
-      prepare: prepareSyncAction,
-      reducer(state, { payload }: PayloadAction<{ id: string; isSharingScreen: boolean }>) {
-        if (!state.people[payload.id]) return;
-        state.people[payload.id].isSharingScreen = payload.isSharingScreen;
-      },
-    },
     updateRoomWallpaper: {
       prepare: prepareSyncAction,
       reducer(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
@@ -262,6 +256,13 @@ const roomSlice = createSlice({
     leave() {
       return initialState;
     },
+    syncFromPeer(lastState, action: PayloadAction<RoomState>) {
+      if (lastState.syncedFromPeer) return lastState;
+      return {
+        ...action.payload,
+        syncedFromPeer: true,
+      };
+    },
   },
 });
 
@@ -277,7 +278,8 @@ export const selectors = {
   createWidgetSelector: (widgetId: string) => (state: RootState) => state.room.widgets[widgetId] || null,
   // memoized so that an identical people map doesn't produce different arrays from Object.keys
   selectPeopleIds: createSelector(selectPeople, (people) => Object.keys(people)),
-  createPersonSelector: (participantId: string) => (state: RootState) => state.room.people[participantId] || null,
+  createPersonSelector: (participantId?: string) => (state: RootState) =>
+    (participantId && state.room.people[participantId]) || null,
   selectRoomBounds: (state: RootState) => state.room.bounds,
   selectHasWhiteboard: (state: RootState) =>
     Object.values(state.room.widgets).some((widget) => widget.type === WidgetType.Whiteboard),
@@ -285,5 +287,6 @@ export const selectors = {
   createEmojiSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.emoji,
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
-  createPersonIsSpeakingSelector: (personId: string) => (state: RootState) => !!state.room.people[personId]?.isSpeaking,
+  createPersonIsSpeakingSelector: (personId?: string) => (state: RootState) =>
+    personId && !!state.room.people[personId]?.isSpeaking,
 };

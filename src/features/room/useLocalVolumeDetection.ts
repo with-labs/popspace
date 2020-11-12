@@ -13,6 +13,8 @@ import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 const VOLUME_THRESHOLD = 11;
 
@@ -33,47 +35,46 @@ export function initializeAnalyser(stream: MediaStream) {
 }
 
 export function useLocalVolumeDetection() {
-  const {
-    room: { localParticipant },
-    localTracks,
-  } = useVideoContext();
-  const isSpeaking = useSelector(selectors.createPersonIsSpeakingSelector(localParticipant.sid));
+  const localParticipant = useLocalParticipant();
+  const localParticipantSid = localParticipant?.sid;
+  const isSpeaking = useSelector(selectors.createPersonIsSpeakingSelector(localParticipantSid));
 
   const coordinatedDispatch = useCoordinatedDispatch();
   const updateIsSpeaking = useCallback(
     (newIsSpeaking: boolean) => {
-      coordinatedDispatch(
-        actions.updatePersonIsSpeaking({
-          id: localParticipant.sid,
-          isSpeaking: newIsSpeaking,
-        })
-      );
+      if (localParticipantSid) {
+        coordinatedDispatch(
+          actions.updatePersonIsSpeaking({
+            id: localParticipantSid,
+            isSpeaking: newIsSpeaking,
+          })
+        );
+      }
     },
-    [coordinatedDispatch, localParticipant.sid]
+    [coordinatedDispatch, localParticipantSid]
   );
-  const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
+
+  const { audioTrack } = useLocalTracks();
 
   const [analyser, setAnalyser] = useState<AnalyserNode>();
-  const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
-  const mediaStreamTrack = useMediaStreamTrack(audioTrack);
 
   useEffect(() => {
-    if (audioTrack && mediaStreamTrack && isTrackEnabled) {
+    if (audioTrack) {
       // Here we create a new MediaStream from a clone of the mediaStreamTrack.
       // A clone is created to allow multiple instances of this component for a single
       // AudioTrack on iOS Safari.
-      let newMediaStream = new MediaStream([mediaStreamTrack.clone()]);
+      let newMediaStream = new MediaStream([audioTrack.clone()]);
 
       // Here we listen for the 'stopped' event on the audioTrack. When the audioTrack is stopped,
       // we stop the cloned track that is stored in 'newMediaStream'. It is important that we stop
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
       const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach((track) => track.stop());
-      audioTrack.on('stopped', stopAllMediaStreamTracks);
+      audioTrack.addEventListener('ended', stopAllMediaStreamTracks);
 
       const reinitializeAnalyser = () => {
         stopAllMediaStreamTracks();
-        newMediaStream = new MediaStream([mediaStreamTrack.clone()]);
+        newMediaStream = new MediaStream([audioTrack.clone()]);
         setAnalyser(initializeAnalyser(newMediaStream));
       };
 
@@ -87,13 +88,13 @@ export function useLocalVolumeDetection() {
       return () => {
         stopAllMediaStreamTracks();
         window.removeEventListener('focus', reinitializeAnalyser);
-        audioTrack.off('stopped', stopAllMediaStreamTracks);
+        audioTrack.removeEventListener('ended', stopAllMediaStreamTracks);
       };
     }
-  }, [isTrackEnabled, mediaStreamTrack, audioTrack]);
+  }, [audioTrack]);
 
   useEffect(() => {
-    if (isTrackEnabled && analyser) {
+    if (analyser) {
       const sampleArray = new Uint8Array(analyser.frequencyBinCount);
 
       const timer = setInterval(() => {
@@ -120,5 +121,5 @@ export function useLocalVolumeDetection() {
     } else {
       updateIsSpeaking(false);
     }
-  }, [isTrackEnabled, analyser, isSpeaking, updateIsSpeaking]);
+  }, [analyser, isSpeaking, updateIsSpeaking]);
 }

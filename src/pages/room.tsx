@@ -13,8 +13,9 @@ import store from '../state/store';
 import { VideoProvider } from '../components/VideoProvider';
 import { ConnectOptions } from 'twilio-video';
 import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
-import { MediaDeviceSynchronizer } from '../features/preferences/MediaDeviceSynchronizer';
 import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
+import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
+import { RoomState } from '../constants/twilio';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -74,7 +75,7 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
 
   const canEnterRoom = useCanEnterRoom();
 
-  if (roomState === 'disconnected') {
+  if (roomState === RoomState.Disconnected) {
     return <JoinRoom roomName={roomName} />;
   }
 
@@ -95,7 +96,6 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
         <Room />
         <ReconnectingNotification />
       </ErrorBoundary>
-      <MediaDeviceSynchronizer />
     </div>
   );
 };
@@ -111,11 +111,13 @@ export default function RoomPage(props: IRoomPageProps) {
     <>
       <ErrorDialog dismissError={() => props.setError(null)} error={props.error} />
       <Provider store={store}>
-        <VideoProvider options={connectionOptions} onError={props.setError}>
-          <CoordinatedDispatchProvider>
-            <InnerApp roomName={props.name} />
-          </CoordinatedDispatchProvider>
-        </VideoProvider>
+        <LocalTracksProvider>
+          <VideoProvider options={connectionOptions} onError={props.setError}>
+            <CoordinatedDispatchProvider>
+              <InnerApp roomName={props.name} />
+            </CoordinatedDispatchProvider>
+          </VideoProvider>
+        </LocalTracksProvider>
       </Provider>
     </>
   );

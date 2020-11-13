@@ -1,5 +1,5 @@
 require("dotenv").config()
 
 module.exports = {
-  jest: require("jest")
+  util: require("./util")
 }

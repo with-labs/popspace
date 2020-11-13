@@ -43,8 +43,20 @@ class NamedEmails {
     arg.firstName = user.first_name
     arg.email = user.email
     arg.appUrl = appUrl()
-    arg.ctaUrl = `${arg.appUrl}/${util.routes.static.dashboard()}`
+    arg.ctaUrl = arg.ctaUrl || `${arg.appUrl}/${util.routes.static.dashboard()}`
     arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(gcfg.appUrl(), magicLink)
+    await fetchEmailAndSend(name, user.email, arg)
+  }
+
+  async sendNamedTransactionEmail(name, email, arg={}) {
+    const user = await db.accounts.userByEmail(email)
+    if(!user) {
+      throw "No such user"
+    }
+    arg.firstName = user.first_name
+    arg.email = email
+    arg.appUrl = appUrl()
+    arg.ctaUrl = arg.ctaUrl || `${arg.appUrl}/${util.routes.static.dashboard()}`
     await fetchEmailAndSend(name, user.email, arg)
   }
 

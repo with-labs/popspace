@@ -48,8 +48,8 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const PINCH_GESTURE_DAMPING = 4000;
-const WHEEL_GESTURE_DAMPING = 4000;
+const PINCH_GESTURE_DAMPING = 200;
+const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels. Needs to be large enough that the dock and
 // any other UI doesn't overlap items on the edges at all times, so
@@ -243,13 +243,21 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // we want to do for zoom.
   const bindActiveGestures = useGesture(
     {
-      onPinch: ({ offset: [d], event }) => {
+      onPinch: ({ delta: [_, d], event }) => {
         event?.preventDefault();
-        doZoom(d / PINCH_GESTURE_DAMPING);
+        doZoom(-d / PINCH_GESTURE_DAMPING);
       },
-      onWheel: ({ movement: [x, y], event }) => {
+      onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
         doZoom(-y / WHEEL_GESTURE_DAMPING);
+      },
+      onPinchStart: ({ event }) => {
+        event?.preventDefault();
+        setZoomSpring({ isZooming: true });
+      },
+      onPinchEnd: ({ event }) => {
+        event?.preventDefault();
+        setZoomSpring({ isZooming: false });
       },
     },
     {
@@ -269,12 +277,6 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     },
     onDragEnd: () => {
       setPanSpring({ isPanning: false });
-    },
-    onPinchStart: () => {
-      setZoomSpring({ isZooming: true });
-    },
-    onPinchEnd: () => {
-      setZoomSpring({ isZooming: false });
     },
     onWheelStart: () => {
       setZoomSpring({ isZooming: true });

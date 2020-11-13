@@ -106,6 +106,7 @@ const roomSlice = createSlice({
           position: payload.position,
           size: payload.size,
         };
+        state.zOrder = state.zOrder || [];
         state.zOrder.push(payload.widget.id);
         state.widgets[payload.widget.id] = payload.widget;
       },
@@ -146,7 +147,7 @@ const roomSlice = createSlice({
       reducer(state, { payload }: PayloadAction<{ id: string }>) {
         delete state.widgets[payload.id];
         delete state.positions[payload.id];
-        state.zOrder = state.zOrder.filter((id) => id !== payload.id);
+        state.zOrder = (state.zOrder || []).filter((id) => id !== payload.id);
       },
     },
     removePerson: {

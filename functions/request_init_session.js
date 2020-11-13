@@ -32,6 +32,6 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const loginRequest = await db.accounts.createLoginRequest(user)
   const logInUrl = await db.accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
-  await lib.email.account.sendLoginOtpEmail(email, user.first_name, logInUrl)
+  await lib.email.account.sendLoginOtpEmail(email, logInUrl)
   return await util.http.succeed(callback, {});
 })

@@ -12,6 +12,7 @@ export interface ICameraSelectProps {
 export const CameraSelect: React.FC<ICameraSelectProps> = (props) => {
   const { cameras, initialized } = useAVSources();
   const { cameraDeviceId, setCameraDeviceId } = useLocalTracks();
+  const value = cameraDeviceId || cameras[0]?.deviceId || null;
 
   // avoid rendering before the options are loaded
   if (!initialized) {
@@ -22,7 +23,7 @@ export const CameraSelect: React.FC<ICameraSelectProps> = (props) => {
     <TextField
       select
       {...props}
-      value={cameraDeviceId ?? null}
+      value={value}
       onChange={(ev) => {
         setCameraDeviceId(ev.target.value);
       }}

@@ -12,6 +12,7 @@ export interface IMicSelectProps {
 export const MicSelect: React.FC<IMicSelectProps> = (props) => {
   const { mics, initialized } = useAVSources();
   const { micDeviceId, setMicDeviceId } = useLocalTracks();
+  const value = micDeviceId || mics[0]?.deviceId || null;
 
   // avoid rendering before the options are loaded
   if (!initialized) {
@@ -22,7 +23,7 @@ export const MicSelect: React.FC<IMicSelectProps> = (props) => {
     <TextField
       select
       {...props}
-      value={micDeviceId ?? null}
+      value={value}
       onChange={(ev) => {
         setMicDeviceId(ev.target.value);
       }}

@@ -5,9 +5,10 @@ import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditLinkWidgetForm } from './EditLinkWidgetForm';
-import { LinkWidgetState } from '../../../../types/room';
+import { LinkWidgetState, LinkWidgetData } from '../../../../types/room';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
+import { MediaLinkWidget } from './MediaLinkWidget';
 
 export interface ILinkWidgetProps {
   state: LinkWidgetState;
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     textOverflow: 'ellipsis',
     width: '100%',
+    maxWidth: 400,
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     fontSize: theme.typography.pxToRem(13),
@@ -51,7 +53,10 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
     );
   }
 
-  // TODO: edit a published widget
+  // media links are rendered differently
+  if (state.data.mediaUrl && state.data.mediaContentType) {
+    return <MediaLinkWidget widgetId={state.id} data={state.data as Required<LinkWidgetData>} onClose={onClose} />;
+  }
 
   return (
     <WidgetFrame color="lavender" widgetId={state.id}>

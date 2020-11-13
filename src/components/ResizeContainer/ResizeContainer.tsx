@@ -277,6 +277,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
       <ResizeContainerContext.Provider value={contextValue}>
         <animated.div
           className={classes.root}
+          data-resizable-container
           style={{
             width,
             height,
@@ -296,6 +297,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
             // a taller measurement than we would want
             style={{ minWidth, minHeight, maxWidth, maxHeight }}
             ref={contentRef}
+            data-content-sizer
           >
             {children}
           </div>

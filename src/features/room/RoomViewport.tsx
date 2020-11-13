@@ -8,6 +8,8 @@ import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/co
 import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
+import { useFileDrop } from './files/useFileDrop';
+import { FileDropLayer } from './files/FileDropLayer';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -359,32 +361,34 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         {...bindPassiveGestures()}
         {...rest}
       >
-        <animated.div
-          className={styles.canvas}
-          style={{
-            transform: to([centerX, centerY, zoom], (cx, cy, zoomv) => {
-              const x = cx * zoomv - halfCanvasWidth + halfWindowWidth;
-              const y = cy * zoomv - halfCanvasHeight + halfWindowHeight;
+        <FileDropLayer>
+          <animated.div
+            className={styles.canvas}
+            style={{
+              transform: to([centerX, centerY, zoom], (cx, cy, zoomv) => {
+                const x = cx * zoomv - halfCanvasWidth + halfWindowWidth;
+                const y = cy * zoomv - halfCanvasHeight + halfWindowHeight;
 
-              return `translate3d(${x}px, ${y}px, 0) scale(${zoomv}, ${zoomv})`;
-            }),
-            width: bounds.width,
-            height: bounds.height,
-            backgroundImage: `url(${backgroundUrl})` as any,
-            backgroundSize: 'cover',
-            willChange: 'transform' as any,
-          }}
-        >
-          {/* 
-        Converts from top-left coords to center-based coords -
-        widgets in the room use center-based coords but their DOM
-        placement still needs to be adjusted because the DOM lays out
-        from top-left. This CSS class just translates the entire
-        container element to the center and allows elements with negative
-        positions to still be visible with overflow: visible.
-        */}
-          <div className={styles.centeredSpaceTransformer}>{children}</div>
-        </animated.div>
+                return `translate3d(${x}px, ${y}px, 0) scale(${zoomv}, ${zoomv})`;
+              }),
+              width: bounds.width,
+              height: bounds.height,
+              backgroundImage: `url(${backgroundUrl})` as any,
+              backgroundSize: 'cover',
+              willChange: 'transform' as any,
+            }}
+          >
+            {/* 
+              Converts from top-left coords to center-based coords -
+              widgets in the room use center-based coords but their DOM
+              placement still needs to be adjusted because the DOM lays out
+              from top-left. This CSS class just translates the entire
+              container element to the center and allows elements with negative
+              positions to still be visible with overflow: visible.
+              */}
+            <div className={styles.centeredSpaceTransformer}>{children}</div>
+          </animated.div>
+        </FileDropLayer>
       </animated.div>
       {uiControls}
       <Fade in={isKeyboardActive} style={keyboardHintStyles}>

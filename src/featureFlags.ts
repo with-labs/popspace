@@ -2,6 +2,7 @@ import { flagg, localStore } from 'flagg';
 
 const flagDefinitions = {
   roomMembers: {},
+  fileDrop: {},
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

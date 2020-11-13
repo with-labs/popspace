@@ -16,7 +16,6 @@ import Paper from '@material-ui/core/Paper';
 import styles from './Admin.module.css';
 
 interface IClaimEmailsTableProps {
-  sessionToken: any;
   resendEmail: any;
 }
 
@@ -34,7 +33,7 @@ export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = (props) => {
   const [error, setError] = useState<ErrorInfo>(null!);
 
   useEffect(() => {
-    Api.adminRoomClaimsData(props.sessionToken).then((claimsData: any) => {
+    Api.adminRoomClaimsData().then((claimsData: any) => {
       setIsLoading(false);
       setRooms(claimsData.data);
     });

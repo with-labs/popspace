@@ -286,6 +286,7 @@ export default {
         label: 'Quick action bar',
       },
       roomMenu: {
+        title: 'Settings',
         goToDashboard: 'Go to Dashboard',
         contactUs: 'Contact Us',
         voteOnFeatures: 'Vote on Features',
@@ -303,7 +304,7 @@ export default {
     },
     modals: {
       inviteUserModal: {
-        title: 'Invite people to {{roomName}}',
+        title: 'Invite people',
         inviteBtn: 'Invite',
         noInvitesLeft: 'No invites left',
         invitesLeft: '{{count}} invite left',
@@ -312,14 +313,10 @@ export default {
         resendInvite: 'Resend Invite',
         deleteInvite: 'Cancel Invite',
         removeUser: 'Remove User',
-        removeUserTitle: 'Remove {{user}} from {{room}}',
-        removeUserBody:
-          'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
-        removeUserBtn: 'Remove {{user}}',
         invitedUser: 'Invited user',
-        removeConfirmTitle: 'Remove {{user}} from {{room}}?',
+        removeConfirmTitle: 'Remove {{user}} from the room?',
         removeConfirmDesc:
-          'Are you sure you want to remove {{user}} from the room {{room}}? The content this user has added in the room will remain in the room.',
+          'Are you sure you want to remove {{user}} from the room? The content this user has added in the room will remain in the room.',
         removeConfirmButton: 'Remove {{user}}',
         resendInviteSuccess: 'Invite re-sent',
       },

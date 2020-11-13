@@ -249,7 +249,14 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       },
       onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
-        doZoom(-y / WHEEL_GESTURE_DAMPING);
+        if (event?.ctrlKey || event?.metaKey) {
+          doZoom(-y / WHEEL_GESTURE_DAMPING);
+        } else {
+          doPan({
+            x,
+            y,
+          });
+        }
       },
       onPinchStart: ({ event }) => {
         event?.preventDefault();
@@ -269,7 +276,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   );
 
   const bindPassiveGestures = useGesture({
-    onDrag: ({ delta: [x, y], event }) => {
+    onDrag: ({ delta: [x, y] }) => {
       doPan({ x: -x, y: -y });
     },
     onDragStart: () => {
@@ -278,11 +285,19 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     onDragEnd: () => {
       setPanSpring({ isPanning: false });
     },
-    onWheelStart: () => {
-      setZoomSpring({ isZooming: true });
+    onWheelStart: ({ event }) => {
+      if (event?.ctrlKey) {
+        setZoomSpring({ isZooming: true });
+      } else {
+        setPanSpring({ isPanning: true });
+      }
     },
-    onWheelEnd: () => {
-      setZoomSpring({ isZooming: false });
+    onWheelEnd: ({ event }) => {
+      if (event?.ctrlKey) {
+        setZoomSpring({ isZooming: false });
+      } else {
+        setPanSpring({ isPanning: false });
+      }
     },
   });
 

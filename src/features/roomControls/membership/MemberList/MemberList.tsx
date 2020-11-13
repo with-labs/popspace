@@ -240,12 +240,10 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         )}
       </Menu>
       <Modal isOpen={confirmIsOpen} onClose={() => setConfirmIsOpen(false)} maxWidth="xs">
-        <ModalTitleBar
-          title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name, room: roomName })}
-        />
+        <ModalTitleBar title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name })} />
         <ModalContentWrapper>
           <Typography variant="body1">
-            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.display_name, room: roomName })}
+            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.display_name })}
           </Typography>
         </ModalContentWrapper>
         <ModalActions>

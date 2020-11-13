@@ -8,8 +8,11 @@ import {
   ListItemIcon,
   ListItemText,
   ListSubheader,
+  IconButton,
+  Box,
 } from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
+import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ManageMembershipMenuItem } from './ManageMembershipMenuItem';
 import { ChangelogMenuItem } from './ChangelogMenuItem';
@@ -23,6 +26,8 @@ import { USER_SUPPORT_EMAIL } from '../../../constants/User';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useDispatch } from 'react-redux';
+import { actions as controlsActions } from '../roomControlsSlice';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -33,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 export const RoomMenu = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);
@@ -42,8 +48,17 @@ export const RoomMenu = () => {
 
   const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 
+  const openMembershipModal = () => {
+    dispatch(controlsActions.setIsMembershipModalOpen({ isOpen: true }));
+  };
+
   return (
-    <>
+    <Box display="flex" flexDirection="row" alignItems="center">
+      {isRoomOwner && (
+        <IconButton onClick={openMembershipModal}>
+          <InviteIcon />
+        </IconButton>
+      )}
       <Button
         variant="text"
         endIcon={<DropdownIcon />}
@@ -51,7 +66,7 @@ export const RoomMenu = () => {
         color="inherit"
         className={classes.button}
       >
-        {roomName || 'Room'}
+        {t('features.roomMenu.title')}
       </Button>
       <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={onClose}>
         <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
@@ -95,6 +110,6 @@ export const RoomMenu = () => {
           </MenuItem>
         </Link>
       </Menu>
-    </>
+    </Box>
   );
 };

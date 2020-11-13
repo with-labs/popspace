@@ -12,6 +12,7 @@ class Client {
     return new Promise((resolve, reject) => {
       this.client = new ws(this.serverUrl)
       this.client.on('message', (message) => {
+        console.log(`Received ${message}`)
       })
       this.client.on('open', () => {
         this.ready = true

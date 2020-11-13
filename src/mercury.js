@@ -10,6 +10,7 @@ class Mercury {
     this.express = express()
     this.participants = new Participants()
     this.participants.setMessageHandler((participant, message) => {
+      console.log(`Received ${message}`)
       this.participants.broadcastFrom(participant, message)
     })
 
@@ -23,7 +24,7 @@ class Mercury {
   }
 
   start() {
-    console.log("Listening on", this.port)
+    // console.log(`Server live on port ${this.port}`)
     this.server = this.express.listen(this.port)
     this.server.on('upgrade', (request, socket, head) => {
       // Standard http upgrade procedure
@@ -36,9 +37,13 @@ class Mercury {
   }
 
   async stop() {
+
     this.participants.disconnectAll()
     return new Promise((resolve, reject) => {
-      this.server.close(() => (resolve()))
+      this.server.close(() => {
+        // console.log("Server shut down")
+        resolve()
+      })
     })
 
   }

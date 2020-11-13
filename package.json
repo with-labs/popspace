@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "console": "node --experimental-repl-await ./scripts/console.js",
     "test": "jest"
   },
   "repository": {

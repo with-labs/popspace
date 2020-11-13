@@ -20,7 +20,7 @@ jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
 jest.mock('./useHandleTrackPublicationFailed/useHandleTrackPublicationFailed');
 jest.mock('./useHandleOnDisconnect/useHandleOnDisconnect');
 jest.mock('./useLocalTrackPublications/useLocalTrackPublications');
-jest.mock('../../hooks/useLocalVideoToggle/useLocalVideoToggle', () => () => [true, jest.fn()]);
+jest.mock('../../hooks/localMediaToggles/useLocalVideoToggle', () => () => [true, jest.fn(), false]);
 jest.mock('./useAllParticipants/useAllParticipants', () => ({ useAllParticipants: () => [] }));
 
 describe('the VideoProvider component', () => {

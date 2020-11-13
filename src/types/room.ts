@@ -41,6 +41,8 @@ export type LinkWidgetState = BaseWidgetState & {
 export type LinkWidgetData = {
   title: string;
   url: string;
+  mediaUrl?: string;
+  mediaContentType?: string;
 };
 
 export type StickyNoteWidgetState = BaseWidgetState & {

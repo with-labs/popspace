@@ -3,9 +3,6 @@ import clsx from 'clsx';
 import { Button, TextField } from '@material-ui/core';
 import { Header } from '../../components/Header/Header';
 import Api from '../../utils/api';
-
-import { USER_SESSION_TOKEN } from '../../constants/User';
-
 import styles from './Admin.module.css';
 import { ClaimEmailsTable } from './ClaimEmailsTable';
 import { Page } from '../../Layouts/Page/Page';
@@ -16,10 +13,8 @@ export const Admin: React.FC<IAdminProps> = () => {
   const [email, setEmail] = useState('');
   const [roomName, setRoomName] = useState('');
 
-  const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
-
   const sendEmail = async (email: string, roomName: string) => {
-    const result: any = await Api.adminCreateAndSendClaimEmail(sessionToken, email, roomName);
+    const result: any = await Api.adminCreateAndSendClaimEmail(email, roomName);
     if (result.success) {
       alert(`Email to ${email} sent!`);
     } else {
@@ -58,7 +53,7 @@ export const Admin: React.FC<IAdminProps> = () => {
               </Button>
             </div>
           </form>
-          <ClaimEmailsTable sessionToken={sessionToken} resendEmail={sendEmail} />
+          <ClaimEmailsTable resendEmail={sendEmail} />
         </div>
       </div>
     </Page>

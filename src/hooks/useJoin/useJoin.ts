@@ -62,7 +62,7 @@ export function useJoin(roomName: string) {
           }
           token = result.token;
         } else {
-          const result = await api.loggedInEnterRoom(sessionToken, roomName);
+          const result = await api.loggedInEnterRoom(roomName);
           if (!result.success || !result.token) {
             if (result.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
               throw new JoinError(t('error.messages.noRoomAccess'));

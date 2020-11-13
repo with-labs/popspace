@@ -38,7 +38,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     if (sessionTokenExists(sessionToken)) {
       // TODO: replace this with the updated api
       // Fix typing
-      Api.getProfile(sessionToken)
+      Api.getProfile()
         .then((result: any) => {
           if (result.success) {
             // this means we have a valid token

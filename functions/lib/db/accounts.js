@@ -17,6 +17,43 @@ class Accounts extends DbAccess {
     return await db.pg.massive.users.update({id: userId}, {deleted_at: this.now()})
   }
 
+  async hardDelete(userId) {
+    // support hard-deleting soft-deleted users
+    const user = db.pg.massive.users.findOne({id: userId})
+    if(!user) {
+      throw "No such user"
+    }
+    const email = user.email
+    const ownedRooms = await db.rooms.getOwnedRooms(userId)
+    const roomIds = ownedRooms.map((r) => (r.id))
+
+    const membershipsToOwnedRooms = await db.pg.massive.room_memberships.find({room_id: roomIds})
+    const invitationsToOwnedRooms = await db.pg.massive.room_invitations.find({room_id: roomIds})
+    const roomNames = await db.pg.massive.room_names.find({room_id: roomIds})
+
+    const membershipsToOwnedRoomsIds = membershipsToOwnedRooms.map((m) => (m.id))
+    const invitationsToOwnedRoomsIds = invitationsToOwnedRooms.map((i) => (i.id))
+    const roomNameIds = roomNames.map((n) => (n.id))
+
+    await db.pg.massive.withTransaction(async (tx) => {
+      await tx.users.destroy({id: userId})
+      await tx.otp_login_requests.destroy({user_id: userId})
+      await tx.otp_account_create_requests.destroy({email: email})
+      await tx.sessions.destroy({user_id: userId})
+      await tx.magic_links.destroy({user_id: userId})
+      // All room membership info
+      await tx.room_invitations.destroy({email: email})
+      await tx.room_claims.destroy({email: email})
+      await tx.room_memberships.destroy({user_id: userId})
+      // All users rooms, their members and metainfo
+      await tx.room_names.destroy({id: roomNameIds})
+      await tx.room_memberships.destroy({id: membershipsToOwnedRoomsIds})
+      await tx.room_invitations.destroy({id: invitationsToOwnedRoomsIds})
+      await tx.rooms.destroy({owner_id: userId})
+    })
+
+  }
+
   async getLatestAccountCreateRequest(email) {
     const requests = await db.pg.massive.otp_account_create_requests.find({
       email: util.args.consolidateEmailString(email)

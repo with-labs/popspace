@@ -58,10 +58,12 @@ export function useScreenShareTracks({
       const videoTrack = stream.getVideoTracks()[0] ?? null;
       const audioTrack = stream.getAudioTracks()[0] ?? null;
 
-      const twilioVideoTrack = new LocalVideoTrack(videoTrack, {
-        name: `${videoName}-${v4()}`,
-        logLevel: 'off',
-      });
+      const twilioVideoTrack =
+        videoTrack &&
+        new LocalVideoTrack(videoTrack, {
+          name: `${videoName}-${v4()}`,
+          logLevel: 'off',
+        });
       const twilioAudioTrack =
         audioTrack &&
         new LocalAudioTrack(audioTrack, {

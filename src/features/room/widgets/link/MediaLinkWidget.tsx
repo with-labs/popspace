@@ -24,12 +24,10 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'transparent',
     color: theme.palette.common.black,
     zIndex: 1,
-    '&:hover': {
-      backgroundColor: theme.palette.grey[100],
-    },
+    backgroundColor: theme.palette.grey[100],
+    transition: theme.transitions.create('opacity'),
   },
   link: {
     display: 'block',
@@ -51,6 +49,12 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
+    '& $titlebar': {
+      opacity: 0,
+    },
+    '&:hover $titlebar': {
+      opacity: 1,
+    },
   },
 }));
 

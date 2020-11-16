@@ -34,7 +34,7 @@ export default {
     light: '#CDF7F3',
     regular: '#ABF1EA',
     bold: '#6DCBC2',
-    ink: '#0F9D90',
+    ink: '#00786D',
   },
   sand: {
     regular: '#fff8f0',

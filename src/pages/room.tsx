@@ -39,7 +39,7 @@ interface IAppProps {
   roomName: string;
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     width: '100vw',
     height: '100vh',
@@ -53,6 +53,7 @@ const useStyles = makeStyles(() => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    backgroundColor: theme.palette.brandColors.slate.ink,
   },
 }));
 

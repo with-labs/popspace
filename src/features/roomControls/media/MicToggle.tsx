@@ -30,9 +30,11 @@ export const MicToggle = (props: { className?: string }) => {
         </>
       }
     >
-      <ToggleButton value="mic" selected={isMicOn} onChange={toggleMicOn} disabled={busy} {...props}>
-        {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
-      </ToggleButton>
+      <div>
+        <ToggleButton value="mic" selected={isMicOn} onChange={toggleMicOn} disabled={busy} {...props}>
+          {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
+        </ToggleButton>
+      </div>
     </Tooltip>
   );
 };

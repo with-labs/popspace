@@ -30,9 +30,11 @@ export const CameraToggle = (props: { className?: string }) => {
         </>
       }
     >
-      <ToggleButton value="video" selected={isVideoOn} onChange={toggleVideoOn} disabled={busy} {...props}>
-        {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
-      </ToggleButton>
+      <div>
+        <ToggleButton value="video" selected={isVideoOn} onChange={toggleVideoOn} disabled={busy} {...props}>
+          {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
+        </ToggleButton>
+      </div>
     </Tooltip>
   );
 };

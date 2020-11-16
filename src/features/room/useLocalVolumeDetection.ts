@@ -11,7 +11,6 @@ import { LocalAudioTrack, RemoteAudioTrack } from 'twilio-video';
 import { actions, selectors } from './roomSlice';
 import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
@@ -57,24 +56,26 @@ export function useLocalVolumeDetection() {
   const { audioTrack } = useLocalTracks();
 
   const [analyser, setAnalyser] = useState<AnalyserNode>();
+  const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);
+  const mediaStreamTrack = useMediaStreamTrack(audioTrack);
 
   useEffect(() => {
-    if (audioTrack) {
+    if (audioTrack && mediaStreamTrack && isTrackEnabled) {
       // Here we create a new MediaStream from a clone of the mediaStreamTrack.
       // A clone is created to allow multiple instances of this component for a single
       // AudioTrack on iOS Safari.
-      let newMediaStream = new MediaStream([audioTrack.clone()]);
+      let newMediaStream = new MediaStream([mediaStreamTrack.clone()]);
 
       // Here we listen for the 'stopped' event on the audioTrack. When the audioTrack is stopped,
       // we stop the cloned track that is stored in 'newMediaStream'. It is important that we stop
       // all tracks when they are not in use. Browsers like Firefox don't let you create a new stream
       // from a new audio device while the active audio device still has active tracks.
       const stopAllMediaStreamTracks = () => newMediaStream.getTracks().forEach((track) => track.stop());
-      audioTrack.addEventListener('ended', stopAllMediaStreamTracks);
+      audioTrack.on('stopped', stopAllMediaStreamTracks);
 
       const reinitializeAnalyser = () => {
         stopAllMediaStreamTracks();
-        newMediaStream = new MediaStream([audioTrack.clone()]);
+        newMediaStream = new MediaStream([mediaStreamTrack.clone()]);
         setAnalyser(initializeAnalyser(newMediaStream));
       };
 
@@ -88,13 +89,13 @@ export function useLocalVolumeDetection() {
       return () => {
         stopAllMediaStreamTracks();
         window.removeEventListener('focus', reinitializeAnalyser);
-        audioTrack.removeEventListener('ended', stopAllMediaStreamTracks);
+        audioTrack.off('stopped', stopAllMediaStreamTracks);
       };
     }
-  }, [audioTrack]);
+  }, [isTrackEnabled, mediaStreamTrack, audioTrack]);
 
   useEffect(() => {
-    if (analyser) {
+    if (isTrackEnabled && analyser) {
       const sampleArray = new Uint8Array(analyser.frequencyBinCount);
 
       const timer = setInterval(() => {
@@ -121,5 +122,5 @@ export function useLocalVolumeDetection() {
     } else {
       updateIsSpeaking(false);
     }
-  }, [analyser, isSpeaking, updateIsSpeaking]);
+  }, [isTrackEnabled, analyser, isSpeaking, updateIsSpeaking]);
 }

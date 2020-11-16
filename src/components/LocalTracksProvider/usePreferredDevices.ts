@@ -12,7 +12,9 @@ export function usePreferredDevices() {
 
   const setCameraDeviceId = useCallback((deviceId: string | null) => {
     if (deviceId) {
-      Cookie.set(CAMERA_DEVICE_COOKIE, deviceId);
+      Cookie.set(CAMERA_DEVICE_COOKIE, deviceId, {
+        secure: true,
+      });
     } else {
       Cookie.remove(CAMERA_DEVICE_COOKIE);
     }
@@ -21,7 +23,9 @@ export function usePreferredDevices() {
 
   const setMicDeviceId = useCallback((deviceId: string | null) => {
     if (deviceId) {
-      Cookie.set(MIC_DEVICE_COOKIE, deviceId);
+      Cookie.set(MIC_DEVICE_COOKIE, deviceId, {
+        secure: true,
+      });
     } else {
       Cookie.remove(MIC_DEVICE_COOKIE);
     }

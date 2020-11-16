@@ -1,48 +1,37 @@
-import { LocalDataTrack, Room } from 'twilio-video';
+import { LocalDataTrack, LocalAudioTrack, LocalVideoTrack } from 'twilio-video';
 import { useEffect } from 'react';
 import { useLocalTracks } from '../../LocalTracksProvider/useLocalTracks';
-import {
-  MIC_TRACK_NAME,
-  CAMERA_TRACK_NAME,
-  SCREEN_SHARE_AUDIO_TRACK_NAME,
-  SCREEN_SHARE_TRACK_NAME,
-} from '../../../constants/User';
-import { v4 } from 'uuid';
 import { useAppState } from '../../../state';
 import { useTranslation } from 'react-i18next';
 import { logger } from '../../../utils/logger';
+import useRoomState from '../../../hooks/useRoomState/useRoomState';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
+import { RoomState } from '../../../constants/twilio';
 
-function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalDataTrack | null, trackName: string) {
+function useTrackPublication(track: LocalAudioTrack | LocalVideoTrack | LocalDataTrack | null) {
   const { setError } = useAppState();
   const { t } = useTranslation();
+  const roomState = useRoomState();
+  const localParticipant = useLocalParticipant();
 
   useEffect(() => {
-    if (!room) return;
+    if (roomState !== RoomState.Connected) return;
+    if (!localParticipant) return;
 
     if (track) {
-      let publishedPromise: Promise<any>;
       const timeout = setTimeout(() => {
         setError(new Error(t('error.messages.catastrophicMediaError')));
       }, 10000);
       const stopTimeout = () => clearTimeout(timeout);
-      if (track instanceof LocalDataTrack) {
-        publishedPromise = room.localParticipant.publishTrack(track).finally(stopTimeout);
-      } else {
-        publishedPromise = room.localParticipant
-          .publishTrack(track, {
-            name: `${trackName}-${v4()}`,
-            logLevel: 'info',
-          })
-          .finally(stopTimeout);
-      }
+      const publishedPromise = localParticipant.publishTrack(track).finally(stopTimeout);
       return () => {
         stopTimeout();
         publishedPromise
           .then(() => {
             try {
-              const pub = room.localParticipant.unpublishTrack(track);
+              const pub = localParticipant.unpublishTrack(track);
               if (pub) {
-                room.localParticipant.emit('trackUnpublished', pub);
+                localParticipant.emit('trackUnpublished', pub);
               }
             } catch (err) {
               logger.error(err);
@@ -53,10 +42,10 @@ function useTrackPublication(room: Room | null, track: MediaStreamTrack | LocalD
           });
       };
     }
-  }, [track, room, trackName, setError, t]);
+  }, [track, localParticipant, roomState, setError, t]);
 }
 
-export function useLocalTrackPublications(room: Room | null) {
+export function useLocalTrackPublications() {
   const { audioTrack, videoTrack, screenShareAudioTrack, screenShareVideoTrack, dataTrack } = useLocalTracks();
 
   // for each local track, we declaratively manage publication state with effects.
@@ -65,10 +54,10 @@ export function useLocalTrackPublications(room: Room | null) {
   // Notably, we want each of these tracks to be published under a specific name
   // so we can reference that elsewhere.
 
-  useTrackPublication(room, audioTrack, MIC_TRACK_NAME);
-  useTrackPublication(room, videoTrack, CAMERA_TRACK_NAME);
-  useTrackPublication(room, screenShareAudioTrack, SCREEN_SHARE_AUDIO_TRACK_NAME);
-  useTrackPublication(room, screenShareVideoTrack, SCREEN_SHARE_TRACK_NAME);
+  useTrackPublication(audioTrack);
+  useTrackPublication(videoTrack);
+  useTrackPublication(screenShareAudioTrack);
+  useTrackPublication(screenShareVideoTrack);
   // name doesn't really matter for data track
-  useTrackPublication(room, dataTrack, 'data');
+  useTrackPublication(dataTrack);
 }

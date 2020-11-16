@@ -273,15 +273,15 @@ export default {
         audioPermissionDismissed:
           'If you want to share your voice, we\'ll need microphone access. Press the button to enable your mic, then choose "Allow"',
         audioPermissionDenied:
-          "You've told your browser to never allow microphone access for With. Change that setting to start sharing your voice.",
+          "You've told your browser not to allow microphone access for With. Change that setting to start sharing your voice.",
         videoPermissionDismissed:
           'If you want to share your video, we\'ll need camera access. Press the button to enable your camera, then choose "Allow"',
         videoPermissionDenied:
-          "You've told your browser to never allow camera access for With. Change that setting to start sharing your video.",
+          "You've told your browser not to allow camera access for With. Change that setting to start sharing your video.",
         screenSharePermissionDismissed:
           'If you want to share your screen, we\'ll need access. Press the button to share your screen, then choose "Allow"',
         screenSharePermissionDenied:
-          "You've told your browser to never allow screen share access for With. Change that setting to start sharing your screen.",
+          "You've told your browser not to allow screen share access for With. Change that setting to start sharing your screen.",
       },
     },
     features: {

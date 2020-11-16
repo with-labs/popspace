@@ -7,33 +7,31 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connect = useCallback(
-    (token) => {
+    async (token) => {
       setIsConnecting(true);
-      return Video.connect(token, { ...options, tracks: [] }).then(
-        (newRoom) => {
-          setRoom(newRoom);
+      try {
+        const newRoom = await Video.connect(token, { ...options, tracks: [] });
+        setRoom(newRoom);
 
-          const handleUnload = () => newRoom.disconnect();
-          newRoom.once('disconnected', () => {
-            // Reset the room only after all other `disconnected` listeners have been called.
-            setTimeout(() => setRoom(null));
-            window.removeEventListener('beforeunload', handleUnload);
-          });
-          // @ts-ignore
-          window.twilioRoom = newRoom;
-          setIsConnecting(false);
+        const handleUnload = () => newRoom.disconnect();
+        newRoom.once('disconnected', () => {
+          // Reset the room only after all other `disconnected` listeners have been called.
+          setTimeout(() => setRoom(null));
+          window.removeEventListener('beforeunload', handleUnload);
+        });
+        // @ts-ignore
+        window.twilioRoom = newRoom;
+        setIsConnecting(false);
 
-          // Add a listener to disconnect from the room when a user closes their browser
-          window.addEventListener('beforeunload', handleUnload);
+        // Add a listener to disconnect from the room when a user closes their browser
+        window.addEventListener('beforeunload', handleUnload);
 
-          return newRoom;
-        },
-        (error) => {
-          onError(error);
-          setIsConnecting(false);
-          return null;
-        }
-      );
+        return newRoom;
+      } catch (error) {
+        onError(error);
+        setIsConnecting(false);
+        return null;
+      }
     },
     [options, onError]
   );

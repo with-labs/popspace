@@ -37,6 +37,11 @@ interface VideoProviderProps {
   children: ReactNode;
 }
 
+const TrackPublisher = () => {
+  useLocalTrackPublications();
+  return null;
+};
+
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = useCallback(
     (error: Error) => {
@@ -48,7 +53,6 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
   );
 
   const { room, isConnecting, connect } = useRoom(onErrorCallback, options);
-  useLocalTrackPublications(room);
 
   // Register onError and onDisconnect callback functions.
   useHandleRoomDisconnectionErrors(room, onError);
@@ -75,6 +79,7 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
         which must be used within the VideoContext Provider.
       */}
       <AttachVisibilityHandler />
+      <TrackPublisher />
     </VideoContext.Provider>
   );
 }

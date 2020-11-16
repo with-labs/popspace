@@ -1,17 +1,25 @@
 import { useState, useCallback, useEffect } from 'react';
+import { convertMediaError } from './convertMediaError';
+import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
+import { v4 } from 'uuid';
+import { MediaTrackEvent } from '../../constants/twilio';
 
 export function useScreenShareTracks({
   onError,
   permissionDeniedMessage,
   permissionDismissedMessage,
+  videoName,
+  audioName,
 }: {
   onError?: (err: Error) => void;
   permissionDeniedMessage?: string;
   permissionDismissedMessage?: string;
+  videoName: string;
+  audioName: string;
 }) {
   const [{ screenShareVideoTrack, screenShareAudioTrack }, setTracks] = useState<{
-    screenShareVideoTrack: MediaStreamTrack | null;
-    screenShareAudioTrack: MediaStreamTrack | null;
+    screenShareVideoTrack: LocalVideoTrack | null;
+    screenShareAudioTrack: LocalAudioTrack | null;
   }>({
     screenShareAudioTrack: null,
     screenShareVideoTrack: null,
@@ -44,24 +52,39 @@ export function useScreenShareTracks({
         screenShareVideoTrack.stop();
       }
 
+      // Twilio doesn't support video+audio tracks from the same source, so we have to create them manually.
+
       const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
       const videoTrack = stream.getVideoTracks()[0] ?? null;
       const audioTrack = stream.getAudioTracks()[0] ?? null;
 
+      const twilioVideoTrack = new LocalVideoTrack(videoTrack, {
+        name: `${videoName}-${v4()}`,
+        logLevel: 'off',
+      });
+      const twilioAudioTrack =
+        audioTrack &&
+        new LocalAudioTrack(audioTrack, {
+          name: `${audioName}-${v4()}`,
+          logLevel: 'off',
+        });
+
       setTracks({
-        screenShareVideoTrack: videoTrack,
-        screenShareAudioTrack: audioTrack,
+        screenShareVideoTrack: twilioVideoTrack,
+        screenShareAudioTrack: twilioAudioTrack,
       });
     } catch (err) {
-      if (permissionDeniedMessage && err.message === 'Permission denied') {
-        onError?.(new Error(permissionDeniedMessage));
-      } else if (permissionDismissedMessage && err.message === 'Permission dismissed') {
-        onError?.(new Error(permissionDismissedMessage));
-      } else {
-        onError?.(err);
-      }
+      onError?.(convertMediaError(err, permissionDeniedMessage, permissionDismissedMessage));
     }
-  }, [onError, permissionDeniedMessage, permissionDismissedMessage, screenShareAudioTrack, screenShareVideoTrack]);
+  }, [
+    onError,
+    permissionDeniedMessage,
+    permissionDismissedMessage,
+    screenShareAudioTrack,
+    screenShareVideoTrack,
+    audioName,
+    videoName,
+  ]);
 
   const stop = useCallback(() => {
     screenShareAudioTrack?.stop();
@@ -79,9 +102,9 @@ export function useScreenShareTracks({
         screenShareVideoTrack: null,
         screenShareAudioTrack: cur.screenShareAudioTrack,
       }));
-    screenShareVideoTrack?.addEventListener('ended', handleStopped);
+    screenShareVideoTrack?.on(MediaTrackEvent.Stopped, handleStopped);
     return () => {
-      screenShareVideoTrack?.removeEventListener('ended', handleStopped);
+      screenShareVideoTrack?.off(MediaTrackEvent.Stopped, handleStopped);
     };
   }, [screenShareVideoTrack]);
 
@@ -92,9 +115,9 @@ export function useScreenShareTracks({
         screenShareVideoTrack: cur.screenShareVideoTrack,
         screenShareAudioTrack: null,
       }));
-    screenShareAudioTrack?.addEventListener('ended', handleStopped);
+    screenShareAudioTrack?.on(MediaTrackEvent.Stopped, handleStopped);
     return () => {
-      screenShareAudioTrack?.removeEventListener('ended', handleStopped);
+      screenShareAudioTrack?.off(MediaTrackEvent.Stopped, handleStopped);
     };
   }, [screenShareAudioTrack]);
 
@@ -103,7 +126,6 @@ export function useScreenShareTracks({
       screenShareVideoTrack,
       screenShareAudioTrack,
     },
-    start,
-    stop,
+    { start, stop },
   ] as const;
 }

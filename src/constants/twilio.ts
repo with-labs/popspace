@@ -34,3 +34,9 @@ export enum ParticipantState {
   Connected = 'connected',
   Reconnecting = 'reconnecting',
 }
+
+export enum MediaTrackEvent {
+  Stopped = 'stopped',
+  Enabled = 'enabled',
+  Disabled = 'disabled',
+}

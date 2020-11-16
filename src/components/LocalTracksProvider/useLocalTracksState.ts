@@ -5,6 +5,12 @@ import { useScreenShareTracks } from './useScreenShareTracks';
 import { DEFAULT_VIDEO_CONSTRAINTS } from '../../constants';
 import { usePreferredDevices } from './usePreferredDevices';
 import { useTranslation } from 'react-i18next';
+import {
+  MIC_TRACK_NAME,
+  CAMERA_TRACK_NAME,
+  SCREEN_SHARE_TRACK_NAME,
+  SCREEN_SHARE_AUDIO_TRACK_NAME,
+} from '../../constants/User';
 
 /**
  * Each user can have exactly one of each kind of track:
@@ -25,8 +31,9 @@ export function useLocalTracksState(onError: (err: Error) => void) {
   const { t } = useTranslation();
   const { cameraDeviceId, micDeviceId, setCameraDeviceId, setMicDeviceId } = usePreferredDevices();
 
-  const [audioTrack, startAudio, stopAudio] = useLocalMediaTrack(
+  const [audioTrack, { start: startAudio, stop: stopAudio }] = useLocalMediaTrack(
     'audio',
+    MIC_TRACK_NAME,
     micDeviceId,
     {},
     {
@@ -35,17 +42,28 @@ export function useLocalTracksState(onError: (err: Error) => void) {
       permissionDeniedMessage: t('error.media.audioPermissionDenied'),
     }
   );
-  const [videoTrack, startVideo, stopVideo] = useLocalMediaTrack('video', cameraDeviceId, DEFAULT_VIDEO_CONSTRAINTS, {
-    onError,
-    permissionDismissedMessage: t('error.media.videoPermissionDismissed'),
-    permissionDeniedMessage: t('error.media.videoPermissionDenied'),
-  });
-  const [{ screenShareVideoTrack, screenShareAudioTrack }, startScreenShare, stopScreenShare] = useScreenShareTracks({
+  const [videoTrack, { start: startVideo, stop: stopVideo }] = useLocalMediaTrack(
+    'video',
+    CAMERA_TRACK_NAME,
+    cameraDeviceId,
+    DEFAULT_VIDEO_CONSTRAINTS,
+    {
+      onError,
+      permissionDismissedMessage: t('error.media.videoPermissionDismissed'),
+      permissionDeniedMessage: t('error.media.videoPermissionDenied'),
+    }
+  );
+  const [
+    { screenShareVideoTrack, screenShareAudioTrack },
+    { start: startScreenShare, stop: stopScreenShare },
+  ] = useScreenShareTracks({
     onError,
     // unlike the others, the screen share dialog currently reports "Cancel" as "Denied" not "Dismissed", so
     // we keep using the dismissed language.
     permissionDismissedMessage: t('error.media.screenSharePermissionDismissed'),
     permissionDeniedMessage: t('error.media.screenSharePermissionDismissed'),
+    videoName: SCREEN_SHARE_TRACK_NAME,
+    audioName: SCREEN_SHARE_AUDIO_TRACK_NAME,
   });
   // there's never really any reason to change this track. It's always there and active.
   const [dataTrack] = useState<LocalDataTrack>(() => new LocalDataTrack());

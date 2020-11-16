@@ -30,7 +30,7 @@ const connectionOptions: ConnectOptions = {
       },
     },
   },
-  dominantSpeaker: true,
+  dominantSpeaker: false,
   maxAudioBitrate: 48000,
   networkQuality: { local: 1, remote: 1 },
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],

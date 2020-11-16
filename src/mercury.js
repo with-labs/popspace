@@ -1,6 +1,8 @@
 const express = require('express')
 const ws = require('ws')
 const Participants = require("./server/participants")
+const MessageProcessor = require("./server/message_processor")
+global.lib = require("./lib/_lib")
 
 // Mercury is the god of communication
 class Mercury {
@@ -9,22 +11,19 @@ class Mercury {
     this.ws = new ws.Server({ noServer: true })
     this.express = express()
     this.participants = new Participants()
-    this.participants.setMessageHandler((participant, message) => {
-      console.log(`Received ${message}`)
-      this.participants.broadcastFrom(participant, message)
-    })
+    this.messageProcessor =  new MessageProcessor(this.participants)
 
     this.ws.on('connection', (socket) => {
       this.participants.addSocket(socket)
     })
 
     this.ws.on('close', () => {
-      console.log("close")
+      log.app.warn("socket server shut down")
     })
   }
 
   start() {
-    // console.log(`Server live on port ${this.port}`)
+    log.app.info(`Server live on port ${this.port}`)
     this.server = this.express.listen(this.port)
     this.server.on('upgrade', (request, socket, head) => {
       // Standard http upgrade procedure

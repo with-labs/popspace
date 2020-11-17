@@ -7,14 +7,13 @@ global.log = lib.log
 global.shared = require("@withso/with-shared")
 lib.Client = require("../client/client")
 
-
 lib.ErrorCodes = require("./error_codes")
 
 lib.init = async () => {
-  await shared.pg.init()
+  await global.shared.db.pg.init()
 }
 
-lib.error = async (code, message, data={}) {
+lib.error = async (code, message, data={}) => {
   return Object.assign({
     success: false,
     code: code,

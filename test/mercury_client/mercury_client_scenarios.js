@@ -2,22 +2,18 @@ const tlib = require("../lib/_testlib")
 
 module.exports = {
   "connect_send_disconnect": async () => {
-    console.log("CONNECt-DISCONNECT")
-    const { clients, mercury } = await tlib.util.serverWithClients(1, "CONNECt-DISCONNECT")
-    console.log("BEGUN")
+    const { clients, mercury } = await tlib.util.serverWithClients(1)
     clients[0].send("hello")
-    console.log("SENT")
     return await mercury.stop()
   },
 
   "1_sender_2_receivers": async (message='hello') => {
-    console.log("1 sender 2 receivers")
     /*
       1. Open several clients
       2. Send a message from one of them
       3. Make sure all clients except sender receive the message
     */
-    const { clients, mercury } = await tlib.util.serverWithClients(3, "1_sender_2_receivers")
+    const { clients, mercury } = await tlib.util.serverWithClients(3)
 
     const sender = clients[0]
     const messagesReceived = []

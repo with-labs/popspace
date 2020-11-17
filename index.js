@@ -22,6 +22,7 @@
 // });
 
 require("dotenv").config()
+
 global.lib = require("./src/lib/_lib")
 const Mercury = require("./src/mercury")
 

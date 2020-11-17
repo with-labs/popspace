@@ -33,7 +33,7 @@ export function useEnforcedPersonSelector(sid: string) {
           position: fuzzVector({ x: 0, y: 0 }, 100),
           person: {
             id: sid,
-            avatar: randomAvatar().name,
+            avatar: randomAvatar(sid).name,
           },
         })
       );

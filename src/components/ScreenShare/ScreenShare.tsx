@@ -1,16 +1,7 @@
 import * as React from 'react';
-import { useParticipant } from '../../hooks/useParticipant/useParticipant';
-import usePublications from '../../hooks/usePublications/usePublications';
-import {
-  RemoteTrackPublication,
-  LocalTrackPublication,
-  LocalVideoTrackPublication,
-  LocalAudioTrackPublication,
-} from 'twilio-video';
-import { SCREEN_SHARE_TRACK_NAME, SCREEN_SHARE_AUDIO_TRACK_NAME } from '../../constants/User';
+import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import Publication from '../Publication/Publication';
 import { ScreenSharePlaceholder } from './ScreenSharePlaceholder';
-import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { Lightbox } from '../Lightbox/Lightbox';
 import { useScreenSharePublication } from '../../hooks/useScreenShare/useScreenShare';
 
@@ -97,7 +88,7 @@ export const ScreenShare: React.FC<IScreenShareProps> = ({
 
   if (isFullscreen) {
     return (
-      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit}>
+      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit} disableAutoFocus disableEnforceFocus>
         {media}
       </Lightbox>
     );

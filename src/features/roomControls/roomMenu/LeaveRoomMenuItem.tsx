@@ -14,7 +14,7 @@ export const LeaveRoomMenuItem: React.FC<ILeaveRoomMenuItemProps> = (props) => {
   const { room } = useVideoContext();
   const history = useHistory();
   const leaveRoom = React.useCallback(() => {
-    room.disconnect();
+    room?.disconnect();
     dispatch(actions.leave());
     history.push(RouteNames.ROOT);
   }, [history, room, dispatch]);

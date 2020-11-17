@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import LocalVideoPreview from '../../components/LocalVideoPreview/LocalVideoPreview';
 import { CameraSelect } from './CameraSelect';
 import { MicSelect } from './MicSelect';
-import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
+import useLocalVideoToggle from '../../hooks/localMediaToggles/useLocalVideoToggle';
 import { PersonAvatar } from '../room/people/PersonAvatar';
 import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +57,7 @@ export const AudioVideoSettingsModal: React.FC<IAudioVideoSettingsModalProps> = 
             {isVideoEnabled ? (
               <LocalVideoPreview />
             ) : (
-              <PersonAvatar personId={localParticipant?.sid} className={classes.avatar} />
+              localParticipant && <PersonAvatar personId={localParticipant.sid} className={classes.avatar} />
             )}
             <div className={classes.videoPreviewSizer} />
           </div>

@@ -8,7 +8,6 @@ import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/co
 import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
-import { useFileDrop } from './files/useFileDrop';
 import { FileDropLayer } from './files/FileDropLayer';
 
 export const RoomViewportContext = React.createContext<null | {
@@ -83,7 +82,7 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
   },
   centeredSpaceTransformer: ({ bounds }) => ({
     overflow: 'visible',
-    transform: `translate3d(${bounds.width / 2}px, ${bounds.height / 2}px, 0)`,
+    transform: `translate(${bounds.width / 2}px, ${bounds.height / 2}px)`,
   }),
 });
 
@@ -177,8 +176,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     (panPosition: Vector2) => {
       const scale = zoom.goal;
 
-      const worldScreenWidth = window.innerWidth / scale;
-      const worldScreenHeight = window.innerHeight / scale;
+      const worldScreenWidth = windowWidth / scale;
+      const worldScreenHeight = windowHeight / scale;
 
       const panBufferWorldSize = PAN_BUFFER / scale;
 
@@ -192,7 +191,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: clamp(panPosition.y, minY, maxY),
       };
     },
-    [halfCanvasHeight, halfCanvasWidth, zoom]
+    [halfCanvasHeight, halfCanvasWidth, zoom, windowWidth, windowHeight]
   );
 
   const doZoom = React.useCallback(
@@ -369,13 +368,12 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
                 const x = cx * zoomv - halfCanvasWidth + halfWindowWidth;
                 const y = cy * zoomv - halfCanvasHeight + halfWindowHeight;
 
-                return `translate3d(${x}px, ${y}px, 0) scale(${zoomv}, ${zoomv})`;
+                return `translate(${x}px, ${y}px) scale(${zoomv}, ${zoomv})`;
               }),
               width: bounds.width,
               height: bounds.height,
               backgroundImage: `url(${backgroundUrl})` as any,
               backgroundSize: 'cover',
-              willChange: 'transform' as any,
             }}
           >
             {/* 

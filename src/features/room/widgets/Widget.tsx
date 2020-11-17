@@ -32,7 +32,7 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
   }, [coordinatedDispatch, id]);
 
   // don't show other user's widgets if they're still drafts
-  if (widget.isDraft && widget.participantSid !== localParticipant.sid) {
+  if (widget.isDraft && widget.participantSid !== localParticipant?.sid) {
     return null;
   }
 

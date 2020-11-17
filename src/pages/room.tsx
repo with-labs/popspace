@@ -1,20 +1,24 @@
 import React, { FC } from 'react';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import JoinRoom from '../components/JoinRoom/JoinRoom';
 import ReconnectingNotification from '../components/ReconnectingNotification/ReconnectingNotification';
 import { Room } from '../features/room/Room';
 import { ErrorBoundary } from '../components/ErrorBoundary/ErrorBoundary';
-import { WithModal } from '../components/WithModal/WithModal';
 import useRoomState from '../hooks/useRoomState/useRoomState';
 import { Provider } from 'react-redux';
 import store from '../state/store';
 import { VideoProvider } from '../components/VideoProvider';
 import { ConnectOptions } from 'twilio-video';
 import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
-import { MediaDeviceSynchronizer } from '../features/preferences/MediaDeviceSynchronizer';
 import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
+import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
+import { RoomState } from '../constants/twilio';
+import { useTranslation } from 'react-i18next';
+import { Modal } from '../components/Modal/Modal';
+import { ModalTitleBar } from '../components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '../components/Modal/ModalContentWrapper';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -29,7 +33,7 @@ const connectionOptions: ConnectOptions = {
       },
     },
   },
-  dominantSpeaker: true,
+  dominantSpeaker: false,
   maxAudioBitrate: 48000,
   networkQuality: { local: 1, remote: 1 },
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
@@ -58,13 +62,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const RoomFallback = () => {
+  const { t } = useTranslation();
+
   return (
-    <WithModal isOpen={true}>
-      <h1 className="u-fontH1">Well, this is awkward...</h1>
-      <p className="u-fontP1">
-        An unexpected error has occurred. Please try refreshing the page and rejoining the room.
-      </p>
-    </WithModal>
+    <Modal isOpen={true} maxWidth="sm">
+      <ModalTitleBar title={t('error.unexpectedModal.title')} />
+      <ModalContentWrapper>
+        <Typography variant="body1">{t('error.unexpectedModal.msg')}</Typography>
+      </ModalContentWrapper>
+    </Modal>
   );
 };
 
@@ -75,7 +81,7 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
 
   const canEnterRoom = useCanEnterRoom();
 
-  if (roomState === 'disconnected') {
+  if (roomState === RoomState.Disconnected) {
     return <JoinRoom roomName={roomName} />;
   }
 
@@ -96,7 +102,6 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
         <Room />
         <ReconnectingNotification />
       </ErrorBoundary>
-      <MediaDeviceSynchronizer />
     </div>
   );
 };
@@ -112,11 +117,13 @@ export default function RoomPage(props: IRoomPageProps) {
     <>
       <ErrorDialog dismissError={() => props.setError(null)} error={props.error} />
       <Provider store={store}>
-        <VideoProvider options={connectionOptions} onError={props.setError}>
-          <CoordinatedDispatchProvider>
-            <InnerApp roomName={props.name} />
-          </CoordinatedDispatchProvider>
-        </VideoProvider>
+        <LocalTracksProvider>
+          <VideoProvider options={connectionOptions} onError={props.setError}>
+            <CoordinatedDispatchProvider>
+              <InnerApp roomName={props.name} />
+            </CoordinatedDispatchProvider>
+          </VideoProvider>
+        </LocalTracksProvider>
       </Provider>
     </>
   );

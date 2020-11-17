@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Modal, makeStyles } from '@material-ui/core';
+import { Modal, makeStyles, ModalProps } from '@material-ui/core';
 
-export interface ILightboxProps {
+export interface ILightboxProps extends ModalProps {
   open: boolean;
   onClose?: () => void;
   onClick?: () => void;
@@ -17,14 +17,22 @@ const useStyles = makeStyles(() => ({
   content: {
     margin: 'auto',
     maxWidth: '98vw',
+    maxHeight: '98vh',
+    display: 'flex',
   },
 }));
 
-export const Lightbox: React.FC<ILightboxProps> = ({ open, onClose, children, onClick }) => {
+export const Lightbox: React.FC<ILightboxProps> = ({ open, onClose, children, onClick, ...rest }) => {
   const classes = useStyles();
 
   return (
-    <Modal open={open} onClose={onClose} className={classes.modal} BackdropProps={{ className: classes.backdrop }}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      className={classes.modal}
+      BackdropProps={{ className: classes.backdrop }}
+      {...rest}
+    >
       <div className={classes.content} onClick={onClick}>
         {children}
       </div>

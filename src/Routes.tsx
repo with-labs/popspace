@@ -2,8 +2,9 @@ import * as React from 'react';
 import { RouteNames } from './constants/RouteNames';
 import { Admin } from './pages/Admin/Admin';
 import Room from './pages/room';
-import SignupThroughInvite from './pages/SignupThroughInvite';
 import { Signin } from './pages/SignIn/Signin';
+import { Signup } from './pages/Signup/Signup';
+
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
@@ -57,8 +58,8 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <Signin />
       </Route>
 
-      {/* commented out since we dont want people to hit this yet
-      <Route exact path={Routes.SIGN_UP}>
+      {/* commented out since we dont want people to hit this yet */}
+      {/* <Route exact path={RouteNames.SIGN_UP}>
         <Signup />
       </Route> */}
 
@@ -72,10 +73,6 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
 
       <Route path={RouteNames.JOIN_ROOM}>
         <JoinRoom />
-      </Route>
-
-      <Route path={RouteNames.INVITE}>
-        <SignupThroughInvite />
       </Route>
 
       <Route path={RouteNames.LOGIN_IN_WITH_EMAIL}>

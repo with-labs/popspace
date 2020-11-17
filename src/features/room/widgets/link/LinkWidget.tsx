@@ -42,7 +42,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
 
   const saveWidget = useSaveWidget(state.id);
 
-  if (state.isDraft && state.participantSid === localParticipant.sid) {
+  if (state.isDraft && state.participantSid === localParticipant?.sid) {
     return (
       <WidgetFrame color="lavender" widgetId={state.id}>
         <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />

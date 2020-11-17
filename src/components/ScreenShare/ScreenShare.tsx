@@ -74,7 +74,7 @@ export const ScreenShare: React.FC<IScreenShareProps> = ({
 
   if (isFullscreen) {
     return (
-      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit}>
+      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit} disableAutoFocus disableEnforceFocus>
         {media}
       </Lightbox>
     );

@@ -49,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     objectFit: 'cover',
   },
+  screenShareFullscreen: {
+    width: '100%',
+    height: 'auto',
+    objectFit: 'contain',
+  },
   grabIcon: {
     width: 16,
     height: 24,
@@ -201,7 +206,7 @@ export const ScreenSharePreview = React.memo(
             id={`${participantSid}-screenShare-preview`}
             isFullscreen={isFullscreen}
             onFullscreenExit={onFullscreenExit}
-            className={classes.screenShare}
+            className={clsx(classes.screenShare, isFullscreen && classes.screenShareFullscreen)}
             placeholderClassName={classes.screenSharePlaceholder}
             objectId={participantSid}
             muted={!isFullscreen}

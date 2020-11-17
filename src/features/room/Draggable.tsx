@@ -117,7 +117,6 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
     // initial values
     x: position.x,
     y: position.y,
-    willChange: 'initial',
     grabbing: false,
     config: SPRINGS.RESPONSIVE,
   }));
@@ -201,14 +200,14 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
       onDragStart: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragStart();
-        set({ grabbing: true, willChange: 'transform' });
+        set({ grabbing: true });
         autoPan.start({ x: state.xy[0], y: state.xy[1] });
         onDragStart?.();
       },
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
-        set({ grabbing: false, willChange: 'initial' });
+        set({ grabbing: false });
         autoPan.stop();
         onDragEnd?.();
       },
@@ -256,7 +255,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
         style={{
           transform: to(
             [x, y],
-            (xv, yv) => `translate3d(${Math.round(xv)}px, ${Math.round(yv)}px, 0px) translate(-50%, -50%)`
+            (xv, yv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px) translate(-50%, -50%)`
           ),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),

@@ -18,6 +18,7 @@ const useStyles = makeStyles(() => ({
     margin: 'auto',
     maxWidth: '98vw',
     maxHeight: '98vh',
+    display: 'flex',
   },
 }));
 

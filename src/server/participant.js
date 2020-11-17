@@ -5,6 +5,11 @@ class Participant {
   constructor(socket) {
     this.socket = socket
     this.id = id++
+    this.authenticated = false
+  }
+
+  async authenticate(token) {
+
   }
 
   setMessageHandler(handler) {
@@ -17,8 +22,22 @@ class Participant {
     this.socket.send(message)
   }
 
-  disconnect() {
+  sendObject(object) {
+    this.send(JSON.stringify(object))
+  }
+
+  sendError(errorCode, errorMessage, errorObject={}) {
+    this.sendObject(Object.assign({
+      code: errorCode,
+      message: errorMessage
+    }, errorObject))
+  }
+
+  async disconnect() {
     this.socket.close()
+    return new Promise((resolve, reject) => {
+      this.socket.on('close', () => (resolve()))
+    })
   }
 }
 

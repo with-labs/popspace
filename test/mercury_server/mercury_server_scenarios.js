@@ -1,23 +1,18 @@
 const tlib = require("../lib/_testlib")
-const Client = require("../../src/client/client")
-const Mercury = require("../../src/mercury")
 
 module.exports = {
-  "keep_track_of_clients": async(numberOfConnections=2) => {
-    const mercury = new Mercury(process.env.EXPRESS_PORT)
-    mercury.start()
+  "restarts_correclty": async () => {
+    for(let i = 0; i < 5; i++) {
+      let { clients, mercury } = await tlib.util.serverWithClients(i + 1, "restarts_correclty")
+      await mercury.stop()
+    }
+  },
 
-    const clients = [
-      new Client(`ws://localhost:${process.env.EXPRESS_PORT}`),
-      new Client(`ws://localhost:${process.env.EXPRESS_PORT}`)
-    ]
-    await Promise.all( clients.map((c) => (c.connect())) )
-
+  "keep_track_of_clients": async (numberOfConnections=2) => {
+    const { clients, mercury } = await tlib.util.serverWithClients(numberOfConnections, "keep_track_of_clients")
     const connectedClients = mercury.clientsCount()
     await mercury.stop()
-
-    await Promise.all(tlib.util.closePromises(clients))
-
+    console.log("STOPPED")
     return {
       clientsCountOnServer: connectedClients,
       clientsCreated: numberOfConnections

@@ -1,37 +1,23 @@
 const tlib = require("../lib/_testlib")
-const Client = require("../../src/client/client")
-const Mercury = require("../../src/mercury")
-
-const begin = async (clientCount) => {
-  const mercury = new Mercury(process.env.EXPRESS_PORT)
-  mercury.start()
-  const clients = []
-  for(let i = 0; i < clientCount; i++) {
-    clients.push(new Client(`ws://localhost:${process.env.EXPRESS_PORT}`))
-  }
-  await Promise.all( clients.map((c) => (c.connect())) )
-  return { clients, mercury }
-}
-
-const finish = async (mercury, clients) => {
-  await mercury.stop()
-  return await Promise.all(tlib.util.closePromises(clients))
-}
 
 module.exports = {
-  "connect_send_disconnect": async() => {
-    const { clients, mercury } = await begin(1)
+  "connect_send_disconnect": async () => {
+    console.log("CONNECt-DISCONNECT")
+    const { clients, mercury } = await tlib.util.serverWithClients(1, "CONNECt-DISCONNECT")
+    console.log("BEGUN")
     clients[0].send("hello")
-    return await finish(mercury, clients)
+    console.log("SENT")
+    return await mercury.stop()
   },
 
   "1_sender_2_receivers": async (message='hello') => {
+    console.log("1 sender 2 receivers")
     /*
       1. Open several clients
       2. Send a message from one of them
       3. Make sure all clients except sender receive the message
     */
-    const { clients, mercury } = await begin(3)
+    const { clients, mercury } = await tlib.util.serverWithClients(3, "1_sender_2_receivers")
 
     const sender = clients[0]
     const messagesReceived = []
@@ -50,12 +36,12 @@ module.exports = {
 
     sender.send(message)
     await Promise.all(receivePromises)
-    await finish(mercury, clients)
+    await mercury.stop()
     return messagesReceived
   },
 
   "2_peers_back_and_forth": async (messageList1=["hello", "1"], messageList2=["goodbye", "2"]) => {
-    const { clients, mercury } = await begin(2)
+    const { clients, mercury } = await tlib.util.serverWithClients(2)
 
     const messagesReceived1 = []
     const messagesReceived2 = []
@@ -85,17 +71,13 @@ module.exports = {
       clients[0].send(messageList1.shift())
     })
 
-    await finish(mercury, clients)
+    await mercury.stop()
 
     return {
       received1: messagesReceived1,
       received2: messagesReceived2,
       sequence: sequence
     }
-
-
-
-
 
   }
 }

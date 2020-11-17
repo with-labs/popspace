@@ -1,0 +1,3 @@
+module.exports = {
+  MESSAGE_INVALID_FORMAT: "MESSAGE_INVALID_FORMAT"
+}

@@ -19,7 +19,7 @@ class Sockets {
     socket.participant = participant
     this.participants[participant.id] = participant
     participant.setMessageHandler(this.onMessageReceived)
-    socket.on('close', () => (this.removeParticipant(socket)))
+    socket.on('close', () => (this.removeParticipant(participant)))
   }
 
   removeParticipant(participant) {
@@ -40,13 +40,13 @@ class Sockets {
     })
   }
 
-  disconnectOne(participant) {
-    participant.disconnect()
+  async disconnectOne(participant) {
     this.removeParticipant(participant)
+    return participant.disconnect()
   }
 
-  disconnectAll() {
-    this.list().forEach((p) => (this.disconnectOne(p)))
+  async disconnectAll() {
+    return this.list().forEach((p) => (this.disconnectOne(p)))
   }
 
   list() {

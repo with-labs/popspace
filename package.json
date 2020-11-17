@@ -1,25 +1,25 @@
 {
-  "name": "with_streamer",
+  "name": "mercury",
   "version": "1.0.0",
   "description": "Server for streaming data to with clients",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "console": "node --experimental-repl-await ./scripts/console.js",
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/with-labs/with_streamer.git"
+    "url": "git+https://github.com/with-labs/mercury.git"
   },
   "author": "Aleksei Chernikov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/with-labs/with_streamer/issues"
+    "url": "https://github.com/with-labs/mercury/issues"
   },
-  "homepage": "https://github.com/with-labs/with_streamer#readme",
+  "homepage": "https://github.com/with-labs/mercury#readme",
   "dependencies": {
-    "@withso/with-shared": "^1.1.0",
+    "@withso/with-shared": "^1.1.2",
     "commander": "^6.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

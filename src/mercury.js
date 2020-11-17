@@ -2,7 +2,6 @@ const express = require('express')
 const ws = require('ws')
 const Participants = require("./server/participants")
 const MessageProcessor = require("./server/message_processor")
-global.lib = require("./lib/_lib")
 
 // Mercury is the god of communication
 class Mercury {
@@ -22,29 +21,33 @@ class Mercury {
     })
   }
 
-  start() {
-    log.app.info(`Server live on port ${this.port}`)
-    this.server = this.express.listen(this.port)
-    this.server.on('upgrade', (request, socket, head) => {
-      // Standard http upgrade procedure
-      // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
-      this.ws.handleUpgrade(request, socket, head, (socket) => {
-        this.ws.emit('connection', socket, request)
+  async start() {
+    return new Promise((resolve, reject) => {
+      this.server = this.express.listen(this.port, () => {
+        log.app.info(`Server live on port ${this.port}`)
+        resolve()
+      })
+      this.server.on('upgrade', (request, socket, head) => {
+        // Standard http upgrade procedure
+        // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
+        this.ws.handleUpgrade(request, socket, head, (socket) => {
+          this.ws.emit('connection', socket, request)
+        })
       })
     })
-
   }
 
   async stop() {
-
-    this.participants.disconnectAll()
+    await this.participants.disconnectAll()
     return new Promise((resolve, reject) => {
       this.server.close(() => {
-        // console.log("Server shut down")
-        resolve()
+        log.app.info(`Server stopped.`)
+        this.ws.close(() => {
+          console.log("Websocket stopped")
+          resolve()
+        })
       })
     })
-
   }
 
   clientsCount() {

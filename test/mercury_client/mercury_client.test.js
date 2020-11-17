@@ -18,6 +18,7 @@ describe('mercury_client', () => {
     messagesReceived.forEach((message) => {
       expect(message).toEqual(sentMessage)
     })
+    expect(messagesReceived.length).toEqual(2)
   })
 
   test('communication between 2 clients', async () => {

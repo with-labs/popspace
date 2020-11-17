@@ -79,6 +79,7 @@ describe('redux roomSlice state', () => {
     // import overwrites existing state
     const result = reducer(
       {
+        zOrder: [],
         widgets: {
           c: {
             id: 'c',

@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { Avatar } from './Avatar';
-import { options } from '../AvatarSelect/options';
+import { options } from '../../utils/AvatarOptions';
 
 export default {
   title: 'components/Avatar',

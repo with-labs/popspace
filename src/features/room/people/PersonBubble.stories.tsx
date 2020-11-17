@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { PersonBubble } from './PersonBubble';
 import { Box } from '@material-ui/core';
 import { LocalVideoTrack, LocalVideoTrackPublication, LocalAudioTrack, LocalAudioTrackPublication } from 'twilio-video';
-import { options } from '../../../components/AvatarSelect/options';
+import { options } from '../../../utils/AvatarOptions';
 
 export default {
   title: 'components/PersonBubble',

@@ -2,15 +2,15 @@ import React, { ChangeEvent } from 'react';
 import { Checkbox, makeStyles, FormControlLabel } from '@material-ui/core';
 import { Positions } from '../../constants/PositionEnum';
 
-const useLabelStyles = makeStyles({
+const useLabelStyles = makeStyles((theme) => ({
   label: {
-    color: 'var(--color-ink)',
+    color: theme.palette.brandColors.ink.regular,
     fontStyle: 'normal',
     fontWeight: 400,
     fontSize: '16px',
     lineHeight: '22px',
   },
-});
+}));
 
 export interface ICheckboxProps {
   className?: string;

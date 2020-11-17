@@ -1,9 +1,7 @@
+// WIP : add in complete error handling, keep expading features
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button, CircularProgress, Box, makeStyles } from '@material-ui/core';
 import Api from '../../utils/api';
-import { ErrorPage } from '../ErrorPage/ErrorPage';
-import { ErrorInfo } from '../../types/api';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,13 +11,29 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-import styles from './Admin.module.css';
-
 interface IClaimEmailsTableProps {
-  resendEmail: any;
+  resendEmail: (emailStr: string, roomNameStr: string) => void;
 }
 
-export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = (props) => {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    width: '100%',
+    backgroundColor: theme.palette.brandColors.sand.regular,
+  },
+  tableContainer: {
+    marginTop: theme.spacing(2),
+  },
+  spinner: {
+    backgroundColor: theme.palette.brandColors.sand.regular,
+  },
+}));
+
+export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = ({resendEmail }) => {
+  const classes = useStyles();
+
   const [rooms, setRooms] = useState<
     {
       email: string;
@@ -30,32 +44,29 @@ export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = (props) => {
     }[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ErrorInfo>(null!);
 
   useEffect(() => {
     Api.adminRoomClaimsData().then((claimsData: any) => {
       setIsLoading(false);
       setRooms(claimsData.data);
     });
-  }, []);
+  });
 
   function actionForRoom(room: any) {
     if (!room.resolved_at) {
-      return <Button onClick={() => props.resendEmail(room.email, room.name)}>Resend email</Button>;
+      return <Button onClick={() => resendEmail(room.email, room.name)}>Resend email</Button>;
     }
   }
 
-  return error ? (
-    <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
-  ) : (
-    <main className={clsx(styles.root)}>
+  return (
+    <main className={classes.root}>
       {isLoading ? (
-        <div className={clsx(styles.root, 'u-flex u-flexJustifyCenter u-flexAlignItemsCenter')}>
+        <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} className={classes.spinner}>
           <CircularProgress />
-        </div>
+        </Box>
       ) : (
         <>
-          <TableContainer component={Paper} className={styles.tableContainer}>
+          <TableContainer component={Paper} className={classes.tableContainer}>
             <Table aria-label="user table">
               <TableHead>
                 <TableRow>

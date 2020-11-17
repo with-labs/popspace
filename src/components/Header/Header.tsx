@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
-import styles from './Header.module.css';
-import { Menu, MenuItem, Divider, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Menu, MenuItem, Divider, ListItemIcon, ListItemText, Button, makeStyles, Typography } from '@material-ui/core';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN, USER_SUPPORT_EMAIL } from '../../constants/User';
-
-import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
-import { Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 
+import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
 import { ReactComponent as DropdownIcon } from '../../images/icons/dropdown.svg';
 import { ReactComponent as SignOutIcon } from '../../images/icons/sign_out.svg';
 import { ReactComponent as SupportIcon } from '../../images/icons/support.svg';
@@ -21,7 +18,28 @@ interface IHeaderProps {
   userName?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  headerWrapper: {
+    flex: '0 0 auto',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  header: {
+    padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
+  },
+  headerFull: {
+    padding: `${theme.spacing(2)}px 0 ${theme.spacing(2)}px ${theme.spacing(1)}px`,
+  },
+  text: {
+    paddingLeft: theme.spacing(2),
+  },
+  buttonContainer: {
+    marginLeft: 'auto',
+  },
+}));
+
 export const Header: React.FC<IHeaderProps> = (props) => {
+  const classes = useStyles();
   const { text, userName, isFullLength = false } = props;
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const { t } = useTranslation();
@@ -108,13 +126,18 @@ export const Header: React.FC<IHeaderProps> = (props) => {
     </>
   );
 
-  const headerStyles = isFullLength ? styles.headerFull : styles.header;
-
   return (
-    <header className={clsx(styles.headerWrapper, headerStyles, 'u-flex u-flexAlignItemsCenter')}>
+    <header
+      className={clsx(classes.headerWrapper, {
+        [classes['header']]: !isFullLength,
+        [classes['headerFull']]: isFullLength,
+      })}
+    >
       <WithLogo />
-      <div className={clsx(styles.text, 'u-fontP1')}>{text}</div>
-      <div className={styles.buttonContainer}>{userName ? userMenu : null}</div>
+      <Typography variant="body1" className={classes.text}>
+        {text}
+      </Typography>
+      <div className={classes.buttonContainer}>{userName ? userMenu : null}</div>
     </header>
   );
 };

@@ -7,11 +7,11 @@ import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { fuzzVector } from '../../utils/math';
 import { actions } from './roomSlice';
 import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
-import { randomAvatar } from '../../components/AvatarSelect/options';
+import { randomAvatar } from '../../utils/AvatarOptions';
 
 jest.mock('./CoordinatedDispatchProvider');
 jest.mock('../../utils/math');
-jest.mock('../../components/AvatarSelect/options');
+jest.mock('../../utils/AvatarOptions');
 jest.mock('../../hooks/useLocalParticipant/useLocalParticipant');
 
 const POSITION = { x: 10, y: -5 };

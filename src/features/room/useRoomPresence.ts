@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectors, actions } from './roomSlice';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { fuzzVector } from '../../utils/math';
-import { randomAvatar } from '../../components/AvatarSelect/options';
+import { randomAvatar } from '../../utils/AvatarOptions';
 
 /**
  * Enforces that the active local user is always

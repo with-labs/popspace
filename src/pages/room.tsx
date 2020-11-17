@@ -12,10 +12,10 @@ import store from '../state/store';
 import { VideoProvider } from '../components/VideoProvider';
 import { ConnectOptions } from 'twilio-video';
 import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
-import { MediaDeviceSynchronizer } from '../features/preferences/MediaDeviceSynchronizer';
 import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
+import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
+import { RoomState } from '../constants/twilio';
 import { useTranslation } from 'react-i18next';
-
 import { Modal } from '../components/Modal/Modal';
 import { ModalTitleBar } from '../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../components/Modal/ModalContentWrapper';
@@ -33,7 +33,7 @@ const connectionOptions: ConnectOptions = {
       },
     },
   },
-  dominantSpeaker: true,
+  dominantSpeaker: false,
   maxAudioBitrate: 48000,
   networkQuality: { local: 1, remote: 1 },
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
@@ -81,7 +81,7 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
 
   const canEnterRoom = useCanEnterRoom();
 
-  if (roomState === 'disconnected') {
+  if (roomState === RoomState.Disconnected) {
     return <JoinRoom roomName={roomName} />;
   }
 
@@ -102,7 +102,6 @@ const InnerApp: FC<IAppProps> = ({ roomName }) => {
         <Room />
         <ReconnectingNotification />
       </ErrorBoundary>
-      <MediaDeviceSynchronizer />
     </div>
   );
 };
@@ -118,11 +117,13 @@ export default function RoomPage(props: IRoomPageProps) {
     <>
       <ErrorDialog dismissError={() => props.setError(null)} error={props.error} />
       <Provider store={store}>
-        <VideoProvider options={connectionOptions} onError={props.setError}>
-          <CoordinatedDispatchProvider>
-            <InnerApp roomName={props.name} />
-          </CoordinatedDispatchProvider>
-        </VideoProvider>
+        <LocalTracksProvider>
+          <VideoProvider options={connectionOptions} onError={props.setError}>
+            <CoordinatedDispatchProvider>
+              <InnerApp roomName={props.name} />
+            </CoordinatedDispatchProvider>
+          </VideoProvider>
+        </LocalTracksProvider>
       </Provider>
     </>
   );

@@ -11,8 +11,9 @@ import { LocalAudioTrack, RemoteAudioTrack } from 'twilio-video';
 import { actions, selectors } from './roomSlice';
 import useIsTrackEnabled from '../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 const VOLUME_THRESHOLD = 11;
 
@@ -33,25 +34,26 @@ export function initializeAnalyser(stream: MediaStream) {
 }
 
 export function useLocalVolumeDetection() {
-  const {
-    room: { localParticipant },
-    localTracks,
-  } = useVideoContext();
-  const isSpeaking = useSelector(selectors.createPersonIsSpeakingSelector(localParticipant.sid));
+  const localParticipant = useLocalParticipant();
+  const localParticipantSid = localParticipant?.sid;
+  const isSpeaking = useSelector(selectors.createPersonIsSpeakingSelector(localParticipantSid));
 
   const coordinatedDispatch = useCoordinatedDispatch();
   const updateIsSpeaking = useCallback(
     (newIsSpeaking: boolean) => {
-      coordinatedDispatch(
-        actions.updatePersonIsSpeaking({
-          id: localParticipant.sid,
-          isSpeaking: newIsSpeaking,
-        })
-      );
+      if (localParticipantSid) {
+        coordinatedDispatch(
+          actions.updatePersonIsSpeaking({
+            id: localParticipantSid,
+            isSpeaking: newIsSpeaking,
+          })
+        );
+      }
     },
-    [coordinatedDispatch, localParticipant.sid]
+    [coordinatedDispatch, localParticipantSid]
   );
-  const audioTrack = localTracks.find((track) => track.kind === 'audio') as LocalAudioTrack;
+
+  const { audioTrack } = useLocalTracks();
 
   const [analyser, setAnalyser] = useState<AnalyserNode>();
   const isTrackEnabled = useIsTrackEnabled(audioTrack as LocalAudioTrack | RemoteAudioTrack);

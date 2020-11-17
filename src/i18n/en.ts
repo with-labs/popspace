@@ -220,6 +220,8 @@ export default {
         invalidEmail: 'Invalid email.',
         mediaNotSupported: 'Unsupported media type',
         fileDropUnknownFailure: 'Upload failed - please try again',
+        catastrophicMediaError:
+          'Something went very wrong while activating your media device. Try refreshing the page to see if that helps.',
       },
       widgetsFallback: {
         title: 'Accessories error',
@@ -287,6 +289,20 @@ export default {
         LINK_EXPIRED: {},
         PAGE_NOT_FOUND: {},
         ROOM_NOT_FOUND: {},
+      },
+      media: {
+        audioPermissionDismissed:
+          'If you want to share your voice, we\'ll need microphone access. Press the button to enable your mic, then choose "Allow"',
+        audioPermissionDenied:
+          "You've told your browser not to allow microphone access for With. Change that setting to start sharing your voice.",
+        videoPermissionDismissed:
+          'If you want to share your video, we\'ll need camera access. Press the button to enable your camera, then choose "Allow"',
+        videoPermissionDenied:
+          "You've told your browser not to allow camera access for With. Change that setting to start sharing your video.",
+        screenSharePermissionDismissed:
+          'If you want to share your screen, we\'ll need access. Press the button to share your screen, then choose "Allow"',
+        screenSharePermissionDenied:
+          "You've told your browser not to allow screen share access for With. Change that setting to start sharing your screen.",
       },
     },
     features: {

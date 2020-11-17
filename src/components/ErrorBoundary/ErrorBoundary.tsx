@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import * as Sentry from '@sentry/react';
+import { logger } from '../../utils/logger';
 
 interface IErrorBoundaryProps {
   fallback: () => ReactNode;
@@ -7,9 +8,7 @@ interface IErrorBoundaryProps {
 
 // Callback for the Sentry ErrorBoundary component that will log errors to the browser console in development mode.
 const devOnError = (error: Error, componentStack: string) => {
-  if (process.env.NODE_ENV !== 'production') {
-    console.error(error, componentStack);
-  }
+  logger.error(error, componentStack);
 };
 
 // Wrap the Sentry ErrorBoundary component and add an onError function to log things to the browser console in

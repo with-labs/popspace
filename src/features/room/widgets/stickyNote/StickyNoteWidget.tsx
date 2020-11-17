@@ -61,7 +61,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
     [baseSaveWidget, localDisplayName]
   );
 
-  if (state.isDraft && state.participantSid === localParticipant.sid) {
+  if (state.isDraft && state.participantSid === localParticipant?.sid) {
     return (
       <StickyNoteFrame
         title={t('widgets.stickyNote.addWidgetTitle')}

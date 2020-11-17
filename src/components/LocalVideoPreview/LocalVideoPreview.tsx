@@ -1,12 +1,12 @@
 import React from 'react';
-import { LocalVideoTrack } from 'twilio-video';
-import VideoTrack from '../VideoTrack/VideoTrack';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { useNamedPublication } from '../../hooks/useNamedPublication/useNamedPublication';
+import { CAMERA_TRACK_NAME } from '../../constants/User';
+import Publication from '../Publication/Publication';
 
 export default function LocalVideoPreview({ className }: { className?: string }) {
-  const { localTracks } = useVideoContext();
+  const localParticipant = useLocalParticipant();
+  const videoPub = useNamedPublication(localParticipant, CAMERA_TRACK_NAME);
 
-  const videoTrack = localTracks.find((track) => track.name.includes('camera')) as LocalVideoTrack;
-
-  return videoTrack ? <VideoTrack track={videoTrack} isLocal classNames={className} /> : null;
+  return videoPub ? <Publication publication={videoPub} isLocal classNames={className} /> : null;
 }

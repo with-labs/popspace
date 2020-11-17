@@ -30,7 +30,7 @@ export function useEnforcedPersonSelector(sid: string) {
     if (!isInRoom) {
       dispatch(
         actions.addPerson({
-          position: fuzzVector({ x: 0, y: 0 }, 100),
+          position: fuzzVector({ x: 0, y: 0 }, 100, sid),
           person: {
             id: sid,
             avatar: randomAvatar(sid).name,

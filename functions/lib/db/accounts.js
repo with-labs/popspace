@@ -19,7 +19,7 @@ class Accounts extends DbAccess {
 
   async hardDelete(userId) {
     // support hard-deleting soft-deleted users
-    const user = db.pg.massive.users.findOne({id: userId})
+    const user = await db.pg.massive.users.findOne({id: userId})
     if(!user) {
       throw "No such user"
     }

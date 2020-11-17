@@ -4,6 +4,6 @@
     "uuid": "^8.3.1"
   },
   "scripts": {
-    "build:setup": "npm install && cd lib && npm install && npm run db:migrate"
+    "build:setup": "npm install && cd lib && npm install"
   }
 }

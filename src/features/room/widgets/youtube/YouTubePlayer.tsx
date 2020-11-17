@@ -62,8 +62,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// memoizing YouTube - so that it won't re-render when the parent's useSyncYoutube hook changes if
+// the changes are only applicable to the VideoControls. This is frequently the case because
+// useSyncYoutube stores the current timestamp in useState, so it will update at least every second
+// with data that only matters to VideoControls, not YouTube. So we want YouTube to ignore that
+// re-render, which memoization does for us.
+const MemoizedYouTube = React.memo(YouTube);
+
 /**
- *
+ * Renders an interactive, peer-synced YouTube player
  */
 export const YouTubePlayer: React.FC<IYouTubePlayerProps> = ({ state, onChange, isMuted }) => {
   const classes = useStyles();
@@ -81,7 +88,12 @@ export const YouTubePlayer: React.FC<IYouTubePlayerProps> = ({ state, onChange, 
 
   return (
     <div className={classes.videoContainer}>
-      <YouTube opts={DEFAULT_OPTS} videoId={state.data.videoId} className={classes.video} {...youtubeBindings} />
+      <MemoizedYouTube
+        opts={DEFAULT_OPTS}
+        videoId={state.data.videoId}
+        className={classes.video}
+        {...youtubeBindings}
+      />
       <VideoControls className={classes.videoControls} {...videoControlBindings} />
     </div>
   );

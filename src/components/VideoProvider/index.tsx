@@ -1,40 +1,16 @@
-/**
- * #WITH_EDIT
- *
- * Add RoomStateProvider.
- * `localTracks` context property can now include LocalDataTracks.
- *
- * Aug 6, 2020 WQP
- * - updated to latest twilio-video starter app.
- *
- * Aug 27, 2020 WQP
- * - Add onError to useLocalTracks.
- *
- * Aug 30, 2020 WQP
- * - Add AttachVisibilityHandler, per starter app.
- *
- * Sept 17, 2020 WQP
- * - Add Sentry logging in error setting callback.
- */
 import React, { createContext, ReactNode, useCallback } from 'react';
 import * as Sentry from '@sentry/react';
-import {
-  CreateLocalTrackOptions,
-  ConnectOptions,
-  LocalAudioTrack,
-  LocalVideoTrack,
-  LocalDataTrack,
-  Room,
-} from 'twilio-video';
+import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';
-import { SelectedParticipantProvider } from './useSelectedParticipant/useSelectedParticipant';
-
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
 import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
 import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
-import useLocalTracks from './useLocalTracks/useLocalTracks';
 import useRoom from './useRoom/useRoom';
+import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
+import { useAllParticipants } from './useAllParticipants/useAllParticipants';
+import { useHackReconnection } from './useHackReconnection/useHackReconnection';
+import { logger } from '../../utils/logger';
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -44,16 +20,12 @@ import useRoom from './useRoom/useRoom';
  */
 
 export interface IVideoContext {
-  room: Room;
-  localTracks: (LocalAudioTrack | LocalVideoTrack | LocalDataTrack)[];
+  room: Room | null;
   isConnecting: boolean;
   connect: (token: string) => Promise<Room | null>;
   onError: (err: Error) => void;
   onDisconnect: Callback;
-  getLocalVideoTrack: (newOptions?: CreateLocalTrackOptions) => Promise<LocalVideoTrack>;
-  getLocalAudioTrack: (deviceId?: string) => Promise<LocalAudioTrack>;
-  isAcquiringLocalTracks: boolean;
-  removeLocalVideoTrack: () => void;
+  allParticipants: (LocalParticipant | RemoteParticipant)[];
 }
 
 export const VideoContext = createContext<IVideoContext>(null!);
@@ -65,51 +37,49 @@ interface VideoProviderProps {
   children: ReactNode;
 }
 
+const TrackPublisher = () => {
+  useLocalTrackPublications();
+  return null;
+};
+
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = useCallback(
     (error: Error) => {
-      console.log(`ERROR: ${error.message}`, error);
+      logger.log(`ERROR: ${error.message}`, error);
       Sentry.captureException(error);
       onError(error);
     },
     [onError]
   );
 
-  const {
-    localTracks,
-    getLocalVideoTrack,
-    getLocalAudioTrack,
-    isAcquiringLocalTracks,
-    removeLocalVideoTrack,
-  } = useLocalTracks(onError);
-  const { room, isConnecting, connect } = useRoom(localTracks, onErrorCallback, options);
+  const { room, isConnecting, connect } = useRoom(onErrorCallback, options);
 
   // Register onError and onDisconnect callback functions.
   useHandleRoomDisconnectionErrors(room, onError);
   useHandleTrackPublicationFailed(room, onError);
   useHandleOnDisconnect(room, onDisconnect);
+  useHackReconnection(room);
+
+  const allParticipants = useAllParticipants(room);
 
   return (
     <VideoContext.Provider
       value={{
         room,
-        localTracks,
         isConnecting,
         onError: onErrorCallback,
         onDisconnect,
-        getLocalVideoTrack,
-        getLocalAudioTrack,
         connect,
-        isAcquiringLocalTracks,
-        removeLocalVideoTrack,
+        allParticipants,
       }}
     >
-      <SelectedParticipantProvider room={room}>{children}</SelectedParticipantProvider>
+      {children}
       {/*
         The AttachVisibilityHandler component is using the useLocalVideoToggle hook
         which must be used within the VideoContext Provider.
       */}
       <AttachVisibilityHandler />
+      <TrackPublisher />
     </VideoContext.Provider>
   );
 }

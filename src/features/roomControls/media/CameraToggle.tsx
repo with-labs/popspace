@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
 import { CameraOnIcon } from '../../../components/icons/CameraOnIcon';
 import { CameraOffIcon } from '../../../components/icons/CameraOffIcon';
-import useLocalVideoToggle from '../../../hooks/useLocalVideoToggle/useLocalVideoToggle';
+import useLocalVideoToggle from '../../../hooks/localMediaToggles/useLocalVideoToggle';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,7 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 
 export const CameraToggle = (props: { className?: string }) => {
   const { t } = useTranslation();
-  const [isVideoOn, toggleVideoOn] = useLocalVideoToggle();
+  const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle();
 
   useHotkeys(
     KeyShortcut.ToggleVideo,
@@ -30,9 +30,11 @@ export const CameraToggle = (props: { className?: string }) => {
         </>
       }
     >
-      <ToggleButton value="video" selected={isVideoOn} onChange={toggleVideoOn} {...props}>
-        {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
-      </ToggleButton>
+      <div>
+        <ToggleButton value="video" selected={isVideoOn} onChange={toggleVideoOn} disabled={busy} {...props}>
+          {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
+        </ToggleButton>
+      </div>
     </Tooltip>
   );
 };

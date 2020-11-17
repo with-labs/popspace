@@ -171,12 +171,22 @@ export function useSyncYoutube({
   // update the scrubber on a consistent timestep - there's no more elegant way
   // to do this that I know of...
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      setRealtimeTimestamp(ytPlayerRef.current?.getCurrentTime() ?? 0);
-    }, 500);
+    let animFrame: number | null = null;
+    let timeout: NodeJS.Timeout | null = null;
+    function loop() {
+      const rounded = Math.round(ytPlayerRef.current?.getCurrentTime() ?? 0);
+      setRealtimeTimestamp(rounded);
+      animFrame = requestAnimationFrame(loop);
+    }
+    loop();
 
     return () => {
-      clearInterval(interval);
+      if (animFrame) {
+        cancelAnimationFrame(animFrame);
+      }
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     };
   }, []);
 

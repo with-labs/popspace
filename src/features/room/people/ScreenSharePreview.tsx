@@ -13,8 +13,6 @@ import { SPRINGS } from '../../../constants/springs';
 import { makeStyles, Box, useTheme } from '@material-ui/core';
 import clsx from 'clsx';
 import { GrabbyIcon } from '../../../components/icons/GrabbyIcon';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { actions } from '../roomSlice';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -51,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     objectFit: 'cover',
   },
+  screenShareFullscreen: {
+    width: '100%',
+    height: 'auto',
+    objectFit: 'contain',
+  },
   grabIcon: {
     width: 16,
     height: 24,
@@ -67,7 +70,7 @@ export const ScreenSharePreview = React.memo(
     const theme = useTheme();
 
     const localParticipant = useLocalParticipant();
-    const isLocal = localParticipant.sid === participantSid;
+    const isLocal = localParticipant?.sid === participantSid;
     const addWidget = useAddAccessory();
     const viewport = useRoomViewport();
 
@@ -91,16 +94,6 @@ export const ScreenSharePreview = React.memo(
       []
     );
     const hasShareAccessory = useSelector((state: RootState) => hasShareAccessorySelector(state, participantSid));
-
-    const coordinatedDispatch = useCoordinatedDispatch();
-    const handleStreamEnd = React.useCallback(() => {
-      coordinatedDispatch(
-        actions.updatePersonIsSharingScreen({
-          id: participantSid,
-          isSharingScreen: false,
-        })
-      );
-    }, [coordinatedDispatch, participantSid]);
 
     const [rootStyles, setRootStyles] = useSpring(() => ({
       x: 0,
@@ -156,7 +149,7 @@ export const ScreenSharePreview = React.memo(
             addWidget({
               type: WidgetType.ScreenShare,
               initialData: {
-                sharingUserId: localParticipant.sid,
+                sharingUserId: localParticipant?.sid,
               },
               publishImmediately: true,
               screenCoordinate: {
@@ -213,9 +206,8 @@ export const ScreenSharePreview = React.memo(
             id={`${participantSid}-screenShare-preview`}
             isFullscreen={isFullscreen}
             onFullscreenExit={onFullscreenExit}
-            className={classes.screenShare}
+            className={clsx(classes.screenShare, isFullscreen && classes.screenShareFullscreen)}
             placeholderClassName={classes.screenSharePlaceholder}
-            onStreamEnd={handleStreamEnd}
             objectId={participantSid}
             muted={!isFullscreen}
           />

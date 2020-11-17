@@ -1,9 +1,7 @@
 import React from 'react';
-import clsx from 'clsx';
 import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
-import { Button } from '@material-ui/core';
-import styles from './GenericErrorPage.module.css';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 
 interface IGenericErrorPageProps {
   buttonText: string;
@@ -16,27 +14,64 @@ interface IGenericErrorPageProps {
   imgAltText?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    width: '100%',
+    backgroundColor: theme.palette.brandColors.sand.regular,
+  },
+  bodyText: {
+    marginTop: theme.spacing(2),
+  },
+  errorText: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.error.dark,
+  },
+  button: {
+    marginTop: theme.spacing(4),
+  },
+  container: {
+    maxWidth: 440,
+  },
+  imgContainer: {
+    maxWidth: '100%',
+    maxHeight: '100%',
+  },
+  image: {
+    width: '100%',
+    maxWidth: 600,
+    display: 'block',
+  },
+}));
+
 export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
+  const classes = useStyles();
   const { buttonText, onClick, quoteText, title, body, errorMessage, imgSrc, imgAltText } = props;
 
   return (
-    <main className={clsx(styles.root, 'u-flex u-flexCol')}>
+    <main className={classes.root}>
       <TwoColLayout>
-        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-          <div className={styles.container}>
+        <Column centerContent={true} useColMargin={true}>
+          <div className={classes.container}>
             <div>{quoteText}</div>
-            <div className="u-fontH0">{title}</div>
-            <div className={clsx(styles.body, 'u-fontP1')}>{body}</div>
-            <div className={clsx(styles.error, 'u-fontP1')}>{errorMessage}</div>
-            <Button className={styles.button} onClick={onClick}>
+            <Typography variant="h1">{title}</Typography>
+            <Typography variant="body1" className={classes.bodyText}>
+              {body}
+            </Typography>
+            <Typography variant="body1" className={classes.errorText}>
+              {errorMessage}
+            </Typography>
+            <Button className={classes.button} onClick={onClick}>
               {buttonText}
             </Button>
           </div>
         </Column>
         {imgSrc && imgAltText ? (
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-            <div className={styles.imageContainer}>
-              <img className={styles.image} src={imgSrc} alt={imgAltText} />
+          <Column centerContent={true} hide="sm">
+            <div className={classes.imgContainer}>
+              <img className={classes.image} src={imgSrc} alt={imgAltText} />
             </div>
           </Column>
         ) : null}

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { PersonBubble } from './PersonBubble';
 import { Box } from '@material-ui/core';
 import { LocalVideoTrack, LocalVideoTrackPublication, LocalAudioTrack, LocalAudioTrackPublication } from 'twilio-video';
-import { options } from '../../../components/AvatarSelect/options';
+import { options } from '../../../utils/AvatarOptions';
 
 export default {
   title: 'components/PersonBubble',
@@ -106,8 +106,9 @@ function Demo({
   status?: string;
   avatar?: string;
 }) {
-  const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | undefined>(undefined);
-  const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | undefined>(undefined);
+  const [localVideo, setLocalVideo] = useState<LocalVideoTrackPublication | null>(null);
+  const [localAudio, setLocalAudio] = useState<LocalAudioTrackPublication | null>(null);
+  const [localScreenShare, setLocalScreenShare] = useState<LocalVideoTrackPublication | null>(null);
 
   useEffect(() => {
     navigator.mediaDevices
@@ -118,6 +119,10 @@ function Demo({
       .then((s) => {
         if (videoOn) {
           setLocalVideo(createFakeVideoTrackPublication(s) as any);
+          setLocalScreenShare(createFakeVideoTrackPublication(s) as any);
+        } else {
+          setLocalVideo(null);
+          setLocalScreenShare(null);
         }
         setLocalAudio(createFakeAudioTrackPublication(s, isMuted) as any);
       });
@@ -146,8 +151,9 @@ function Demo({
           status: status ?? person.status,
         }}
         isLocal={isLocal}
-        cameraTrack={videoOn ? localVideo : undefined}
+        cameraTrack={localVideo}
         audioTrack={localAudio}
+        screenShareTrack={localScreenShare}
       />
     </Box>
   );

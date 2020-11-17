@@ -1,21 +1,30 @@
 import React from 'react';
-import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import signinImg from '../../images/SignIn.png';
-import { Button } from '@material-ui/core';
+import { Button, Typography, makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { isMobileOnly } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
-
-import styles from './FinalizeAccount.module.css';
+import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 
 interface IClaimConfirmationViewProps {
   roomName: string;
   email: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  button: {
+    marginTop: theme.spacing(5),
+  },
+  title: {
+    marginBottom: 10,
+  },
+}));
+
 export const ClaimConfirmationView: React.FC<IClaimConfirmationViewProps> = (props) => {
+  const classes = useStyles();
   const { email, roomName } = props;
   const history = useHistory();
   const { t } = useTranslation();
@@ -26,10 +35,12 @@ export const ClaimConfirmationView: React.FC<IClaimConfirmationViewProps> = (pro
 
   return (
     <TwoColLayout>
-      <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-        <div className={styles.container}>
-          <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.claimConfirmationView.title')}</div>
-          <div className="u-fontP1">
+      <Column centerContent={true} useColMargin={true}>
+        <PanelContainer>
+          <Typography variant="h2" className={classes.title}>
+            {t('pages.claimConfirmationView.title')}
+          </Typography>
+          <Typography variant="body1">
             {t('pages.claimConfirmationView.associationText', { roomName, email })}
             <br />
             <br />
@@ -41,18 +52,16 @@ export const ClaimConfirmationView: React.FC<IClaimConfirmationViewProps> = (pro
                 {t('pages.claimConfirmationView.mobileOptimizationNotice')}
               </>
             )}
-          </div>
+          </Typography>
           {!isMobileOnly && (
-            <Button className={styles.button} onClick={onGotoRoomClick}>
+            <Button className={classes.button} onClick={onGotoRoomClick}>
               {t('pages.claimConfirmationView.gotoRoomBtn')}
             </Button>
           )}
-        </div>
+        </PanelContainer>
       </Column>
-      <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-        <div className={styles.imageContainer}>
-          <img className={styles.image} src={signinImg} alt={t('pages.claimConfirmationView.imgAltText')} />
-        </div>
+      <Column centerContent={true} hide="sm">
+        <PanelImage src={signinImg} altTextKey="pages.claimConfirmationView.imgAltText" />
       </Column>
     </TwoColLayout>
   );

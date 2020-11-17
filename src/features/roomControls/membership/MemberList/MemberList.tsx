@@ -28,7 +28,7 @@ import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWr
 
 import { cherry, snow } from '../../../../theme/theme';
 import Api from '../../../../utils/api';
-import { ErrorModal } from '../../../room/modals/ErrorModal/ErrorModal';
+import { ErrorModal } from '../../../../components/ErrorModal/ErrorModal';
 import { useSnackbar } from 'notistack';
 import { BaseResponse } from '../../../../utils/api';
 import * as Sentry from '@sentry/react';

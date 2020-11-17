@@ -1,7 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import clsx from 'clsx';
-import styles from './FinalizeAccount.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
@@ -17,28 +15,64 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
-import { Button, TextField, Link } from '@material-ui/core';
+import { makeStyles, Button, TextField, Link, Typography, Box } from '@material-ui/core';
 import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
+import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
+import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 
 import { ClaimConfirmationView } from './ClaimConfirmationView';
 
 interface IFinalizeAccountProps {}
 
+const useStyles = makeStyles((theme) => ({
+  colRow: {
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+  checkBoxes: {
+    marginTop: theme.spacing(2.5),
+  },
+  button: {
+    marginTop: theme.spacing(5),
+  },
+  title: {
+    marginBottom: 10,
+  },
+  text: {
+    marginBottom: theme.spacing(5),
+  },
+  firstName: {
+    marginRight: theme.spacing(2.5),
+    [theme.breakpoints.only('sm')]: {
+      marginRight: 0,
+      marginBottom: theme.spacing(2),
+    },
+  },
+  lastName: {
+    [theme.breakpoints.only('sm')]: {
+      marginTop: theme.spacing(1.25),
+    },
+  },
+}));
+
 export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const history = useHistory();
   const { t } = useTranslation();
+  const classes = useStyles();
 
   // get the query params from the invite
   const query = useQueryParams();
 
   // pull out the information we need from query string
   //if we dont have the params, redirect to root
-  const otp = useMemo(() => query.get('otp'), [query]);
-  const email = useMemo(() => query.get('email'), [query]);
-  const claimId = useMemo(() => query.get('cid'), [query]);
+  const otp = query.get('otp');
+  const email = query.get('email');
+  const claimId = query.get('cid');
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -131,6 +165,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     }
   };
 
+  // TODO: convert form to formik?
   return (
     <Page isLoading={isLoading} error={error}>
       <Header />
@@ -138,19 +173,23 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         <ClaimConfirmationView roomName={roomName} email={email || ''} />
       ) : (
         <TwoColLayout>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-            <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-              <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.finalizeAccount.title')}</div>
-              <div className={clsx(styles.text, 'u-fontP1')}>{t('pages.finalizeAccount.body', { email })}</div>
+          <Column centerContent={true} useColMargin={true}>
+            <PanelContainer>
+              <Typography variant="h2" className={classes.title}>
+                {t('pages.finalizeAccount.title')}
+              </Typography>
+              <Typography variant="body1" className={classes.text}>
+                {t('pages.finalizeAccount.body', { email })}
+              </Typography>
               <form onSubmit={onFormSubmit}>
-                <div className="u-flex u-sm-flexCol u-flexRow">
+                <Box display="flex" className={classes.colRow}>
                   <TextField
                     id="firstName"
                     value={firstName}
                     onChange={(event) => setFirstName(event.target.value)}
                     placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
                     label={t('pages.finalizeAccount.fistNameLabel')}
-                    className={styles.firstName}
+                    className={classes.firstName}
                   />
                   <TextField
                     id="lastName"
@@ -158,10 +197,10 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                     onChange={(event) => setLastName(event.target.value)}
                     placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
                     label={t('pages.finalizeAccount.lastNameLabel')}
-                    className={styles.lastName}
+                    className={classes.lastName}
                   />
-                </div>
-                <div className={styles.checkboxes}>
+                </Box>
+                <div className={classes.checkBoxes}>
                   <CheckboxField
                     label={
                       <span>
@@ -184,16 +223,14 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                     name={t('pages.finalizeAccount.martketingCheckboxName')}
                   />
                 </div>
-                <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+                <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
                   {t('pages.finalizeAccount.submitBtnText')}
                 </Button>
               </form>
-            </div>
+            </PanelContainer>
           </Column>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-            <div className={styles.imageContainer}>
-              <img className={styles.image} src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
-            </div>
+          <Column centerContent={true} hide="sm">
+            <PanelImage src={signinImg} altTextKey="pages.finalizeAccount.imgAltText" />
           </Column>
         </TwoColLayout>
       )}

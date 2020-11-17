@@ -259,7 +259,6 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
           ),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
-          // willChange: willChange as any,
         }}
         className={styles.root}
         onKeyDown={stopPropagation}

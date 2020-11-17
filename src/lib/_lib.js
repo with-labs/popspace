@@ -8,7 +8,7 @@ global.shared = require("@withso/with-shared")
 lib.Client = require("../client/client.js")
 
 lib.init = async () => {
-  await shared.pg.init()
+  // await shared.pg.init()
 }
 
 global.lib = lib

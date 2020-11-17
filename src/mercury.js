@@ -3,7 +3,6 @@ const ws = require('ws')
 const Participants = require("./server/participants")
 const MessageProcessor = require("./server/message_processor")
 
-// Mercury is the god of communication
 class Mercury {
   constructor(port) {
     this.port = port

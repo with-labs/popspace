@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import * as typeformEmbed from '@typeform/embed';
 import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import { Button, makeStyles, CircularProgress, Box } from '@material-ui/core';
+import { Button, makeStyles, Typography } from '@material-ui/core';
 import Api from '../../utils/api';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
@@ -105,17 +104,19 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   return (
     <Page isLoading={isLoading} error={error} className={classes.root}>
       <TwoColLayout>
-        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
+        <Column centerContent={true} useColMargin={true}>
           <div className={classes.container}>
             <div>{t('pages.unsubscribe.quoteText')}</div>
-            <div className="u-fontH0">{t('pages.unsubscribe.title')}</div>
-            <div className={clsx(classes.body, 'u-fontP1')}>{t('pages.unsubscribe.body')}</div>
+            <Typography variant="h1">{t('pages.unsubscribe.title')}</Typography>
+            <Typography variant="body1" className={classes.body}>
+              {t('pages.unsubscribe.body')}
+            </Typography>
             <Button className={classes.button} onClick={onClickHandler}>
               {t('pages.unsubscribe.button')}
             </Button>
           </div>
         </Column>
-        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
+        <Column centerContent={true} hide="sm">
           <div className={classes.imageContainer}>
             <img className={classes.image} src={SadBlobby} alt={t('pages.unsubscribe.imgAltText')} />
           </div>

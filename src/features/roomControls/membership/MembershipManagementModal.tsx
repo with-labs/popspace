@@ -16,7 +16,7 @@ import Api from '../../../utils/api';
 import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/SessionTokenExists';
-import { ErrorModal } from '../../room/modals/ErrorModal/ErrorModal';
+import { ErrorModal } from '../.././../components/ErrorModal/ErrorModal';
 import * as Sentry from '@sentry/react';
 import { ErrorCodes } from '../../../constants/ErrorCodes';
 import { BaseResponse } from '../../../utils/api';

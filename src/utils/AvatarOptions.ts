@@ -1,4 +1,4 @@
-import { AvatarMetadata } from '../../constants/AvatarMetadata';
+import { AvatarMetadata } from '../constants/AvatarMetadata';
 export interface IAvatar {
   name: string;
   image: string;

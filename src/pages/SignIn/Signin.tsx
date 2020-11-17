@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
-import clsx from 'clsx';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Page } from '../../Layouts/Page/Page';
-
 import { Header } from '../../components/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
 import Api from '../../utils/api';
-
-import styles from './Signin.module.css';
-import signinImg from '../../images/SignIn.png';
-import { Button, TextField } from '@material-ui/core';
-
+import { Button, TextField, makeStyles, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
+import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+
+import signinImg from '../../images/SignIn.png';
 
 interface ISigninProps {}
 
+const useStyles = makeStyles((theme) => ({
+  title: {
+    marginBottom: theme.spacing(5),
+  },
+  emailInput: {
+    marginBottom: theme.spacing(5),
+  },
+}));
+
 export const Signin: React.FC<ISigninProps> = (props) => {
+  const classes = useStyles();
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [emailError, setEmailError] = useState('');
@@ -56,9 +64,11 @@ export const Signin: React.FC<ISigninProps> = (props) => {
         <ConfirmationView email={email} />
       ) : (
         <TwoColLayout>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-            <div className={styles.container}>
-              <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.signin.title')}</div>
+          <Column centerContent={true} useColMargin={true}>
+            <PanelContainer>
+              <Typography variant="h2" className={classes.title}>
+                {t('pages.signin.title')}
+              </Typography>
               <form onSubmit={onFormSubmit}>
                 <TextField
                   id="SignIn-email"
@@ -66,7 +76,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder={t('pages.signin.email.placeHolder')}
                   label={t('pages.signin.email.label')}
-                  className={styles.emailInput}
+                  className={classes.emailInput}
                   error={!!emailError}
                   helperText={emailError}
                   margin="normal"
@@ -75,12 +85,10 @@ export const Signin: React.FC<ISigninProps> = (props) => {
                   {t('pages.signin.submitButtonText')}
                 </Button>
               </form>
-            </div>
+            </PanelContainer>
           </Column>
-          <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-            <div className={styles.imageContainer}>
-              <img className={styles.image} src={signinImg} alt={t('pages.signin.imgAltText')} />
-            </div>
+          <Column centerContent={true} hide="sm">
+            <PanelImage src={signinImg} altTextKey="pages.signin.imgAltText" />
           </Column>
         </TwoColLayout>
       )}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, ButtonBase } from '@material-ui/core';
-import { options as avatarOptions } from '../../../components/AvatarSelect/options';
+import { options as avatarOptions } from '../../../utils/AvatarOptions';
 import clsx from 'clsx';
 
 export interface IAvatarGridProps {

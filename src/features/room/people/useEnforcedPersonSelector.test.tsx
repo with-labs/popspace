@@ -6,11 +6,11 @@ import { createStore } from 'redux';
 import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
 import { fuzzVector } from '../../../utils/math';
 import { actions } from '../roomSlice';
-import { randomAvatar } from '../../../components/AvatarSelect/options';
+import { randomAvatar } from '../../../utils/AvatarOptions';
 
 jest.mock('../CoordinatedDispatchProvider');
 jest.mock('../../../utils/math');
-jest.mock('../../../components/AvatarSelect/options');
+jest.mock('../../../utils/AvatarOptions');
 
 const ID = 'me';
 

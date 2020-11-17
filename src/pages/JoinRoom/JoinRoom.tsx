@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import clsx from 'clsx';
-import styles from './JoinRoom.module.css';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
@@ -17,15 +15,52 @@ import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
-import { Button, TextField, Link } from '@material-ui/core';
+import { Button, TextField, Link, makeStyles, Typography } from '@material-ui/core';
 import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
+import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
+import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 
 interface IJoinRoomProps {}
 
+const useStyles = makeStyles((theme) => ({
+  title: {
+    marginBottom: theme.spacing(1),
+  },
+  text: {
+    marginBottom: theme.spacing(5),
+  },
+  button: {
+    marginTop: theme.spacing(5),
+  },
+  firstName: {
+    marginRight: 0,
+    marginBottom: theme.spacing(2),
+    [theme.breakpoints.up('md')]: {
+      marginRight: 20,
+    },
+  },
+  lastName: {
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(1),
+    },
+  },
+  checkboxes: {
+    marginTop: 20,
+  },
+  formWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+}));
+
 export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
+  const classes = useStyles();
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -131,19 +166,23 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
     <Page isLoading={isLoading} error={error}>
       <Header />
       <TwoColLayout>
-        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter" useColMargin={true}>
-          <div className={clsx(styles.container, 'u-flex u-flexCol')}>
-            <div className={clsx(styles.title, 'u-fontH1')}>{t('pages.joinRoom.title')}</div>
-            <div className={clsx(styles.text, 'u-fontP1')}>{t('pages.joinRoom.body', { email, roomName })}</div>
+        <Column centerContent={true} useColMargin={true}>
+          <PanelContainer>
+            <Typography variant="h2" className={classes.title}>
+              {t('pages.joinRoom.title')}
+            </Typography>
+            <Typography variant="body1" className={classes.text}>
+              {t('pages.joinRoom.body', { email, roomName })}
+            </Typography>
             <form onSubmit={onFormSubmit}>
-              <div className="u-flex u-sm-flexCol u-flexRow">
+              <div className={classes.formWrapper}>
                 <TextField
                   id="firstName"
                   value={firstName}
                   onChange={(event) => setFirstName(event.target.value)}
                   placeholder={t('pages.joinRoom.firstNamePlaceholder')}
                   label={t('pages.joinRoom.fistNameLabel')}
-                  className={styles.firstName}
+                  className={classes.firstName}
                 />
                 <TextField
                   id="lastName"
@@ -151,10 +190,10 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
                   onChange={(event) => setLastName(event.target.value)}
                   placeholder={t('pages.joinRoom.lastNamePlaceholder')}
                   label={t('pages.joinRoom.lastNameLabel')}
-                  className={styles.lastName}
+                  className={classes.lastName}
                 />
               </div>
-              <div className={styles.checkboxes}>
+              <div className={classes.checkboxes}>
                 <CheckboxField
                   label={
                     <span>
@@ -177,16 +216,14 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
                   name={t('pages.joinRoom.martketingCheckboxName')}
                 />
               </div>
-              <Button className={styles.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+              <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
                 {t('pages.joinRoom.submitBtnText')}
               </Button>
             </form>
-          </div>
+          </PanelContainer>
         </Column>
-        <Column classNames="u-flexJustifyCenter u-flexAlignItemsCenter u-sm-displayNone">
-          <div className={styles.imageContainer}>
-            <img className={styles.image} src={signinImg} alt={t('pages.joinRoom.imgAltText')} />
-          </div>
+        <Column centerContent={true} hide="sm">
+          <PanelImage src={signinImg} altTextKey="pages.joinRoom.imgAltText" />
         </Column>
       </TwoColLayout>
     </Page>

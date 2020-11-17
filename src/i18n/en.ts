@@ -61,6 +61,23 @@ export default {
         submitButtonText: 'Sign In',
         imgAltText: 'sign in image',
       },
+      signup: {
+        title: 'Create an account',
+        email: {
+          placeholder: 'dorothy@emerald.so',
+          label: 'Email Address',
+        },
+        firstName: {
+          placeholder: 'Dorothy',
+          label: 'First Name',
+        },
+        lastName: {
+          placeholder: 'Gale',
+          label: 'Last Name',
+        },
+        submitButtonText: 'Sign in with email',
+        imgAltText: 'sign up image',
+      },
       confirmationView: {
         title: 'Check your email',
         bodyText:
@@ -210,6 +227,10 @@ export default {
         title: 'Accessories error',
         msg:
           "An error occurred while setting up the room's accessories. Try refreshing the page and rejoining the room to fix this error.",
+      },
+      unexpectedModal: {
+        title: 'Well, this is awkward...',
+        msg: 'An unexpected error has occurred. Please try refreshing the page and rejoining the room.',
       },
       noteError: {
         title: 'A sidenote',

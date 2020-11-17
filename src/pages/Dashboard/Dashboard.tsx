@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import { useHistory } from 'react-router-dom';
-import Api from '../../utils/api';
+import Api, { BaseResponse } from '../../utils/api';
 import * as Sentry from '@sentry/react';
-import { Link, Box } from '@material-ui/core';
+import { Link, Box, makeStyles, Typography } from '@material-ui/core';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { USER_SESSION_TOKEN } from '../../constants/User';
@@ -14,22 +13,62 @@ import { Header } from '../../components/Header/Header';
 import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { sessionTokenExists } from '../../utils/SessionTokenExists';
-import { Button } from '@material-ui/core';
-import { WithModal } from '../../components/WithModal/WithModal';
 import { useTranslation } from 'react-i18next';
 import { Page } from '../../Layouts/Page/Page';
-
-import styles from './Dashboard.module.css';
+import { ErrorModal } from '../../components/ErrorModal/ErrorModal';
 
 interface IDashboardProps {}
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.brandColors.snow.regular,
+  },
+  wrapper: {
+    maxWidth: 768,
+    width: '80%',
+  },
+  text: {
+    marginBottom: theme.spacing(4),
+  },
+  bgContainer: {
+    borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+    backgroundColor: theme.palette.brandColors.sand.regular,
+    padding: theme.spacing(4),
+    overflowY: 'auto',
+    height: '100%',
+  },
+  roomWrapper: {
+    with: '100%',
+  },
+  roomGrid: {
+    height: '100%',
+    display: 'grid',
+    'grid-gap': '10px',
+    'grid-template-columns': '100%',
+    [theme.breakpoints.up('md')]: {
+      'grid-template-columns': '50% 50%',
+    },
+  },
+  feedbackTextWrapper: {
+    padding: `0 10%`,
+    textAlign: 'center',
+    height: '100%',
+  },
+  feedbackLink: {
+    marginTop: theme.spacing(4),
+  },
+}));
+
+// TODO: refine error state handler, unify to use BaseResponse
+
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
+  const classes = useStyles();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
   const [error, setError] = useState<ErrorInfo>(null!);
   const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
-  const [errorMsg, setErrorMsg] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<BaseResponse | null>(null);
   const { t } = useTranslation();
 
   // run this on mount
@@ -40,7 +79,10 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
       // Fix typing
       Api.getProfile()
         .then((result: any) => {
-          if (result.success) {
+          // there is an edge case that profile a profile will return null if a user doesnt
+          // exist in the db, but they have a valid session token, so just check if there is a profile
+          // if not redirect to the signin page
+          if (result.success && result.profile) {
             // this means we have a valid token
             setIsLoading(false);
             setUser(result.profile.user);
@@ -67,35 +109,38 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
 
   const feedbackItem = (
     <DashboardItem>
-      <div
-        className={clsx(
-          styles.feedbackTextWrapper,
-          'u-height100Percent u-flex u-flexCol u-flexJustifyCenter u-flexAlignItemsCenter'
-        )}
+      <Box
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        className={classes.feedbackTextWrapper}
       >
-        <div className="u-fontP1">{t('pages.dashboard.feedbackItemBodyText')}</div>
-        <div className={styles.feedbackLink}>
+        <Typography variant="body1">{t('pages.dashboard.feedbackItemBodyText')}</Typography>
+        <div className={classes.feedbackLink}>
           <Link href={Links.FEEDBACK} target="_blank" rel="noopener noreferrer">
             {t('pages.dashboard.feedbackItemLink')}
           </Link>
         </div>
-      </div>
+      </Box>
     </DashboardItem>
   );
 
   const onRoomSummaryError = (msg: string) => {
-    setErrorMsg(msg);
+    setErrorMsg({ message: msg } as BaseResponse);
   };
 
   return (
     <Page isLoading={isLoading} error={error}>
       <Box display="flex" justifyContent="center" flexGrow={1}>
-        <div className={clsx(styles.wrapper, 'u-flex u-flexCol u-size4of5')}>
+        <Box display="flex" flexDirection="column" flexBasis="auto" className={classes.wrapper}>
           <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
-          <div className={clsx(styles.bgContainer, 'u-height100Percent')}>
-            <div className={clsx(styles.text, 'u-fontH1')}>{t('pages.dashboard.roomsTitle')}</div>
-            <div className={clsx('u-width100Percent')}>
-              <div className={clsx(styles.roomGrid, 'u-height100Percent')}>
+          <div className={classes.bgContainer}>
+            <Typography variant="h2" className={classes.text}>
+              {t('pages.dashboard.roomsTitle')}
+            </Typography>
+            <div className={classes.roomWrapper}>
+              <div className={classes.roomGrid}>
                 {[...rooms.owned, ...rooms.member].map((memberRoom) => {
                   return (
                     <DashboardItem key={memberRoom.id}>
@@ -107,17 +152,14 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
               </div>
             </div>
           </div>
-        </div>
+        </Box>
       </Box>
-      <WithModal isOpen={!!errorMsg}>
-        <div className="u-flex u-flexCol">
-          <h1 className="u-fontH1">{t('error.noteError.title')}</h1>
-          <p className="u-fontP1">{errorMsg}</p>
-        </div>
-        <div className="u-flexExpandTop">
-          <Button onClick={() => setErrorMsg('')}>{t('error.noteError.btnText')}</Button>
-        </div>
-      </WithModal>
+      <ErrorModal
+        open={!!errorMsg}
+        error={errorMsg!}
+        onClose={() => setErrorMsg(null)}
+        title={t('error.noteError.title')}
+      />
     </Page>
   );
 };

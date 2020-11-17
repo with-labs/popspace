@@ -80,6 +80,7 @@ describe('redux roomSlice state', () => {
     const result = reducer(
       {
         zOrder: [],
+        syncedFromPeer: false,
         widgets: {
           c: {
             id: 'c',
@@ -119,7 +120,6 @@ describe('redux roomSlice state', () => {
             kind: 'person',
             avatar: 'dog',
             emoji: null,
-            isSharingScreen: false,
             isSpeaking: false,
             status: '',
           },
@@ -188,7 +188,6 @@ describe('redux roomSlice state', () => {
           kind: 'person',
           avatar: 'dog',
           emoji: null,
-          isSharingScreen: false,
           isSpeaking: false,
           status: '',
         },

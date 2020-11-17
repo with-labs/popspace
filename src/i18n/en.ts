@@ -222,6 +222,7 @@ export default {
         fileDropUnknownFailure: 'Upload failed - please try again',
         catastrophicMediaError:
           'Something went very wrong while activating your media device. Try refreshing the page to see if that helps.',
+        downloadFailed: "That didn't work - try again?",
       },
       widgetsFallback: {
         title: 'Accessories error',

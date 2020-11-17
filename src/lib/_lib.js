@@ -5,13 +5,24 @@ lib.ws = require('ws')
 lib.log = require("./log")
 global.log = lib.log
 global.shared = require("@withso/with-shared")
-lib.Client = require("../client/client.js")
+lib.Client = require("../client/client")
+
+
+lib.ErrorCodes = require("./error_codes")
 
 lib.init = async () => {
-  // await shared.pg.init()
+  await shared.pg.init()
+}
+
+lib.error = async (code, message, data={}) {
+  return Object.assign({
+    success: false,
+    code: code,
+    message: message,
+    data: data
+  })
 }
 
 global.lib = lib
-
 
 module.exports = lib

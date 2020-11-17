@@ -20,6 +20,7 @@ class Sockets {
     this.participants[participant.id] = participant
     participant.setMessageHandler(this.onMessageReceived)
     socket.on('close', () => (this.removeParticipant(participant)))
+    log.dev.debug(`New client - ${participant.id}`)
   }
 
   removeParticipant(participant) {

@@ -1,4 +1,6 @@
 import { AvatarMetadata } from '../constants/AvatarMetadata';
+import seedRandom from 'seed-random';
+
 export interface IAvatar {
   name: string;
   image: string;
@@ -24,8 +26,8 @@ const initAvatars = (avatars: Array<any>) => {
 
 const options: IAvatar[] = initAvatars(AvatarMetadata);
 
-const randomAvatar = () => {
-  return options[Math.floor(Math.random() * options.length)];
+const randomAvatar = (seed?: string) => {
+  return options[Math.floor(seedRandom(seed)() * options.length)];
 };
 
 export { options, randomAvatar };

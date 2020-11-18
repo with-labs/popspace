@@ -1,4 +1,5 @@
 import { Vector2 } from '../types/spatials';
+import seedRandom from 'seed-random';
 
 /**
  * Constrains a number to be between a min and max value
@@ -59,11 +60,12 @@ export function vectorLength(v: Vector2) {
  * @param vec the original position
  * @param maxDistance maximum distance to fuzz
  */
-export function fuzzVector(vec: Vector2, maxDistance: number = 10) {
-  const randomAngle = Math.random() * Math.PI * 2;
+export function fuzzVector(vec: Vector2, maxDistance: number = 10, seed?: string) {
+  const rand = seedRandom(seed);
+  const randomAngle = rand() * Math.PI * 2;
   const directionNormal = {
     x: Math.cos(randomAngle),
     y: Math.sin(randomAngle),
   };
-  return addVectors(vec, multiplyVector(directionNormal, Math.random() * maxDistance));
+  return addVectors(vec, multiplyVector(directionNormal, rand() * maxDistance));
 }

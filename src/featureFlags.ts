@@ -1,9 +1,6 @@
 import { flagg, localStore } from 'flagg';
 
 const flagDefinitions = {
-  roomMembers: {
-    description: 'Controls visibility of room members menu item',
-  },
   fileDrop: {
     description: 'Allows drag-and-drop file uploads in the room',
   },

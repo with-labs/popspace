@@ -24,6 +24,7 @@ export type AddAccessoryQuickAction = BaseQuickAction & {
   kind: QuickActionKind.AddAccessory;
   accessoryType: WidgetType;
   accessoryData: WidgetData;
+  draft?: boolean;
 };
 
 export type SetStatusQuickAction = BaseQuickAction & {

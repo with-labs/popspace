@@ -22,7 +22,7 @@ export type AccessoryIconProps = SvgIconProps & {
 export function AccessoryIcon({ type, ...props }: AccessoryIconProps) {
   const Glyph = icons[type];
   return (
-    <SvgIcon {...props}>
+    <SvgIcon {...props} viewBox="0 0 32 32">
       <Glyph />
     </SvgIcon>
   );

@@ -30,7 +30,7 @@ const QuickActionAddAccessory: React.FC<{ value: AddAccessoryQuickAction }> = ({
   return (
     <>
       <ListItemIcon>
-        <AccessoryIcon type={value.accessoryType} />
+        <AccessoryIcon type={value.accessoryType} style={{ fontSize: 32, width: 32, height: 32 }} />
       </ListItemIcon>
       <ListItemText>{value.displayName}</ListItemText>
     </>

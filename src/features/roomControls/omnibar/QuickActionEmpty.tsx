@@ -1,21 +1,13 @@
 import * as React from 'react';
 import { Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 export const QuickActionEmpty = () => {
+  const { t } = useTranslation();
+
   return (
-    <>
-      <Typography variant="caption">
-        Type or paste text, links, images, youtube links, and anything else you want to add to the room.
-      </Typography>
-      {/* TODO: help dialog */}
-      {/*<Divider />
-      <MenuItem
-      >
-        <ListItemIcon>
-          <HelpIcon />
-        </ListItemIcon>
-        <ListItemText>See help</ListItemText>
-      </MenuItem> */}
-    </>
+    <Typography variant="body1" color="textSecondary" style={{ marginBottom: 4 }}>
+      {t('features.omnibar.quickActionEmpty')}
+    </Typography>
   );
 };

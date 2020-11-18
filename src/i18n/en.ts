@@ -316,6 +316,7 @@ export default {
         placeholder: "What's your status?",
         emojiTitle: 'Pick an emoji',
         quickActionTitle: 'Set your status',
+        altClearButton: 'Clear status',
       },
       omnibar: {
         // TODO: update when we support more quick actions

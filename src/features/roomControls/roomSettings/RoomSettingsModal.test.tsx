@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { WallpaperModal } from './WallpaperModal';
+import { RoomSettingsModal } from './RoomSettingsModal';
 // mocked
 import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { createStore } from 'redux';
@@ -16,11 +16,11 @@ jest.mock('../../room/CoordinatedDispatchProvider', () => ({
 // extract mock value
 const mockDispatch = useCoordinatedDispatch() as jest.Mock;
 
-describe('WallpaperModal component', () => {
+describe('RoomSettingsModal component', () => {
   it('can set wallpaper from built-ins', async () => {
     const mockStore = createStore(() => ({
       roomControls: {
-        isWallpaperModalOpen: true,
+        isRoomSettingsModalOpen: true,
       },
       room: {
         wallpaperUrl: null,
@@ -28,7 +28,7 @@ describe('WallpaperModal component', () => {
     }));
 
     const props = {};
-    const result = render(<WallpaperModal {...props} />, {
+    const result = render(<RoomSettingsModal {...props} />, {
       wrapper: (p) => <Provider store={mockStore} {...p} />,
     });
 
@@ -43,7 +43,7 @@ describe('WallpaperModal component', () => {
   it('can set wallpaper from custom url', async () => {
     const mockStore = createStore(() => ({
       roomControls: {
-        isWallpaperModalOpen: true,
+        isRoomSettingsModalOpen: true,
       },
       room: {
         wallpaperUrl: null,
@@ -51,7 +51,7 @@ describe('WallpaperModal component', () => {
     }));
 
     const props = {};
-    const result = render(<WallpaperModal {...props} />, {
+    const result = render(<RoomSettingsModal {...props} />, {
       wrapper: (p) => <Provider store={mockStore} {...p} />,
     });
 
@@ -70,7 +70,7 @@ describe('WallpaperModal component', () => {
   it('only accepts certain filetypes', async () => {
     const mockStore = createStore(() => ({
       roomControls: {
-        isWallpaperModalOpen: true,
+        isRoomSettingsModalOpen: true,
       },
       room: {
         wallpaperUrl: null,
@@ -78,7 +78,7 @@ describe('WallpaperModal component', () => {
     }));
 
     const props = {};
-    const result = render(<WallpaperModal {...props} />, {
+    const result = render(<RoomSettingsModal {...props} />, {
       wrapper: (p) => <Provider store={mockStore} {...p} />,
     });
 

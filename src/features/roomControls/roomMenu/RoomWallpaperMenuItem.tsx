@@ -17,7 +17,7 @@ export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpa
     <MenuItem
       ref={ref}
       onClick={() => {
-        dispatch(controlsActions.setIsWallpaperModalOpen({ isOpen: true }));
+        dispatch(controlsActions.setIsRoomSettingsModalOpen({ isOpen: true }));
         props.onClick?.();
       }}
     >

@@ -7,6 +7,7 @@ import {
   IconButton,
   FilledInput,
   Menu,
+  InputAdornment,
 } from '@material-ui/core';
 import { Emoji, EmojiData, Picker } from 'emoji-mart';
 import { SizeTransition } from '../../../components/SizeTransition/SizeTransition';
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   input: {
-    minWidth: 200,
+    minWidth: 215,
     marginLeft: theme.spacing(1),
   },
 }));
@@ -140,6 +141,18 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
             autoFocus
             onFocus={handleFocusSelectAll}
             className={classes.input}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label={t('features.status.altClearButton')}
+                  onClick={() => inputProps.onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)}
+                  edge="end"
+                  size="small"
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            }
             {...inputProps}
           />
           <Menu {...emojiMenuProps}>

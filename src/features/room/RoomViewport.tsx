@@ -245,11 +245,15 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // we want to do for zoom.
   const bindActiveGestures = useGesture(
     {
-      onPinch: ({ delta: [_, d], event }) => {
+      onPinch: ({ delta: [_, d], offset: [dist], event }) => {
         event?.preventDefault();
-        // different damping for touchpad pinch (uses scrollwheel event) vs.
+        // different behavior for touchpad pinch (uses scrollwheel event) vs.
         // true multitouch screen pinch
-        doZoom(-d / (event?.type === 'wheel' ? TOUCHPAD_PINCH_GESTURE_DAMPING : MULTITOUCH_PINCH_GESTURE_DAMPING));
+        if (event?.type === 'wheel') {
+          doZoom(-d / TOUCHPAD_PINCH_GESTURE_DAMPING);
+        } else {
+          doZoom(-dist / MULTITOUCH_PINCH_GESTURE_DAMPING);
+        }
       },
       onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
@@ -280,7 +284,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   );
 
   const bindPassiveGestures = useGesture({
-    onDrag: ({ delta: [x, y], event }) => {
+    onDrag: ({ delta: [x, y] }) => {
       doPan({ x: -x, y: -y });
     },
     onDragStart: () => {

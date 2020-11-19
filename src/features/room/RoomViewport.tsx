@@ -74,6 +74,7 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     userSelect: 'none',
     cursor: 'move',
     position: 'relative',
+    touchAction: 'none',
   },
   canvas: {
     position: 'absolute',
@@ -275,7 +276,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   );
 
   const bindPassiveGestures = useGesture({
-    onDrag: ({ delta: [x, y] }) => {
+    onDrag: ({ delta: [x, y], event }) => {
       doPan({ x: -x, y: -y });
     },
     onDragStart: () => {

@@ -47,8 +47,8 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const TOUCHPAD_PINCH_GESTURE_DAMPING = 200;
-const MULTITOUCH_PINCH_GESTURE_DAMPING = 7;
+const INITIAL_ZOOM = 1;
+const PINCH_GESTURE_DAMPING = 100;
 const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels. Needs to be large enough that the dock and
@@ -119,8 +119,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     isPanning: false,
     config: VIEWPORT_PAN_SPRING,
   }));
-  const [{ zoom }, setZoomSpring] = useSpring(() => ({
-    zoom: 1,
+  const [{ zoom, isZooming }, setZoomSpring] = useSpring(() => ({
+    zoom: INITIAL_ZOOM,
     isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
   }));
@@ -196,11 +196,9 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [halfCanvasHeight, halfCanvasWidth, zoom, windowWidth, windowHeight]
   );
 
-  const doZoom = React.useCallback(
-    (delta: number) => {
-      const currentZoom = zoom.goal;
-      const added = currentZoom + delta;
-      const clamped = clamp(added, minZoom, maxZoom);
+  const doAbsoluteZoom = React.useCallback(
+    (val: number) => {
+      const clamped = clamp(val, minZoom, maxZoom);
 
       // also update pan position as the user zooms, since
       // the allowed boundary changes slightly as the zoom changes
@@ -217,7 +215,16 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         centerY: clampedPan.y,
       });
     },
-    [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring, zoom]
+    [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring]
+  );
+
+  const doZoom = React.useCallback(
+    (delta: number) => {
+      const currentZoom = zoom.goal;
+      const added = currentZoom + delta;
+      doAbsoluteZoom(added);
+    },
+    [doAbsoluteZoom, zoom]
   );
 
   const doPan = React.useCallback(
@@ -246,14 +253,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     {
       onPinch: ({ delta: [_, d], offset: [dist], event }) => {
         event?.preventDefault();
-        // different behavior for touchpad pinch (uses scrollwheel event) vs.
-        // true multitouch screen pinch
-        if (event?.type === 'wheel') {
-          doZoom(-d / TOUCHPAD_PINCH_GESTURE_DAMPING);
-          // epsilon to prevent erratic behavior over small movements
-        } else if (Math.abs(d) > 0.00001) {
-          doZoom(-d / MULTITOUCH_PINCH_GESTURE_DAMPING);
-        }
+        doAbsoluteZoom(INITIAL_ZOOM + dist / PINCH_GESTURE_DAMPING);
       },
       onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
@@ -277,6 +277,16 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     },
     {
       domTarget,
+      // keeps the pinch gesture within our min/max zoom bounds,
+      // without this you can pinch 'more' than the zoom allows,
+      // creating weird deadzones at min and max values where
+      // you have to keep pinching to get 'back' into the allowed range
+      pinch: {
+        distanceBounds: {
+          min: (minZoom - INITIAL_ZOOM) * PINCH_GESTURE_DAMPING,
+          max: (maxZoom - INITIAL_ZOOM) * PINCH_GESTURE_DAMPING,
+        },
+      },
       eventOptions: {
         passive: false,
       },
@@ -300,8 +310,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         setPanSpring({ isPanning: true });
       }
     },
-    onWheelEnd: ({ event }) => {
-      if (event?.ctrlKey) {
+    onWheelEnd: () => {
+      if (isZooming.goal) {
         setZoomSpring({ isZooming: false });
       } else {
         setPanSpring({ isPanning: false });

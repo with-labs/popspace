@@ -48,7 +48,7 @@ export interface IRoomViewportProps {
 }
 
 const INITIAL_ZOOM = 1;
-const PINCH_GESTURE_DAMPING = 100;
+const PINCH_GESTURE_DAMPING = 200;
 const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels. Needs to be large enough that the dock and

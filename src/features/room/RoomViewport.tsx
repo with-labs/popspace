@@ -246,9 +246,11 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onPinch: ({ delta: [_, d], event }) => {
         event?.preventDefault();
         doZoom(-d / PINCH_GESTURE_DAMPING);
+        console.debug('pinch', event, d);
       },
       onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
+        console.debug('wheel', event, x, y);
         if (event?.ctrlKey || event?.metaKey) {
           doZoom(-y / WHEEL_GESTURE_DAMPING);
         } else {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { LinkWidgetData } from '../../../../types/room';
-import { makeStyles, Paper, ThemeProvider } from '@material-ui/core';
+import { makeStyles, Paper, ThemeProvider, Box, Typography } from '@material-ui/core';
 import { Draggable } from '../../Draggable';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { WidgetContent } from '../WidgetContent';
@@ -11,6 +11,7 @@ import { Link } from '../../../../components/Link/Link';
 import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
 import { useTranslation } from 'react-i18next';
 import { UnsupportedFile } from './UnsupportedFile';
+import { truncate } from '../../../../utils/truncate';
 
 export interface IMediaLinkWidgetProps {
   widgetId: string;
@@ -29,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.grey[100],
     transition: theme.transitions.create('opacity'),
   },
+  resizeContainer: {
+    display: 'flex',
+  },
   link: {
-    display: 'block',
-    width: 'auto',
-    height: 'auto',
-    position: 'relative',
+    flex: 1,
   },
   media: {
     width: '100%',
@@ -79,14 +80,22 @@ export const MediaLinkWidget: React.FC<IMediaLinkWidgetProps> = ({ widgetId, dat
               minHeight={80}
               maxWidth={1440}
               maxHeight={900}
+              className={classes.resizeContainer}
             >
-              <Link to={data.url} newTab disableStyling>
+              <Link to={data.url} newTab disableStyling className={classes.link}>
                 <MediaLinkMedia
                   src={data.mediaUrl}
                   contentType={data.mediaContentType}
                   title={data.title}
                   className={classes.media}
                 />
+                {data.description && (
+                  <Box p={1}>
+                    <Typography variant="caption" title={data.description}>
+                      {truncate(data.description, 80)}
+                    </Typography>
+                  </Box>
+                )}
               </Link>
               <WidgetResizeHandle />
             </WidgetResizeContainer>
@@ -119,9 +128,9 @@ const MediaLinkMedia: React.FC<{ src: string; contentType: string; title?: strin
     }
   }, [remeasure]);
 
-  if (contentType.startsWith('image/')) {
+  if (contentType.startsWith('image')) {
     return <img src={src} alt={title} onLoad={remeasure} className={className} ref={ref as any} />;
-  } else if (contentType.startsWith('video/')) {
+  } else if (contentType.startsWith('video')) {
     return (
       <video src={src} title={title} autoPlay controls loop onLoad={remeasure} className={className} ref={ref as any} />
     );

@@ -4,8 +4,9 @@ import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocal
 import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { useRoomViewport } from '../../room/RoomViewport';
 import { actions as roomActions } from '../../room/roomSlice';
-import { WidgetData, WidgetType } from '../../../types/room';
+import { WidgetData, WidgetType, LinkWidgetData } from '../../../types/room';
 import { Vector2 } from '../../../types/spatials';
+import { useGetLinkData } from '../../room/widgets/link/useGetLinkData';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
@@ -19,8 +20,10 @@ export function useAddAccessory() {
 
   const dispatch = useCoordinatedDispatch();
 
+  const getLinkData = useGetLinkData();
+
   return useCallback(
-    ({
+    async ({
       type,
       initialData,
       publishImmediately = false,
@@ -40,6 +43,10 @@ export function useAddAccessory() {
       });
 
       if (userSid) {
+        // a bit of an awkward edge case - perhaps we could refactor how this works.
+        // add opengraph data to links
+        const data = type === WidgetType.Link ? await getLinkData((initialData as LinkWidgetData).url) : initialData;
+
         dispatch(
           roomActions.addWidget({
             position,
@@ -47,13 +54,13 @@ export function useAddAccessory() {
               kind: 'widget',
               type,
               participantSid: userSid,
-              data: initialData,
+              data,
               isDraft: !publishImmediately,
             },
           })
         );
       }
     },
-    [dispatch, userSid, viewport]
+    [dispatch, userSid, viewport, getLinkData]
   );
 }

@@ -72,7 +72,7 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
             }
         );
       },
-      50,
+      20,
       { leading: true, trailing: true }
     ),
     []

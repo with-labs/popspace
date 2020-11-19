@@ -9,6 +9,7 @@ import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControl
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
 import { FileDropLayer } from './files/FileDropLayer';
+import { featureFlags } from '../../featureFlags';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -47,8 +48,8 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const TOUCHPAD_PINCH_GESTURE_DAMPING = 200;
-const MULTITOUCH_PINCH_GESTURE_DAMPING = 50;
+const TOUCHPAD_PINCH_GESTURE_DAMPING = featureFlags.get('touchpadZoomDamping') as number;
+const MULTITOUCH_PINCH_GESTURE_DAMPING = featureFlags.get('multitouchZoomDamping') as number;
 const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels. Needs to be large enough that the dock and

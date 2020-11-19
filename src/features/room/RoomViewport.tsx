@@ -252,7 +252,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         if (event?.type === 'wheel') {
           doZoom(-d / TOUCHPAD_PINCH_GESTURE_DAMPING);
         } else {
-          doZoom(-dist / MULTITOUCH_PINCH_GESTURE_DAMPING);
+          doZoom(-d / MULTITOUCH_PINCH_GESTURE_DAMPING);
         }
       },
       onWheel: ({ delta: [x, y], event }) => {

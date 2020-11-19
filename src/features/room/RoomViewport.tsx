@@ -47,7 +47,8 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const PINCH_GESTURE_DAMPING = 200;
+const TOUCHPAD_PINCH_GESTURE_DAMPING = 200;
+const MULTITOUCH_PINCH_GESTURE_DAMPING = 1;
 const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,
 // in viewport pixels. Needs to be large enough that the dock and
@@ -243,14 +244,15 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // we want to do for zoom.
   const bindActiveGestures = useGesture(
     {
-      onPinch: ({ delta: [_, d], event }) => {
+      onPinch: ({ delta: [_, d], event, wheeling }) => {
         event?.preventDefault();
-        doZoom(-d / PINCH_GESTURE_DAMPING);
-        console.debug('pinch', event, d);
+        // different damping for touchpad pinch (uses scrollwheel event) vs.
+        // true multitouch screen pinch
+        doZoom(-d / (wheeling ? TOUCHPAD_PINCH_GESTURE_DAMPING : MULTITOUCH_PINCH_GESTURE_DAMPING));
+        console.debug('pinch', event, wheeling, d);
       },
       onWheel: ({ delta: [x, y], event }) => {
         event?.preventDefault();
-        console.debug('wheel', event, x, y);
         if (event?.ctrlKey || event?.metaKey) {
           doZoom(-y / WHEEL_GESTURE_DAMPING);
         } else {

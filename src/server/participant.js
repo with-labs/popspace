@@ -7,7 +7,7 @@ class Participant {
     this.id = id++
     this.authenticated = false
     this.socket.on('message', (message) => {
-      log.dev.debug(`Got message from ${participant.id} ${message}`)
+      log.dev.debug(`Got message from ${this.id} ${message}`)
       try {
         const event = prepareEvent(message)
         if(this.eventHandler) {

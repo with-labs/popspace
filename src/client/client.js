@@ -21,6 +21,17 @@ class Client {
     })
   }
 
+  authenticate(token) {
+    this.sendEvent("auth", { token })
+  }
+
+  sendEvent(kind, payload) {
+    this.send(JSON.stringify({
+      kind: kind,
+      payload: payload
+    }))
+  }
+
   send(message) {
     this.client.send(message)
   }

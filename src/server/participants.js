@@ -8,10 +8,19 @@ class Sockets {
         this.messageHandler(participant, message)
       }
     }
+    this.onEventReceived = (participant, event) => {
+      if(this.eventHandler) {
+        this.eventHandler(participant, event)
+      }
+    }
   }
 
   setMessageHandler(messageHandler) {
     this.messageHandler = messageHandler
+  }
+
+  setEventHandler(eventHandler) {
+    this.eventHandler = eventHandler
   }
 
   addSocket(socket) {
@@ -19,6 +28,7 @@ class Sockets {
     socket.participant = participant
     this.participants[participant.id] = participant
     participant.setMessageHandler(this.onMessageReceived)
+    participant.setEventHandler(this.onEventReceived)
     socket.on('close', () => (this.removeParticipant(participant)))
     log.dev.debug(`New client - ${participant.id}`)
   }

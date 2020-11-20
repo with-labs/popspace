@@ -6,6 +6,9 @@ class Participant {
     this.socket = socket
     this.id = id++
     this.authenticated = false
+    this.user = null
+    this.roomId = null
+
     this.socket.on('message', (message) => {
       log.dev.debug(`Got message from ${this.id} ${message}`)
       try {
@@ -36,10 +39,19 @@ class Participant {
       an authentication request after the connection is established.
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
-    this.user = {
-      id: 1
+    this.user = await shared.lib.auth.userFromToken(token)
+    if(!this.user) {
+      this.authenticated = false
+      this.roomId = null
+      this.sendObject(lib.error(lib.ErrorCodes.AUTH_FAILED, `Invalid session token`))
+      return false
     }
+    this.roomId = roomId
     this.authenticated = true
+    this.sendObject({
+      kind: "auth",
+      success: "true"
+    })
   }
 
   isAuthenticated() {

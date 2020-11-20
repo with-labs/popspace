@@ -44,7 +44,7 @@ export const RoomMenu = () => {
   const onClose = () => setAnchorEl(null);
 
   const roomName = useRoomName();
-  const currentUserProfile = useCurrentUserProfile();
+  const { currentUserProfile } = useCurrentUserProfile();
 
   const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 

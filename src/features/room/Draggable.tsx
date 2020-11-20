@@ -48,6 +48,7 @@ export interface IDraggableProps {
 const useStyles = makeStyles({
   root: {
     position: 'absolute',
+    touchAction: 'none',
   },
 });
 

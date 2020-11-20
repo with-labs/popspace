@@ -3,6 +3,7 @@ import Konva from 'konva';
 import { nanoid } from '@reduxjs/toolkit';
 import { COLORS, ERASER_COLOR, ERASER_WIDTH, STROKE_WIDTH } from './constants';
 import { DrawingLine, WhiteboardState } from './types';
+import throttle from 'lodash.throttle';
 
 function getMousePosition(ev: Konva.KonvaEventObject<MouseEvent>) {
   return ev.target?.getStage()?.getPointerPosition() ?? { x: 0, y: 0 };
@@ -19,7 +20,7 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
   const finalState = controlledValue || internalState;
   const finalOnChange = controlledValue ? controlledOnChange : setInternalState;
 
-  const handleMouseDown = React.useCallback(
+  const handlePointerDown = React.useCallback(
     (ev: Konva.KonvaEventObject<MouseEvent>) => {
       setActiveLine((current) => {
         // we are already drawing something, ignore this
@@ -41,7 +42,7 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
     [activeColor]
   );
 
-  const handleMouseUp = React.useCallback(
+  const handlePointerUp = React.useCallback(
     (ev: Konva.KonvaEventObject<MouseEvent>) => {
       if (!activeLine) return;
       const { x, y } = getMousePosition(ev);
@@ -58,17 +59,24 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
     [activeLine, finalOnChange, finalState]
   );
 
-  const handleMouseMove = React.useCallback((ev: Konva.KonvaEventObject<MouseEvent>) => {
-    const { x, y } = getMousePosition(ev);
+  const handlePointerMove = React.useCallback(
+    throttle(
+      (ev: Konva.KonvaEventObject<MouseEvent>) => {
+        const { x, y } = getMousePosition(ev);
 
-    setActiveLine(
-      (cur) =>
-        cur && {
-          ...cur,
-          path: [...cur.path, x, y],
-        }
-    );
-  }, []);
+        setActiveLine(
+          (cur) =>
+            cur && {
+              ...cur,
+              path: [...cur.path, x, y],
+            }
+        );
+      },
+      20,
+      { leading: true, trailing: true }
+    ),
+    []
+  );
 
   const handleEraserClick = React.useCallback(() => {
     if (activeColor === ERASER_COLOR) {
@@ -82,9 +90,12 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
   }, [finalOnChange, activeColor]);
 
   const whiteboardProps = {
-    onMouseDown: handleMouseDown,
-    onMouseUp: handleMouseUp,
-    onMouseMove: handleMouseMove,
+    onMouseDown: handlePointerDown,
+    onMouseUp: handlePointerUp,
+    onMouseMove: handlePointerMove,
+    onTouchStart: handlePointerDown,
+    onTouchEnd: handlePointerUp,
+    onTouchMove: handlePointerMove,
     ref: stageRef,
     value: finalState,
     onChange: finalOnChange,

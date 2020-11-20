@@ -35,7 +35,7 @@ export function useQuickAction() {
           addAccessory({
             type: value.accessoryType,
             initialData: value.accessoryData,
-            publishImmediately: true,
+            publishImmediately: !value.draft,
           });
           break;
         case QuickActionKind.SetStatus:

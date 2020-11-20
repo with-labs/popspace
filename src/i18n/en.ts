@@ -167,6 +167,8 @@ export default {
         title: 'Whiteboard',
         doubleTapEraserToClear: 'Double tap Eraser to clear',
         export: 'Save whiteboard as an image',
+        quickActionTitle: 'Add a Whiteboard',
+        quickActionPrompt: '/whiteboard',
       },
       youtube: {
         name: 'YouTube',
@@ -323,8 +325,9 @@ export default {
       },
       omnibar: {
         // TODO: update when we support more quick actions
-        placeholder: 'Type or paste to add',
+        placeholder: 'Add content to the room',
         label: 'Quick action bar',
+        quickActionEmpty: 'Type or paste anything you want to add to the room, or select an action below.',
       },
       roomMenu: {
         title: 'Settings',

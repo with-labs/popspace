@@ -40,6 +40,8 @@ export function useLocalMediaTrack(
   const constraintsRef = useRef(constraints);
   const [track, setTrack] = useState<LocalAudioTrack | LocalVideoTrack | null>(null);
 
+  const isRestartingRef = useRef(false);
+
   const start = useCallback(async () => {
     const finalConstraints = {
       ...constraintsRef.current,
@@ -50,8 +52,12 @@ export function useLocalMediaTrack(
 
     try {
       if (track) {
+        // we track restarting state in realtime with a ref - because
+        // restart fires the 'stopped' event, but we don't want to trigger
+        // normal track-stopped behavior.
+        isRestartingRef.current = true;
         await track.restart(finalConstraints);
-        setTrack(track);
+        isRestartingRef.current = false;
       } else {
         const createTrack = kind === 'video' ? createLocalVideoTrack : createLocalAudioTrack;
         const newTrack = await createTrack(finalConstraints);
@@ -77,7 +83,12 @@ export function useLocalMediaTrack(
 
   // subscribe to track ending, and remove it.
   useEffect(() => {
-    const handleStopped = () => setTrack(null);
+    const handleStopped = () => {
+      // the track stopped, so we clear it in state - UNLESS
+      // we are in the process of restarting it, which still fires the
+      // stopped event
+      if (!isRestartingRef.current) setTrack(null);
+    };
     track?.on(MediaTrackEvent.Stopped, handleStopped);
     return () => {
       track?.off(MediaTrackEvent.Stopped, handleStopped);

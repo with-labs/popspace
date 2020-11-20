@@ -12,7 +12,6 @@ module.exports = {
     const { clients, mercury } = await tlib.util.serverWithClients(numberOfConnections, "keep_track_of_clients")
     const connectedClients = mercury.clientsCount()
     await mercury.stop()
-    console.log("STOPPED")
     return {
       clientsCountOnServer: connectedClients,
       clientsCreated: numberOfConnections

@@ -2,16 +2,25 @@ const Processor = require("./processor")
 
 class AuthProcessor extends Processor {
   async process(event) {
+    console.log("Prcessing")
     switch(event.kind) {
       case "auth":
         return this.authenticate(event)
       default:
-        return lib.error(lib.ErrorCodes.EVENT_TYPE_INVALID, `Unrecognized event type: ${event.kind}`)
+        return event._sender.sendError(
+          event,
+          lib.ErrorCodes.EVENT_TYPE_INVALID,
+          `Unrecognized event type: ${event.kind}`
+        )
     }
   }
 
   async authenticate(event) {
-    return event.sender.authenticate(event.payload.token, event.payload.roomId)
+    const success = await event._sender.authenticate(event.payload.token, event.payload.roomId)
+    event._sender.sendResponse(event, {
+      kind: "auth",
+      success: "true"
+    })
   }
 }
 

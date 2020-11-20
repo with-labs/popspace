@@ -6,7 +6,8 @@ const ACTION_BY_EVENT_KIND = {
 }
 
 const PUBLIC_ACTIONS = {
-  "auth": true
+  "auth": true,
+  "ping": true
 }
 
 class MessageProcessor {
@@ -16,21 +17,19 @@ class MessageProcessor {
     this.participants.setEventHandler(async (event) => {
       const action = ACTION_BY_EVENT_KIND[event.kind]
       if(this.processors[action]) {
-        if(event.sender.isAuthenticated() || PUBLIC_ACTIONS[action]) {
+        if(event._sender.isAuthenticated() || PUBLIC_ACTIONS[action]) {
           return await this.processors[action].process(event, this.participants)
         } else {
-          event.sender.sendError(lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+          event._sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
         }
       } else {
-        // Eventually we'll stop re-broadcasting all events, and only allow whitelisted ones
-        event.sender.send("Unrecognized event format. Broadcasting to room. ~withso")
-        this.participants.broadcastFrom(participant, event.message)
+        event._sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event format ${event.message}.`)
       }
     })
 
     this.participants.setMessageHandler(async (participant, message) => {
       // relay all unrecgnized messages, but let the participant know this message is not supported
-      participant.send("Unrecognized message format. Broadcasting to room. ~withso")
+      // participant.send(`Unrecognized message format ${message}. Broadcasting to room. ~withso`)
       this.participants.broadcastFrom(participant, message)
     })
 

@@ -12,7 +12,7 @@ class Participant {
     this.socket.on('message', (message) => {
       log.dev.debug(`Got message from ${this.id} ${message}`)
       try {
-        const event = prepareEvent(message)
+        const event = this.prepareEvent(message)
         if(this.eventHandler) {
           this.eventHandler(event)
         }
@@ -43,15 +43,11 @@ class Participant {
     if(!this.user) {
       this.authenticated = false
       this.roomId = null
-      this.sendObject(lib.error(lib.ErrorCodes.AUTH_FAILED, `Invalid session token`))
       return false
     }
     this.roomId = roomId
     this.authenticated = true
-    this.sendObject({
-      kind: "auth",
-      success: "true"
-    })
+    return true
   }
 
   isAuthenticated() {
@@ -76,8 +72,14 @@ class Participant {
     this.send(JSON.stringify(object))
   }
 
-  sendError(errorCode, errorMessage, errorObject={}) {
+  sendResponse(requestEvent, response) {
     this.sendObject(Object.assign({
+      requestId: requestEvent.id
+    }, response))
+  }
+
+  sendError(requestEvent, errorCode, errorMessage, errorObject={}) {
+    this.sendResponse(requestEvent, Object.assign({
       code: errorCode,
       message: errorMessage
     }, errorObject))

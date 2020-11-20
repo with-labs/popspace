@@ -42,7 +42,7 @@ class Mercury {
       this.server.close(() => {
         log.app.info(`Server stopped.`)
         this.ws.close(() => {
-          console.log("Websocket stopped")
+          log.app.info(`WebSocket stopped.`)
           resolve()
         })
       })

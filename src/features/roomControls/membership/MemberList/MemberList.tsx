@@ -102,6 +102,8 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     setMenuAnchorEl(null);
   };
 
+  // we will use this... maybe... someday
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const inviteResendHandler = async () => {
     try {
       setMenuAnchorEl(null);

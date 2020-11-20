@@ -9,7 +9,6 @@ import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { slate } from '../../../../theme/theme';
 import { Link } from '../../../../components/Link/Link';
 import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
-import { useTranslation } from 'react-i18next';
 import { UnsupportedFile } from './UnsupportedFile';
 import { truncate } from '../../../../utils/truncate';
 
@@ -113,8 +112,6 @@ const MediaLinkMedia: React.FC<{ src: string; contentType: string; title?: strin
   className,
 }) => {
   const { remeasure } = useResizeContext();
-
-  const { t } = useTranslation();
 
   const ref = React.useRef<HTMLElement>(null);
 

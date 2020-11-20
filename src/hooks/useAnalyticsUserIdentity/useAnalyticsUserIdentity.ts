@@ -3,11 +3,11 @@ import * as Sentry from '@sentry/react';
 import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
 
 export function useAnalyticsUserIdentity() {
-  const profile = useCurrentUserProfile();
+  const { currentUserProfile } = useCurrentUserProfile();
 
   useEffect(() => {
-    if (profile) {
-      const { email, display_name: name, id } = profile.user;
+    if (currentUserProfile) {
+      const { email, display_name: name, id } = currentUserProfile.user;
       Sentry.setUser({
         email,
         username: name,
@@ -29,5 +29,5 @@ export function useAnalyticsUserIdentity() {
       // remove user association on logout
       Sentry.setUser(null);
     }
-  }, [profile]);
+  }, [currentUserProfile]);
 }

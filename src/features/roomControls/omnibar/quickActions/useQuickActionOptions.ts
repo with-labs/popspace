@@ -12,7 +12,22 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
   // by persisting room state and membership
   const userName = useParticipantDisplayIdentity(useLocalParticipant());
 
-  if (!!prompt.trim()) {
+  if (!prompt) {
+    // this accessory shows a default option in the empty state
+    return [
+      {
+        kind: QuickActionKind.AddAccessory,
+        accessoryType: WidgetType.StickyNote,
+        displayName: t('widgets.stickyNote.quickActionTitle'),
+        accessoryData: {
+          text: '',
+          author: userName || '',
+        },
+        confidence: 5,
+        draft: true,
+      },
+    ];
+  } else {
     // any text can be added to a sticky note.
     return [
       {
@@ -20,33 +35,45 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
         accessoryType: WidgetType.StickyNote,
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
-          text: prompt.trim(),
+          text: prompt,
           author: userName || '',
         },
         confidence: 2,
       },
     ];
   }
-
-  return [];
 }
 
 function useLinkQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();
 
-  if (!!prompt) {
+  if (!prompt) {
+    // this accessory shows a default option in the empty state
+    return [
+      {
+        kind: QuickActionKind.AddAccessory,
+        accessoryType: WidgetType.Link,
+        displayName: t('widgets.link.quickActionTitle'),
+        accessoryData: {
+          url: '',
+          title: 'Link',
+        },
+        confidence: 5,
+        draft: true,
+      },
+    ];
+  } else {
     try {
-      const trimmed = prompt.trim();
       // throws if the string is not a valid URL
-      new URL(trimmed);
+      new URL(prompt);
       return [
         {
           kind: QuickActionKind.AddAccessory,
           accessoryType: WidgetType.Link,
           displayName: t('widgets.link.quickActionTitle'),
           accessoryData: {
-            url: trimmed,
-            title: trimmed,
+            url: prompt,
+            title: prompt,
           },
           confidence: 8,
         },
@@ -55,14 +82,27 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
       return [];
     }
   }
-
-  return [];
 }
 
 function useYoutubeQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();
 
-  if (!!prompt) {
+  if (!prompt) {
+    // this accessory shows a default option in the empty state
+    return [
+      {
+        kind: QuickActionKind.AddAccessory,
+        accessoryType: WidgetType.YouTube,
+        displayName: t('widgets.youtube.quickActionTitle'),
+        accessoryData: {
+          videoId: null,
+          playStartedTimestampUTC: null,
+        },
+        confidence: 5,
+        draft: true,
+      },
+    ];
+  } else {
     const parsed = parseYoutubeLink(prompt);
 
     if (parsed) {
@@ -86,10 +126,33 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
   return [];
 }
 
+function useWhiteboardQuickActions(prompt: string): QuickAction[] {
+  const { t } = useTranslation();
+
+  if (!prompt || prompt === t('widgets.whiteboard.quickActionPrompt')) {
+    return [
+      {
+        kind: QuickActionKind.AddAccessory,
+        accessoryType: WidgetType.Whiteboard,
+        accessoryData: {
+          whiteboardState: {
+            lines: [],
+          },
+        },
+        // for empty, it's 5 - for /whiteboard, it's 10
+        confidence: !prompt ? 5 : 10,
+        displayName: t('widgets.whiteboard.quickActionTitle'),
+      },
+    ];
+  }
+
+  return [];
+}
+
 function useStatusQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();
 
-  if (!!prompt?.trim()) {
+  if (!!prompt) {
     return [
       {
         kind: QuickActionKind.SetStatus,
@@ -109,10 +172,12 @@ function useStatusQuickActions(prompt: string): QuickAction[] {
  * metadata will be associated with those actions.
  */
 export function useQuickActionOptions(prompt: string): QuickAction[] {
+  const trimmed = prompt.trim();
   return [
-    ...useStickyNoteQuickActions(prompt),
-    ...useLinkQuickActions(prompt),
-    ...useYoutubeQuickActions(prompt),
-    ...useStatusQuickActions(prompt),
+    ...useStickyNoteQuickActions(trimmed),
+    ...useLinkQuickActions(trimmed),
+    ...useYoutubeQuickActions(trimmed),
+    ...useStatusQuickActions(trimmed),
+    ...useWhiteboardQuickActions(trimmed),
   ].sort((a, b) => b.confidence - a.confidence);
 }

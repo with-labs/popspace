@@ -31,6 +31,7 @@ const fakeLocalParticipant = {
   unpublishTracks: () => {},
 
   on: () => {},
+  off: () => {},
 };
 
 class FakeRoom extends EventEmitter {

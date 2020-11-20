@@ -10,9 +10,9 @@ import { wallPaperOptions } from '../roomControls/roomSettings/WallpaperOptions'
 const WARNING_STICKY_ID = 'warningSticky';
 const WARNING_STICKY_TEXT = `WARNING!
 
-With doesn't save your room contents after everyone leaves yet. We're working on it right now!
+With doesn't save your room contents after everyone leaves yet. We're working on it!
 
-Thanks for being an early user!
+Thanks for using With!
 `;
 
 /**

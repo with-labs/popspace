@@ -7,6 +7,14 @@ import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/ro
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import { wallPaperOptions } from '../roomControls/roomSettings/WallpaperOptions';
 
+const WARNING_STICKY_ID = 'warningSticky';
+const WARNING_STICKY_TEXT = `WARNING!
+
+With doesn't save your room contents after everyone leaves yet. We're working on it right now!
+
+Thanks for being an early user!
+`;
+
 /**
  * Positioning data for an object in a room,
  * along with a reference to the object itself.
@@ -43,9 +51,25 @@ interface RoomState {
 
 /** Use for testing only, please. */
 export const initialState: RoomState = {
-  positions: {},
+  positions: {
+    [WARNING_STICKY_ID]: {
+      position: { x: 0, y: 0 },
+    },
+  },
   zOrder: [],
-  widgets: {},
+  widgets: {
+    [WARNING_STICKY_ID]: {
+      id: WARNING_STICKY_ID,
+      participantSid: 'withteam',
+      isDraft: false,
+      kind: 'widget',
+      type: WidgetType.StickyNote,
+      data: {
+        text: WARNING_STICKY_TEXT,
+        author: 'The With Team',
+      },
+    },
+  },
   people: {},
   // TODO: make this changeable
   bounds: {

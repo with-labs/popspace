@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
+  const [isLoading, setIsLoading] = useState(!sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
   const [error, setError] = useState<ErrorInfo>(null!);
   const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
@@ -75,6 +75,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   useEffect(() => {
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
     if (sessionTokenExists(sessionToken)) {
+      setIsLoading(true);
       // TODO: replace this with the updated api
       // Fix typing
       Api.getProfile()
@@ -84,7 +85,6 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           // if not redirect to the signin page
           if (result.success && result.profile) {
             // this means we have a valid token
-            setIsLoading(false);
             setUser(result.profile.user);
             setRooms(result.profile.rooms);
           } else {
@@ -94,12 +94,14 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           }
         })
         .catch((e: any) => {
-          setIsLoading(false);
           Sentry.captureMessage(`Error calling api call getProfile`, Sentry.Severity.Error);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,
           });
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
       // we arent logged in so redirect to the sign in page

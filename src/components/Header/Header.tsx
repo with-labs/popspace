@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Menu, MenuItem, Divider, ListItemIcon, ListItemText, Button, makeStyles, Typography } from '@material-ui/core';
 import { Links } from '../../constants/Links';
-import { USER_SESSION_TOKEN, USER_SUPPORT_EMAIL } from '../../constants/User';
+import { USER_SUPPORT_EMAIL } from '../../constants/User';
 import { useTranslation } from 'react-i18next';
+import { removeSessionToken } from '../../utils/removeSessionToken';
 
 import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
 import { ReactComponent as DropdownIcon } from '../../images/icons/dropdown.svg';
@@ -61,7 +62,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
 
   const onSignoutHandler = () => {
     // delete the session token
-    localStorage.removeItem(USER_SESSION_TOKEN);
+    removeSessionToken();
     // TODO: should make a call to invalidate the token on the back end as well
 
     // redirect to landing page

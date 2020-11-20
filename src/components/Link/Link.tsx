@@ -65,9 +65,9 @@ export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, ...props })
     }
 
     return (
-      <a href={href} {...extraProps}>
+      <MuiLink href={href} {...extraProps}>
         {props.children}
-      </a>
+      </MuiLink>
     );
   }
 

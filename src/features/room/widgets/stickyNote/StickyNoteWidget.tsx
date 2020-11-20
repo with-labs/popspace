@@ -12,6 +12,7 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { Markdown } from '../../../../components/Markdown/Markdown';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -32,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     whiteSpace: 'pre-wrap',
+    '& pre': {
+      overflowX: 'auto',
+    },
   },
   author: {
     flex: '0 0 auto',
@@ -82,8 +86,8 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
       contentClassName={classes.content}
     >
       <div className={classes.scrollContainer}>
-        <Typography paragraph variant="body1" className={classes.text}>
-          {state.data.text}
+        <Typography paragraph variant="body1" component="div" className={classes.text}>
+          <Markdown>{state.data.text}</Markdown>
         </Typography>
       </div>
       <Typography variant="caption" className={classes.author}>
@@ -109,7 +113,7 @@ const StickyNoteFrame: React.FC<{
       mode="free"
       minWidth={250}
       minHeight={80}
-      maxWidth={400}
+      maxWidth={600}
       maxHeight={800}
       className={contentClassName}
     >

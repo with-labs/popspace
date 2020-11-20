@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { makeStyles, TextField } from '@material-ui/core';
+import { makeStyles, TextField, Paper, Box } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { AddAccessoryMenu } from './AddAccessoryMenu';
 import { QuickAction } from './QuickAction';
 import { useQuickAction } from './quickActions/useQuickAction';
 import { QuickAction as QuickActionData } from './quickActions/types';
@@ -12,34 +11,24 @@ export interface IOmnibarProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 400,
+    minWidth: 264,
   },
   addMenuButton: {
     // according to design system rules, this button is within an input within
     // a paper surface - so the border radius continues to decrease
     borderRadius: 2,
   },
-  inputAdornedStart: {
-    paddingLeft: theme.spacing(1.5),
-  },
   inputRoot: {
-    '&[class*="-focused"]': {
-      boxShadow: theme.focusRings.create(theme.palette.grey[900]),
-      caretColor: theme.palette.grey[900],
-    },
+    // TODO: verify with Laurent that we can revert to standard focus colors
+    // '&[class*="-focused"]': {
+    //   boxShadow: theme.focusRings.create(theme.palette.grey[900]),
+    //   caretColor: theme.palette.grey[900],
+    // },
     '&[class*="MuiFilledInput-root"]': {
       // reset the Autocomplete padding change...
       paddingTop: 4,
       paddingBottom: 4,
-      paddingLeft: 4,
-      '& > $inputAdornedStart': {
-        // put some space between the input and the add button - using
-        // inputAdornedStart class here so this padding gets removed if the add
-        // button is not shown for whatever reason.
-        paddingLeft: theme.spacing(1.5),
-        paddingTop: 0,
-        paddingBottom: 0,
-      },
+      paddingLeft: 8,
     },
   },
   input: {
@@ -63,11 +52,6 @@ export const Omnibar: React.FC<IOmnibarProps> = (props) => {
           aria-label={t('features.omnibar.label')}
           variant="filled"
           {...params}
-          InputProps={{
-            ...params.InputProps,
-            classes: { inputAdornedStart: classes.inputAdornedStart },
-            startAdornment: <AddAccessoryMenu className={classes.addMenuButton} />,
-          }}
           className={classes.root}
         />
       )}
@@ -77,9 +61,20 @@ export const Omnibar: React.FC<IOmnibarProps> = (props) => {
       autoHighlight
       forcePopupIcon={false}
       {...autocompleteProps}
+      // When the input is empty we show a special popup with a message
+      PaperComponent={autocompleteProps.inputValue ? Paper : EmptyPaper}
       classes={{
         inputRoot: classes.inputRoot,
       }}
     />
   );
 };
+
+const EmptyPaper = (props: any) => (
+  <Paper {...props}>
+    <Box px={2} pt={2}>
+      <QuickActionEmpty />
+    </Box>
+    {props.children}
+  </Paper>
+);

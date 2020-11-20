@@ -144,6 +144,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
     },
     text: {
       primary: brandPalette.ink.regular,
+      secondary: brandPalette.slate.ink,
     },
     success: toMuiColorPalette(brandPalette.oregano),
     error: toMuiColorPalette(brandPalette.cherry),
@@ -511,6 +512,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         root: {
           boxShadow: focusRings.idle,
           transition: transitions.create(['box-shadow', 'background-color', 'color']),
+          padding: spacing(1),
           '&:focus': {
             boxShadow: focusRings.primary,
           },
@@ -732,32 +734,31 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiToggleButton: {
         root: {
           borderRadius: shape.contentBorderRadius,
-          borderWidth: shape.borderWidth,
+          borderWidth: 0,
           color: palette.grey[900],
-          borderColor: palette.grey[50],
           backgroundColor: palette.common.white,
           padding: 6,
+          boxShadow: focusRings.idle,
 
-          transition: transitions.create(['border-color', 'color', 'background-color']),
+          transition: transitions.create(['border-color', 'color', 'background-color', 'box-shadow']),
 
           '&:hover': {
-            borderColor: palette.grey[500],
-            backgroundColor: palette.common.white,
+            backgroundColor: palette.grey[50],
           },
 
           '&:focus': {
-            borderColor: palette.grey[900],
+            boxShadow: focusRings.create(palette.secondary.main),
             backgroundColor: palette.common.white,
           },
 
           '&:active': {
-            borderColor: palette.grey[900],
-            backgroundColor: palette.grey[50],
+            boxShadow: focusRings.create(palette.secondary.main),
+            backgroundColor: palette.secondary.light,
           },
 
           '&$selected': {
             color: palette.secondary.dark,
-            borderColor: palette.secondary.main,
+            boxShadow: focusRings.create(palette.secondary.light),
             backgroundColor: palette.common.white,
 
             '& + &': {
@@ -767,17 +768,17 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
             },
 
             '&:hover': {
-              borderColor: palette.secondary.dark,
+              boxShadow: focusRings.create(palette.secondary.main),
               backgroundColor: palette.common.white,
             },
 
             '&:focus': {
-              borderColor: palette.secondary.contrastText,
+              boxShadow: focusRings.create(palette.secondary.main),
               backgroundColor: palette.common.white,
             },
 
             '&:active': {
-              borderColor: palette.secondary.contrastText,
+              boxShadow: focusRings.create(palette.secondary.main),
               backgroundColor: palette.secondary.light,
               color: palette.secondary.contrastText,
             },

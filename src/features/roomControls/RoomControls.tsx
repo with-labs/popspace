@@ -18,26 +18,6 @@ const useStyles = makeStyles((theme) => ({
   },
   settingsButton: {
     marginLeft: theme.spacing(1),
-    // adapted to look like the other toggle buttons
-    width: 40,
-    height: 40,
-    color: theme.palette.grey[900],
-    minWidth: 0,
-    borderColor: theme.palette.grey[50],
-    backgroundColor: theme.palette.common.white,
-
-    transition: theme.transitions.create(['borderColor', 'color']),
-
-    '&:hover': {
-      borderColor: theme.palette.grey[500],
-      backgroundColor: theme.palette.common.white,
-    },
-    '&:focus': {
-      borderColor: theme.palette.grey[900],
-    },
-    '&:active': {
-      backgroundColor: theme.palette.grey[50],
-    },
   },
   roomMenu: {
     position: 'fixed',

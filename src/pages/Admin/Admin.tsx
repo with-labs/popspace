@@ -4,9 +4,6 @@ import clsx from 'clsx';
 import { Button, TextField, makeStyles, Box } from '@material-ui/core';
 import { Header } from '../../components/Header/Header';
 import Api from '../../utils/api';
-
-import { USER_SESSION_TOKEN } from '../../constants/User';
-
 import { ClaimEmailsTable } from './ClaimEmailsTable';
 import { Page } from '../../Layouts/Page/Page';
 

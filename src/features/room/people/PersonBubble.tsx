@@ -1,19 +1,11 @@
 import * as React from 'react';
-import {
-  LocalParticipant,
-  RemoteParticipant,
-  AudioTrackPublication,
-  VideoTrackPublication,
-  RemoteTrackPublication,
-  LocalTrackPublication,
-} from 'twilio-video';
+import { LocalParticipant, RemoteParticipant, RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../components/Avatar/Avatar';
 import { useSpring, animated, config } from '@react-spring/web';
-import useIsTrackEnabled from '../../../hooks/useIsTrackEnabled/useIsTrackEnabled';
 import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';

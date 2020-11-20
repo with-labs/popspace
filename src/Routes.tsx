@@ -3,8 +3,6 @@ import { RouteNames } from './constants/RouteNames';
 import { Admin } from './pages/Admin/Admin';
 import Room from './pages/room';
 import { Signin } from './pages/SignIn/Signin';
-import { Signup } from './pages/Signup/Signup';
-
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useRoomViewport } from '../../room/RoomViewport';
-import { Box, makeStyles, IconButton, Fab } from '@material-ui/core';
+import { Box, makeStyles, Fab } from '@material-ui/core';
 import clsx from 'clsx';
 import { PlusIcon } from '../../../components/icons/PlusIcon';
 import { MinusIcon } from '../../../components/icons/MinusIcon';

@@ -10,7 +10,6 @@ import { generateShadows } from './shadows';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type _aug from '@material-ui/lab/themeAugmentation';
 import { DropdownIcon } from '../components/icons/DropdownIcon';
-import shadows from '@material-ui/core/styles/shadows';
 
 const SEMIBOLD_WEIGHT = 600;
 

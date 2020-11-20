@@ -11,6 +11,10 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
       setIsConnecting(true);
       try {
         const newRoom = await Video.connect(token, { ...options, tracks: [] });
+        // some reasonably large number - we subscribe in many places.
+        // FIXME: reduce number of subscriptions by moving them up into context state
+        // instead of directly in hook
+        newRoom.setMaxListeners(40);
         setRoom(newRoom);
 
         const handleUnload = () => newRoom.disconnect();

@@ -18,12 +18,17 @@ export default {
     },
     errorPages: {
       takeMeHomeBtn: 'Take me Home',
+      signInBtn: 'Sign in',
       contactSupportBtn: 'Contact Support',
       invalidRoom: {
         title: 'You don’t have access to this room.',
-        body: 'Please contact the room host for more details.',
+        body: 'Please contact the room owner to get invited.',
+        bodySignedOut: 'Please sign in and make sure the room owner has invited you to this room.',
         quoteText: '',
         altImgText: 'No access',
+        buttonText: 'Go to Dashboard',
+        subMessageNotSignedIn:
+          'You are currently logged is as {{email}} <br/> You might need to <3>sign out</3> and then sign in with a different email',
       },
       linkExpired: {
         title: 'Oops, this link is not valid anymore',
@@ -97,7 +102,6 @@ export default {
       },
       finalizeAccount: {
         title: 'Finalize your account',
-        body: 'Please finalize your account {{email}} to keep access to your room.',
         firstNamePlaceholder: 'Dorothy',
         fistNameLabel: 'First Name',
         lastNamePlaceholder: 'Gale',
@@ -109,16 +113,6 @@ export default {
         submitBtnText: 'Finalize my account',
         imgAltText: 'sign in',
         tosCheck: 'I agree to the <1>Terms of Service</1>',
-      },
-      claimConfirmationView: {
-        title: 'Your room has been claimed',
-        gotoRoomBtn: 'Go to my room',
-        associationText: 'Your room {{roomName}} is now associated to your account {{email}}.',
-        confirmationBody:
-          'We are hard at work to allow you to invite other people to your room. For now, your guests can still access your room with the same room password as before.',
-        mobileOptimizationNotice:
-          'With is currently not optimized for mobile. We rather polish the experience before you can use it. Sorry for the inconvenience.',
-        imgAltText: 'sign in',
       },
       room: {
         joinTitle: 'Joining {{roomName}}',

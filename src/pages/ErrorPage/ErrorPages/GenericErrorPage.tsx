@@ -1,7 +1,7 @@
 import React from 'react';
 import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
-import { Button, makeStyles, Typography } from '@material-ui/core';
+import { Button, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
 
 interface IGenericErrorPageProps {
   buttonText: string;
@@ -12,6 +12,8 @@ interface IGenericErrorPageProps {
   errorMessage?: string;
   imgSrc?: string;
   imgAltText?: string;
+  subMessage?: string | React.ReactElement;
+  isLoading?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(4),
+    minsWidth: 190,
   },
   container: {
     maxWidth: 440,
@@ -44,38 +47,62 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 600,
     display: 'block',
   },
+  subMessage: {
+    display: 'block',
+    marginTop: theme.spacing(5),
+  },
 }));
 
 export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
   const classes = useStyles();
-  const { buttonText, onClick, quoteText, title, body, errorMessage, imgSrc, imgAltText } = props;
+  const {
+    buttonText,
+    onClick,
+    quoteText,
+    title,
+    body,
+    errorMessage,
+    imgSrc,
+    imgAltText,
+    subMessage,
+    isLoading,
+  } = props;
 
   return (
     <main className={classes.root}>
-      <TwoColLayout>
-        <Column centerContent={true} useColMargin={true}>
-          <div className={classes.container}>
-            <div>{quoteText}</div>
-            <Typography variant="h1">{title}</Typography>
-            <Typography variant="body1" className={classes.bodyText}>
-              {body}
-            </Typography>
-            <Typography variant="body1" className={classes.errorText}>
-              {errorMessage}
-            </Typography>
-            <Button className={classes.button} onClick={onClick}>
-              {buttonText}
-            </Button>
-          </div>
-        </Column>
-        {imgSrc && imgAltText ? (
-          <Column centerContent={true} hide="sm">
-            <div className={classes.imgContainer}>
-              <img className={classes.image} src={imgSrc} alt={imgAltText} />
+      {isLoading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <TwoColLayout>
+          <Column centerContent={true} useColMargin={true}>
+            <div className={classes.container}>
+              <div>{quoteText}</div>
+              <Typography variant="h1">{title}</Typography>
+              <Typography variant="body1" className={classes.bodyText}>
+                {body}
+              </Typography>
+              <Typography variant="body1" className={classes.errorText}>
+                {errorMessage}
+              </Typography>
+              <Button className={classes.button} onClick={onClick} fullWidth={false}>
+                {buttonText}
+              </Button>
+              <Typography component={'span'} variant="body1" className={classes.subMessage}>
+                {subMessage}
+              </Typography>
             </div>
           </Column>
-        ) : null}
-      </TwoColLayout>
+          {imgSrc && imgAltText ? (
+            <Column centerContent={true} hide="sm">
+              <div className={classes.imgContainer}>
+                <img className={classes.image} src={imgSrc} alt={imgAltText} />
+              </div>
+            </Column>
+          ) : null}
+        </TwoColLayout>
+      )}
     </main>
   );
 };

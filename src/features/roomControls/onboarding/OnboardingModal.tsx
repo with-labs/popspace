@@ -86,7 +86,7 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const roomName = useRoomName();
-  const currentUserProfile = useCurrentUserProfile();
+  const { currentUserProfile } = useCurrentUserProfile();
 
   const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
 

@@ -67,6 +67,10 @@ class Sockets {
   count() {
     return this.list().length
   }
+
+  async serialize() {
+    return this.list().map((p) => (p.serialize()))
+  }
 }
 
 module.exports = Sockets

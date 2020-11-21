@@ -11,6 +11,7 @@ module.exports = {
 
     return {
       beforeAuth,
+      auth,
       afterAuth
     }
   }),

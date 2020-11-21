@@ -6,9 +6,9 @@ class Participant {
     this.socket = socket
     this.id = id++
     this.authenticated = false
-    this.user = null
+    this.user = {}
     this.roomId = null
-    this.room = null
+    this.room = {}
 
     this.socket.on('message', (message) => {
       log.dev.debug(`Got message from ${this.id} ${message}`)
@@ -48,8 +48,8 @@ class Participant {
     if(!this.user || !this.room) {
       this.authenticated = false
       this.roomId = null
-      this.room = null
-      this.user = null
+      this.room = {}
+      this.user = {}
       return false
     }
     this.roomId = roomId
@@ -98,6 +98,18 @@ class Participant {
     return new Promise((resolve, reject) => {
       this.socket.on('close', () => (resolve()))
     })
+  }
+
+  async serialize() {
+    return {
+      authenticated: this.authenticated,
+      user: {
+        displayName: this.user.display_name,
+        id: this.user.id
+      },
+      sessionId: this.id,
+      roomId: this.roomId
+    }
   }
 }
 

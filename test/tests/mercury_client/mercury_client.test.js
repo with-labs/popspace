@@ -1,6 +1,6 @@
 const scenarios = require('./mercury_client_scenarios')
 
-tlib.describeWithLib('mercury_client', () => {
+tlib.TestTemplate.describeWithLib('mercury_client', () => {
   // We have some long-running tests
   jest.setTimeout(30000);
 
@@ -19,8 +19,8 @@ tlib.describeWithLib('mercury_client', () => {
   })
 
   test('communication between 2 clients', async () => {
-    const messages1 = ["hello", "1", "hi", "3"]
-    const messages2 = ["goodbye", "2", "bye", "4"]
+    const messages1 = ["hello", "msg1", "hi", "msg3"]
+    const messages2 = ["goodbye", "msg2", "bye", "msg4"]
     const expectedSequence =[
       messages1[0], messages2[0],
       messages1[1], messages2[1],

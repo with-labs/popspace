@@ -1,6 +1,6 @@
 const scenarios = require('./mercury_server_scenarios')
 
-tlib.describeWithLib('mercury_server', () => {
+tlib.TestTemplate.describeWithLib('mercury_server', () => {
   jest.setTimeout(30000)
 
   test("starts up and shuts down gracefully", async () => {

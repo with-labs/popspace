@@ -16,10 +16,20 @@ class AuthProcessor extends Processor {
 
   async authenticate(event) {
     const success = await event._sender.authenticate(event.data.payload.token, event.data.payload.roomId)
-    event._sender.sendResponse(event, {
-      kind: "auth",
-      success: "true"
-    })
+    if(success) {
+      return event._sender.sendResponse(event, {
+        kind: "auth",
+        success: true
+      })
+    } else {
+      return event._sender.sendError(
+        event,
+        lib.ErrorCodes.AUTH_FAILED,
+        "Invalid credentials",
+        { kind: "auth"}
+      )
+    }
+
   }
 }
 

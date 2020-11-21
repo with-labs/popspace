@@ -1,7 +1,7 @@
 global.tlib = require("../../lib/_testlib")
 
 module.exports = {
-  "connect_send_disconnect": tlib.testServerClients(1, async (clients, mercury) => {
+  "connect_send_disconnect": tlib.TestTemplate.testServerClients(1, async (clients) => {
     clients[0].send("hello")
     return true
   }),

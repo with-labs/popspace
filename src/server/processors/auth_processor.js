@@ -2,8 +2,7 @@ const Processor = require("./processor")
 
 class AuthProcessor extends Processor {
   async process(event) {
-    console.log("Prcessing")
-    switch(event.kind) {
+    switch(event.data.kind) {
       case "auth":
         return this.authenticate(event)
       default:
@@ -16,7 +15,7 @@ class AuthProcessor extends Processor {
   }
 
   async authenticate(event) {
-    const success = await event._sender.authenticate(event.payload.token, event.payload.roomId)
+    const success = await event._sender.authenticate(event.data.payload.token, event.data.payload.roomId)
     event._sender.sendResponse(event, {
       kind: "auth",
       success: "true"

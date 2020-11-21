@@ -44,11 +44,13 @@ class Client {
   }
 
   sendEvent(event) {
+    console.log("Sending event", event)
     this.send(JSON.stringify(event))
   }
 
-  async authenticate(token) {
-    return this.sendEventWithPromise("auth", { token })
+  async authenticate(token, roomId) {
+    console.log("Sending promise", roomId)
+    return this.sendEventWithPromise("auth", { token, roomId })
   }
 
   async sendEventWithPromise(kind, payload) {

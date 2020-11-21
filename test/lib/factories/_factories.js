@@ -35,5 +35,6 @@ factory.setAdapter(new MassiveJsAdapter());
 
 require("./factory_user")
 require("./factory_session")
+require("./factory_room")
 
 module.exports = factory;

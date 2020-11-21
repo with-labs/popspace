@@ -15,15 +15,20 @@ class MessageProcessor {
     this.participants = participants
 
     this.participants.setEventHandler(async (event) => {
-      const action = ACTION_BY_EVENT_KIND[event.kind]
+      const action = ACTION_BY_EVENT_KIND[event.data.kind]
       if(this.processors[action]) {
         if(event._sender.isAuthenticated() || PUBLIC_ACTIONS[action]) {
-          return await this.processors[action].process(event, this.participants)
+          try {
+            return await this.processors[action].process(event, this.participants)
+          } catch(e) {
+            return event._sender.sendError(event, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.")
+          }
+
         } else {
-          event._sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+          return event._sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
         }
       } else {
-        event._sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event format ${event.message}.`)
+        return event._sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event format ${event._message}.`)
       }
     })
 

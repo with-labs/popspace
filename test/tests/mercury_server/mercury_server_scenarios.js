@@ -8,7 +8,7 @@ module.exports = {
     }
   },
 
-  "keep_track_of_clients": tlib.testServerClients(1, async (clients, mercury) => {
+  "keep_track_of_clients": tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
     const connectedClients = mercury.clientsCount()
     return {
       clientsCountOnServer: connectedClients,

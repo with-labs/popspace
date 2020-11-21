@@ -8,6 +8,7 @@ class Participant {
     this.authenticated = false
     this.user = null
     this.roomId = null
+    this.room = null
 
     this.socket.on('message', (message) => {
       log.dev.debug(`Got message from ${this.id} ${message}`)
@@ -25,11 +26,14 @@ class Participant {
   }
 
   prepareEvent(message) {
-    const event = JSON.parse(message)
-    event._sender = this
-    event._message = message
-    event.payload = event.payload || {}
-    return event
+    const data = JSON.parse(message)
+    return {
+      _sender: this,
+      _message: message,
+      // only allow in-room requests
+      roomId: data.kind == "auth" ? data.payload.roomId : this.roomId,
+      data: data
+    }
   }
 
   async authenticate(token, roomId) {
@@ -40,9 +44,12 @@ class Participant {
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
     this.user = await shared.lib.auth.userFromToken(token)
-    if(!this.user) {
+    this.room = await shared.db.pg.massive.rooms.findOne({id: roomId})
+    if(!this.user || !this.room) {
       this.authenticated = false
       this.roomId = null
+      this.room = null
+      this.user = null
       return false
     }
     this.roomId = roomId
@@ -74,7 +81,7 @@ class Participant {
 
   sendResponse(requestEvent, response) {
     this.sendObject(Object.assign({
-      requestId: requestEvent.id
+      requestId: requestEvent.data.id
     }, response))
   }
 

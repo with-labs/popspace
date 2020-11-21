@@ -1,9 +1,6 @@
-require("jest")
-const tlib = require("../lib/_testlib")
 const scenarios = require('./mercury_client_scenarios')
 
-
-describe('mercury_client', () => {
+tlib.describeWithLib('mercury_client', () => {
   // We have some long-running tests
   jest.setTimeout(30000);
 

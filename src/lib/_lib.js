@@ -12,6 +12,9 @@ lib.ErrorCodes = require("./error_codes")
 lib.init = async () => {
   await global.shared.db.pg.init()
 }
+lib.cleanup = async() => {
+  await global.shared.db.pg.tearDown()
+}
 
 lib.error = async (code, message, data={}) => {
   return Object.assign({

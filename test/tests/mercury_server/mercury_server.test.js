@@ -1,9 +1,6 @@
-require("jest")
-const tlib = require("../lib/_testlib")
 const scenarios = require('./mercury_server_scenarios')
 
-
-describe('mercury_server', () => {
+tlib.describeWithLib('mercury_server', () => {
   jest.setTimeout(30000)
 
   test("starts up and shuts down gracefully", async () => {

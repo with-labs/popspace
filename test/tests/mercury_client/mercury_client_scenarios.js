@@ -1,11 +1,10 @@
-const tlib = require("../lib/_testlib")
+global.tlib = require("../../lib/_testlib")
 
 module.exports = {
-  "connect_send_disconnect": async () => {
-    const { clients, mercury } = await tlib.util.serverWithClients(1)
+  "connect_send_disconnect": tlib.testServerClients(1, async (clients, mercury) => {
     clients[0].send("hello")
-    return await mercury.stop()
-  },
+    return true
+  }),
 
   "1_sender_2_receivers": async (message='hello') => {
     /*

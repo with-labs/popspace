@@ -1,4 +1,4 @@
-const tlib = require("../lib/_testlib")
+global.tlib = require("../../lib/_testlib")
 
 module.exports = {
   "restarts_correclty": async () => {
@@ -8,13 +8,11 @@ module.exports = {
     }
   },
 
-  "keep_track_of_clients": async (numberOfConnections=2) => {
-    const { clients, mercury } = await tlib.util.serverWithClients(numberOfConnections, "keep_track_of_clients")
+  "keep_track_of_clients": tlib.testServerClients(1, async (clients, mercury) => {
     const connectedClients = mercury.clientsCount()
-    await mercury.stop()
     return {
       clientsCountOnServer: connectedClients,
-      clientsCreated: numberOfConnections
+      clientsCreated: clients.length
     }
-  }
+  })
 }

@@ -62,7 +62,9 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
         draft: true,
       },
     ];
-  } else {
+    // excluding starting with #, since that is a valid URL but not
+    // probably what the user intended
+  } else if (!prompt.startsWith('#')) {
     try {
       // throws if the string is not a valid URL
       new URL(prompt);
@@ -82,6 +84,8 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
       return [];
     }
   }
+
+  return [];
 }
 
 function useYoutubeQuickActions(prompt: string): QuickAction[] {

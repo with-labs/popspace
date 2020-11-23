@@ -18,6 +18,7 @@ const useStyles = makeStyles<Theme, IWidgetContentProps>((theme) => ({
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
+    userSelect: 'text',
   }),
 }));
 

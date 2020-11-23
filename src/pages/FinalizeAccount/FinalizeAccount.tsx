@@ -23,8 +23,6 @@ import { useTranslation, Trans } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 
-import { ClaimConfirmationView } from './ClaimConfirmationView';
-
 interface IFinalizeAccountProps {}
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(5),
   },
   title: {
-    marginBottom: 10,
+    marginBottom: theme.spacing(5),
   },
   text: {
     marginBottom: theme.spacing(5),
@@ -80,8 +78,6 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const [receiveMarketing, setReceiveMarketing] = useState(false);
   const [error, setError] = useState<ErrorInfo>(null!);
   const [isLoading, setIsLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [roomName, setRoomName] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
@@ -146,16 +142,13 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         errorType: ErrorTypes.LINK_EXPIRED,
       });
     } else {
-      // Note: currently for alpha users or users we send invites out to, this registers the room
-      // to their account. There will be a seperate api endpoint for when we do this same flow via user invites
-      // 9-28-2020
       const result: any = await Api.registerThroughClaim(data, otp, claimId);
       if (result.success) {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
         }
-        setRoomName(result.roomName);
-        setShowConfirmation(true);
+        // user is done finalizing account, go to room
+        history.push(`/${result.roomName}`);
       } else {
         Sentry.captureMessage(`Error finializing account for ${email} on submit`, Sentry.Severity.Error);
         setError({
@@ -169,71 +162,64 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   return (
     <Page isLoading={isLoading} error={error}>
       <Header />
-      {showConfirmation ? (
-        <ClaimConfirmationView roomName={roomName} email={email || ''} />
-      ) : (
-        <TwoColLayout>
-          <Column centerContent={true} useColMargin={true}>
-            <PanelContainer>
-              <Typography variant="h2" className={classes.title}>
-                {t('pages.finalizeAccount.title')}
-              </Typography>
-              <Typography variant="body1" className={classes.text}>
-                {t('pages.finalizeAccount.body', { email })}
-              </Typography>
-              <form onSubmit={onFormSubmit}>
-                <Box display="flex" className={classes.colRow}>
-                  <TextField
-                    id="firstName"
-                    value={firstName}
-                    onChange={(event) => setFirstName(event.target.value)}
-                    placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
-                    label={t('pages.finalizeAccount.fistNameLabel')}
-                    className={classes.firstName}
-                  />
-                  <TextField
-                    id="lastName"
-                    value={lastName}
-                    onChange={(event) => setLastName(event.target.value)}
-                    placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
-                    label={t('pages.finalizeAccount.lastNameLabel')}
-                    className={classes.lastName}
-                  />
-                </Box>
-                <div className={classes.checkBoxes}>
-                  <CheckboxField
-                    label={
-                      <span>
-                        <Trans i18nKey="pages.joinRoom.tosCheck">
-                          I agree to the
-                          <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                            Terms of Service
-                          </Link>
-                        </Trans>
-                      </span>
-                    }
-                    checked={acceptTos}
-                    onChange={() => setAcceptTos(!acceptTos)}
-                    name={t('pages.finalizeAccount.tosCheckboxName')}
-                  />
-                  <CheckboxField
-                    label={t('pages.finalizeAccount.marketingCheckboxText')}
-                    checked={receiveMarketing}
-                    onChange={() => setReceiveMarketing(!receiveMarketing)}
-                    name={t('pages.finalizeAccount.martketingCheckboxName')}
-                  />
-                </div>
-                <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-                  {t('pages.finalizeAccount.submitBtnText')}
-                </Button>
-              </form>
-            </PanelContainer>
-          </Column>
-          <Column centerContent={true} hide="sm">
-            <PanelImage src={signinImg} altTextKey="pages.finalizeAccount.imgAltText" />
-          </Column>
-        </TwoColLayout>
-      )}
+      <TwoColLayout>
+        <Column centerContent={true} useColMargin={true}>
+          <PanelContainer>
+            <Typography variant="h2" className={classes.title}>
+              {t('pages.finalizeAccount.title')}
+            </Typography>
+            <form onSubmit={onFormSubmit}>
+              <Box display="flex" className={classes.colRow}>
+                <TextField
+                  id="firstName"
+                  value={firstName}
+                  onChange={(event) => setFirstName(event.target.value)}
+                  placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
+                  label={t('pages.finalizeAccount.fistNameLabel')}
+                  className={classes.firstName}
+                />
+                <TextField
+                  id="lastName"
+                  value={lastName}
+                  onChange={(event) => setLastName(event.target.value)}
+                  placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
+                  label={t('pages.finalizeAccount.lastNameLabel')}
+                  className={classes.lastName}
+                />
+              </Box>
+              <div className={classes.checkBoxes}>
+                <CheckboxField
+                  label={
+                    <span>
+                      <Trans i18nKey="pages.joinRoom.tosCheck">
+                        I agree to the
+                        <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
+                          Terms of Service
+                        </Link>
+                      </Trans>
+                    </span>
+                  }
+                  checked={acceptTos}
+                  onChange={() => setAcceptTos(!acceptTos)}
+                  name={t('pages.finalizeAccount.tosCheckboxName')}
+                />
+                <CheckboxField
+                  label={t('pages.finalizeAccount.marketingCheckboxText')}
+                  checked={receiveMarketing}
+                  onChange={() => setReceiveMarketing(!receiveMarketing)}
+                  name={t('pages.finalizeAccount.martketingCheckboxName')}
+                />
+              </div>
+              <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+                {t('pages.finalizeAccount.submitBtnText')}
+              </Button>
+            </form>
+          </PanelContainer>
+        </Column>
+        <Column centerContent={true} hide="sm">
+          <PanelImage src={signinImg} altTextKey="pages.finalizeAccount.imgAltText" />
+        </Column>
+      </TwoColLayout>
     </Page>
   );
 };

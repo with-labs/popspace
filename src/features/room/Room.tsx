@@ -17,6 +17,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { ParticipantState } from '../../constants/twilio';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 interface IRoomProps {}
 
@@ -56,6 +57,13 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
     allParticipants,
   ]);
+
+  // Start the mic track on load - but only on first load
+  const { startAudio } = useLocalTracks();
+  const initialStartAudio = React.useRef(startAudio);
+  React.useEffect(() => {
+    initialStartAudio.current();
+  }, []);
 
   return (
     <RoomViewport

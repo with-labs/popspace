@@ -64,96 +64,109 @@ function validateEmail(email: string, translate: TFunction) {
 }
 
 const MAX_INVITE_COUNT = 20;
+const ROOM_MEMBERS_QUERY = '/room_get_members';
 
-export const MembershipManagement: React.FC<IMembershipManagementModalProps> = ({ autoFocusInvite }) => {
-  const { t } = useTranslation();
-  const classes = useStyles();
-  const roomName = useRoomName();
-  const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
-  const [submitError, setSubmitError] = useState<ApiError | null>(null);
+export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
+  ({ autoFocusInvite }, ref) => {
+    const { t } = useTranslation();
+    const classes = useStyles();
+    const roomName = useRoomName();
+    const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
+    const [submitError, setSubmitError] = useState<ApiError | null>(null);
 
-  const cache = useQueryCache();
-  const { data, isLoading, error } = useQuery<{ result: ApiRoomMember[] }, ApiError>([
-    '/room_get_members',
-    {
-      roomName,
-    },
-  ]);
-  const members = data?.result || [];
-
-  useEffect(() => {
-    if (error) logger.error(error);
-  }, [error]);
-
-  const onSubmitHandler = async (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
-    try {
-      if (sessionTokenExists(sessionToken) && roomName) {
-        const response = await Api.sendRoomInvite(roomName, values.inviteeEmail);
-        if (response.success) {
-          // update query cache for members list query
-          cache.setQueryData<{ result: ApiRoomMember[] }>(['/get_room_members', { roomName }], (cur) => ({
-            result: [...(cur?.result ?? []), response.newMember],
-          }));
-        } else {
-          // TODO: convert to try/catch when api module throws errors
-          setSubmitError(new ApiError(response));
-        }
+    const cache = useQueryCache();
+    const { data, isLoading, error } = useQuery<{ result: ApiRoomMember[] }, ApiError>(
+      [
+        ROOM_MEMBERS_QUERY,
+        {
+          roomName,
+        },
+      ],
+      {
+        // 5 min cache time
+        cacheTime: 5 * 60,
       }
-    } catch (e) {
-      logger.error(`Error membership modal send invite`, e);
-      setSubmitError(e);
-    } finally {
-      actions.resetForm();
-    }
-  };
+    );
+    const members = data?.result || [];
 
-  const onMemberRemove = (member: any) => {
-    // remove member from the query cache
-    cache.setQueryData<{ result: ApiRoomMember[] }>(['/get_room_members', { roomName }], (cur) => ({
-      result: cur?.result ? cur.result.filter((m) => m !== member) : [],
-    }));
-  };
+    useEffect(() => {
+      if (error) logger.error(error);
+    }, [error]);
 
-  const remainingInvites = MAX_INVITE_COUNT - members.length;
+    const onSubmitHandler = async (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
+      try {
+        if (sessionTokenExists(sessionToken) && roomName) {
+          const response = await Api.sendRoomInvite(roomName, values.inviteeEmail);
+          if (response.success) {
+            // update query cache for members list query
+            console.log('update cache');
+            cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName }], (cur) => ({
+              result: [...(cur?.result ?? []), response.newMember],
+            }));
+            console.debug(cache.getQueryData([ROOM_MEMBERS_QUERY, { roomName }]));
+          } else {
+            // TODO: convert to try/catch when api module throws errors
+            setSubmitError(new ApiError(response));
+          }
+        }
+      } catch (e) {
+        logger.error(`Error membership modal send invite`, e);
+        setSubmitError(e);
+      } finally {
+        actions.resetForm();
+      }
+    };
 
-  return (
-    <>
-      <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
-        <Form>
-          <Box display="flex" flexDirection="row">
-            <FormikTextField
-              className={classes.emailField}
-              name="inviteeEmail"
-              placeholder={t('common.emailInput.placeHolder')}
-              label={t('common.emailInput.label')}
-              margin="normal"
-              validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
-              helperText={t(
-                remainingInvites === 0 ? 'modals.inviteUserModal.noInvitesLeft' : 'modals.inviteUserModal.invitesLeft',
-                { count: remainingInvites }
-              )}
-              autoFocus={autoFocusInvite}
-            />
-            <FormikSubmitButton className={classes.submitBtn}>
-              {t('modals.inviteUserModal.inviteBtn')}
-            </FormikSubmitButton>
+    const onMemberRemove = (member: any) => {
+      // remove member from the query cache
+      cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName }], (cur) => ({
+        result: cur?.result ? cur.result.filter((m) => m !== member) : [],
+      }));
+    };
+
+    const remainingInvites = MAX_INVITE_COUNT - members.length;
+
+    return (
+      <div ref={ref}>
+        <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
+          <Form>
+            <Box display="flex" flexDirection="row">
+              <FormikTextField
+                className={classes.emailField}
+                name="inviteeEmail"
+                placeholder={t('common.emailInput.placeHolder')}
+                label={t('common.emailInput.label')}
+                margin="normal"
+                validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
+                helperText={t(
+                  remainingInvites === 0
+                    ? 'modals.inviteUserModal.noInvitesLeft'
+                    : 'modals.inviteUserModal.invitesLeft',
+                  { count: remainingInvites }
+                )}
+                autoFocus={autoFocusInvite}
+              />
+              <FormikSubmitButton className={classes.submitBtn}>
+                {t('modals.inviteUserModal.inviteBtn')}
+              </FormikSubmitButton>
+            </Box>
+          </Form>
+        </Formik>
+        {members.length > 0 && roomName ? (
+          <MemberList members={members} onMemberRemove={onMemberRemove} roomName={roomName} />
+        ) : (
+          <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} flexShrink={0} flexBasis="auto">
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <Typography variant="body1" className={classes.inviteText}>
+                {t('modals.inviteUserModal.getStarted')}
+              </Typography>
+            )}
           </Box>
-        </Form>
-      </Formik>
-      {members.length > 0 && roomName ? (
-        <MemberList members={members} onMemberRemove={onMemberRemove} roomName={roomName} />
-      ) : (
-        <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} flexShrink={0} flexBasis="auto">
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <Typography variant="body1" className={classes.inviteText}>
-              {t('modals.inviteUserModal.getStarted')}
-            </Typography>
-          )}
-        </Box>
-      )}
-      <ErrorModal error={error || submitError} />
-    </>
-  );
-};
+        )}
+        <ErrorModal error={error || submitError} />
+      </div>
+    );
+  }
+);

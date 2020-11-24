@@ -12,7 +12,7 @@ export interface IMembersMenuProps {}
  * Renders the members dropdown menu and the grouping of controls which
  * trigger / interact with it
  */
-export const MembersMenu: React.FC<IMembersMenuProps> = () => {
+export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((_, ref) => {
   const anchorRef = React.useRef<any>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
@@ -37,7 +37,7 @@ export const MembersMenu: React.FC<IMembersMenuProps> = () => {
   }, []);
 
   return (
-    <>
+    <div ref={ref}>
       {/* TODO: public member list of avatars */}
       {isRoomOwner && (
         <>
@@ -52,6 +52,6 @@ export const MembersMenu: React.FC<IMembersMenuProps> = () => {
           </Menu>
         </>
       )}
-    </>
+    </div>
   );
-};
+});

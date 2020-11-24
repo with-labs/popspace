@@ -4,6 +4,7 @@ import { Omnibar } from './omnibar/Omnibar';
 import { MediaControls } from './media/MediaControls';
 import { SettingsButton } from './settings/SettingsButton';
 import { RoomMenu } from './roomMenu/RoomMenu';
+import { MembersMenu } from './membership/MembersMenu';
 
 export interface IRoomControlsProps {}
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   settingsButton: {
     marginLeft: theme.spacing(1),
   },
-  roomMenu: {
+  membersMenu: {
     position: 'fixed',
     right: theme.spacing(2),
     top: theme.spacing(2),
@@ -34,12 +35,13 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
   return (
     <>
       <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
+        <RoomMenu />
         <Omnibar />
         <MediaControls />
         <SettingsButton className={classes.settingsButton} />
       </Box>
-      <Box component={Paper} className={classes.roomMenu}>
-        <RoomMenu />
+      <Box component={Paper} className={classes.membersMenu}>
+        <MembersMenu />
       </Box>
     </>
   );

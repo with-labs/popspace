@@ -4,10 +4,12 @@ import useLocalAudioToggle from '../../../hooks/localMediaToggles/useLocalAudioT
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
+import { MicDeviceMenu } from './MicDeviceMenu';
+import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 
 export const MicToggle = (props: { className?: string }) => {
   const { t } = useTranslation();
@@ -22,19 +24,38 @@ export const MicToggle = (props: { className?: string }) => {
     [toggleMicOn]
   );
 
+  const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);
+  const handleContextMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
+    ev.preventDefault();
+    setMenuAnchor(ev.currentTarget);
+  }, []);
+
   return (
-    <Tooltip
-      title={
-        <>
-          <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText> {t('features.mediaControls.micToggle')}
-        </>
-      }
-    >
-      <div>
-        <ToggleButton value="mic" selected={isMicOn} onChange={toggleMicOn} disabled={busy} {...props}>
-          {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
-        </ToggleButton>
-      </div>
-    </Tooltip>
+    <>
+      <Tooltip
+        title={
+          <>
+            <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText> {t('features.mediaControls.micToggle')}
+          </>
+        }
+      >
+        <div>
+          <ToggleButton
+            value="mic"
+            selected={isMicOn}
+            onChange={toggleMicOn}
+            onContextMenu={handleContextMenu}
+            disabled={busy}
+            {...props}
+          >
+            {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
+          </ToggleButton>
+        </div>
+      </Tooltip>
+      <IconButton size="small" onClick={(ev) => setMenuAnchor(ev.currentTarget)}>
+        <DropdownIcon />
+      </IconButton>
+      <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
+    </>
   );
 };

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Box, makeStyles, Paper } from '@material-ui/core';
 import { Omnibar } from './omnibar/Omnibar';
 import { MediaControls } from './media/MediaControls';
-import { SettingsButton } from './settings/SettingsButton';
 import { RoomMenu } from './roomMenu/RoomMenu';
 import { MembersMenu } from './membership/MembersMenu';
 
@@ -38,7 +37,6 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
         <RoomMenu />
         <Omnibar />
         <MediaControls />
-        <SettingsButton className={classes.settingsButton} />
       </Box>
       <Box component={Paper} className={classes.membersMenu}>
         <MembersMenu />

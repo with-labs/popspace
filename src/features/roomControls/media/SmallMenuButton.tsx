@@ -6,7 +6,15 @@ import { DropdownFilledIcon } from '../../../components/icons/DropdownFilledIcon
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.grey[50],
-    marginLeft: 2,
+    position: 'relative',
+    zIndex: 1,
+    left: -8,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: 0,
+  },
+  icon: {
+    fontSize: 24,
+    position: 'relative',
   },
 }));
 
@@ -15,7 +23,7 @@ export const SmallMenuButton: React.FC<IconButtonProps> = (props) => {
 
   return (
     <IconButton size="small" {...props} className={clsx(classes.root, props.className)}>
-      <DropdownFilledIcon style={{ fontSize: 10 }} />
+      <DropdownFilledIcon className={classes.icon} />
     </IconButton>
   );
 };

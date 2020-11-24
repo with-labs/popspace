@@ -4,6 +4,7 @@ import { Omnibar } from './omnibar/Omnibar';
 import { MediaControls } from './media/MediaControls';
 import { RoomMenu } from './roomMenu/RoomMenu';
 import { MembersMenu } from './membership/MembersMenu';
+import { useIsRoomOwner } from '../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 export interface IRoomControlsProps {}
 
@@ -31,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
 export const RoomControls = React.memo<IRoomControlsProps>((props) => {
   const classes = useStyles();
 
+  const isRoomOwner = useIsRoomOwner();
+
   return (
     <>
       <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
@@ -38,9 +41,13 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
         <Omnibar />
         <MediaControls />
       </Box>
-      <Box component={Paper} className={classes.membersMenu}>
-        <MembersMenu />
-      </Box>
+      {/* TODO: when we have a prettier list of members, we will show
+      it here even if you aren't the owner */}
+      {isRoomOwner && (
+        <Box component={Paper} className={classes.membersMenu}>
+          <MembersMenu />
+        </Box>
+      )}
     </>
   );
 });

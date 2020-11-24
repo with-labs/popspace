@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
-import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { Menu, IconButton } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
+import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 export interface IMembersMenuProps {}
 
@@ -17,12 +16,7 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
   const [isOpen, setIsOpen] = React.useState(false);
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
 
-  const roomName = useRoomName();
-  const { currentUserProfile } = useCurrentUserProfile();
-  const isRoomOwner = React.useMemo(() => currentUserProfile?.rooms?.owned.some((room) => room.name === roomName), [
-    currentUserProfile,
-    roomName,
-  ]);
+  const isRoomOwner = useIsRoomOwner();
 
   const onOpen = React.useCallback(() => {
     setIsOpen(true);

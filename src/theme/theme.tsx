@@ -519,13 +519,16 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '&:active': {
             backgroundColor: palette.grey[50],
           },
+          '&:hover': {
+            backgroundColor: palette.grey[300],
+          },
         },
         sizeSmall: {
           fontSize: typography.pxToRem(16),
-          padding: 5,
+          padding: 7,
 
           '&:focus': {
-            boxShadow: focusRings.create(palette.secondary.contrastText, true),
+            boxShadow: focusRings.create(palette.secondary.contrastText),
           },
         },
       },

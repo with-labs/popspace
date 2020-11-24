@@ -28,6 +28,14 @@ export type ApiRoom = {
   priority_level: number;
 };
 
+export type ApiRoomMember = {
+  display_name: string;
+  email: string;
+  user_id: string;
+  avatar_url: string;
+  has_accepted: boolean;
+};
+
 class Api {
   async signup(data: any) {
     return await this.post('/request_create_account', data);
@@ -64,7 +72,7 @@ class Api {
   }
 
   async sendRoomInvite(roomName: string, email: string) {
-    return await this.post('/send_room_invite', { roomName, email });
+    return await this.post<BaseResponse & { newMember: ApiRoomMember }>('/send_room_invite', { roomName, email });
   }
 
   async cancelRoomInvite(roomName: string, email: string) {
@@ -76,7 +84,7 @@ class Api {
   }
 
   async getRoomMembers(roomName: string) {
-    return await this.post('/room_get_members', { roomName });
+    return await this.post<BaseResponse & { result: ApiRoomMember[] }>('/room_get_members', { roomName });
   }
 
   async resolveRoomInvite(otp: string, inviteId: string) {
@@ -151,3 +159,17 @@ class Api {
 }
 
 export default new Api();
+
+/** TODO: throw one of these one very failed request */
+export class ApiError extends Error {
+  code: string;
+
+  get errorCode() {
+    return this.code;
+  }
+
+  constructor(response: BaseResponse) {
+    super(response.message || 'Unexpected error');
+    this.code = response.errorCode?.toString() || ErrorCodes.UNEXPECTED;
+  }
+}

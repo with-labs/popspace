@@ -1,5 +1,6 @@
 import { useQuery } from 'react-query';
 import { ApiUser, ApiRoom } from '../../utils/api';
+import { useMemo } from 'react';
 
 export function useCurrentUserProfile() {
   const { data, isLoading } = useQuery<{ profile?: { user: ApiUser; rooms: { member: ApiRoom[]; owned: ApiRoom[] } } }>(
@@ -8,5 +9,7 @@ export function useCurrentUserProfile() {
 
   const profile = data?.profile;
 
-  return { currentUserProfile: profile, isLoading };
+  return useMemo(() => {
+    return { currentUserProfile: profile, isLoading };
+  }, [profile, isLoading]);
 }

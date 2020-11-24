@@ -110,10 +110,6 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
   const nextStep = () => {
     if (currentStep + 1 < onboardingSteps.length) {
       setCurrentStep(currentStep + 1);
-    } else if (isRoomOwner) {
-      // if its the room owner, close the modal and open the membership mangement modal
-      onCloseHandler();
-      dispatch(controlsActions.setIsMembershipModalOpen({ isOpen: true }));
     } else {
       // we have hit the end, just call the close handler
       onCloseHandler();

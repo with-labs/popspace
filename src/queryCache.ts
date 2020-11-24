@@ -1,10 +1,10 @@
 import { QueryCache } from 'react-query';
-import api from './utils/api';
+import api, { ApiError } from './utils/api';
 
 const defaultQueryFn = async (key: string, data?: any) => {
-  const { success, message, ...result } = await api.post(key, data || {});
+  const { success, message, errorCode, ...result } = await api.post(key, data || {});
   if (!success) {
-    throw new Error(message);
+    throw new ApiError({ success, message, errorCode });
   }
   return result;
 };

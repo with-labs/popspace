@@ -10,7 +10,6 @@ import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
-import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
@@ -40,7 +39,6 @@ export const Room: React.FC<IRoomProps> = () => (
     <RoomSettingsModal />
     <LocalVolumeDetector />
     <CleanupDisconnectedPeople />
-    <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />
     <OnboardingModal />

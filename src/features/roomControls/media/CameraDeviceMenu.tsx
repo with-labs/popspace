@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useAVSources } from '../../../hooks/useAVSources/useAVSources';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { Menu, MenuItem } from '@material-ui/core';
-import { removeDeviceId } from './removeDeviceId';
 
 export interface ICameraDeviceMenuProps {
   open: boolean;
@@ -33,7 +32,7 @@ export const CameraDeviceMenu: React.FC<ICameraDeviceMenuProps> = ({ open, onClo
             onClose();
           }}
         >
-          {removeDeviceId(cam.label)}
+          {cam.label}
         </MenuItem>
       ))}
     </Menu>

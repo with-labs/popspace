@@ -17,7 +17,7 @@ export const MediaControls = () => {
   const classes = useStyles();
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center">
+    <Box display="flex" flexDirection="row" alignItems="center" color="grey.900">
       <CameraToggle className={classes.toggleButton} />
       <MicToggle className={classes.toggleButton} />
       <ScreenShareToggle className={classes.toggleButton} />

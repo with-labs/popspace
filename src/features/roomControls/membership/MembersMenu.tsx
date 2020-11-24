@@ -19,7 +19,10 @@ export const MembersMenu: React.FC<IMembersMenuProps> = () => {
 
   const roomName = useRoomName();
   const { currentUserProfile } = useCurrentUserProfile();
-  const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
+  const isRoomOwner = React.useMemo(() => currentUserProfile?.rooms?.owned.some((room) => room.name === roomName), [
+    currentUserProfile,
+    roomName,
+  ]);
 
   const onOpen = React.useCallback(() => {
     setIsOpen(true);

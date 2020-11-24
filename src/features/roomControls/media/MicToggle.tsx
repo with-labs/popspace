@@ -4,12 +4,12 @@ import useLocalAudioToggle from '../../../hooks/localMediaToggles/useLocalAudioT
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Tooltip, IconButton } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
 import { MicDeviceMenu } from './MicDeviceMenu';
-import { DropdownIcon } from '../../../components/icons/DropdownIcon';
+import { SmallMenuButton } from './SmallMenuButton';
 
 export const MicToggle = (props: { className?: string }) => {
   const { t } = useTranslation();
@@ -52,9 +52,7 @@ export const MicToggle = (props: { className?: string }) => {
           </ToggleButton>
         </div>
       </Tooltip>
-      <IconButton size="small" onClick={(ev) => setMenuAnchor(ev.currentTarget)}>
-        <DropdownIcon />
-      </IconButton>
+      <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
       <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
     </>
   );

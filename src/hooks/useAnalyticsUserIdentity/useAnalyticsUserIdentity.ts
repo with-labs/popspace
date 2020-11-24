@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
+import { logger } from '../../utils/logger';
 
 export function useAnalyticsUserIdentity() {
   const { currentUserProfile } = useCurrentUserProfile();
@@ -23,7 +24,7 @@ export function useAnalyticsUserIdentity() {
           },
         });
       } else {
-        Sentry.captureMessage('Canny App ID not found', Sentry.Severity.Warning);
+        logger.warn('Canny App ID not found');
       }
     } else {
       // remove user association on logout

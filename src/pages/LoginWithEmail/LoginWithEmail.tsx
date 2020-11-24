@@ -3,11 +3,11 @@ import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
-import * as Sentry from '@sentry/react';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
+import { logger } from '../../utils/logger';
 
 interface ILoginWithEmailProps {}
 
@@ -47,7 +47,7 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
         })
         .catch((e: any) => {
           setIsLoading(false);
-          Sentry.captureMessage(`Error using room for ${uid}`, Sentry.Severity.Error);
+          logger.error(`Error using room for ${uid}`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,

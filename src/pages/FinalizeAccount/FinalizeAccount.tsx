@@ -4,15 +4,11 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-
 import Api from '../../utils/api';
-import * as Sentry from '@sentry/react';
-
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { USER_SESSION_TOKEN } from '../../constants/User';
-
 import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
 import { makeStyles, Button, TextField, Link, Typography, Box } from '@material-ui/core';
@@ -22,6 +18,7 @@ import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { logger } from '../../utils/logger';
 
 interface IFinalizeAccountProps {}
 
@@ -102,10 +99,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
             } else {
               // opt, email, claimId fails
               setIsLoading(false);
-              Sentry.captureMessage(
-                `Error claiming room for ${email}: linked expired on load`,
-                Sentry.Severity.Warning
-              );
+              logger.warn(`Error claiming room for ${email}: linked expired on load`);
               setError({
                 errorType: ErrorTypes.LINK_EXPIRED,
                 error: result,
@@ -116,7 +110,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         .catch((e: any) => {
           // unexpected error
           setIsLoading(false);
-          Sentry.captureMessage(`Error claiming room for ${email}`, Sentry.Severity.Error);
+          logger.error(`Error claiming room for ${email}`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,
@@ -137,12 +131,15 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
     };
 
     if (!otp || !claimId) {
-      Sentry.captureMessage(`Error finializing account for ${email}: link expired`, Sentry.Severity.Warning);
+      logger.warn(`Error finializing account for ${email}: link expired`);
       setError({
         errorType: ErrorTypes.LINK_EXPIRED,
       });
     } else {
-      const result: any = await Api.registerThroughClaim(data, otp, claimId);
+      // Note: currently for alpha users or users we send invites out to, this registers the room
+      // to their account. There will be a seperate api endpoint for when we do this same flow via user invites
+      // 9-28-2020
+      const result = await Api.registerThroughClaim(data, otp, claimId);
       if (result.success) {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
@@ -150,7 +147,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         // user is done finalizing account, go to room
         history.push(`/${result.roomName}`);
       } else {
-        Sentry.captureMessage(`Error finializing account for ${email} on submit`, Sentry.Severity.Error);
+        logger.error(`Error finializing account for ${email} on submit`, result.message, result.errorCode);
         setError({
           errorType: ErrorTypes.UNEXPECTED,
         });

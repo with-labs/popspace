@@ -47,7 +47,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
     focusRings: {
       primary: string;
       idle: string;
-      create: (color: string) => string;
+      create: (color: string, outside?: boolean) => string;
     };
   }
 
@@ -61,7 +61,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
       primary: string;
       /** use this focus ring when not focused */
       idle: string;
-      create: (color: string) => string;
+      create: (color: string, outside?: boolean) => string;
     };
   }
 }
@@ -110,8 +110,8 @@ function toMuiColorPalette(pal: WithColorPalette) {
   };
 }
 
-function createFocusRing(color: string) {
-  return `inset 0 0 0 2px ${color}`;
+function createFocusRing(color: string, outside: boolean = false) {
+  return `${!outside ? 'inset ' : ''}0 0 0 2px ${color}`;
 }
 
 /**
@@ -512,11 +512,23 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           boxShadow: focusRings.idle,
           transition: transitions.create(['box-shadow', 'background-color', 'color']),
           padding: spacing(1),
+
           '&:focus': {
             boxShadow: focusRings.primary,
           },
           '&:active': {
             backgroundColor: palette.grey[50],
+          },
+          '&:hover': {
+            backgroundColor: palette.grey[300],
+          },
+        },
+        sizeSmall: {
+          fontSize: typography.pxToRem(16),
+          padding: 7,
+
+          '&:focus': {
+            boxShadow: focusRings.create(palette.secondary.contrastText),
           },
         },
       },
@@ -732,33 +744,32 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiToggleButton: {
         root: {
-          borderRadius: shape.contentBorderRadius,
+          borderRadius: '100%',
           borderWidth: 0,
           color: palette.grey[900],
-          backgroundColor: palette.common.white,
-          padding: 6,
+          backgroundColor: palette.grey[50],
+          padding: 8,
           boxShadow: focusRings.idle,
 
           transition: transitions.create(['border-color', 'color', 'background-color', 'box-shadow']),
 
           '&:hover': {
-            backgroundColor: palette.grey[50],
+            backgroundColor: palette.grey[300],
           },
 
           '&:focus': {
-            boxShadow: focusRings.create(palette.secondary.main),
-            backgroundColor: palette.common.white,
+            boxShadow: focusRings.primary,
+            backgroundColor: palette.grey[50],
           },
 
           '&:active': {
             boxShadow: focusRings.create(palette.secondary.main),
-            backgroundColor: palette.secondary.light,
+            backgroundColor: palette.grey[300],
           },
 
           '&$selected': {
             color: palette.secondary.dark,
-            boxShadow: focusRings.create(palette.secondary.light),
-            backgroundColor: palette.common.white,
+            backgroundColor: palette.secondary.light,
 
             '& + &': {
               // remove the default conjoining of toggle buttons
@@ -768,12 +779,14 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
 
             '&:hover': {
               boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.common.white,
+              backgroundColor: palette.secondary.main,
+              color: palette.secondary.contrastText,
             },
 
             '&:focus': {
-              boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.common.white,
+              boxShadow: focusRings.primary,
+              backgroundColor: palette.secondary.light,
+              color: palette.secondary.contrastText,
             },
 
             '&:active': {

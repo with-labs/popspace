@@ -6,10 +6,7 @@ import { ScreenShareToggle } from './ScreenShareToggle';
 
 const useStyles = makeStyles((theme) => ({
   toggleButton: {
-    marginLeft: theme.spacing(1),
-    '&[selected] + &[selected]': {
-      marginLeft: theme.spacing(1),
-    },
+    marginLeft: 0,
   },
 }));
 
@@ -17,7 +14,7 @@ export const MediaControls = () => {
   const classes = useStyles();
 
   return (
-    <Box display="flex" flexDirection="row">
+    <Box display="flex" flexDirection="row" alignItems="center" color="grey.900" pl={1}>
       <CameraToggle className={classes.toggleButton} />
       <MicToggle className={classes.toggleButton} />
       <ScreenShareToggle className={classes.toggleButton} />

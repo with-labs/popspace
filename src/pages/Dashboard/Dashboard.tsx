@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Api, { BaseResponse } from '../../utils/api';
-import * as Sentry from '@sentry/react';
 import { Link, Box, makeStyles, Typography } from '@material-ui/core';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
@@ -16,6 +15,7 @@ import { sessionTokenExists } from '../../utils/SessionTokenExists';
 import { useTranslation } from 'react-i18next';
 import { Page } from '../../Layouts/Page/Page';
 import { ErrorModal } from '../../components/ErrorModal/ErrorModal';
+import { logger } from '../../utils/logger';
 
 interface IDashboardProps {}
 
@@ -94,7 +94,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           }
         })
         .catch((e: any) => {
-          Sentry.captureMessage(`Error calling api call getProfile`, Sentry.Severity.Error);
+          logger.error(`Error calling api call getProfile`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,

@@ -3,11 +3,11 @@ import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import { USER_SESSION_TOKEN } from '../../constants/User';
-import * as Sentry from '@sentry/react';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
+import { logger } from '../../utils/logger';
 
 interface IVerifyEmailProps {}
 
@@ -42,7 +42,7 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
         })
         .catch((e: any) => {
           setIsLoading(false);
-          Sentry.captureMessage(`Error verifying email for ${email}`, Sentry.Severity.Error);
+          logger.error(`Error verifying email for ${email}`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,

@@ -31,8 +31,8 @@ import Api from '../../../../utils/api';
 import { ErrorModal } from '../../../../components/ErrorModal/ErrorModal';
 import { useSnackbar } from 'notistack';
 import { BaseResponse } from '../../../../utils/api';
-import * as Sentry from '@sentry/react';
 import { ErrorCodes } from '../../../../constants/ErrorCodes';
+import { logger } from '../../../../utils/logger';
 
 export type UserListMemberInfo = {
   avatar_url: string | null;
@@ -115,7 +115,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         setError(result);
       }
     } catch (err) {
-      Sentry.captureMessage(`Error memberlist invite resend handler`, Sentry.Severity.Error);
+      logger.error(`Error memberlist invite resend handler`, err);
       setError({
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
@@ -136,7 +136,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         setError(result);
       }
     } catch (err) {
-      Sentry.captureMessage(`Error memberlist cancel invite handler`, Sentry.Severity.Error);
+      logger.error(`Error memberlist cancel invite handler`, err);
       setError({
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
@@ -162,7 +162,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         setError(result);
       }
     } catch (err) {
-      Sentry.captureMessage(`Error memberlist remove handler`, Sentry.Severity.Error);
+      logger.error(`Error memberlist remove handler`, err);
       setError({
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,

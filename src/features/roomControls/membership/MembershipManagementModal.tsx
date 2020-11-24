@@ -17,12 +17,12 @@ import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/SessionTokenExists';
 import { ErrorModal } from '../.././../components/ErrorModal/ErrorModal';
-import * as Sentry from '@sentry/react';
 import { ErrorCodes } from '../../../constants/ErrorCodes';
 import { BaseResponse } from '../../../utils/api';
 
 import { MemberList } from './MemberList/MemberList';
 import membersImg from './images/ManageMembers.png';
+import { logger } from '../../../utils/logger';
 
 export type MembershipFormData = {
   inviteeEmail: string;
@@ -106,7 +106,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
         }
       }
     } catch (e) {
-      Sentry.captureMessage(`Error membership modal send invite`, Sentry.Severity.Error);
+      logger.error(`Error membership modal send invite`, e);
       setError({
         success: false,
         errorCode: ErrorCodes.UNEXPECTED,
@@ -131,7 +131,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
         })
         .catch((e: any) => {
           setIsLoading(false);
-          Sentry.captureMessage(`Error membership modal get room members`, Sentry.Severity.Error);
+          logger.error(`Error membership modal get room members`, e);
           setError({
             success: false,
             errorCode: ErrorCodes.UNEXPECTED,

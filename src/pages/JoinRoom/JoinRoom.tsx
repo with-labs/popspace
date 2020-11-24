@@ -6,7 +6,6 @@ import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 
 import Api from '../../utils/api';
-import * as Sentry from '@sentry/react';
 
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
@@ -22,6 +21,7 @@ import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { logger } from '../../utils/logger';
 
 interface IJoinRoomProps {}
 
@@ -104,10 +104,7 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
             } else {
               // opt, email, claimId fails
               setIsLoading(false);
-              Sentry.captureMessage(
-                `Error claiming room for ${email}: linked expired on load`,
-                Sentry.Severity.Warning
-              );
+              logger.warn(`Error claiming room for ${email}: linked expired on load`);
               setError({
                 errorType: ErrorTypes.LINK_EXPIRED,
                 error: result,
@@ -118,7 +115,7 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
         .catch((e: any) => {
           // unexpected error
           setIsLoading(false);
-          Sentry.captureMessage(`Error join room for ${email}`, Sentry.Severity.Error);
+          logger.error(`Error join room for ${email}`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,
@@ -139,22 +136,19 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
     };
 
     if (!otp || !inviteId) {
-      Sentry.captureMessage(
-        `Error in JoinRoom finializing account for ${email}: link expired`,
-        Sentry.Severity.Warning
-      );
+      logger.warn(`Error in JoinRoom finializing account for ${email}: link expired`);
       setError({
         errorType: ErrorTypes.LINK_EXPIRED,
       });
     } else {
-      const result: any = await Api.registerThroughInvite(data, otp, inviteId);
+      const result = await Api.registerThroughInvite(data, otp, inviteId);
       if (result.success) {
         if (result.newSessionToken) {
           window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
         }
         history.push(`/${roomName}`);
       } else {
-        Sentry.captureMessage(`Error in JoinRoom finializing account for ${email} on submit`, Sentry.Severity.Error);
+        logger.error(`Error in JoinRoom finializing account for ${email} on submit`, result.message, result.errorCode);
         setError({
           errorType: ErrorTypes.UNEXPECTED,
         });

@@ -4,14 +4,23 @@ import useLocalAudioToggle from '../../../hooks/localMediaToggles/useLocalAudioT
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Tooltip } from '@material-ui/core';
+import { Tooltip, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
 import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
+import clsx from 'clsx';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    // default (inactive) state is red
+    backgroundColor: theme.palette.error.light,
+  },
+}));
 
 export const MicToggle = (props: { className?: string }) => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const [isMicOn, toggleMicOn, busy] = useLocalAudioToggle();
 
@@ -47,6 +56,7 @@ export const MicToggle = (props: { className?: string }) => {
             onContextMenu={handleContextMenu}
             disabled={busy}
             {...props}
+            className={clsx(classes.root, props.className)}
           >
             {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
           </ToggleButton>

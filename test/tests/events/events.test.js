@@ -7,6 +7,7 @@ tlib.TestTemplate.describeWithLib('mercury_client', () => {
   test("authentication", async () => {
     const results = await scenarios["authenticate"]()
     expect(results.beforeAuth.code).toEqual("UNAUTHORIZED")
+    expect(results.auth.success).toBeTruthy()
     expect(results.afterAuth.code).not.toEqual("UNAUTHORIZED")
   })
 

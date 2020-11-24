@@ -20,6 +20,7 @@
   "homepage": "https://github.com/with-labs/mercury#readme",
   "dependencies": {
     "@withso/with-shared": "^1.1.2",
+    "aws-sdk": "^2.797.0",
     "chance": "^1.1.7",
     "commander": "^6.2.0",
     "dotenv": "^8.2.0",

@@ -18,11 +18,11 @@ class AuthProcessor extends Processor {
     const success = await event._sender.authenticate(event.data.payload.token, event.data.payload.roomId)
     if(success) {
       // TODO: I want to make these events into objects to abstract away the data structure
-      const roomData = await this.getRoomData(event.data.payload.roomId, participants)
+      const authData = await this.getAuthData(event, participants)
       return event._sender.sendResponse(event, {
         kind: "auth",
         success: true,
-        roomData: roomData
+        authData: authData
       })
     } else {
       return event._sender.sendError(
@@ -34,18 +34,14 @@ class AuthProcessor extends Processor {
     }
   }
 
-  async getRoomData(roomId, participants) {
-    const result = {}
-
-    result.widgets = await this.getWidgets(roomId)
-    result.participants = await participants.serialize()
-    result.room = {
-      wallpaper: "",
-      id: 0,
-      displayName: "xyz"
-    }
-
-    return result
+  async getAuthData(event, participants) {
+    const user = event._sender.user
+    const room = {}
+    room.widgets = await this.getWidgets(event.data.payload.roomId)
+    room.participants = await participants.serialize()
+    room.id = 0
+    room.state = {}
+    return { room, user }
   }
 
   async getWidgets(roomId) {

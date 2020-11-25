@@ -4,10 +4,9 @@ import { clamp, clampVector } from '../../utils/math';
 import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import { makeStyles, Theme, Paper, Box, Fade, Typography } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
-import { useTranslation } from 'react-i18next';
 import { FileDropLayer } from './files/FileDropLayer';
 
 export const RoomViewportContext = React.createContext<null | {
@@ -88,16 +87,8 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
   }),
 });
 
-const keyboardHintStyles: React.CSSProperties = {
-  position: 'fixed',
-  bottom: 8,
-  left: '50%',
-  transform: 'translateX(-50%)',
-};
-
 export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
-  const { t } = useTranslation();
 
   const { children, bounds, minZoom = 1 / 4, maxZoom = 2, backgroundUrl, uiControls, ...rest } = props;
 
@@ -362,7 +353,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height]
   );
 
-  const { props: keyControlProps, isActive: isKeyboardActive } = useKeyboardControls({
+  const { props: keyControlProps } = useKeyboardControls({
     pan: doPan,
     zoom: doZoom,
   });
@@ -408,13 +399,6 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         </FileDropLayer>
       </animated.div>
       {uiControls}
-      <Fade in={isKeyboardActive} style={keyboardHintStyles}>
-        <Box component={Paper} py={1} px={2}>
-          <Typography id="keyboard-explainer" variant="body2">
-            {t('features.room.viewportControlsToolTip')}
-          </Typography>
-        </Box>
-      </Fade>
     </RoomViewportContext.Provider>
   );
 };

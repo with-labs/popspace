@@ -304,7 +304,6 @@ export default {
     },
     features: {
       room: {
-        viewportControlsToolTip: 'Arrow keys to pan, +/- to zoom',
         customWallpaperLabel: 'Link to an image',
         wallpaperSet: 'New wallpaper set!',
         wallpaperSupportedFileTypes: 'JPG, PNG, WEBP, and GIF',

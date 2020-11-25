@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMediaQuery, Theme, Drawer, Menu } from '@material-ui/core';
+import { useMediaQuery, Theme, Menu, SwipeableDrawer } from '@material-ui/core';
 
 export interface IResponsiveMenuProps {
   anchorEl?: HTMLElement | null;
@@ -8,6 +8,8 @@ export interface IResponsiveMenuProps {
   className?: string;
 }
 
+const noop = () => {};
+
 /**
  * Renders a Menu on desktop and a Drawer on mobile
  */
@@ -15,7 +17,17 @@ export const ResponsiveMenu: React.FC<IResponsiveMenuProps> = ({ anchorEl, open,
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
 
   if (isSmall) {
-    return <Drawer anchor="bottom" open={open} onClose={onClose} PaperProps={{ className }} {...rest} />;
+    return (
+      <SwipeableDrawer
+        disableSwipeToOpen
+        onOpen={noop}
+        anchor="bottom"
+        open={open}
+        onClose={onClose}
+        PaperProps={{ className }}
+        {...rest}
+      />
+    );
   }
 
   return <Menu anchorEl={anchorEl} open={open} onClose={onClose} className={className} {...rest} />;

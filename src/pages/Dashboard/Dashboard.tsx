@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   wrapper: {
     maxWidth: 768,
     width: '80%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
   },
   text: {
     marginBottom: theme.spacing(4),

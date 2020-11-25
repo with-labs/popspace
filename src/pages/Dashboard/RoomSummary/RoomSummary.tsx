@@ -12,6 +12,9 @@ interface IRoomSummaryProps {
 const useStyles = makeStyles((theme) => ({
   roomName: {
     height: '100%',
+    maxWidth: '100%',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
   },
 }));
 

@@ -6,6 +6,7 @@ import { useQuickAction } from '../quickActions/useQuickAction';
 import { useAutocomplete } from '@material-ui/lab';
 import { QuickAction } from '../quickActions/QuickAction';
 import { QuickActionEmpty } from '../quickActions/QuickActionEmpty';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -39,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
  */
 export const Omnidrawer = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   // autocomplete open state lags behind drawer so there's time to mount
   // the input
@@ -78,7 +81,12 @@ export const Omnidrawer = () => {
       </Fab>
       <ResponsiveMenu open={!!anchorEl} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} className={classes.menu}>
         <div {...getRootProps()}>
-          <TextField InputLabelProps={getInputLabelProps()} inputProps={getInputProps()} margin="normal" />
+          <TextField
+            InputLabelProps={getInputLabelProps()}
+            inputProps={getInputProps()}
+            margin="normal"
+            placeholder={t('features.omnibar.placeholder')}
+          />
           {!autocompleteProps.inputValue && (
             <Box p={2} pt={0}>
               <QuickActionEmpty />

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Menu, makeStyles, Divider, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
+import { makeStyles, Divider, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ChangelogMenuItem } from './ChangelogMenuItem';
 import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
@@ -11,6 +11,7 @@ import { USER_SUPPORT_EMAIL } from '../../../constants/User';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
 import { HamburgerIcon } from '../../../components/icons/HamburgerIcon';
+import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -35,7 +36,7 @@ export const RoomMenu = () => {
       >
         <HamburgerIcon />
       </IconButton>
-      <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={onClose}>
+      <ResponsiveMenu anchorEl={anchorEl} open={!!anchorEl} onClose={onClose}>
         <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
@@ -68,7 +69,7 @@ export const RoomMenu = () => {
             <ListItemText primary={t('header.privacyPolicy')} />
           </MenuItem>
         </Link>
-      </Menu>
+      </ResponsiveMenu>
     </Box>
   );
 };

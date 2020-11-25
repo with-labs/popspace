@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Box, makeStyles, Paper } from '@material-ui/core';
-import { Omnibar } from './omnibar/Omnibar';
+import { RoomAddContent } from './addContent/RoomAddContent';
 import { MediaControls } from './media/MediaControls';
 import { RoomMenu } from './roomMenu/RoomMenu';
 import { MembersMenu } from './membership/MembersMenu';
@@ -38,7 +38,7 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
     <>
       <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
         <RoomMenu />
-        <Omnibar />
+        <RoomAddContent />
         <MediaControls />
       </Box>
       {/* TODO: when we have a prettier list of members, we will show

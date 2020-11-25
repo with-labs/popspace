@@ -9,6 +9,7 @@ import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControl
 import useMergedRefs from '@react-hook/merged-ref';
 import { useTranslation } from 'react-i18next';
 import { FileDropLayer } from './files/FileDropLayer';
+import { mandarin as theme } from '../../theme/theme';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -47,7 +48,10 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const INITIAL_ZOOM = 1;
+const DESKTOP_INITIAL_ZOOM = 1;
+const MOBILE_INITIAL_ZOOM = 0.75;
+const isMobile = typeof window !== 'undefined' && window.matchMedia(theme.breakpoints.down('sm'));
+const INITIAL_ZOOM = isMobile ? MOBILE_INITIAL_ZOOM : DESKTOP_INITIAL_ZOOM;
 const PINCH_GESTURE_DAMPING = 200;
 const WHEEL_GESTURE_DAMPING = 400;
 // how much "empty space" the user can see at the edge of the world,

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Menu, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
+import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 export interface IMembersMenuProps {}
 
@@ -41,9 +42,9 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
           <IconButton ref={anchorRef} onClick={onOpen}>
             <DropdownIcon />
           </IconButton>
-          <Menu anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
+          <ResponsiveMenu anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
             <MembershipManagement autoFocusInvite={autoFocusInvite} />
-          </Menu>
+          </ResponsiveMenu>
         </>
       )}
     </div>

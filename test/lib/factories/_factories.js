@@ -12,6 +12,10 @@ class MassiveJsAdapter {
     return props
   }
   async save(props, tableName) {
+    const existing = await shared.db.pg.massive[tableName].findOne(props)
+    if(existing) {
+      return existing
+    }
     // https://massivejs.org/docs/options-objects#onconflict
     return shared.db.pg.massive[tableName].insert(props, {
       onConflict: {
@@ -36,5 +40,6 @@ factory.setAdapter(new MassiveJsAdapter());
 require("./factory_user")
 require("./factory_session")
 require("./factory_room")
+require("./factory_room_name")
 
 module.exports = factory;

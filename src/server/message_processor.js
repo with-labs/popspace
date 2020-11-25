@@ -32,6 +32,7 @@ class MessageProcessor {
       try {
         return await processors[action].process(event, this.participants)
       } catch(e) {
+        log.app.error(`Error processing message: ${e.message}`)
         return sender.sendError(event, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.")
       }
     })

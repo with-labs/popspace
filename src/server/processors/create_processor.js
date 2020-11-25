@@ -16,20 +16,18 @@ class CreateProcessor extends Processor {
   }
 
   async createWidget(event, participants) {
-    const roomId = event.roomId
-    const ownerId = event._sender.user.id
+    const room = event._sender.room
+    const widgetOwner = event._sender.user
 
-    const room = await shared.db.pg.massive.rooms.findOne({id: roomId})
     if(!room) {
       return event._sender.sendError(event, lib.ErrorCodes.ROOM_NOT_FOUND, `Invalid room_id ${event.roomId}`)
     }
-    const owner = await shared.db.pg.massive.users.findOne({id: roomId})
-    if(!owner) {
-      return event._sender.sendError(event, lib.ErrorCodes.USER_NOT_FOUND, `User not found ${event.roomId}`)
+    if(!widgetOwner) {
+      return event._sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, `Must authenticate to create widgets.`)
     }
     const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
-      const widget = await tx.widgets.insert({owner_id: ownerId})
-      const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: roomId})
+      const widget = await tx.widgets.insert({owner_id: widgetOwner.id})
+      const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: room.id})
       return widget // so clients can reference the widget id
     })
 

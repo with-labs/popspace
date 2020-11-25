@@ -572,9 +572,9 @@
     "@types/yargs-parser" "*"
 
 "@withso/with-shared@^1.1.2":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.1.8.tgz#97503b44e9d979ff8c680e359c1051ffe3403968"
-  integrity sha512-6xAUxcq0dZQdsTHdUA8VnJTrADqZvJ9xlDtgCX6sCMzMH2ueFfmuWdlbBPJ3ZGCUJaNKBSOgUuircfCskEbnCg==
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.2.3.tgz#386e5cab744edd864df37d4d40874cc74bc31e3e"
+  integrity sha512-CBcV5gISaJcEnCVp9zFd/cHG7TGaiNR3D/LQBZSdYkKbn1M/HbI11tIVPR9JQt1ZJCtCqK9cZRytFFsWBpBQEg==
   dependencies:
     async-lock "^1.2.4"
     massive "^6.6.1"

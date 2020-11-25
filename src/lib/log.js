@@ -8,7 +8,7 @@ const log4jsConfig = {
   },
   categories: {
     default: { appenders: ['console'], level: 'info' },
-    app: { appenders: ['app', 'console'], level:  process.env.NODE_ENV == 'test' ? 'off' : 'info' },
+    app: { appenders: ['app', 'console'], level:  process.env.NODE_ENV == 'test' ? 'error' : 'info' },
     dbqueries: { appenders: ['dbqueries'], level: 'info' },
     dev: {appenders: ['console', 'dev'], level: process.env.NODE_ENV == 'development' ? 'trace' : 'off'}
   }

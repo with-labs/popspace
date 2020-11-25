@@ -3,10 +3,10 @@ global.tlib = require("../../lib/_testlib")
 module.exports = {
   "authenticate": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
-    const { user, session, token, room } = await testEnvironment.createLoggedInUser()
+    const { user, session, token, room, roomName } = await testEnvironment.createLoggedInUser()
 
     const beforeAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
-    const auth = await clients[0].authenticate(token, room.id)
+    const auth = await clients[0].authenticate(token, roomName.name)
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
 
     return {
@@ -16,16 +16,28 @@ module.exports = {
     }
   }),
 
-  "authenticate_fail": tlib.TestTemplate.testServerClients(1, async (clients) => {
+  "authenticate_fail_wrong_token": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
-    const { user, session, token, room } = await testEnvironment.createLoggedInUser()
-    const auth = await clients[0].authenticate("{}", "2")
+    const { user, session, token, room, roomName } = await testEnvironment.createLoggedInUser()
+    const auth = await clients[0].authenticate("{}", roomName)
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
     return {
       auth,
       afterAuth
     }
   }),
+
+  "authenticate_fail_no_such_room": tlib.TestTemplate.testServerClients(1, async (clients) => {
+    const testEnvironment = new tlib.TestEnvironment()
+    const { user, session, token, room, roomName } = await testEnvironment.createLoggedInUser()
+    const auth = await clients[0].authenticate("{}", roomName)
+    const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
+    return {
+      auth,
+      afterAuth
+    }
+  }),
+
 
   "create_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client

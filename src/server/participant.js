@@ -1,3 +1,4 @@
+
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
 
@@ -7,10 +8,13 @@ class Participant {
     this.id = id++
     this.authenticated = false
     this.user = {}
-    this.roomId = null
     this.room = {}
 
     this.socket.on('message', (message) => {
+      /* TODO:
+        - ratelimit
+        - sanitize input: protect from js-injection attacks on peers
+      */
       log.dev.debug(`Got message from ${this.id} ${message}`)
       try {
         const event = this.prepareEvent(message)
@@ -36,23 +40,26 @@ class Participant {
     }
   }
 
-  async authenticate(token, roomId) {
+  async authenticate(token, roomName) {
     /*
       It seems that the JS WebSockets API doesn't well support setting custom headers
       when the connection is being established. A reasonable alternative is to send
       an authentication request after the connection is established.
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
+    console.log("Participant auth", token, roomName)
     this.user = await shared.lib.auth.userFromToken(token)
-    this.room = await shared.db.pg.massive.rooms.findOne({id: roomId})
+    console.log("got user")
+    this.room = await shared.db.rooms.roomByName(roomName)
+    console.log("gor room")
     if(!this.user || !this.room) {
+      console.log("no room or user")
       this.authenticated = false
-      this.roomId = null
       this.room = {}
       this.user = {}
       return false
     }
-    this.roomId = roomId
+    console.log('authd')
     this.authenticated = true
     return true
   }
@@ -108,7 +115,7 @@ class Participant {
         id: this.user.id
       },
       sessionId: this.id,
-      roomId: this.roomId
+      roomId: this.room.id
     }
   }
 }

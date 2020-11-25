@@ -47,8 +47,9 @@ class Client {
     this.send(JSON.stringify(event))
   }
 
-  async authenticate(token, roomId) {
-    return this.sendEventWithPromise("auth", { token, roomId })
+  async authenticate(token, roomName) {
+    console.log("Authenticating", token, roomName)
+    return this.sendEventWithPromise("auth", { token, roomName })
   }
 
   async sendEventWithPromise(kind, payload) {

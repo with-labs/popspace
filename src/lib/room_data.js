@@ -118,21 +118,17 @@ class RoomData {
   // private
   async addWidget(widgetId, roomId, data, state) {
     const dataItem = {
-      widget_id: {S: widget_id},
-      data: {  S: data },
+      widget_id: { S: widgetId },
+      data: { S: data },
     }
     const stateItem = {
-      widget_id: widgetId,
-      room_id: roomId,
-      state: state
-    }
-    const putParams = {
-      Item: item,
-      TableName: "sendable_emails"
+      widget_id: { S: widgetId },
+      room_id: {S: roomId},
+      state: {S: state}
     }
     return Promise.all([
       new Promise((resolve, reject) => {
-        this.dynamo.putItem(putParams, (err, data) => {
+        this.dynamo.putItem({item: dataItem, TableName: 'widget_data'}, (err, data) => {
           if(err) {
             return reject(data)
           } else {
@@ -141,7 +137,7 @@ class RoomData {
         })
       }),
       new Promise((resolve, reject) => {
-        this.dynamo.putItem(putParams, (err, data) => {
+        this.dynamo.putItem({item: stateItem, TableName: 'room_widget_states'}, (err, data) => {
           if(err) {
             return reject(data)
           } else {
@@ -150,6 +146,14 @@ class RoomData {
         })
       })
     ])
+  }
+
+  async updateWidgetData(widgetId, data) {
+
+  }
+
+  async updateWidgetState(widgetId, state) {
+
   }
 
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Typography, makeStyles } from '@material-ui/core';
-import { isMobileOnly, isChrome, isIOS } from 'react-device-detect';
+import { isChrome, isIOS } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
 
 interface IRoomSummaryProps {
@@ -22,10 +22,7 @@ export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
   const history = useHistory();
 
   const onButtonClickHandler = () => {
-    if (isMobileOnly) {
-      // right now mobile phones dont get to to go to the room
-      onErrorHandler(t('error.messages.mobileNotOptimized'));
-    } else if (isIOS && isChrome) {
+    if (isIOS && isChrome) {
       // webrtc doesnt work on chrome + ios, so tell them to use safari
       onErrorHandler(t('error.messages.chromeOnIosRestrictions'));
     } else {

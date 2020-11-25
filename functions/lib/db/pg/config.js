@@ -1,10 +1,10 @@
 const LOCAL_CREDENTIALS = {
   "driver": "pg",
-  "user": "withso",
-  "password": "withso",
-  "host": "localhost",
-  "database": "withso",
-  "port": process.env.PG_PORT || "5432"
+  "user":  process.env.DEVELOPMENT_PG_USER,
+  "password": process.env.DEVELOPMENT_PG_PASSOWRD,
+  "host": process.env.DEVELOPMENT_PG_HOST,
+  "database": process.env.DEVELOPMENT_PG_DATABASE,
+  "port": process.env.DEVELOPMENT_PG_PORT
 }
 
 const PROD_CREDENTIALS = {

@@ -847,6 +847,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         paperAnchorBottom: {
           borderTopRightRadius: shape.borderRadius,
           borderTopLeftRadius: shape.borderRadius,
+          maxHeight: '90vh',
         },
       },
       MuiSvgIcon: {

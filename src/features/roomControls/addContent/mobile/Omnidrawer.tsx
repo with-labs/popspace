@@ -19,6 +19,18 @@ const useStyles = makeStyles((theme) => ({
       maxHeight: '90vh',
     },
   },
+  option: {
+    '&[aria-selected="true"]': {
+      backgroundColor: theme.palette.action.selected,
+    },
+    '&[data-focus="true"]': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&[aria-disabled="true"]': {
+      opacity: theme.palette.action.disabledOpacity,
+      pointerEvents: 'none',
+    },
+  },
 }));
 
 /**
@@ -56,6 +68,7 @@ export const Omnidrawer = () => {
       autocompleteProps.onChange(event, value);
       setAnchorEl(null);
     },
+    autoHighlight: true,
   });
 
   return (
@@ -65,18 +78,26 @@ export const Omnidrawer = () => {
       </Fab>
       <ResponsiveMenu open={!!anchorEl} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} className={classes.menu}>
         <div {...getRootProps()}>
-          <TextField InputLabelProps={getInputLabelProps()} inputProps={getInputProps()} />
+          <TextField InputLabelProps={getInputLabelProps()} inputProps={getInputProps()} margin="normal" />
           {!autocompleteProps.inputValue && (
-            <Box p={2}>
+            <Box p={2} pt={0}>
               <QuickActionEmpty />
             </Box>
           )}
           <List {...getListboxProps()}>
-            {groupedOptions.map((option, index) => (
-              <MenuItem {...getOptionProps({ option, index })} key={option.displayName}>
-                <QuickAction value={option} />
-              </MenuItem>
-            ))}
+            {groupedOptions.map((option, index) => {
+              const optionProps = getOptionProps({ option, index }) as any;
+              return (
+                <MenuItem
+                  {...optionProps}
+                  selected={optionProps['aria-selected']}
+                  className={classes.option}
+                  key={option.displayName}
+                >
+                  <QuickAction value={option} />
+                </MenuItem>
+              );
+            })}
           </List>
         </div>
       </ResponsiveMenu>

@@ -60,7 +60,7 @@ export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ onChange, value }
             className={clsx(classes.item, wallpaper.url === value && classes.itemSelected)}
             aria-label={wallpaper.name}
           >
-            <img className={classes.image} src={wallpaper.url} alt={wallpaper.name} />
+            <img className={classes.image} src={wallpaper.thumbnailUrl} alt={wallpaper.name} />
           </ButtonBase>
           <Typography variant="body2" className={classes.title}>
             {sentenceCase(wallpaper.name)}

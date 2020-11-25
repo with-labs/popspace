@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useAVSources } from '../../../hooks/useAVSources/useAVSources';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { Menu, MenuItem } from '@material-ui/core';
-import { removeDeviceId } from './removeDeviceId';
 
 export interface IMicDeviceMenuProps {
   open: boolean;
@@ -33,7 +32,7 @@ export const MicDeviceMenu: React.FC<IMicDeviceMenuProps> = ({ open, onClose, an
             onClose();
           }}
         >
-          {removeDeviceId(mic.label)}
+          {mic.label}
         </MenuItem>
       ))}
     </Menu>

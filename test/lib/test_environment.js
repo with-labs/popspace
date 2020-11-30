@@ -7,9 +7,8 @@ module.exports = class {
     const user = await factory.create("user")
     const session = await factory.create("session")
     const token = await shared.lib.auth.tokenFromSession(session)
-    const room = await factory.create('room', { owner_id: user.id })
-    const roomName = await factory.create('room_name', {room_id: room.id})
-    const result = { user, session, token, room, roomName, client }
+    const { room, nameEntry } = await shared.db.rooms.generateRoom(user.id)
+    const result = { user, session, token, room, client, roomNameEntry: nameEntry }
     this.loggedInUsers.push(result)
     return result
   }

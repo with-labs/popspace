@@ -572,11 +572,12 @@
     "@types/yargs-parser" "*"
 
 "@withso/with-shared@^1.1.2":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.2.3.tgz#386e5cab744edd864df37d4d40874cc74bc31e3e"
-  integrity sha512-CBcV5gISaJcEnCVp9zFd/cHG7TGaiNR3D/LQBZSdYkKbn1M/HbI11tIVPR9JQt1ZJCtCqK9cZRytFFsWBpBQEg==
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.2.5.tgz#e6cc4c326eda045e222556a468440273b5a70f89"
+  integrity sha512-yoF9j9wYruHLAwaAPcvymx4ddcH07qYIcmSncpLmJAM8FQLzPxTPsGJ9e1vxc5tFIp6qTMiE9H0JIJY2bjfgBw==
   dependencies:
     async-lock "^1.2.4"
+    crypto-random-string "^3.3.0"
     massive "^6.6.1"
     moment "^2.29.1"
     pg "^8.5.1"
@@ -1188,6 +1189,13 @@ cross-spawn@^7.0.0:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypto-random-string@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-3.3.0.tgz#c7a4682b2a87146a1f8b7378ea2606f95775e7e6"
+  integrity sha512-teWAwfMb1d6brahYyKqcBEb5Yp8PJPvPOdOonXDnvaKOTmKDFNVE8E3Y2XQuzjNV/3XMwHbrX9fHWvrhRKt4Gg==
+  dependencies:
+    type-fest "^0.8.1"
 
 cssom@^0.4.4:
   version "0.4.4"
@@ -3216,9 +3224,9 @@ pg-connection-string@^2.4.0:
   integrity sha512-3iBXuv7XKvxeMrIgym7njT+HlZkwZqqGX4Bu9cci8xHZNT+Um1gWKqCsAzcC0d95rcKMU5WBg6YRUcHyV0HZKQ==
 
 pg-cursor@^2.4.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/pg-cursor/-/pg-cursor-2.5.1.tgz#e9c7245946d7eee2a71c6fca358c633154f2eded"
-  integrity sha512-84ku3o+Nkg3vh3fLqW5wLPSGUXNZJl42Yd733EqXUpMe9HVzOTWmEury0l18kYadmB9f9ZnEMRcd8Dv/HhoYaw==
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/pg-cursor/-/pg-cursor-2.5.2.tgz#9217fc989fa64221a02d6ed4b37323267d90abde"
+  integrity sha512-yS0lxXA5WoIVK7BUgJr1uOJDJe5JxVezItTLvqnTXj6bF3di4UtQOrPx8RW3GpFmom2NTQfpEc2N6vvdpopQSw==
 
 pg-int8@1.0.1:
   version "1.0.1"

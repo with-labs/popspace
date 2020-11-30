@@ -2,7 +2,6 @@ const Processor = require("./processor")
 
 class CreateProcessor extends Processor {
   async process(event, participants) {
-    console.log("Processing create")
     switch(event.data.kind) {
       case "room/addWidget":
         return this.createWidget(event, participants)

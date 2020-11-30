@@ -15,13 +15,10 @@ class AuthProcessor extends Processor {
   }
 
   async authenticate(event, participants) {
-    console.log("Auth processor")
     const success = await event._sender.authenticate(event.data.payload.token, event.data.payload.roomName)
-    console.log("Auth success", success)
     if(success) {
       // TODO: I want to make these events into objects to abstract away the data structure
       const authData = await this.getAuthData(event, participants)
-      console.log("Got auth data", authData)
       return event._sender.sendResponse(event, {
         kind: "auth",
         success: true,

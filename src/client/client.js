@@ -48,7 +48,6 @@ class Client {
   }
 
   async authenticate(token, roomName) {
-    console.log("Authenticating", token, roomName)
     return this.sendEventWithPromise("auth", { token, roomName })
   }
 

@@ -11,13 +11,13 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     expect(results.afterAuth.code).not.toEqual("UNAUTHORIZED")
   })
 
-  test("authentication fail: wrong session token", async () => {
+  test("authentication should fail with wrong session token", async () => {
     const results = await scenarios["authenticate_fail_wrong_token"]()
     expect(results.auth.code).toEqual("AUTH_FAILED")
     expect(results.afterAuth.code).toEqual("UNAUTHORIZED")
   })
 
-  test("authentication fail: no such room", async () => {
+  test("authentication should fail when no such room", async () => {
     const results = await scenarios["authenticate_fail_no_such_room"]()
     expect(results.auth.code).toEqual("AUTH_FAILED")
     expect(results.afterAuth.code).toEqual("UNAUTHORIZED")

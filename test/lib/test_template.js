@@ -13,9 +13,13 @@ module.exports = {
   },
   testServerClients: (nClients, lambda) => {
     return async () => {
+      let result = null
       const { clients, mercury } = await tlib.util.serverWithClients(nClients)
-      const result = await lambda(clients, mercury)
-      await mercury.stop()
+      try {
+        result = await lambda(clients, mercury)
+      } finally {
+        await mercury.stop()
+      }
       return result
     }
   },
@@ -23,8 +27,8 @@ module.exports = {
     return tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
       const testEnvironment = new tlib.TestEnvironment()
       const client = clients[0]
-      const {user, session, token, roomName} = await testEnvironment.createLoggedInUser(client)
-      const auth = await client.authenticate(token, roomName.name)
+      const {user, session, token, roomNameEntry} = await testEnvironment.createLoggedInUser(client)
+      const auth = await client.authenticate(token, roomNameEntry.name)
       return await lambda(testEnvironment, mercury)
     })
   }

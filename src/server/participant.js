@@ -47,19 +47,14 @@ class Participant {
       an authentication request after the connection is established.
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
-    console.log("Participant auth", token, roomName)
     this.user = await shared.lib.auth.userFromToken(token)
-    console.log("got user")
     this.room = await shared.db.rooms.roomByName(roomName)
-    console.log("gor room")
     if(!this.user || !this.room) {
-      console.log("no room or user")
       this.authenticated = false
       this.room = {}
       this.user = {}
       return false
     }
-    console.log('authd')
     this.authenticated = true
     return true
   }

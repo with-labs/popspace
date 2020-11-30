@@ -1,13 +1,6 @@
 const DbAccess = require("./pg/db_access")
 
 /**
-  According to the CAN SPAM guidelines
-  https://www.ftc.gov/tips-advice/business-center/guidance/can-spam-act-compliance-guide-business
-  unsubscribe links have to be active for at least 30 days.
-*/
-const UNSUBSCRIBE_LINK_EXPIRATION_DAYS = 31;
-
-/**
 Manages life cycle of magic links.
 
 Magic links permit executing various restricted access for
@@ -23,11 +16,28 @@ class Magic extends DbAccess {
   }
 
   async createUnsubscribe(userId) {
+    const existingLink = await db.pg.massive.magic_links.findOne({
+      userId: userId,
+      expires_at: null,
+      resolved_at: null,
+      action: Magic.actions.UNSUBSCRIBE
+    })
+    if(existingLink) {
+      return existingLink
+    }
     const request = {
       user_id: userId,
       otp: lib.db.otp.generate(),
       issued_at: this.now(),
-      expires_at: lib.db.otp.expirationInNDays(UNSUBSCRIBE_LINK_EXPIRATION_DAYS),
+      /**
+        According to the CAN SPAM guidelines
+        https://www.ftc.gov/tips-advice/business-center/guidance/can-spam-act-compliance-guide-business
+        unsubscribe links have to be active for at least 30 days.
+
+        But according to us and the internet, there is no reason to make these links expire
+        https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
+      */
+      expires_at: null,
       action: Magic.actions.UNSUBSCRIBE
     }
     return await db.pg.massive.magic_links.insert(request)
@@ -65,10 +75,10 @@ class Magic extends DbAccess {
     if(!user) {
         return { error : lib.db.ErrorCodes.user.NO_SUCH_USER }
     }
-    const result = await db.pg.massive.withTransaction(async (tx) => {
-      await tx.users.update({id: userId}, {newsletter_opt_in: false})
-      return await tx.magic_links.update({id: request.id}, {resolved_at: this.now})
-    })
+    // Usually we'd want to mark the magic link as expired in a transaction,
+    // but there is no reason to invalidate unsubscribe links.
+    // https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
+    await lib.db.pg.massive.users.update({id: userId}, {newsletter_opt_in: false})
     return { }
   }
 }

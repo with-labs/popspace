@@ -28,6 +28,15 @@ export type ApiRoom = {
   priority_level: number;
 };
 
+export type ApiOpenGraphResult = {
+  url: string;
+  title?: string;
+  image?: string;
+  description?: string;
+  type: string;
+  site_name?: string;
+};
+
 export type ApiRoomMember = {
   display_name: string;
   email: string;
@@ -131,6 +140,12 @@ class Api {
     return await this.post<BaseResponse & { uploadUrl: string; downloadUrl: string }>('/get_room_file_upload_url', {
       fileName,
       contentType,
+    });
+  }
+
+  async getOpenGraph(url: string) {
+    return await this.post<BaseResponse & { result: ApiOpenGraphResult }>('/opengraph', {
+      url,
     });
   }
 

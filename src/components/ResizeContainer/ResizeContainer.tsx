@@ -113,9 +113,11 @@ function clampAndEnforceMode({
     // for 'scale' mode, we need to ensure the aspect ratio of the clamped values
     // is consistent with the original dimensions
     if (width > height) {
-      h = w / originalAspectRatio;
-    } else {
+      h = clamp(w / originalAspectRatio, minHeight, maxHeight);
       w = h * originalAspectRatio;
+    } else {
+      w = clamp(h * originalAspectRatio, minWidth, maxWidth);
+      h = w / originalAspectRatio;
     }
   }
 

@@ -1,5 +1,4 @@
 import React, { createContext, ReactNode, useCallback } from 'react';
-import * as Sentry from '@sentry/react';
 import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
@@ -45,8 +44,7 @@ const TrackPublisher = () => {
 export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
   const onErrorCallback = useCallback(
     (error: Error) => {
-      logger.log(`ERROR: ${error.message}`, error);
-      Sentry.captureException(error);
+      logger.error(`ERROR: ${error.message}`, error);
       onError(error);
     },
     [onError]

@@ -10,13 +10,13 @@ import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
-import { MembershipManagementModal } from '../roomControls/membership/MembershipManagementModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { ParticipantState } from '../../constants/twilio';
+import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 
 interface IRoomProps {}
 
@@ -39,7 +39,6 @@ export const Room: React.FC<IRoomProps> = () => (
     <RoomSettingsModal />
     <LocalVolumeDetector />
     <CleanupDisconnectedPeople />
-    <MembershipManagementModal />
     <UserSettingsModal />
     <ChangelogModal />
     <OnboardingModal />
@@ -56,6 +55,13 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
     allParticipants,
   ]);
+
+  // Start the mic track on load - but only on first load
+  const { startAudio } = useLocalTracks();
+  const initialStartAudio = React.useRef(startAudio);
+  React.useEffect(() => {
+    initialStartAudio.current();
+  }, []);
 
   return (
     <RoomViewport

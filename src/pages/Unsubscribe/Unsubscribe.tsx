@@ -9,11 +9,11 @@ import Api from '../../utils/api';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
-import * as Sentry from '@sentry/react';
 import { Page } from '../../Layouts/Page/Page';
 
 import { RouteNames } from '../../constants/RouteNames';
 import SadBlobby from './images/sadblobby.png';
+import { logger } from '../../utils/logger';
 
 interface IUnsubscribeProps {}
 
@@ -78,7 +78,7 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
         })
         .catch((e: any) => {
           setIsLoading(false);
-          Sentry.captureMessage(`Error unsubcribing email for ${mlid}`, Sentry.Severity.Error);
+          logger.error(`Error unsubcribing email for ${mlid}`, e);
           setError({
             errorType: ErrorTypes.UNEXPECTED,
             error: e,

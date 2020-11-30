@@ -3,7 +3,6 @@ import { RootState } from '../../state/store';
 
 const initialState = {
   isRoomSettingsModalOpen: false,
-  isMembershipModalOpen: false,
   isUserSettingsModalOpen: false,
   isChangelogModalOpen: false,
   isOnboardingModalOpen: false,
@@ -15,9 +14,6 @@ export const roomControlsSlice = createSlice({
   reducers: {
     setIsRoomSettingsModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isRoomSettingsModalOpen = payload.isOpen;
-    },
-    setIsMembershipModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
-      state.isMembershipModalOpen = payload.isOpen;
     },
     setIsUserSettingsModalOpen(state, { payload }: PayloadAction<{ isOpen: boolean }>) {
       state.isUserSettingsModalOpen = payload.isOpen;
@@ -34,13 +30,11 @@ export const roomControlsSlice = createSlice({
 export const { actions, reducer } = roomControlsSlice;
 
 const selectIsRoomSettingsModalOpen = (state: RootState) => state.roomControls.isRoomSettingsModalOpen;
-const selectIsMembershipModalOpen = (state: RootState) => state.roomControls.isMembershipModalOpen;
 const selectIsUserSettingsModalOpen = (state: RootState) => state.roomControls.isUserSettingsModalOpen;
 const selectIsChangelogModalOpen = (state: RootState) => state.roomControls.isChangelogModalOpen;
 const selectIsOnboardingModalOpen = (state: RootState) => state.roomControls.isOnboardingModalOpen;
 
 export const selectors = {
-  selectIsMembershipModalOpen,
   selectIsUserSettingsModalOpen,
   selectIsChangelogModalOpen,
   selectIsOnboardingModalOpen,

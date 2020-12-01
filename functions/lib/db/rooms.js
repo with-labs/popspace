@@ -304,6 +304,17 @@ class Rooms extends DbAccess {
     return current
   }
 
+  async hasAccess(userId, roomId) {
+    const room = await this.roomById(roomId)
+    if(!room) {
+      return false
+    }
+    if(room.owner_id == userId) {
+      return true
+    }
+    return await this.isMember(userId, roomId)
+  }
+
   async getRoomMembers(roomId) {
     const memberships = await db.pg.massive.room_memberships.find({
       room_id: roomId,

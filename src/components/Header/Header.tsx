@@ -4,7 +4,7 @@ import { Menu, MenuItem, Divider, ListItemIcon, ListItemText, Button, makeStyles
 import { Links } from '../../constants/Links';
 import { USER_SUPPORT_EMAIL } from '../../constants/User';
 import { useTranslation } from 'react-i18next';
-import { removeSessionToken } from '../../utils/removeSessionToken';
+import { removeSessionToken } from '../../utils/sessionToken';
 
 import { ReactComponent as WithLogo } from '../../images/logo/medium.svg';
 import { ReactComponent as DropdownIcon } from '../../images/icons/dropdown.svg';

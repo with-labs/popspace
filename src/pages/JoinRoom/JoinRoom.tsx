@@ -4,24 +4,22 @@ import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Page } from '../../Layouts/Page/Page';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-
 import Api from '../../utils/api';
 
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import { ErrorCodes } from '../../constants/ErrorCodes';
-import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
 import { Button, TextField, Link, makeStyles, Typography } from '@material-ui/core';
 import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
-import { ErrorTypes } from '../../constants/ErrorType';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 import { logger } from '../../utils/logger';
+import { getSessionToken, setSessionToken } from '../../utils/sessionToken';
 
 interface IJoinRoomProps {}
 
@@ -68,11 +66,11 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
   const query = useQueryParams();
 
   // pull out the information we need from query string
-  //if we dont have the params, redirect to root
-  const otp = query.get('otp');
-  const email = query.get('email');
-  const inviteId = query.get('iid');
-  const roomName = query.get('room');
+  const otp = query.get('otp') || '';
+  const email = query.get('email') || '';
+  const inviteId = query.get('iid') || null;
+  // mainly used for display
+  const roomName = query.get('room') || '';
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -83,50 +81,78 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    // if opt, email , or the inviteId is empty, redirect to root
-    if (!otp || !email || !inviteId) {
-      history.push(RouteNames.ROOT);
-    } else {
-      // check to see if the room has already been claimed
-      Api.resolveRoomInvite(otp, inviteId)
-        .then((result: any) => {
-          if (result.success) {
-            if (result.newSessionToken) {
-              window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
-            }
-            // TODO: change to be the room your being invtited to
-            history.push(`/${roomName}`);
-          } else {
-            if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
-              // the room is unclaimed, but the user isnt created,
-              //  so we render the finialize form to finish creating the user
-              setIsLoading(false);
-            } else {
-              // opt, email, claimId fails
-              setIsLoading(false);
-              logger.warn(`Error claiming room for ${email}: linked expired on load`);
-              setError({
-                errorType: ErrorTypes.LINK_EXPIRED,
-                error: result,
-              });
-            }
+    Api.resolveRoomInvite(otp, inviteId)
+      .then((result: any) => {
+        if (result.success) {
+          // the invitee has an account and has successfully
+          // been added to the the room memebership list.
+          if (result.newSessionToken) {
+            // refresh the user session token if we have one.
+            setSessionToken(result.newSessionToken);
           }
-        })
-        .catch((e: any) => {
-          // unexpected error
-          setIsLoading(false);
-          logger.error(`Error join room for ${email}`, e);
+          // redirect using the roomName returned from result to
+          // make sure user is redirect to the correct room they where
+          /// added to.
+          history.push(`/${result.roomName}`);
+        } else if (result.errorCode === ErrorCodes.INVALID_OTP) {
+          // OTP is invalid
+          if (getSessionToken()) {
+            // check to see if the user has a session token stored, if they do
+            // then redirect to the dashboard.
+            history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
+          } else {
+            // user is not signed in, redirect to the sign in page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
+          }
+        } else if (result.errorCode === ErrorCodes.EXPIRED_OTP) {
+          // OTP is expired, so we will show the link expired page
+          logger.warn(`Error joining for ${email}: linked expired`, result.message, result.errorCode);
           setError({
-            errorType: ErrorTypes.UNEXPECTED,
-            error: e,
+            errorCode: ErrorCodes.JOIN_ROOM_LINK_EXPIRED,
+            error: result,
           });
+        } else if (result.errorCode === ErrorCodes.RESOLVED_OTP) {
+          // this link has already been clicked before
+          // check to see if the user has a session token set
+          if (getSessionToken()) {
+            // if the user has a session token, its safe to assume they are logged in
+            // so kick the user into the join room flow which will take
+            // care of validating if a user is logged in and if they have the proper
+            // room permissions set.
+            history.push(`/${result.roomName}`);
+          } else {
+            // if the user is not logged in, redirect to signin page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.RESOLVED_OTP}`);
+          }
+        } else if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
+          // the invitee ddoesnt have an accout, so we display
+          // the user account screen
+          setIsLoading(false);
+        } else {
+          // something unexpected has happened
+          logger.error(`Error joining room for ${email}: unexpected error`, result.message, result.errorCode);
+          setError({
+            errorCode: ErrorCodes.UNEXPECTED,
+            error: result,
+          });
+        }
+      })
+      .catch((e: any) => {
+        // something unexpected has happened
+        logger.error(`Error joining room for ${email}: unexpected error`, e);
+        setError({
+          errorCode: ErrorCodes.UNEXPECTED,
+          error: e,
         });
-    }
-  }, [history, otp, email, inviteId, roomName]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [history, otp, inviteId, roomName, email]);
 
+  // TODO: move this over to formik
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const data = {
       firstName,
       lastName,
@@ -135,24 +161,41 @@ export const JoinRoom: React.FC<IJoinRoomProps> = (props) => {
       receiveMarketing,
     };
 
-    if (!otp || !inviteId) {
-      logger.warn(`Error in JoinRoom finializing account for ${email}: link expired`);
-      setError({
-        errorType: ErrorTypes.LINK_EXPIRED,
-      });
-    } else {
-      const result = await Api.registerThroughInvite(data, otp, inviteId);
+    try {
+      const result: any = await Api.registerThroughInvite(data, otp, inviteId);
       if (result.success) {
+        // invitee has successfully created an account
         if (result.newSessionToken) {
-          window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
+          // set the new session token if have one
+          setSessionToken(result.newSessionToken);
         }
-        history.push(`/${roomName}`);
+        // redirect to the room the user was added to.
+        history.push(`/${result.roomName}`);
+      } else if (
+        result.errorCode === ErrorCodes.INVALID_OTP ||
+        result.errorCode === ErrorCodes.EXPIRED_OTP ||
+        result.errorCode === ErrorCodes.RESOLVED_OTP
+      ) {
+        logger.warn(`Error joining for ${email}: linked expired`, result.message, result.errorCode);
+        setError({
+          errorCode: ErrorCodes.JOIN_ROOM_LINK_EXPIRED,
+          error: result,
+        });
       } else {
+        // something we didnt think of happened
         logger.error(`Error in JoinRoom finializing account for ${email} on submit`, result.message, result.errorCode);
         setError({
-          errorType: ErrorTypes.UNEXPECTED,
+          errorCode: ErrorCodes.UNEXPECTED,
+          error: result,
         });
       }
+    } catch (err) {
+      // something happened UNEXPECTEDLY
+      logger.error(`Error in JoinRoom finializing account for ${email} on submit`, err);
+      setError({
+        errorCode: ErrorCodes.UNEXPECTED,
+        error: err,
+      });
     }
   };
 

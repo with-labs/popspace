@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
-import { USER_SESSION_TOKEN } from '../../constants/User';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
 import { logger } from '../../utils/logger';
+import { setSessionToken } from '../../utils/sessionToken';
 
 interface IVerifyEmailProps {}
 
@@ -22,6 +22,7 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
   const otp = useMemo(() => query.get('otp'), [query]);
   const email = useMemo(() => query.get('email'), [query]);
 
+  // TODO: when we have signup, update this to specs like loginWithEmail
   useEffect(() => {
     setIsLoading(true);
     if (!otp || !email) {
@@ -31,11 +32,11 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
         .then((result: any) => {
           setIsLoading(false);
           if (result.succuess) {
-            window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
+            setSessionToken(result.token);
             history.push(RouteNames.ROOT);
           } else {
             setError({
-              errorType: ErrorTypes.LINK_EXPIRED,
+              errorCode: ErrorCodes.INVALID_LINK,
               error: result,
             });
           }
@@ -44,7 +45,7 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
           setIsLoading(false);
           logger.error(`Error verifying email for ${email}`, e);
           setError({
-            errorType: ErrorTypes.UNEXPECTED,
+            errorCode: ErrorCodes.UNEXPECTED,
             error: e,
           });
         });

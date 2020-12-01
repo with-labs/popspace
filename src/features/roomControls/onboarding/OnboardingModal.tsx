@@ -11,8 +11,7 @@ import { USER_ONBOARDING } from '../../../constants/User';
 import { BackIcon } from '../../../components/icons/BackIcon';
 import { ForwardIcon } from '../../../components/icons/ForwardIcon';
 import { selectors as controlSelectors, actions as controlsActions } from '../roomControlsSlice';
-import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 import onboardingImg1 from './images/onboarding_1.png';
 import onboardingImg2 from './images/onboarding_2.png';
@@ -84,11 +83,7 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [currentStep, setCurrentStep] = useState(0);
-
-  const roomName = useRoomName();
-  const { currentUserProfile } = useCurrentUserProfile();
-
-  const isRoomOwner = currentUserProfile?.rooms?.owned.some((room) => room.name === roomName);
+  const isRoomOwner = useIsRoomOwner();
 
   useEffect(() => {
     // check to see if the user has completed the onboarding or not,

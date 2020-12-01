@@ -46,8 +46,8 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     // If we can't resolve - but it's a valid claim and the user is a member -
     // we can let them through into the room anyway if they have the OTP
     if(resolve.error == lib.db.ErrorCodes.otp.RESOLVED_OTP && claim.otp == otp) {
-      const alreadyMember = await db.rooms.isMember(user.id, claim.room_id)
-      if(alreadyMember && !shouldRenewToken) {
+      const hasAccess = await db.rooms.hasAccess(user.id, claim.room_id)
+      if(hasAccess && !shouldRenewToken) {
         // Don't allow the link to function as an un-expiring log in link -
         // only pass them through with a valid token.
         return await util.http.succeed(callback, result)

@@ -7,9 +7,10 @@ import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Api from '../../utils/api';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
+import { getSessionToken } from '../../utils/sessionToken';
 
 import { RouteNames } from '../../constants/RouteNames';
 import SadBlobby from './images/sadblobby.png';
@@ -53,38 +54,42 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   // get the query params from the url
   const query = useQueryParams();
 
-  const otp = useMemo(() => query.get('otp'), [query]);
-  const mlid = useMemo(() => query.get('mlid'), [query]);
+  const otp = query.get('otp') || '';
+  const mlid = query.get('mlid') || '';
 
   useEffect(() => {
     setIsLoading(true);
-    if (!otp || !mlid) {
-      // pop the invalid link page
-      setError({
-        errorType: ErrorTypes.LINK_EXPIRED,
-        error: t('error.messages.malformedUrl'),
-      });
-    } else {
-      Api.unsubscribeFromEmail(otp, mlid)
-        .then((result: any) => {
-          setIsLoading(false);
-          if (!result.success) {
-            // TODO: we could be handling INVALID/EXPIRED/RESOLVED errors separately
+    Api.unsubscribeFromEmail(otp, mlid)
+      .then((result: any) => {
+        setIsLoading(false);
+        if (!result.success) {
+          if (result.errorCode === ErrorCodes.INVALID_OTP) {
+            // the link is invalid, expired, or already resolved
+            if (getSessionToken()) {
+              // if the user is logged in, go to the dash
+              history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
+            } else {
+              // the user is not logged in, something is wrong with the link
+              // redirect to signin page with invalid popup message
+              history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
+            }
+          } else {
+            // something unexpected happened with the link
+            logger.warn(`Warning unsubcribing email for ${mlid}`, result.message, result.errorCode);
             setError({
-              errorType: ErrorTypes.LINK_EXPIRED,
-              error: { message: '' },
+              errorCode: ErrorCodes.UNEXPECTED,
             });
           }
-        })
-        .catch((e: any) => {
-          setIsLoading(false);
-          logger.error(`Error unsubcribing email for ${mlid}`, e);
-          setError({
-            errorType: ErrorTypes.UNEXPECTED,
-            error: e,
-          });
+        }
+      })
+      .catch((e: any) => {
+        setIsLoading(false);
+        logger.error(`Error unsubcribing email for ${mlid}`, e);
+        setError({
+          errorCode: ErrorCodes.UNEXPECTED,
+          error: e,
         });
-    }
+      });
   }, [history, otp, mlid, t]);
 
   const onClickHandler = () => {

@@ -17,6 +17,8 @@ const parseParams = async (event, context) => {
   if (contentType === "application/json") {
     const body = JSON.parse(event.body)
     context.params = body || {}
+  } else {
+    context.params = {}
   }
   return false
 }
@@ -45,6 +47,15 @@ const getUser = async (event, context) => {
     return false
   }
   context.user = user
+  context.session = session
+  if(context.params) {
+    // TODO: This is a compatibility layer for passing in tokens via body
+    // As we move away from that style, we should migrate endpoints that rely on having the token
+    // There are probably some wins we can have with downstream brevity,
+    // e.g. usually the token is converted to a session, and thatt
+    // could be part of the data the middleware always passes down
+    context.params.token = token
+  }
   return false
 }
 

@@ -1,5 +1,5 @@
 import { ErrorCodes } from '../constants/ErrorCodes';
-import { getSessionToken } from './getSessionToken';
+import { getSessionToken } from './sessionToken';
 
 export type BaseResponse = {
   success: boolean;
@@ -58,7 +58,7 @@ class Api {
     return await this.post('/request_init_session', { email });
   }
 
-  async logIn(otp: string, uid: string) {
+  async logIn(otp: string, uid: string | null) {
     return await this.post('/resolve_init_session', { otp, uid });
   }
 
@@ -96,19 +96,19 @@ class Api {
     return await this.post<BaseResponse & { result: ApiRoomMember[] }>('/room_get_members', { roomName });
   }
 
-  async resolveRoomInvite(otp: string, inviteId: string) {
+  async resolveRoomInvite(otp: string, inviteId: string | null) {
     return await this.post('/resolve_room_invite', { otp, inviteId });
   }
 
-  async registerThroughInvite(data: any, otp: string, inviteId: string) {
+  async registerThroughInvite(data: any, otp: string, inviteId: string | null) {
     return await this.post('/register_through_invite', { data, otp, inviteId });
   }
 
-  async registerThroughClaim(data: any, otp: string, claimId: string) {
+  async registerThroughClaim(data: any, otp: string, claimId: string | null) {
     return await this.post('/register_through_claim', { data, otp, claimId });
   }
 
-  async resolveRoomClaim(otp: string, claimId: string) {
+  async resolveRoomClaim(otp: string, claimId: string | null) {
     return await this.post('/resolve_room_claim', { otp, claimId });
   }
 

@@ -9,8 +9,9 @@ import { isEmailValid } from '../../../utils/CheckEmail';
 import Api, { ApiRoomMember, ApiError } from '../../../utils/api';
 import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
-import { sessionTokenExists } from '../../../utils/SessionTokenExists';
-import { ErrorModal } from '../../../components/ErrorModal/ErrorModal';
+import { sessionTokenExists } from '../../../utils/sessionToken';
+import { DialogModal } from '../../../components/DialogModal/DialogModal';
+import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
 
 import { MemberList } from './MemberList/MemberList';
 import { useQuery, useQueryCache } from 'react-query';
@@ -72,7 +73,6 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
     const classes = useStyles();
     const roomName = useRoomName();
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
-    const [submitError, setSubmitError] = useState<ApiError | null>(null);
 
     const cache = useQueryCache();
     const { data, isLoading, error } = useQuery<{ result: ApiRoomMember[] }, ApiError>(
@@ -88,6 +88,15 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       }
     );
     const members = data?.result || [];
+
+    const formatErrorMessage = (response: any) => {
+      return {
+        title: t('common.error'),
+        body: getErrorMessageFromResponse(response, t) ?? '',
+      };
+    };
+
+    const [dialogError, setDialogError] = useState(error ? formatErrorMessage(error) : null);
 
     useEffect(() => {
       if (error) logger.error(error);
@@ -106,12 +115,12 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
             console.debug(cache.getQueryData([ROOM_MEMBERS_QUERY, { roomName }]));
           } else {
             // TODO: convert to try/catch when api module throws errors
-            setSubmitError(new ApiError(response));
+            setDialogError(formatErrorMessage(new ApiError(response)));
           }
         }
       } catch (e) {
         logger.error(`Error membership modal send invite`, e);
-        setSubmitError(e);
+        setDialogError(formatErrorMessage(e));
       } finally {
         actions.resetForm();
       }
@@ -165,7 +174,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
             )}
           </Box>
         )}
-        <ErrorModal error={error || submitError} />
+        <DialogModal message={dialogError} onClose={() => setDialogError(null)} />
       </div>
     );
   }

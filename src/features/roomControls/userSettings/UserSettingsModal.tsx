@@ -10,7 +10,7 @@ import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { sessionTokenExists } from '../../../utils/SessionTokenExists';
+import { sessionTokenExists } from '../../../utils/sessionToken';
 import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';

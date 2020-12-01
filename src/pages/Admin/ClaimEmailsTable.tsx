@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = ({resendEmail }) => {
+export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = ({ resendEmail }) => {
   const classes = useStyles();
 
   const [rooms, setRooms] = useState<
@@ -50,7 +50,7 @@ export const ClaimEmailsTable: React.FC<IClaimEmailsTableProps> = ({resendEmail 
       setIsLoading(false);
       setRooms(claimsData.data);
     });
-  });
+  }, []);
 
   function actionForRoom(room: any) {
     if (!room.resolved_at) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import { Page } from '../../Layouts/Page/Page';
@@ -10,6 +10,13 @@ import { Button, TextField, makeStyles, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
+import { useHistory } from 'react-router-dom';
+import { RouteNames } from '../../constants/RouteNames';
+import { ErrorCodes } from '../../constants/ErrorCodes';
+import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
+import { getErrorDialogText } from '../../utils/ErrorMessage';
+import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 import signinImg from '../../images/SignIn.png';
 
@@ -25,11 +32,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Signin: React.FC<ISigninProps> = (props) => {
+  const history = useHistory();
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [emailError, setEmailError] = useState('');
   const { t } = useTranslation();
+  const { currentUserProfile, isLoading } = useCurrentUserProfile();
+
+  // get the query params, if any
+  const query = useQueryParams();
+  const errorInfo = query.get('e');
+
+  const [errorMsg] = useState<DialogMessage | null>(getErrorDialogText(errorInfo as ErrorCodes, t));
+
+  useEffect(() => {
+    // if the errorInfo is not null and the user is already logged in
+    // then we redirect to the dash if the user tries to hit the
+    if (!errorInfo && currentUserProfile) {
+      history.push(RouteNames.ROOT);
+    }
+  }, [history, errorInfo, currentUserProfile]);
 
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,7 +72,6 @@ export const Signin: React.FC<ISigninProps> = (props) => {
         setShowConfirmation(true);
       } else {
         // we have an error
-        // TODO: update this once the error messaging from the backend is standarized
         setEmailError(loginRequest.message);
       }
     } else {
@@ -57,8 +79,16 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     }
   };
 
+  const clearError = () => {
+    if (errorInfo) {
+      // remove the error from the query string when the user has cleared
+      // the error
+      history.replace(RouteNames.SIGN_IN);
+    }
+  };
+
   return (
-    <Page>
+    <Page isLoading={isLoading}>
       <Header />
       {showConfirmation ? (
         <ConfirmationView email={email} />
@@ -92,6 +122,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
           </Column>
         </TwoColLayout>
       )}
+      <DialogModal message={errorMsg} onClose={clearError} />
     </Page>
   );
 };

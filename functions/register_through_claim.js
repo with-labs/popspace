@@ -56,6 +56,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     )
   }
 
+
   // claims have the exact same verification logic as invites
   const verification = db.rooms.isValidInvitation(claim, params.email, otp)
   if(verification.error) {

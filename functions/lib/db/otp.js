@@ -10,15 +10,16 @@ const otplib = {
     return moment(entity.expires_at).valueOf() < moment.utc().valueOf()
   },
 
+  // prioritizes IS_VALID -> IS_RESOLVED -> IS_EXPIRED
   verify: (request, otp) => {
     if(!request || request.otp != otp || request.revoked_at) {
       return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
     }
-    if(otplib.isExpired(request)) {
-      return { error: lib.db.ErrorCodes.otp.EXPIRED_OTP }
-    }
     if(request.resolved_at) {
       return { error: lib.db.ErrorCodes.otp.RESOLVED_OTP }
+    }
+    if(otplib.isExpired(request)) {
+      return { error: lib.db.ErrorCodes.otp.EXPIRED_OTP }
     }
     return { error: null, result: null }
   },

@@ -2,6 +2,7 @@ import React from 'react';
 import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
+import { Trans } from 'react-i18next';
 
 interface IGenericErrorPageProps {
   buttonText: string;
@@ -79,7 +80,7 @@ export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
           <Column centerContent={true} useColMargin={true}>
             <div className={classes.container}>
               <div>{quoteText}</div>
-              <Typography variant="h1">{title}</Typography>
+              <Typography variant="h1"><Trans>{title}</Trans></Typography>
               <Typography variant="body1" className={classes.bodyText}>
                 {body}
               </Typography>

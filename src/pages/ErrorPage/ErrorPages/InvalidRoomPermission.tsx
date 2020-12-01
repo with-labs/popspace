@@ -6,7 +6,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import NoAccessImg from '../images/No_Access.png';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { Button, makeStyles } from '@material-ui/core';
-import { removeSessionToken } from '../../../utils/removeSessionToken';
+import { removeSessionToken } from '../../../utils/sessionToken';
 
 interface IInvalidRoomPermissionProps {
   errorMsg?: string;

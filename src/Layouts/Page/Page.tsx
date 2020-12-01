@@ -26,7 +26,7 @@ export const Page: React.FC<IPageProps> = (props) => {
   const classes = useStyles();
 
   return error ? (
-    <ErrorPage type={error.errorType} errorMessage={error.error?.message} />
+    <ErrorPage type={error.errorCode} errorMessage={error.error?.message} />
   ) : (
     <main className={clsx(classes.root, className)}>
       {isLoading ? (

@@ -7,18 +7,17 @@ import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import Api from '../../utils/api';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
-import { ErrorCodes } from '../../constants/ErrorCodes';
-import { USER_SESSION_TOKEN } from '../../constants/User';
 import { Header } from '../../components/Header/Header';
 import signinImg from '../../images/SignIn.png';
 import { makeStyles, Button, TextField, Link, Typography, Box } from '@material-ui/core';
 import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 import { logger } from '../../utils/logger';
+import { getSessionToken, setSessionToken } from '../../utils/sessionToken';
 
 interface IFinalizeAccountProps {}
 
@@ -59,16 +58,6 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const history = useHistory();
   const { t } = useTranslation();
   const classes = useStyles();
-
-  // get the query params from the invite
-  const query = useQueryParams();
-
-  // pull out the information we need from query string
-  //if we dont have the params, redirect to root
-  const otp = query.get('otp');
-  const email = query.get('email');
-  const claimId = query.get('cid');
-
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [acceptTos, setAcceptTos] = useState(false);
@@ -76,52 +65,96 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const [error, setError] = useState<ErrorInfo>(null!);
   const [isLoading, setIsLoading] = useState(false);
 
+  // get the query params from the invite
+  const query = useQueryParams();
+
+  // pull out the information we need from query string
+  //if we dont have the params, redirect to root
+  const otp = query.get('otp') || '';
+  const email = query.get('email') || '';
+  const claimId = query.get('cid') || null;
+
   useEffect(() => {
     setIsLoading(true);
-    // if opt, email , or the claim id is empty, redirect to root
-    if (!otp || !email || !claimId) {
-      history.push(RouteNames.ROOT);
-    } else {
-      // check to see if the room has already been claimed
-      Api.resolveRoomClaim(otp, claimId)
-        .then((result: any) => {
-          if (result.success) {
-            if (result.newSessionToken) {
-              window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
-            }
-            // redirect to the dashboard if someone is already logged in and the room is claimed
-            history.push(RouteNames.ROOT);
-          } else {
-            if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
-              // the room is unclaimed, but the user isnt created,
-              //  so we render the finialize form to finish creating the user
-              setIsLoading(false);
-            } else {
-              // opt, email, claimId fails
-              setIsLoading(false);
-              logger.warn(`Error claiming room for ${email}: linked expired on load`);
-              setError({
-                errorType: ErrorTypes.LINK_EXPIRED,
-                error: result,
-              });
-            }
+    // check to see if the room has already been claimed
+    Api.resolveRoomClaim(otp, claimId)
+      .then((result: any) => {
+        if (result.success) {
+          // the user exists in the database, and has succussfully had the room associated with them
+          if (result.newSessionToken) {
+            // set the new session token if we get one
+            setSessionToken(result.newSessionToken);
           }
-        })
-        .catch((e: any) => {
-          // unexpected error
-          setIsLoading(false);
-          logger.error(`Error claiming room for ${email}`, e);
+          // check to see if we have a room name, if we do redirect to the room
+          if (result.roomName) {
+            history.push(`/${result.roomName}`);
+          } else {
+            // if not redirect to dashboard
+            history.push(RouteNames.ROOT);
+          }
+        } else if (result.errorCode === ErrorCodes.INVALID_OTP) {
+          // OTP is invalid
+          if (getSessionToken()) {
+            // check to see if the user has a session token stored, if they do
+            // then redirect to the dashboard.
+            history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
+          } else {
+            // user is not signed in, redirect to the sign in page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
+          }
+        } else if (result.errorCode === ErrorCodes.EXPIRED_OTP) {
+          // OTP is expired, so we will show the link expired page
+          logger.warn(`Error claiming room for ${email}: linked expired`, result.message, result.errorCode);
           setError({
-            errorType: ErrorTypes.UNEXPECTED,
-            error: e,
+            errorCode: ErrorCodes.CLAIM_LINK_EXPIRED,
+            error: result,
           });
+        } else if (result.errorCode === ErrorCodes.RESOLVED_OTP) {
+          // this link has already been clicked before
+          // check to see if the user has a session token set
+          if (getSessionToken()) {
+            // if the user has a session token, its safe to assume they are logged in
+            // so kick the user into the join room flow which will take
+            // care of validating if a user is logged in and if they have the proper
+            // room permissions set.
+            if (result.roomName) {
+              history.push(`/${result.roomName}`);
+            } else {
+              // if not redirect to dashboard
+              history.push(RouteNames.ROOT);
+            }
+          } else {
+            // if the user is not logged in, redirect to signin page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.RESOLVED_OTP}`);
+          }
+        } else if (result.errorCode === ErrorCodes.JOIN_FAIL_NO_SUCH_USER) {
+          // the room is unclaimed, but the user isnt created,
+          // so we render the finialize form to finish creating the user
+          setIsLoading(false);
+        } else {
+          // something unexpected has happened
+          logger.error(`Error claiming room for ${email}: unexpected error message`, result.message, result.errorCode);
+          setError({
+            errorCode: ErrorCodes.UNEXPECTED,
+            error: result,
+          });
+        }
+      })
+      .catch((e: any) => {
+        // unexpected error
+        logger.error(`Error claiming room for ${email}`, e);
+        setError({
+          errorCode: ErrorCodes.UNEXPECTED,
+          error: e,
         });
-    }
-  }, [history, otp, email, claimId]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [history, otp, email, claimId, t]);
 
   const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const data = {
       firstName,
       lastName,
@@ -130,28 +163,40 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
       receiveMarketing,
     };
 
-    if (!otp || !claimId) {
-      logger.warn(`Error finializing account for ${email}: link expired`);
-      setError({
-        errorType: ErrorTypes.LINK_EXPIRED,
-      });
-    } else {
-      // Note: currently for alpha users or users we send invites out to, this registers the room
-      // to their account. There will be a seperate api endpoint for when we do this same flow via user invites
-      // 9-28-2020
+    try {
       const result = await Api.registerThroughClaim(data, otp, claimId);
       if (result.success) {
-        if (result.newSessionToken) {
-          window.localStorage.setItem(USER_SESSION_TOKEN, result.newSessionToken);
+        // invitee was able to register
+        if (result.neSessionToken) {
+          // refresh the session token if we have it
+          setSessionToken(result.newSessionToken);
         }
-        // user is done finalizing account, go to room
+
+        // user is done creating they account,
+        // redirect them to the room
         history.push(`/${result.roomName}`);
+      } else if (
+        result.errorCode === ErrorCodes.INVALID_OTP ||
+        result.errorCode === ErrorCodes.EXPIRED_OTP ||
+        result.errorCode === ErrorCodes.RESOLVED_OTP
+      ) {
+        logger.warn(`Warning: finalizing acount for ${email}: otp error`, result.message, result.errorCode);
+        setError({
+          errorCode: ErrorCodes.LINK_EXPIRED,
+          error: result,
+        });
       } else {
         logger.error(`Error finializing account for ${email} on submit`, result.message, result.errorCode);
         setError({
-          errorType: ErrorTypes.UNEXPECTED,
+          errorCode: ErrorCodes.UNEXPECTED,
         });
       }
+    } catch (e) {
+      // something unexpected has happened, display the unexpected error page
+      logger.error(`Error finializing account for ${email} on submit`, e);
+      setError({
+        errorCode: ErrorCodes.UNEXPECTED,
+      });
     }
   };
 

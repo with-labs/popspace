@@ -44,6 +44,7 @@ class Client {
   }
 
   sendEvent(event) {
+    console.log("===============Sending\n", event, "\n=====================")
     this.send(JSON.stringify(event))
   }
 

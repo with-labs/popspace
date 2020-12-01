@@ -37,7 +37,7 @@ class AuthProcessor extends Processor {
   async getAuthData(event, participants) {
     const user = event._sender.user
     const room = {}
-    room.widgets = await lib.roomData.getWidgetsInRoom(parseInt(event._sender.room.id))
+    room.widgets = await lib.roomData.getWidgetsInRoom(event._sender.room.id)
     room.participants = await participants.serialize()
     room.id = 0
     room.state = {}

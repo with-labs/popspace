@@ -1,6 +1,7 @@
 global.tlib = require("../../lib/_testlib")
 
 const requestStickyNoteCreate = async (client) => {
+  console.log("Requesting sticky!")
   return await client.sendEventWithPromise("room/addWidget", {
     type: "sticky_note",
     roomState: {
@@ -53,13 +54,9 @@ module.exports = {
 
   "create_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
-    const response = await requestStickyNoteCreate(client)
-    return response
-  }),
-
-  "update_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
-    const client = testEnvironment.loggedInUsers[0].client
-    const response = await requestStickyNoteCreate(client)
-    return response
+    const createResponse = await requestStickyNoteCreate(client)
+    return {
+      createResponse
+    }
   })
 }

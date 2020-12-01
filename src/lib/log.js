@@ -1,7 +1,7 @@
 const log4js = require('log4js')
 const log4jsConfig = {
   appenders: {
-    dbqueries: { type: 'file', filename: 'logs/dbqueries.log' },
+    database: { type: 'file', filename: 'logs/database.log' },
     app: { type: 'file', filename: 'logs/app.log' },
     console: { type: 'console' },
     dev: {type: 'file', filename: 'logs/dev.log'}
@@ -9,7 +9,7 @@ const log4jsConfig = {
   categories: {
     default: { appenders: ['console'], level: 'info' },
     app: { appenders: ['app', 'console'], level:  process.env.NODE_ENV == 'test' ? 'error' : 'info' },
-    dbqueries: { appenders: ['dbqueries'], level: 'info' },
+    database: { appenders: ['database'], level: 'info' },
     dev: {appenders: ['console', 'dev'], level: process.env.NODE_ENV == 'development' ? 'trace' : 'off'}
   }
 }
@@ -20,7 +20,7 @@ logging = {
     logger[level](message);
   },
   default: log4js.getLogger(),
-  dbqueries: log4js.getLogger('dbqueries'),
+  database: log4js.getLogger('database'),
   app: log4js.getLogger('app'),
   dev: log4js.getLogger('dev'),
   all: (level, message) => {

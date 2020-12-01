@@ -29,4 +29,10 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     expect(response.widgetId).toBeTruthy()
   })
 
+  test('updating widgets', async () => {
+    const response = await scenarios["update_a_widget"]()
+    expect(response.success).toEqual(true)
+    expect(response.widgetId).toBeTruthy()
+  })
+
 })

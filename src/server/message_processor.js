@@ -2,6 +2,7 @@ const _processors = require("./processors/_processors")
 
 const ACTION_BY_EVENT_KIND = {
   "room/addWidget": "create",
+  "room/moveObject": "mutate",
   "auth": "auth",
   "ping": "ping"
 }
@@ -13,7 +14,8 @@ const PUBLIC_ACTIONS = {
 
 const processors = {
   auth: new _processors.AuthProcessor(),
-  create: new _processors.CreateProcessor()
+  create: new _processors.CreateProcessor(),
+  mutate: new _processors.MutateProcessor()
 }
 
 class MessageProcessor {
@@ -32,7 +34,7 @@ class MessageProcessor {
       try {
         return await processors[action].process(event, this.participants)
       } catch(e) {
-        log.app.error(`Error processing message: ${e.message}\n${e.stack}`)
+        log.app.error(`Error processing message: ${e ? e.message : 'null error'}\n${e ? e.stack : ''}`)
         return sender.sendError(event, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.")
       }
     })

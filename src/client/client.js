@@ -48,7 +48,11 @@ class Client {
   }
 
   async authenticate(token, roomName) {
-    return this.sendEventWithPromise("auth", { token, roomName })
+    const response = this.sendEventWithPromise("auth", { token, roomName })
+    if(response.success) {
+      this.roomData = response.data
+    }
+    return response
   }
 
   async sendEventWithPromise(kind, payload) {

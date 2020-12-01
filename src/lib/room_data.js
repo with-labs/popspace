@@ -1,8 +1,14 @@
 const Aws = require("aws-sdk");
 
+const tableName = (tableNickname) => {
+  return `${process.env.NODE_ENV}_${tableNickname}`
+}
+
 class RoomData {
   constructor() {
-
+    // TODO: extract shared dynamo logic
+    // Separate create/delete table logic from queries
+    // this should be the bridge between dynamo/postgres, not a dynamo access helper
   }
 
   async init() {
@@ -14,9 +20,88 @@ class RoomData {
     this.documentClient = new Aws.DynamoDB.DocumentClient({service: this.dynamo});
   }
 
+  async getWidgetsInRoom(roomId) {
+    const widgets = await shared.db.pg.massive.query(`
+      SELECT
+        widgets.id AS id, widgets._type as type
+      FROM
+        widgets JOIN room_widgets ON widgets.id = room_widgets.widget_id
+      WHERE
+        room_widgets.room_id = $1
+        AND
+        widgets.deleted_at IS NULL
+        AND
+        widgets.archived_at IS NULL
+    `, [roomId])
+    const widgetsById = {}
+    const widgetIds = widgets.map((w) => {
+      widgetsById[w.id] = w
+      return w.id
+    })
+    const widgetStates = await this.getWidgetStates(widgetIds)
+    const roomStates = await this.getWidgetRoomStates(widgetIds, roomId)
+    for(const widgetState of widgetStates) {
+      const widget = widgetsById[data.widget_id]
+      widget.widgetState = widgetState
+    }
+    for(const roomState of roomStates) {
+      let widget = widgetsById[roomState.widget_id]
+      widget.roomState = roomState
+    }
+    return widgets
+  }
+
+  async getWidgetStates(widgetIds) {
+    const requestParams = {
+      TableName: tableName('widget_data'),
+      KeyConditionExpression: "#widget_id = :widget_id",
+      ExpressionAttributeNames:{
+          "#widget_id": "widget_id"
+      },
+      ExpressionAttributeValues: {
+          ":widget_id": widgetIds
+      },
+      ScanIndexForward: false
+    }
+    return new Promise((resolve, reject) => {
+      this.documentClient.query(requestParams, (err, data) => {
+        if(err) {
+          reject(err)
+        } else {
+          resolve(data.Items)
+        }
+      })
+    })
+  }
+
+  async getWidgetRoomStates(widgetIds, roomId) {
+    const requestParams = {
+      TableName: tableName('widget_data'),
+      KeyConditionExpression: "#widget_id = :widget_id AND #room_id = :room_id",
+      ExpressionAttributeNames:{
+        "#widget_id": "widget_id",
+        "#room_id": "room_id"
+      },
+      ExpressionAttributeValues: {
+        ":widget_id": widgetIds,
+        ":room_id": roomId
+      },
+      ScanIndexForward: false
+    }
+    return new Promise((resolve, reject) => {
+      this.documentClient.query(requestParams, (err, data) => {
+        if(err) {
+          reject(err)
+        } else {
+          resolve(data.Items)
+        }
+      })
+    })
+  }
+
   async createRoomStatesTable() {
     return this.createTable({
-      TableName: "room_states",
+      TableName: tableName("room_states"),
       KeySchema: [
         { AttributeName: "room_id", KeyType: "HASH"},
       ],
@@ -33,7 +118,7 @@ class RoomData {
 
   async createWidgetStatesTable() {
     return this.createTable({
-      TableName: "widget_data",
+      TableName: tableName("widget_data"),
       KeySchema: [
         { AttributeName: "widget_id", KeyType: "HASH"},
       ],
@@ -50,7 +135,7 @@ class RoomData {
 
   async createWidgetRoomStatesTable() {
     return this.createTable({
-      TableName: "room_widget_states",
+      TableName: tableName("room_widget_states"),
       KeySchema: [
         { AttributeName: "room_id", KeyType: "HASH"},
         { AttributeName: "widget_id", KeyType: "RANGE"},
@@ -70,10 +155,10 @@ class RoomData {
     return new Promise((resolve, reject) => {
       this.dynamo.createTable(params, (err, data) => {
         if (err) {
-          log.app.warn("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
+          log.database.warn("Unable to create table. Error JSON:", JSON.stringify(err, null, 2));
           reject(err)
         } else {
-          log.app.info("Created table. Table description JSON:", JSON.stringify(data, null, 2));
+          log.database.info("Created table. Table description JSON:", JSON.stringify(data, null, 2));
           resolve(data)
         }
       });
@@ -84,10 +169,10 @@ class RoomData {
     return new Promise((resolve, reject) => {
       this.documentClient.delete(params, (err, data) => {
         if (err) {
-          console.error("Unable to delete entry. Error JSON:", JSON.stringify(err, null, 2));
+          log.database.error("Unable to delete entry. Error JSON:", JSON.stringify(err, null, 2));
           reject(err)
         } else {
-          console.log("Deleted entry. Response:", JSON.stringify(data, null, 2));
+          log.database.info("Deleted entry. Response:", JSON.stringify(data, null, 2));
           resolve(data)
         }
       })
@@ -108,14 +193,13 @@ class RoomData {
 
   async deleteRoomState(roomId) {
     await this.deleteEntry({
-      TableName: 'room_states',
+      TableName: tableName('room_states'),
       Key: {
         room_id: roomId
       }
     })
   }
 
-  // private
   async addWidget(widgetId, roomId, data, state) {
     const dataItem = {
       widget_id: { S: widgetId },
@@ -128,7 +212,7 @@ class RoomData {
     }
     return Promise.all([
       new Promise((resolve, reject) => {
-        this.dynamo.putItem({item: dataItem, TableName: 'widget_data'}, (err, data) => {
+        this.dynamo.putItem({item: dataItem, TableName: tableName('widget_data')}, (err, data) => {
           if(err) {
             return reject(data)
           } else {
@@ -137,7 +221,7 @@ class RoomData {
         })
       }),
       new Promise((resolve, reject) => {
-        this.dynamo.putItem({item: stateItem, TableName: 'room_widget_states'}, (err, data) => {
+        this.dynamo.putItem({item: stateItem, TableName: tableName('room_widget_states')}, (err, data) => {
           if(err) {
             return reject(data)
           } else {
@@ -158,4 +242,4 @@ class RoomData {
 
 }
 
-module.exports = new RoomData()
+module.exports = RoomData

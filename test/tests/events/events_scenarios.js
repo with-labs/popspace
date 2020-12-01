@@ -1,5 +1,18 @@
 global.tlib = require("../../lib/_testlib")
 
+const requestStickyNoteCreate = async (client) => {
+  return await client.sendEventWithPromise("room/addWidget", {
+    type: "sticky_note",
+    roomState: {
+      position: { x: 0, y: 0 },
+      size: { width: 100, height: 100},
+    },
+    widgetState: {
+      text: "Hello world!"
+    }
+  })
+}
+
 module.exports = {
   "authenticate": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
@@ -38,10 +51,15 @@ module.exports = {
     }
   }),
 
-
   "create_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
-    const response = await client.sendEventWithPromise("room/addWidget", {})
+    const response = await requestStickyNoteCreate(client)
+    return response
+  }),
+
+  "update_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+    const client = testEnvironment.loggedInUsers[0].client
+    const response = await requestStickyNoteCreate(client)
     return response
   })
 }

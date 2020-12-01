@@ -6,10 +6,13 @@ lib.log = require("./log")
 global.log = lib.log
 global.shared = require("@withso/with-shared")
 lib.Client = require("../client/client")
-
 lib.ErrorCodes = require("./error_codes")
 
+const RoomData = require("./room_data")
+
 lib.init = async () => {
+  lib.roomData = new RoomData()
+  await lib.roomData.init()
   await global.shared.db.pg.init()
 }
 lib.cleanup = async() => {

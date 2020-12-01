@@ -22,7 +22,7 @@ class AuthProcessor extends Processor {
       return event._sender.sendResponse(event, {
         kind: "auth",
         success: true,
-        authData: authData
+        data: authData
       })
     } else {
       return event._sender.sendError(
@@ -37,27 +37,11 @@ class AuthProcessor extends Processor {
   async getAuthData(event, participants) {
     const user = event._sender.user
     const room = {}
-    room.widgets = await this.getWidgets(event._sender.room.id)
+    room.widgets = await lib.roomData.getWidgetsInRoom(parseInt(event._sender.room.id))
     room.participants = await participants.serialize()
     room.id = 0
     room.state = {}
     return { room, user }
-  }
-
-  async getWidgets(roomId) {
-    const widgets = await shared.db.pg.massive.query(`
-      SELECT
-        widgets.id AS id
-      FROM
-        widgets JOIN room_widgets ON widgets.id = room_widgets.widget_id
-      WHERE
-        room_widgets.room_id = $1
-        AND
-        widgets.deleted_at IS NULL
-        AND
-        widgets.archived_at IS NULL
-    `, [roomId])
-    return widgets
   }
 
 }

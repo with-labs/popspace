@@ -1,4 +1,5 @@
 module.exports = {
   CreateProcessor: require("./create_processor"),
-  AuthProcessor: require("./auth_processor")
+  AuthProcessor: require("./auth_processor"),
+  MutateProcessor: require("./mutate_processor")
 }

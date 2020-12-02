@@ -8,8 +8,13 @@ module.exports = class {
     const session = await factory.create("session")
     const token = await shared.lib.auth.tokenFromSession(session)
     const { room, nameEntry } = await shared.db.rooms.generateRoom(user.id)
-    const result = { user, session, token, room, client, roomNameEntry: nameEntry }
-    this.loggedInUsers.push(result)
-    return result
+    const environmentUser = { user, session, token, room, client, roomNameEntry: nameEntry }
+    this.loggedInUsers.push(environmentUser)
+    return environmentUser
+  }
+
+  async authenticate(environmentUser) {
+    const auth = await environmentUser.client.authenticate(environmentUser.token, environmentUser.roomNameEntry.name)
+    environmentUser.auth = auth
   }
 }

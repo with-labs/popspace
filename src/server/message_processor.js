@@ -3,6 +3,7 @@ const _processors = require("./processors/_processors")
 const ACTION_BY_EVENT_KIND = {
   "room/addWidget": "create",
   "room/moveObject": "mutate",
+  "room/get": "get",
   "auth": "auth",
   "ping": "ping"
 }
@@ -15,7 +16,8 @@ const PUBLIC_ACTIONS = {
 const processors = {
   auth: new _processors.AuthProcessor(),
   create: new _processors.CreateProcessor(),
-  mutate: new _processors.MutateProcessor()
+  mutate: new _processors.MutateProcessor(),
+  get: new _processors.GetProcessor()
 }
 
 class MessageProcessor {

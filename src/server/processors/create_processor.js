@@ -31,13 +31,11 @@ class CreateProcessor extends Processor {
     if(!payload.widgetState || !payload.roomState) {
       return event._sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and roomState in payload.`)
     }
-    console.log("+=======Creating widget", event.data.payload)
     const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
       const widget = await tx.widgets.insert({owner_id: widgetOwner.id, _type: payload.type})
       const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: room.id})
       return widget
     })
-    console.log("widget created", widget.id, room.id, payload.widgetState, payload.roomState)
     /*
       payload example:
       {

@@ -27,8 +27,8 @@ module.exports = {
     return tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
       const testEnvironment = new tlib.TestEnvironment()
       const client = clients[0]
-      const {user, session, token, roomNameEntry} = await testEnvironment.createLoggedInUser(client)
-      const auth = await client.authenticate(token, roomNameEntry.name)
+      const environmentUser = await testEnvironment.createLoggedInUser(client)
+      await testEnvironment.authenticate(environmentUser)
       return await lambda(testEnvironment, mercury)
     })
   }

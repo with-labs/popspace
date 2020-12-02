@@ -24,9 +24,10 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
   })
 
   test("creating widgets", async () => {
-    const { createResponse } = await scenarios["create_a_widget"]()
+    const { createResponse, beginWidgetCount, endWidgetCount } = await scenarios["create_a_widget"]()
     expect(createResponse.success).toEqual(true)
     expect(createResponse.widgetId).toBeTruthy()
+    expect(endWidgetCount - beginWidgetCount).toEqual(1)
   })
 
   test('updating widgets', async () => {

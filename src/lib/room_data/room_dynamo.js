@@ -23,17 +23,31 @@ class RoomDynamo {
     return `${process.env.NODE_ENV}_${tableNickname}`
   }
 
-  async getWidgetStates(widgetIds) {
+  async populateWidgetData(widgets, roomId) {
+    // dynamo only allows querying 1 primary key at a time
+    // we could batch the request as an optimization,
+    // but batching has limits we'd need to respect
+    // https://www.dynamodbguide.com/working-with-multiple-items/
+    // An alternative could be to use range keys,
+    // but it seems weird to arbitrarily introduce a static hash key.
+    return Promise.all(widgets.map(async (widget) => {
+      const widgetState = await this.getWidgetState(widget.id)
+      const roomState = await this.getRoomWidgetState(widget.id, roomId)
+      widget.widgetState = widgetState
+      widget.roomState = roomState
+    }))
+  }
+
+  async getWidgetState(widgetId) {
     const requestParams = {
       TableName: this.tableName('widget_data'),
-      KeyConditionExpression: "#widget_id = :widget_id",
+      KeyConditionExpression: "#widget_id_attribute = :widget_id_value",
       ExpressionAttributeNames:{
-          "#widget_id": "widget_id"
+          "#widget_id_attribute": "widget_id"
       },
       ExpressionAttributeValues: {
-          ":widget_id": widgetIds
-      },
-      ScanIndexForward: false
+          ":widget_id_value": parseInt(widgetId)
+      }
     }
     return new Promise((resolve, reject) => {
       this.documentClient.query(requestParams, (err, data) => {
@@ -49,7 +63,7 @@ class RoomDynamo {
     })
   }
 
-  async getRoomWidgetStates(widgetIds, roomId) {
+  async getRoomWidgetState(widgetId, roomId) {
     const requestParams = {
       TableName: this.tableName('room_widget_states'),
       KeyConditionExpression: "#widget_id = :widget_id AND #room_id = :room_id",
@@ -58,10 +72,9 @@ class RoomDynamo {
         "#room_id": "room_id"
       },
       ExpressionAttributeValues: {
-        ":widget_id": widgetIds,
-        ":room_id": roomId
-      },
-      ScanIndexForward: false
+        ":widget_id": parseInt(widgetId),
+        ":room_id": parseInt(roomId)
+      }
     }
     return new Promise((resolve, reject) => {
       this.documentClient.query(requestParams, (err, data) => {
@@ -221,7 +234,6 @@ class RoomDynamo {
   }
 
   async deleteWidget(roomIds, widgetId) {
-    console.log(roomIds)
     const promises = roomIds.map((rid) => {
       return this.deleteEntry({
         TableName: this.tableName('room_widget_states'),

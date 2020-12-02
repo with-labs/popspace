@@ -35,6 +35,13 @@ class Client {
     })
   }
 
+  async getRoomState() {
+    if(!this.ready) {
+      throw "Please connect"
+    }
+    return this.sendEventWithPromise("room/get", {})
+  }
+
   parseEvent(message) {
     const event = JSON.parse(message)
     event._receiver = this
@@ -44,7 +51,6 @@ class Client {
   }
 
   sendEvent(event) {
-    console.log("===============Sending\n", event, "\n=====================")
     this.send(JSON.stringify(event))
   }
 

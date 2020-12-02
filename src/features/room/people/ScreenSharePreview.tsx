@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import { useAddAccessory } from '../../roomControls/omnibar/useAddAccessory';
+import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { WidgetType } from '../../../types/room';
 import { useRoomViewport } from '../RoomViewport';
 import { createSelector } from '@reduxjs/toolkit';

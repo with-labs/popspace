@@ -1,6 +1,6 @@
 import { Vector2 } from '../../../types/spatials';
 import { useCallback, DragEvent, useState, useRef, useMemo } from 'react';
-import { useAddAccessory } from '../../roomControls/omnibar/useAddAccessory';
+import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { WidgetType } from '../../../types/room';
 import api from '../../../utils/api';
 import { useSnackbar } from 'notistack';

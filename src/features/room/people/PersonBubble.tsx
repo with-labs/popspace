@@ -12,6 +12,7 @@ import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { PersonStatus } from './PersonStatus';
 import { ScreenSharePreview } from './ScreenSharePreview';
 import { DraggableHandle } from '../DraggableHandle';
+import { isMobileOnly } from 'react-device-detect';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
@@ -176,15 +177,21 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       x: isVideoOn ? '0%' : '-100%',
     });
 
+    const handlers = isMobileOnly
+      ? {}
+      : {
+          onPointerEnter: onHover,
+          onPointerLeave: onUnHover,
+        };
+
     return (
       <animated.div
         {...rest}
         ref={ref}
         className={clsx(classes.root, rest.className)}
         style={{ ...rootStyles, ...speakingRingStyles } as any}
-        onPointerEnter={onHover}
-        onPointerLeave={onUnHover}
         data-test-person={displayIdentity}
+        {...handlers}
       >
         <DraggableHandle disabled={!isLocal} className={classes.handle}>
           <animated.div className={classes.mainContent} style={mainContentStyles}>

@@ -6,11 +6,15 @@ import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { actions } from '../../room/roomSlice';
-import { BUILT_IN_WALLPAPERS } from '../../../constants/wallpapers';
 import { wallPaperOptions } from './WallpaperOptions';
 
 jest.mock('../../room/CoordinatedDispatchProvider', () => ({
   useCoordinatedDispatch: jest.fn().mockReturnValue(jest.fn()),
+}));
+
+jest.mock('@material-ui/core', () => ({
+  ...(jest.requireActual('@material-ui/core') as any),
+  useMediaQuery: () => false,
 }));
 
 // extract mock value

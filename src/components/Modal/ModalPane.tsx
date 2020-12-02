@@ -11,7 +11,10 @@ const useStyles = makeStyles((theme) => ({
   modalPane: {
     overflowY: 'auto',
     width: 340,
+    maxWidth: '100%',
     height: 340,
+    maxHeight: '100%',
+
     '& + &': {
       marginLeft: theme.spacing(2),
 

@@ -13,10 +13,12 @@ interface IChangelogModalProps {}
 const useStyles = makeStyles((theme) => ({
   content: {
     width: 580,
+    maxWidth: '100%',
   },
   changelog: {
     width: '100%',
     height: 500,
+    maxHeight: '90vh',
     border: 'none',
   },
 }));

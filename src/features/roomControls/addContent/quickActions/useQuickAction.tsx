@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAddAccessory } from '../useAddAccessory';
+import { useAddAccessory } from './useAddAccessory';
 import { QuickAction, QuickActionKind } from './types';
 import { useQuickActionOptions } from './useQuickActionOptions';
 import { useCoordinatedDispatch } from '../../../room/CoordinatedDispatchProvider';

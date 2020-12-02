@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
   },
   submitBtn: {
     height: '48px',
-    marginTop: '23px',
     width: '100px',
   },
   imgPane: {
@@ -139,12 +138,12 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       <div ref={ref}>
         <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
           <Form>
-            <Box display="flex" flexDirection="row">
+            <Box display="flex" flexDirection="row" alignItems="flex-start">
               <FormikTextField
                 className={classes.emailField}
                 name="inviteeEmail"
                 placeholder={t('common.emailInput.placeHolder')}
-                label={t('common.emailInput.label')}
+                aria-label={t('common.emailInput.label')}
                 margin="normal"
                 validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
                 helperText={t(

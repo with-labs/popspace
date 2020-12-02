@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { makeStyles, TextField, Paper, Box } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { QuickAction } from './QuickAction';
-import { useQuickAction } from './quickActions/useQuickAction';
-import { QuickAction as QuickActionData } from './quickActions/types';
-import { QuickActionEmpty } from './QuickActionEmpty';
+import { QuickAction } from '../quickActions/QuickAction';
+import { useQuickAction } from '../quickActions/useQuickAction';
+import { QuickAction as QuickActionData } from '../quickActions/types';
+import { QuickActionEmpty } from '../quickActions/QuickActionEmpty';
 import { useTranslation } from 'react-i18next';
 
 export interface IOmnibarProps {}

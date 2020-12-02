@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
-import { addVectors } from '../../../utils/math';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
-import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
-import { useRoomViewport } from '../../room/RoomViewport';
-import { actions as roomActions } from '../../room/roomSlice';
-import { WidgetData, WidgetType, LinkWidgetData } from '../../../types/room';
-import { Vector2 } from '../../../types/spatials';
-import { useGetLinkData } from '../../room/widgets/link/useGetLinkData';
+import { addVectors } from '../../../../utils/math';
+import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import { useCoordinatedDispatch } from '../../../room/CoordinatedDispatchProvider';
+import { useRoomViewport } from '../../../room/RoomViewport';
+import { actions as roomActions } from '../../../room/roomSlice';
+import { WidgetData, WidgetType, LinkWidgetData } from '../../../../types/room';
+import { Vector2 } from '../../../../types/spatials';
+import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 
 /**
  * Creates a new accessory near the center of the user's viewport,

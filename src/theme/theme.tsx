@@ -159,7 +159,17 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   // only used to extract some MUI theme tools that can be
   // used in the overrides below, such as computed color palettes and
   // font sizing utils
-  const { typography, palette, spacing, transitions, shape, mainShadows, focusRings, zIndex } = createMuiTheme({
+  const {
+    typography,
+    palette,
+    spacing,
+    transitions,
+    shape,
+    mainShadows,
+    focusRings,
+    zIndex,
+    breakpoints,
+  } = createMuiTheme({
     palette: finalPalette,
     typography: {
       fontWeightMedium: SEMIBOLD_WEIGHT,
@@ -802,6 +812,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           boxShadow: mainShadows.surface,
           borderRadius: shape.borderRadius,
         },
+        paperFullWidth: {
+          [breakpoints.down('sm')]: {
+            width: `calc(100% - 32px)`,
+            margin: spacing(2),
+          },
+        },
         paperWidthXs: {
           // this is to support the xs break point option
           // for alert style dialogs, since we currently
@@ -822,6 +838,16 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiDialogActions: {
         root: {
           padding: '0 32px 32px 32px',
+        },
+      },
+      MuiDrawer: {
+        paper: {
+          padding: spacing(1.5),
+        },
+        paperAnchorBottom: {
+          borderTopRightRadius: shape.borderRadius,
+          borderTopLeftRadius: shape.borderRadius,
+          maxHeight: '90vh',
         },
       },
       MuiSvgIcon: {

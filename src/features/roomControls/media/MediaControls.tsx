@@ -1,4 +1,4 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { Box, makeStyles, Hidden } from '@material-ui/core';
 import * as React from 'react';
 import { CameraToggle } from './CameraToggle';
 import { MicToggle } from './MicToggle';
@@ -17,7 +17,9 @@ export const MediaControls = () => {
     <Box display="flex" flexDirection="row" alignItems="center" color="grey.900" pl={1}>
       <CameraToggle className={classes.toggleButton} />
       <MicToggle className={classes.toggleButton} />
-      <ScreenShareToggle className={classes.toggleButton} />
+      <Hidden smDown>
+        <ScreenShareToggle className={classes.toggleButton} />
+      </Hidden>
     </Box>
   );
 };

@@ -17,6 +17,7 @@ import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { ParticipantState } from '../../constants/twilio';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
+import { Hidden } from '@material-ui/core';
 
 interface IRoomProps {}
 
@@ -70,7 +71,9 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
       uiControls={
         <>
           <RoomControls />
-          <ViewportControls />
+          <Hidden smDown>
+            <ViewportControls />
+          </Hidden>
         </>
       }
       data-test-room

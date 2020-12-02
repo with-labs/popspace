@@ -60,7 +60,7 @@ export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value }) => {
 
   return (
     <div className={classes.root}>
-      {avatarOptions.map((avatar, idx) => (
+      {avatarOptions.map((avatar) => (
         <ButtonBase
           key={avatar.name}
           onClick={() => onChange(avatar.name)}

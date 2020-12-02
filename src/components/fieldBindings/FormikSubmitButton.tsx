@@ -18,15 +18,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.focusRings.create(theme.palette.grey[500]),
     color: theme.palette.grey[500],
   },
-  wrapper: {
-    position: 'relative',
-  },
   spinner: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -20,
-    marginLeft: -12,
+    margin: 'auto',
   },
 }));
 
@@ -54,18 +47,15 @@ export const FormikSubmitButton: React.FC<FormikSubmitButtonProps> = ({
   // loading state - not natively supported by MUI (yet) but it makes sense to put here.
   if (context.isSubmitting) {
     return (
-      <div className={classes.wrapper}>
-        <Button type="submit" disabled className={classes.loading} {...props}></Button>
+      <Button type="submit" disabled className={classes.loading} {...props}>
         <CircularProgress size={24} className={classes.spinner} />
-      </div>
+      </Button>
     );
   }
 
   return (
-    <div className={classes.wrapper}>
-      <Button type="submit" disabled={!context.isValid || disabled} {...props}>
-        {showError ? firstValidationError.toString() : children}
-      </Button>
-    </div>
+    <Button type="submit" disabled={!context.isValid || disabled} {...props}>
+      {showError ? firstValidationError.toString() : children}
+    </Button>
   );
 };

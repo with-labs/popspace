@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Api, { BaseResponse } from '../../utils/api';
+import Api from '../../utils/api';
 import { Link, Box, makeStyles, Typography } from '@material-ui/core';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
-import { USER_SESSION_TOKEN } from '../../constants/User';
 
 import { DashboardItem } from './DashboardItem/DashboardItem';
 import { RoomSummary } from './RoomSummary/RoomSummary';
 import { Header } from '../../components/Header/Header';
 import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
-import { ErrorTypes } from '../../constants/ErrorType';
-import { sessionTokenExists } from '../../utils/SessionTokenExists';
+import { ErrorCodes } from '../../constants/ErrorCodes';
+import { sessionTokenExists, getSessionToken, removeSessionToken } from '../../utils/sessionToken';
 import { useTranslation } from 'react-i18next';
 import { Page } from '../../Layouts/Page/Page';
-import { ErrorModal } from '../../components/ErrorModal/ErrorModal';
 import { logger } from '../../utils/logger';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
+import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
+
+import { getErrorDialogText } from '../../utils/ErrorMessage';
 
 interface IDashboardProps {}
 
@@ -63,20 +65,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // TODO: refine error state handler, unify to use BaseResponse
-
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(!sessionTokenExists(localStorage.getItem(USER_SESSION_TOKEN)));
+  const [isLoading, setIsLoading] = useState(!sessionTokenExists(getSessionToken()));
   const [error, setError] = useState<ErrorInfo>(null!);
   const [user, setUser] = useState<UserInfo>(null!);
   const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
-  const [errorMsg, setErrorMsg] = useState<BaseResponse | null>(null);
   const { t } = useTranslation();
+  const query = useQueryParams();
+
+  // check to see if we have url error code and set it as the default error if we have it
+  const errorInfo = query.get('e');
+  const [errorMsg, setErrorMsg] = useState<DialogMessage | null>(getErrorDialogText(errorInfo as ErrorCodes, t));
 
   // run this on mount
   useEffect(() => {
-    const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
+    const sessionToken = getSessionToken();
     if (sessionTokenExists(sessionToken)) {
       setIsLoading(true);
       // TODO: replace this with the updated api
@@ -92,14 +97,14 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
             setRooms(result.profile.rooms);
           } else {
             // we dont have a valid token, so redirect to sign in and remove old token
-            localStorage.removeItem(USER_SESSION_TOKEN);
+            removeSessionToken();
             history.push(RouteNames.SIGN_IN);
           }
         })
         .catch((e: any) => {
           logger.error(`Error calling api call getProfile`, e);
           setError({
-            errorType: ErrorTypes.UNEXPECTED,
+            errorCode: ErrorCodes.UNEXPECTED,
             error: e,
           });
         })
@@ -132,7 +137,15 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   );
 
   const onRoomSummaryError = (msg: string) => {
-    setErrorMsg({ message: msg } as BaseResponse);
+    setErrorMsg({ body: msg, title: t('error.noteError.title') } as DialogMessage);
+  };
+
+  const clearUrlError = () => {
+    if (errorInfo) {
+      // remove the error from the query string when the user has cleared
+      // the error
+      history.replace(RouteNames.ROOT);
+    }
   };
 
   return (
@@ -159,12 +172,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           </div>
         </Box>
       </Box>
-      <ErrorModal
-        open={!!errorMsg}
-        error={errorMsg!}
-        onClose={() => setErrorMsg(null)}
-        title={t('error.noteError.title')}
-      />
+      <DialogModal message={errorMsg} onClose={clearUrlError} />
     </Page>
   );
 };

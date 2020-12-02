@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
-import { USER_SESSION_TOKEN } from '../../constants/User';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
 import { logger } from '../../utils/logger';
+import { getSessionToken, setSessionToken } from '../../utils/sessionToken';
 
 interface ILoginWithEmailProps {}
 
@@ -20,41 +20,70 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
   const query = useQueryParams();
 
   // pull out the information we need from query string
-  //if we dont have the params, redirect to root
-  const otp = useMemo(() => query.get('otp'), [query]);
-  const uid = useMemo(() => query.get('uid'), [query]);
+  const otp = query.get('otp') || '';
+  const uid = query.get('uid') || null;
 
   useEffect(() => {
     setIsLoading(true);
-    // if opt, or the user id is empty, redirect to root
-    if (!otp || !uid) {
-      history.push(RouteNames.ROOT);
-    } else {
-      Api.logIn(otp, uid)
-        .then((result: any) => {
-          setIsLoading(false);
-          if (result.success) {
-            // set the session token
-            window.localStorage.setItem(USER_SESSION_TOKEN, result.token);
-            // redirect to the root
+    Api.logIn(otp, uid)
+      .then((result: any) => {
+        setIsLoading(false);
+        if (result.success) {
+          // user has successfully been signed in so we
+          // set the new session token for the user
+          setSessionToken(result.token);
+          // redirect to the root
+          history.push(RouteNames.ROOT);
+        } else if (result.errorCode === ErrorCodes.INVALID_OTP) {
+          // OTP is invalid
+          if (getSessionToken()) {
+            // check to see if the user has a session token stored, if they do
+            // then redirect to the dashboard.
+            history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
+          } else {
+            // user is not signed in, redirect to the sign in page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
+          }
+        } else if (result.errorCode === ErrorCodes.EXPIRED_OTP) {
+          // OTP is expired
+          // check to see if the user has a session token set
+          if (getSessionToken()) {
+            // if the user has a session token, its safe to assume they are logged in
+            // so kick the user into their dashboard
             history.push(RouteNames.ROOT);
           } else {
-            setError({
-              errorType: ErrorTypes.LINK_EXPIRED,
-              error: result,
-            });
+            // if the user is not logged in, redirect to signin page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.EXPIRED_OTP}`);
           }
-        })
-        .catch((e: any) => {
-          setIsLoading(false);
-          logger.error(`Error using room for ${uid}`, e);
+        } else if (result.errorCode === ErrorCodes.RESOLVED_OTP) {
+          // OTP has already been claimed
+          // this link has already been clicked before
+          // check to see if the user has a session token set
+          if (getSessionToken()) {
+            // if the user has a session token, its safe to assume they are logged in
+            // so kick the user into their dashboard
+            history.push(RouteNames.ROOT);
+          } else {
+            // if the user is not logged in, redirect to signin page with invalid link error
+            history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.RESOLVED_OTP}`);
+          }
+        } else {
+          logger.error(`Error in LoginWithEmail for ${uid}`, result.message, result.errorCode);
           setError({
-            errorType: ErrorTypes.UNEXPECTED,
-            error: e,
+            errorCode: ErrorCodes.UNEXPECTED,
+            error: result,
           });
+        }
+      })
+      .catch((e: any) => {
+        setIsLoading(false);
+        logger.error(`Error in LoginWithEmail for ${uid}`, e);
+        setError({
+          errorCode: ErrorCodes.UNEXPECTED,
+          error: e,
         });
-    }
-  }, [history, otp, uid]);
+      });
+  }, [otp, uid, history]);
 
   return <Page isLoading={isLoading} error={error} />;
 };

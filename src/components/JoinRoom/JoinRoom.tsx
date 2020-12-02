@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useJoin } from '../../hooks/useJoin/useJoin';
 import { makeStyles, Container, CircularProgress } from '@material-ui/core';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import clsx from 'clsx';
+import { ErrorInfo } from '../../types/api';
 
 interface IJoinRoomProps {
   roomName: string;
@@ -24,16 +25,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  loadedBackground: {
-    backgroundColor: theme.palette.brandColors.sand.regular,
-  },
 }));
 
 const JoinRoom = ({ roomName }: IJoinRoomProps) => {
   const classes = useStyles();
   const [join] = useJoin(roomName);
 
-  const [errorPageInfo, setErrorPageInfo] = React.useState<{ errorType: ErrorTypes } | null>(null);
+  const [errorPageInfo, setErrorPageInfo] = React.useState<ErrorInfo | null>(null);
 
   // attempt an auto-login first
   React.useEffect(() => {
@@ -41,17 +39,17 @@ const JoinRoom = ({ roomName }: IJoinRoomProps) => {
       // this just means the user can't auto-join
       // unknown error was thrown
       setErrorPageInfo({
-        errorType: ErrorTypes.INVALID_ROOM_PERMISSIONS,
+        errorCode: ErrorCodes.INVALID_ROOM_PERMISSIONS,
       });
     });
   }, [join]);
 
   if (errorPageInfo) {
-    return <ErrorPage type={errorPageInfo.errorType} />;
+    return <ErrorPage type={errorPageInfo.errorCode} />;
   }
 
   return (
-    <div className={clsx(classes.backdrop, classes.loadedBackground)}>
+    <div className={clsx(classes.backdrop)}>
       <Container className={classes.container} maxWidth="sm">
         <CircularProgress />
       </Container>

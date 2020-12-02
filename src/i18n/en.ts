@@ -31,8 +31,14 @@ export default {
           'You are currently logged is as {{email}} <br/> You might need to <3>sign out</3> and then sign in with a different email',
       },
       linkExpired: {
-        title: 'Oops, this link is not valid anymore',
-        body: 'Maybe the link has expired, or was revoked, or maybe you used this link already.',
+        title: 'FPO Oops, <br/> this link is not valid',
+        body: 'FPO Maybe the link has expired, was revoked, or maybe it was not copied correctly.',
+        quoteText: '',
+        altImgText: 'Link expired',
+      },
+      invalidLink: {
+        title: 'Oops, <br/> this link is not valid',
+        body: 'Maybe the link has expired, was revoked, or maybe it was not copied correctly.',
         quoteText: '',
         altImgText: 'Link expired',
       },
@@ -54,6 +60,19 @@ export default {
           'Our bad, something went wrong. We could show you some scary error message but you should just let us know :)',
         quoteText: '',
         altImgText: 'Unexpected',
+      },
+      claimLinkExpired: {
+        title: 'Your invite link has expired',
+        body: 'The most likely explanation is that your invite link is too old. Contact us and we will sort it out!',
+        quoteText: '',
+        altImgText: 'TBD',
+      },
+      joinRoomExpired: {
+        title: 'Your invite link has expired',
+        body:
+          'The most likely explanation is that your invite link is too old.\n\nPlease ask the room owner to invite you to the room again.',
+        quoteText: '',
+        altImgText: 'TBD',
       },
     },
     pages: {
@@ -197,11 +216,21 @@ export default {
       },
     },
     error: {
+      modal: {
+        RESOLVED_OTP: {
+          title: 'This link has already been used.',
+          body: 'For your security, some links can only be used once.',
+        },
+        INVALID_LINK: {
+          title: 'Oops, this link appears to be incomplete.',
+          body: 'If you copied the link from an email, please make sure you copy the complete link.',
+        },
+      },
       messages: {
         provideValidEmail: 'Please provide a valid email.',
         provideValidUrl: 'Please provide a valid URL.',
         provideValidYoutubeUrl: 'Please provide a valid YouTube URL',
-        malformedUrl: 'Malformed URL. Please check to make sure URL has been properly copied from the email.',
+        malformedUrl: 'Please check to make sure URL has been properly copied from the email.',
         mobileNotOptimized:
           "With is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         chromeOnIosRestrictions:

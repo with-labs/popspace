@@ -1,14 +1,13 @@
 import { useState, useCallback } from 'react';
 import api from '../../utils/api';
 import useVideoContext from '../useVideoContext/useVideoContext';
-import { getSessionToken } from '../../utils/getSessionToken';
+import { getSessionToken } from '../../utils/sessionToken';
 import { useTranslation } from 'react-i18next';
 import { ErrorCodes } from '../../constants/ErrorCodes';
-import { ErrorTypes } from '../../constants/ErrorType';
 
 export class JoinError extends Error {}
 export class FatalError extends Error {
-  constructor(message: string, public errorType: ErrorTypes) {
+  constructor(message: string, public errorCode: ErrorCodes) {
     super(message);
   }
 }
@@ -55,7 +54,7 @@ export function useJoin(roomName: string) {
             } else if (result.errorCode === ErrorCodes.INVALID_USER_IDENTITY) {
               throw new JoinError(t('error.messages.joinRoomInvalidScreenName'));
             } else if (result.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-              throw new FatalError(t('error.messages.unknownRoom'), ErrorTypes.ROOM_NOT_FOUND);
+              throw new FatalError(t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
             } else {
               throw new JoinError(t('error.messages.joinRoomUnknownFailure'));
             }

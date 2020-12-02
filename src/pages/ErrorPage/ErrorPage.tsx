@@ -1,13 +1,16 @@
 import React from 'react';
-import { ErrorTypes } from '../../constants/ErrorType';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 import { InvalidRoomPermission } from './ErrorPages/InvalidRoomPermission';
 import { LinkExpired } from './ErrorPages/LinkExpired';
+import { InvalidLink } from './ErrorPages/InvalidLink';
 import { PageNotFound } from './ErrorPages/PageNotFound';
 import { RoomNotFound } from './ErrorPages/RoomNotFound';
 import { Unexpected } from './ErrorPages/Unexpected';
+import { ClaimLinkExpired } from './ErrorPages/ClaimLinkExpired';
+import { JoinRoomExpired } from './ErrorPages/JoinRoomExpired';
 
 interface IErrorPageProps {
-  type: ErrorTypes;
+  type: ErrorCodes;
   errorMessage?: string;
 }
 
@@ -17,20 +20,29 @@ export const ErrorPage: React.FC<IErrorPageProps> = (props) => {
   const { type, errorMessage } = props;
   var errorPage = <Unexpected errorMsg={errorMessage} />;
   switch (type) {
-    case ErrorTypes.INVALID_ROOM_PERMISSIONS:
+    case ErrorCodes.INVALID_ROOM_PERMISSIONS:
       errorPage = <InvalidRoomPermission errorMsg={errorMessage} />;
       break;
-    case ErrorTypes.LINK_EXPIRED:
+    case ErrorCodes.LINK_EXPIRED:
       errorPage = <LinkExpired errorMsg={errorMessage} />;
       break;
-    case ErrorTypes.PAGE_NOT_FOUND:
+    case ErrorCodes.INVALID_LINK:
+      errorPage = <InvalidLink errorMsg={errorMessage} />;
+      break;
+    case ErrorCodes.PAGE_NOT_FOUND:
       errorPage = <PageNotFound errorMsg={errorMessage} />;
       break;
-    case ErrorTypes.ROOM_NOT_FOUND:
+    case ErrorCodes.ROOM_NOT_FOUND:
       errorPage = <RoomNotFound errorMsg={errorMessage} />;
       break;
-    case ErrorTypes.UNEXPECTED:
+    case ErrorCodes.UNEXPECTED:
       errorPage = <Unexpected errorMsg={errorMessage} />;
+      break;
+    case ErrorCodes.CLAIM_LINK_EXPIRED:
+      errorPage = <ClaimLinkExpired errorMsg={errorMessage} />;
+      break;
+    case ErrorCodes.JOIN_ROOM_LINK_EXPIRED:
+      errorPage = <JoinRoomExpired errorMsg={errorMessage} />;
       break;
   }
 

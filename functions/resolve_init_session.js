@@ -9,7 +9,16 @@ lib.util.env.init(require("./env.json"))
  */
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const otp = context.params.otp;
-  const uid = context.params.uid;
+  let uid = context.params.uid;
+  try {
+    if(!otp || !uid) {
+      throw "Otp required"
+    }
+
+    uid = parseInt(uid)
+  } catch {
+    return await lib.db.otp.handleAuthFailure(lib.db.ErrorCodes.otp.INVALID_OTP, callback)
+  }
 
   const result = await db.accounts.resolveLoginRequest(uid, otp)
   if(result.error != null) {

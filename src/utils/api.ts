@@ -1,5 +1,5 @@
 import { ErrorCodes } from '../constants/ErrorCodes';
-import { getSessionToken } from './getSessionToken';
+import { getSessionToken } from './sessionToken';
 
 export type BaseResponse = {
   success: boolean;
@@ -28,6 +28,15 @@ export type ApiRoom = {
   priority_level: number;
 };
 
+export type ApiOpenGraphResult = {
+  url: string;
+  title?: string;
+  image?: string;
+  description?: string;
+  type: string;
+  site_name?: string;
+};
+
 export type ApiRoomMember = {
   display_name: string;
   email: string;
@@ -49,7 +58,7 @@ class Api {
     return await this.post('/request_init_session', { email });
   }
 
-  async logIn(otp: string, uid: string) {
+  async logIn(otp: string, uid: string | null) {
     return await this.post('/resolve_init_session', { otp, uid });
   }
 
@@ -87,19 +96,19 @@ class Api {
     return await this.post<BaseResponse & { result: ApiRoomMember[] }>('/room_get_members', { roomName });
   }
 
-  async resolveRoomInvite(otp: string, inviteId: string) {
+  async resolveRoomInvite(otp: string, inviteId: string | null) {
     return await this.post('/resolve_room_invite', { otp, inviteId });
   }
 
-  async registerThroughInvite(data: any, otp: string, inviteId: string) {
+  async registerThroughInvite(data: any, otp: string, inviteId: string | null) {
     return await this.post('/register_through_invite', { data, otp, inviteId });
   }
 
-  async registerThroughClaim(data: any, otp: string, claimId: string) {
+  async registerThroughClaim(data: any, otp: string, claimId: string | null) {
     return await this.post('/register_through_claim', { data, otp, claimId });
   }
 
-  async resolveRoomClaim(otp: string, claimId: string) {
+  async resolveRoomClaim(otp: string, claimId: string | null) {
     return await this.post('/resolve_room_claim', { otp, claimId });
   }
 
@@ -131,6 +140,12 @@ class Api {
     return await this.post<BaseResponse & { uploadUrl: string; downloadUrl: string }>('/get_room_file_upload_url', {
       fileName,
       contentType,
+    });
+  }
+
+  async getOpenGraph(url: string) {
+    return await this.post<BaseResponse & { result: ApiOpenGraphResult }>('/opengraph', {
+      url,
     });
   }
 

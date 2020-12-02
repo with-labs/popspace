@@ -1,11 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { useJoin } from './useJoin';
 import mockUseVideoContext from '../useVideoContext/useVideoContext';
-import { getSessionToken as mockGetSessionToken } from '../../utils/getSessionToken';
+import { getSessionToken as mockGetSessionToken } from '../../utils/sessionToken';
 import mockApi from '../../utils/api';
 
 jest.mock('../../hooks/useVideoContext/useVideoContext');
-jest.mock('../../utils/getSessionToken');
+jest.mock('../../utils/sessionToken');
 jest.mock('../../utils/api');
 
 const mockConnect = jest.fn();

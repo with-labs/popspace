@@ -2,7 +2,7 @@ import * as React from 'react';
 import { makeStyles, StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import { mandarin as theme } from './theme/theme';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Router } from 'react-router';
 import AppStateProvider from './state';
 import { Routes } from './Routes';
 import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
@@ -11,6 +11,7 @@ import { featureFlags } from './featureFlags';
 import { ReactQueryCacheProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { queryCache } from './queryCache';
+import history from './history';
 
 export interface IAppProps {}
 
@@ -62,7 +63,7 @@ export const App: React.FC<IAppProps> = () => {
             <MuiThemeProvider theme={theme}>
               <SnackbarWrapper>
                 <CssBaseline />
-                <Router>
+                <Router history={history}>
                   <AppStateProvider>
                     <Routes />
                   </AppStateProvider>

@@ -13,18 +13,22 @@ global.lib.util = require("./util/index.js")
 global.lib.db = require("./db/index.js")
 global.lib.email = require("./email/index.js")
 global.lib.s3 = require("./s3/s3.js")
+global.lib.opengraph = require("./opengraph/opengraph")
 
 lib.init = async (appUrl) => {
   global.gcfg = {
     appUrl: () => appUrl
   }
-  await lib.db.init()
-  await lib.s3.init()
+  // order is not important, running in parallel
+  await Promise.all([lib.db.init(), lib.s3.init(), lib.opengraph.init()])
 }
 
 lib.cleanup = async () => {
-  await lib.db.cleanup()
-  await lib.s3.cleanup()
+  await Promise.all([
+    lib.db.cleanup(),
+    lib.s3.cleanup(),
+    lib.opengraph.cleanup()
+  ])
 }
 
 global.util = lib.util

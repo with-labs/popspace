@@ -1,4 +1,4 @@
-import { ErrorTypes } from '../constants/ErrorType';
+import { ErrorCodes } from '../constants/ErrorCodes';
 
 // data types from the backend
 export type RoomInfo = {
@@ -21,6 +21,6 @@ export type UserInfo = {
 
 // TODO: update error object once we bring that into line
 export type ErrorInfo = {
-  errorType: ErrorTypes;
+  errorCode: ErrorCodes;
   error?: { [key: string]: any };
 };

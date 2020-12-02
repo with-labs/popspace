@@ -28,11 +28,13 @@ import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWr
 
 import { cherry, snow } from '../../../../theme/theme';
 import Api from '../../../../utils/api';
-import { ErrorModal } from '../../../../components/ErrorModal/ErrorModal';
 import { useSnackbar } from 'notistack';
 import { BaseResponse } from '../../../../utils/api';
 import { ErrorCodes } from '../../../../constants/ErrorCodes';
 import { logger } from '../../../../utils/logger';
+
+import { DialogModal, DialogMessage } from '../../../../components/DialogModal/DialogModal';
+import { getErrorMessageFromResponse } from '../../../../utils/ErrorMessage';
 
 export type UserListMemberInfo = {
   avatar_url: string | null;
@@ -68,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomName }) => {
   const classes = useStyles();
-  const [error, setError] = useState<BaseResponse | null>(null);
+  const [error, setError] = useState<DialogMessage | null>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [isBusy, setIsBusy] = useState(false);
 
@@ -83,6 +85,13 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   const { t } = useTranslation();
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+
+  const formatErrorMessage = (response: BaseResponse) => {
+    return {
+      title: t('common.error'),
+      body: getErrorMessageFromResponse(response, t) ?? '',
+    };
+  };
 
   const onMenuOpenHandler = (event: React.MouseEvent<HTMLElement>, memberIndex: number) => {
     // close any existing menu we have
@@ -112,14 +121,16 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
       if (result.success) {
         enqueueSnackbar(t('modals.inviteUserModal.resendInviteSuccess'), { variant: 'success' });
       } else {
-        setError(result);
+        setError(formatErrorMessage(result));
       }
     } catch (err) {
       logger.error(`Error memberlist invite resend handler`, err);
-      setError({
-        success: false,
-        errorCode: ErrorCodes.UNEXPECTED,
-      });
+      setError(
+        formatErrorMessage({
+          success: false,
+          errorCode: ErrorCodes.UNEXPECTED,
+        })
+      );
     } finally {
       setIsBusy(false);
     }
@@ -133,14 +144,16 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {
-        setError(result);
+        setError(formatErrorMessage(result));
       }
     } catch (err) {
       logger.error(`Error memberlist cancel invite handler`, err);
-      setError({
-        success: false,
-        errorCode: ErrorCodes.UNEXPECTED,
-      });
+      setError(
+        formatErrorMessage({
+          success: false,
+          errorCode: ErrorCodes.UNEXPECTED,
+        })
+      );
     } finally {
       setIsBusy(false);
     }
@@ -159,14 +172,16 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {
-        setError(result);
+        setError(formatErrorMessage(result));
       }
     } catch (err) {
       logger.error(`Error memberlist remove handler`, err);
-      setError({
-        success: false,
-        errorCode: ErrorCodes.UNEXPECTED,
-      });
+      setError(
+        formatErrorMessage({
+          success: false,
+          errorCode: ErrorCodes.UNEXPECTED,
+        })
+      );
     } finally {
       setIsBusy(false);
     }
@@ -261,7 +276,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
           </ThemeProvider>
         </ModalActions>
       </Modal>
-      <ErrorModal open={!!error} error={error!} onClose={() => setError(null)} />
+      <DialogModal message={error} onClose={() => setError(null)} />
     </Box>
   );
 };

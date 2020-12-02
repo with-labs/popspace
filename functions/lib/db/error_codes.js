@@ -2,16 +2,15 @@ module.exports = {
   // Don't use 0 since it's false-y and is fertile grounds for programming error
   UNEXPECTER_ERROR: -1,
   otp: {
-    INVALID_OTP: 1,
-    EXPIRED_OTP: 2,
-    RESOLVED_OTP: 3,
+    INVALID_OTP: "INVALID_OTP",
+    EXPIRED_OTP: "EXPIRED_OTP",
+    RESOLVED_OTP: "RESOLVED_OTP",
     INVALID_ACTION: "INVALID_ACTION",
   },
 
   room: {
-    // TODO: migrate all error codes to strings
-    JOIN_FAIL_NO_SUCH_USER: 1,
-    JOIN_ALREADY_MEMBER: 2,
+    JOIN_FAIL_NO_SUCH_USER: 'JOIN_FAIL_NO_SUCH_USER',
+    JOIN_ALREADY_MEMBER: 'JOIN_ALREADY_MEMBER',
     TOO_MANY_OWNED_ROOMS: "TOO_MANY_OWNED_ROOMS",
     ALREADY_INVITED: "ALREADY_INVITED",
     UNKNOWN_ROOM: "UNKNOWN_ROOM",

@@ -6,6 +6,7 @@ import { makeStyles, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
+import { useGetLinkData } from './useGetLinkData';
 
 export interface IEditLinkWidgetFormProps {
   onSave: (data: LinkWidgetData) => any;
@@ -45,13 +46,14 @@ export const EditLinkWidgetForm: React.FC<IEditLinkWidgetFormProps> = ({ initial
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const handleSave = (values: LinkWidgetData) => {
-    // for now we just use the URL as the title, until we can do some basic web scraping.
-    onSave({
-      url: values.url.trim(),
-      title: values.url.trim(),
-    });
-  };
+  const getLinkData = useGetLinkData();
+  const handleSave = React.useCallback(
+    async (values: LinkWidgetData) => {
+      const data = await getLinkData(values.url);
+      onSave(data);
+    },
+    [getLinkData, onSave]
+  );
 
   return (
     <Formik initialValues={initialValues} onSubmit={handleSave} validateOnMount>

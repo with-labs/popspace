@@ -107,11 +107,9 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
           const response = await Api.sendRoomInvite(roomName, values.inviteeEmail);
           if (response.success) {
             // update query cache for members list query
-            console.log('update cache');
             cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName }], (cur) => ({
               result: [...(cur?.result ?? []), response.newMember],
             }));
-            console.debug(cache.getQueryData([ROOM_MEMBERS_QUERY, { roomName }]));
           } else {
             // TODO: convert to try/catch when api module throws errors
             setDialogError(formatErrorMessage(new ApiError(response)));

@@ -3,7 +3,7 @@ import { GenericErrorPage } from './GenericErrorPage';
 import { RouteNames } from '../../../constants/RouteNames';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LinkBrokenImg from '../images/Link_Broken.png';
+import linkExpiredImg from '../images/Expired_join_room.png';
 
 interface IJoinRoomExpiredProps {
   errorMsg?: string;
@@ -26,7 +26,7 @@ export const JoinRoomExpired: React.FC<IJoinRoomExpiredProps> = (props) => {
       title={t('errorPages.joinRoomExpired.title')}
       body={t('errorPages.joinRoomExpired.body')}
       errorMessage={errorMsg}
-      imgSrc={LinkBrokenImg}
+      imgSrc={linkExpiredImg}
       imgAltText={t('errorPages.joinRoomExpired.altImgText')}
     />
   );

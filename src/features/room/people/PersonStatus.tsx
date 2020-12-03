@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottomLeftRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.mainShadows.surface,
-    padding: `${theme.spacing(0.5)}px ${theme.spacing(1)}px`,
+    padding: `${theme.spacing(1)}px`,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -45,14 +45,14 @@ const useStyles = makeStyles((theme) => ({
   },
   emoji: {
     fontSize: 18,
-    lineHeight: 1,
+    lineHeight: 0,
   },
   text: {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
   input: {
-    minWidth: 215,
+    minWidth: 224,
     marginLeft: theme.spacing(1),
   },
 }));
@@ -137,7 +137,6 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
           </IconButton>
           <FilledInput
             placeholder={t('features.status.placeholder')}
-            margin="dense"
             autoFocus
             onFocus={handleFocusSelectAll}
             className={classes.input}

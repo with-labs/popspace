@@ -6,7 +6,7 @@ import { Header } from '../../components/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
 import Api from '../../utils/api';
-import { Button, TextField, makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
 import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
@@ -17,16 +17,31 @@ import { ErrorCodes } from '../../constants/ErrorCodes';
 import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
 import { getErrorDialogText } from '../../utils/ErrorMessage';
 import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { TFunction } from 'i18next';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
 
 import signinImg from '../../images/SignIn.png';
+
+export type SignInFormData = {
+  email: string;
+};
+
+const EMPTY_VALUES: SignInFormData = {
+  email: '',
+};
+
+function validateEmail(email: string, translate: TFunction) {
+  if (!isEmailValid(email)) {
+    return translate('error.messages.provideValidEmail');
+  }
+}
 
 interface ISigninProps {}
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    marginBottom: theme.spacing(5),
-  },
-  emailInput: {
     marginBottom: theme.spacing(5),
   },
 }));
@@ -36,7 +51,6 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [emailError, setEmailError] = useState('');
   const { t } = useTranslation();
   const { currentUserProfile, isLoading } = useCurrentUserProfile();
 
@@ -54,32 +68,25 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     }
   }, [history, errorInfo, currentUserProfile]);
 
-  const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // clear any errors we have
-    setEmailError('');
-
-    const cleanEmail = email.trim();
-
-    // check if the email is valid or not
-    const isValid = isEmailValid(cleanEmail);
-
-    if (isValid) {
+  const onSubmit = async (data: SignInFormData, actions: FormikHelpers<SignInFormData>) => {
+    try {
+      const cleanEmail = data.email.trim();
       // TODO: fix typing
       const loginRequest: any = await Api.requestLoginOtp(cleanEmail);
       if (loginRequest.success) {
+        setEmail(cleanEmail);
         // we have sent off the magic link to the user, so render success page
         setShowConfirmation(true);
       } else {
         // we have an error
-        setEmailError(loginRequest.message);
+        actions.setFieldError('email', loginRequest.message);
       }
-    } else {
-      setEmailError(t('error.messages.provideValidEmail'));
+    } catch (e) {
+      actions.setFieldError('email', e.message);
     }
   };
 
-  const clearError = () => {
+  const clearUrlError = () => {
     if (errorInfo) {
       // remove the error from the query string when the user has cleared
       // the error
@@ -99,22 +106,21 @@ export const Signin: React.FC<ISigninProps> = (props) => {
               <Typography variant="h2" className={classes.title}>
                 {t('pages.signin.title')}
               </Typography>
-              <form onSubmit={onFormSubmit}>
-                <TextField
-                  id="SignIn-email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder={t('pages.signin.email.placeHolder')}
-                  label={t('pages.signin.email.label')}
-                  className={classes.emailInput}
-                  error={!!emailError}
-                  helperText={emailError}
-                  margin="normal"
-                />
-                <Button type="submit" disabled={!email.length}>
-                  {t('pages.signin.submitButtonText')}
-                </Button>
-              </form>
+              <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmit} validateOnMount>
+                <Form>
+                  <FormikTextField
+                    id="SignIn-email"
+                    name="email"
+                    placeholder={t('pages.signin.email.placeHolder')}
+                    label={t('pages.signin.email.label')}
+                    validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
+                    fullWidth
+                  />
+                  <Box mt={5}>
+                    <FormikSubmitButton>{t('pages.signin.submitButtonText')}</FormikSubmitButton>
+                  </Box>
+                </Form>
+              </Formik>
             </PanelContainer>
           </Column>
           <Column centerContent={true} hide="sm">
@@ -122,7 +128,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
           </Column>
         </TwoColLayout>
       )}
-      <DialogModal message={errorMsg} onClose={clearError} />
+      <DialogModal message={errorMsg} onClose={clearUrlError} />
     </Page>
   );
 };

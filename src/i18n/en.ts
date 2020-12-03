@@ -225,6 +225,10 @@ export default {
           title: 'Oops, this link appears to be incomplete.',
           body: 'If you copied the link from an email, please make sure you copy the complete link.',
         },
+        EXPIRED_OTP: {
+          title: 'This link has expired',
+          body: 'This one-time link has expired. Please sign in and request a new one-time link.',
+        },
       },
       messages: {
         provideValidEmail: 'Please provide a valid email.',

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
@@ -18,6 +18,8 @@ import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { ParticipantState } from '../../constants/twilio';
 import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 import { Hidden } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { actions } from './roomSlice';
 
 interface IRoomProps {}
 
@@ -50,8 +52,9 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const bounds = useSelector(selectors.selectRoomBounds);
   const widgetIds = useSelector(selectors.selectWidgetIds);
   const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
+  const dispatch = useDispatch();
 
-  const { allParticipants } = useVideoContext();
+  const { allParticipants, room } = useVideoContext();
   // only show participants who are actually connected
   const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
     allParticipants,
@@ -60,9 +63,20 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   // Start the mic track on load - but only on first load
   const { startAudio } = useLocalTracks();
   const initialStartAudio = React.useRef(startAudio);
-  React.useEffect(() => {
+  useEffect(() => {
     initialStartAudio.current();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      // When the room unmounts we should disconnect the user
+      // the main case for this is if a user hits the back button
+      // disconnecting from the room will prevent a user from doubling up
+      // if they rejoin the room after hitting back
+      room?.disconnect();
+      dispatch(actions.leave());
+    };
+  }, [room, dispatch]);
 
   return (
     <RoomViewport

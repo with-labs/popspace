@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as typeformEmbed from '@typeform/embed';
 import { useHistory } from 'react-router-dom';

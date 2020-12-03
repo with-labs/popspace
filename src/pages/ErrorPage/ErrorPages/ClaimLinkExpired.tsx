@@ -3,7 +3,7 @@ import { GenericErrorPage } from './GenericErrorPage';
 import { RouteNames } from '../../../constants/RouteNames';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LinkBrokenImg from '../images/Link_Broken.png';
+import linkExpiredImg from '../images/Expired_claim_link.png';
 
 interface IClaimLinkExpiredProps {
   errorMsg?: string;
@@ -26,7 +26,7 @@ export const ClaimLinkExpired: React.FC<IClaimLinkExpiredProps> = (props) => {
       title={t('errorPages.claimLinkExpired.title')}
       body={t('errorPages.claimLinkExpired.body')}
       errorMessage={errorMsg}
-      imgSrc={LinkBrokenImg}
+      imgSrc={linkExpiredImg}
       imgAltText={t('errorPages.claimLinkExpired.altImgText')}
     />
   );

@@ -8,9 +8,7 @@ interface IPanelContainerProps {
 const useStyles = makeStyles((theme) => ({
   container: {
     maxWidth: '100%',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-    },
+    width: '100%',
     [theme.breakpoints.up('md')]: {
       maxWidth: 340,
     },

@@ -20,6 +20,8 @@ import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTra
 import { Hidden } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { actions } from './roomSlice';
+import { useRoomName } from '../../hooks/useRoomName/useRoomName';
+import { PageTitle } from '../../components/PageTitle/PageTitle';
 
 interface IRoomProps {}
 
@@ -53,6 +55,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const widgetIds = useSelector(selectors.selectWidgetIds);
   const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
   const dispatch = useDispatch();
+  const roomName = useRoomName();
 
   const { allParticipants, room } = useVideoContext();
   // only show participants who are actually connected
@@ -92,6 +95,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
       }
       data-test-room
     >
+      <PageTitle title={roomName} />
       <ErrorBoundary fallback={() => <WidgetsFallback />}>
         {widgetIds.map((id) => (
           <Widget id={id} key={id} />

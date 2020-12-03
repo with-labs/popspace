@@ -8,6 +8,7 @@ export default {
       logout: 'Logout',
     },
     common: {
+      with: 'With',
       emailInput: {
         placeHolder: 'dorothy@emerald.so',
         label: 'Email Address',

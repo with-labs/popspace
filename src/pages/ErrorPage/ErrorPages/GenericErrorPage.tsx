@@ -3,6 +3,7 @@ import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
 import { Trans } from 'react-i18next';
+import { PageTitle } from '../../../components/PageTitle/PageTitle';
 
 interface IGenericErrorPageProps {
   buttonText: string;
@@ -15,6 +16,7 @@ interface IGenericErrorPageProps {
   imgAltText?: string;
   subMessage?: string | React.ReactElement;
   isLoading?: boolean;
+  pageTitle?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -67,10 +69,12 @@ export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
     imgAltText,
     subMessage,
     isLoading,
+    pageTitle,
   } = props;
 
   return (
     <main className={classes.root}>
+      <PageTitle title={pageTitle} />
       {isLoading ? (
         <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1}>
           <CircularProgress />
@@ -80,7 +84,9 @@ export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
           <Column centerContent={true} useColMargin={true}>
             <div className={classes.container}>
               <div>{quoteText}</div>
-              <Typography variant="h1"><Trans>{title}</Trans></Typography>
+              <Typography variant="h1">
+                <Trans>{title}</Trans>
+              </Typography>
               <Typography variant="body1" className={classes.bodyText}>
                 {body}
               </Typography>

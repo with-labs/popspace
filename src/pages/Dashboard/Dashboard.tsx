@@ -16,7 +16,6 @@ import { Page } from '../../Layouts/Page/Page';
 import { logger } from '../../utils/logger';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
-
 import { getErrorDialogText } from '../../utils/ErrorMessage';
 
 interface IDashboardProps {}

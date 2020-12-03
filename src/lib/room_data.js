@@ -11,9 +11,10 @@ class RoomData {
 
   async getRoomData(roomId) {
     const room = {}
-    room.widgets = await this.getWidgetsInRoom(roomId)
+    const widgetsInRoom = await this.getWidgetsInRoom(roomId)
+    room.widgets = widgetsInRoom.map((w) => (w.serialize()))
     room.id = roomId
-    room.state = {}
+    room.state = await this.dynamo.getRoomState(roomId)
     return room
   }
 
@@ -21,7 +22,7 @@ class RoomData {
     roomId = parseInt(roomId)
     const widgets = await shared.db.pg.massive.query(`
       SELECT
-        widgets.id AS id, widgets._type as type
+        widgets.id AS id, widgets._type as _type
       FROM
         widgets JOIN room_widgets ON widgets.id = room_widgets.widget_id
       WHERE
@@ -31,13 +32,13 @@ class RoomData {
         AND
         widgets.archived_at IS NULL
     `, [roomId])
-    return await this.dynamo.populateWidgetData(widgets, roomId)
+    return await this.dynamo.getRoomWidgets(widgets, roomId)
   }
 
-  async addWidget(widgetId, roomId, data, state) {
+  async addWidgetInRoom(roomWidget) {
     return Promise.all([
-      this.dynamo.setWidgetData(widgetId, data),
-      this.dynamo.setRoomWidgetState(widgetId, roomId, state)
+      this.dynamo.setWidgetData(roomWidget.widgetId(), roomWidget.widgetState()),
+      this.dynamo.setRoomWidgetState(roomWidget.widgetId(), roomWidget.roomId(), roomWidget.roomState())
     ])
   }
 

@@ -81,16 +81,18 @@ class Participant {
     this.send(JSON.stringify(object))
   }
 
-  sendResponse(requestEvent, response) {
+  sendResponse(requestEvent, response = {}) {
     this.sendObject(Object.assign({
-      requestId: requestEvent.data.id
+      requestId: requestEvent.data.id,
+      kind: "response" || response.kind
     }, response))
   }
 
   sendError(requestEvent, errorCode, errorMessage, errorObject={}) {
     this.sendResponse(requestEvent, Object.assign({
       code: errorCode,
-      message: errorMessage
+      message: errorMessage,
+      kind: "error"
     }, errorObject))
   }
 

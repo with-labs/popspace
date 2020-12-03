@@ -49,9 +49,16 @@ class CreateProcessor extends Processor {
         }
       }
     */
-    await lib.roomData.addWidget(widget.id, room.id, payload.widgetState, payload.roomState)
-    participants.broadcastFrom(event._sender, event._message)
-    return event._sender.sendResponse(event, { widgetId: widget.id, success: true })
+    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widgetState, payload.roomState)
+    await lib.roomData.addWidgetInRoom(roomWidget)
+    const createNotification = {
+      kind: "room/addWidget",
+      payload: {
+        widget: roomWidget.serialize()
+      }
+    }
+    participants.broadcastJsonFrom(createNotification)
+    return event._sender.sendResponse(event, createNotification)
   }
 }
 

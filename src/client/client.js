@@ -21,9 +21,15 @@ class Client {
         log.dev.debug(`${this.id} received ${message}`)
         try {
           const event = this.parseEvent(message)
-          this.promiseResolvers.forEach((resolver) => {
-            resolver(event)
-          })
+          if(this.promiseResolvers.length > 0) {
+            const newResolvers = []
+            this.promiseResolvers.forEach((resolver) => {
+              if(!resolver(event)) {
+                newResolvers.push(resolver)
+              }
+            })
+            this.promiseResolvers = newResolvers
+          }
         } catch(e) {
           // Not an event no problem, nothing to do
         }
@@ -104,7 +110,9 @@ class Client {
     const resolver = (receivedEvent) => {
       if(receivedEvent.requestId == event.id) {
         resolvePromise(receivedEvent)
+        return true
       }
+      return false
     }
     return {
       promise: promise,

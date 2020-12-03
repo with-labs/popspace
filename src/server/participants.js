@@ -45,6 +45,15 @@ class Sockets {
     })
   }
 
+  broadcastJsonFrom(json) {
+    return this.broadcastFrom(JSON.stringify(json))
+  }
+
+  broadcastJson(json) {
+    // Do we want to include generic meta-info, like the author of the message?
+    return this.broadcast(JSON.stringify(json))
+  }
+
   broadcast(message) {
     this.list().forEach((participant) => {
       participant.send(message)

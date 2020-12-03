@@ -7,6 +7,7 @@ global.log = lib.log
 global.shared = require("@withso/with-shared")
 lib.Client = require("../client/client")
 lib.ErrorCodes = require("./error_codes")
+lib.dto = require("./dto/_dto")
 
 const RoomData = require("./room_data")
 

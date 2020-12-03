@@ -23,7 +23,7 @@ class RoomDynamo {
     return `${process.env.NODE_ENV}_${tableNickname}`
   }
 
-  async populateWidgetData(widgets, roomId) {
+  async getRoomWidgets(widgets, roomId) {
     // dynamo only allows querying 1 primary key at a time
     // we could batch the request as an optimization,
     // but batching has limits we'd need to respect
@@ -33,58 +33,27 @@ class RoomDynamo {
     return Promise.all(widgets.map(async (widget) => {
       const widgetState = await this.getWidgetState(widget.id)
       const roomState = await this.getRoomWidgetState(widget.id, roomId)
-      widget.widgetState = widgetState
-      widget.roomState = roomState
+      const roomWidget = new lib.dto.RoomWidget(roomId, widget, widgetState, roomState)
+      return roomWidget
     }))
   }
 
+  async getRoomState(roomId) {
+    return await this.getByHash('room_states', 'room_id', parseInt(roomId))
+  }
+
   async getWidgetState(widgetId) {
-    const requestParams = {
-      TableName: this.tableName('widget_data'),
-      KeyConditionExpression: "#widget_id_attribute = :widget_id_value",
-      ExpressionAttributeNames:{
-          "#widget_id_attribute": "widget_id"
-      },
-      ExpressionAttributeValues: {
-          ":widget_id_value": parseInt(widgetId)
-      }
-    }
-    return new Promise((resolve, reject) => {
-      this.documentClient.query(requestParams, (err, data) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(data.Items.map((i) => {
-            i.state = JSON.parse(i.state)
-            return i
-          }))
-        }
-      })
-    })
+    return await this.getByHash('widget_data', 'widget_id', parseInt(widgetId))
   }
 
   async getRoomWidgetState(widgetId, roomId) {
-    const requestParams = {
-      TableName: this.tableName('room_widget_states'),
-      KeyConditionExpression: "#widget_id = :widget_id AND #room_id = :room_id",
-      ExpressionAttributeNames:{
-        "#widget_id": "widget_id",
-        "#room_id": "room_id"
-      },
-      ExpressionAttributeValues: {
-        ":widget_id": parseInt(widgetId),
-        ":room_id": parseInt(roomId)
-      }
-    }
-    return new Promise((resolve, reject) => {
-      this.documentClient.query(requestParams, (err, data) => {
-        if(err) {
-          reject(err)
-        } else {
-          resolve(data.Items)
-        }
-      })
-    })
+    return await this.getByHashAndRange(
+      'room_widget_states',
+      'room_id',
+      parseInt(roomId),
+      'widget_id',
+      parseInt(widgetId)
+    )
   }
 
   async setWidgetData(widgetId, data) {
@@ -252,6 +221,53 @@ class RoomDynamo {
     }))
 
     return await Promise.all(promises)
+  }
+
+
+  async getByHash(tableNickname, hashKey, hashValue) {
+    const requestParams = {
+      TableName: this.tableName(tableNickname),
+      KeyConditionExpression: "#attribute = :value",
+      ExpressionAttributeNames:{
+          "#attribute": hashKey
+      },
+      ExpressionAttributeValues: {
+          ":value": hashValue
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.documentClient.query(requestParams, (err, data) => {
+        if(err) {
+          reject(err)
+        } else {
+          resolve(data.Items)
+        }
+      })
+    })
+  }
+
+  async getByHashAndRange(tableNickname, hashKey, hashValue, rangeKey, rangeValue) {
+    const requestParams = {
+      TableName: this.tableName(tableNickname),
+      KeyConditionExpression: "#hkey = :hvalue AND #rkey = :rvalue",
+      ExpressionAttributeNames:{
+        "#hkey": hashKey,
+        "#rkey": rangeKey
+      },
+      ExpressionAttributeValues: {
+        ":hvalue": hashValue,
+        ":rvalue": rangeValue
+      }
+    }
+    return new Promise((resolve, reject) => {
+      this.documentClient.query(requestParams, (err, data) => {
+        if(err) {
+          reject(err)
+        } else {
+          resolve(data.Items)
+        }
+      })
+    })
   }
 
 

@@ -5,6 +5,8 @@ class MutateProcessor extends Processor {
     switch(event.data.kind) {
       case "room/moveObject":
         return this.moveObject(event, participants)
+      case "room/state":
+        return this.updateRoomState(event, participants)
       default:
         return event._sender.sendError(
           event,
@@ -15,6 +17,10 @@ class MutateProcessor extends Processor {
   }
 
   async moveObject(event, participants) {
+  }
+
+  async updateRoomState(event, participants) {
+
   }
 }
 

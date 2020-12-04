@@ -42,10 +42,19 @@ class Client {
   }
 
   async getRoomState() {
-    if(!this.ready) {
+    this.requireReady()
+    return this.sendEventWithPromise("room/getRoom", {})
+  }
+
+  async getWidgetState(widgetId) {
+    this.requireReady()
+    return this.sendEventWithPromise("room/getWidget", { widget_id: widgetId })
+  }
+
+  requireReady() {
+   if(!this.ready) {
       throw "Please connect"
     }
-    return this.sendEventWithPromise("room/get", {})
   }
 
   parseEvent(message) {

@@ -14,7 +14,7 @@ const runScenario = async () => {
   const testSuite = require(`../test/tests/${commander.test}/${commander.test}_scenarios.js`)
   await lib.init()
   const result = await testSuite[commander.scenario]()
-  console.log("Response: ", result)
+  console.log("Response: ", JSON.stringify(result))
   process.exit(0)
 }
 

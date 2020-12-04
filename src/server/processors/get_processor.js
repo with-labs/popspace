@@ -3,8 +3,10 @@ const Processor = require("./processor")
 class GetProcessor extends Processor {
   async process(event, participants) {
     switch(event.data.kind) {
-      case "room/get":
+      case "room/getRoom":
         return await this.respondRoomData(event, participants)
+      case "room/getWidget":
+        return await this.respondWidgetData(event, participants)
       default:
         return event._sender.sendError(
           event,
@@ -16,7 +18,12 @@ class GetProcessor extends Processor {
 
   async respondRoomData(event, participants) {
     const roomData = await lib.roomData.getRoomData(event._sender.room.id)
-    return await event._sender.sendResponse(event, { success: true, data: roomData })
+    return await event._sender.sendResponse(event, { success: true, payload: roomData })
+  }
+
+  async respondWidgetData(event, participants) {
+    const roomWidget = await lib.dto.RoomWidget.fromWidgetId(event.data.payload.widget_id, event._sender.room.id)
+    return await event._sender.sendResponse(event, { kind: "room/getWidget", payload: roomWidget.serialize() })
   }
 }
 

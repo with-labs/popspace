@@ -57,12 +57,20 @@ class RoomData {
     return this.dynamo.deleteWidget(roomIds, widgetId)
   }
 
-  async updateWidgetData(widgetId, data) {
-
+  async moveWidget(widgetId, roomId, toX, toY) {
+    return this.updateWidgetRoomState(widgetId, roomId, {x: toX, y: toY})
   }
 
-  async updateWidgetState(widgetId, state) {
+  async updateWidgetRoomState(widgetId, roomId, stateUpdate) {
+    const widgetRoomState = await this.dynamo.getRoomWidgetState(widgetId, roomId)
+    Object.assign(widgetRoomState, stateUpdate)
+    return await this.dynamo.setRoomWidgetState(widgetId, roomId, widgetRoomState)
+  }
 
+  async updateWidgetState(widgetId, stateUpdate) {
+    const widgetState = await this.dynamo.getWidgetState(widgetId, roomId)
+    Object.assign(widgetState, stateUpdate)
+    return await this.dynamo.setWidgetData(widgetId, roomState)
   }
 
 }

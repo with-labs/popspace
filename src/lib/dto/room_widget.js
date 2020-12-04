@@ -32,4 +32,15 @@ class RoomWidget {
     }
   }
 }
+
+RoomWidget.fromWidgetId = async (widgetId, roomId) => {
+  const pgWidgets = await shared.db.pg.massive.query(`
+    SELECT id, _type from widgets where id = $1
+  `, parseInt(widgetId))
+  if(pgWidgets.length < 1) {
+    return null
+  }
+  return await lib.roomData.dynamo.getRoomWidget(pgWidgets[0], roomId)
+}
+
 module.exports = RoomWidget

@@ -82,9 +82,13 @@ class Participant {
   }
 
   sendResponse(requestEvent, response = {}) {
+    // TODO:
+    // Do we want to establish a generic nested structure?
+    // { requestId, kind, payload: {}} ?
+    // We may want to specify "kind" differently then
     this.sendObject(Object.assign({
       requestId: requestEvent.data.id,
-      kind: "response" || response.kind
+      kind: response.kind || "response"
     }, response))
   }
 

@@ -31,29 +31,42 @@ class RoomDynamo {
     // An alternative could be to use range keys,
     // but it seems weird to arbitrarily introduce a static hash key.
     return Promise.all(widgets.map(async (widget) => {
-      const widgetState = await this.getWidgetState(widget.id)
-      const roomState = await this.getRoomWidgetState(widget.id, roomId)
-      const roomWidget = new lib.dto.RoomWidget(roomId, widget, widgetState, roomState)
-      return roomWidget
+      return this.getRoomWidget(widget, roomId)
     }))
   }
 
+  async getRoomWidget(widget, roomId) {
+    const widgetState = await this.getWidgetState(widget.id)
+    const roomState = await this.getRoomWidgetState(widget.id, roomId)
+    const roomWidget = new lib.dto.RoomWidget(roomId, widget, widgetState, roomState)
+    return roomWidget
+  }
+
   async getRoomState(roomId) {
-    return await this.getByHash('room_states', 'room_id', parseInt(roomId))
+    const entry = await this.getByHash('room_states', 'room_id', parseInt(roomId))
+    if(entry.length > 0) {
+      return JSON.parse(entry[0].state)
+    }
   }
 
   async getWidgetState(widgetId) {
-    return await this.getByHash('widget_data', 'widget_id', parseInt(widgetId))
+    const entry = await this.getByHash('widget_data', 'widget_id', parseInt(widgetId))
+    if(entry.length > 0) {
+      return JSON.parse(entry[0].state)
+    }
   }
 
   async getRoomWidgetState(widgetId, roomId) {
-    return await this.getByHashAndRange(
+    const entry = await this.getByHashAndRange(
       'room_widget_states',
       'room_id',
       parseInt(roomId),
       'widget_id',
       parseInt(widgetId)
     )
+    if(entry.length > 0) {
+      return JSON.parse(entry[0].state)
+    }
   }
 
   async setWidgetData(widgetId, data) {
@@ -92,15 +105,6 @@ class RoomDynamo {
       })
     })
   }
-
-  async updateWidgetData(widgetId, data) {
-
-  }
-
-  async updateWidgetState(widgetId, state) {
-
-  }
-
 
   // private
   async createRoomStatesTable() {

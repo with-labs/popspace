@@ -59,13 +59,38 @@ module.exports = {
     return {
       createResponse,
       beginWidgetCount: startRoomData.widgets.length,
-      endWidgetCount: getResponse.data.widgets.length
+      endWidgetCount: getResponse.payload.widgets.length
     }
   }),
 
-  "update_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+  "move_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
-    const response = await requestStickyNoteCreate(client)
-    return response
+    const auth = testEnvironment.loggedInUsers[0].auth
+    const widgetsInRoom = auth.data.room.widgets
+    let widget = null
+    if(widgetsInRoom.length < 1) {
+      const createResponse = await requestStickyNoteCreate(client)
+      widget = createResponse.payload.widget
+    } else {
+      widget = widgetsInRoom[0]
+    }
+    const beforeMove = Object.assign({}, widget)
+
+    const move = {
+      widget_id: widget.widget_id,
+      roomState: {
+        position: {
+          x: parseInt(beforeMove.roomState.position.x) + 30,
+          y: parseInt(beforeMove.roomState.position.y) + 60
+        }
+      }
+    }
+    await client.sendEventWithPromise("room/moveObject", move)
+    const newState = await client.getWidgetState(widget.widget_id)
+
+    return {
+      beforeMove,
+      afterMove: newState.payload
+    }
   })
 }

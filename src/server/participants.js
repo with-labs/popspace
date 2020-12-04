@@ -37,6 +37,10 @@ class Sockets {
     delete this.participants[participant.id]
   }
 
+  rebroadcast(event) {
+    return this.broadcastFrom(event._sender, event._message)
+  }
+
   broadcastFrom(sendingParticipant, message) {
     this.list().forEach((participant) => {
       if(participant != sendingParticipant) {

@@ -5,6 +5,7 @@ import useTrack from '../../hooks/useTrack/useTrack';
 import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { Provider } from 'react-redux';
 import store from '../../state/store';
+import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
@@ -76,9 +77,11 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+          <Provider store={store}>
+            <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
+          </Provider>
+        </MediaReadinessContext.Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
       expect(wrapper.container.querySelectorAll('audio').length).toBe(1);
@@ -93,14 +96,16 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <Provider store={store}>
-          <Publication
-            isLocal
-            publication={'mockPublication' as any}
-            objectId={'mockParticipant'}
-            disableAudio={true}
-          />
-        </Provider>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+          <Provider store={store}>
+            <Publication
+              isLocal
+              publication={'mockPublication' as any}
+              objectId={'mockParticipant'}
+              disableAudio={true}
+            />
+          </Provider>
+        </MediaReadinessContext.Provider>
       );
       expect(useTrack).toHaveBeenCalledWith('mockPublication');
       expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
@@ -110,11 +115,32 @@ describe('the Publication component', () => {
   it('should render null when there is no track', () => {
     mockUseTrack.mockImplementation(() => null);
     const wrapper = render(
-      <Provider store={store}>
-        <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-      </Provider>
+      <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
+        </Provider>
+      </MediaReadinessContext.Provider>
     );
     expect(useTrack).toHaveBeenCalledWith('mockPublication');
     expect(wrapper.container.querySelectorAll('*').length).toBe(0);
+  });
+
+  it('should render null when media is not ready (no user gesture yet)', () => {
+    mockUseTrack.mockImplementation(() => ({
+      kind: 'audio',
+      name: 'mic',
+      attach: jest.fn(),
+      detach: jest.fn(),
+      setPriority: jest.fn(),
+    }));
+    const wrapper = render(
+      <MediaReadinessContext.Provider value={{ isReady: false, onReady: jest.fn() }}>
+        <Provider store={store}>
+          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
+        </Provider>
+      </MediaReadinessContext.Provider>
+    );
+    expect(useTrack).toHaveBeenCalledWith('mockPublication');
+    expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
   });
 });

@@ -29,7 +29,7 @@ class AuthProcessor extends Processor {
         event,
         lib.ErrorCodes.AUTH_FAILED,
         "Invalid credentials",
-        { kind: "auth"}
+        { kind: "error"}
       )
     }
   }

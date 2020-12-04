@@ -94,6 +94,7 @@ class Participant {
 
   sendError(requestEvent, errorCode, errorMessage, errorObject={}) {
     this.sendResponse(requestEvent, Object.assign({
+      requestId: requestEvent.data.id,
       code: errorCode,
       message: errorMessage,
       kind: "error"

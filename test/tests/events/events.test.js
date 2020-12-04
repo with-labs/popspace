@@ -32,8 +32,12 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
   })
 
   test('updating widgets', async () => {
-    const response = await scenarios["update_a_widget"]()
-    expect(true)
+    const response = await scenarios["move_a_widget"]()
+    const positionBeforeMove = response.beforeMove.roomState.position
+    const positionAfterMove = response.afterMove.roomState.position
+    expect(parseInt(positionAfterMove.x) - parseInt(positionBeforeMove.x) == 30)
+    expect(parseInt(positionAfterMove.y) - parseInt(positionBeforeMove.y) == 60)
+
   })
 
 })

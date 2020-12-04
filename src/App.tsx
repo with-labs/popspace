@@ -12,6 +12,7 @@ import { ReactQueryCacheProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { queryCache } from './queryCache';
 import history from './history';
+import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 
 export interface IAppProps {}
 
@@ -65,7 +66,9 @@ export const App: React.FC<IAppProps> = () => {
                 <CssBaseline />
                 <Router history={history}>
                   <AppStateProvider>
-                    <Routes />
+                    <MediaReadinessProvider>
+                      <Routes />
+                    </MediaReadinessProvider>
                   </AppStateProvider>
                 </Router>
               </SnackbarWrapper>

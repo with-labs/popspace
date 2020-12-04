@@ -16,12 +16,12 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { ParticipantState } from '../../constants/twilio';
-import { useLocalTracks } from '../../components/LocalTracksProvider/useLocalTracks';
 import { Hidden } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { actions } from './roomSlice';
 import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
+import { EnterRoomModal } from '../roomControls/enterRoomModal/EnterRoomModal';
 
 interface IRoomProps {}
 
@@ -45,6 +45,7 @@ export const Room: React.FC<IRoomProps> = () => (
     <LocalVolumeDetector />
     <CleanupDisconnectedPeople />
     <UserSettingsModal />
+    <EnterRoomModal />
     <ChangelogModal />
     <OnboardingModal />
   </>
@@ -62,13 +63,6 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
     allParticipants,
   ]);
-
-  // Start the mic track on load - but only on first load
-  const { startAudio } = useLocalTracks();
-  const initialStartAudio = React.useRef(startAudio);
-  useEffect(() => {
-    initialStartAudio.current();
-  }, []);
 
   useEffect(() => {
     return () => {

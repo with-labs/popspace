@@ -22,6 +22,7 @@ scripts/one_time/data
 .env.test.local
 .env.production.local
 .env
+.env*
 env.json
 tmp
 

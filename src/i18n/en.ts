@@ -438,6 +438,11 @@ export default {
       changelogModal: {
         title: "What's new?",
       },
+      enterRoomModal: {
+        title: 'Enter the room',
+        content: 'Your camera will be disabled, but your microphone will be enabled.',
+        buttonText: 'Enter the room',
+      },
     },
   },
 };

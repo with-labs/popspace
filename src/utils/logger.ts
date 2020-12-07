@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { Breadcrumb } from '@sentry/react';
 
 const sentryLevelMap = {
   info: Sentry.Severity.Info,
@@ -38,4 +39,12 @@ export const logger = {
   debug: doLog.bind(null, 'debug'),
   log: doLog.bind(null, 'log'),
   critical: doLog.bind(null, 'critical'),
+  breadcrumb: (breadcrumb: Breadcrumb) => {
+    if (process.env.NODE_ENV === 'production' || localStorage.getItem('DEBUG') === 'true') {
+      Sentry.addBreadcrumb(breadcrumb);
+    }
+    if (localStorage.getItem('DEBUG') === 'true') {
+      console.debug(`[breadcrumb] (${breadcrumb.category || 'uncategorized'}) ${breadcrumb.message}`);
+    }
+  },
 };

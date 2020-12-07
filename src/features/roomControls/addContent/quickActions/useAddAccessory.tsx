@@ -45,7 +45,12 @@ export function useAddAccessory() {
       if (userSid) {
         // a bit of an awkward edge case - perhaps we could refactor how this works.
         // add opengraph data to links
-        const data = type === WidgetType.Link ? await getLinkData((initialData as LinkWidgetData).url) : initialData;
+        let data = initialData;
+        // kind of a heuristic - only fetch opengraph data if we don't already
+        // have a media preview
+        if (type === WidgetType.Link && !(initialData as LinkWidgetData).mediaUrl) {
+          data = await getLinkData((initialData as LinkWidgetData).url);
+        }
 
         dispatch(
           roomActions.addWidget({

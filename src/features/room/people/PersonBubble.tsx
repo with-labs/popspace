@@ -5,7 +5,7 @@ import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayI
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
 import { Avatar } from '../../../components/Avatar/Avatar';
-import { useSpring, animated, config } from '@react-spring/web';
+import { useSpring, animated } from '@react-spring/web';
 import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
@@ -13,6 +13,7 @@ import { PersonStatus } from './PersonStatus';
 import { ScreenSharePreview } from './ScreenSharePreview';
 import { DraggableHandle } from '../DraggableHandle';
 import { isMobileOnly } from 'react-device-detect';
+import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
@@ -118,6 +119,14 @@ const useStyles = makeStyles((theme) => ({
   mutedIcon: {
     color: theme.palette.error.dark,
   },
+  speakingIndicator: {
+    bottom: -10,
+    width: 24,
+    height: 24,
+    position: 'absolute',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
 }));
 
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
@@ -151,13 +160,6 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       borderRadius: isVideoOn ? 28 : '100%',
     });
 
-    // track whether this user is speaking (updated using audio track volume monitoring)
-    // this is a separate spring so we can configure the physics to be more responsive
-    const speakingRingStyles = useSpring({
-      borderColor: isSpeaking && isMicOn ? theme.palette.brandColors.lavender.regular : theme.palette.background.paper,
-      config: config.stiff,
-    });
-
     const graphicStyles = useSpring({
       height: isVideoOn ? EXPANDED_SIZE - 32 : SMALL_SIZE - 49,
       backgroundColor,
@@ -189,7 +191,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         {...rest}
         ref={ref}
         className={clsx(classes.root, rest.className)}
-        style={{ ...rootStyles, ...speakingRingStyles } as any}
+        style={rootStyles as any}
         data-test-person={displayIdentity}
         {...handlers}
       >
@@ -219,7 +221,9 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
               <Typography className={classes.name}>{displayIdentity}</Typography>
             </animated.div>
-            {!isMicOn && (
+            {isMicOn ? (
+              <AudioIndicator className={classes.speakingIndicator} isActive={isSpeaking} />
+            ) : (
               <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
                 <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />
               </animated.div>

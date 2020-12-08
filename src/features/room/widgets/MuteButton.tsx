@@ -43,7 +43,7 @@ export const MuteButton: React.FC<IMuteButtonProps> = (props) => {
         {t('widgets.common.mutedForYou')}
       </animated.div>
       <IconButton size="small" onClick={props.onClick}>
-        <AudioIndicator isActive={!props.isMuted} isPaused={!props.isPlaying && !props.isMuted} />
+        <AudioIndicator variant="sine" isActive={!props.isMuted} isPaused={!props.isPlaying && !props.isMuted} />
       </IconButton>
     </div>
   );

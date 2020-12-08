@@ -8,7 +8,9 @@ export default {
   argTypes: {},
 };
 
-const Template: Story<{ isActive: boolean; isPaused: boolean }> = (args) => <AudioIndicator {...args} />;
+const Template: Story<{ isActive: boolean; isPaused: boolean; variant: 'sine' | 'flat' }> = (args) => (
+  <AudioIndicator {...args} />
+);
 
 export const Default = Template.bind({});
 Default.args = {
@@ -25,5 +27,12 @@ Paused.args = {
 export const Stopped = Template.bind({});
 Stopped.args = {
   isActive: false,
+  isPaused: false,
+};
+
+export const Sine = Template.bind({});
+Sine.args = {
+  variant: 'sine',
+  isActive: true,
   isPaused: false,
 };

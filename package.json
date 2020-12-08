@@ -127,7 +127,7 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development REACT_APP_SET_AUTH=passcode PORT=3002 craco start",
-    "prebuild": "node ./scripts/write_env.js && cd functions && npm run build:setup && npm run licenses",
+    "prebuild": "npm run licenses && node ./scripts/write_env.js && cd functions && npm run build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode craco build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
     "test": "jest",

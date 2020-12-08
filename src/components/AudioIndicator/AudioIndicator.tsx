@@ -9,20 +9,34 @@ export interface IAudioIndicatorProps {
 }
 
 /**
+ * Sinusoidal movement, from 0-1, based on time and with phase offset
+ */
+function convolutedSinMovement(time: number, phaseOffset: number) {
+  const phased = time + phaseOffset;
+  const a = Math.cos(phased);
+  const b = Math.sin(phased * Math.PI);
+  const c = Math.sin(phased * Math.PI * Math.PI);
+  return a * b * c * 2 + 0.5;
+}
+
+/**
  * Renders an animated "equalizer" visual which indicates if audio is playing
  */
 export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPaused, className, variant = 'flat' }) => {
   const [bar1, setBar1] = useSpring(() => ({
     height: 10,
     y: 3,
+    // config: SPRINGS.RESPONSIVE,
   }));
   const [bar2, setBar2] = useSpring(() => ({
     height: 16,
     y: 0,
+    // config: SPRINGS.RESPONSIVE,
   }));
   const [bar3, setBar3] = useSpring(() => ({
     height: 6,
     y: 5,
+    // config: SPRINGS.RESPONSIVE,
   }));
 
   React.useEffect(() => {
@@ -37,11 +51,11 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
           let start: DOMHighResTimeStamp;
           const loop = (timestamp: DOMHighResTimeStamp) => {
             if (!start) start = timestamp;
-            const elapsed = (timestamp - start) / 300;
+            const elapsed = (timestamp - start) / 400;
 
-            const val1 = (Math.sin(elapsed + Math.PI / 3) + 1) * 5;
-            const val2 = (Math.sin(elapsed + Math.PI / 2) + 1) * 8;
-            const val3 = (Math.sin(elapsed + Math.PI / 6) + 1) * 5;
+            const val1 = convolutedSinMovement(elapsed, Math.PI / 3) * 4 + 4;
+            const val2 = convolutedSinMovement(elapsed, Math.PI / 2) * 8 + 5;
+            const val3 = convolutedSinMovement(elapsed, Math.PI / 6) * 4 + 4;
 
             setBar1({ height: val1, y: 8 - val1 / 2 });
             setBar2({ height: val2, y: 8 - val2 / 2 });

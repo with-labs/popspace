@@ -222,7 +222,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               <Typography className={classes.name}>{displayIdentity}</Typography>
             </animated.div>
             {isMicOn ? (
-              <AudioIndicator className={classes.speakingIndicator} isActive={isSpeaking} />
+              <AudioIndicator className={classes.speakingIndicator} isActive={isSpeaking} variant="sine" />
             ) : (
               <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
                 <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />

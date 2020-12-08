@@ -12,6 +12,7 @@ import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
 import { HamburgerIcon } from '../../../components/icons/HamburgerIcon';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
+import { RouteNames } from '../../../constants/RouteNames';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -67,6 +68,11 @@ export const RoomMenu = () => {
         <Link to={Links.PRIVACY_POLICY} disableStyling>
           <MenuItem dense>
             <ListItemText primary={t('header.privacyPolicy')} />
+          </MenuItem>
+        </Link>
+        <Link to={RouteNames.LICENSES} disableStyling>
+          <MenuItem dense>
+            <ListItemText primary={t('features.roomMenu.licenses')} />
           </MenuItem>
         </Link>
       </ResponsiveMenu>

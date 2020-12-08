@@ -366,6 +366,7 @@ export default {
         addAndManage: 'Invite people',
         userSettings: 'User Settings',
         changelog: "What's new?",
+        licenses: 'License Info',
       },
       mediaControls: {
         micToggle: 'Toggle voice',

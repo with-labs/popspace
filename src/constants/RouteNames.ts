@@ -10,4 +10,5 @@ export enum RouteNames {
   LOGIN_IN_WITH_EMAIL = '/loginwithemail',
   UNSUBSCRIBE = '/unsubscribe',
   FEATURE_FLAGS = '/internal/featureflags',
+  LICENSES = '/licenses',
 }

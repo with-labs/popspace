@@ -38,7 +38,6 @@ const localPerson = {
   avatar: 'puppy',
   emoji: null,
   viewingScreenSid: null,
-  isSpeaking: false,
   status: null,
   isSharingScreen: false,
 };
@@ -59,7 +58,6 @@ const remotePerson = {
   avatar: 'star',
   emoji: null,
   viewingScreenSid: null,
-  isSpeaking: false,
   status: null,
   isSharingScreen: true,
 };

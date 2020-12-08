@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
 import { ViewportControls } from '../roomControls/viewport/ViewportControls';
-import { useLocalVolumeDetection } from './useLocalVolumeDetection';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
@@ -22,16 +21,9 @@ import { actions } from './roomSlice';
 import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
 import { EnterRoomModal } from '../roomControls/enterRoomModal/EnterRoomModal';
+import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
 
 interface IRoomProps {}
-
-// creating a separate component for these so that they won't trigger
-// re-renders of the entire Room
-// TODO: improve re-render triggering on these hooks.
-const LocalVolumeDetector = () => {
-  useLocalVolumeDetection();
-  return null;
-};
 
 const CleanupDisconnectedPeople = React.memo(() => {
   useCleanupDisconnectedPeople();
@@ -42,8 +34,8 @@ export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
     <RoomSettingsModal />
-    <LocalVolumeDetector />
     <CleanupDisconnectedPeople />
+    <SpeakingStateObserver />
     <UserSettingsModal />
     <EnterRoomModal />
     <ChangelogModal />

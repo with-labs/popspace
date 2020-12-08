@@ -13,6 +13,16 @@ const requestStickyNoteCreate = async (client) => {
   })
 }
 
+const getOrCreateWidget = async (client, auth) => {
+   const widgetsInRoom = auth.data.room.widgets
+    if(widgetsInRoom.length < 1) {
+      const createResponse = await requestStickyNoteCreate(client)
+      return createResponse.payload.widget
+    } else {
+      return widgetsInRoom[0]
+    }
+}
+
 module.exports = {
   "authenticate": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
@@ -21,7 +31,6 @@ module.exports = {
     const beforeAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
     const auth = await clients[0].authenticate(token, roomNameEntry.name)
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
-
     return {
       beforeAuth,
       auth,
@@ -66,14 +75,7 @@ module.exports = {
   "move_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
     const auth = testEnvironment.loggedInUsers[0].auth
-    const widgetsInRoom = auth.data.room.widgets
-    let widget = null
-    if(widgetsInRoom.length < 1) {
-      const createResponse = await requestStickyNoteCreate(client)
-      widget = createResponse.payload.widget
-    } else {
-      widget = widgetsInRoom[0]
-    }
+    const widget = await getOrCreateWidget(client, auth)
     const beforeMove = Object.assign({}, widget)
 
     const move = {
@@ -92,5 +94,19 @@ module.exports = {
       beforeMove,
       afterMove: newState.payload
     }
-  })
+  }),
+
+  "update_wallpaper": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+    const client = testEnvironment.loggedInUsers[0].client
+    const startRoomData = testEnvironment.loggedInUsers[0].auth.data.room
+    const createResponse = client.sendEventWithPromise("room/wallpaper", {
+
+    })
+    const getResponse = await client.getRoomState()
+    return {
+      createResponse,
+      beginWidgetCount: startRoomData.widgets.length,
+      endWidgetCount: getResponse.payload.widgets.length
+    }
+  }),
 }

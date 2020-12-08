@@ -1,16 +1,17 @@
 const Participant = require("./participant")
 
-class Sockets {
+class Participants {
   constructor() {
     this.participants = {}
+    this.roomParticipants = {}
     this.onMessageReceived = (participant, message) => {
       if(this.messageHandler) {
         this.messageHandler(participant, message)
       }
     }
-    this.onEventReceived = (participant, event) => {
+    this.onEventReceived = (event) => {
       if(this.eventHandler) {
-        this.eventHandler(participant, event)
+        this.eventHandler(event)
       }
     }
   }
@@ -21,6 +22,26 @@ class Sockets {
 
   setEventHandler(eventHandler) {
     this.eventHandler = eventHandler
+  }
+
+  async joinRoom(participant) {
+    const roomId = participant.roomId()
+    if(this.roomParticipants[roomId]) {
+      this.roomParticipants[roomId].push(participant)
+    } else {
+      this.roomParticipants[roomId] = [participant]
+    }
+  }
+
+  async quitRoom(participant) {
+    const roomParticipants = this.getRoomParticipants(participant.roomId())
+    if(!roomParticipants) {
+      return
+    }
+    const index = roomParticipants.find((p) => (p == participant))
+    if(index > -1) {
+      roomParticipants.splice(index, 1)
+    }
   }
 
   addSocket(socket) {
@@ -35,6 +56,7 @@ class Sockets {
 
   removeParticipant(participant) {
     delete this.participants[participant.id]
+    this.quitRoom(participant)
   }
 
   rebroadcast(event) {
@@ -42,15 +64,15 @@ class Sockets {
   }
 
   broadcastFrom(sendingParticipant, message) {
-    this.list().forEach((participant) => {
+    this.getRoomParticipants(sendingParticipant.roomId()).forEach((participant) => {
       if(participant != sendingParticipant) {
         participant.send(message)
       }
     })
   }
 
-  broadcastJsonFrom(json) {
-    return this.broadcastFrom(JSON.stringify(json))
+  broadcastJsonFrom(sendingParticipant, json) {
+    return this.broadcastFrom(sendingParticipant, JSON.stringify(json))
   }
 
   broadcastJson(json) {
@@ -58,8 +80,8 @@ class Sockets {
     return this.broadcast(JSON.stringify(json))
   }
 
-  broadcast(message) {
-    this.list().forEach((participant) => {
+  broadcast(roomId, message) {
+    this.getRoomParticipants(roomId).forEach((participant) => {
       participant.send(message)
     })
   }
@@ -73,6 +95,10 @@ class Sockets {
     return this.list().forEach((p) => (this.disconnectOne(p)))
   }
 
+  getRoomParticipants(roomId) {
+    return this.roomParticipants[roomId] ? this.roomParticipants[roomId] : this.roomParticipants[roomId] = []
+  }
+
   list() {
     return Object.values(this.participants)
   }
@@ -81,9 +107,9 @@ class Sockets {
     return this.list().length
   }
 
-  async serialize() {
-    return this.list().map((p) => (p.serialize()))
+  async serialize(roomId) {
+    return this.getRoomParticipants(roomId).map((p) => (p.serialize()))
   }
 }
 
-module.exports = Sockets
+module.exports = Participants

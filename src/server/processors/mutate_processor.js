@@ -1,6 +1,4 @@
-const Processor = require("./processor")
-
-class MutateProcessor extends Processor {
+class MutateProcessor {
   async process(event, participants) {
     switch(event.data.kind) {
       case "room/moveObject":

@@ -11,11 +11,16 @@ module.exports = {
       return
     }
 
+    const clients = await tlib.util.addClients(mercury, clientCount)
+    return { clients, mercury }
+  },
+
+  addClients: async (mercury, clientCount) => {
     const clients = []
     for(let i = 0; i < clientCount; i++) {
       clients.push(new Client(`ws://localhost:${process.env.TEST_PORT}`))
     }
     await Promise.all( clients.map((c) => (c.connect())) )
-    return { clients, mercury }
+    return clients
   }
 }

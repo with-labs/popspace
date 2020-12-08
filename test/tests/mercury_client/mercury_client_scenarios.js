@@ -6,41 +6,42 @@ module.exports = {
     return true
   }),
 
-  "1_sender_2_receivers": async (message='hello') => {
-    /*
-      1. Open several clients
-      2. Send a message from one of them
-      3. Make sure all clients except sender receive the message
-    */
-    const { clients, mercury } = await tlib.util.serverWithClients(3)
-
-    const sender = clients[0]
+  "1_sender_2_receivers": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {
+    const loggedInUsers = testEnvironment.loggedInUsers
+    const sentMessage = 'hello'
+    const sender = loggedInUsers[0].client
     const messagesReceived = []
     const receivePromises = []
 
-    clients.forEach((client) => {
-      if(client != sender) {
+    loggedInUsers.forEach((loggedInUser) => {
+      if(loggedInUser.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {
-          client.on('message', (message) => {
+          loggedInUser.client.on('message', (message) => {
             messagesReceived.push(message)
             resolve()
           })
         }))
       }
     })
-
-    sender.send(message)
+    sender.send(sentMessage)
     await Promise.all(receivePromises)
-    await mercury.stop()
-    return messagesReceived
-  },
+    return {
+      sentMessage,
+      messagesReceived
+    }
+  }),
 
-  "2_peers_back_and_forth": async (messageList1=["hello", "1"], messageList2=["goodbye", "2"]) => {
-    const { clients, mercury } = await tlib.util.serverWithClients(2)
+  "2_peers_back_and_forth": tlib.TestTemplate.nAuthenticatedUsers(2, async (testEnvironment) => {
+    const messageList1 = ["hello", "msg1", "hi", "msg3"]
+    const messageList2 = ["goodbye", "msg2", "bye", "msg4"]
+
+    const messagesSent1 = [...messageList1]
+    const messagesSent2 = [...messageList2]
 
     const messagesReceived1 = []
     const messagesReceived2 = []
     const sequence = []
+    const clients = testEnvironment.loggedInUsers.map((u) => (u.client))
 
     await new Promise((resolve, reject) => {
       clients[0].on('message', (message) => {
@@ -66,13 +67,13 @@ module.exports = {
       clients[0].send(messageList1.shift())
     })
 
-    await mercury.stop()
-
     return {
-      received1: messagesReceived1,
-      received2: messagesReceived2,
-      sequence: sequence
+      messagesSent1,
+      messagesSent2,
+      messagesReceived1,
+      messagesReceived2,
+      sequence
     }
 
-  }
+  })
 }

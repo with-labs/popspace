@@ -1,6 +1,4 @@
-const Processor = require("./processor")
-
-class AuthProcessor extends Processor {
+class AuthProcessor {
   async process(event, participants) {
     switch(event.data.kind) {
       case "auth":
@@ -15,17 +13,19 @@ class AuthProcessor extends Processor {
   }
 
   async authenticate(event, participants) {
-    const success = await event._sender.authenticate(event.data.payload.token, event.data.payload.roomName)
+    const sender = event._sender
+    const success = await sender.authenticate(event.data.payload.token, event.data.payload.roomName)
     if(success) {
-      // TODO: I want to make these events into objects to abstract away the data structure
+      await participants.joinRoom(sender)
       const authData = await this.getAuthData(event, participants)
-      return event._sender.sendResponse(event, {
+      // TODO: convert to object-based events
+      return sender.sendResponse(event, {
         kind: "auth.ack",
         success: true,
         data: authData
       })
     } else {
-      return event._sender.sendError(
+      return sender.sendError(
         event,
         lib.ErrorCodes.AUTH_FAILED,
         "Invalid credentials",
@@ -37,7 +37,7 @@ class AuthProcessor extends Processor {
   async getAuthData(event, participants) {
     const user = event._sender.user
     const room = await lib.roomData.getRoomData(event._sender.room.id)
-    const serializedParticipants = await participants.serialize()
+    const serializedParticipants = await participants.serialize(room.id)
     return { room, user, participants: serializedParticipants }
   }
 

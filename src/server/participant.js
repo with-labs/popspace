@@ -17,7 +17,7 @@ class Participant {
       */
       log.dev.debug(`Got message from ${this.id} ${message}`)
       try {
-        const event = this.prepareEvent(message)
+        const event = new lib.event.MercuryEvent(this, message)
         if(this.eventHandler) {
           this.eventHandler(event)
         }
@@ -29,15 +29,8 @@ class Participant {
     })
   }
 
-  prepareEvent(message) {
-    const data = JSON.parse(message)
-    return {
-      _sender: this,
-      _message: message,
-      // only allow in-room requests
-      roomId: data.kind == "auth" ? data.payload.roomId : this.roomId,
-      data: data
-    }
+  roomId() {
+    return this.room.id
   }
 
   async authenticate(token, roomName) {

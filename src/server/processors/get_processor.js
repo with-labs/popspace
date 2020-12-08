@@ -1,6 +1,4 @@
-const Processor = require("./processor")
-
-class GetProcessor extends Processor {
+class GetProcessor {
   async process(event, participants) {
     switch(event.data.kind) {
       case "room/getRoom":

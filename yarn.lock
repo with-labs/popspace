@@ -572,9 +572,9 @@
     "@types/yargs-parser" "*"
 
 "@withso/with-shared@^1.1.2":
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.2.5.tgz#e6cc4c326eda045e222556a468440273b5a70f89"
-  integrity sha512-yoF9j9wYruHLAwaAPcvymx4ddcH07qYIcmSncpLmJAM8FQLzPxTPsGJ9e1vxc5tFIp6qTMiE9H0JIJY2bjfgBw==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.2.6.tgz#fc87abfa532e0c24e73f599a57a24ff2b4edcd92"
+  integrity sha512-tnYgd/nQH9WYx/j/UoUldx+gHgnE1BgdY3n6jMHCVH8N775ATpPWezxQ8ig1EtcVWuv4UcS5G1ZjUCgljbWJ6A==
   dependencies:
     async-lock "^1.2.4"
     crypto-random-string "^3.3.0"
@@ -726,9 +726,9 @@ assign-symbols@^1.0.0:
   integrity sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
 
 async-lock@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/async-lock/-/async-lock-1.2.4.tgz#80d0d612383045dd0c30eb5aad08510c1397cb91"
-  integrity sha512-UBQJC2pbeyGutIfYmErGc9RaJYnpZ1FHaxuKwb0ahvGiiCkPUf3p67Io+YLPmmv3RHY+mF6JEtNW8FlHsraAaA==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/async-lock/-/async-lock-1.2.6.tgz#c83c7a2569d1745306f4a5ae03680310e5f65e67"
+  integrity sha512-gobUp/bRWL/uJsxi4ZK7NM770s5d2Tx5Hl7uxFIcN6yTz1Kvy2RCSKEvzhLsjAAnYaNa8lDvcjy9ybM6lXFjIg==
 
 asynckit@^0.4.0:
   version "0.4.0"

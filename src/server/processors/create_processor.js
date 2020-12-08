@@ -1,6 +1,4 @@
-const Processor = require("./processor")
-
-class CreateProcessor extends Processor {
+class CreateProcessor {
   async process(event, participants) {
     switch(event.data.kind) {
       case "room/addWidget":
@@ -57,7 +55,7 @@ class CreateProcessor extends Processor {
         widget: roomWidget.serialize()
       }
     }
-    participants.broadcastJsonFrom(createNotification)
+    participants.broadcastJsonFrom(event._sender, createNotification)
     return event._sender.sendResponse(event, createNotification)
   }
 }

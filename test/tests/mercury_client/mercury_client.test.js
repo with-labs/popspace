@@ -10,27 +10,26 @@ tlib.TestTemplate.describeWithLib('mercury_client', () => {
   })
 
   test('broadcasts messages from one client to all other clients', async () => {
-    const sentMessage = 'hello'
-    const messagesReceived = await scenarios["1_sender_2_receivers"](sentMessage)
-    messagesReceived.forEach((message) => {
-      expect(message).toEqual(sentMessage)
+    const result = await scenarios["1_sender_2_receivers"]()
+    result.messagesReceived.forEach((message) => {
+      expect(message).toEqual(result.sentMessage)
     })
-    expect(messagesReceived.length).toEqual(2)
+    expect(result.messagesReceived.length).toEqual(2)
   })
 
   test('communication between 2 clients', async () => {
-    const messages1 = ["hello", "msg1", "hi", "msg3"]
-    const messages2 = ["goodbye", "msg2", "bye", "msg4"]
+    // Send copies of the arrays since we want to check the results against them
+    const result = await scenarios["2_peers_back_and_forth"]()
+    const messages1 = result.messagesSent1
+    const messages2 = result.messagesSent2
     const expectedSequence =[
       messages1[0], messages2[0],
       messages1[1], messages2[1],
       messages1[2], messages2[2],
       messages1[3], messages2[3],
     ]
-    // Send copies of the arrays since we want to check the results against them
-    const exchangeResult = await scenarios["2_peers_back_and_forth"]([...messages1], [...messages2])
-    expect(exchangeResult.received1).toEqual(messages2)
-    expect(exchangeResult.received2).toEqual(messages1)
-    expect(exchangeResult.sequence).toEqual(expectedSequence)
+    expect(result.messagesReceived1).toEqual(messages2)
+    expect(result.messagesReceived2).toEqual(messages1)
+    expect(result.sequence).toEqual(expectedSequence)
   })
 })

@@ -15,6 +15,9 @@ import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
+import { Page } from './Layouts/Page/Page';
+
+const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
 
@@ -87,6 +90,12 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
 
       <Route path={RouteNames.UNSUBSCRIBE}>
         <Unsubscribe />
+      </Route>
+
+      <Route path={RouteNames.LICENSES}>
+        <React.Suspense fallback={<Page isLoading />}>
+          <LicensesPage />
+        </React.Suspense>
       </Route>
 
       <Route path="/:room_name">

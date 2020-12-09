@@ -178,27 +178,37 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
 
     // this effect handles remeasuring the content when needed
     React.useEffect(() => {
-      if (!contentRef.current || !needsRemeasure) return;
+      if (!needsRemeasure) return;
 
-      const naturalWidth = contentRef.current.clientWidth;
-      const naturalHeight = contentRef.current.clientHeight;
+      requestAnimationFrame(async () => {
+        if (!contentRef.current) return;
 
-      const aspect = naturalWidth / naturalHeight;
-      setOriginalAspectRatio(aspect);
+        // wait for fonts to load before resizing
+        if (document.fonts.ready) {
+          // race the promise load with a 3 second timer (i.e. timeout if wait is too long)
+          await Promise.race([document.fonts.ready, new Promise((res) => setTimeout(res, 3000))]);
+        }
 
-      onResize(
-        clampAndEnforceMode({
-          width: naturalWidth,
-          height: naturalHeight,
-          minHeight,
-          minWidth,
-          maxHeight,
-          maxWidth,
-          mode,
-          originalAspectRatio: aspect,
-        })
-      );
-      setNeedsRemeasure(false);
+        const naturalWidth = contentRef.current.clientWidth;
+        const naturalHeight = contentRef.current.clientHeight;
+
+        const aspect = naturalWidth / naturalHeight;
+        setOriginalAspectRatio(aspect);
+
+        onResize(
+          clampAndEnforceMode({
+            width: naturalWidth,
+            height: naturalHeight,
+            minHeight,
+            minWidth,
+            maxHeight,
+            maxWidth,
+            mode,
+            originalAspectRatio: aspect,
+          })
+        );
+        setNeedsRemeasure(false);
+      });
     }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
 
     // this effect updates the spring dimensions when the `size` prop changes

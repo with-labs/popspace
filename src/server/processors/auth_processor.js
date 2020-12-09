@@ -20,8 +20,7 @@ class AuthProcessor {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(event, participants)
       sender.sendResponse(event, authData)
-      // TODO: get data for new particpant
-      sender.broadcastPeerEvent("room/participantJoined", {})
+      sender.broadcastPeerEvent("room/participantJoined", sender.serialize())
     } else {
       return sender.sendError(
         event,
@@ -34,8 +33,13 @@ class AuthProcessor {
 
   async getAuthData(event, participants) {
     const user = event.senderUser()
-    const room = await lib.roomData.getRoomData(event.roomId())
-    const serializedParticipants = await participants.serialize(room.id)
+    const participant = event.senderParticipant()
+    const roomId = event.roomId()
+    const room = await lib.roomData.getRoomData(roomId)
+
+    const peers = participant.listPeersIncludingSelf()
+    const serializedParticipants = peers.map((p) => (p.serialize()))
+
     return { room, user, participants: serializedParticipants }
   }
 

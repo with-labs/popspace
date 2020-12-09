@@ -50,10 +50,13 @@ class Participants {
     return Object.values(this.participants).length
   }
 
-  async serialize(roomId) {
+  async participantsInRoom(roomId) {
     const socketGroup = this.socketGroupsByRoomId[roomId]
-    const roomParticipants = socketGroup ? socketGroup.participants() : []
-    return roomParticipants.map((p) => (p.serialize()))
+    return socketGroup ? socketGroup.participants() : []
+  }
+
+  async serialize(roomId) {
+    return this.participantsInRoom(roomId).map((p) => (p.serialize()))
   }
 }
 

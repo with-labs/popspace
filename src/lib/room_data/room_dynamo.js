@@ -23,6 +23,8 @@ class RoomDynamo {
     return `${process.env.NODE_ENV}_${tableNickname}`
   }
 
+  // TODO: I think I prefer roomId first, then the data; should consolidate
+  // ~Alexey
   async getRoomWidgets(widgets, roomId) {
     // dynamo only allows querying 1 primary key at a time
     // we could batch the request as an optimization,
@@ -51,6 +53,19 @@ class RoomDynamo {
 
   async getWidgetState(widgetId) {
     const entry = await this.getByHash('widget_data', 'widget_id', parseInt(widgetId))
+    if(entry.length > 0) {
+      return JSON.parse(entry[0].state)
+    }
+  }
+
+  async getParticipantState(roomId, userId) {
+    const entry = await this.getByHashAndRange(
+      'room_participant_states',
+      'room_id',
+      parseInt(roomId),
+      'user_id',
+      parseInt(userId)
+    )
     if(entry.length > 0) {
       return JSON.parse(entry[0].state)
     }
@@ -106,6 +121,23 @@ class RoomDynamo {
     })
   }
 
+  async setParticipantState(roomId, userId, state) {
+    const stateItem = {
+      user_id: { N: `${userId}` },
+      room_id: {N: `${roomId}`},
+      state: {S: JSON.stringify(state)}
+    }
+    return new Promise((resolve, reject) => {
+      this.dynamo.putItem({Item: stateItem, TableName: this.tableName('room_participant_states')}, (err, data) => {
+        if(err) {
+          return reject(err)
+        } else {
+          return resolve(data)
+        }
+      })
+    })
+  }
+
   // private
   async createRoomStatesTable() {
     return this.createTable({
@@ -149,6 +181,24 @@ class RoomDynamo {
       AttributeDefinitions: [
         { AttributeName: "room_id", AttributeType: "N" },
         { AttributeName: "widget_id", AttributeType: "N"},
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10
+      }
+    })
+  }
+
+  async createParticipantStatesTable() {
+    return this.createTable({
+      TableName: this.tableName("room_participant_states"),
+      KeySchema: [
+        { AttributeName: "room_id", KeyType: "HASH"},
+        { AttributeName: "user_id", KeyType: "RANGE"},
+      ],
+      AttributeDefinitions: [
+        { AttributeName: "room_id", AttributeType: "N" },
+        { AttributeName: "user_id", AttributeType: "N"},
       ],
       ProvisionedThroughput: {
         ReadCapacityUnits: 10,
@@ -227,6 +277,15 @@ class RoomDynamo {
     return await Promise.all(promises)
   }
 
+  async deleteParticipant(userId, roomId) {
+    return this.deleteEntry({
+      TableName: this.tableName('room_participant_states'),
+      Key: {
+        room_id: roomId,
+        user_id: userId
+      }
+    })
+  }
 
   async getByHash(tableNickname, hashKey, hashValue) {
     const requestParams = {

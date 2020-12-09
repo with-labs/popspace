@@ -1,14 +1,25 @@
 const ws = require('ws');
+
+const DEFAULT_STATE_IN_ROOM = {
+  position: {
+    x: 0,
+    y: 0
+  },
+  emoji: null,
+  status: null
+}
+
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
 
 class Participant {
   constructor(socket) {
     this.socket = socket
-    this.id = id++
+    this.id = id++ // perhaps a decent more verbose name is sessionId
     this.authenticated = false
     this.user = {}
     this.room = {}
+    this.stateInRoom = null
 
     this.socket.on('message', (message) => {
       /* TODO:
@@ -32,6 +43,10 @@ class Participant {
     return this.room.id
   }
 
+  listPeersIncludingSelf() {
+    return this.socketGroup ? this.socketGroup.participants() : []
+  }
+
   async authenticate(token, roomName) {
     /*
       It seems that the JS WebSockets API doesn't well support setting custom headers
@@ -46,6 +61,11 @@ class Participant {
       this.room = {}
       this.user = {}
       return false
+    }
+    this.stateInRoom = await lib.roomData.dynamo.getParticipantState(this.user.id, this.room.id)
+    if(!this.stateInRoom) {
+      this.stateInRoom = DEFAULT_STATE_IN_ROOM
+      await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.stateInRoom)
     }
     this.authenticated = true
     return true
@@ -119,7 +139,8 @@ class Participant {
         id: this.user.id
       },
       sessionId: this.id,
-      roomId: this.room.id
+      roomId: this.room.id,
+      stateInRoom: this.stateInRoom
     }
   }
 }

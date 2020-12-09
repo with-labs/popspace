@@ -1,5 +1,14 @@
 const RoomDynamo = require("./room_data/room_dynamo")
 
+const DEFAULT_PARTICIPANT_STATE = {
+  position: {
+    x: 0,
+    y: 0
+  },
+  emoji: null,
+  status: null
+}
+
 class RoomData {
   constructor() {
     this.dynamo = new RoomDynamo()
@@ -42,6 +51,30 @@ class RoomData {
     ])
   }
 
+  async addParticipantInRoom(roomId, userId, state=DEFAULT_PARTICIPANT_STATE) {
+    await this.dynamo.setParticipantState(roomId, userId, state)
+  }
+
+  async updateParticipantState(roomId, participant, stateUpdate, currentState=null) {
+    const userId = participant.user.id
+    if(!currentState) {
+      currentState = await this.dynamo.getParticipantState(roomId, userId)
+    }
+    const newState = Object.assign(currentState || {}, stateUpdate)
+    return this.dynamo.setParticipantState(userId, roomId, newState)
+  }
+
+  async removeParticipant(roomId, participant) {
+    /*
+      When might we need this?
+      Not so much when people leave the room, or lose their membership.
+      If they ever come back, we can keep their data.
+      If the user or room is deleted though there's no reason to keep the data entry around.
+      Perhaps the best way to handle that is just with a background sweep job.
+    */
+    return this.dynamo.deleteParticipant(participant.user.id, roomId)
+  }
+
   async eraseWidget(widgetId) {
     widgetId = parseInt(widgetId)
     const roomIdEntries = await shared.db.pg.massive.query(`
@@ -61,8 +94,10 @@ class RoomData {
     return this.updateWidgetRoomState(widgetId, roomId, {x: toX, y: toY})
   }
 
-  async updateWidgetRoomState(widgetId, roomId, stateUpdate) {
-    const widgetRoomState = await this.dynamo.getRoomWidgetState(widgetId, roomId)
+  async updateWidgetRoomState(widgetId, roomId, stateUpdate, widgetRoomState=null) {
+    if(!widgetRoomState) {
+      widgetRoomState = await this.dynamo.getRoomWidgetState(widgetId, roomId)
+    }
     Object.assign(widgetRoomState, stateUpdate)
     return await this.dynamo.setRoomWidgetState(widgetId, roomId, widgetRoomState)
   }

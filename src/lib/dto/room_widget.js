@@ -4,7 +4,6 @@ class RoomWidget {
     this._pgWidget = pgWidget
     this._widgetState = widgetState
     this._roomState = roomState
-    roomState.room_id = roomId
   }
 
   widgetId() {
@@ -27,6 +26,10 @@ class RoomWidget {
     return {
       widget_id: this._pgWidget.id,
       type: this._pgWidget._type,
+      /*
+        Perhaps there are better names here?
+        e.g. data+transform, or contents+render
+      */
       widgetState: this._widgetState,
       roomState: this._roomState
     }

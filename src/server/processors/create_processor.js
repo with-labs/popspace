@@ -51,8 +51,9 @@ class CreateProcessor {
     await lib.roomData.addWidgetInRoom(roomWidget)
 
     const responseEvent = new lib.event.ResponseEvent(event, roomWidget.serialize(), "room/addWidget")
-    // TODO: we may want a cleaner broadcast system where only the sender gets his requestId back
-    return participants.broadcastEvent(responseEvent)
+    const peerEvent = new lib.event.PeerEvent(sender, event.kind(), event.payload())
+    sender.sendResponse(event, roomWidget.serialize(), event.kind())
+    sender.broadcastPeerEvent(event.kind(), roomWidget.serialize())
   }
 }
 

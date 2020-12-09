@@ -2,10 +2,11 @@
   Represents events sent from peers
 */
 class PeerEvent {
-  constructor(kind, payload, eventId=null) {
+  constructor(sender, kind, payload, eventId=null) {
     this._data = {
       kind: kind,
-      payload: payload
+      payload: payload,
+      sender: sender
     }
     if(eventId) {
       /*
@@ -31,15 +32,21 @@ class PeerEvent {
     return this._data.payload
   }
 
+  sender() {
+    return this._data.sender
+  }
+
   serialize() {
     return {
+      senderSessionId: this.sender().id,
       kind: this.kind(),
-      payload: this.payload()
+      payload: this.payload(),
+      requestId: this.eventId()
     }
   }
 }
 
-PeerEvent.fromMessage = function(message) {
+PeerEvent.fromMessage = function(sender, message) {
   let data = null
   try {
     data = JSON.parse(message)
@@ -52,7 +59,7 @@ PeerEvent.fromMessage = function(message) {
   if(!data.payload) {
     throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "event field 'payload' required")
   }
-  return new PeerEvent(data.kind, data.payload, data.id)
+  return new PeerEvent(sender, data.kind, data.payload, data.id)
 }
 
 module.exports = PeerEvent

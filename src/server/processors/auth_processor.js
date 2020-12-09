@@ -19,12 +19,9 @@ class AuthProcessor {
     if(success) {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(event, participants)
-      // TODO: if participants knew their room peers, we could have a better API
-      // (specifically, we could do participant.broadcast(), and hide lower level ways of messaging)
       sender.sendResponse(event, authData)
       // TODO: get data for new particpant
-      const joinEvent = new lib.event.PeerEvent("room/participantJoined", {})
-      participants.broadcastEventFrom(sender, joinEvent)
+      sender.broadcastPeerEvent("room/participantJoined", {})
     } else {
       return sender.sendError(
         event,

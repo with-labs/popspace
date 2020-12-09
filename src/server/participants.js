@@ -1,9 +1,10 @@
 const Participant = require("./participant")
+const SocketGroup = require("./socket_group")
 
 class Participants {
   constructor() {
     this.participants = {}
-    this.roomParticipants = {}
+    this.socketGroupsByRoomId = {}
     this.onEventReceived = (event) => {
       if(this.eventHandler) {
         this.eventHandler(event)
@@ -21,22 +22,10 @@ class Participants {
 
   async joinRoom(participant) {
     const roomId = participant.roomId()
-    if(this.roomParticipants[roomId]) {
-      this.roomParticipants[roomId].push(participant)
-    } else {
-      this.roomParticipants[roomId] = [participant]
+    if(!this.socketGroupsByRoomId[roomId]) {
+      this.socketGroupsByRoomId[roomId] = new SocketGroup(participant.room)
     }
-  }
-
-  async quitRoom(participant) {
-    const roomParticipants = this.getRoomParticipants(participant.roomId())
-    if(!roomParticipants) {
-      return
-    }
-    const index = roomParticipants.find((p) => (p == participant))
-    if(index > -1) {
-      roomParticipants.splice(index, 1)
-    }
+    participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
   }
 
   addSocket(socket) {
@@ -50,67 +39,21 @@ class Participants {
 
   removeParticipant(participant) {
     delete this.participants[participant.id]
-    this.quitRoom(participant)
-  }
-
-  rebroadcast(event) {
-    return this.broadcastFrom(event._sender, event._message)
-  }
-
-  broadcastFrom(sendingParticipant, message) {
-    this.getRoomParticipants(sendingParticipant.roomId()).forEach((participant) => {
-      if(participant != sendingParticipant) {
-        participant.send(message)
-      }
-    })
-  }
-
-  broadcastEvent(event) {
-    return this.broadcastJson(event.roomId(), event.serialize())
-  }
-
-  broadcastEventFrom(sendingParticipant, event) {
-    return this.broadcastJsonFrom(sendingParticipant, event.serialize())
-  }
-
-  broadcastJsonFrom(sendingParticipant, json) {
-    return this.broadcastFrom(sendingParticipant, JSON.stringify(json))
-  }
-
-  broadcastJson(roomId, json) {
-    // Do we want to include generic meta-info, like the author of the message?
-    return this.broadcast(roomId, JSON.stringify(json))
-  }
-
-  broadcast(roomId, message) {
-    this.getRoomParticipants(roomId).forEach((participant) => {
-      participant.send(message)
-    })
-  }
-
-  async disconnectOne(participant) {
-    this.removeParticipant(participant)
-    return participant.disconnect()
+    participant.disconnect()
   }
 
   async disconnectAll() {
-    return this.list().forEach((p) => (this.disconnectOne(p)))
-  }
-
-  getRoomParticipants(roomId) {
-    return this.roomParticipants[roomId] ? this.roomParticipants[roomId] : this.roomParticipants[roomId] = []
-  }
-
-  list() {
-    return Object.values(this.participants)
+    return Object.values(this.participants).forEach((p) => (this.removeParticipant(p)))
   }
 
   count() {
-    return this.list().length
+    return Object.values(this.participants).length
   }
 
   async serialize(roomId) {
-    return this.getRoomParticipants(roomId).map((p) => (p.serialize()))
+    const socketGroup = this.socketGroupsByRoomId[roomId]
+    const roomParticipants = socketGroup ? socketGroup.participants() : []
+    return roomParticipants.map((p) => (p.serialize()))
   }
 }
 

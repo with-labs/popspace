@@ -13,8 +13,9 @@ class GetProcessor {
   }
 
   async sendEcho(event, participants) {
-    participants.broadcastEventFrom(event.senderParticipant(), event.sourceEvent())
-    event.senderParticipant().sendResponse(event, { received: true })
+    const sender = event.senderParticipant()
+    sender.broadcastPeerEvent(event.kind(), event.payload())
+    sender.sendResponse(event, { received: true })
   }
 }
 

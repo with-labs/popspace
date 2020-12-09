@@ -6,7 +6,7 @@ module.exports = class MercuryEvent {
   constructor(sender, message) {
     this._sender = sender
     this._message = message
-    this.peerEvent = lib.event.PeerEvent.fromMessage(message)
+    this.peerEvent = lib.event.PeerEvent.fromMessage(sender, message)
   }
 
   kind() {

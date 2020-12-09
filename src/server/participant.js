@@ -1,4 +1,4 @@
-
+const ws = require('ws');
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
 
@@ -51,6 +51,27 @@ class Participant {
     return true
   }
 
+  joinSocketGroup(socketGroup) {
+    this.leaveSocketGroup()
+    this.socketGroup = socketGroup
+    socketGroup.addParticipant(this)
+  }
+
+  leaveSocketGroup() {
+    if(this.socketGroup) {
+      this.socketGroup.removeParticipant(this)
+      this.socketGroup.broadcastPeerEvent(this, "room/participantLeft", { participantId: this.id })
+      this.socketGroup = null
+    }
+  }
+
+  broadcastPeerEvent(kind, payload, eventId=null) {
+    if(!this.socketGroup) {
+      throw "Must authenticate before broadcasting"
+    }
+    this.socketGroup.broadcastPeerEvent(this, kind, payload, eventId)
+  }
+
   isAuthenticated() {
     return this.authenticated
   }
@@ -60,28 +81,32 @@ class Participant {
     this.eventHandler = handler
   }
 
-  send(message) {
-    this.socket.send(message)
-  }
-
-  sendObject(object) {
-    this.send(JSON.stringify(object))
+  sendEvent(event) {
+    this.socket.send(
+      JSON.stringify(event.serialize())
+    )
   }
 
   sendResponse(requestEvent, payload={}, kind=null) {
-    const responseEvent = new lib.event.ResponseEvent(requestEvent, payload, kind)
-    this.sendObject(responseEvent.serialize())
+    this.sendEvent(new lib.event.ResponseEvent(requestEvent, payload, kind))
+  }
+
+  sendPeerEvent(sender, kind, payload, eventId=null) {
+    this.sendEvent(new lib.event.PeerEvent(sender, kind, payload, eventId))
   }
 
   sendError(requestEvent, errorCode, errorMessage, payload={}) {
-    const errorEvent = new lib.event.ErrorEvent(requestEvent, errorCode, errorMessage, payload)
-    this.sendObject(errorEvent.serialize())
+    this.sendEvent(new lib.event.ErrorEvent(requestEvent, errorCode, errorMessage, payload))
   }
 
   async disconnect() {
+    this.leaveSocketGroup()
     this.authenticated = false
+    if([ws.CLOSING, ws.CLOSED].includes(this.socket.readyState)) {
+      return true
+    }
     return new Promise((resolve, reject) => {
-      this.socket.on('close', () => (resolve()))
+      this.socket.once('close', () => (resolve()))
       this.socket.close()
     })
   }

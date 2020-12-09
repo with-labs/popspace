@@ -23,22 +23,27 @@ class MutateProcessor {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Invalid x,y for moveObject.`)
     }
     const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.roomState)
-    participants.rebroadcast(event)
-    sender.sendResponse(event, {kind: "room/moveObject", payload: widget})
+    // TODO: handle errors
+    this.sendToPeersAndSelf(event)
   }
 
   async updateWidgetRoomState(event, participants) {
     const widget = event.payload().widget
     const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.roomState)
-    participants.rebroadcast(event)
-    event.senderParticipant().sendResponse(event, widget)
+    this.sendToPeersAndSelf(event)
   }
 
   async updateWidgetState(event, participants) {
     const widget = event.payload().widget
     const result = await lib.roomData.updateWidgetState(widget.widget_id, event.roomId(), widget.widgetState)
-    participants.rebroadcast(event)
-    event.senderParticipant().sendResponse(event, widget)
+    this.sendToPeersAndSelf(event)
+  }
+
+  sendToPeersAndSelf(event) {
+    const sender = event.senderParticipant()
+    sender.broadcastPeerEvent(event.kind(), event.payload())
+    // We could save traffic here and only send the fact that the event was applied
+    sender.sendResponse(event, event.payload(), event.kind())
   }
 }
 

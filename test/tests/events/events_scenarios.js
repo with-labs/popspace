@@ -13,11 +13,11 @@ const requestStickyNoteCreate = async (client) => {
   })
 }
 
-const getOrCreateWidget = async (client, auth) => {
-   const widgetsInRoom = auth.data.room.widgets
+const getOrCreateWidget = async (client, authData) => {
+   const widgetsInRoom = authData.room.widgets
     if(widgetsInRoom.length < 1) {
       const createResponse = await requestStickyNoteCreate(client)
-      return createResponse.payload.widget
+      return createResponse.payload
     } else {
       return widgetsInRoom[0]
     }
@@ -27,7 +27,6 @@ module.exports = {
   "authenticate": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
     const { user, session, token, room, roomNameEntry } = await testEnvironment.createLoggedInUser()
-
     const beforeAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
     const auth = await clients[0].authenticate(token, roomNameEntry.name)
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
@@ -41,10 +40,16 @@ module.exports = {
   "authenticate_fail_wrong_token": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
     const { user, session, token, room, roomNameEntry } = await testEnvironment.createLoggedInUser()
-    const auth = await clients[0].authenticate("{}", roomNameEntry.name)
+    let response = null
+    try {
+      response = await clients[0].authenticate("{}", roomNameEntry.name)
+    } catch(e) {
+      response = e.response
+    }
+
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
     return {
-      auth,
+      auth: response,
       afterAuth
     }
   }),
@@ -52,17 +57,22 @@ module.exports = {
   "authenticate_fail_no_such_room": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
     const { user, session, token, room, roomNameEntry } = await testEnvironment.createLoggedInUser()
-    const auth = await clients[0].authenticate("{}", roomNameEntry.name)
+    let response = null
+    try {
+      response = await clients[0].authenticate("{}", "faken_ame2000_")
+    } catch(e) {
+      response = e.response
+    }
     const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
     return {
-      auth,
+      auth: response,
       afterAuth
     }
   }),
 
   "create_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
-    const startRoomData = testEnvironment.loggedInUsers[0].auth.data.room
+    const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
     const createResponse = await requestStickyNoteCreate(client)
     const getResponse = await client.getRoomState()
     return {
@@ -75,7 +85,7 @@ module.exports = {
   "move_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
     const auth = testEnvironment.loggedInUsers[0].auth
-    const widget = await getOrCreateWidget(client, auth)
+    const widget = await getOrCreateWidget(client, auth.payload)
     const beforeMove = Object.assign({}, widget)
 
     const move = {
@@ -98,7 +108,7 @@ module.exports = {
 
   "update_wallpaper": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
-    const startRoomData = testEnvironment.loggedInUsers[0].auth.data.room
+    const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
     const createResponse = client.sendEventWithPromise("room/wallpaper", {
 
     })

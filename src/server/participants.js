@@ -58,7 +58,6 @@ class Participants {
   }
 
   broadcastFrom(sendingParticipant, message) {
-
     this.getRoomParticipants(sendingParticipant.roomId()).forEach((participant) => {
       if(participant != sendingParticipant) {
         participant.send(message)
@@ -67,7 +66,7 @@ class Participants {
   }
 
   broadcastEvent(event) {
-    return this.broadcastJson(event.serialize())
+    return this.broadcastJson(event.roomId(), event.serialize())
   }
 
   broadcastEventFrom(sendingParticipant, event) {
@@ -78,9 +77,9 @@ class Participants {
     return this.broadcastFrom(sendingParticipant, JSON.stringify(json))
   }
 
-  broadcastJson(json) {
+  broadcastJson(roomId, json) {
     // Do we want to include generic meta-info, like the author of the message?
-    return this.broadcast(JSON.stringify(json))
+    return this.broadcast(roomId, JSON.stringify(json))
   }
 
   broadcast(roomId, message) {

@@ -52,7 +52,7 @@ class CreateProcessor {
 
     const responseEvent = new lib.event.ResponseEvent(event, roomWidget.serialize(), "room/addWidget")
     // TODO: we may want a cleaner broadcast system where only the sender gets his requestId back
-    return participants.broadcastEvent(sender, responseEvent)
+    return participants.broadcastEvent(responseEvent)
   }
 }
 

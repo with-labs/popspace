@@ -23,6 +23,10 @@ module.exports = class ResponseEvent {
     return this._sourceMercuryEvent
   }
 
+  roomId() {
+    return this._sourceMercuryEvent.roomId()
+  }
+
   serialize() {
     return Object.assign({}, this._data)
   }

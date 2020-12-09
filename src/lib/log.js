@@ -10,7 +10,10 @@ const log4jsConfig = {
     default: { appenders: ['console'], level: 'info' },
     app: { appenders: ['app', 'console'], level:  process.env.NODE_ENV == 'test' ? 'error' : 'info' },
     database: { appenders: ['database'], level: 'info' },
-    dev: {appenders: ['console', 'dev'], level: process.env.NODE_ENV == 'development' ? 'trace' : 'off'}
+    dev: {
+      appenders: ['console', 'dev'],
+      level: ['developoment'].includes(process.env.NODE_ENV) ? 'trace' : 'off'
+    }
   }
 }
 log4js.configure(log4jsConfig)

@@ -7,7 +7,8 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
   test("authentication", async () => {
     const results = await scenarios["authenticate"]()
     expect(results.beforeAuth.code).toEqual("UNAUTHORIZED")
-    expect(results.auth.success).toBeTruthy()
+    expect(results.auth.kind).toBeTruthy()
+    expect(results.auth.kind).not.toEqual("error")
     expect(results.afterAuth.code).not.toEqual("UNAUTHORIZED")
   })
 
@@ -29,7 +30,7 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     const { createResponse, beginWidgetCount, endWidgetCount } = await scenarios["create_a_widget"]()
     expect(createResponse.kind).toEqual("room/addWidget")
 
-    expect(createResponse.payload.widget.widget_id).toBeTruthy()
+    expect(createResponse.payload.widget_id).toBeTruthy()
     expect(endWidgetCount - beginWidgetCount).toEqual(1)
   })
 
@@ -39,7 +40,6 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     const positionAfterMove = response.afterMove.roomState.position
     expect(parseInt(positionAfterMove.x) - parseInt(positionBeforeMove.x) == 30)
     expect(parseInt(positionAfterMove.y) - parseInt(positionBeforeMove.y) == 60)
-
   })
 
 })

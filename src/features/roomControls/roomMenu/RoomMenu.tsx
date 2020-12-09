@@ -70,7 +70,7 @@ export const RoomMenu = () => {
             <ListItemText primary={t('header.privacyPolicy')} />
           </MenuItem>
         </Link>
-        <Link to={RouteNames.LICENSES} disableStyling>
+        <Link to={RouteNames.LICENSES} disableStyling newTab>
           <MenuItem dense>
             <ListItemText primary={t('features.roomMenu.licenses')} />
           </MenuItem>

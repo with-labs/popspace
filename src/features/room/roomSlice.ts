@@ -164,7 +164,6 @@ const roomSlice = createSlice({
 
         state.people[payload.person.id] = {
           kind: 'person',
-          isSpeaking: false,
           status: null,
           emoji: null,
           ...payload.person,
@@ -270,14 +269,6 @@ const roomSlice = createSlice({
         state.wallpaperUrl = payload.wallpaperUrl;
       },
     },
-    updatePersonIsSpeaking: {
-      prepare: (a) => prepareSyncAction<{ id: string; isSpeaking: boolean }>(a),
-      reducer(state, { payload }: PayloadAction<{ id: string; isSpeaking: boolean }>) {
-        if (!state.people[payload.id]) return;
-
-        state.people[payload.id].isSpeaking = payload.isSpeaking;
-      },
-    },
     /**
      * Import room data, including widgets and their positions, wallpaper, and other
      * settings - and overwrite existing stuff. People and their positions remain
@@ -353,6 +344,4 @@ export const selectors = {
   createEmojiSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.emoji,
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,
-  createPersonIsSpeakingSelector: (personId?: string) => (state: RootState) =>
-    personId && !!state.room.people[personId]?.isSpeaking,
 };

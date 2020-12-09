@@ -13,6 +13,7 @@ import { ScreenSharePreview } from './ScreenSharePreview';
 import { DraggableHandle } from '../DraggableHandle';
 import { isMobileOnly } from 'react-device-detect';
 import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
+import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingStates';
 import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 
 const EXPANDED_SIZE = 280;
@@ -140,7 +141,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const isMicOn = !!audioTrack;
     const isSharingScreen = !!screenShareTrack;
 
-    const { avatar: avatarName, isSpeaking, emoji, status } = person ?? {};
+    const { avatar: avatarName, emoji, status } = person ?? {};
+
+    const isSpeaking = useSpeakingStates(
+      React.useCallback((store) => store.isSpeaking[participant.sid] ?? false, [participant.sid])
+    );
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);

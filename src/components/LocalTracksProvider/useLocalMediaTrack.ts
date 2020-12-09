@@ -57,6 +57,9 @@ export function useLocalMediaTrack(
         // normal track-stopped behavior.
         isRestartingRef.current = true;
         await track.restart(finalConstraints);
+        // this isn't a native event, but it's really useful to differentiate
+        // a restart vs. a stop / start.
+        track.emit('restarted');
         isRestartingRef.current = false;
       } else {
         const createTrack = kind === 'video' ? createLocalVideoTrack : createLocalAudioTrack;

@@ -117,7 +117,8 @@
     "twilio-video": "^2.9.0",
     "typescript": "^3.9.7",
     "uuid": "^7.0.2",
-    "volume-meter": "^2.0.1"
+    "volume-meter": "^2.0.1",
+    "zustand": "^3.2.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [

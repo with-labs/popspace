@@ -16,15 +16,16 @@ module.exports = {
     loggedInUsers.forEach((loggedInUser) => {
       if(loggedInUser.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {
-          loggedInUser.client.on('message', (message) => {
-            messagesReceived.push(message)
+          loggedInUser.client.on('event.echo', (event) => {
+            messagesReceived.push(event.payload.message)
             resolve()
           })
         }))
       }
     })
-    sender.send(sentMessage)
+    sender.broadcast(sentMessage)
     await Promise.all(receivePromises)
+
     return {
       sentMessage,
       messagesReceived
@@ -44,27 +45,27 @@ module.exports = {
     const clients = testEnvironment.loggedInUsers.map((u) => (u.client))
 
     await new Promise((resolve, reject) => {
-      clients[0].on('message', (message) => {
-        messagesReceived1.push(message)
-        sequence.push(message)
+      clients[0].on('event.echo', (event) => {
+        messagesReceived1.push(event.payload.message)
+        sequence.push(event.payload.message)
         if(messageList1.length > 0) {
-          clients[0].send(messageList1.shift())
+          clients[0].broadcast(messageList1.shift())
         } else {
           resolve()
         }
       })
 
-      clients[1].on('message', (message) => {
-        messagesReceived2.push(message)
-        sequence.push(message)
+      clients[1].on('event.echo', (event) => {
+        messagesReceived2.push(event.payload.message)
+        sequence.push(event.payload.message)
         if(messageList2.length > 0) {
-          clients[1].send(messageList2.shift())
+          clients[1].broadcast(messageList2.shift())
         } else {
           resolve()
         }
       })
 
-      clients[0].send(messageList1.shift())
+      clients[0].broadcast(messageList1.shift())
     })
 
     return {

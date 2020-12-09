@@ -4,11 +4,6 @@ class Participants {
   constructor() {
     this.participants = {}
     this.roomParticipants = {}
-    this.onMessageReceived = (participant, message) => {
-      if(this.messageHandler) {
-        this.messageHandler(participant, message)
-      }
-    }
     this.onEventReceived = (event) => {
       if(this.eventHandler) {
         this.eventHandler(event)
@@ -48,7 +43,6 @@ class Participants {
     const participant = new Participant(socket)
     socket.participant = participant
     this.participants[participant.id] = participant
-    participant.setMessageHandler(this.onMessageReceived)
     participant.setEventHandler(this.onEventReceived)
     socket.on('close', () => (this.removeParticipant(participant)))
     log.dev.debug(`New client - ${participant.id}`)
@@ -64,11 +58,20 @@ class Participants {
   }
 
   broadcastFrom(sendingParticipant, message) {
+
     this.getRoomParticipants(sendingParticipant.roomId()).forEach((participant) => {
       if(participant != sendingParticipant) {
         participant.send(message)
       }
     })
+  }
+
+  broadcastEvent(event) {
+    return this.broadcastJson(event.serialize())
+  }
+
+  broadcastEventFrom(sendingParticipant, event) {
+    return this.broadcastJsonFrom(sendingParticipant, event.serialize())
   }
 
   broadcastJsonFrom(sendingParticipant, json) {

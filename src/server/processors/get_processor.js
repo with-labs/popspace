@@ -1,27 +1,27 @@
 class GetProcessor {
-  async process(event, participants) {
-    switch(event.data.kind) {
+  async process(mercuryEvent, participants) {
+    switch(mercuryEvent.kind()) {
       case "room/getRoom":
-        return await this.respondRoomData(event, participants)
+        return await this.respondRoomData(mercuryEvent, participants)
       case "room/getWidget":
-        return await this.respondWidgetData(event, participants)
+        return await this.respondWidgetData(mercuryEvent, participants)
       default:
-        return event._sender.sendError(
-          event,
+        return mercuryEvent.senderParticipant().sendError(
+          mercuryEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${event.data.kind}`
+          `Unrecognized event type: ${mercuryEvent.kind()}`
         )
     }
   }
 
   async respondRoomData(event, participants) {
-    const roomData = await lib.roomData.getRoomData(event._sender.room.id)
-    return await event._sender.sendResponse(event, { success: true, payload: roomData })
+    const roomData = await lib.roomData.getRoomData(event.roomId())
+    return await event.senderParticipant().sendResponse(event, roomData)
   }
 
   async respondWidgetData(event, participants) {
-    const roomWidget = await lib.dto.RoomWidget.fromWidgetId(event.data.payload.widget_id, event._sender.room.id)
-    return await event._sender.sendResponse(event, { kind: "room/getWidget", payload: roomWidget.serialize() })
+    const roomWidget = await lib.dto.RoomWidget.fromWidgetId(event.payload().widget_id, event.roomId())
+    return await event.senderParticipant().sendResponse(event, roomWidget.serialize())
   }
 }
 

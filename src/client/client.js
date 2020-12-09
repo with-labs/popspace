@@ -1,8 +1,10 @@
 const ws = require('ws');
+const EventEmitter = require('events');
 let count = 0
 
-class Client {
+class Client extends EventEmitter {
   constructor(serverUrl) {
+    super()
     this.id = count++
     this.eventId = 0
     this.ready = false
@@ -16,8 +18,8 @@ class Client {
   /**********************************/
   async connect() {
     return new Promise((resolve, reject) => {
-      this.client = new ws(this.serverUrl)
-      this.client.on('message', (message) => {
+      this.socket = new ws(this.serverUrl)
+      this.socket.on('message', (message) => {
         log.dev.debug(`${this.id} received ${message}`)
         try {
           const event = this.parseEvent(message)
@@ -26,15 +28,19 @@ class Client {
             this.promiseResolvers.forEach((resolver) => {
               if(!resolver(event)) {
                 newResolvers.push(resolver)
+              } else {
+                log.app.debug(`resolved ${event.kind}: ${event._message}`)
               }
             })
             this.promiseResolvers = newResolvers
           }
+          this.emit('event', event)
+          this.emit(`event.${event.kind}`, event)
         } catch(e) {
           // Not an event no problem, nothing to do
         }
       })
-      this.client.on('open', () => {
+      this.socket.on('open', () => {
         this.ready = true
         resolve(this)
       })
@@ -61,7 +67,6 @@ class Client {
     const event = JSON.parse(message)
     event._receiver = this
     event._message = message
-    event.payload = event.payload || {}
     return event
   }
 
@@ -70,9 +75,11 @@ class Client {
   }
 
   async authenticate(token, roomName) {
-    const response = this.sendEventWithPromise("auth", { token, roomName })
-    if(response.success) {
-      this.roomData = response.data
+    const response = await this.sendEventWithPromise("auth", { token, roomName })
+    if(response.kind == "error") {
+      throw `Error ${response.code}: ${error.message}`
+    } else {
+      this.roomData = response.payload
     }
     return response
   }
@@ -85,24 +92,22 @@ class Client {
     return promise
   }
 
-  /****************************************/
-  /*    public - allow lower level access */
-  /****************************************/
-  send(message) {
-    this.client.send(message)
+  async broadcast(message) {
+    return this.sendEventWithPromise("echo", { message })
   }
+
 
   disconnect() {
-    this.client.close()
-  }
-
-  on(event, fn) {
-    this.client.on(event, fn)
+    this.socket.close()
   }
 
   /****************************************/
   /*    private                           */
   /****************************************/
+  send(message) {
+    this.socket.send(message)
+  }
+
   makeEvent(kind, payload) {
     return {
       id: `${this.id}_${this.eventId++}`,

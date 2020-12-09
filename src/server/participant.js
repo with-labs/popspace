@@ -22,9 +22,8 @@ class Participant {
           this.eventHandler(event)
         }
       } catch(e) {
-        if(this.messageHandler) {
-          this.messageHandler(this, message)
-        }
+        log.app.error(e)
+        this.sendError({}, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
       }
     })
   }
@@ -56,11 +55,6 @@ class Participant {
     return this.authenticated
   }
 
-  setMessageHandler(handler) {
-    // Messages are any text sent over the socket
-    this.messageHandler = handler
-  }
-
   setEventHandler(handler) {
     // Events are JSON objects sent over the socket
     this.eventHandler = handler
@@ -74,31 +68,21 @@ class Participant {
     this.send(JSON.stringify(object))
   }
 
-  sendResponse(requestEvent, response = {}) {
-    // TODO:
-    // Do we want to establish a generic nested structure?
-    // { requestId, kind, payload: {}} ?
-    // We may want to specify "kind" differently then
-    this.sendObject(Object.assign({
-      requestId: requestEvent.data.id,
-      kind: response.kind || "response"
-    }, response))
+  sendResponse(requestEvent, payload={}, kind=null) {
+    const responseEvent = new lib.event.ResponseEvent(requestEvent, payload, kind)
+    this.sendObject(responseEvent.serialize())
   }
 
-  sendError(requestEvent, errorCode, errorMessage, errorObject={}) {
-    this.sendResponse(requestEvent, Object.assign({
-      requestId: requestEvent.data.id,
-      code: errorCode,
-      message: errorMessage,
-      kind: "error"
-    }, errorObject))
+  sendError(requestEvent, errorCode, errorMessage, payload={}) {
+    const errorEvent = new lib.event.ErrorEvent(requestEvent, errorCode, errorMessage, payload)
+    this.sendObject(errorEvent.serialize())
   }
 
   async disconnect() {
     this.authenticated = false
-    this.socket.close()
     return new Promise((resolve, reject) => {
       this.socket.on('close', () => (resolve()))
+      this.socket.close()
     })
   }
 

@@ -1,43 +1,44 @@
 class MutateProcessor {
-  async process(event, participants) {
-    switch(event.data.kind) {
+  async process(mercuryEvent, participants) {
+    switch(mercuryEvent.kind()) {
       case "room/moveObject":
-        return this.moveObject(event, participants)
+        return this.moveObject(mercuryEvent, participants)
       case "room/state":
-        return this.updateRoomState(event, participants)
+        return this.updateRoomState(mercuryEvent, participants)
       default:
-        return event._sender.sendError(
-          event,
+        return mercuryEvent.senderParticipant().sendError(
+          mercuryEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${event.data.kind}`
+          `Unrecognized event type: ${mercuryEvent.kind()}`
         )
     }
   }
 
   async moveObject(event, participants) {
-    const widget = event.data.payload
+    const widget = event.payload()
+    const sender = event.senderParticipant()
     try {
       const x = parseInt(widget.roomState.position.x), y = parseInt(widget.roomState.position.y)
     } catch {
-      return event._sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must specify x,y for moveObject.`)
+      return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Invalid x,y for moveObject.`)
     }
-    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event._sender.room.id, widget.roomState)
+    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.roomState)
     participants.rebroadcast(event)
-    event._sender.sendResponse(event, {kind: "room/moveObject", payload: widget})
+    sender.sendResponse(event, {kind: "room/moveObject", payload: widget})
   }
 
   async updateWidgetRoomState(event, participants) {
-    const widget = event.data.payload.widget
-    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event._sender.room.id, widget.roomState)
+    const widget = event.payload().widget
+    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.roomState)
     participants.rebroadcast(event)
-    event._sender.sendResponse(event, {kind: "room/updateWidget", payload: widget})
+    event.senderParticipant().sendResponse(event, widget)
   }
 
   async updateWidgetState(event, participants) {
-    const widget = event.data.payload.widget
-    const result = await lib.roomData.updateWidgetState(widget.widget_id, event._sender.room.id, widget.widgetState)
+    const widget = event.payload().widget
+    const result = await lib.roomData.updateWidgetState(widget.widget_id, event.roomId(), widget.widgetState)
     participants.rebroadcast(event)
-    event._sender.sendResponse(event, {kind: "room/updateWidget", payload: widget})
+    event.senderParticipant().sendResponse(event, widget)
   }
 }
 

@@ -1,7 +1,7 @@
 const express = require('express')
 const ws = require('ws')
 const Participants = require("./server/participants")
-const MessageProcessor = require("./server/message_processor")
+const EventProcessor = require("./server/event_processor")
 
 class Mercury {
   constructor(port) {
@@ -9,7 +9,7 @@ class Mercury {
     this.ws = new ws.Server({ noServer: true })
     this.express = express()
     this.participants = new Participants()
-    this.messageProcessor =  new MessageProcessor(this.participants)
+    this.eventProcessor =  new EventProcessor(this.participants)
 
     this.ws.on('connection', (socket) => {
       this.participants.addSocket(socket)

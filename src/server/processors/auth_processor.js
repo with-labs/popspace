@@ -1,29 +1,30 @@
 class AuthProcessor {
-  async process(event, participants) {
-    switch(event.data.kind) {
+  async process(mercuryEvent, participants) {
+    switch(mercuryEvent.kind()) {
       case "auth":
-        return this.authenticate(event, participants)
+        return this.authenticate(mercuryEvent, participants)
       default:
-        return event._sender.sendError(
-          event,
+        return mercuryEvent.senderParticipant().sendError(
+          mercuryEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${event.kind}`
+          `Unrecognized event type: ${mercuryEvent.kind()}`
         )
     }
   }
 
   async authenticate(event, participants) {
-    const sender = event._sender
-    const success = await sender.authenticate(event.data.payload.token, event.data.payload.roomName)
+    const sender = event.senderParticipant()
+    const payload = event.payload()
+    const success = await sender.authenticate(payload.token, payload.roomName)
     if(success) {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(event, participants)
-      // TODO: convert to object-based events
-      return sender.sendResponse(event, {
-        kind: "auth.ack",
-        success: true,
-        data: authData
-      })
+      // TODO: if participants knew their room peers, we could have a better API
+      // (specifically, we could do participant.broadcast(), and hide lower level ways of messaging)
+      sender.sendResponse(event, authData)
+      // TODO: get data for new particpant
+      const joinEvent = new lib.event.PeerEvent("room/participantJoined", {})
+      participants.broadcastEventFrom(sender, joinEvent)
     } else {
       return sender.sendError(
         event,
@@ -35,8 +36,8 @@ class AuthProcessor {
   }
 
   async getAuthData(event, participants) {
-    const user = event._sender.user
-    const room = await lib.roomData.getRoomData(event._sender.room.id)
+    const user = event.senderUser()
+    const room = await lib.roomData.getRoomData(event.roomId())
     const serializedParticipants = await participants.serialize(room.id)
     return { room, user, participants: serializedParticipants }
   }

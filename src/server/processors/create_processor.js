@@ -1,8 +1,8 @@
 class CreateProcessor {
-  async process(mercuryEvent, participants) {
+  async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
       case "room/addWidget":
-        return this.createWidget(mercuryEvent, participants)
+        return this.createWidget(mercuryEvent)
       default:
         return mercuryEvent._sender.sendError(
           mercuryEvent,
@@ -12,7 +12,7 @@ class CreateProcessor {
     }
   }
 
-  async createWidget(event, participants) {
+  async createWidget(event) {
     /*
       payload example:
       {
@@ -41,6 +41,11 @@ class CreateProcessor {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and roomState in payload.`)
     }
 
+    // TODO: Perrhaps-in-room and widgets should have their own classes,
+    // similar to participants: the database access logic (fetch/update)
+    // and serialization logic can live there.
+    // Arguably that may be more useful if we want to cache widget data later,
+    // and we don't need it yet.
     const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
       const widget = await tx.widgets.insert({owner_id: widgetOwner.id, _type: payload.type})
       const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: room.id})

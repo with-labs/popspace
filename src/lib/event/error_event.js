@@ -1,5 +1,5 @@
 /**
-  Represents an event that was triggered by a PeerEvent
+  Represents an error that was triggered by a PeerEvent
 */
 module.exports = class ErrorEvent {
   constructor(sourceMercuryEvent, errorCode, errorMessage, payload) {

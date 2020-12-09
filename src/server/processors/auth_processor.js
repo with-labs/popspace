@@ -17,8 +17,15 @@ class AuthProcessor {
     const payload = event.payload()
     const success = await sender.authenticate(payload.token, payload.roomName)
     if(success) {
+      /*
+        TODO: it'd be nice to get rid of this participants reference.
+        Some options:
+        1. sender emits an event that participants listen on and handle room joining
+        2. MercuryEvent has the relevant socket group
+        3. socket groups or participants available globally
+      */
       await participants.joinRoom(sender)
-      const authData = await this.getAuthData(event, participants)
+      const authData = await this.getAuthData(event)
       sender.sendResponse(event, authData)
       sender.broadcastPeerEvent("room/participantJoined", sender.serialize())
     } else {
@@ -31,7 +38,7 @@ class AuthProcessor {
     }
   }
 
-  async getAuthData(event, participants) {
+  async getAuthData(event) {
     const user = event.senderUser()
     const participant = event.senderParticipant()
     const roomId = event.roomId()

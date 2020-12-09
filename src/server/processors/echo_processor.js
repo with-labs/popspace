@@ -1,8 +1,8 @@
 class GetProcessor {
-  async process(mercuryEvent, participants) {
+  async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
       case "echo":
-        return await this.sendEcho(mercuryEvent, participants)
+        return await this.sendEcho(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(
           mercuryEvent,
@@ -12,7 +12,7 @@ class GetProcessor {
     }
   }
 
-  async sendEcho(event, participants) {
+  async sendEcho(event) {
     const sender = event.senderParticipant()
     sender.broadcastPeerEvent(event.kind(), event.payload())
     sender.sendResponse(event, { received: true })

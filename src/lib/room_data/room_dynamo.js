@@ -17,6 +17,7 @@ class RoomDynamo {
     await this.createRoomStatesTable()
     await this.createWidgetStatesTable()
     await this.createWidgetRoomStatesTable()
+    await this.createParticipantStatesTable()
   }
 
   tableName(tableNickname) {

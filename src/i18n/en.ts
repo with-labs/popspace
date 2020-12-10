@@ -444,6 +444,14 @@ export default {
         content: 'Your camera will be disabled, but your microphone will be enabled.',
         buttonText: 'Enter the room',
       },
+      bugReportModal: {
+        title: 'Report a bug',
+        explanationText: 'Please explain what happened',
+        submitButton: 'Send bug report',
+        imgAltText: 'Report a bug',
+        confirmationText: 'Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!',
+        errorMessage: 'Something unexpected has happened. Please contact us directly at support@with.so.',
+      },
     },
   },
 };

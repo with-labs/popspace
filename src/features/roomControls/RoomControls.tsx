@@ -5,14 +5,17 @@ import { MediaControls } from './media/MediaControls';
 import { RoomMenu } from './roomMenu/RoomMenu';
 import { MembersMenu } from './membership/MembersMenu';
 import { useIsRoomOwner } from '../../hooks/useIsRoomOwner/useIsRoomOwner';
+import { BugReport } from './BugReport/BugReport';
 
 export interface IRoomControlsProps {}
 
 const useStyles = makeStyles((theme) => ({
-  mainControls: {
+  controlsWrapper: {
     position: 'fixed',
     left: theme.spacing(2),
     top: theme.spacing(2),
+  },
+  mainControls: {
     zIndex: theme.zIndex.speedDial,
     borderRadius: 16,
     padding: theme.spacing(1.5),
@@ -27,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 16,
     padding: theme.spacing(1.5),
   },
+  bugReport: {
+    width: 185,
+    marginTop: theme.spacing(2),
+  },
 }));
 
 export const RoomControls = React.memo<IRoomControlsProps>((props) => {
@@ -36,10 +43,13 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
 
   return (
     <>
-      <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
-        <RoomMenu />
-        <RoomAddContent />
-        <MediaControls />
+      <Box className={classes.controlsWrapper} display="flex" flexDirection="column">
+        <Box component={Paper} className={classes.mainControls} display="flex" flexDirection="row" alignItems="center">
+          <RoomMenu />
+          <RoomAddContent />
+          <MediaControls />
+        </Box>
+        <BugReport className={classes.bugReport} />
       </Box>
       {/* TODO: when we have a prettier list of members, we will show
       it here even if you aren't the owner */}

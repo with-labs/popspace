@@ -253,6 +253,7 @@ export default {
         catastrophicMediaError:
           'Something went very wrong while activating your media device. Try refreshing the page to see if that helps.',
         downloadFailed: "That didn't work - try again?",
+        unauthorized: 'Please log in',
       },
       widgetsFallback: {
         title: 'Accessories error',
@@ -289,7 +290,7 @@ export default {
         INVALID_ROOM_CLAIM: {
           //message: 'INVALID_ROOM_CLAIM',
         },
-        UNAUTHORIZED_ROOM_ACCESSS: {
+        UNAUTHORIZED_ROOM_ACCESS: {
           //message: 'UNAUTHORIZED_ROOM_ACCESSS',
         },
         ALREADY_CLAIMED: {
@@ -304,7 +305,7 @@ export default {
         ALREADY_REGISTERED: {
           //message: 'ALREADY_REGISTERED',
         },
-        UNAUTHORIZED: {
+        UNAUTHORIZED_USER: {
           //message: 'UNAUTHORIZED',
         },
         ADMIN_ONLY_RESTRICTED: {
@@ -316,7 +317,6 @@ export default {
         UNEXPECTED: {
           message: 'Something unexpected has happened. Please try again later.',
         },
-        INVALID_ROOM_PERMISSIONS: {},
         LINK_EXPIRED: {},
         PAGE_NOT_FOUND: {},
         ROOM_NOT_FOUND: {},

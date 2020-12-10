@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
   },
   mutedIcon: {
-    color: theme.palette.brandColors.cherry.ink,
+    color: theme.palette.brandColors.cherry.bold,
   },
   speakingIndicator: {
     bottom: -8,

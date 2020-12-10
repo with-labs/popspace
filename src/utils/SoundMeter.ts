@@ -18,6 +18,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 import { logger } from './logger';
 
+// Safari.
+const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+
 export class SoundMeter {
   private context: AudioContext;
   private script: ScriptProcessorNode;

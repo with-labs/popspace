@@ -77,7 +77,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Unauthorized access`,
-      { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESSS }
+      { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESS }
     )
   }
 

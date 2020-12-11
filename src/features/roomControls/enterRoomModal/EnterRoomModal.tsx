@@ -21,11 +21,19 @@ export const EnterRoomModal: React.FC = () => {
   // auto-start mic when:
   // 1. user clicks to enter room
   // 2. this component mounts and they are already ready to enter (dialog doesn't open)
+
+  // keep a reference to the latest value of startAudio in a ref
+  // so that it doesn't trigger the effect when it changes but we
+  // can still call it in the effect
+  const startAudioRef = React.useRef(startAudio);
+  React.useEffect(() => {
+    startAudioRef.current = startAudio;
+  }, [startAudio]);
   React.useEffect(() => {
     if (isReady) {
-      startAudio();
+      startAudioRef.current();
     }
-  }, [isReady, startAudio]);
+  }, [isReady]);
 
   return (
     <Dialog open={!isReady} disableBackdropClick>

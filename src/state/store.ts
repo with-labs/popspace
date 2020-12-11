@@ -11,7 +11,7 @@ export type RootState = ReturnType<typeof appReducer>;
 
 // filter for what redux actions we log to sentry
 const reduxActionFilter = (action: AnyAction) => {
-  if (action.type === 'room/updatePersonIsSpeaking') {
+  if (action.type === 'room/updatePersonIsSpeaking' || action.type === 'room/moveObject') {
     return null;
   }
   return action;

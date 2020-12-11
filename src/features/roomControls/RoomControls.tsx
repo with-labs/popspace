@@ -14,11 +14,13 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     left: theme.spacing(2),
     top: theme.spacing(2),
+    pointerEvents: 'none',
   },
   mainControls: {
     zIndex: theme.zIndex.speedDial,
     borderRadius: 16,
     padding: theme.spacing(1.5),
+    pointerEvents: 'auto',
   },
   settingsButton: {
     marginLeft: theme.spacing(1),
@@ -33,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   bugReport: {
     width: 185,
     marginTop: theme.spacing(2),
+    pointerEvents: 'auto',
   },
 }));
 

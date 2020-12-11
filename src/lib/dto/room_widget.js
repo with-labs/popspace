@@ -43,7 +43,7 @@ RoomWidget.fromWidgetId = async (widgetId, roomId) => {
   if(pgWidgets.length < 1) {
     return null
   }
-  return await lib.roomData.dynamo.getRoomWidget(pgWidgets[0], roomId)
+  return await lib.roomData.dynamo.getRoomWidget(roomId, pgWidgets[0])
 }
 
 module.exports = RoomWidget

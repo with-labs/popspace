@@ -41,13 +41,13 @@ class RoomData {
         AND
         widgets.archived_at IS NULL
     `, [roomId])
-    return await this.dynamo.getRoomWidgets(widgets, roomId)
+    return await this.dynamo.getRoomWidgets(roomId, widgets)
   }
 
   async addWidgetInRoom(roomWidget) {
     return Promise.all([
       this.dynamo.setWidgetData(roomWidget.widgetId(), roomWidget.widgetState()),
-      this.dynamo.setRoomWidgetState(roomWidget.widgetId(), roomWidget.roomId(), roomWidget.roomState())
+      this.dynamo.setRoomWidgetState(roomWidget.roomId(), roomWidget.widgetId(), roomWidget.roomState())
     ])
   }
 
@@ -72,7 +72,7 @@ class RoomData {
       If the user or room is deleted though there's no reason to keep the data entry around.
       Perhaps the best way to handle that is just with a background sweep job.
     */
-    return this.dynamo.deleteParticipant(participant.user.id, roomId)
+    return this.dynamo.deleteParticipant(roomId, participant.user.id)
   }
 
   async eraseWidget(widgetId) {
@@ -91,21 +91,21 @@ class RoomData {
   }
 
   async moveWidget(widgetId, roomId, toX, toY) {
-    return this.updateWidgetRoomState(widgetId, roomId, {x: toX, y: toY})
+    return this.updateWidgetRoomState(roomId, roomId, {x: toX, y: toY})
   }
 
   async updateWidgetRoomState(widgetId, roomId, stateUpdate, widgetRoomState=null) {
     if(!widgetRoomState) {
-      widgetRoomState = await this.dynamo.getRoomWidgetState(widgetId, roomId)
+      widgetRoomState = await this.dynamo.getRoomWidgetState(roomId, widgetId)
     }
     Object.assign(widgetRoomState, stateUpdate)
-    return await this.dynamo.setRoomWidgetState(widgetId, roomId, widgetRoomState)
+    return await this.dynamo.setRoomWidgetState(roomId, widgetId, widgetRoomState)
   }
 
   async updateWidgetState(widgetId, stateUpdate) {
-    const widgetState = await this.dynamo.getWidgetState(widgetId, roomId)
+    const widgetState = await this.dynamo.getWidgetState(roomId, widgetId)
     Object.assign(widgetState, stateUpdate)
-    return await this.dynamo.setWidgetData(widgetId, roomState)
+    return await this.dynamo.setWidgetData(widgetId, widgetState)
   }
 
 }

@@ -24,9 +24,7 @@ class RoomDynamo {
     return `${process.env.NODE_ENV}_${tableNickname}`
   }
 
-  // TODO: I think I prefer roomId first, then the data; should consolidate
-  // ~Alexey
-  async getRoomWidgets(widgets, roomId) {
+  async getRoomWidgets(roomId, widgets) {
     // dynamo only allows querying 1 primary key at a time
     // we could batch the request as an optimization,
     // but batching has limits we'd need to respect
@@ -34,13 +32,13 @@ class RoomDynamo {
     // An alternative could be to use range keys,
     // but it seems weird to arbitrarily introduce a static hash key.
     return Promise.all(widgets.map(async (widget) => {
-      return this.getRoomWidget(widget, roomId)
+      return this.getRoomWidget(roomId, widget)
     }))
   }
 
-  async getRoomWidget(widget, roomId) {
+  async getRoomWidget(roomId, widget) {
     const widgetState = await this.getWidgetState(widget.id)
-    const roomState = await this.getRoomWidgetState(widget.id, roomId)
+    const roomState = await this.getRoomWidgetState(roomId, widget.id)
     const roomWidget = new lib.dto.RoomWidget(roomId, widget, widgetState, roomState)
     return roomWidget
   }
@@ -72,7 +70,7 @@ class RoomDynamo {
     }
   }
 
-  async getRoomWidgetState(widgetId, roomId) {
+  async getRoomWidgetState(roomId, widgetId) {
     const entry = await this.getByHashAndRange(
       'room_widget_states',
       'room_id',
@@ -105,7 +103,7 @@ class RoomDynamo {
     })
   }
 
-  async setRoomWidgetState(widgetId, roomId, state) {
+  async setRoomWidgetState(roomId, widgetId, state) {
     const stateItem = {
       widget_id: { N: `${widgetId}` },
       room_id: {N: `${roomId}`},
@@ -278,7 +276,7 @@ class RoomDynamo {
     return await Promise.all(promises)
   }
 
-  async deleteParticipant(userId, roomId) {
+  async deleteParticipant(roomId, userId) {
     return this.deleteEntry({
       TableName: this.tableName('room_participant_states'),
       Key: {

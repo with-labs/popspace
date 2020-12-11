@@ -8,6 +8,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
 import { logger } from '../../utils/logger';
 import { RoomEvent } from '../../constants/twilio';
+import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 
 const UPDATE_INTERVAL = 300;
 // arbitrary, based on experimentation...
@@ -26,6 +27,9 @@ export const SpeakingStateObserver: React.FC = () => {
   const localParticipantSid = localParticipant?.sid;
 
   const { audioTrack, dataTrack } = useLocalTracks();
+
+  const { isReady } = React.useContext(MediaReadinessContext);
+
   // a single, stable instance of SoundMeter we can plug our
   // audio tracks into
   const [soundMeter] = React.useState(() => new SoundMeter());
@@ -34,7 +38,7 @@ export const SpeakingStateObserver: React.FC = () => {
   React.useEffect(() => {
     const { set, remove } = useSpeakingStates.getState().api;
 
-    if (!localParticipantSid) return;
+    if (!localParticipantSid || !isReady) return;
 
     if (!audioTrack) {
       remove(localParticipantSid);
@@ -82,7 +86,7 @@ export const SpeakingStateObserver: React.FC = () => {
         audioTrack.off('restarted', handleTrackRestart);
       };
     }
-  }, [audioTrack, localParticipantSid, soundMeter, dataTrack]);
+  }, [audioTrack, localParticipantSid, soundMeter, dataTrack, isReady]);
 
   // this effect monitors peer data tracks for speaking events and
   // updates our local state

@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react';
 import api from '../../utils/api';
 import useVideoContext from '../useVideoContext/useVideoContext';
-import { getSessionToken } from '../../utils/sessionToken';
 import { useTranslation } from 'react-i18next';
 import { ErrorCodes } from '../../constants/ErrorCodes';
-
-export class JoinError extends Error {}
+import { logger } from '../../utils/logger';
+export class JoinError extends Error {
+  constructor(message: string, public errorCode: ErrorCodes) {
+    super(message);
+  }
+}
 export class FatalError extends Error {
   constructor(message: string, public errorCode: ErrorCodes) {
     super(message);
@@ -29,57 +32,34 @@ export function useJoin(roomName: string) {
    * Joins a room - credentials are only required if the user
    * is not signed in.
    */
-  const join = useCallback(
-    async (username?: string, password?: string) => {
-      setJoining(true);
-
-      try {
-        // split into two code paths - one for if the user has an active session,
-        // one for not. Both will populate `token` in the end.
-        let token: string;
-
-        const sessionToken = getSessionToken();
-
-        // if there is no session token, or there were provided credentials, use the credentials.
-        if (!sessionToken || (username && password)) {
-          // if no session and no password, reject
-          if (!password || !username) {
-            throw new JoinError(t('error.messages.noRoomPassword'));
-          }
-
-          const result = await api.getToken(username, password, roomName);
-          if (!result.success || !result.token) {
-            if (result.errorCode === ErrorCodes.INCORRECT_ROOM_PASSCODE) {
-              throw new JoinError(t('error.messages.incorrectRoomPassword'));
-            } else if (result.errorCode === ErrorCodes.INVALID_USER_IDENTITY) {
-              throw new JoinError(t('error.messages.joinRoomInvalidScreenName'));
-            } else if (result.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-              throw new FatalError(t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
-            } else {
-              throw new JoinError(t('error.messages.joinRoomUnknownFailure'));
-            }
-          }
-          token = result.token;
-        } else {
-          const result = await api.loggedInEnterRoom(roomName);
-          if (!result.success || !result.token) {
-            if (result.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
-              throw new JoinError(t('error.messages.noRoomAccess'));
-            } else {
-              throw new JoinError(t('error.messages.joinRoomUnknownFailure'));
-            }
-          }
-          token = result.token;
+  const join = useCallback(async () => {
+    setJoining(true);
+    try {
+      const result = await api.loggedInEnterRoom(roomName);
+      if (!result.success || !result.token) {
+        if (result.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
+          // user is logged in but doesnt have room access
+          throw new JoinError(t('error.messages.noRoomAccess'), ErrorCodes.UNAUTHORIZED_ROOM_ACCESS);
+        } else if (result.errorCode === ErrorCodes.UNKNOWN_ROOM) {
+          // trying to join a room that does not exist
+          throw new FatalError(t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
         }
-
-        // now we have a token, join the room!
-        await connect(token);
-      } finally {
-        setJoining(false);
+        if (result.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
+          // user is not logged in
+          throw new JoinError(t('error.messages.unauthorized'), ErrorCodes.UNAUTHORIZED_USER);
+        } else {
+          logger.error(`Unhandled expection in useJoin`, result.errorCode, result.message);
+          throw new JoinError(t('error.messages.joinRoomUnknownFailure'), ErrorCodes.JOIN_ROOM_UNKNOWN);
+        }
       }
-    },
-    [roomName, connect, t]
-  );
+      const token = result.token;
+
+      // now we have a token, join the room!
+      await connect(token);
+    } finally {
+      setJoining(false);
+    }
+  }, [roomName, connect, t]);
 
   return [join, { loading: joining }] as const;
 }

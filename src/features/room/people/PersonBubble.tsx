@@ -117,7 +117,9 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '1',
     position: 'absolute',
   },
-  mutedIcon: {},
+  mutedIcon: {
+    color: theme.palette.brandColors.cherry.bold,
+  },
   speakingIndicator: {
     bottom: -8,
     width: 24,

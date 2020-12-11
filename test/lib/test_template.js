@@ -38,14 +38,37 @@ module.exports = {
 
   nAuthenticatedUsers: (nUsers, lambda) => {
     return tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+      const firstClient = testEnvironment.loggedInUsers[0].client
       const room = testEnvironment.loggedInUsers[0].room
       const roomNameEntry = testEnvironment.loggedInUsers[0].roomNameEntry
+
+      /*
+        Each user after the first one produces a certain number of join events.
+        The number of events is equal to the amount of users connected before him.
+        Total events: 1 + 2 + 3 + 4 + 5 + ... + (nUsers - 1)
+        We go up to (nUsers - 1), because we don't count the first user.
+      */
+      let joinsRemaining = nUsers * (nUsers - 1)/2 - 1
+
       const clients = await tlib.util.addClients(testEnvironment.mercury, nUsers - 1)
+
+      const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
+        [firstClient, ...clients].forEach((client) => {
+          client.on('event.room/participantJoined', () => {
+            joinsRemaining--
+            if(joinsRemaining <= 0) {
+              resolve()
+            }
+          })
+        })
+      })
+
       const inits = clients.map(async (client) => {
         const environmentUser = await testEnvironment.createLoggedInUser(client, room, roomNameEntry)
         await testEnvironment.authenticate(environmentUser)
       })
       await Promise.all(inits)
+      await joinsPropagatedPromise
       return await lambda(testEnvironment)
     })
 

@@ -23,6 +23,7 @@ class GetProcessor {
     const roomWidget = await lib.dto.RoomWidget.fromWidgetId(event.payload().widget_id, event.roomId())
     return await event.senderParticipant().sendResponse(event, roomWidget.serialize())
   }
+
 }
 
 module.exports = GetProcessor

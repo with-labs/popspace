@@ -39,7 +39,7 @@ class EventProcessor {
       try {
         return await processors[action].process(mercuryEvent, this.participants)
       } catch(e) {
-        log.app.error(`Error processing message: ${e ? e.message : 'null error'}\n${e ? e.stack : ''}`)
+        log.app.error(`Error processing ${action}: ${e ? e.message || e : 'null error'}\n${e ? e.stack : ''}`)
         return sender.sendError(mercuryEvent, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.", {message: e.message, stack: e.stack})
       }
     })

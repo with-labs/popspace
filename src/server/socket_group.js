@@ -25,6 +25,10 @@ class SocketGroup {
     return this._participants
   }
 
+  authenticatedParticipants() {
+    return this._participants.filter((p) => (p.authenticated))
+  }
+
   broadcastPeerEvent(sender, kind, payload, eventId=null) {
     for(const participant of this._participants) {
       if(participant != sender) {

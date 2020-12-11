@@ -47,7 +47,7 @@ class AuthProcessor {
     const peers = participant.listPeersIncludingSelf()
     const serializedParticipants = peers.map((p) => (p.serialize()))
 
-    return { room, user, participants: serializedParticipants }
+    return { room, self: participant.serialize(), participants: serializedParticipants }
   }
 
 }

@@ -13,7 +13,7 @@ module.exports = class {
     if(!room) {
       let roomInfo = await shared.db.rooms.generateRoom(user.id)
       room = roomInfo.room
-      roomNameEntry= roomInfo.roomNameEntry
+      roomNameEntry = roomInfo.roomNameEntry
     }
     return this.logIntoRoom(client, user, room, roomNameEntry)
   }

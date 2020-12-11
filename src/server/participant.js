@@ -21,6 +21,14 @@ class Participant {
     this.room = {}
     this.stateInRoom = null
 
+    this.socket.on('disconnect', () => {
+      this.leaveSocketGroup()
+    })
+
+    this.socket.on('close', () => {
+      this.leaveSocketGroup()
+    })
+
     this.socket.on('message', (message) => {
       /* TODO:
         - ratelimit
@@ -44,10 +52,11 @@ class Participant {
   }
 
   listPeersIncludingSelf() {
-    return this.socketGroup ? this.socketGroup.participants() : []
+    return (this.socketGroup ? this.socketGroup.authenticatedParticipants() : [])
   }
 
   async authenticate(token, roomName) {
+
     /*
       It seems that the JS WebSockets API doesn't well support setting custom headers
       when the connection is being established. A reasonable alternative is to send
@@ -80,7 +89,7 @@ class Participant {
   leaveSocketGroup() {
     if(this.socketGroup) {
       this.socketGroup.removeParticipant(this)
-      this.socketGroup.broadcastPeerEvent(this, "room/participantLeft", { participantId: this.id })
+      this.socketGroup.broadcastPeerEvent(this, "room/participantLeft", { sessionId: this.id })
       this.socketGroup = null
     }
   }
@@ -131,7 +140,7 @@ class Participant {
     })
   }
 
-  async serialize() {
+  serialize() {
     return {
       authenticated: this.authenticated,
       user: {

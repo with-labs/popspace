@@ -1,6 +1,7 @@
 const ws = require('ws');
 const EventEmitter = require('events');
 let count = 0
+const ClientRoomData = require('./client_room_data')
 
 class Client extends EventEmitter {
   constructor(serverUrl) {
@@ -34,6 +35,7 @@ class Client extends EventEmitter {
             })
             this.promiseResolvers = newResolvers
           }
+          this.handleEvent(event)
           this.emit('event', event)
           this.emit(`event.${event.kind}`, event)
         } catch(e) {
@@ -45,6 +47,30 @@ class Client extends EventEmitter {
         resolve(this)
       })
     })
+  }
+
+  userId() {
+    this.requireReady()
+    return this.roomData.userId()
+  }
+
+  async disconnect() {
+    this.ready = false
+    return new Promise((resolve, reject) => {
+      this.socket.once("close", () => {
+        resolve(this)
+      })
+      this.socket.close()
+      this.socket = null
+    })
+  }
+
+  peersIncludingSelf() {
+    return this.roomData.peersIncludingSelf()
+  }
+
+  authenticatedPeers() {
+    return this.roomData.authenticatedPeers()
   }
 
   async getRoomState() {
@@ -79,7 +105,7 @@ class Client extends EventEmitter {
     if(response.kind == "error") {
       throw {response: response, code: response.code, message: `Error ${response.code}: ${response.message}`}
     } else {
-      this.roomData = response.payload
+      this.roomData = new ClientRoomData(response.payload)
     }
     return response
   }
@@ -135,7 +161,28 @@ class Client extends EventEmitter {
   }
 
   handleEvent(event) {
+    switch(event.kind) {
+      case 'room/participantJoined':
+        /*
+          Note: we're not necessarily adding a peer when they join.
+          They may have already been connected to the room,
+          just not fully authenticated.
 
+          E.g. this protects against certain race conditions:
+          1. A socket connect
+          2. B socket connect
+          3. A authenticate
+          4. B authenticate
+          5. B gets list of authenticated participants: [A, B]
+          6. A broadcasts its join event
+         (7. B broadcasts its join event)
+        */
+        this.roomData.updatePeer(event.payload)
+        break
+      case 'room/participantLeft':
+        this.roomData.removePeer(event.payload)
+        break
+    }
   }
 }
 

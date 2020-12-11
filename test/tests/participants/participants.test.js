@@ -4,22 +4,24 @@ tlib.TestTemplate.describeWithLib('participants', () => {
   // We have some long-running tests
   jest.setTimeout(30000);
 
-  test("when a user joins a room they are the only participant", async () => {
-    const result = await scenarios["one_participant"]()
-    expect(true)
-  })
-
-  test("when a second user joins a room, they see each other", async () => {
-    expect(true)
+  test("when new users join a room, they are visible to all other peers", async () => {
+    const result = await scenarios["participants_see_each_other"]()
+    result.countsAtEnd.forEach((participantCountAccordingToPeer) => {
+      expect(participantCountAccordingToPeer).toEqual(result.desiredParticipants)
+      expect(participantCountAccordingToPeer).toEqual(result.desiredParticipants)
+    })
   })
 
   test("when a user leaves a room, other users find out", async () => {
-    expect(true)
+    const result = await scenarios["disconnecting_participants"]()
+    result.countsAtEnd.forEach((endCount) => {
+      expect(endCount).toEqual(result.participantCountAtStart - 1)
+    })
   })
 
-  test("when a participant moves, other participants find out", async () => {
-    expect(true)
-  })
+  // test("when a participant moves, other participants find out", async () => {
+  //   expect(true)
+  // })
 
 
 

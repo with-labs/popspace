@@ -18,6 +18,18 @@ import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
+const VOICE_ICON_SPRINGS = {
+  VISIBLE: {
+    mass: 0.5,
+    tension: 700,
+    friction: 20,
+  },
+  INVISIBLE: {
+    mass: 0.1,
+    tension: 800,
+    friction: 30,
+  },
+};
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   participant: LocalParticipant | RemoteParticipant;
@@ -109,24 +121,23 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     maxWidth: '80%',
   },
-  mutedGraphic: {
-    bottom: 6,
-    fontSize: theme.typography.pxToRem(16),
-    width: 16,
-    height: 16,
-    lineHeight: '1',
+  voiceIndicator: {
+    bottom: -8,
     position: 'absolute',
+    transform: 'translate(50%, -50%)',
   },
   mutedIcon: {
+    width: 16,
+    height: 16,
+    fontSize: theme.typography.pxToRem(16),
     color: theme.palette.brandColors.cherry.bold,
   },
-  speakingIndicator: {
-    bottom: -8,
+  voiceWave: {
     width: 24,
     height: 24,
-    position: 'absolute',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: 'relative',
+    // tweak to visually align it with mute icon
+    top: 7,
   },
 }));
 
@@ -170,12 +181,46 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       backgroundColor,
     });
 
-    const mutedGraphicStyles = useSpring({
-      right: isVideoOn ? 16 : 58,
-    });
+    const [speakingIndicatorStyles, setSpeakingIndicatorStyles] = useSpring(() => ({
+      right: isVideoOn ? '8%' : '50%',
+      bottom: isVideoOn ? -10 : -8,
+      opacity: 1,
+      config: VOICE_ICON_SPRINGS.VISIBLE,
+    }));
+
+    React.useEffect(() => {
+      // scripted animation for the transition to and from video for the speaking indicator
+      // graphic - this makes the transition of the position of the icon feel less
+      // awkward by hiding it while it moves, popping it in later
+
+      (async function () {
+        if (isVideoOn) {
+          await setSpeakingIndicatorStyles({ opacity: 0, config: VOICE_ICON_SPRINGS.VISIBLE });
+          await setSpeakingIndicatorStyles({
+            right: '8%',
+            bottom: -20,
+            // modify spring for this operation - the icon is invisible at this point
+            // we just want this to move quickly to the next position
+            config: VOICE_ICON_SPRINGS.INVISIBLE,
+          });
+          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -10, config: VOICE_ICON_SPRINGS.VISIBLE });
+        } else {
+          await setSpeakingIndicatorStyles({ opacity: 0, config: VOICE_ICON_SPRINGS.VISIBLE });
+          await setSpeakingIndicatorStyles({
+            right: '50%',
+            bottom: -18,
+            // modify spring for this operation - the icon is invisible at this point
+            // we just want this to move quickly to the next position
+            config: VOICE_ICON_SPRINGS.INVISIBLE,
+          });
+          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -8, config: VOICE_ICON_SPRINGS.VISIBLE });
+        }
+      })();
+    }, [isVideoOn, setSpeakingIndicatorStyles]);
 
     const bottomSectionStyles = useSpring({
-      lineHeight: isVideoOn ? '32px' : '16px',
+      lineHeight: '1',
+      height: isVideoOn ? 24 : 16,
     });
 
     const statusStyles = useSpring({
@@ -226,13 +271,13 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
               <Typography className={classes.name}>{displayIdentity}</Typography>
             </animated.div>
-            {isMicOn ? (
-              <AudioIndicator className={classes.speakingIndicator} isActive={isSpeaking} variant="sine" />
-            ) : (
-              <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
+            <animated.div className={classes.voiceIndicator} style={speakingIndicatorStyles as any}>
+              {isMicOn ? (
+                <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
+              ) : (
                 <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
-              </animated.div>
-            )}
+              )}
+            </animated.div>
           </animated.div>
         </DraggableHandle>
         <animated.div className={classes.status} style={statusStyles}>

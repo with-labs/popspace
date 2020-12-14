@@ -442,7 +442,7 @@ export default {
       },
       enterRoomModal: {
         title: 'Enter the room',
-        content: 'Your camera will be disabled, but your microphone will be enabled.',
+        content: 'You can take a moment to set up your camera and microphone if you like.',
         buttonText: 'Enter the room',
       },
       bugReportModal: {

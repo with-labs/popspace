@@ -19,7 +19,10 @@ class Rooms extends DbAccess {
 
   async roomByName(name) {
     const normalized = util.args.normalizeRoomName(name)
-    const roomNameEntry = await db.pg.massive.room_names.findOne({name: normalized})
+    const queryResult = await db.pg.massive.query(`
+      SELECT room_id FROM room_names WHERE lower(name) = lower($1)
+    `, name)
+    const roomNameEntry = queryResult[0]
     if(!roomNameEntry) return null;
     return await db.pg.massive.rooms.findOne({id: roomNameEntry.room_id})
   }
@@ -42,7 +45,7 @@ class Rooms extends DbAccess {
       SELECT
         rooms.id AS id,
         rooms.owner_id AS owner_id,
-        room_names.name AS name,
+        lower(room_names.name) AS name,
         room_names.priority_level AS priority_level
       FROM
         rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
@@ -59,7 +62,7 @@ class Rooms extends DbAccess {
       SELECT
         rooms.id AS id,
         rooms.owner_id AS owner_id,
-        room_names.name AS name,
+        lower(room_names.name) AS name,
         room_names.priority_level AS priority_level
       FROM
         rooms LEFT OUTER JOIN room_names on rooms.id = room_names.room_id
@@ -77,7 +80,7 @@ class Rooms extends DbAccess {
       SELECT
         room_names.room_id AS id,
         rooms_and_memberships.owner_id AS owner_id,
-        room_names.name AS name,
+        lower(room_names.name) AS name,
         room_names.priority_level AS priority_level
       FROM
         (
@@ -138,7 +141,7 @@ class Rooms extends DbAccess {
       })
       const generatedName = await tx.room_names.insert({
         room_id: room.id,
-        name: name,
+        name: util.args.normalizeRoomName(name),
         priority_level: priorityLevel,
         is_vanity: isVanity
       })

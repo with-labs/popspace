@@ -10,7 +10,6 @@ export type PersonState = {
   avatar: string;
   emoji: EmojiData | null | string;
   status: string | null;
-  isSpeaking: boolean;
 };
 
 /** Data common to all types of widgets */

@@ -8,12 +8,13 @@ import { Avatar } from '../../../components/Avatar/Avatar';
 import { useSpring, animated } from '@react-spring/web';
 import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { PersonStatus } from './PersonStatus';
 import { ScreenSharePreview } from './ScreenSharePreview';
 import { DraggableHandle } from '../DraggableHandle';
 import { isMobileOnly } from 'react-device-detect';
 import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
+import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingStates';
+import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
@@ -109,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '80%',
   },
   mutedGraphic: {
-    bottom: 4,
+    bottom: 6,
     fontSize: theme.typography.pxToRem(16),
     width: 16,
     height: 16,
@@ -117,10 +118,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
   },
   mutedIcon: {
-    color: theme.palette.error.dark,
+    color: theme.palette.brandColors.cherry.bold,
   },
   speakingIndicator: {
-    bottom: -10,
+    bottom: -8,
     width: 24,
     height: 24,
     position: 'absolute',
@@ -142,7 +143,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const isMicOn = !!audioTrack;
     const isSharingScreen = !!screenShareTrack;
 
-    const { avatar: avatarName, isSpeaking, emoji, status } = person ?? {};
+    const { avatar: avatarName, emoji, status } = person ?? {};
+
+    const isSpeaking = useSpeakingStates(
+      React.useCallback((store) => store.isSpeaking[participant.sid] ?? false, [participant.sid])
+    );
 
     // visible screen name
     const displayIdentity = useParticipantDisplayIdentity(participant);
@@ -225,7 +230,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               <AudioIndicator className={classes.speakingIndicator} isActive={isSpeaking} variant="sine" />
             ) : (
               <animated.div className={classes.mutedGraphic} style={mutedGraphicStyles}>
-                <MicOffIcon className={classes.mutedIcon} fontSize="inherit" />
+                <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
               </animated.div>
             )}
           </animated.div>

@@ -25,7 +25,15 @@ const doLog = (level: 'info' | 'warn' | 'error' | 'debug' | 'log' | 'critical', 
       Sentry.captureException(firstError, { level: sentryLevelMap[level] });
     }
     // capture any other string logs, stringify others
-    const strings = messages.map((m) => (typeof m === 'string' ? m : m.toString?.() ?? '...'));
+    const strings = messages.map((m) => {
+      if (typeof m === 'string' || typeof m === 'number') return m;
+
+      try {
+        return JSON.stringify(m);
+      } catch (err) {
+        return '<unserializeable>';
+      }
+    });
     if (strings) {
       Sentry.captureMessage(strings.join(' '), { level: sentryLevelMap[level] });
     }

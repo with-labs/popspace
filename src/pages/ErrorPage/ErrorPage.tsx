@@ -20,7 +20,7 @@ export const ErrorPage: React.FC<IErrorPageProps> = (props) => {
   const { type, errorMessage } = props;
   var errorPage = <Unexpected errorMsg={errorMessage} />;
   switch (type) {
-    case ErrorCodes.INVALID_ROOM_PERMISSIONS:
+    case ErrorCodes.UNAUTHORIZED_ROOM_ACCESS:
       errorPage = <InvalidRoomPermission errorMsg={errorMessage} />;
       break;
     case ErrorCodes.LINK_EXPIRED:

@@ -7,6 +7,7 @@ import { actions as roomActions } from '../../../room/roomSlice';
 import { WidgetData, WidgetType, LinkWidgetData } from '../../../../types/room';
 import { Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
+import { useFeatureFlag } from 'flagg';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
@@ -21,6 +22,7 @@ export function useAddAccessory() {
   const dispatch = useCoordinatedDispatch();
 
   const getLinkData = useGetLinkData();
+  const [hasOpengraph] = useFeatureFlag('opengraph');
 
   return useCallback(
     async ({
@@ -48,8 +50,11 @@ export function useAddAccessory() {
         let data = initialData;
         // kind of a heuristic - only fetch opengraph data if we don't already
         // have a media preview
-        if (type === WidgetType.Link && !(initialData as LinkWidgetData).mediaUrl) {
+        if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetData).mediaUrl) {
           data = await getLinkData((initialData as LinkWidgetData).url);
+
+          // reset the url we get from open graph, to the url the user provided
+          (data as LinkWidgetData).url = (initialData as LinkWidgetData).url;
         }
 
         dispatch(
@@ -66,6 +71,6 @@ export function useAddAccessory() {
         );
       }
     },
-    [dispatch, userSid, viewport, getLinkData]
+    [dispatch, userSid, viewport, getLinkData, hasOpengraph]
   );
 }

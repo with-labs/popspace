@@ -5,7 +5,8 @@ import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import clsx from 'clsx';
 import { ErrorInfo } from '../../types/api';
-
+import { useHistory } from 'react-router-dom';
+import { RouteNames } from '../../constants/RouteNames';
 interface IJoinRoomProps {
   roomName: string;
 }
@@ -30,19 +31,23 @@ const useStyles = makeStyles((theme) => ({
 const JoinRoom = ({ roomName }: IJoinRoomProps) => {
   const classes = useStyles();
   const [join] = useJoin(roomName);
+  const history = useHistory();
 
   const [errorPageInfo, setErrorPageInfo] = React.useState<ErrorInfo | null>(null);
 
   // attempt an auto-login first
   React.useEffect(() => {
     join().catch((err) => {
-      // this just means the user can't auto-join
-      // unknown error was thrown
-      setErrorPageInfo({
-        errorCode: ErrorCodes.INVALID_ROOM_PERMISSIONS,
-      });
+      if (err.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
+        // redireecto to root, user needs to login
+        history.push(RouteNames.ROOT);
+      } else {
+        setErrorPageInfo({
+          errorCode: err.errorCode,
+        });
+      }
     });
-  }, [join]);
+  }, [join, history]);
 
   if (errorPageInfo) {
     return <ErrorPage type={errorPageInfo.errorCode} />;

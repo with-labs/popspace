@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers, AnyAction } from '@reduxjs/toolkit';
 import { reducer as roomReducer } from '../features/room/roomSlice';
 import { reducer as roomControlsReducer } from '../features/roomControls/roomControlsSlice';
 import * as Sentry from '@sentry/react';
@@ -9,7 +9,17 @@ const appReducer = combineReducers({
 });
 export type RootState = ReturnType<typeof appReducer>;
 
-const sentryEnhancer = Sentry.createReduxEnhancer();
+// filter for what redux actions we log to sentry
+const reduxActionFilter = (action: AnyAction) => {
+  if (action.type === 'room/updatePersonIsSpeaking' || action.type === 'room/moveObject') {
+    return null;
+  }
+  return action;
+};
+
+const sentryEnhancer = Sentry.createReduxEnhancer({
+  actionTransformer: reduxActionFilter,
+});
 
 const store = configureStore({
   reducer: appReducer,

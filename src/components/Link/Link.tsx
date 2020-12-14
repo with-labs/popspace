@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { Link as MuiLink, LinkProps as MuiLinkProps, makeStyles } from '@material-ui/core';
 import { logger } from '../../utils/logger';
+import clsx from 'clsx';
 
 export interface ILinkProps extends Omit<RouterLinkProps, 'color'> {
   color?: MuiLinkProps['color'];
@@ -35,16 +36,16 @@ const newTabProps = {
  * Wraps various Link functionality into one easy component - link to absolute or relative
  * URLs, open in new tab, remove link default styling, etc.
  */
-export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, ...props }) => {
+export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, to, ...props }) => {
   const classes = useStyles();
 
-  const isAbsoluteURL = typeof props.to === 'string' && checkAbsoluteURL(props.to);
+  const isAbsoluteURL = typeof to === 'string' && checkAbsoluteURL(to);
 
   // every absolute URL link opens in a new tab by default, but passing newTab={false} explicitly
   // can turn that off
   const extraProps = newTab || (isAbsoluteURL && newTab !== false) ? newTabProps : {};
 
-  const isInvalidConfig = (isAbsoluteURL || newTab) && typeof props.to !== 'string' && typeof props.to !== 'undefined';
+  const isInvalidConfig = (isAbsoluteURL || newTab) && typeof to !== 'string' && typeof to !== 'undefined';
   React.useEffect(() => {
     if (isInvalidConfig) {
       logger.error(`You can't use a newTab Link with a complex to prop`);
@@ -54,26 +55,34 @@ export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, ...props })
   // use an <a /> tag for absolute links or new tab links, and React Router for paths within the app
   // separate code path because <a /> accepts a very different and smaller set of props than RR Link
   if (isAbsoluteURL || newTab) {
-    const href = typeof props.to !== 'string' && typeof props.to !== 'undefined' ? '#' : props.to;
+    const href = typeof to !== 'string' && typeof to !== 'undefined' ? '#' : to;
 
     if (disableStyling) {
       return (
-        <a className={classes.disableStyling} href={href} {...extraProps}>
+        <a className={clsx(classes.disableStyling, props.className)} href={href} {...extraProps}>
           {props.children}
         </a>
       );
     }
 
     return (
-      <MuiLink href={href} {...extraProps}>
+      <MuiLink href={href} {...props} {...extraProps}>
         {props.children}
       </MuiLink>
     );
   }
 
   if (disableStyling) {
-    return <RouterLink className={classes.disableStyling} {...props} {...extraProps} />;
+    return <RouterLink className={classes.disableStyling} to={to} {...props} {...extraProps} />;
   }
 
-  return <MuiLink component={RouterLink} underline={disableStyling ? 'none' : undefined} {...props} {...extraProps} />;
+  return (
+    <MuiLink
+      component={RouterLink}
+      underline={disableStyling ? 'none' : undefined}
+      to={to}
+      {...props}
+      {...extraProps}
+    />
+  );
 };

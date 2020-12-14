@@ -200,6 +200,7 @@ export default {
         publishedTitle: 'Sticky Note',
         quickActionTitle: 'Add a Sticky Note',
         quickAddButton: 'Add another note',
+        markdownCheatSheet: 'Markdown cheat sheet',
       },
       screenShare: {
         name: 'Screen Share',

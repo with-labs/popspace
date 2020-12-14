@@ -26,3 +26,12 @@ declare const Canny: (
     };
   }
 ) => void;
+
+interface Fonts extends EventSource {
+  check(fontString: string): boolean;
+  ready: Promise<any>;
+}
+
+declare interface Document {
+  fonts: Fonts;
+}

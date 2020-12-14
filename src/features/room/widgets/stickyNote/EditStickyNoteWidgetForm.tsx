@@ -5,6 +5,7 @@ import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikS
 import { StickyNoteWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
 import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
+import { Link } from '../../../../components/Link/Link';
 
 type RequiredStickyNoteData = Omit<StickyNoteWidgetData, 'author'>;
 
@@ -29,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
     resize: 'none',
     padding: 0,
   },
+  cheatSheet: {
+    fontWeight: theme.typography.fontWeightBold,
+    color: theme.palette.grey[900],
+    textAlign: 'center',
+  },
 }));
 
 export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> = ({
@@ -51,6 +57,11 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
         />
         <Box mt={1}>
           <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
+        </Box>
+        <Box mt={1} textAlign="center">
+          <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
+            {t('widgets.stickyNote.markdownCheatSheet')}
+          </Link>
         </Box>
       </Form>
     </Formik>

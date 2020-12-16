@@ -15,7 +15,7 @@ class DeleteProcessor {
   }
 
   async deleteWidget(event) {
-    await lib.roomData.softDeleteWidget(event.payload().event_id)
+    await lib.roomData.softDeleteWidget(event.payload().widget_id)
     const sender = event.senderParticipant()
     sender.broadcastPeerEvent("widgetDeleted", event.payload())
     sender.sendResponse(event, event.payload(), "widgetDeleted")
@@ -24,7 +24,6 @@ class DeleteProcessor {
   async removeParticipant(event) {
     return event.participant.disconnect()
   }
-
 }
 
 module.exports = DeleteProcessor

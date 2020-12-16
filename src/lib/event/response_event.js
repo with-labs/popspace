@@ -28,6 +28,11 @@ module.exports = class ResponseEvent {
   }
 
   serialize() {
-    return Object.assign({}, this._data)
+    const serialized = Object.assign({}, this._data)
+    serialized.sender = {
+      user_id: this._sourceMercuryEvent.userId(),
+      session_id: this._sourceMercuryEvent.sessionId()
+    }
+    return serialized
   }
 }

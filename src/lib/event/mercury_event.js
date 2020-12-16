@@ -33,6 +33,10 @@ module.exports = class MercuryEvent {
     return this.senderUser().id
   }
 
+  sessionId() {
+    return this._sender.sessionId()
+  }
+
   senderUser() {
     return this._sender.user
   }

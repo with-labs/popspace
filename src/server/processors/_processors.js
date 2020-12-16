@@ -1,7 +1,8 @@
 module.exports = {
   CreateProcessor: require("./create_processor"),
   AuthProcessor: require("./auth_processor"),
-  MutateProcessor: require("./mutate_processor"),
+  UpdateProcessor: require("./update_processor"),
   GetProcessor: require("./get_processor"),
-  EchoProcessor: require("./echo_processor")
+  EchoProcessor: require("./echo_processor"),
+  DeleteProcessor: require("./delete_processor")
 }

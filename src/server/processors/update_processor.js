@@ -1,8 +1,13 @@
-class MutateProcessor {
+class UpdateProcessor {
   async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
-      case "moveWidget":
+      case "transformWidget":
         return this.moveWidget(mercuryEvent)
+      case "updateWidget":
+        return
+      case "transformSelf":
+        return
+      case "updateSelf":
       case "updateRoomState":
         return this.updateRoomState(mercuryEvent)
       default:
@@ -58,4 +63,4 @@ class MutateProcessor {
   }
 }
 
-module.exports = MutateProcessor
+module.exports = UpdateProcessor

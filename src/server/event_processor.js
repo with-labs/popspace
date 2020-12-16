@@ -2,12 +2,18 @@ const _processors = require("./processors/_processors")
 
 const ACTION_BY_EVENT_KIND = {
   "createWidget": "create",
-  "moveWidget": "mutate",
+  "transformWidget": "update",
+  "updateWidget": "update",
+  "transformSelf": "update",
+  "updateSelf": "update",
+  "updateRoomState": "update",
+  "echo": "echo",
+  "leave": "delete",
+  "deleteWidget": "delete",
   "getRoom": "get",
   "getWidget": "get",
   "auth": "auth",
-  "ping": "ping",
-  "echo": "echo"
+  "ping": "ping"
 }
 
 const PUBLIC_ACTIONS = {
@@ -18,9 +24,10 @@ const PUBLIC_ACTIONS = {
 const processors = {
   auth: new _processors.AuthProcessor(),
   create: new _processors.CreateProcessor(),
-  mutate: new _processors.MutateProcessor(),
+  update: new _processors.UpdateProcessor(),
   get: new _processors.GetProcessor(),
-  echo: new _processors.EchoProcessor()
+  echo: new _processors.EchoProcessor(),
+  delete: new _processors.DeleteProcessor()
 }
 
 class EventProcessor {

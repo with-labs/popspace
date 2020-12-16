@@ -15,7 +15,7 @@ class AuthProcessor {
   async authenticate(event, participants) {
     const sender = event.senderParticipant()
     const payload = event.payload()
-    const success = await sender.authenticate(payload.token, payload.roomName)
+    const success = await sender.authenticate(payload.token, payload.room_name)
     if(success) {
       /*
         TODO: it'd be nice to get rid of this participants reference.
@@ -27,7 +27,7 @@ class AuthProcessor {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(event)
       sender.sendResponse(event, authData)
-      sender.broadcastPeerEvent("room/participantJoined", sender.serialize())
+      sender.broadcastPeerEvent("participantJoined", sender.serialize())
     } else {
       return sender.sendError(
         event,

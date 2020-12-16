@@ -51,10 +51,9 @@ module.exports = {
       let joinsRemaining = nUsers * (nUsers - 1)/2 - 1
 
       const clients = await tlib.util.addClients(testEnvironment.mercury, nUsers - 1)
-
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
         [firstClient, ...clients].forEach((client) => {
-          client.on('event.room/participantJoined', () => {
+          client.on('event.participantJoined', () => {
             joinsRemaining--
             if(joinsRemaining <= 0) {
               resolve()

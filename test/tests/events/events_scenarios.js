@@ -1,7 +1,7 @@
 global.tlib = require("../../lib/_testlib")
 
 const requestStickyNoteCreate = async (client) => {
-  return await client.sendEventWithPromise("room/addWidget", {
+  return await client.sendEventWithPromise("createWidget", {
     type: "sticky_note",
     roomState: {
       position: { x: 0, y: 0 },
@@ -27,9 +27,9 @@ module.exports = {
   "authenticate": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
     const { user, session, token, room, roomNameEntry } = await testEnvironment.createLoggedInUser()
-    const beforeAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
+    const beforeAuth = await clients[0].sendEventWithPromise("createWidget", {})
     const auth = await clients[0].authenticate(token, roomNameEntry.name)
-    const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
+    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
     return {
       beforeAuth,
       auth,
@@ -47,7 +47,7 @@ module.exports = {
       response = e.response
     }
 
-    const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
+    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
     return {
       auth: response,
       afterAuth
@@ -63,7 +63,7 @@ module.exports = {
     } catch(e) {
       response = e.response
     }
-    const afterAuth = await clients[0].sendEventWithPromise("room/addWidget", {})
+    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
     return {
       auth: response,
       afterAuth
@@ -89,7 +89,7 @@ module.exports = {
     const beforeMove = Object.assign({}, widget)
 
     const move = {
-      widget_id: widget.widget_id,
+      widgetId: widget.widgetId,
       roomState: {
         position: {
           x: parseInt(beforeMove.roomState.position.x) + 30,
@@ -97,8 +97,8 @@ module.exports = {
         }
       }
     }
-    await client.sendEventWithPromise("room/moveObject", move)
-    const newState = await client.getWidgetState(widget.widget_id)
+    await client.sendEventWithPromise("moveWidget", move)
+    const newState = await client.getWidgetState(widget.widgetId)
 
     return {
       beforeMove,
@@ -109,7 +109,7 @@ module.exports = {
   "update_wallpaper": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
     const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
-    const createResponse = client.sendEventWithPromise("room/wallpaper", {
+    const createResponse = client.sendEventWithPromise("updateRoomState", {
 
     })
     const getResponse = await client.getRoomState()

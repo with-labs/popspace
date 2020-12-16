@@ -15,7 +15,7 @@ module.exports = {
     let remainingNotifications = participantCountAtStart - 1
     return new Promise(async (resolve, reject) => {
       loggedInUsers.forEach((u) => {
-        u.client.on("event.room/participantLeft", () => {
+        u.client.on("event.participantLeft", () => {
           remainingNotifications--
           if(remainingNotifications <= 0) {
             resolve({

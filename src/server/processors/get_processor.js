@@ -1,9 +1,9 @@
 class GetProcessor {
   async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
-      case "room/getRoom":
+      case "getRoom":
         return await this.respondRoomData(mercuryEvent)
-      case "room/getWidget":
+      case "getWidget":
         return await this.respondWidgetData(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(

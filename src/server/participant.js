@@ -1,4 +1,5 @@
-const ws = require('ws');
+const ws = require('ws')
+const camelcaseKeys = require('camelcase-keys')
 
 const DEFAULT_STATE_IN_ROOM = {
   position: {
@@ -8,6 +9,9 @@ const DEFAULT_STATE_IN_ROOM = {
   emoji: null,
   status: null
 }
+
+/* The JSON API is camelcase, but the database has underscore column names */
+const CAMELCASE_DEEP = { deep: true }
 
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
@@ -51,6 +55,10 @@ class Participant {
     return this.room.id
   }
 
+  sessionId() {
+    return this.id
+  }
+
   listPeersIncludingSelf() {
     return (this.socketGroup ? this.socketGroup.authenticatedParticipants() : [])
   }
@@ -89,7 +97,7 @@ class Participant {
   leaveSocketGroup() {
     if(this.socketGroup) {
       this.socketGroup.removeParticipant(this)
-      this.socketGroup.broadcastPeerEvent(this, "room/participantLeft", { sessionId: this.id })
+      this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       this.socketGroup = null
     }
   }
@@ -112,7 +120,9 @@ class Participant {
 
   sendEvent(event) {
     this.socket.send(
-      JSON.stringify(event.serialize())
+      JSON.stringify(
+        camelcaseKeys(event.serialize(), CAMELCASE_DEEP)
+      )
     )
   }
 

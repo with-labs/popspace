@@ -30,8 +30,8 @@ class RoomWidget {
         Perhaps there are better names here?
         e.g. data+transform, or contents+render
       */
-      widgetState: this._widgetState,
-      roomState: this._roomState
+      widget_state: this._widgetState,
+      room_state: this._roomState
     }
   }
 }

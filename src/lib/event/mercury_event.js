@@ -6,19 +6,19 @@ module.exports = class MercuryEvent {
   constructor(sender, message) {
     this._sender = sender
     this._message = message
-    this.peerEvent = lib.event.PeerEvent.fromMessage(sender, message)
+    this._sourceEvent = lib.event.PeerEvent.fromMessage(sender, message)
   }
 
   kind() {
-    return this.peerEvent.kind()
+    return this._sourceEvent.kind()
   }
 
   requestId() {
-    return this.peerEvent.eventId()
+    return this._sourceEvent.eventId()
   }
 
   payload() {
-    return this.peerEvent.payload()
+    return this._sourceEvent.payload()
   }
 
   room() {
@@ -38,7 +38,7 @@ module.exports = class MercuryEvent {
   }
 
   sourceEvent() {
-    return this.peerEvent
+    return this._sourceEvent
   }
 
   // Non-serializable: represents events internal to mercury, carrying serializable network events

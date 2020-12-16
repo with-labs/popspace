@@ -1,3 +1,5 @@
+const snakecaseKeys = require('snakecase-keys')
+
 /**
   Represents events sent from peers
 */
@@ -16,12 +18,12 @@ class PeerEvent {
 
         If a response is not expected, there is no need to provide an id.
       */
-      this._data.eventId = eventId
+      this._data.id = eventId
     }
   }
 
   eventId() {
-    return this._data.eventId
+    return this._data.id
   }
 
   kind() {
@@ -38,10 +40,10 @@ class PeerEvent {
 
   serialize() {
     return {
-      senderSessionId: this.sender().id,
+      sender_session_id: this.sender().sessionId(),
       kind: this.kind(),
       payload: this.payload(),
-      requestId: this.eventId()
+      request_id: this.eventId()
     }
   }
 }
@@ -49,7 +51,13 @@ class PeerEvent {
 PeerEvent.fromMessage = function(sender, message) {
   let data = null
   try {
-    data = JSON.parse(message)
+    // Convert to snake case, because raw data fields are snake case.
+    // We use snake case because some databases (like postgres)
+    // are weird wrt case-insensitivity:
+    // in psql, double quotes turn a column name into case-sensitive,
+    // so a query like "select widget_id from room_widgets;" becomes
+    // 'select "WidgetId" from "RoomWidgets";'.
+    data = snakecaseKeys(JSON.parse(message))
   } catch(e) {
     throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "events must be JSON")
   }

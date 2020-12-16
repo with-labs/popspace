@@ -75,12 +75,12 @@ class Client extends EventEmitter {
 
   async getRoomState() {
     this.requireReady()
-    return this.sendEventWithPromise("room/getRoom", {})
+    return this.sendEventWithPromise("getRoom", {})
   }
 
   async getWidgetState(widgetId) {
     this.requireReady()
-    return this.sendEventWithPromise("room/getWidget", { widget_id: widgetId })
+    return this.sendEventWithPromise("getWidget", { widget_id: widgetId })
   }
 
   requireReady() {
@@ -162,7 +162,7 @@ class Client extends EventEmitter {
 
   handleEvent(event) {
     switch(event.kind) {
-      case 'room/participantJoined':
+      case 'participantJoined':
         /*
           Note: we're not necessarily adding a peer when they join.
           They may have already been connected to the room,
@@ -179,7 +179,7 @@ class Client extends EventEmitter {
         */
         this.roomData.updatePeer(event.payload)
         break
-      case 'room/participantLeft':
+      case 'participantLeft':
         this.roomData.removePeer(event.payload)
         break
     }

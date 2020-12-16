@@ -1,7 +1,7 @@
 class CreateProcessor {
   async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
-      case "room/addWidget":
+      case "createWidget":
         return this.createWidget(mercuryEvent)
       default:
         return mercuryEvent._sender.sendError(
@@ -37,7 +37,7 @@ class CreateProcessor {
     if(!payload.type) {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widget type in payload.`)
     }
-    if(!payload.widgetState || !payload.roomState) {
+    if(!payload.widget_state || !payload.room_state) {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and roomState in payload.`)
     }
 
@@ -52,13 +52,11 @@ class CreateProcessor {
       return widget
     })
 
-    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widgetState, payload.roomState)
+    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.room_state)
     await lib.roomData.addWidgetInRoom(roomWidget)
 
-    const responseEvent = new lib.event.ResponseEvent(event, roomWidget.serialize(), "room/addWidget")
-    const peerEvent = new lib.event.PeerEvent(sender, event.kind(), event.payload())
-    sender.sendResponse(event, roomWidget.serialize(), event.kind())
-    sender.broadcastPeerEvent(event.kind(), roomWidget.serialize())
+    sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")
+    sender.broadcastPeerEvent("widgetCreated", roomWidget.serialize())
   }
 }
 

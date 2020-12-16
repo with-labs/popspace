@@ -1,9 +1,9 @@
 class MutateProcessor {
   async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
-      case "room/moveObject":
-        return this.moveObject(mercuryEvent)
-      case "room/state":
+      case "moveWidget":
+        return this.moveWidget(mercuryEvent)
+      case "updateRoomState":
         return this.updateRoomState(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(
@@ -14,15 +14,15 @@ class MutateProcessor {
     }
   }
 
-  async moveObject(event) {
+  async moveWidget(event) {
     const widget = event.payload()
     const sender = event.senderParticipant()
     let x, y
     try {
-      x = parseInt(widget.roomState.position.x)
-      y = parseInt(widget.roomState.position.y)
+      x = parseInt(widget.room_state.position.x)
+      y = parseInt(widget.room_state.position.y)
     } catch {
-      return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Invalid x,y for moveObject.`)
+      return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Invalid x,y for moveWidget.`)
     }
     const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), {
       x: x,
@@ -34,14 +34,14 @@ class MutateProcessor {
 
   async updateWidgetRoomState(event) {
     const widget = event.payload().widget
-    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.roomState)
+    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.room_state)
     // TODO: handle errors
     this.sendToPeersAndSelf(event)
   }
 
   async updateWidgetState(event) {
     const widget = event.payload().widget
-    const result = await lib.roomData.updateWidgetState(widget.widget_id, event.roomId(), widget.widgetState)
+    const result = await lib.roomData.updateWidgetState(widget.widget_id, event.roomId(), widget.widget_state)
     // TODO: handle errors
     this.sendToPeersAndSelf(event)
   }

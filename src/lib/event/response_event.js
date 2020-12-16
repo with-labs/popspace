@@ -7,7 +7,7 @@ module.exports = class ResponseEvent {
     this._data = {
       payload: payload,
       kind: kind || `${sourceMercuryEvent.kind()}.response`,
-      requestId: sourceMercuryEvent.requestId()
+      request_id: sourceMercuryEvent.requestId()
     }
   }
 

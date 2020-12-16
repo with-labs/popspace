@@ -1,10 +1,10 @@
 const _processors = require("./processors/_processors")
 
 const ACTION_BY_EVENT_KIND = {
-  "room/addWidget": "create",
-  "room/moveObject": "mutate",
-  "room/getRoom": "get",
-  "room/getWidget": "get",
+  "createWidget": "create",
+  "moveWidget": "mutate",
+  "getRoom": "get",
+  "getWidget": "get",
   "auth": "auth",
   "ping": "ping",
   "echo": "echo"

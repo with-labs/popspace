@@ -41,7 +41,7 @@ class CreateProcessor {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and roomState in payload.`)
     }
 
-    // TODO: Perrhaps-in-room and widgets should have their own classes,
+    // TODO: Perhaps-in-room and widgets should have their own classes,
     // similar to participants: the database access logic (fetch/update)
     // and serialization logic can live there.
     // Arguably that may be more useful if we want to cache widget data later,

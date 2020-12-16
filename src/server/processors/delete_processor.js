@@ -2,9 +2,9 @@ class DeleteProcessor {
   async process(mercuryEvent) {
     switch(mercuryEvent.kind()) {
       case "deleteWidget":
-        return
+        return this.deleteWidget(mercuryEvent)
       case "leave":
-        return
+        return this.removeParticipant(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(
           mercuryEvent,
@@ -14,6 +14,16 @@ class DeleteProcessor {
     }
   }
 
+  async deleteWidget(event) {
+    await lib.roomData.softDeleteWidget(event.payload().event_id)
+    const sender = event.senderParticipant()
+    sender.broadcastPeerEvent("widgetDeleted", event.payload())
+    sender.sendResponse(event, event.payload(), "widgetDeleted")
+  }
+
+  async removeParticipant(event) {
+    return event.participant.disconnect()
+  }
 
 }
 

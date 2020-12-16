@@ -137,6 +137,22 @@ class RoomDynamo {
     })
   }
 
+  async setRoomState(roomId, state) {
+    const stateItem = {
+      room_id: {N: `${roomId}`},
+      state: {S: JSON.stringify(state)}
+    }
+    return new Promise((resolve, reject) => {
+      this.dynamo.putItem({Item: stateItem, TableName: this.tableName('room_states')}, (err, data) => {
+        if(err) {
+          return reject(err)
+        } else {
+          return resolve(data)
+        }
+      })
+    })
+  }
+
   // private
   async createRoomStatesTable() {
     return this.createTable({

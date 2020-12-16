@@ -29,6 +29,10 @@ module.exports = class MercuryEvent {
     return this._sender.room.id
   }
 
+  userId() {
+    return this.senderUser().id
+  }
+
   senderUser() {
     return this._sender.user
   }

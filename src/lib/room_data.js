@@ -75,6 +75,13 @@ class RoomData {
     return this.dynamo.deleteParticipant(roomId, participant.user.id)
   }
 
+  async softDeleteWidget(widgetId) {
+    widgetId = parseInt(widgetId)
+    return shared.db.pg.massive.query(`
+      UPDATE widgets SET deleted_at = now() WHERE id = $1
+    `, widgetId)
+  }
+
   async eraseWidget(widgetId) {
     widgetId = parseInt(widgetId)
     const roomIdEntries = await shared.db.pg.massive.query(`

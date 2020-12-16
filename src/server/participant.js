@@ -51,12 +51,16 @@ class Participant {
     })
   }
 
+  sessionId() {
+    return this.id
+  }
+
   roomId() {
     return this.room.id
   }
 
-  sessionId() {
-    return this.id
+  userId() {
+    return this.user.id
   }
 
   listPeersIncludingSelf() {

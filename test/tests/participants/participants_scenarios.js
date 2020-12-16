@@ -2,6 +2,7 @@ global.tlib = require("../../lib/_testlib")
 
 module.exports = {
   "participants_see_each_other": tlib.TestTemplate.nAuthenticatedUsers(5, async (testEnvironment) => {
+    console.log("Authenticated")
     const loggedInUsers = testEnvironment.loggedInUsers
     return {
       countsAtEnd: loggedInUsers.filter((lu) => (lu != loggedInUsers[0])).map((lu) => (lu.client.authenticatedPeers().length)),
@@ -28,6 +29,24 @@ module.exports = {
       await loggedInUsers[0].client.disconnect()
     })
 
+  }),
+
+  "moving_participants": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {
+    const loggedInUsers = testEnvironment.loggedInUsers
+    const client = loggedInUsers[0].client
+    const beforeMove = loggedInUsers[0].auth.stateInRoom
+    const move = {
+      roomState: {
+        position: {
+          x: 10,
+          y: 10
+        }
+      }
+    }
+    const moveResult = await client.sendEventWithPromise("transformSelf", move)
+    return {
+      moveResult, beforeMove
+    }
   })
 
 }

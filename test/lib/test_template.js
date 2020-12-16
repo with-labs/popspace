@@ -53,7 +53,7 @@ module.exports = {
       const clients = await tlib.util.addClients(testEnvironment.mercury, nUsers - 1)
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
         [firstClient, ...clients].forEach((client) => {
-          client.on('event.participantJoined', () => {
+          client.on('event.participantJoined', (event) => {
             joinsRemaining--
             if(joinsRemaining <= 0) {
               resolve()

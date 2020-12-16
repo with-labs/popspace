@@ -40,7 +40,10 @@ class PeerEvent {
 
   serialize() {
     return {
-      sender_session_id: this.sender().sessionId(),
+      sender: {
+        user_id: this.sender().userId(),
+        session_id: this.sender().sessionId()
+      },
       kind: this.kind(),
       payload: this.payload(),
       request_id: this.eventId()

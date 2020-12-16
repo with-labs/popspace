@@ -21,10 +21,9 @@ class UpdateProcessor {
   }
 
   async updateParticipantRoomState(event, responseKind) {
-    const roomState = event.payload().roomState
-    await lib.roomData.dynamo.setParticipantState(event.roomId(), event.userId(), roomState)
+    await lib.roomData.dynamo.setParticipantState(event.roomId(), event.userId(), event.payload().room_state)
     this.sendToPeersAndSelf(event, responseKind)
-  }v
+  }
 
   async updateWidgetRoomState(event) {
     const widget = event.payload()
@@ -45,10 +44,6 @@ class UpdateProcessor {
     this.sendToPeersAndSelf(event, "roomStateUpdated")
   }
 
-  async updateParticipantRoomState(event) {
-    await lib.roomData.dynamo.setParticipantState(event.roomId(), event.userId(), event.payload())
-    this.sendToPeersAndSelf(event, "participantUpdated")
-  }
 
   sendToPeersAndSelf(event, kind) {
     const sender = event.senderParticipant()

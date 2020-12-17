@@ -93,6 +93,7 @@ class Participant {
       const defaultParticipantState = {
         displayName: this.user.displayName
       }
+      this.participantState = defaultParticipantState
     }
     this.authenticated = true
     return true
@@ -164,7 +165,6 @@ class Participant {
     return {
       authenticated: this.authenticated,
       user: {
-        displayName: this.user.display_name,
         id: this.user.id
       },
       sessionId: this.id,

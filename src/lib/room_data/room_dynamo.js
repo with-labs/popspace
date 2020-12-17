@@ -17,6 +17,7 @@ class RoomDynamo {
     await this.createRoomStatesTable()
     await this.createWidgetStatesTable()
     await this.createWidgetRoomStatesTable()
+    await this.createRoomParticipantStatesTable()
     await this.createParticipantStatesTable()
   }
 
@@ -57,7 +58,14 @@ class RoomDynamo {
     }
   }
 
-  async getParticipantState(roomId, userId) {
+  async getParticipantState(userId) {
+    const entry = await this.getByHash('participant_states', 'user_id', parseInt(userId))
+    if(entry.length > 0) {
+      return JSON.parse(entry[0].state)
+    }
+  }
+
+  async getRoomParticipantState(roomId, userId) {
     const entry = await this.getByHashAndRange(
       'room_participant_states',
       'room_id',
@@ -120,7 +128,23 @@ class RoomDynamo {
     })
   }
 
-  async setParticipantState(roomId, userId, state) {
+  async setParticipantState(userId, state) {
+    const dataItem = {
+      widget_id: { N: `${userId}` },
+      state: { S: JSON.stringify(state) },
+    }
+    return new Promise((resolve, reject) => {
+      this.dynamo.putItem({Item: dataItem, TableName: this.tableName('participant_states')}, (err, data) => {
+        if(err) {
+          return reject(err)
+        } else {
+          return resolve(data)
+        }
+      })
+    })
+  }
+
+  async setRoomParticipantState(roomId, userId, state) {
     const stateItem = {
       user_id: { N: `${userId}` },
       room_id: {N: `${roomId}`},
@@ -204,7 +228,7 @@ class RoomDynamo {
     })
   }
 
-  async createParticipantStatesTable() {
+  async createRoomParticipantStatesTable() {
     return this.createTable({
       TableName: this.tableName("room_participant_states"),
       KeySchema: [
@@ -221,6 +245,23 @@ class RoomDynamo {
       }
     })
   }
+
+  async createParticipantStatesTable() {
+    return this.createTable({
+      TableName: this.tableName("participant_states"),
+      KeySchema: [
+        { AttributeName: "user_id", KeyType: "HASH"}
+      ],
+      AttributeDefinitions: [
+        { AttributeName: "user_id", AttributeType: "N"},
+      ],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 10,
+        WriteCapacityUnits: 10
+      }
+    })
+  }
+
 
   async createTable(params) {
     return new Promise((resolve, reject) => {

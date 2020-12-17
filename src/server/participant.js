@@ -23,7 +23,8 @@ class Participant {
     this.authenticated = false
     this.user = {}
     this.room = {}
-    this.stateInRoom = null
+    this.transform = null
+    this.participantState = null
 
     this.socket.on('disconnect', () => {
       this.leaveSocketGroup()
@@ -68,7 +69,6 @@ class Participant {
   }
 
   async authenticate(token, roomName) {
-
     /*
       It seems that the JS WebSockets API doesn't well support setting custom headers
       when the connection is being established. A reasonable alternative is to send
@@ -83,10 +83,16 @@ class Participant {
       this.user = {}
       return false
     }
-    this.stateInRoom = await lib.roomData.dynamo.getParticipantState(this.user.id, this.room.id)
-    if(!this.stateInRoom) {
-      this.stateInRoom = DEFAULT_STATE_IN_ROOM
-      await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.stateInRoom)
+    this.transform = await lib.roomData.dynamo.getRoomParticipantState(this.room.id, this.user.id)
+    if(!this.transform) {
+      this.transform = DEFAULT_STATE_IN_ROOM
+      await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.transform)
+    }
+    this.participantState = await lib.roomData.dynamo.getParticipantState(this.user.id)
+    if(!this.participantState) {
+      const defaultParticipantState = {
+        displayName: this.user.displayName
+      }
     }
     this.authenticated = true
     return true
@@ -163,7 +169,8 @@ class Participant {
       },
       sessionId: this.id,
       roomId: this.room.id,
-      stateInRoom: this.stateInRoom
+      transform: this.transform,
+      participantState: this.participantState
     }
   }
 }

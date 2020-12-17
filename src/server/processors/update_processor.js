@@ -6,9 +6,9 @@ class UpdateProcessor {
       case "updateWidget":
         return this.updateWidgetState(mercuryEvent)
       case "transformSelf":
-        return this.updateParticipantRoomState(mercuryEvent, "participantTransformed")
+        return this.updateRoomParticipantState(mercuryEvent)
       case "updateSelf":
-        return this.updateParticipantRoomState(mercuryEvent, "participantUpdated")
+        return this.updateParticipantState(mercuryEvent)
       case "updateRoomState":
         return this.updateRoomState(mercuryEvent)
       default:
@@ -20,14 +20,19 @@ class UpdateProcessor {
     }
   }
 
-  async updateParticipantRoomState(event, responseKind) {
-    await lib.roomData.dynamo.setParticipantState(event.roomId(), event.userId(), event.payload().room_state)
-    this.sendToPeersAndSelf(event, responseKind)
+  async updateRoomParticipantState(event, responseKind) {
+    await lib.roomData.dynamo.setRoomParticipantState(event.roomId(), event.userId(), event.payload().transform)
+    this.sendToPeersAndSelf(event, "participantTransformed")
+  }
+
+  async updateParticipantState(event) {
+    await lib.roomData.dynamo.setParticipantState(event.userId(), event.payload().user)
+    this.sendToPeersAndSelf(event, "participantUpdated")
   }
 
   async updateWidgetRoomState(event) {
     const widget = event.payload()
-    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.room_state)
+    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.transform)
     // TODO: handle errors
     this.sendToPeersAndSelf(event, "widgetTransformed")
   }

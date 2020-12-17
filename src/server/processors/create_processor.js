@@ -37,8 +37,8 @@ class CreateProcessor {
     if(!payload.type) {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widget type in payload.`)
     }
-    if(!payload.widget_state || !payload.room_state) {
-      return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and roomState in payload.`)
+    if(!payload.widget_state || !payload.transform) {
+      return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and transform in payload.`)
     }
 
     // TODO: Perhaps-in-room and widgets should have their own classes,
@@ -52,7 +52,7 @@ class CreateProcessor {
       return widget
     })
 
-    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.room_state)
+    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.transform)
     await lib.roomData.addWidgetInRoom(roomWidget)
 
     sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")

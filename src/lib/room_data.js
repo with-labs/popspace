@@ -4,9 +4,7 @@ const DEFAULT_PARTICIPANT_STATE = {
   position: {
     x: 0,
     y: 0
-  },
-  emoji: null,
-  status: null
+  }
 }
 
 class RoomData {
@@ -31,7 +29,7 @@ class RoomData {
     roomId = parseInt(roomId)
     const widgets = await shared.db.pg.massive.query(`
       SELECT
-        widgets.id AS id, widgets._type as _type
+        widgets.id AS id, widgets._type as _type, widgets.owner_id as owner_id
       FROM
         widgets JOIN room_widgets ON widgets.id = room_widgets.widget_id
       WHERE
@@ -52,16 +50,25 @@ class RoomData {
   }
 
   async addParticipantInRoom(roomId, userId, state=DEFAULT_PARTICIPANT_STATE) {
-    await this.dynamo.setParticipantState(roomId, userId, state)
+    await this.dynamo.setRoomParticipantState(roomId, userId, state)
   }
 
-  async updateParticipantState(roomId, participant, stateUpdate, currentState=null) {
+  async updateRoomParticipantState(roomId, participant, stateUpdate, currentState=null) {
     const userId = participant.user.id
     if(!currentState) {
-      currentState = await this.dynamo.getParticipantState(roomId, userId)
+      currentState = await this.dynamo.getRoomParticipantState(roomId, userId)
     }
     const newState = Object.assign(currentState || {}, stateUpdate)
-    return this.dynamo.setParticipantState(userId, roomId, newState)
+    return this.dynamo.setRoomParticipantState(roomId, userId, newState)
+  }
+
+  async updateParticipantState(participant, stateUpdate, currentState=null) {
+    const userId = participant.user.id
+    if(!currentState) {
+      currentState = await this.dynamo.getParticipantState(userId)
+    }
+    const newState = Object.assign(currentState || {}, stateUpdate)
+    return this.dynamo.setParticipantState(userId, newState)
   }
 
   async removeParticipant(roomId, participant) {
@@ -110,7 +117,7 @@ class RoomData {
   }
 
   async updateWidgetState(widgetId, stateUpdate) {
-    const widgetState = await this.dynamo.getWidgetState(roomId, widgetId)
+    const widgetState = await this.dynamo.getWidgetState(widgetId)
     Object.assign(widgetState, stateUpdate)
     return await this.dynamo.setWidgetData(widgetId, widgetState)
   }

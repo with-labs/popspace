@@ -26,12 +26,8 @@ class RoomWidget {
     return {
       widget_id: this._pgWidget.id,
       type: this._pgWidget._type,
-      /*
-        Perhaps there are better names here?
-        e.g. data+transform, or contents+render
-      */
       widget_state: this._widgetState,
-      room_state: this._roomState
+      transform: this._roomState
     }
   }
 }

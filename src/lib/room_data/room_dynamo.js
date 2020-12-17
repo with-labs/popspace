@@ -130,7 +130,7 @@ class RoomDynamo {
 
   async setParticipantState(userId, state) {
     const dataItem = {
-      widget_id: { N: `${userId}` },
+      user_id: { N: `${userId}` },
       state: { S: JSON.stringify(state) },
     }
     return new Promise((resolve, reject) => {

@@ -89,12 +89,8 @@ class Participant {
       await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.transform)
     }
     this.participantState = await lib.roomData.dynamo.getParticipantState(this.user.id)
-    if(!this.participantState) {
-      const defaultParticipantState = {
-        displayName: this.user.displayName
-      }
-      this.participantState = defaultParticipantState
-    }
+    this.participantState = this.participantState || {}
+    this.participantState.display_name = this.participantState.display_name || this.user.display_name
     this.authenticated = true
     return true
   }

@@ -104,11 +104,7 @@ class RoomData {
     return this.dynamo.deleteWidget(roomIds, widgetId)
   }
 
-  async moveWidget(widgetId, roomId, toX, toY) {
-    return this.updateWidgetRoomState(roomId, roomId, {x: toX, y: toY})
-  }
-
-  async updateWidgetRoomState(widgetId, roomId, stateUpdate, widgetRoomState=null) {
+  async updateWidgetRoomState(roomId, widgetId, stateUpdate, widgetRoomState=null) {
     if(!widgetRoomState) {
       widgetRoomState = await this.dynamo.getRoomWidgetState(roomId, widgetId)
     }

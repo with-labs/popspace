@@ -26,20 +26,20 @@ class UpdateProcessor {
   }
 
   async updateParticipantState(event) {
-    await lib.roomData.dynamo.setParticipantState(event.userId(), event.payload().user)
+    await lib.roomData.dynamo.setParticipantState(event.userId(), event.payload().participant_state)
     this.sendToPeersAndSelf(event, "participantUpdated")
   }
 
   async updateWidgetRoomState(event) {
     const widget = event.payload()
-    const result = await lib.roomData.updateWidgetRoomState(widget.widget_id, event.roomId(), widget.transform)
+    const result = await lib.roomData.updateWidgetRoomState(event.roomId(), widget.widget_id, widget.transform)
     // TODO: handle errors
     this.sendToPeersAndSelf(event, "widgetTransformed")
   }
 
   async updateWidgetState(event) {
     const widget = event.payload()
-    const result = await lib.roomData.updateWidgetState(widget.widget_id, event.roomId(), widget.widget_state)
+    const result = await lib.roomData.updateWidgetState(widget.widget_id, widget.widget_state)
     // TODO: handle errors
     this.sendToPeersAndSelf(event, "widgetUpdated")
   }

@@ -16,6 +16,7 @@ import clsx from 'clsx';
 import { Trans } from 'react-i18next';
 import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
 import { logger } from '../../../utils/logger';
+import { v4 } from 'uuid';
 
 import bugReportImg from './images/bugReport.png';
 
@@ -101,9 +102,13 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
   const onSubmitHandler = useCallback(
     async (values: { description: string }) => {
       // generate an event to associate feedback with
+      // add in the report_id tag so we can select on it and create individual reports in sentry
+      // Set the grouping fingerprint in sentry to be
+      // message:"User Bug Report" -> bug-report, {{ tags.report_id }}
       const evtId = Sentry.captureEvent({
         message: 'User Bug Report',
         level: Sentry.Severity.Critical,
+        tags: { report_id: v4() },
       });
 
       try {

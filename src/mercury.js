@@ -9,6 +9,9 @@ const setupSslCertificate = (server) => {
       res.send("E-MYqRgt4XNcoZd7PshjMnf00WF4yrNUUwhfo0WKiZs.2em07c7jo9IgJDEa63fu1Ts4rs8OQFcZRLF3jJZ21fg")
     })
   }
+  server.get("/ping", (req, res) => {
+    res.send("pong")
+  })
 }
 
 class Mercury {

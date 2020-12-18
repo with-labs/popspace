@@ -3,6 +3,14 @@ const ws = require('ws')
 const Participants = require("./server/participants")
 const EventProcessor = require("./server/event_processor")
 
+const setupSslCertificate = (server) => {
+  if(process.env.NODE_ENV == "staging") {
+    server.get("/.well-known/acme-challenge/qDXrOCjH5Lq9rJiNAXHlbtpq7r1PjGTEMUWDFZFGiqE", (req, res) => {
+      res.send("E-MYqRgt4XNcoZd7PshjMnf00WF4yrNUUwhfo0WKiZs.2em07c7jo9IgJDEa63fu1Ts4rs8OQFcZRLF3jJZ21fg")
+    })
+  }
+}
+
 class Mercury {
   constructor(port) {
     this.port = port
@@ -21,11 +29,13 @@ class Mercury {
   }
 
   async start() {
+    setupSslCertificate(this.express)
     return new Promise((resolve, reject) => {
       this.server = this.express.listen(this.port, () => {
         log.app.info(`Server live on port ${this.port}`)
         resolve()
       })
+
       this.server.on('upgrade', (request, socket, head) => {
         // Standard http upgrade procedure
         // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server

@@ -131,6 +131,8 @@
     "prebuild": "npm run licenses && node ./scripts/write_env.js && cd functions && npm run build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode craco build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
+    "local:dev": "NODE_ENV=development npm run dev",
+    "local:staging": "NODE_ENV=staging npm run dev",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
     "test:watch": "jest --watch --bail",

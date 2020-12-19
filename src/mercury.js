@@ -1,17 +1,15 @@
+const fs = require('fs')
 const express = require('express')
+const https = require('https')
 const ws = require('ws')
 const Participants = require("./server/participants")
 const EventProcessor = require("./server/event_processor")
 
-const setupSslCertificate = (server) => {
-  if(process.env.NODE_ENV == "staging") {
-    server.get("/.well-known/acme-challenge/qDXrOCjH5Lq9rJiNAXHlbtpq7r1PjGTEMUWDFZFGiqE", (req, res) => {
-      res.send("E-MYqRgt4XNcoZd7PshjMnf00WF4yrNUUwhfo0WKiZs.2em07c7jo9IgJDEa63fu1Ts4rs8OQFcZRLF3jJZ21fg")
-    })
-  }
-  server.get("/ping", (req, res) => {
-    res.send("pong")
-  })
+const loadSsl = () => {
+  const privateKey  = fs.readFileSync(process.env.SSL_PRIVATE_KEY_PATH, 'utf8')
+  const certificate = fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')
+  console.log(privateKey, certificate)
+  return { key: privateKey, cert: certificate }
 }
 
 class Mercury {
@@ -32,19 +30,23 @@ class Mercury {
   }
 
   async start() {
-    setupSslCertificate(this.express)
     return new Promise((resolve, reject) => {
-      this.server = this.express.listen(this.port, () => {
-        log.app.info(`Server live on port ${this.port}`)
-        resolve()
-      })
-
+      this.server = https.createServer(loadSsl(), this.express)
       this.server.on('upgrade', (request, socket, head) => {
         // Standard http upgrade procedure
         // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
         this.ws.handleUpgrade(request, socket, head, (socket) => {
           this.ws.emit('connection', socket, request)
         })
+      })
+
+      this.listen = this.server.listen(this.port, () => {
+        log.app.info(`Server live on port ${this.port}`)
+        resolve()
+      })
+
+      this.express.get('/', (req, res) => {
+        res.send("hello")
       })
     })
   }

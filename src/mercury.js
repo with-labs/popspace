@@ -8,18 +8,17 @@ const EventProcessor = require("./server/event_processor")
 const loadSsl = () => {
   const privateKey  = fs.readFileSync(process.env.SSL_PRIVATE_KEY_PATH, 'utf8')
   const certificate = fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')
-  console.log(privateKey, certificate)
   return { key: privateKey, cert: certificate }
 }
 
 class Mercury {
   constructor(port) {
     this.port = port
-    this.ws = new ws.Server({ noServer: true })
     this.express = express()
     this.participants = new Participants()
     this.eventProcessor =  new EventProcessor(this.participants)
 
+    this.ws = new ws.Server({ noServer: true })
     this.ws.on('connection', (socket) => {
       this.participants.addSocket(socket)
     })

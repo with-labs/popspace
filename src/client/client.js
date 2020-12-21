@@ -19,7 +19,9 @@ class Client extends EventEmitter {
   /**********************************/
   async connect() {
     return new Promise((resolve, reject) => {
-      this.socket = new ws(this.serverUrl)
+      this.socket = new ws(this.serverUrl, {
+        rejectUnauthorized: process.env.NODE_ENV == 'production'
+      })
       this.socket.on('message', (message) => {
         log.dev.debug(`${this.id} received ${message}`)
         try {

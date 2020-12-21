@@ -21,12 +21,12 @@ class UpdateProcessor {
   }
 
   async updateRoomParticipantState(event, responseKind) {
-    await lib.roomData.dynamo.setRoomParticipantState(event.roomId(), event.userId(), event.payload().transform)
+    await lib.roomData.updateRoomParticipantState(event.roomId(), event.senderParticipant(), event.payload().transform)
     this.sendToPeersAndSelf(event, "participantTransformed")
   }
 
   async updateParticipantState(event) {
-    await lib.roomData.dynamo.setParticipantState(event.userId(), event.payload().participant_state)
+    await lib.roomData.updateParticipantState(event.senderParticipant(), event.payload().participant_state)
     this.sendToPeersAndSelf(event, "participantUpdated")
   }
 

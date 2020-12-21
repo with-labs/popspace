@@ -244,13 +244,14 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
   // active is required to prevent default behavior, which
   // we want to do for zoom.
-  const bindActiveGestures = useGesture(
+  useGesture(
     {
       onPinch: ({ delta: [_, d], offset: [dist], event }) => {
         event?.preventDefault();
         doAbsoluteZoom(INITIAL_ZOOM + dist / PINCH_GESTURE_DAMPING);
       },
       onWheel: ({ delta: [x, y], event }) => {
+        console.debug('saw wheel');
         event?.preventDefault();
         if (event?.ctrlKey || event?.metaKey) {
           doZoom(-y / WHEEL_GESTURE_DAMPING);
@@ -313,12 +314,6 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       }
     },
   });
-
-  // bind our gesture handlers to the global window
-  // TODO: this won't be needed in the next major react-spring release
-  React.useEffect(() => {
-    bindActiveGestures();
-  }, [bindActiveGestures]);
 
   const onObjectDragStart = React.useCallback(() => {
     if (!domTarget.current) return;

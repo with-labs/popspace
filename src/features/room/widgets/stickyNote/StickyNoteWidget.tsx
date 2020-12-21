@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
+import { WidgetScrollPane } from '../WidgetScrollPane';
 
 export interface IStickyNoteWidgetProps {
   state: StickyNoteWidgetState;
@@ -28,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   scrollContainer: {
-    overflowY: 'auto',
     flex: 1,
   },
   text: {
@@ -85,11 +85,11 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
       widgetId={state.id}
       contentClassName={classes.content}
     >
-      <div className={classes.scrollContainer}>
+      <WidgetScrollPane className={classes.scrollContainer}>
         <Typography paragraph variant="body1" component="div" className={classes.text}>
           <Markdown>{state.data.text}</Markdown>
         </Typography>
-      </div>
+      </WidgetScrollPane>
       <Typography variant="caption" className={classes.author}>
         {t('widgets.stickyNote.addedBy', { author: state.data.author })}
       </Typography>

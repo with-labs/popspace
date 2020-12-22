@@ -2,7 +2,6 @@ global.tlib = require("../../lib/_testlib")
 
 module.exports = {
   "participants_see_each_other": tlib.TestTemplate.nAuthenticatedUsers(5, async (testEnvironment) => {
-    console.log("Authenticated")
     const loggedInUsers = testEnvironment.loggedInUsers
     return {
       countsAtEnd: loggedInUsers.filter((lu) => (lu != loggedInUsers[0])).map((lu) => (lu.client.authenticatedPeers().length)),

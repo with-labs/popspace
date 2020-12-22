@@ -3,7 +3,7 @@ global.tlib = require("../../lib/_testlib")
 const requestStickyNoteCreate = async (client) => {
   return await client.sendEventWithPromise("createWidget", {
     type: "sticky_note",
-    roomState: {
+    transform: {
       position: { x: 0, y: 0 },
       size: { width: 100, height: 100},
     },
@@ -90,10 +90,10 @@ module.exports = {
 
     const move = {
       widgetId: widget.widgetId,
-      roomState: {
+      transform: {
         position: {
-          x: parseInt(beforeMove.roomState.position.x) + 30,
-          y: parseInt(beforeMove.roomState.position.y) + 60
+          x: parseInt(beforeMove.transform.position.x) + 30,
+          y: parseInt(beforeMove.transform.position.y) + 60
         }
       }
     }

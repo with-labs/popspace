@@ -41,5 +41,6 @@ require("./factory_user")
 require("./factory_session")
 require("./factory_room")
 require("./factory_room_name")
+require("./factory_room_membership")
 
 module.exports = factory;

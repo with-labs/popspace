@@ -20,11 +20,7 @@ class Participant {
   constructor(socket) {
     this.socket = socket
     this.id = id++ // perhaps a decent more verbose name is sessionId
-    this.authenticated = false
-    this.user = {}
-    this.room = {}
-    this.transform = null
-    this.participantState = null
+    this.unauthenticate()
 
     this.socket.on('disconnect', () => {
       this.leaveSocketGroup()
@@ -78,11 +74,15 @@ class Participant {
     this.user = await shared.lib.auth.userFromToken(token)
     this.room = await shared.db.rooms.roomByName(roomName)
     if(!this.user || !this.room) {
-      this.authenticated = false
-      this.room = {}
-      this.user = {}
+      this.unauthenticate()
       return false
     }
+    const hasAccess = await shared.db.roomMemberships.hasAccess(this.user.id, this.room.id)
+    if(!hasAccess) {
+      this.unauthenticate()
+      return false
+    }
+
     this.transform = await lib.roomData.dynamo.getRoomParticipantState(this.room.id, this.user.id)
     if(!this.transform) {
       this.transform = DEFAULT_STATE_IN_ROOM
@@ -147,7 +147,7 @@ class Participant {
 
   async disconnect() {
     this.leaveSocketGroup()
-    this.authenticated = false
+    this.unauthenticate()
     if([ws.CLOSING, ws.CLOSED].includes(this.socket.readyState)) {
       return true
     }
@@ -155,6 +155,14 @@ class Participant {
       this.socket.once('close', () => (resolve()))
       this.socket.close()
     })
+  }
+
+  unauthenticate() {
+    this.authenticated = false
+    this.user = {}
+    this.room = {}
+    this.transform = null
+    this.participantState = null
   }
 
   serialize() {

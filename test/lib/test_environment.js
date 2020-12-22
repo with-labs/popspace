@@ -10,7 +10,12 @@ module.exports = class {
 
   async createLoggedInUser(client, room=null, roomNameEntry=null) {
     const user = await factory.create("user")
-    if(!room) {
+    if(room && room.owner_id != user.id) {
+      const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(user.id, room.id)
+      if(!alreadyHasAccess) {
+        await shared.db.roomMemberships.forceMembership(room.id, user)
+      }
+    } else {
       let roomInfo = await shared.db.rooms.generateRoom(user.id)
       room = roomInfo.room
       roomNameEntry = roomInfo.roomNameEntry

@@ -251,7 +251,6 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         doAbsoluteZoom(INITIAL_ZOOM + dist / PINCH_GESTURE_DAMPING);
       },
       onWheel: ({ delta: [x, y], event }) => {
-        console.debug('saw wheel');
         event?.preventDefault();
         if (event?.ctrlKey || event?.metaKey) {
           doZoom(-y / WHEEL_GESTURE_DAMPING);

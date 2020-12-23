@@ -76,7 +76,7 @@ class RoomData {
     if(stateUpdate.display_name) {
       await shared.db.pg.massive.query(`
         UPDATE users SET display_name = $1 WHERE id = $2
-      `, stateUpdate.display_name, userId)
+      `, [stateUpdate.display_name, userId])
     }
     return this.dynamo.setParticipantState(userId, newState)
   }

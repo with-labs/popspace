@@ -29,9 +29,14 @@ class RoomData {
     roomId = parseInt(roomId)
     const widgets = await shared.db.pg.massive.query(`
       SELECT
-        widgets.id AS id, widgets._type as _type, widgets.owner_id as owner_id
+        widgets.id AS id,
+        widgets._type as _type,
+        widgets.owner_id as owner_id,
+        users.display_name as owner_display_name
       FROM
-        widgets JOIN room_widgets ON widgets.id = room_widgets.widget_id
+        widgets
+          JOIN room_widgets ON widgets.id = room_widgets.widget_id
+          JOIN users        ON widgets.owner_id = users.id
       WHERE
         room_widgets.room_id = $1
         AND

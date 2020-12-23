@@ -1,9 +1,10 @@
 class RoomWidget {
-  constructor(roomId, pgWidget, widgetState, roomState) {
+  constructor(roomId, pgWidget, widgetState, roomState, ownerDisplayName) {
     this._roomId = roomId
     this._pgWidget = pgWidget
     this._widgetState = widgetState
     this._roomState = roomState
+    this._ownerDisplayName = ownerDisplayName
   }
 
   widgetId() {
@@ -22,12 +23,32 @@ class RoomWidget {
     return this._roomId
   }
 
+  ownerId() {
+    return this._pgWidget.owner_id
+  }
+
+  ownerDisplayName() {
+    return this._ownerDisplayName
+  }
+
   serialize() {
     return {
       widget_id: this._pgWidget.id,
       owner_id: this._pgWidget.owner_id,
       type: this._pgWidget._type,
       widget_state: this._widgetState,
+      /*
+        NOTE: the way we get the display name now is a bit ugly.
+        We create RoomWidget objects in various contexts, and
+        we don't always have the user's display name handy -
+        so right now we receive just the display name as an extra arg,
+        and we have to JOIN with users in many contexts to get it.
+
+        Perhaps it'd be nicer to have serialize() be async,
+        then we could fetch it as we serialize, and eventually
+        fetch it from a cached global store.
+      */
+      owner_display_name: this._ownerDisplayName,
       transform: this._roomState
     }
   }
@@ -35,7 +56,11 @@ class RoomWidget {
 
 RoomWidget.fromWidgetId = async (widgetId, roomId) => {
   const pgWidgets = await shared.db.pg.massive.query(`
-    SELECT id, _type, owner_id from widgets where id = $1
+    SELECT
+      widgets.id, widgets._type, widgets.owner_id,
+      users.display_name AS owner_display_name
+    FROM widgets JOIN users ON widgets.owner_id = users.id
+    WHERE widgets.id = $1
   `, parseInt(widgetId))
   if(pgWidgets.length < 1) {
     return null

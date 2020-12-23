@@ -52,7 +52,7 @@ class CreateProcessor {
       return widget
     })
 
-    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.transform)
+    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetOwner.display_name)
     await lib.roomData.addWidgetInRoom(roomWidget)
 
     sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")

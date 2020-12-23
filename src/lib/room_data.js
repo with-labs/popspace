@@ -64,7 +64,8 @@ class RoomData {
       currentState = await this.dynamo.getRoomParticipantState(roomId, userId)
     }
     const newState = Object.assign(currentState || {}, stateUpdate)
-    return this.dynamo.setRoomParticipantState(roomId, userId, newState)
+    await this.dynamo.setRoomParticipantState(roomId, userId, newState)
+    return newState
   }
 
   async updateParticipantState(participant, stateUpdate, currentState=null) {
@@ -78,7 +79,8 @@ class RoomData {
         UPDATE users SET display_name = $1 WHERE id = $2
       `, [stateUpdate.display_name, userId])
     }
-    return this.dynamo.setParticipantState(userId, newState)
+    await this.dynamo.setParticipantState(userId, newState)
+    return newState
   }
 
   async removeParticipant(roomId, participant) {

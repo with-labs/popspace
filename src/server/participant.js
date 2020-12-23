@@ -157,6 +157,16 @@ class Participant {
     })
   }
 
+  updateState(newState) {
+    // TODO: maybe move the broadcast out here
+    this.participantState = newState
+  }
+
+  updateTransform(newTransform) {
+    // TODO: maybe move the broadcast out here
+    this.transform = newTransform
+  }
+
   unauthenticate() {
     this.authenticated = false
     this.user = {}

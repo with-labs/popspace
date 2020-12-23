@@ -21,12 +21,16 @@ class UpdateProcessor {
   }
 
   async updateRoomParticipantState(event, responseKind) {
-    await lib.roomData.updateRoomParticipantState(event.roomId(), event.senderParticipant(), event.payload().transform)
+    const sender = event.senderParticipant()
+    const newRoomState = await lib.roomData.updateRoomParticipantState(event.roomId(), sender, event.payload().transform)
+    sender.updateTransform(newRoomState)
     this.sendToPeersAndSelf(event, "participantTransformed")
   }
 
   async updateParticipantState(event) {
-    await lib.roomData.updateParticipantState(event.senderParticipant(), event.payload().participant_state)
+    const sender = event.senderParticipant()
+    const newState = await lib.roomData.updateParticipantState(sender, event.payload().participant_state)
+    sender.updateState(newState)
     this.sendToPeersAndSelf(event, "participantUpdated")
   }
 

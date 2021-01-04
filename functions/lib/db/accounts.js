@@ -96,7 +96,7 @@ class Accounts extends DbAccess {
     const request = {
       first_name: params.firstName,
       last_name: params.lastName,
-      display_name: `${params.firstName} ${params.lastName}`,
+      display_name: `${params.firstName}`,
       email: util.args.consolidateEmailString(params.email),
       newsletter_opt_in: params.receiveMarketing,
       otp: lib.db.otp.generate(),

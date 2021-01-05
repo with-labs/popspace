@@ -37,7 +37,7 @@ class Participant {
       */
       log.received.info(message)
       log.dev.debug(`Got message from ${this.id} ${message}`)
-      let event
+      let event = null
       try {
         event = new lib.event.MercuryEvent(this, message)
       } catch {

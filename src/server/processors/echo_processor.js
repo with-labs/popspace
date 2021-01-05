@@ -4,7 +4,7 @@ class GetProcessor {
       case "echo":
         return await this.sendEcho(mercuryEvent)
       case "ping":
-        return await this.sendEcho(mercuryEvent)
+        return await this.sendPing(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(
           mercuryEvent,

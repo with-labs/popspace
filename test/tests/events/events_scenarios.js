@@ -109,14 +109,14 @@ module.exports = {
   "update_wallpaper": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
     const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
-    const createResponse = client.sendEventWithPromise("updateRoomState", {
-
+    const updateResponse = await client.sendEventWithPromise("updateRoomState", {
+      wallpaperUrl: "https://s3-us-west-2.amazonaws.com/with.wallpapers/To-Do_Board_Galaxy.jpg"
     })
     const getResponse = await client.getRoomState()
     return {
-      createResponse,
-      beginWidgetCount: startRoomData.widgets.length,
-      endWidgetCount: getResponse.payload.widgets.length
+      updateResponse,
+      newRoomState: getResponse
     }
   }),
+
 }

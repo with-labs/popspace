@@ -42,4 +42,10 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     expect(parseInt(positionAfterMove.y) - parseInt(positionBeforeMove.y) == 60)
   })
 
+  test('updating a room wallpaper', async () => {
+    const result = await scenarios["update_wallpaper"]()
+    expect(result.updateResponse.kind).toEqual("roomStateUpdated")
+    expect(result.updateResponse.payload.wallpaperUrl).toEqual(result.newRoomState.payload.state.wallpaperUrl)
+  })
+
 })

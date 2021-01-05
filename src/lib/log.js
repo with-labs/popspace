@@ -4,7 +4,9 @@ const log4jsConfig = {
     database: { type: 'file', filename: 'logs/database.log' },
     app: { type: 'file', filename: 'logs/app.log' },
     console: { type: 'console' },
-    dev: {type: 'file', filename: 'logs/dev.log'}
+    dev: {type: 'file', filename: 'logs/dev.log'},
+    received: {type: 'file', filename: 'logs/received.log'},
+    sent: {type: 'file', filename: 'logs/sent.log'},
   },
   categories: {
     default: { appenders: ['console'], level: 'info' },
@@ -13,7 +15,9 @@ const log4jsConfig = {
     dev: {
       appenders: ['console', 'dev'],
       level: ['developoment'].includes(process.env.NODE_ENV) ? 'trace' : 'off'
-    }
+    },
+    received: { appenders: ['received'], level: 'trace' },
+    sent: { appenders: ['sent'], level: 'trace' }
   }
 }
 log4js.configure(log4jsConfig)
@@ -26,6 +30,8 @@ logging = {
   database: log4js.getLogger('database'),
   app: log4js.getLogger('app'),
   dev: log4js.getLogger('dev'),
+  received: log4js.getLogger('received'),
+  sent: log4js.getLogger('sent'),
   all: (level, message) => {
     Object.keys(log4jsConfig.categories).map((category) => (log4js.getLogger(category)[level](message)));
   }

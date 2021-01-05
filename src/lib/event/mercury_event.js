@@ -14,7 +14,7 @@ module.exports = class MercuryEvent {
   }
 
   requestId() {
-    return this._sourceEvent.eventId()
+    return this._sourceEvent.requestId()
   }
 
   payload() {

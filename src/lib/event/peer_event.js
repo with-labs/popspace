@@ -22,7 +22,7 @@ class PeerEvent {
     }
   }
 
-  eventId() {
+  requestId() {
     return this._data.id
   }
 
@@ -46,7 +46,7 @@ class PeerEvent {
       },
       kind: this.kind(),
       payload: this.payload(),
-      request_id: this.eventId()
+      request_id: this.requestId()
     }
   }
 }

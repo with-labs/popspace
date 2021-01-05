@@ -35,15 +35,23 @@ class Participant {
         - ratelimit
         - sanitize input: protect from js-injection attacks on peers
       */
+      log.received.info(message)
       log.dev.debug(`Got message from ${this.id} ${message}`)
+      let event
       try {
-        const event = new lib.event.MercuryEvent(this, message)
+        event = new lib.event.MercuryEvent(this, message)
+      } catch {
+        log.app.error(`Invalid event format ${message}`)
+        this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
+      }
+
+      try {
         if(this.eventHandler) {
           this.eventHandler(event)
         }
       } catch(e) {
         log.app.error(e)
-        this.sendError({}, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
+        this.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid event", {source: message})
       }
     })
   }
@@ -126,11 +134,9 @@ class Participant {
   }
 
   sendEvent(event) {
-    this.socket.send(
-      JSON.stringify(
-        camelcaseKeys(event.serialize(), CAMELCASE_DEEP)
-      )
-    )
+    const message = JSON.stringify(camelcaseKeys(event.serialize(), CAMELCASE_DEEP))
+    log.sent.info(message)
+    this.socket.send(message)
   }
 
   sendResponse(requestEvent, payload={}, kind=null) {

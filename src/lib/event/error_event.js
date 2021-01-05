@@ -12,7 +12,7 @@ module.exports = class ErrorEvent {
 
   serialize() {
     return {
-      request_id: this.sourceMercuryEvent.requestId(),
+      request_id: this.sourceMercuryEvent ? this.sourceMercuryEvent.requestId() : null,
       code: this.errorCode,
       message: this.errorMessage,
       kind: this.kind,

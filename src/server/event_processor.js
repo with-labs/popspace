@@ -13,10 +13,10 @@ const ACTION_BY_EVENT_KIND = {
   "getRoom": "get",
   "getWidget": "get",
   "auth": "auth",
-  "ping": "ping"
+  "ping": "echo"
 }
 
-const PUBLIC_ACTIONS = {
+const PUBLIC_EVENT_KINDS = {
   "auth": true,
   "ping": true
 }
@@ -27,7 +27,8 @@ const processors = {
   update: new _processors.UpdateProcessor(),
   get: new _processors.GetProcessor(),
   echo: new _processors.EchoProcessor(),
-  delete: new _processors.DeleteProcessor()
+  delete: new _processors.DeleteProcessor(),
+
 }
 
 class EventProcessor {
@@ -35,12 +36,13 @@ class EventProcessor {
     this.participants = participants
 
     this.participants.setEventHandler(async (mercuryEvent) => {
-      const action = ACTION_BY_EVENT_KIND[mercuryEvent.kind()]
+      const eventKind = mercuryEvent.kind()
+      const action = ACTION_BY_EVENT_KIND[eventKind]
       const sender = mercuryEvent.senderParticipant()
       if(!processors[action]) {
         return sender.sendError(mercuryEvent, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event ${mercuryEvent.kind()}.`)
       }
-      if(!PUBLIC_ACTIONS[action] && !sender.isAuthenticated()) {
+      if(!PUBLIC_EVENT_KINDS[eventKind] && !sender.isAuthenticated()) {
         return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
       }
       try {

@@ -48,4 +48,10 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     expect(result.updateResponse.payload.wallpaperUrl).toEqual(result.newRoomState.payload.state.wallpaperUrl)
   })
 
+  test('deleting a widget', async () => {
+    const result = await scenarios["create_then_delete"]()
+    expect(result.deleteResponse.kind).toEqual("widgetDeleted")
+    expect(result.roomStateAfterCreate.payload.widgets.length - 1).toEqual(result.roomStateAfterDelete.payload.widgets.length)
+  })
+
 })

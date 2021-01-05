@@ -119,4 +119,21 @@ module.exports = {
     }
   }),
 
+  "create_then_delete": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+    const client = testEnvironment.loggedInUsers[0].client
+    const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
+
+    const createResponse = await requestStickyNoteCreate(client)
+    const widgetId = createResponse.payload.widgetId
+    const roomStateAfterCreate = await client.getRoomState()
+    const deleteResponse = await client.sendEventWithPromise("deleteWidget", {widgetId})
+    const roomStateAfterDelete = await client.getRoomState()
+
+    return {
+      createResponse,
+      deleteResponse,
+      roomStateAfterCreate,
+      roomStateAfterDelete
+    }
+  }),
 }

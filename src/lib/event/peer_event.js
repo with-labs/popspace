@@ -67,10 +67,7 @@ PeerEvent.fromMessage = function(sender, message) {
   if(!data.kind) {
     throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "event field 'kind' required")
   }
-  if(!data.payload) {
-    throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "event field 'payload' required")
-  }
-  return new PeerEvent(sender, data.kind, data.payload, data.id)
+  return new PeerEvent(sender, data.kind, data.payload || {}, data.id)
 }
 
 module.exports = PeerEvent

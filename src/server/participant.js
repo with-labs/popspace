@@ -42,7 +42,7 @@ class Participant {
         event = new lib.event.MercuryEvent(this, message)
       } catch {
         log.app.error(`Invalid event format ${message}`)
-        this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
+        return this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
       }
 
       try {
@@ -51,7 +51,7 @@ class Participant {
         }
       } catch(e) {
         log.app.error(e)
-        this.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid event", {source: message})
+        return this.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid event", {source: message})
       }
     })
   }

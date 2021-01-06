@@ -32,8 +32,7 @@ class AuthProcessor {
       return sender.sendError(
         event,
         lib.ErrorCodes.AUTH_FAILED,
-        "Invalid credentials",
-        { kind: "error"}
+        "Invalid credentials"
       )
     }
   }

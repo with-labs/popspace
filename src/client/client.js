@@ -105,7 +105,7 @@ class Client extends EventEmitter {
   async authenticate(token, roomName) {
     const response = await this.sendEventWithPromise("auth", { token, roomName })
     if(response.kind == "error") {
-      throw {response: response, code: response.code, message: `Error ${response.code}: ${response.message}`}
+      throw response
     } else {
       this.roomData = new ClientRoomData(response.payload)
     }

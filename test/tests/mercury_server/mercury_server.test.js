@@ -13,4 +13,10 @@ tlib.TestTemplate.describeWithLib('mercury_server', () => {
     expect(connectedClients.clientsCountOnServer).toEqual(connectedClients.clientsCreated)
   })
 
+  test("refuses to connect without authorized access", async () => {
+    const result = await scenarios["refuse_unauthorized_entry"]()
+    expect(result.kind).toEqual("error")
+    expect(result.code).toEqual("AUTH_FAILED")
+  })
+
 })

@@ -1,28 +1,34 @@
-import { WallpaperMetadata } from '../../../constants/WallpaperMetadata';
+import { WallpaperMetadata, WallpaperMetadataType } from '../../../constants/WallpaperMetadata';
 export interface IWallpaper {
   name: string;
   url: string;
   thumbnailUrl: string;
+  title: string;
+  artistName: string;
 }
 
 const WALLPAPERS_HOST = `https://s3-us-west-2.amazonaws.com/with.wallpapers`;
 
-const initWallpapers = (wallpaperList: Array<any>) => {
-  const options: IWallpaper[] = [];
-  const addWallpaper = (name: any) => {
-    options.push({
-      name: name,
-      url: `${WALLPAPERS_HOST}/${name}.jpg`,
-      thumbnailUrl: `${WALLPAPERS_HOST}/${name}_thumb.jpg`,
-    });
-  };
+const initWallpapers = (wallpaperList: { [key: string]: WallpaperMetadataType[] }) => {
+  const options: { [key: string]: IWallpaper[] } = {};
 
-  for (const wallpaper of wallpaperList) {
-    addWallpaper(wallpaper.name);
+  for (const wallpaperCategory in wallpaperList) {
+    const rawMetaData = wallpaperList[wallpaperCategory];
+    const wallpapers = [];
+    for (const wallpaper of rawMetaData) {
+      wallpapers.push({
+        name: wallpaper.title,
+        url: `${WALLPAPERS_HOST}/${wallpaper.file}.jpg`,
+        thumbnailUrl: `${WALLPAPERS_HOST}/${wallpaper.file}_thumb.jpg`,
+        title: wallpaper.title,
+        artistName: wallpaper.artist.name,
+      });
+    }
+    options[wallpaperCategory] = wallpapers;
   }
   return options;
 };
 
-const wallPaperOptions: IWallpaper[] = initWallpapers(WallpaperMetadata);
+const wallPaperOptions: { [key: string]: IWallpaper[] } = initWallpapers(WallpaperMetadata);
 
 export { wallPaperOptions };

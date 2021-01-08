@@ -339,11 +339,12 @@ export default {
     },
     features: {
       room: {
-        customWallpaperLabel: 'Link to an image',
+        customWallpaperLabel: 'Link to an image ( {{fileTypes}} are supported )',
         wallpaperSet: 'New wallpaper set!',
         wallpaperSupportedFileTypes: 'JPG, PNG, WEBP, and GIF',
         export: 'Save room to file',
         import: 'Load room from file',
+        submitButtonText: 'Apply',
       },
       status: {
         placeholder: "What's your status?",
@@ -394,7 +395,20 @@ export default {
         resendInviteSuccess: 'Invite re-sent',
       },
       wallpaperModal: {
-        title: 'Wallpaper',
+        title: 'Room wallpaper',
+        customWallpaperTitle: 'Link to an image ({{fileTypes}} are supported)',
+        submitButton: 'Apply wallpaper',
+        category: {
+          todoBoards: 'To-do Boards',
+          calendars: 'Calendars',
+          workshops: 'Workshops',
+          nature: 'Nature',
+          fruits: 'Fruits',
+          abstract: 'Abstract',
+          patterns: 'Patterns',
+          abstractPaintings: 'Abstract Paintings',
+          figurativePaintings: 'Figurative Paintings',
+        },
       },
       avModal: {
         title: 'Audio & Video',

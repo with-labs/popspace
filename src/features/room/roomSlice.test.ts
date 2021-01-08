@@ -126,6 +126,7 @@ describe('redux roomSlice state', () => {
         bounds: { width: 2500, height: 2500 },
         useSpatialAudio: true,
         wallpaperUrl: 'https://a.so/b.png',
+        isCustomWallpaper: false,
       },
       importAction
     );

@@ -7,6 +7,9 @@ import { WidgetState, PersonState, WidgetType, WidgetData } from '../../types/ro
 import { MIN_WIDGET_HEIGHT, MIN_WIDGET_WIDTH } from '../../constants/room';
 import { wallPaperOptions } from '../roomControls/roomSettings/WallpaperOptions';
 
+const defaultWallpaperCategory = 'todoBoards';
+const defaultWallpaper = 0;
+
 const WARNING_STICKY_ID = 'warningSticky';
 const WARNING_STICKY_TEXT = `WARNING!
 
@@ -45,6 +48,7 @@ interface RoomState {
   zOrder: string[];
   bounds: Bounds;
   wallpaperUrl: string;
+  isCustomWallpaper: boolean;
   useSpatialAudio: boolean;
   syncedFromPeer: boolean;
 }
@@ -76,7 +80,8 @@ export const initialState: RoomState = {
     width: 2400,
     height: 2400,
   },
-  wallpaperUrl: wallPaperOptions[0].url,
+  wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
+  isCustomWallpaper: false,
   useSpatialAudio: true,
   syncedFromPeer: false,
 };
@@ -264,9 +269,10 @@ const roomSlice = createSlice({
       },
     },
     updateRoomWallpaper: {
-      prepare: (a) => prepareSyncAction<{ wallpaperUrl: string }>(a),
-      reducer(state, { payload }: PayloadAction<{ wallpaperUrl: string }>) {
+      prepare: (a) => prepareSyncAction<{ wallpaperUrl: string; isCustomWallpaper: boolean }>(a),
+      reducer(state, { payload }: PayloadAction<{ wallpaperUrl: string; isCustomWallpaper: boolean }>) {
         state.wallpaperUrl = payload.wallpaperUrl;
+        state.isCustomWallpaper = payload.isCustomWallpaper;
       },
     },
     /**
@@ -341,6 +347,7 @@ export const selectors = {
   selectHasWhiteboard: (state: RootState) =>
     Object.values(state.room.widgets).some((widget) => widget.type === WidgetType.Whiteboard),
   selectWallpaperUrl: (state: RootState) => state.room.wallpaperUrl,
+  selectIsCustomWallpaper: (state: RootState) => state.room.isCustomWallpaper,
   createEmojiSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.emoji,
   selectUseSpatialAudio: (state: RootState) => state.room.useSpatialAudio,
   createPersonAvatarSelector: (personId: string) => (state: RootState) => state.room.people[personId]?.avatar,

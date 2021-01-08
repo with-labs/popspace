@@ -9,7 +9,6 @@ interface IModalContentWrapperProps {
 
 const useStyles = makeStyles((theme) => ({
   content: {
-    display: 'flex',
     flexDirection: 'row',
 
     [theme.breakpoints.down('sm')]: {

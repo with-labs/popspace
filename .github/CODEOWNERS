@@ -5,10 +5,11 @@
 # the repo. Unless a later match takes precedence,
 # they will be requested for review when someone opens a
 # pull request.
-*           @jesse-with @grant-with @alexey-dc @wpultz
+#           Jesse       Grant   Alexey     Wyatt
+*           @jesse-with @a-type @alexey-dc @wpultz
 
 
 /functions/ @alexey-dc
 
 
-/src/       @jesse-with @grant-with @wpultz @a-type
+/src/       @jesse-with @a-type @wpultz

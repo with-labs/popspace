@@ -12,10 +12,10 @@ const loadSsl = () => {
 }
 
 class Mercury {
-  constructor(port) {
+  constructor(port, heartbeatTimeoutMillis) {
     this.port = port
     this.express = express()
-    this.participants = new Participants()
+    this.participants = new Participants(heartbeatTimeoutMillis)
     this.eventProcessor =  new EventProcessor(this.participants)
 
     this.ws = new ws.Server({ noServer: true })

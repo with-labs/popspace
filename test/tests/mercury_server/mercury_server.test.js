@@ -19,4 +19,9 @@ tlib.TestTemplate.describeWithLib('mercury_server', () => {
     expect(result.code).toEqual("AUTH_FAILED")
   })
 
+  test("disconnects clients when they fail their heartbeat timeout", async () => {
+    const result = await scenarios["heartbeat_timeout_disconnect"]()
+    expect(result.clientsAfterTimeout).toEqual(result.clientsBeforeTimeout - 1)
+  })
+
 })

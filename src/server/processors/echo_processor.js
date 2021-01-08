@@ -4,7 +4,7 @@ class GetProcessor {
       case "echo":
         return await this.sendEcho(mercuryEvent)
       case "ping":
-        return await this.sendPing(mercuryEvent)
+        return await this.processPing(mercuryEvent)
       default:
         return mercuryEvent.senderParticipant().sendError(
           mercuryEvent,
@@ -20,8 +20,9 @@ class GetProcessor {
     sender.sendResponse(event, { received: true })
   }
 
-  async sendPing(event) {
+  async processPing(event) {
     const sender = event.senderParticipant()
+    sender.keepalive()
     sender.sendResponse(event, { received: true }, "pong")
   }
 }

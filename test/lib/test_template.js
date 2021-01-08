@@ -11,10 +11,10 @@ module.exports = {
       return handler()
     })
   },
-  testServerClients: (nClients, lambda) => {
+  testServerClients: (nClients, lambda, heartbeatTimeoutMillis) => {
     return async () => {
       let result = null
-      const { clients, mercury } = await tlib.util.serverWithClients(nClients)
+      const { clients, mercury } = await tlib.util.serverWithClients(nClients, heartbeatTimeoutMillis)
       try {
         result = await lambda(clients, mercury)
       } catch(e) {

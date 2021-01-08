@@ -1,9 +1,28 @@
 global.tlib = require("../../lib/_testlib")
+const Client = require("../../../src/client/client")
 
 module.exports = {
   "connect_send_disconnect": tlib.TestTemplate.testServerClients(1, async (clients) => {
     clients[0].broadcast("hello")
     return true
+  }),
+
+  "heartbeat_timeout_disconnect": tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
+    const heartbeatIntervalMillis = 60000
+    const heartbeatTimeoutMillis = 100
+    const client = new Client(`wss://localhost:${process.env.TEST_PORT}`, heartbeatIntervalMillis, heartbeatTimeoutMillis)
+    await client.connect()
+    const readyBeforeTimeout = client.isReady()
+    const clientsBeforeTimeout = mercury.clientsCount()
+    await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
+    const clientsAfterTimeout = mercury.clientsCount()
+    const readyAfterTimeout = client.isReady()
+    return {
+      clientsBeforeTimeout,
+      clientsAfterTimeout,
+      readyBeforeTimeout,
+      readyAfterTimeout
+    }
   }),
 
   "1_sender_2_receivers": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {

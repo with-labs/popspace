@@ -12,9 +12,9 @@ class AuthProcessor {
     }
   }
 
-  async authenticate(event, participants) {
-    const sender = event.senderParticipant()
-    const payload = event.payload()
+  async authenticate(mercuryEvent, participants) {
+    const sender = mercuryEvent.senderParticipant()
+    const payload = mercuryEvent.payload()
     const success = await sender.authenticate(payload.token, payload.room_name)
     if(success) {
       /*
@@ -25,22 +25,22 @@ class AuthProcessor {
         3. socket groups or participants available globally
       */
       await participants.joinRoom(sender)
-      const authData = await this.getAuthData(event)
-      sender.sendResponse(event, authData)
+      const authData = await this.getAuthData(mercuryEvent)
+      sender.sendResponse(mercuryEvent, authData)
       sender.broadcastPeerEvent("participantJoined", sender.serialize())
     } else {
       return sender.sendError(
-        event,
+        mercuryEvent,
         lib.ErrorCodes.AUTH_FAILED,
         "Invalid credentials"
       )
     }
   }
 
-  async getAuthData(event) {
-    const user = event.senderUser()
-    const participant = event.senderParticipant()
-    const roomId = event.roomId()
+  async getAuthData(mercuryEvent) {
+    const user = mercuryEvent.senderUser()
+    const participant = mercuryEvent.senderParticipant()
+    const roomId = mercuryEvent.roomId()
     const room = await lib.roomData.getRoomData(roomId)
 
     const peers = participant.listPeersIncludingSelf()

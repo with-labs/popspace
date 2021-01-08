@@ -44,7 +44,7 @@ module.exports = {
     try {
       response = await clients[0].authenticate("{}", roomNameEntry.name)
     } catch(e) {
-      response = e.response
+      response = e
     }
 
     const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
@@ -61,7 +61,7 @@ module.exports = {
     try {
       response = await clients[0].authenticate("{}", "faken_ame2000_")
     } catch(e) {
-      response = e.response
+      response = e
     }
     const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
     return {

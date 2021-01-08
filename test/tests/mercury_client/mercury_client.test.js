@@ -9,6 +9,13 @@ tlib.TestTemplate.describeWithLib('mercury_client', () => {
     expect(true)
   })
 
+  test("disconnects on heartbeat timeout", async () => {
+    const result = await scenarios["heartbeat_timeout_disconnect"]()
+    expect(result.clientsAfterTimeout).toEqual(result.clientsBeforeTimeout - 1)
+    expect(result.readyBeforeTimeout).toEqual(true)
+    expect(result.readyAfterTimeout).toEqual(false)
+  })
+
   test('broadcasts messages from one client to all other clients', async () => {
     const result = await scenarios["1_sender_2_receivers"]()
     result.messagesReceived.forEach((message) => {

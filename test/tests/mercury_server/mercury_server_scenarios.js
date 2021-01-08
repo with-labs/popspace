@@ -3,7 +3,7 @@ global.tlib = require("../../lib/_testlib")
 module.exports = {
   "restarts_correclty": async () => {
     for(let i = 0; i < 5; i++) {
-      let { clients, mercury } = await tlib.util.serverWithClients(i + 1, "restarts_correclty")
+      let { clients, mercury } = await tlib.util.serverWithClients(i + 1)
       await mercury.stop()
     }
   },
@@ -35,5 +35,15 @@ module.exports = {
       } catch (error) {
         return error
       }
-  })
+  }),
+
+  "heartbeat_timeout_disconnect":tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
+    const clientsBeforeTimeout = mercury.clientsCount()
+    await new Promise((resolve, reject) => setTimeout(resolve, 200));
+    const clientsAfterTimeout = mercury.clientsCount()
+    return {
+      clientsBeforeTimeout,
+      clientsAfterTimeout
+    }
+  }, 100)
 }

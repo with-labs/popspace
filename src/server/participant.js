@@ -16,11 +16,17 @@ const CAMELCASE_DEEP = { deep: true }
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
 
+
 class Participant {
-  constructor(socket) {
+  constructor(socket, heartbeatTimeoutMillis) {
     this.socket = socket
+    this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
     this.id = id++ // perhaps a decent more verbose name is sessionId
     this.unauthenticate()
+
+    this.dieFromTimeout = () => {
+      this.disconnect()
+    }
 
     this.socket.on('disconnect', () => {
       this.leaveSocketGroup()
@@ -54,6 +60,13 @@ class Participant {
         return this.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid event", {source: message})
       }
     })
+
+    this.keepalive()
+  }
+
+  keepalive() {
+    clearTimeout(this.heartbeatTimeout)
+    this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
   }
 
   sessionId() {
@@ -107,9 +120,11 @@ class Participant {
     this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
+    this.keepalive
   }
 
   leaveSocketGroup() {
+    clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })

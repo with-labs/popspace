@@ -2,7 +2,8 @@ const Participant = require("./participant")
 const SocketGroup = require("./socket_group")
 
 class Participants {
-  constructor() {
+  constructor(heartbeatTimeoutMillis) {
+    this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
     this.participants = {}
     this.socketGroupsByRoomId = {}
     this.onEventReceived = (event) => {
@@ -29,7 +30,7 @@ class Participants {
   }
 
   addSocket(socket) {
-    const participant = new Participant(socket)
+    const participant = new Participant(socket, this.heartbeatTimeoutMillis)
     socket.participant = participant
     this.participants[participant.id] = participant
     participant.setEventHandler(this.onEventReceived)

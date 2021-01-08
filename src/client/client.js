@@ -4,7 +4,7 @@ let count = 0
 const ClientRoomData = require('./client_room_data')
 
 class Client extends EventEmitter {
-  constructor(serverUrl) {
+  constructor(serverUrl, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) {
     super()
     this.id = count++
     this.eventId = 0
@@ -12,6 +12,11 @@ class Client extends EventEmitter {
     this.serverUrl = serverUrl
     this.messageListeners = {}
     this.promiseResolvers = []
+    this.heartbeatIntervalMillis = heartbeatIntervalMillis
+    this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+    this.dieFromTimeout = () =>  {
+      this.disconnect()
+    }
   }
 
   /**********************************/
@@ -21,6 +26,15 @@ class Client extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.socket = new ws(this.serverUrl, {
         rejectUnauthorized: process.env.NODE_ENV == 'production'
+      })
+      this.socket.on('open', () => {
+        this.startHeartbeat()
+        this.ready = true
+        resolve(this)
+      })
+      this.socket.on('close', () => {
+        this.stopHeartbeat()
+        this.ready = false
       })
       this.socket.on('message', (message) => {
         log.dev.debug(`${this.id} received ${message}`)
@@ -44,11 +58,27 @@ class Client extends EventEmitter {
           // Not an event no problem, nothing to do
         }
       })
-      this.socket.on('open', () => {
-        this.ready = true
-        resolve(this)
-      })
     })
+  }
+
+  startHeartbeat() {
+    this.heartbeatInterval = setInterval(this.heartbeat, this.heartbeatIntervalMillis)
+    this.heartbeat()
+  }
+
+  stopHeartbeat() {
+    clearInterval(this.heartbeatInterval)
+    clearTimeout(this.heartbeatTimeout)
+  }
+
+  heartbeat = async () => {
+    clearTimeout(this.heartbeatTimeout)
+    const response = await this.sendEventWithPromise("ping", {})
+    if(response.kind == "pong") {
+      this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
+    } else {
+      this.disconnect()
+    }
   }
 
   userId() {
@@ -83,6 +113,10 @@ class Client extends EventEmitter {
   async getWidgetState(widgetId) {
     this.requireReady()
     return this.sendEventWithPromise("getWidget", { widget_id: widgetId })
+  }
+
+  isReady() {
+    return this.ready
   }
 
   requireReady() {
@@ -126,6 +160,7 @@ class Client extends EventEmitter {
 
 
   disconnect() {
+    this.ready = false
     this.socket.close()
   }
 

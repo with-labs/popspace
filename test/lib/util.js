@@ -2,8 +2,8 @@ const Mercury = require("../../src/mercury")
 const Client = require("../../src/client/client")
 
 module.exports = {
-  serverWithClients: async (clientCount) => {
-    const mercury = new Mercury(process.env.TEST_PORT)
+  serverWithClients: async (clientCount, heartbeatTimeoutMillis=process.env.HEARTBEAT_TIMEOUT_MILLIS) => {
+    const mercury = new Mercury(process.env.TEST_PORT, heartbeatTimeoutMillis)
     try {
       await mercury.start()
     } catch(e) {
@@ -15,10 +15,10 @@ module.exports = {
     return { clients, mercury }
   },
 
-  addClients: async (mercury, clientCount) => {
+  addClients: async (mercury, clientCount, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) => {
     const clients = []
     for(let i = 0; i < clientCount; i++) {
-      clients.push(new Client(`wss://localhost:${process.env.TEST_PORT}`))
+      clients.push(new Client(`wss://localhost:${process.env.TEST_PORT}`, heartbeatIntervalMillis, heartbeatTimeoutMillis))
     }
     await Promise.all( clients.map((c) => (c.connect())) )
     return clients

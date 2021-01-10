@@ -12,8 +12,20 @@ class Client extends EventEmitter {
     this.serverUrl = serverUrl
     this.messageListeners = {}
     this.promiseResolvers = []
+
     this.heartbeatIntervalMillis = heartbeatIntervalMillis
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+
+    this.heartbeat = async () => {
+      clearTimeout(this.heartbeatTimeout)
+      const response = await this.sendEventWithPromise("ping", {})
+      if(response.kind == "pong") {
+        this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
+      } else {
+        this.disconnect()
+      }
+    }
+
     this.dieFromTimeout = () =>  {
       this.disconnect()
     }
@@ -69,16 +81,6 @@ class Client extends EventEmitter {
   stopHeartbeat() {
     clearInterval(this.heartbeatInterval)
     clearTimeout(this.heartbeatTimeout)
-  }
-
-  heartbeat = async () => {
-    clearTimeout(this.heartbeatTimeout)
-    const response = await this.sendEventWithPromise("ping", {})
-    if(response.kind == "pong") {
-      this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
-    } else {
-      this.disconnect()
-    }
   }
 
   userId() {

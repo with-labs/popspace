@@ -4,8 +4,11 @@
   that room.
 */
 
+let id = 0
+
 class SocketGroup {
   constructor(room) {
+    this.id = id++
     this._room = room
     this._participants = []
   }

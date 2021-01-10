@@ -16,6 +16,14 @@ tlib.TestTemplate.describeWithLib('mercury_client', () => {
     expect(result.readyAfterTimeout).toEqual(false)
   })
 
+  test("other clients find out about a dropped client", async () => {
+    const result = await scenarios["heartbeat_timeout_event_propagate"]()
+    expect(result.leaveEvent.kind).toEqual("participantLeft")
+    expect(result.clientsAfterTimeout).toEqual(result.clientsBeforeTimeout - 1)
+    expect(result.readyBeforeTimeout).toEqual(true)
+    expect(result.readyAfterTimeout).toEqual(false)
+  })
+
   test('broadcasts messages from one client to all other clients', async () => {
     const result = await scenarios["1_sender_2_receivers"]()
     result.messagesReceived.forEach((message) => {

@@ -25,6 +25,44 @@ module.exports = {
     }
   }),
 
+  "heartbeat_timeout_event_propagate": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
+    const existingClient = testEnvironment.loggedInUsers[0].client
+    const mercury = testEnvironment.mercury
+    let leaveEvent
+    const leaveEventPromise = new Promise((resolve, reject) => {
+      existingClient.on('event.participantLeft', (event) => {
+        leaveEvent = event
+        resolve()
+      })
+    })
+
+    const room = testEnvironment.loggedInUsers[0].room
+    const roomNameEntry = testEnvironment.loggedInUsers[0].roomNameEntry
+
+    const heartbeatIntervalMillis = 60000
+    // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
+    const heartbeatTimeoutMillis = 1500
+    const clients = await tlib.util.addClients(testEnvironment.mercury, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
+    const client = clients[0]
+
+    const environmentUser = await testEnvironment.createLoggedInUser(client, room, roomNameEntry)
+    await testEnvironment.authenticate(environmentUser)
+
+    const readyBeforeTimeout = client.isReady()
+    const clientsBeforeTimeout = mercury.clientsCount()
+    await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
+    const clientsAfterTimeout = mercury.clientsCount()
+    const readyAfterTimeout = client.isReady()
+    await leaveEventPromise
+    return {
+      clientsBeforeTimeout,
+      clientsAfterTimeout,
+      readyBeforeTimeout,
+      readyAfterTimeout,
+      leaveEvent
+    }
+  }),
+
   "1_sender_2_receivers": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {
     const loggedInUsers = testEnvironment.loggedInUsers
     const sentMessage = 'hello'

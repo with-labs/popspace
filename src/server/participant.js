@@ -121,7 +121,7 @@ class Participant {
   }
 
   joinSocketGroup(socketGroup) {
-    console.log("Joining socket group", this.id, socketGroup.id)
+    console.log("Joining socket group", this.id, socketGroup.id, this.room.id)
     this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)

@@ -70,7 +70,7 @@ class Participant {
   keepalive() {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
-    console.log("Keepalive", this.id, this.heartbeatTimeout)
+    console.log("Keepalive", this.id, this.socketGroup ? this.socketGroup.id : null)
   }
 
   sessionId() {

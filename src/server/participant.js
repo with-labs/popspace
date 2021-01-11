@@ -121,6 +121,7 @@ class Participant {
   }
 
   joinSocketGroup(socketGroup) {
+    console.log("Joining socket group", this.id, socketGroup.id)
     this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
@@ -130,6 +131,7 @@ class Participant {
   leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
+      console.log("Leaving socket group", this.id, this.socketGroup.id)
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       this.socketGroup = null

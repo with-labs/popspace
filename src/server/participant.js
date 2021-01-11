@@ -68,9 +68,9 @@ class Participant {
   }
 
   keepalive() {
-    console.log("Keepalive", this.id)
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
+    console.log("Keepalive", this.id, this.heartbeatTimeout)
   }
 
   sessionId() {
@@ -124,7 +124,7 @@ class Participant {
     this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
-    this.keepalive
+    this.keepalive()
   }
 
   leaveSocketGroup() {

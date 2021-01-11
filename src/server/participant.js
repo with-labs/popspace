@@ -24,7 +24,10 @@ class Participant {
     this.id = id++ // perhaps a decent more verbose name is sessionId
     this.unauthenticate()
 
+    console.log("New client", this.id)
+
     this.dieFromTimeout = () => {
+      console.log("Dying from timeout", this.id)
       this.disconnect()
     }
 
@@ -65,6 +68,7 @@ class Participant {
   }
 
   keepalive() {
+    console.log("Keepalive", this.id)
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
   }

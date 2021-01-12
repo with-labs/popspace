@@ -1,5 +1,10 @@
 import { options } from '../../utils/AvatarOptions';
 
 export function useAvatar(avatarName: string) {
-  return options.find((opt) => opt.name === avatarName);
+  for (const category in options) {
+    const avatar = options[category].find((opt) => opt.name === avatarName);
+    if (!!avatar) {
+      return avatar;
+    }
+  }
 }

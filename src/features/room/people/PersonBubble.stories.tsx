@@ -16,7 +16,9 @@ export default {
     avatar: {
       control: {
         type: 'select',
-        options: options.map((opt) => opt.name),
+        options: Object.keys(options).reduce(function (r, k) {
+          return r.concat(options[k].map((avatar) => avatar.name));
+        }, [] as string[]),
       },
     },
   },

@@ -1,34 +1,41 @@
 import React from 'react';
 import clsx from 'clsx';
-import { DialogTitle, makeStyles, Typography, IconButton } from '@material-ui/core';
+import { DialogTitle, makeStyles, Typography, IconButton, Box } from '@material-ui/core';
 import { CloseIcon } from '../../components/icons/CloseIcon';
+import { BackIcon } from '../../components/icons/BackIcon';
 
 interface WidgetTitlebarProps {
   title: string;
-  className?: string;
   onClose?: () => void;
+  onBack?: (() => void) | null;
 }
 
 const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    position: 'absolute',
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[800],
+  title: {
+    flexGrow: 1,
   },
 }));
 
-export const ModalTitleBar: React.FC<WidgetTitlebarProps> = ({ title, className, onClose }) => {
+export const ModalTitleBar: React.FC<WidgetTitlebarProps> = ({ title, onClose, onBack }) => {
   const classes = useStyles();
 
   return (
     <DialogTitle disableTypography>
-      <Typography variant="h2">{title}</Typography>
-      {onClose ? (
-        <IconButton className={clsx(classes.closeButton, className)} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      ) : null}
+      <Box display="flex" flexDirection="row" alignItems="center">
+        {onBack ? (
+          <IconButton onClick={onBack}>
+            <BackIcon />
+          </IconButton>
+        ) : null}
+        <Typography variant="h2" className={classes.title}>
+          {title}
+        </Typography>
+        {onClose ? (
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </Box>
     </DialogTitle>
   );
 };

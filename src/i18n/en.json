@@ -364,10 +364,23 @@
       },
       "userSettingsModal": {
         "title": "User settings",
+        "avatarTitle": "Avatars",
+        "editAvatarButton": "Edit Avatar",
         "displayNameInput": {
           "placeholder": "Dorthy",
           "label": "Display Name",
           "helperText": "Ability to change your display name coming soon!"
+        },
+        "category": {
+          "pets": "Pets",
+          "animals": "Animals",
+          "abstractAnimals": "Abstract Animals",
+          "yum": "Yum",
+          "fruitsVeggies": "Fruits & Veggies",
+          "cosmos": "Cosmos",
+          "misc": "Misc",
+          "zodiac": "Zodiac",
+          "withCharacters": "With Characters"
         }
       },
       "changelogModal": { "title": "What's new?" },

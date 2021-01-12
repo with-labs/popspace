@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   formWrapper: {
+    flexShrink: 0,
     width: '100%',
     marginBottom: theme.spacing(3),
   },

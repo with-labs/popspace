@@ -1,35 +1,42 @@
 import * as React from 'react';
 import { makeStyles, ButtonBase } from '@material-ui/core';
-import { options as avatarOptions } from '../../../utils/AvatarOptions';
+import { IAvatar } from '../../../utils/AvatarOptions';
 import clsx from 'clsx';
-
 export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
+  avatarList: IAvatar[];
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'grid',
     width: '100%',
-    gridTemplateColumns: 'repeat(3, 1fr)',
+    gridTemplateColumns: 'repeat(5, 1fr)',
     gridAutoRows: '1fr',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
+
+    [theme.breakpoints.down('sm')]: {
+      gridTemplateColumns: 'repeat(3, 1fr)',
+    },
   },
   item: {
     borderRadius: theme.shape.contentBorderRadius,
     overflow: 'hidden',
-
-    transition: theme.transitions.create(['box-shadow', 'padding']),
+    transition: theme.transitions.create(['box-shadow', 'transform']),
 
     '&:focus:not($itemSelected), &:hover:not($itemSelected)': {
       boxShadow: `0 0 0 4px ${theme.palette.grey[500]}`,
-      padding: 4,
+      '& > $imageContainer': {
+        transform: `scale(0.9)`,
+      },
     },
     '&:active': {
       boxShadow: `0 0 0 4px ${theme.palette.grey[900]}`,
-      padding: 4,
+      '& > $imageContainer': {
+        transform: `scale(1)`,
+      },
     },
   },
   itemSelected: {
@@ -45,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
   imageContainer: {
     position: 'relative',
+    transition: theme.transitions.create(['transform']),
   },
   imageBackground: {
     width: '100%',
@@ -53,14 +61,18 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     borderRadius: theme.shape.contentBorderRadius,
   },
+  buttonTest: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      {avatarOptions.map((avatar) => (
+      {avatarList.map((avatar) => (
         <ButtonBase
           key={avatar.name}
           onClick={() => onChange(avatar.name)}

@@ -1,0 +1,55 @@
+import * as React from 'react';
+import { makeStyles, Typography, Box } from '@material-ui/core';
+import { options as avatarOptions } from '../../../utils/AvatarOptions';
+import { AvatarGrid } from './AvatarGrid';
+import { useTranslation } from 'react-i18next';
+
+export interface IAvatarCategoryProps {
+  onChange: (avatarName: string) => void;
+  value: string | null;
+}
+
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    overflowY: 'auto',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    height: 340,
+    [theme.breakpoints.down('sm')]: {
+      height: '100%',
+    },
+  },
+  category: {
+    marginBottom: '48px',
+  },
+  title: {
+    marginBottom: theme.spacing(1),
+  },
+}));
+
+export const AvatarCategory: React.FC<IAvatarCategoryProps> = ({ onChange, value }) => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      flexGrow={1}
+      flexShrink={1}
+      flexBasis={'auto'}
+      className={classes.wrapper}
+    >
+      {Object.keys(avatarOptions).map((category, idx) => {
+        return (
+          <div key={`${category}_${idx}`} className={classes.category}>
+            <Typography variant="h3" className={classes.title}>
+              {t(`modals.userSettingsModal.category.${category}`)}
+            </Typography>
+            <AvatarGrid avatarList={avatarOptions[category]} onChange={onChange} value={value} />
+          </div>
+        );
+      })}
+    </Box>
+  );
+};

@@ -205,7 +205,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
     },
 
     typography: {
-      fontFamily: 'Silka',
+      fontFamily: 'Silka, Helvetica, sans',
       fontWeightMedium: SEMIBOLD_WEIGHT,
       body1: {
         lineHeight: 22 / 16,

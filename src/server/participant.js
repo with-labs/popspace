@@ -24,10 +24,8 @@ class Participant {
     this.id = id++ // perhaps a decent more verbose name is sessionId
     this.unauthenticate()
 
-    console.log("New client", this.id)
-
     this.dieFromTimeout = () => {
-      console.log("Dying from timeout", this.id)
+      log.app.info(`Participant dying from timeout (participant.id: ${this.id})`)
       this.disconnect()
     }
 
@@ -70,7 +68,7 @@ class Participant {
   keepalive() {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
-    console.log("Keepalive", this.id, this.socketGroup ? this.socketGroup.id : null)
+    log.app.info(`Keepalive pid ${this.id} socketGroup ${this.socketGroup ? this.socketGroup.id : null}`)
   }
 
   sessionId() {
@@ -121,7 +119,6 @@ class Participant {
   }
 
   joinSocketGroup(socketGroup) {
-    console.log("Joining socket group", this.id, socketGroup.id, this.room.id)
     this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
@@ -131,7 +128,6 @@ class Participant {
   leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
-      console.log("Leaving socket group", this.id, this.socketGroup.id)
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       this.socketGroup = null

@@ -35,9 +35,6 @@ class SocketGroup {
   broadcastPeerEvent(sender, kind, payload, eventId=null) {
     for(const participant of this._participants) {
       if(participant != sender) {
-        if(kind == "participantLeft") {
-          console.log("Sending participantLeft to", participant.id, this.id)
-        }
         participant.sendPeerEvent(sender, kind, payload, eventId)
       }
     }

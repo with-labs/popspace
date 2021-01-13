@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const InvalidRoomPermission: React.FC<IInvalidRoomPermissionProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const history = useHistory();
   const { t } = useTranslation();
   const classes = useStyles();
-  const { currentUserProfile, isLoading } = useCurrentUserProfile();
+  const { profile: currentUserProfile, isLoading } = useCurrentUserProfile();
 
   const onButtonClick = () => {
     history.push(RouteNames.ROOT);
@@ -63,6 +63,7 @@ export const InvalidRoomPermission: React.FC<IInvalidRoomPermissionProps> = (pro
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={currentUserProfile ? t('errorPages.invalidRoom.buttonText') : t('errorPages.signInBtn')}
       onClick={currentUserProfile ? onButtonClick : onSignInClick}
       quoteText={t('errorPages.invalidRoom.quoteText')}

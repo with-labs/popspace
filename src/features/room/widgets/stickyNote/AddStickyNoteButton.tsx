@@ -1,15 +1,12 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
 import { addVectors } from '../../../../utils/math';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import { useCoordinatedDispatch } from '../../CoordinatedDispatchProvider';
-import * as roomSlice from '../../roomSlice';
 import { useRoomViewport } from '../../RoomViewport';
-import { WidgetType } from '../../../../types/room';
 import { AddIcon } from '../../../../components/icons/AddIcon';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
+import { WidgetType } from '../../../../roomState/types/widgets';
+import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 export interface IAddStickyNoteButtonProps {
   /**
@@ -23,15 +20,16 @@ export interface IAddStickyNoteButtonProps {
 
 export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ parentId }) => {
   const { t } = useTranslation();
-  const localParticipant = useLocalParticipant();
-  const localParticipantSid = localParticipant?.sid;
-  const localDisplayName = useParticipantDisplayIdentity(localParticipant);
+  const { user } = useCurrentUserProfile();
+  const userId = user?.id ?? null;
 
   const { toWorldCoordinate } = useRoomViewport();
 
-  const coordinatedDispatch = useCoordinatedDispatch();
-  // get the parent position if available, or fallback to null.
-  const currentPosition = useSelector(roomSlice.selectors.createPositionSelector(parentId || '')) || null;
+  const addWidget = useRoomStore((room) => room.api.addWidget);
+
+  const currentPosition = useRoomStore(
+    React.useCallback((room) => room.widgetPositions[parentId ?? '']?.position, [parentId])
+  );
   const handleCreateNew = React.useCallback(() => {
     const position = currentPosition
       ? addVectors(currentPosition, { x: 100, y: 100 })
@@ -40,25 +38,18 @@ export const AddStickyNoteButton: React.FC<IAddStickyNoteButtonProps> = ({ paren
           y: window.innerHeight / 2,
         });
 
-    if (localParticipantSid) {
-      coordinatedDispatch(
-        roomSlice.actions.addWidget({
-          widget: {
-            kind: 'widget',
-            type: WidgetType.StickyNote,
-            data: {
-              title: '',
-              text: '',
-              author: localDisplayName || 'Anonymous',
-            },
-            isDraft: true,
-            participantSid: localParticipantSid,
-          },
+    if (userId) {
+      addWidget({
+        widgetState: {
+          text: '',
+        },
+        transform: {
           position,
-        })
-      );
+        },
+        type: WidgetType.StickyNote,
+      });
     }
-  }, [localDisplayName, currentPosition, coordinatedDispatch, localParticipantSid, toWorldCoordinate]);
+  }, [currentPosition, toWorldCoordinate, userId, addWidget]);
 
   return (
     <WidgetTitlebarButton onClick={handleCreateNew} aria-label={t('widgets.stickyNote.quickAddButton')}>

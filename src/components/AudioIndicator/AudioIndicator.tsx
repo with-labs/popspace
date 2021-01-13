@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { animated, useSpring } from '@react-spring/web';
+import { makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 
 export interface IAudioIndicatorProps {
   isActive: boolean;
@@ -19,33 +21,46 @@ function convolutedSinMovement(time: number, phaseOffset: number) {
   return a * b * c * 2 + 0.5;
 }
 
+const useStyles = makeStyles({
+  root: {
+    // the root of the audio animation is composited on a different layer so that its frequent
+    // animation repaints will not affect parent layers
+    willChange: 'transform',
+  },
+  bar: {
+    height: 16,
+    width: 2,
+    transformOrigin: 'center',
+  },
+});
+
+function createTransform(scale: number) {
+  return `scaleY(${scale}) translateY(-8px)`;
+}
+
 /**
  * Renders an animated "equalizer" visual which indicates if audio is playing
  */
 export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPaused, className, variant = 'flat' }) => {
+  const classes = useStyles();
+
   const [bar1, setBar1] = useSpring(() => ({
-    height: 10,
-    y: 3,
-    // config: SPRINGS.RESPONSIVE,
+    transform: createTransform(0.625),
   }));
   const [bar2, setBar2] = useSpring(() => ({
-    height: 16,
-    y: 0,
-    // config: SPRINGS.RESPONSIVE,
+    transform: createTransform(1),
   }));
   const [bar3, setBar3] = useSpring(() => ({
-    height: 6,
-    y: 5,
-    // config: SPRINGS.RESPONSIVE,
+    transform: createTransform(0.375),
   }));
 
   React.useEffect(() => {
     if (isActive) {
       if (variant === 'sine') {
         if (isPaused) {
-          setBar1({ height: 10, y: 3 });
-          setBar2({ height: 16, y: 0 });
-          setBar3({ height: 6, y: 5 });
+          setBar1({ transform: createTransform(0.625) });
+          setBar2({ transform: createTransform(1) });
+          setBar3({ transform: createTransform(0.375) });
         } else {
           let frame: number = 0;
           let start: DOMHighResTimeStamp;
@@ -57,9 +72,9 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
             const val2 = convolutedSinMovement(elapsed, Math.PI / 2) * 8 + 5;
             const val3 = convolutedSinMovement(elapsed, Math.PI / 6) * 4 + 4;
 
-            setBar1({ height: val1, y: 8 - val1 / 2 });
-            setBar2({ height: val2, y: 8 - val2 / 2 });
-            setBar3({ height: val3, y: 8 - val3 / 2 });
+            setBar1({ transform: createTransform(val1 / 16) });
+            setBar2({ transform: createTransform(val2 / 16) });
+            setBar3({ transform: createTransform(val3 / 16) });
 
             frame = requestAnimationFrame(loop);
           };
@@ -70,19 +85,19 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
         }
       } else {
         if (isPaused) {
-          setBar1({ height: 8, y: 4 });
-          setBar2({ height: 12, y: 2 });
-          setBar3({ height: 8, y: 4 });
+          setBar1({ transform: createTransform(0.5) });
+          setBar2({ transform: createTransform(0.75) });
+          setBar3({ transform: createTransform(0.5) });
         } else {
-          setBar1({ height: 10, y: 3 });
-          setBar2({ height: 16, y: 0 });
-          setBar3({ height: 10, y: 3 });
+          setBar1({ transform: createTransform(0.625) });
+          setBar2({ transform: createTransform(1) });
+          setBar3({ transform: createTransform(0.625) });
         }
       }
     } else {
-      setBar1({ height: 2, y: 6 });
-      setBar2({ height: 2, y: 6 });
-      setBar3({ height: 2, y: 6 });
+      setBar1({ transform: createTransform(0.125) });
+      setBar2({ transform: createTransform(0.125) });
+      setBar3({ transform: createTransform(0.125) });
     }
   }, [isActive, isPaused, setBar1, setBar2, setBar3, variant]);
 
@@ -95,11 +110,11 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={className}
+      className={clsx(classes.root, className)}
     >
-      <animated.rect x="6" y="6" width="2" height="2" rx="1" style={bar1} />
-      <animated.rect x="11" y="6" width="2" height="2" rx="1" style={bar2} />
-      <animated.rect x="16" y="6" width="2" height="2" rx="1" style={bar3} />
+      <animated.rect className={classes.bar} x="6" y="12" rx="1" style={bar1} />
+      <animated.rect className={classes.bar} x="11" y="12" rx="1" style={bar2} />
+      <animated.rect className={classes.bar} x="16" y="12" rx="1" style={bar3} />
     </svg>
   );
 };

@@ -1,14 +1,11 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import * as roomSlice from '../roomSlice';
 import { LinkWidget } from './link/LinkWidget';
 import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
 import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
-import { WidgetState, WidgetType } from '../../../types/room';
-import { ScreenShareWidget } from './screenShare/ScreenShareWidget';
+import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
+import { useRoomStore } from '../../../roomState/useRoomStore';
+import { WidgetShape, WidgetType } from '../../../roomState/types/widgets';
 
 export interface IWidgetProps {
   id: string;
@@ -19,20 +16,15 @@ export interface IWidgetProps {
  * within a Room.
  */
 export const Widget = React.memo<IWidgetProps>(({ id }) => {
-  const localParticipant = useLocalParticipant();
-  const widget = useSelector(roomSlice.selectors.createWidgetSelector(id));
+  const widget = useRoomStore(React.useCallback((room) => room.widgets[id], [id]));
+  const deleteWidget = useRoomStore((room) => room.api.deleteWidget);
 
-  const coordinatedDispatch = useCoordinatedDispatch();
   const handleRemove = React.useCallback(() => {
-    coordinatedDispatch(
-      roomSlice.actions.removeWidget({
-        id,
-      })
-    );
-  }, [coordinatedDispatch, id]);
+    deleteWidget({ widgetId: id });
+  }, [deleteWidget, id]);
 
-  // don't show other user's widgets if they're still drafts
-  if (widget.isDraft && widget.participantSid !== localParticipant?.sid) {
+  if (!widget) {
+    // FIXME: why are widgets which arent in the store sometimes being rendered?
     return null;
   }
 
@@ -40,7 +32,7 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
 });
 
 interface IWidgetContentProps {
-  widget: WidgetState;
+  widget: WidgetShape & { ownerId: string };
   onClose: () => void;
 }
 
@@ -58,7 +50,7 @@ const WidgetContent = React.memo<IWidgetContentProps>(({ widget, onClose }) => {
       return <WhiteboardWidget state={widget} onClose={onClose} />;
     case WidgetType.YouTube:
       return <YoutubeWidget state={widget} onClose={onClose} />;
-    case WidgetType.ScreenShare:
+    case WidgetType.SidecarStream:
       return <ScreenShareWidget state={widget} onClose={onClose} />;
   }
 });

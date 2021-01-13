@@ -1,25 +1,20 @@
+import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCallback } from 'react';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { actions } from '../roomSlice';
-import { WidgetData } from '../../../types/room';
+import { WidgetState } from '../../../roomState/types/widgets';
 
 /**
  * saves a widget, syncing its state to peers, and publishing it if
  * it is not already public
  */
-export function useSaveWidget(widgetId: string) {
-  const dispatch = useCoordinatedDispatch();
-
+export const useSaveWidget = (widgetId: string) => {
+  const update = useRoomStore((room) => room.api.updateWidget);
   return useCallback(
-    (data: Partial<WidgetData>) => {
-      dispatch(
-        actions.updateWidgetData({
-          id: widgetId,
-          data,
-          publish: true,
-        })
-      );
+    (data: Partial<WidgetState>) => {
+      update({
+        widgetId,
+        widgetState: data,
+      });
     },
-    [widgetId, dispatch]
+    [update, widgetId]
   );
-}
+};

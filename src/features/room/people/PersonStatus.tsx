@@ -14,15 +14,13 @@ import { SizeTransition } from '../../../components/SizeTransition/SizeTransitio
 import clsx from 'clsx';
 import { EmojiIcon } from '../../../components/icons/EmojiIcon';
 import { useTranslation } from 'react-i18next';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { actions } from '../roomSlice';
 import 'emoji-mart/css/emoji-mart.css';
 import { CloseIcon } from '../../../components/icons/CloseIcon';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 export interface IPersonStatusProps {
   emoji?: string | EmojiData | null;
   status?: string | null;
-  personId: string;
   className?: string;
   isLocal: boolean;
   isParentHovered: boolean;
@@ -61,19 +59,11 @@ const handleFocusSelectAll = (ev: React.FocusEvent<HTMLInputElement>) => {
   ev.target.setSelectionRange(0, ev.target.value.length);
 };
 
-export const PersonStatus: React.FC<IPersonStatusProps> = ({
-  personId,
-  isLocal,
-  isParentHovered,
-  emoji,
-  status,
-  className,
-}) => {
+export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHovered, emoji, status, className }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const { open, close, editing, emojiButtonProps, emojiMenuProps, inputProps, onEmojiChange } = useStatusEditing({
-    personId,
     currentStatus: status || null,
     currentEmoji: emoji || null,
     isLocal,
@@ -155,7 +145,7 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({
             {...inputProps}
           />
           <Menu {...emojiMenuProps}>
-            <Picker native title={t('features.status.emojiTitle')} onSelect={onEmojiChange} />
+            <Picker native title={t('features.status.emojiTitle')} onSelect={(dat) => onEmojiChange(dat.id!)} />
           </Menu>
         </div>
       </ClickAwayListener>
@@ -228,12 +218,10 @@ const CurrentEmojiButtonContent = ({ emoji }: { emoji: EmojiData | string }) => 
 };
 
 function useStatusEditing({
-  personId,
   currentStatus,
   currentEmoji,
   isLocal,
 }: {
-  personId: string;
   currentStatus: string | null;
   currentEmoji: string | EmojiData | null;
   isLocal: boolean;
@@ -248,26 +236,14 @@ function useStatusEditing({
     setInputValue(currentStatus || '');
   }, [currentStatus]);
 
-  const coordinatedDispatch = useCoordinatedDispatch();
-  const updateStatus = React.useCallback(
-    ({ emoji, status }: { emoji?: EmojiData | null; status?: string }) => {
-      coordinatedDispatch(
-        actions.updatePersonStatus({
-          id: personId,
-          emoji,
-          status,
-        })
-      );
-    },
-    [coordinatedDispatch, personId]
-  );
+  const updateSelf = useRoomStore((room) => room.api.updateSelf);
 
   // whenever we close the status editor, save the changes
   const close = () => {
     setEditing(false);
     // commit the text status update
-    updateStatus({
-      status: inputValue,
+    updateSelf({
+      statusText: inputValue,
     });
   };
 
@@ -296,7 +272,7 @@ function useStatusEditing({
     emojiButtonProps: {
       onClick: (ev: React.MouseEvent<HTMLElement>) => {
         if (currentEmoji) {
-          updateStatus({ emoji: null });
+          updateSelf({ emoji: null });
         } else {
           // open emoji menu
           setAnchorEl(ev.target as any);
@@ -308,8 +284,8 @@ function useStatusEditing({
       open: !!anchorEl,
       onClose: () => setAnchorEl(null),
     },
-    onEmojiChange: (e: EmojiData) => {
-      updateStatus({ emoji: e });
+    onEmojiChange: (e: string) => {
+      updateSelf({ emoji: e });
       setAnchorEl(null);
     },
   };

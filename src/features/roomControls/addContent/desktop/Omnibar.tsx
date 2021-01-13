@@ -19,11 +19,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 2,
   },
   inputRoot: {
-    // TODO: verify with Laurent that we can revert to standard focus colors
-    // '&[class*="-focused"]': {
-    //   boxShadow: theme.focusRings.create(theme.palette.grey[900]),
-    //   caretColor: theme.palette.grey[900],
-    // },
     '&[class*="MuiFilledInput-root"]': {
       // reset the Autocomplete padding change...
       paddingTop: 4,

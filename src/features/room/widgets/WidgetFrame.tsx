@@ -3,11 +3,7 @@ import { Paper, makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
 import { Draggable } from '../Draggable';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../../state/store';
-import { useSelector } from 'react-redux';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { actions } from '../roomSlice';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 export interface IWidgetFrameProps {
   children: React.ReactNode;
@@ -17,20 +13,16 @@ export interface IWidgetFrameProps {
 }
 
 function useZIndex(widgetId: string) {
-  const selectZIndex = React.useMemo(
-    () =>
-      createSelector(
-        (state: RootState) => state.room.zOrder || [],
-        (_: any, id: string) => id,
-        (zOrder, id) => {
-          const index = zOrder.indexOf(id);
-          if (index !== -1) return index;
-          return 0;
-        }
-      ),
-    []
+  const zIndex = useRoomStore(
+    React.useCallback(
+      (room) => {
+        const index = (room.state.zOrder ?? []).indexOf(widgetId);
+        if (index !== -1) return index;
+        return 0;
+      },
+      [widgetId]
+    )
   );
-  const zIndex = useSelector((state: RootState) => selectZIndex(state, widgetId));
   return zIndex;
 }
 
@@ -53,15 +45,15 @@ const useStyles = makeStyles((theme) => ({
 export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ widgetId, ...props }) => {
   const classes = useStyles();
   const zIndex = useZIndex(widgetId);
-  const dispatch = useCoordinatedDispatch();
+  const bringToFrontAction = useRoomStore((room) => room.api.bringToFront);
   const bringToFront = React.useCallback(() => {
-    dispatch(actions.bringToFront({ id: widgetId }));
-  }, [dispatch, widgetId]);
+    bringToFrontAction({ widgetId });
+  }, [bringToFrontAction, widgetId]);
 
   const theme = themes[props.color || 'lavender'];
 
   return (
-    <Draggable id={widgetId} zIndex={zIndex} onDragStart={bringToFront}>
+    <Draggable id={widgetId} zIndex={zIndex} onDragStart={bringToFront} kind="widget">
       <ThemeProvider theme={theme}>
         <Paper {...props} elevation={1} className={clsx(classes.root, props.className)} />
       </ThemeProvider>

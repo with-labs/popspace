@@ -9,8 +9,6 @@ import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/u
 import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { Provider } from 'react-redux';
-import store from '../../state/store';
 
 const mockRoom = new EventEmitter() as Room;
 const mockOnDisconnect = jest.fn();
@@ -26,11 +24,14 @@ jest.mock('./useAllParticipants/useAllParticipants', () => ({ useAllParticipants
 describe('the VideoProvider component', () => {
   it('should correctly return the Video Context object', () => {
     const wrapper: React.FC = ({ children }) => (
-      <Provider store={store}>
-        <VideoProvider onError={() => {}} onDisconnect={mockOnDisconnect} options={{ dominantSpeaker: true }}>
-          {children}
-        </VideoProvider>
-      </Provider>
+      <VideoProvider
+        onError={() => {}}
+        onDisconnect={mockOnDisconnect}
+        options={{ dominantSpeaker: true }}
+        roomName="room"
+      >
+        {children}
+      </VideoProvider>
     );
     const { result } = renderHook(useVideoContext, { wrapper });
     expect(result.current).toEqual({
@@ -53,11 +54,14 @@ describe('the VideoProvider component', () => {
   it('should call the onError function when there is an error', () => {
     const mockOnError = jest.fn();
     const wrapper: React.FC = ({ children }) => (
-      <Provider store={store}>
-        <VideoProvider onError={mockOnError} onDisconnect={mockOnDisconnect} options={{ dominantSpeaker: true }}>
-          {children}
-        </VideoProvider>
-      </Provider>
+      <VideoProvider
+        onError={mockOnError}
+        onDisconnect={mockOnDisconnect}
+        options={{ dominantSpeaker: true }}
+        roomName="room"
+      >
+        {children}
+      </VideoProvider>
     );
     const { result } = renderHook(useVideoContext, { wrapper });
     result.current.onError({} as TwilioError);

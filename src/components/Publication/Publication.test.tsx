@@ -3,9 +3,8 @@ import Publication from './Publication';
 import { render } from '@testing-library/react';
 import useTrack from '../../hooks/useTrack/useTrack';
 import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { Provider } from 'react-redux';
-import store from '../../state/store';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
+import { CAMERA_TRACK_NAME } from '../../constants/User';
 
 jest.mock('../../hooks/useTrack/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
@@ -25,11 +24,9 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
       );
-      expect(useTrack).toHaveBeenCalledWith('mockPublication');
+      expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('video').length).toBe(1);
     });
 
@@ -42,11 +39,9 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
       );
-      expect(useTrack).toHaveBeenCalledWith('mockPublication');
+      expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelector('video')?.style.transform).not.toBe('rotateY(180deg)');
     });
 
@@ -59,11 +54,13 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <Publication
+          isLocal
+          publication={{ trackName: `${CAMERA_TRACK_NAME}#foo` } as any}
+          objectId={'mockParticipant'}
+        />
       );
-      expect(useTrack).toHaveBeenCalledWith('mockPublication');
+      expect(useTrack).toHaveBeenCalledWith({ trackName: `${CAMERA_TRACK_NAME}#foo` });
       expect(wrapper.container.querySelector('video')?.style.transform).toBe('rotateY(180deg)');
     });
   });
@@ -78,12 +75,10 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
-          <Provider store={store}>
-            <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-          </Provider>
+          <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
         </MediaReadinessContext.Provider>
       );
-      expect(useTrack).toHaveBeenCalledWith('mockPublication');
+      expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('audio').length).toBe(1);
     });
 
@@ -97,17 +92,15 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
-          <Provider store={store}>
-            <Publication
-              isLocal
-              publication={'mockPublication' as any}
-              objectId={'mockParticipant'}
-              disableAudio={true}
-            />
-          </Provider>
+          <Publication
+            isLocal
+            publication={{ trackName: 'trackName' } as any}
+            objectId={'mockParticipant'}
+            disableAudio={true}
+          />
         </MediaReadinessContext.Provider>
       );
-      expect(useTrack).toHaveBeenCalledWith('mockPublication');
+      expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
     });
   });
@@ -116,12 +109,10 @@ describe('the Publication component', () => {
     mockUseTrack.mockImplementation(() => null);
     const wrapper = render(
       <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
       </MediaReadinessContext.Provider>
     );
-    expect(useTrack).toHaveBeenCalledWith('mockPublication');
+    expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
     expect(wrapper.container.querySelectorAll('*').length).toBe(0);
   });
 
@@ -135,12 +126,10 @@ describe('the Publication component', () => {
     }));
     const wrapper = render(
       <MediaReadinessContext.Provider value={{ isReady: false, onReady: jest.fn() }}>
-        <Provider store={store}>
-          <Publication isLocal publication={'mockPublication' as any} objectId={'mockParticipant'} />
-        </Provider>
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
       </MediaReadinessContext.Provider>
     );
-    expect(useTrack).toHaveBeenCalledWith('mockPublication');
+    expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
     expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
   });
 });

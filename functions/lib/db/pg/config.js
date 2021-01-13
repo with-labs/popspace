@@ -1,33 +1,33 @@
 const LOCAL_CREDENTIALS = {
-  "driver": "pg",
-  "user":  process.env.DEVELOPMENT_PG_USER,
-  "password": process.env.DEVELOPMENT_PG_PASSOWRD,
-  "host": process.env.DEVELOPMENT_PG_HOST,
-  "database": process.env.DEVELOPMENT_PG_DATABASE,
-  "port": process.env.DEVELOPMENT_PG_PORT
+  driver: "pg",
+  user: process.env.DEVELOPMENT_PG_USER,
+  password: process.env.DEVELOPMENT_PG_PASSOWRD,
+  host: process.env.DEVELOPMENT_PG_HOST,
+  database: process.env.DEVELOPMENT_PG_DATABASE,
+  port: process.env.DEVELOPMENT_PG_PORT
 }
 
 const PROD_CREDENTIALS = {
   // These are run at build time, and are thus fetched from the Netlify admin panel
-  "driver": "pg",
-  "user": process.env.PRODUCTION_PG_USER,
-  "password": process.env.PRODUCTION_PG_PASSWORD,
-  "host": process.env.PRODUCTION_PG_HOST,
-  "database": process.env.PRODUCTION_PG_DATABASE,
-  "port": process.env.PRODUCTION_PG_PORT
+  driver: "pg",
+  user: process.env.PRODUCTION_PG_USER,
+  password: process.env.PRODUCTION_PG_PASSWORD,
+  host: process.env.PRODUCTION_PG_HOST,
+  database: process.env.PRODUCTION_PG_DATABASE,
+  port: process.env.PRODUCTION_PG_PORT
 }
 
 const STAGING_CREDENTIALS = {
-  "driver": "pg",
-  "user": process.env.STAGING_PG_USER,
-  "password": process.env.STAGING_PG_PASSWORD,
-  "host": process.env.STAGING_PG_HOST,
-  "database": process.env.STAGING_PG_DATABASE,
-  "port": process.env.STAGING_PG_PORT
+  driver: "pg",
+  user: process.env.STAGING_PG_USER,
+  password: process.env.STAGING_PG_PASSWORD,
+  host: process.env.STAGING_PG_HOST,
+  database: process.env.STAGING_PG_DATABASE,
+  port: process.env.STAGING_PG_PORT
 }
 
 const getCredentials = () => {
-  switch(process.env.NODE_ENV) {
+  switch (process.env.NODE_ENV) {
     case "production":
       return PROD_CREDENTIALS
     case "development" || "local":
@@ -41,7 +41,9 @@ const getCredentials = () => {
     case "test":
       return STAGING_CREDENTIALS
     default:
-      throw `unrecognized environment ${process.env.NODE_ENV} Env: ${JSON.stringify(process.env)}`
+      throw `unrecognized environment ${
+        process.env.NODE_ENV
+      } Env: ${JSON.stringify(process.env)}`
   }
 }
 

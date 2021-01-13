@@ -5,7 +5,7 @@ import '../src/i18n';
 
 // all our necessary contexts
 import { Provider } from 'react-redux';
-import store from '../src/state/store';
+import { createStore } from '../src/roomState/store';
 import { CoordinatedDispatchProvider } from '../src/features/room/CoordinatedDispatchProvider';
 import { withVideo } from './__decorators__/withVideo';
 import { SnackbarProvider } from 'notistack';
@@ -14,6 +14,11 @@ import { HashRouter } from 'react-router-dom';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
 };
+
+const store = createStore({
+  userId: 'fake',
+  roomId: 'fake',
+});
 
 function withRedux(Story) {
   return (
@@ -30,7 +35,7 @@ function withSnackbars(Story) {
     <SnackbarProvider>
       <Story />
     </SnackbarProvider>
-  )
+  );
 }
 
 function withRouter(Story) {
@@ -38,7 +43,7 @@ function withRouter(Story) {
     <HashRouter>
       <Story />
     </HashRouter>
-  )
+  );
 }
 
 export const decorators = [

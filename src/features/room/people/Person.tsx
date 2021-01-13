@@ -1,47 +1,63 @@
 import * as React from 'react';
 import { Draggable } from '../Draggable';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { PersonBubble } from './PersonBubble';
-import { useNamedPublication } from '../../../hooks/useNamedPublication/useNamedPublication';
-import { MIC_TRACK_NAME, CAMERA_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../constants/User';
-import { LocalParticipant, RemoteParticipant } from 'twilio-video';
-import { useEnforcedPersonSelector } from './useEnforcedPersonSelector';
-import { useParticipantState } from '../../../hooks/useParticipantState/useParticipantState';
-import { ParticipantState } from '../../../constants/twilio';
+import { useRoomStore } from '../../../roomState/useRoomStore';
+import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import { Stream } from '../../../types/streams';
+import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
 
 const MAX_Z_INDEX = 2147483647;
 
 export interface IPersonProps {
-  participant: LocalParticipant | RemoteParticipant;
+  personId: string;
 }
 
-export const Person = React.memo<IPersonProps>(({ participant }) => {
-  const localParticipant = useLocalParticipant();
-  const person = useEnforcedPersonSelector(participant.sid);
+export const Person = React.memo<IPersonProps>(({ personId }) => {
+  const person = useRoomStore(React.useCallback((room) => room.users[personId], [personId]));
 
-  const participantState = useParticipantState(participant);
+  // FIXME: this is essentially random right now!
+  // it may not even be consistent across different peers!
+  // We're selecting a Twilio participant, of all the participants which may
+  // be associated with the User, to show as the "primary" one
+  const { allParticipants } = useVideoContext();
+  const allAssociatedParticipants = React.useMemo(
+    // sorting to at least make it stable
+    () =>
+      allParticipants
+        .sort((a, b) => a.identity.localeCompare(b.identity))
+        .filter((p) => p.identity.startsWith(`${personId}#`)),
+    [allParticipants, personId]
+  );
 
-  const isMe = localParticipant?.sid === participant?.sid;
+  const isMe = personId === useCurrentUserProfile().user?.id;
 
-  const audioTrackPub = useNamedPublication(participant, MIC_TRACK_NAME);
-  const cameraTrackPub = useNamedPublication(participant, CAMERA_TRACK_NAME);
-  const screenShareVideoTrackPub = useNamedPublication(participant, SCREEN_SHARE_TRACK_NAME);
+  const groupedStreams = useCollectedStreams(allAssociatedParticipants);
+  const allStreams = React.useMemo(() => {
+    return Object.values(groupedStreams)
+      .reduce<Array<Stream>>((streamList, streamGroup) => {
+        if (streamGroup.av) streamList.push(streamGroup.av);
+        if (streamGroup.screen) streamList.push(streamGroup.screen);
+        return streamList;
+      }, [])
+      .sort((a, b) => a.id.localeCompare(b.id));
+  }, [groupedStreams]);
+  // only one stream should have audio on - that is the first choice for main stream.
+  // if no streams have audio, choose the first in the sorted list with video. Otherwise,
+  // just choose the first one.
+  const mainStream =
+    allStreams.find((stream) => !!stream.audioPublication) ??
+    allStreams.find((stream) => !!stream.videoPublication) ??
+    null;
+  const sidecarStreams = allStreams.filter((s) => s !== mainStream);
 
-  // hide users in an inconsistent connection state
-  if (!person || participantState !== ParticipantState.Connected) {
+  if (!person) {
     return null;
   }
 
   return (
-    <Draggable id={participant.sid} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}>
-      <PersonBubble
-        participant={participant}
-        person={person}
-        isLocal={isMe}
-        audioTrack={audioTrackPub}
-        cameraTrack={cameraTrackPub}
-        screenShareTrack={screenShareVideoTrackPub}
-      />
+    <Draggable id={personId} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1} kind="person">
+      <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />
     </Draggable>
   );
 });

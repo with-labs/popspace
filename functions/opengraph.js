@@ -11,9 +11,17 @@ module.exports.handler = util.netlify.postEndpoint(
       )
     }
 
-    const ogResult = await lib.opengraph.getGraphData(context.params.url)
-    return await util.http.succeed(callback, {
-      result: ogResult
-    })
+    try {
+      const ogResult = await lib.opengraph.getGraphData(context.params.url)
+      return await util.http.succeed(callback, {
+        result: ogResult
+      })
+    } catch (err) {
+      return await lib.util.http.fail(
+        callback,
+        "No data available for that URL",
+        { errorCode: util.http.ERRORS.opengraph.NO_DATA }
+      )
+    }
   }
 )

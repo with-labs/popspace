@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     position: 'relative',
     zIndex: 50,
-    willChange: 'transform',
     width: 240,
     height: 180,
     backgroundColor: `rgba(255, 255, 255, 0.5)`,

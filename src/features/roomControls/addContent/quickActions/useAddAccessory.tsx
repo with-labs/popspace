@@ -1,39 +1,36 @@
 import { useCallback } from 'react';
 import { addVectors } from '../../../../utils/math';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
-import { useCoordinatedDispatch } from '../../../room/CoordinatedDispatchProvider';
 import { useRoomViewport } from '../../../room/RoomViewport';
-import { actions as roomActions } from '../../../room/roomSlice';
-import { WidgetData, WidgetType, LinkWidgetData } from '../../../../types/room';
 import { Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { useFeatureFlag } from 'flagg';
+import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
+import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useRoomStore } from '../../../../roomState/useRoomStore';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
  * assigning them as the owner and by default making it a draft.
  */
 export function useAddAccessory() {
-  const user = useLocalParticipant();
-  const userSid = user?.sid;
+  const { user } = useCurrentUserProfile();
+  const userId = user?.id;
 
   const viewport = useRoomViewport();
-
-  const dispatch = useCoordinatedDispatch();
 
   const getLinkData = useGetLinkData();
   const [hasOpengraph] = useFeatureFlag('opengraph');
 
+  const addWidget = useRoomStore((room) => room.api.addWidget);
+
   return useCallback(
-    async ({
+    async <Type extends WidgetType>({
       type,
       initialData,
-      publishImmediately = false,
       screenCoordinate = { x: window.innerWidth / 2, y: window.innerHeight / 2 },
     }: {
-      type: WidgetType;
-      initialData: WidgetData;
-      publishImmediately?: boolean;
+      type: Type;
+      initialData: WidgetStateByType[Type];
       screenCoordinate?: Vector2;
     }) => {
       const centerOfScreen = viewport.toWorldCoordinate(screenCoordinate);
@@ -44,33 +41,29 @@ export function useAddAccessory() {
         y: Math.random() * 50 - 25,
       });
 
-      if (userSid) {
+      if (userId) {
         // a bit of an awkward edge case - perhaps we could refactor how this works.
         // add opengraph data to links
         let data = initialData;
         // kind of a heuristic - only fetch opengraph data if we don't already
         // have a media preview
-        if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetData).mediaUrl) {
-          data = await getLinkData((initialData as LinkWidgetData).url);
+        if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
+          // FIXME: any cast
+          data = (await getLinkData((initialData as LinkWidgetState).url)) as any;
 
           // reset the url we get from open graph, to the url the user provided
-          (data as LinkWidgetData).url = (initialData as LinkWidgetData).url;
+          (data as LinkWidgetState).url = (initialData as LinkWidgetState).url;
         }
 
-        dispatch(
-          roomActions.addWidget({
+        addWidget({
+          type,
+          transform: {
             position,
-            widget: {
-              kind: 'widget',
-              type,
-              participantSid: userSid,
-              data,
-              isDraft: !publishImmediately,
-            },
-          })
-        );
+          },
+          widgetState: data,
+        });
       }
     },
-    [dispatch, userSid, viewport, getLinkData, hasOpengraph]
+    [addWidget, userId, viewport, getLinkData, hasOpengraph]
   );
 }

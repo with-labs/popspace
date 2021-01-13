@@ -5,14 +5,14 @@ import { ReactComponent as StickyNoteIcon } from './svg/tray_sticky.svg';
 import { ReactComponent as VideoIcon } from './svg/tray_video.svg';
 import { ReactComponent as WhiteboardIcon } from './svg/tray_whiteboard.svg';
 import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
-import { WidgetType } from '../../types/room';
+import { WidgetType } from '../../roomState/types/widgets';
 
 const icons: Record<WidgetType, React.FC<any>> = {
   [WidgetType.Link]: LinkIcon,
   [WidgetType.StickyNote]: StickyNoteIcon,
   [WidgetType.Whiteboard]: WhiteboardIcon,
   [WidgetType.YouTube]: VideoIcon,
-  [WidgetType.ScreenShare]: ScreenShareIcon,
+  [WidgetType.SidecarStream]: ScreenShareIcon,
 };
 
 export type AccessoryIconProps = SvgIconProps & {

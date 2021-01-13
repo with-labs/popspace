@@ -1,16 +1,10 @@
 import { QuickAction, QuickActionKind } from './types';
 import { useTranslation } from 'react-i18next';
-import useParticipantDisplayIdentity from '../../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
-import { WidgetType } from '../../../../types/room';
 import { parseYoutubeLink } from '../../../../utils/youtube';
+import { WidgetType } from '../../../../roomState/types/widgets';
 
 function useStickyNoteQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();
-
-  // TODO: remove once we solve the username disappearing problem
-  // by persisting room state and membership
-  const userName = useParticipantDisplayIdentity(useLocalParticipant());
 
   if (!prompt) {
     // this accessory shows a default option in the empty state
@@ -21,10 +15,8 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
           text: '',
-          author: userName || '',
         },
         confidence: 5,
-        draft: true,
       },
     ];
   } else {
@@ -36,7 +28,6 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
           text: prompt,
-          author: userName || '',
         },
         confidence: 2,
       },
@@ -59,7 +50,6 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
           title: 'Link',
         },
         confidence: 5,
-        draft: true,
       },
     ];
     // excluding starting with #, since that is a valid URL but not
@@ -103,7 +93,6 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
           playStartedTimestampUTC: null,
         },
         confidence: 5,
-        draft: true,
       },
     ];
   } else {

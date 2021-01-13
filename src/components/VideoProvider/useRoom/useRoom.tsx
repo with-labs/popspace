@@ -14,6 +14,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
     async (token) => {
       setIsConnecting(true);
       try {
+        logger.debug(`Connecting to room`);
         const newRoom = await Video.connect(token, { ...options, tracks: [] });
         // some reasonably large number - we subscribe in many places.
         // FIXME: reduce number of subscriptions by moving them up into context state
@@ -42,6 +43,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
             data: {
               roomSid: newRoom.sid,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });
@@ -53,6 +55,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
             data: {
               roomSid: newRoom.sid,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });
@@ -64,6 +67,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
             data: {
               roomSid: newRoom.sid,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });
@@ -75,6 +79,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
             data: {
               roomSid: newRoom.sid,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });
@@ -108,6 +113,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
               trackSid: pub?.trackSid,
               trackName: pub?.trackName,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });
@@ -121,6 +127,7 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
               trackSid: pub?.trackSid,
               trackName: pub?.trackName,
               participantSid: participant?.sid,
+              participantIdentity: participant?.identity,
             },
           });
         });

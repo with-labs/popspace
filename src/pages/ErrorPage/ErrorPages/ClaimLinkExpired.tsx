@@ -10,7 +10,7 @@ interface IClaimLinkExpiredProps {
 }
 
 export const ClaimLinkExpired: React.FC<IClaimLinkExpiredProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -20,6 +20,7 @@ export const ClaimLinkExpired: React.FC<IClaimLinkExpiredProps> = (props) => {
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={t('errorPages.takeMeHomeBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.claimLinkExpired.quoteText')}

@@ -1,11 +1,12 @@
 import { Vector2 } from '../../../types/spatials';
 import { useCallback, DragEvent, useState, useRef, useMemo } from 'react';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
-import { WidgetType } from '../../../types/room';
 import api from '../../../utils/api';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 import { debounce } from '@material-ui/core';
+import { WidgetType } from '../../../roomState/types/widgets';
+import { logger } from '../../../utils/logger';
 
 function getFileDropItems(ev: DragEvent) {
   const items: File[] = [];
@@ -88,12 +89,11 @@ export function useFileDrop() {
                 mediaContentType: file.type,
                 mediaUrl: downloadUrl,
               },
-              publishImmediately: true,
               screenCoordinate: mousePosition,
             });
           }
         } catch (err) {
-          console.error(err);
+          logger.error(err);
         } finally {
           setTargetPosition(null);
           isFileDropRef.current = false;

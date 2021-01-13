@@ -10,7 +10,7 @@ interface IInvalidLinkProps {
 }
 
 export const InvalidLink: React.FC<IInvalidLinkProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -20,6 +20,7 @@ export const InvalidLink: React.FC<IInvalidLinkProps> = (props) => {
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={t('errorPages.takeMeHomeBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.invalidLink.quoteText')}

@@ -1,30 +1,32 @@
 import React, { useCallback, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectors as controlsSelectors, actions as controlsActions } from '../roomControlsSlice';
-import { selectors as roomSelectors, actions as roomActions } from '../../room/roomSlice';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import { Box, makeStyles, Button, Typography, useTheme } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
-
 import { Avatar } from '../../../components/Avatar/Avatar';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { sessionTokenExists } from '../../../utils/sessionToken';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
-import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
-import { useCoordinatedDispatch } from '../../room/CoordinatedDispatchProvider';
-import { useAuth } from '../../../hooks/useAuth/useAuth';
+import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-
 import { AvatarCategory } from './AvatarCategory';
+import { TFunction } from 'i18next';
+import { useRoomModalStore } from '../useRoomModalStore';
+import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 export type UserSettingFormData = {
   displayName: string;
 };
+
+function validateDisplayName(newDisplayName: string, translate: TFunction) {
+  const trimmedDisplayName = newDisplayName.trim();
+  if (trimmedDisplayName.length === 0) {
+    return translate('modals.userSettingsModal.displayNameInput.blankError');
+  }
+}
 
 interface IUserSettingsModalProps {}
 
@@ -110,13 +112,11 @@ const useStyles = makeStyles((theme) => ({
 
 export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
   const theme = useTheme();
-
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const coordinatedDispatch = useCoordinatedDispatch();
   const { t } = useTranslation();
-  const isOpen = useSelector(controlsSelectors.selectIsUserSettingsModalOpen);
-  const { sessionToken } = useAuth();
+
+  const isOpen = useRoomModalStore((modals) => modals.userSettings);
+  const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
   const [isAvatarSelectionOpen, setIsAvatarSelectionOpen] = useState(false);
 
   const animatedStyle = useSpring({
@@ -126,38 +126,38 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
     display: 'flex',
     position: 'relative',
   });
+  const updateSelf = useRoomStore((room) => room.api.updateSelf);
 
   // get the current users information
-  const localParticipant = useLocalParticipant();
-  const sid = localParticipant?.sid;
-  const person = useSelector(roomSelectors.createPersonSelector(sid));
-  const { avatar: avatarName } = person ?? {};
+  const { user } = useCurrentUserProfile();
+  const userId = user?.id;
+  const person = useRoomStore((room) => room.users[userId ?? '']);
+  const { avatarName } = person?.participantState;
   const { backgroundColor } = useAvatar(avatarName || '') ?? { backgroundColor: theme.palette.grey[50] };
 
   // visible screen name
-  const displayIdentity = useParticipantDisplayIdentity(localParticipant);
+  const displayIdentity = person?.participantState.displayName;
 
   const onCloseHandler = () => {
-    dispatch(controlsActions.setIsUserSettingsModalOpen({ isOpen: false }));
     setIsAvatarSelectionOpen(false);
+    closeModal('userSettings');
   };
 
-  const onSubmitHandler = (values: UserSettingFormData) => {
-    if (sessionTokenExists(sessionToken)) {
-      // Api.updateUserInformation(sessionToken, '', values.displayName)
-      //   .then((result: any) => {
-      //     //TODO fill this out with Alekesi
-      //   })
-      //   .catch((e: any) => {});
-    }
-  };
+  const onSubmitHandler = useCallback(
+    (values: UserSettingFormData) => {
+      if (!userId) return;
+      updateSelf({ displayName: values.displayName.trim() });
+    },
+    [updateSelf, userId]
+  );
 
   const setAvatar = useCallback(
     (newAvatar: string) => {
-      coordinatedDispatch(roomActions.updatePersonAvatar({ id: sid, avatar: newAvatar }));
+      if (!userId) return;
       setIsAvatarSelectionOpen(false);
+      updateSelf({ avatarName: newAvatar });
     },
-    [coordinatedDispatch, sid]
+    [updateSelf, userId]
   );
 
   return (
@@ -202,16 +202,22 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                     enableReinitialize
                   >
                     <Form>
-                      <Box display="flex" flexDirection="row">
-                        <FormikTextField
-                          className=""
-                          name="displayName"
-                          placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
-                          label={t('modals.userSettingsModal.displayNameInput.label')}
-                          margin="normal"
-                          helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
-                          disabled={true}
-                        />
+                      <Box display="flex" flexDirection="column">
+                        <Box flexGrow={1}>
+                          <FormikTextField
+                            id="userSetters-displayName"
+                            className=""
+                            name="displayName"
+                            placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
+                            label={t('modals.userSettingsModal.displayNameInput.label')}
+                            margin="normal"
+                            helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
+                            validate={(newDisplayName) => validateDisplayName(newDisplayName, t)}
+                          />
+                        </Box>
+                        <FormikSubmitButton activeOnChange>
+                          {t('modals.userSettingsModal.submitButton')}
+                        </FormikSubmitButton>
                       </Box>
                     </Form>
                   </Formik>

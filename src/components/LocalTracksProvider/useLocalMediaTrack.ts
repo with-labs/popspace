@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import { convertMediaError } from './convertMediaError';
 import { LocalAudioTrack, LocalVideoTrack, createLocalAudioTrack, createLocalVideoTrack } from 'twilio-video';
 import { MediaTrackEvent } from '../../constants/twilio';
-import { v4 } from 'uuid';
+import { createTrackName } from '../../utils/trackNames';
 
 function getTrackDeviceId(track: LocalAudioTrack | LocalVideoTrack) {
   const constraints = track.mediaStreamTrack.getConstraints();
@@ -47,7 +47,7 @@ export function useLocalMediaTrack(
       ...constraintsRef.current,
       deviceId: deviceId ?? undefined,
       // name is randomized to prevent publish conflicts down the line
-      name: `${name}-${v4()}`,
+      name: createTrackName(name),
     };
 
     try {

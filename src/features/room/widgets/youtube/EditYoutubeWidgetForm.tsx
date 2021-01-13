@@ -2,10 +2,10 @@ import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
-import { YoutubeWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { parseYoutubeLink } from '../../../../utils/youtube';
+import { YoutubeWidgetState } from '../../../../roomState/types/widgets';
 
 /**
  * Unlike other simpler widgets, the data in the form
@@ -17,7 +17,7 @@ export type EditYoutubeFormData = {
 };
 
 export interface IEditYoutubeWidgetFormProps {
-  onSave: (data: YoutubeWidgetData) => any;
+  onSave: (data: YoutubeWidgetState) => any;
   initialValues?: EditYoutubeFormData;
 }
 

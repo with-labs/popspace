@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { actions as controlsActions } from '../roomControlsSlice';
 import { SettingsIcon } from '../../../components/icons/SettingsIcon';
+import { useRoomModalStore } from '../useRoomModalStore';
 
 export interface IRoomWallpaperMenuItemProps {
   onClick?: () => void;
@@ -10,14 +9,13 @@ export interface IRoomWallpaperMenuItemProps {
 }
 
 export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpaperMenuItemProps>((props, ref) => {
-  // we don't want to sync this state to peers.
-  const dispatch = useDispatch();
+  const openModal = useRoomModalStore((modals) => modals.api.openModal);
 
   return (
     <MenuItem
       ref={ref}
       onClick={() => {
-        dispatch(controlsActions.setIsRoomSettingsModalOpen({ isOpen: true }));
+        openModal('settings');
         props.onClick?.();
       }}
     >

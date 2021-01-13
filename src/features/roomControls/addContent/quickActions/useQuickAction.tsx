@@ -2,9 +2,7 @@ import * as React from 'react';
 import { useAddAccessory } from './useAddAccessory';
 import { QuickAction, QuickActionKind } from './types';
 import { useQuickActionOptions } from './useQuickActionOptions';
-import { useCoordinatedDispatch } from '../../../room/CoordinatedDispatchProvider';
-import { actions } from '../../../room/roomSlice';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
+import { useRoomStore } from '../../../../roomState/useRoomStore';
 
 export function useQuickAction() {
   const [inputValue, setInputValue] = React.useState('');
@@ -14,11 +12,9 @@ export function useQuickAction() {
 
   const options = useQuickActionOptions(inputValue);
 
-  const localParticipant = useLocalParticipant();
-  const localParticipantSid = localParticipant?.sid;
-
   const addAccessory = useAddAccessory();
-  const coordinatedDispatch = useCoordinatedDispatch();
+
+  const updateSelf = useRoomStore((room) => room.api.updateSelf);
 
   const handleSelection = React.useCallback(
     (ev: any, value: QuickAction | null) => {
@@ -35,20 +31,17 @@ export function useQuickAction() {
           addAccessory({
             type: value.accessoryType,
             initialData: value.accessoryData,
-            publishImmediately: !value.draft,
           });
           break;
         case QuickActionKind.SetStatus:
-          coordinatedDispatch(
-            actions.updatePersonStatus({
-              id: localParticipantSid,
-              status: value.status,
-            })
-          );
+          updateSelf({
+            statusText: value.status,
+            emoji: null,
+          });
           break;
       }
     },
-    [addAccessory, localParticipantSid, coordinatedDispatch]
+    [addAccessory, updateSelf]
   );
 
   return {

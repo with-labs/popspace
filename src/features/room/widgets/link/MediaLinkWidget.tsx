@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { LinkWidgetData } from '../../../../types/room';
 import { makeStyles, Paper, ThemeProvider, Box, Typography } from '@material-ui/core';
 import { Draggable } from '../../Draggable';
 import { WidgetTitlebar } from '../WidgetTitlebar';
@@ -11,10 +10,11 @@ import { Link } from '../../../../components/Link/Link';
 import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
 import { UnsupportedFile } from './UnsupportedFile';
 import { truncate } from '../../../../utils/truncate';
+import { LinkWidgetState } from '../../../../roomState/types/widgets';
 
 export interface IMediaLinkWidgetProps {
   widgetId: string;
-  data: Required<LinkWidgetData>;
+  data: Required<LinkWidgetState>;
   onClose: () => void;
 }
 
@@ -66,7 +66,7 @@ export const MediaLinkWidget: React.FC<IMediaLinkWidgetProps> = ({ widgetId, dat
   const classes = useStyles();
 
   return (
-    <Draggable id={widgetId}>
+    <Draggable id={widgetId} kind="widget">
       <ThemeProvider theme={slate}>
         <Paper elevation={1} className={classes.paper}>
           {/* Transparent titlebar overlaps content */}

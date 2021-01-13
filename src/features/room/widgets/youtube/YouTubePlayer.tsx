@@ -3,13 +3,13 @@ import YouTube from 'react-youtube';
 import { VideoControls } from './VideoControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
-import { YoutubeWidgetData, YoutubeWidgetState } from '../../../../types/room';
 import { makeStyles } from '@material-ui/core';
+import { YoutubeWidgetShape, YoutubeWidgetState } from '../../../../roomState/types/widgets';
 
 export interface IYouTubePlayerProps {
   isMuted?: boolean;
-  state: YoutubeWidgetState;
-  onChange: (data: Partial<YoutubeWidgetData>) => void;
+  state: YoutubeWidgetShape;
+  onChange: (data: Partial<YoutubeWidgetState>) => void;
 }
 
 // number of seconds we allow YT players to be out of sync by
@@ -90,7 +90,7 @@ export const YouTubePlayer: React.FC<IYouTubePlayerProps> = ({ state, onChange, 
     <div className={classes.videoContainer}>
       <MemoizedYouTube
         opts={DEFAULT_OPTS}
-        videoId={state.data.videoId}
+        videoId={state.widgetState.videoId}
         className={classes.video}
         {...youtubeBindings}
       />

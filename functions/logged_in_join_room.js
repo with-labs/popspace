@@ -1,9 +1,9 @@
 const lib = require("lib")
 lib.util.env.init(require("./env.json"))
 
-const AccessToken = require('twilio').jwt.AccessToken
+const AccessToken = require("twilio").jwt.AccessToken
 const VideoGrant = AccessToken.VideoGrant
-const uuidv4 = require('uuid').v4
+const uuidv4 = require("uuid").v4
 
 // 240 hours
 // https://www.twilio.com/docs/chat/create-tokens
@@ -31,64 +31,74 @@ const TWILIO_API_KEYS_ENV = process.env.TWILIO_API_KEYS_ENV
 // inside the Netlify admin panel.
 const TWILIO_API_KEYS = {
   development: {
-    TWILIO_API_KEY_SID:    process.env.TWILIO_API_KEY_SID_DEV,
-    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_DEV,
+    TWILIO_API_KEY_SID: process.env.TWILIO_API_KEY_SID_DEV,
+    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_DEV
   },
   production: {
-    TWILIO_API_KEY_SID:    process.env.TWILIO_API_KEY_SID_PROD,
-    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_PROD,
+    TWILIO_API_KEY_SID: process.env.TWILIO_API_KEY_SID_PROD,
+    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_PROD
   }
 }
 
 // If you have access to the Netlify environment context, use it to determien
 // which API keys to use. Otherwise, fallback to the 'development' API keys.
-const TWILIO_API_KEY_SID =    TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SID :    TWILIO_API_KEYS['development'].TWILIO_API_KEY_SID;
-const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV] ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SECRET : TWILIO_API_KEYS['development'].TWILIO_API_KEY_SECRET;
+const TWILIO_API_KEY_SID = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV]
+  ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SID
+  : TWILIO_API_KEYS["development"].TWILIO_API_KEY_SID
+const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV]
+  ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SECRET
+  : TWILIO_API_KEYS["development"].TWILIO_API_KEY_SECRET
 
 const canEnterRoom = async (user, room) => {
-  if(user.id == room.owner_id) return true;
+  if (user.id == room.owner_id) return true
   return await lib.db.rooms.isMember(user.id, room.id)
 }
 
-module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
-  const body = context.params
-  const roomName = body.roomName
-  const room = await lib.db.rooms.roomByName(roomName)
+module.exports.handler = util.netlify.postEndpoint(
+  async (event, context, callback) => {
+    const body = context.params
+    const roomName = body.roomName
+    const room = await lib.db.rooms.roomByName(roomName)
 
-  if(!room) {
-    return await lib.util.http.fail(
-      callback,
-      `Room not found: ${roomName}`,
-      { errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
+    if (!room) {
+      return await lib.util.http.fail(callback, `Room not found: ${roomName}`, {
+        errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM
+      })
+    }
+
+    const user = context.user
+    if (!user) {
+      return await lib.util.http.fail(
+        callback,
+        `Must be logged in to join room`,
+        { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+      )
+    }
+
+    const canEnter = await canEnterRoom(user, room)
+    if (!canEnter) {
+      return await lib.util.http.fail(callback, `Unauthorized access`, {
+        errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESS
+      })
+    }
+
+    const userUuid4 = uuidv4()
+    const token = new AccessToken(
+      TWILIO_ACCOUNT_SID,
+      TWILIO_API_KEY_SID,
+      TWILIO_API_KEY_SECRET,
+      {
+        ttl: MAX_ALLOWED_SESSION_SECONDS
+      }
     )
+
+    // TODO: use User ID from our database
+    token.identity = `${user.id}#!${userUuid4}`
+    const videoGrant = new VideoGrant({
+      room: `${process.env.NODE_ENV}_${room.id}`
+    })
+    token.addGrant(videoGrant)
+
+    return await util.http.succeed(callback, { token: token.toJwt() })
   }
-
-  const user = context.user
-  if(!user) {
-    return await lib.util.http.fail(
-      callback,
-      `Must be logged in to join room`,
-      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
-    )
-  }
-
-  const canEnter = await canEnterRoom(user, room)
-  if(!canEnter) {
-    return await lib.util.http.fail(
-      callback,
-      `Unauthorized access`,
-      { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESS }
-    )
-  }
-
-  const userUuid4 = uuidv4();
-  const token = new AccessToken(TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET, {
-    ttl: MAX_ALLOWED_SESSION_SECONDS,
-  })
-
-  token.identity = `${user.first_name}#!${userUuid4}`;
-  const videoGrant = new VideoGrant({ room: `${process.env.NODE_ENV}_${room.id}` });
-  token.addGrant(videoGrant);
-
-  return await util.http.succeed(callback, {token: token.toJwt()})
-})
+)

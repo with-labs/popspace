@@ -22,7 +22,7 @@ describe('the useHandleRoomDisconnectionErrors hook', () => {
     act(() => {
       mockRoom.emit('disconnected', 'disconnected', 'mockError');
     });
-    expect(mockOnError).toHaveBeenCalledWith('mockError');
+    expect(mockOnError).toHaveBeenCalledWith(expect.any(Error));
   });
 
   it('should tear down old listeners when receiving a new room', () => {

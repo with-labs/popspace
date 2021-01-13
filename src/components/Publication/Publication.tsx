@@ -13,6 +13,8 @@ import useTrack from '../../hooks/useTrack/useTrack';
 import { IVideoTrack } from '../../types/twilio';
 import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication, Track } from 'twilio-video';
 import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { hasTrackName } from '../../utils/trackNames';
+import { CAMERA_TRACK_NAME } from '../../constants/User';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -21,6 +23,11 @@ interface PublicationProps {
    * like a widget or user, pass its ID to enable spatial audio.
    */
   objectId?: string;
+  /**
+   * For spatial audio, we must know what kind of object this is.
+   * Default is widget.
+   */
+  objectKind?: 'widget' | 'user';
   disableSpatialAudio?: boolean;
   isLocal: boolean;
   disableAudio?: boolean;
@@ -38,10 +45,11 @@ export default function Publication({
   classNames,
   id,
   disableSpatialAudio,
+  objectKind = 'widget',
 }: PublicationProps) {
   const track = useTrack(publication);
 
-  const volume = useSpatialAudioVolume(objectId);
+  const volume = useSpatialAudioVolume(objectKind, objectId ?? null);
 
   if (!track) return null;
 
@@ -51,7 +59,7 @@ export default function Publication({
         <VideoTrack
           track={track as IVideoTrack}
           priority={videoPriority}
-          isLocal={track.name.startsWith('camera') && isLocal}
+          isLocal={hasTrackName(publication, CAMERA_TRACK_NAME) && isLocal}
           classNames={classNames}
           id={id}
         />

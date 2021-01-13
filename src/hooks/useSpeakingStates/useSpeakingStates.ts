@@ -13,16 +13,16 @@ export const useSpeakingStates = create(
     },
     (set, get) => ({
       api: {
-        set: (participantSid: string, isSpeaking: boolean) =>
+        set: (id: string, isSpeaking: boolean) =>
           set({
             isSpeaking: {
               ...get().isSpeaking,
-              [participantSid]: isSpeaking,
+              [id]: isSpeaking,
             },
           }),
-        remove: (participantSid: string) =>
+        remove: (id: string) =>
           set({
-            isSpeaking: omit(get().isSpeaking, participantSid),
+            isSpeaking: omit(get().isSpeaking, id),
           }),
       },
     })

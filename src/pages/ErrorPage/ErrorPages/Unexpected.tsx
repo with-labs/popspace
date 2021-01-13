@@ -9,7 +9,7 @@ interface IUnexpectedProps {
 }
 
 export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const { t } = useTranslation();
 
   const onButtonClick = () => {
@@ -19,6 +19,7 @@ export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={t('errorPages.contactSupportBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.unexpected.quoteText')}

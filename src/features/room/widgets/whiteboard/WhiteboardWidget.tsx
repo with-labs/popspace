@@ -2,7 +2,6 @@ import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
-import { WhiteboardWidgetState } from '../../../../types/room';
 import { Whiteboard } from '../../../../components/Whiteboard/Whiteboard';
 import { useSaveWidget } from '../useSaveWidget';
 import { useExport } from './useExport';
@@ -14,9 +13,10 @@ import { WhiteboardTools } from '../../../../components/Whiteboard/WhiteboardToo
 import { WhiteboardState } from '../../../../components/Whiteboard/types';
 import { ERASER_COLOR } from '../../../../components/Whiteboard/constants';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
+import { WhiteboardWidgetShape } from '../../../../roomState/types/widgets';
 
 export interface IWhiteboardWidgetProps {
-  state: WhiteboardWidgetState;
+  state: WhiteboardWidgetShape & { ownerId: string };
   /**
    * Called when the user hits the X to close the widget
    */
@@ -41,7 +41,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const update = useSaveWidget(state.id);
+  const update = useSaveWidget(state.widgetId);
 
   const handleWhiteboardChange = React.useCallback(
     (s: WhiteboardState) => {
@@ -53,14 +53,14 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   );
 
   const { whiteboardProps, exportToImageURL, toolsProps, activeColor } = useWhiteboard(
-    state.data.whiteboardState,
+    state.widgetState.whiteboardState,
     handleWhiteboardChange
   );
 
   const handleExport = useExport(exportToImageURL);
 
   return (
-    <WidgetFrame color="snow" widgetId={state.id}>
+    <WidgetFrame color="snow" widgetId={state.widgetId}>
       <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />} onClose={onClose}>
         <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />

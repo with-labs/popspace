@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useCallback } from 'react';
+import React, { createContext, ReactNode, useCallback, useEffect } from 'react';
 import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
 import { Callback } from '../../types/twilio';
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
@@ -8,8 +8,22 @@ import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/u
 import useRoom from './useRoom/useRoom';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
 import { useAllParticipants } from './useAllParticipants/useAllParticipants';
-import { useHackReconnection } from './useHackReconnection/useHackReconnection';
 import { logger } from '../../utils/logger';
+import { noop } from 'lodash';
+import api from '../../utils/api';
+import { ErrorCodes } from '../../constants/ErrorCodes';
+import { useTranslation } from 'react-i18next';
+
+export class JoinError extends Error {
+  constructor(message: string, public errorCode: ErrorCodes) {
+    super(message);
+  }
+}
+export class FatalError extends Error {
+  constructor(message: string, public errorCode: ErrorCodes) {
+    super(message);
+  }
+}
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -34,6 +48,7 @@ interface VideoProviderProps {
   onError: (err: Error) => void;
   onDisconnect?: Callback;
   children: ReactNode;
+  roomName: string;
 }
 
 const TrackPublisher = () => {
@@ -41,7 +56,15 @@ const TrackPublisher = () => {
   return null;
 };
 
-export function VideoProvider({ options, children, onError = () => {}, onDisconnect = () => {} }: VideoProviderProps) {
+export function VideoProvider({
+  options,
+  children,
+  onError = noop,
+  onDisconnect = noop,
+  roomName,
+}: VideoProviderProps) {
+  const { t } = useTranslation();
+
   const onErrorCallback = useCallback(
     (error: Error) => {
       logger.error(`ERROR: ${error.message}`, error);
@@ -52,11 +75,39 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
 
   const { room, isConnecting, connect } = useRoom(onErrorCallback, options);
 
+  // auto-join the room using authenticated user session
+  useEffect(() => {
+    (async function () {
+      try {
+        const result = await api.loggedInEnterRoom(roomName);
+        if (!result.success || !result.token) {
+          if (result.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
+            // user is logged in but doesnt have room access
+            throw new JoinError(t('error.messages.noRoomAccess'), ErrorCodes.UNAUTHORIZED_ROOM_ACCESS);
+          } else if (result.errorCode === ErrorCodes.UNKNOWN_ROOM) {
+            // trying to join a room that does not exist
+            throw new FatalError(t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
+          }
+          if (result.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
+            // user is not logged in
+            throw new JoinError(t('error.messages.unauthorized'), ErrorCodes.UNAUTHORIZED_USER);
+          } else {
+            logger.error(`Unhandled expection in useJoin`, result.errorCode, result.message);
+            throw new JoinError(t('error.messages.joinRoomUnknownFailure'), ErrorCodes.JOIN_ROOM_UNKNOWN);
+          }
+        }
+        const token = result.token;
+        await connect(token);
+      } catch (err) {
+        onErrorCallback(err);
+      }
+    })();
+  }, [connect, roomName, onErrorCallback, t]);
+
   // Register onError and onDisconnect callback functions.
   useHandleRoomDisconnectionErrors(room, onError);
   useHandleTrackPublicationFailed(room, onError);
   useHandleOnDisconnect(room, onDisconnect);
-  useHackReconnection(room);
 
   const allParticipants = useAllParticipants(room);
 

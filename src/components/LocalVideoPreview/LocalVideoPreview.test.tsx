@@ -4,6 +4,7 @@ import LocalVideoPreview from './LocalVideoPreview';
 import { useNamedPublication } from '../../hooks/useNamedPublication/useNamedPublication';
 import useTrack from '../../hooks/useTrack/useTrack';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
+import { CAMERA_TRACK_NAME } from '../../constants/User';
 
 jest.mock('../../hooks/useNamedPublication/useNamedPublication');
 jest.mock('../../hooks/useTrack/useTrack');
@@ -15,7 +16,7 @@ const mockUseTrack = useTrack as jest.Mock<any>;
 
 describe('the LocalVideoPreview component', () => {
   it('it should render a VideoTrack component when there is a "camera" track', () => {
-    mockUseNamedTrack.mockReturnValue({} as LocalTrackPublication);
+    mockUseNamedTrack.mockReturnValue({ trackName: `${CAMERA_TRACK_NAME}#foo` } as LocalTrackPublication);
     mockUseTrack.mockReturnValue({ name: 'camera', kind: 'video', attach: jest.fn(), detach: jest.fn() });
     const { container } = render(<LocalVideoPreview />);
     expect(container.firstChild).toEqual(expect.any(window.HTMLVideoElement));

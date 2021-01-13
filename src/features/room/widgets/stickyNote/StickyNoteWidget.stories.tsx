@@ -1,9 +1,9 @@
 import { StickyNoteWidget } from './StickyNoteWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
-import { WidgetType } from '../../../../types/room';
 import { withViewport } from '../../../../stories/__decorators__/withViewport';
 import { Box } from '@material-ui/core';
+import { WidgetType } from '../../../../roomState/types/widgets';
 
 export default {
   title: 'widgets/StickyNote',
@@ -12,19 +12,17 @@ export default {
   decorators: [withViewport],
 };
 
-const Template: Story<{ text: string; isDraft: boolean }> = (args) => (
+const Template: Story<{ text: string }> = (args) => (
   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight={500}>
     <StickyNoteWidget
       onClose={() => {}}
       state={{
-        id: 'example',
-        kind: 'widget',
-        participantSid: 'me',
-        isDraft: args.isDraft,
+        widgetId: 'example',
+        ownerId: 'me',
+        ownerDisplayName: 'Me',
         type: WidgetType.StickyNote,
-        data: {
+        widgetState: {
           text: args.text,
-          author: 'me',
         },
       }}
     />
@@ -34,11 +32,9 @@ const Template: Story<{ text: string; isDraft: boolean }> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   text: 'Hello world!',
-  isDraft: false,
 };
 
 export const Draft = Template.bind({});
 Draft.args = {
   text: '',
-  isDraft: true,
 };

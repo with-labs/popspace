@@ -6,15 +6,15 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import enhanceMessage from './enhanceMessage';
-import { TwilioError } from 'twilio-video';
 
 interface ErrorDialogProps {
   dismissError: Function;
-  error: TwilioError | null;
+  error: Error | null;
 }
 
 function ErrorDialog({ dismissError, error }: PropsWithChildren<ErrorDialogProps>) {
-  const { message, code } = error || {};
+  const { message } = error || {};
+  const code = (error as any)?.code;
   const enhancedMessage = enhanceMessage(message, code);
 
   return (

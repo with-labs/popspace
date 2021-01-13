@@ -1,20 +1,19 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
 import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { LinkWidgetData } from '../../../../types/room';
 import { makeStyles, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
 import { useGetLinkData } from './useGetLinkData';
+import { LinkWidgetState } from '../../../../roomState/types/widgets';
 
 export interface IEditLinkWidgetFormProps {
-  onSave: (data: LinkWidgetData) => any;
-  initialValues?: LinkWidgetData;
+  onSave: (data: LinkWidgetState) => any;
+  initialValues?: { url: string };
 }
 
-const EMPTY_VALUES: LinkWidgetData = {
-  title: '',
+const EMPTY_VALUES = {
   url: '',
 };
 
@@ -48,7 +47,7 @@ export const EditLinkWidgetForm: React.FC<IEditLinkWidgetFormProps> = ({ initial
 
   const getLinkData = useGetLinkData();
   const handleSave = React.useCallback(
-    async (values: LinkWidgetData) => {
+    async (values: { url: string }) => {
       const data = await getLinkData(values.url);
       onSave(data);
     },

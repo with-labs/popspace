@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { LocalParticipant, RemoteParticipant, RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
-import useParticipantDisplayIdentity from '../../../hooks/useParticipantDisplayIdentity/useParticipantDisplayIdentity';
 import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
-import { Avatar } from '../../../components/Avatar/Avatar';
 import { useSpring, animated } from '@react-spring/web';
-import { PersonState } from '../../../types/room';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { PersonStatus } from './PersonStatus';
-import { ScreenSharePreview } from './ScreenSharePreview';
+import { SidecarStreamPreview } from './SidecarStreamPreview';
 import { DraggableHandle } from '../DraggableHandle';
 import { isMobileOnly } from 'react-device-detect';
 import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
 import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingStates';
 import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
+import { RoomUserStateShape } from '../../../roomState/useRoomStore';
+import { Stream } from '../../../types/streams';
+import { PersonAvatar } from './PersonAvatar';
+import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;
@@ -32,12 +32,10 @@ const VOICE_ICON_SPRINGS = {
 };
 
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
-  participant: LocalParticipant | RemoteParticipant;
-  isLocal: boolean;
-  person: PersonState;
-  audioTrack: RemoteTrackPublication | LocalTrackPublication | null;
-  cameraTrack: RemoteTrackPublication | LocalTrackPublication | null;
-  screenShareTrack: RemoteTrackPublication | LocalTrackPublication | null;
+  isMe: boolean;
+  person: RoomUserStateShape;
+  mainStream: Stream | null;
+  sidecarStreams: Stream[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.mainShadows.surface,
   },
   handle: {
-    overflow: 'hdiden',
+    overflow: 'hidden',
     width: '100%',
     height: '100%',
   },
@@ -119,7 +117,9 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: theme.typography.fontWeightMedium,
     textOverflow: 'ellipsis',
     margin: '0 auto',
-    maxWidth: '80%',
+    maxWidth: '70%',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
   },
   voiceIndicator: {
     bottom: -8,
@@ -141,46 +141,66 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Renders the 'bubble' which represents a user in the room.
+ * TODO: break this component down (both the JSX and the hook logic)
+ * so it's easier to read / maintain / reuse pieces
+ */
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
-  ({ participant, isLocal, person, audioTrack, cameraTrack, screenShareTrack, ...rest }, ref) => {
+  ({ isMe: isLocal, person, mainStream, sidecarStreams, ...rest }, ref) => {
     const classes = useStyles();
     const theme = useTheme();
 
+    // tracking hover state to show status editing
     const [isHovered, setIsHovered] = React.useState(false);
     const onHover = React.useCallback(() => setIsHovered(true), []);
     const onUnHover = React.useCallback(() => setIsHovered(false), []);
 
-    const isVideoOn = !!cameraTrack;
-    const isMicOn = !!audioTrack;
-    const isSharingScreen = !!screenShareTrack;
+    // some basic checks for how we should render media
+    const isVideoOn = !!mainStream?.videoPublication;
+    const isMicOn = !!mainStream?.audioPublication;
+    const hasSidecars = !!sidecarStreams.length;
 
-    const { avatar: avatarName, emoji, status } = person ?? {};
-
+    // track speaking state for the Twilio participant represented by the main stream
+    const mainStreamParticipantIdentity = mainStream?.participantIdentity;
     const isSpeaking = useSpeakingStates(
-      React.useCallback((store) => store.isSpeaking[participant.sid] ?? false, [participant.sid])
+      React.useCallback(
+        (store) => (mainStreamParticipantIdentity ? !!store.isSpeaking[mainStreamParticipantIdentity] : false),
+        [mainStreamParticipantIdentity]
+      )
     );
 
-    // visible screen name
-    const displayIdentity = useParticipantDisplayIdentity(participant);
+    // extract data from our With backend user
+    const userId = person?.id;
+    const emoji = person?.participantState.emoji;
+    const statusText = person?.participantState.statusText;
+    const displayIdentity = person?.participantState.displayName;
+    const avatarName = person?.participantState.avatarName;
 
+    // determine background color based on avatar
     const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
 
+    // this spring animates the outer bubble container
     const rootStyles = useSpring({
       borderRadius: isVideoOn ? 32 : '100%',
       width: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
       height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
     });
 
+    // this spring animates the main internal layout structure
     const mainContentStyles = useSpring({
       // reduce border radius to align based on border width
       borderRadius: isVideoOn ? 28 : '100%',
     });
 
+    // this spring animates the video / avatar container and background
     const graphicStyles = useSpring({
       height: isVideoOn ? EXPANDED_SIZE - 32 : SMALL_SIZE - 49,
       backgroundColor,
     });
 
+    // this spring animates the speaking indicator position as the
+    // bubble transitions from video to avatar
     const [speakingIndicatorStyles, setSpeakingIndicatorStyles] = useSpring(() => ({
       right: isVideoOn ? '8%' : '50%',
       bottom: isVideoOn ? -10 : -8,
@@ -188,11 +208,10 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       config: VOICE_ICON_SPRINGS.VISIBLE,
     }));
 
+    // scripted animation for the transition to and from video for the speaking indicator
+    // graphic - this makes the transition of the position of the icon feel less
+    // awkward by hiding it while it moves, popping it in later
     React.useEffect(() => {
-      // scripted animation for the transition to and from video for the speaking indicator
-      // graphic - this makes the transition of the position of the icon feel less
-      // awkward by hiding it while it moves, popping it in later
-
       (async function () {
         if (isVideoOn) {
           await setSpeakingIndicatorStyles({ opacity: 0, config: VOICE_ICON_SPRINGS.VISIBLE });
@@ -218,17 +237,20 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       })();
     }, [isVideoOn, setSpeakingIndicatorStyles]);
 
+    // this spring animates the display name
     const bottomSectionStyles = useSpring({
       lineHeight: '1',
       height: isVideoOn ? 24 : 16,
     });
 
+    // this spring animates the status indicator
     const statusStyles = useSpring({
       left: isVideoOn ? 8 : 16,
       top: isVideoOn ? 8 : 0,
       x: isVideoOn ? '0%' : '-100%',
     });
 
+    // we only activate hover effects if the user isn't on mobile
     const handlers = isMobileOnly
       ? {}
       : {
@@ -249,22 +271,24 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
           <animated.div className={classes.mainContent} style={mainContentStyles}>
             {/* Still a typing issue with react-spring :( */}
             <animated.div className={classes.background} style={graphicStyles as any}>
-              {cameraTrack && (
+              {mainStream?.videoPublication && (
                 <Publication
                   classNames={classes.video}
-                  publication={cameraTrack}
+                  publication={mainStream.videoPublication}
                   isLocal={isLocal}
-                  objectId={participant.sid}
+                  objectId={userId}
+                  objectKind="user"
                 />
               )}
             </animated.div>
-            {!cameraTrack && <Avatar className={classes.avatar} name={avatarName} />}
-            {audioTrack && (
+            {!mainStream?.videoPublication && <PersonAvatar className={classes.avatar} personId={userId} />}
+            {mainStream?.audioPublication && (
               <Publication
                 classNames={classes.audio}
-                publication={audioTrack}
+                publication={mainStream?.audioPublication}
                 isLocal={isLocal}
-                objectId={participant.sid}
+                objectId={userId}
+                objectKind="user"
                 disableAudio={isLocal}
               />
             )}
@@ -281,17 +305,18 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
           </animated.div>
         </DraggableHandle>
         <animated.div className={classes.status} style={statusStyles}>
-          <PersonStatus
-            personId={person.id}
-            emoji={emoji}
-            status={status}
-            isParentHovered={isHovered}
-            isLocal={isLocal}
-          />
+          <PersonStatus emoji={emoji} status={statusText} isParentHovered={isHovered} isLocal={isLocal} />
         </animated.div>
-        {isSharingScreen && (
+        {hasSidecars && (
           <div className={classes.screenSharePreviewContainer}>
-            <ScreenSharePreview participantSid={participant.sid} className={classes.screenSharePreview} />
+            {sidecarStreams.map((stream) => (
+              <SidecarStreamPreview
+                userId={userId}
+                className={classes.screenSharePreview}
+                stream={stream}
+                key={stream.id}
+              />
+            ))}
           </div>
         )}
       </animated.div>

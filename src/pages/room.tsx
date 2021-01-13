@@ -1,24 +1,20 @@
-import React, { FC } from 'react';
+import React from 'react';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
-import { CircularProgress, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import JoinRoom from '../components/JoinRoom/JoinRoom';
 import ReconnectingNotification from '../components/ReconnectingNotification/ReconnectingNotification';
 import { Room } from '../features/room/Room';
 import { ErrorBoundary } from '../components/ErrorBoundary/ErrorBoundary';
-import useRoomState from '../hooks/useRoomState/useRoomState';
-import { Provider } from 'react-redux';
-import store from '../state/store';
 import { VideoProvider } from '../components/VideoProvider';
 import { ConnectOptions } from 'twilio-video';
-import { CoordinatedDispatchProvider } from '../features/room/CoordinatedDispatchProvider';
-import { useCanEnterRoom } from '../hooks/useCanEnterRoom/useCanEnterRoom';
 import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
-import { RoomState } from '../constants/twilio';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../components/Modal/Modal';
 import { ModalTitleBar } from '../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../components/Modal/ModalContentWrapper';
+import { RoomStateProvider } from '../roomState/RoomStateProvider';
+import { useAppState } from '../state';
+import { RemoteControlProvider } from '../components/RemoteControlProvider/RemoteControlProvider';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -73,58 +69,31 @@ const RoomFallback = () => {
     </Modal>
   );
 };
-
-const InnerApp: FC<IAppProps> = ({ roomName }) => {
-  const classes = useStyles();
-
-  const roomState = useRoomState();
-
-  const canEnterRoom = useCanEnterRoom();
-
-  if (roomState === RoomState.Disconnected) {
-    return <JoinRoom roomName={roomName} />;
-  }
-
-  if (!canEnterRoom) {
-    // still waiting on additional setup after join - this usually means there
-    // are already people in the room and we are waiting on an initial state snapshot.
-    // In the future this might wait on a state hydration from the server.
-    return (
-      <div className={classes.backdrop}>
-        <CircularProgress style={{ margin: 'auto' }} />
-      </div>
-    );
-  }
-
-  return (
-    <div className={classes.roomWrapper}>
-      <ErrorBoundary fallback={() => <RoomFallback />}>
-        <Room />
-        <ReconnectingNotification />
-      </ErrorBoundary>
-    </div>
-  );
-};
-
 interface IRoomPageProps {
   name: string;
-  error: any;
-  setError: any;
 }
 
 export default function RoomPage(props: IRoomPageProps) {
+  const classes = useStyles();
+  const { error, setError } = useAppState();
+
   return (
     <>
-      <ErrorDialog dismissError={() => props.setError(null)} error={props.error} />
-      <Provider store={store}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      <RoomStateProvider roomName={props.name}>
         <LocalTracksProvider>
-          <VideoProvider options={connectionOptions} onError={props.setError}>
-            <CoordinatedDispatchProvider>
-              <InnerApp roomName={props.name} />
-            </CoordinatedDispatchProvider>
+          <VideoProvider options={connectionOptions} onError={setError} roomName={props.name}>
+            <RemoteControlProvider>
+              <div className={classes.roomWrapper}>
+                <ErrorBoundary fallback={() => <RoomFallback />}>
+                  <Room />
+                  <ReconnectingNotification />
+                </ErrorBoundary>
+              </div>
+            </RemoteControlProvider>
           </VideoProvider>
         </LocalTracksProvider>
-      </Provider>
+      </RoomStateProvider>
     </>
   );
 }

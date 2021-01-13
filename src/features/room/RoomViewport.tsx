@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { Bounds, Vector2 } from '../../types/spatials';
+import { Vector2 } from '../../types/spatials';
 import { clamp, clampVector } from '../../utils/math';
 import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
-import { animated, useSpring, to } from '@react-spring/web';
+import { animated, useSpring, to, SpringConfig } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { makeStyles, Theme } from '@material-ui/core';
 import { useKeyboardControls } from '../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { FileDropLayer } from './files/FileDropLayer';
 import { mandarin as theme } from '../../theme/theme';
+import { useRoomStore } from '../../roomState/useRoomStore';
+import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -31,10 +33,6 @@ export function useRoomViewport() {
 
 export interface IRoomViewportProps {
   children: React.ReactNode;
-  /** The total canvas size */
-  bounds: Bounds;
-  /** The background image for the canvas */
-  backgroundUrl: string;
   /** Configure the minimum zoom ratio - smaller means the room gets smaller */
   minZoom?: number;
   /** Configure the maximum zoom ratio - larger means the room gets larger */
@@ -47,8 +45,8 @@ export interface IRoomViewportProps {
   uiControls: React.ReactNode;
 }
 
-const DESKTOP_INITIAL_ZOOM = 1;
-const MOBILE_INITIAL_ZOOM = 0.75;
+const DESKTOP_INITIAL_ZOOM = 1.25;
+const MOBILE_INITIAL_ZOOM = 1;
 const isMobile = typeof window !== 'undefined' && window.matchMedia(theme.breakpoints.down('sm'));
 const INITIAL_ZOOM = isMobile ? MOBILE_INITIAL_ZOOM : DESKTOP_INITIAL_ZOOM;
 const PINCH_GESTURE_DAMPING = 200;
@@ -69,6 +67,11 @@ const VIEWPORT_ZOOM_SPRING = {
   friction: 40,
   mass: 0.1,
 };
+const RELAXED_SPRING = {
+  tension: 65,
+  friction: 55,
+  mass: 10,
+};
 
 const useStyles = makeStyles<Theme, IRoomViewportProps>({
   viewport: {
@@ -84,19 +87,34 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     position: 'absolute',
     transformOrigin: 'center center',
     borderRadius: 10,
+    backgroundSize: 'cover',
+    // Important! This forces the canvas to be its own composition layer in the browser
+    // render pipeline. That means the canvas (which contains all the widgets, people,
+    // and other room objects) will be rasterized separately from the background
+    // and any foreground (controls) elements. This seems to have a huge
+    // impact on rendering performance.
+    willChange: 'transform',
   },
-  centeredSpaceTransformer: ({ bounds }) => ({
-    overflow: 'visible',
-    transform: `translate(${bounds.width / 2}px, ${bounds.height / 2}px)`,
-  }),
 });
 
 export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
 
-  const { children, bounds, minZoom = 1 / 4, maxZoom = 2, backgroundUrl, uiControls, ...rest } = props;
+  const { children, minZoom = 1 / 4, maxZoom = 2, uiControls, ...rest } = props;
+
+  const bounds = useRoomStore((room) => room.state.bounds);
+  const backgroundUrl = useRoomStore((room) => room.state.wallpaperUrl);
+
+  const centeredSpaceTransformerStyles = React.useMemo(
+    () => ({
+      overflow: 'visible',
+      transform: `translate(${bounds.width / 2}px, ${bounds.height / 2}px)`,
+    }),
+    [bounds.width, bounds.height]
+  );
 
   const domTarget = React.useRef<HTMLDivElement>(null);
+  const canvasRef = React.useRef<HTMLDivElement>(null);
 
   // some basic necessary variables
   const [windowWidth, windowHeight] = useWindowSize();
@@ -104,6 +122,14 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const halfWindowHeight = windowHeight / 2;
   const halfCanvasWidth = bounds.width / 2;
   const halfCanvasHeight = bounds.height / 2;
+
+  // initializes canvas size
+  React.useLayoutEffect(() => {
+    const canvasEl = canvasRef.current!;
+    canvasEl.style.width = `${bounds.width}px`;
+    canvasEl.style.height = `${bounds.height}px`;
+    canvasEl.style.backgroundImage = `url(${backgroundUrl})`;
+  }, [canvasRef, bounds, backgroundUrl]);
 
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
@@ -115,7 +141,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     config: VIEWPORT_PAN_SPRING,
   }));
   const [{ zoom, isZooming }, setZoomSpring] = useSpring(() => ({
-    zoom: INITIAL_ZOOM,
+    zoom: minZoom,
     isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
   }));
@@ -192,7 +218,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   );
 
   const doAbsoluteZoom = React.useCallback(
-    (val: number) => {
+    (val: number, spring?: SpringConfig) => {
       const clamped = clamp(val, minZoom, maxZoom);
 
       // also update pan position as the user zooms, since
@@ -204,26 +230,28 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
       setZoomSpring({
         zoom: clamped,
+        config: spring ?? VIEWPORT_ZOOM_SPRING,
       });
       setPanSpring({
         centerX: clampedPan.x,
         centerY: clampedPan.y,
+        config: spring ?? VIEWPORT_PAN_SPRING,
       });
     },
     [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring]
   );
 
   const doZoom = React.useCallback(
-    (delta: number) => {
+    (delta: number, spring?: SpringConfig) => {
       const currentZoom = zoom.goal;
       const added = currentZoom + delta;
-      doAbsoluteZoom(added);
+      doAbsoluteZoom(added, spring);
     },
     [doAbsoluteZoom, zoom]
   );
 
   const doPan = React.useCallback(
-    (delta: Vector2) => {
+    (delta: Vector2, spring?: SpringConfig) => {
       // when the user drags, we constrain the distance they can
       // move the canvas to keep it on screen
       // TODO: figure out how to do this with gesture constraints
@@ -237,10 +265,40 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       setPanSpring({
         centerX: clamped.x,
         centerY: clamped.y,
+        config: spring ?? VIEWPORT_PAN_SPRING,
       });
     },
     [centerX, centerY, clampPanPosition, setPanSpring, zoom]
   );
+
+  const userId = useRoomStore((room) => (room.sessionId && room.sessionLookup[room.sessionId]) ?? null);
+  const { isReady } = React.useContext(MediaReadinessContext);
+
+  // these need to be cached in refs so they don't invalidate the effect
+  // below when the window size changes.
+  const doPanRef = React.useRef(doPan);
+  const doAbsoluteZoomRef = React.useRef(doAbsoluteZoom);
+  React.useLayoutEffect(() => void (doPanRef.current = doPan), [doPan]);
+  React.useLayoutEffect(() => void (doAbsoluteZoomRef.current = doAbsoluteZoom), [doAbsoluteZoom]);
+  // on first mount, the view is zoomed out at the center of the room
+  // wait a moment, then zoom in to the user's avatar
+  React.useEffect(() => {
+    if (!isReady) return;
+
+    const timeout = setTimeout(() => {
+      if (!userId) return;
+
+      // find user's position
+      const room = useRoomStore.getState();
+      const userPosition = room.userPositions[userId];
+      const point = userPosition.position;
+
+      // zoom in
+      doAbsoluteZoomRef.current(INITIAL_ZOOM, RELAXED_SPRING);
+      doPanRef.current(point, RELAXED_SPRING);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, [userId, isReady, setPanSpring, setZoomSpring, doPanRef, doAbsoluteZoomRef]);
 
   // active is required to prevent default behavior, which
   // we want to do for zoom.
@@ -340,7 +398,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const infoContextValue = React.useMemo(
     () => ({
       toWorldCoordinate,
-      getZoom: zoom.get,
+      getZoom: zoom.get.bind(zoom),
       onObjectDragStart,
       onObjectDragEnd,
       pan: doPan,
@@ -371,20 +429,18 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         <FileDropLayer>
           <animated.div
             className={styles.canvas}
+            ref={canvasRef}
             style={{
               transform: to([centerX, centerY, zoom], (cx, cy, zoomv) => {
-                const x = cx * zoomv - halfCanvasWidth + halfWindowWidth;
-                const y = cy * zoomv - halfCanvasHeight + halfWindowHeight;
-
-                return `translate(${x}px, ${y}px) scale(${zoomv}, ${zoomv})`;
+                // 1. Translate the center of the canvas to 0,0 (-halfCanvasWidth, -halfCanvasHeight)
+                // 2. Translate that center point back to the center of the screen (+halfWindowWidth, +halfWindowHeight)
+                // 3. Scale up (or down) to the specified zoom value
+                // 4. Translate the center according to the pan position
+                return `translate(${-halfCanvasWidth}px, ${-halfCanvasHeight}px) translate(${halfWindowWidth}px, ${halfWindowHeight}px) scale(${zoomv}, ${zoomv}) translate(${cx}px, ${cy}px)`;
               }),
-              width: bounds.width,
-              height: bounds.height,
-              backgroundImage: `url(${backgroundUrl})` as any,
-              backgroundSize: 'cover',
             }}
           >
-            {/* 
+            {/*
               Converts from top-left coords to center-based coords -
               widgets in the room use center-based coords but their DOM
               placement still needs to be adjusted because the DOM lays out
@@ -392,7 +448,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
               container element to the center and allows elements with negative
               positions to still be visible with overflow: visible.
               */}
-            <div className={styles.centeredSpaceTransformer}>{children}</div>
+            <div style={centeredSpaceTransformerStyles}>{children}</div>
           </animated.div>
         </FileDropLayer>
       </animated.div>

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { makeStyles, Typography } from '@material-ui/core';
 import { wallPaperOptions } from './WallpaperOptions';
-import { useSelector } from 'react-redux';
-import { selectors as roomSelectors } from '../../room/roomSlice';
 import { WallpaperGrid } from './WallpaperGrid';
 import { useTranslation } from 'react-i18next';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 export interface IWallpaperCategroyProps {
   onChange: (wallpaperUrl: string, isCustomWallpaper: boolean) => void;
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export const WallpaperCategory: React.FC<IWallpaperCategroyProps> = ({ onChange }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const wallpaperUrl = useSelector(roomSelectors.selectWallpaperUrl);
+  const wallpaperUrl = useRoomStore((room) => room.state.wallpaperUrl);
 
   return (
     <div>

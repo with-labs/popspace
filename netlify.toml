@@ -10,6 +10,7 @@
   REACT_APP_ANALYTICS_ENV = "production"
   TWILIO_API_KEYS_ENV = "production"
   NODE_ENV="production"
+  REACT_APP_SOCKET_HOST="wss://mercury.with.so:8443"
 
 [context.deploy-preview.environment]
   REACT_APP_ANALYTICS_ENV = "staging"

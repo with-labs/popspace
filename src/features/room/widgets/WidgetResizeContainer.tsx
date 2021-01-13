@@ -1,13 +1,9 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../../state/store';
-import { useCoordinatedDispatch } from '../CoordinatedDispatchProvider';
-import { actions } from '../roomSlice';
 import { Bounds } from '../../../types/spatials';
 import { ResizeContainer, ResizeMode } from '../../../components/ResizeContainer/ResizeContainer';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 export interface IWidgetResizeContainerProps {
   widgetId: string;
@@ -17,12 +13,8 @@ export interface IWidgetResizeContainerProps {
   minHeight?: number;
   mode?: ResizeMode;
   className?: string;
+  disableInitialSizing?: boolean;
 }
-
-// since widgets are center-anchored, dragging the corner
-// has double the scale effect since the object scales in
-// both directions.
-const resizeScaleFactor = 2;
 
 const useStyles = makeStyles({
   content: {
@@ -42,38 +34,25 @@ export const WidgetResizeContainer: React.FC<IWidgetResizeContainerProps> = ({
   mode,
   children,
   className,
-  ...boundsProps
+  ...restProps
 }) => {
   const classes = useStyles();
 
-  // creating a memoized selector for perf benefits
-  const sizeSelector = React.useMemo(
-    () =>
-      createSelector(
-        (state: RootState) => state.room.positions,
-        (_: any, objectId: string) => objectId,
-        (positions, objectId) => positions[objectId]?.size ?? null
-      ),
-    []
-  );
+  const size = useRoomStore(React.useCallback((room) => room.widgetPositions[widgetId]?.size ?? null, [widgetId]));
+  const resizeWidget = useRoomStore((room) => room.api.resizeWidget);
 
-  const size = useSelector((state: RootState) => sizeSelector(state, widgetId));
-
-  const coordinatedDispatch = useCoordinatedDispatch();
   const onResize = React.useCallback(
     (newSize: Bounds) => {
-      coordinatedDispatch(
-        actions.resizeObject({
-          id: widgetId,
-          size: newSize,
-        })
-      );
+      resizeWidget({
+        widgetId,
+        size: newSize,
+      });
     },
-    [coordinatedDispatch, widgetId]
+    [resizeWidget, widgetId]
   );
 
   return (
-    <ResizeContainer size={size} onResize={onResize} mode={mode} resizeScaleFactor={resizeScaleFactor} {...boundsProps}>
+    <ResizeContainer size={size} onResize={onResize} mode={mode} {...restProps}>
       <div className={clsx(classes.content, className)}>{children}</div>
     </ResizeContainer>
   );

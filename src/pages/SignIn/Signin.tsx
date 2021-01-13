@@ -52,7 +52,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   const [email, setEmail] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { t } = useTranslation();
-  const { currentUserProfile, isLoading } = useCurrentUserProfile();
+  const { user, isLoading } = useCurrentUserProfile();
 
   // get the query params, if any
   const query = useQueryParams();
@@ -63,10 +63,10 @@ export const Signin: React.FC<ISigninProps> = (props) => {
   useEffect(() => {
     // if the errorInfo is not null and the user is already logged in
     // then we redirect to the dash if the user tries to hit the
-    if (!errorInfo && currentUserProfile) {
+    if (!errorInfo && user) {
       history.push(RouteNames.ROOT);
     }
-  }, [history, errorInfo, currentUserProfile]);
+  }, [history, errorInfo, user]);
 
   const onSubmit = async (data: SignInFormData, actions: FormikHelpers<SignInFormData>) => {
     try {

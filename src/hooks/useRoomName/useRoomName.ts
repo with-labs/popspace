@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 export function useRoomName() {
   const query = useQueryParams();
-  const params = useParams<{ room_name: string }>();
+  const params = useParams<{ roomName: string }>();
 
-  return params['room_name'] || query.get('r');
+  return params['roomName'] || query.get('r');
 }

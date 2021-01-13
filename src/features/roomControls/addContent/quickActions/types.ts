@@ -1,4 +1,4 @@
-import { WidgetType, WidgetData } from '../../../../types/room';
+import { WidgetType, WidgetStateByType } from '../../../../roomState/types/widgets';
 
 export enum QuickActionKind {
   AddAccessory,
@@ -20,11 +20,10 @@ type BaseQuickAction = {
   confidence: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 };
 
-export type AddAccessoryQuickAction = BaseQuickAction & {
+export type AddAccessoryQuickAction<Type extends WidgetType> = BaseQuickAction & {
   kind: QuickActionKind.AddAccessory;
-  accessoryType: WidgetType;
-  accessoryData: WidgetData;
-  draft?: boolean;
+  accessoryType: Type;
+  accessoryData: WidgetStateByType[Type];
 };
 
 export type SetStatusQuickAction = BaseQuickAction & {
@@ -33,7 +32,7 @@ export type SetStatusQuickAction = BaseQuickAction & {
 };
 
 // TODO: union other types of actions into this discriminated union type
-export type QuickAction = AddAccessoryQuickAction | SetStatusQuickAction;
+export type QuickAction = AddAccessoryQuickAction<any> | SetStatusQuickAction;
 
 /**
  * A quick action provider is a function that generates valid quick

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { LocalDataTrack } from 'twilio-video';
 import { useLocalMediaTrack } from './useLocalMediaTrack';
 import { useScreenShareTracks } from './useScreenShareTracks';

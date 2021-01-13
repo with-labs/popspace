@@ -50,6 +50,11 @@ export interface IResizeContainerProps {
   minHeight?: number;
 
   children: React.ReactNode;
+
+  /**
+   * Disables the initial size measure on mount
+   */
+  disableInitialSizing?: boolean;
 }
 
 export const ResizeContainerContext = React.createContext<{
@@ -74,7 +79,6 @@ export function useResizeContext() {
 const useStyles = makeStyles({
   root: {
     position: 'relative',
-    willChange: 'width, height',
   },
   unmeasuredContentSizer: {
     position: 'absolute',
@@ -150,6 +154,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     minWidth,
     minHeight,
     children,
+    disableInitialSizing,
   }) => {
     const classes = useStyles();
 
@@ -158,7 +163,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     // we track the need to remeasure internally, and don't inform external
     // components about a remeasure until the measure has taken place and
     // the new result is passed to onResize - this helps simplify usage
-    const [needsRemeasure, setNeedsRemeasure] = React.useState(!size);
+    const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
     const [originalAspectRatio, setOriginalAspectRatio] = React.useState(1);
 
     // dimensions are initialized to the provided size, or

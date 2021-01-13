@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { actions as controlsActions } from '../roomControlsSlice';
 import { SettingsIcon } from '../../../components/icons/SettingsIcon';
+import { useRoomModalStore } from '../useRoomModalStore';
 
 export interface IUserSettingsMenuItemProps {
   onClick?: () => void;
@@ -10,14 +9,13 @@ export interface IUserSettingsMenuItemProps {
 }
 
 export const UserSettingsMenuItem = React.forwardRef<HTMLLIElement, IUserSettingsMenuItemProps>((props, ref) => {
-  // we don't want to sync this state to peers.
-  const dispatch = useDispatch();
+  const openModal = useRoomModalStore((room) => room.api.openModal);
 
   return (
     <MenuItem
       ref={ref}
       onClick={() => {
-        dispatch(controlsActions.setIsUserSettingsModalOpen({ isOpen: true }));
+        openModal('userSettings');
         props.onClick?.();
       }}
     >

@@ -3,21 +3,20 @@ import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../../constants/RouteNames';
 import { LeaveIcon } from '../../../components/icons/LeaveIcon';
-import { useDispatch } from 'react-redux';
-import { actions } from '../../room/roomSlice';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 export interface ILeaveRoomMenuItemProps {}
 
 export const LeaveRoomMenuItem: React.FC<ILeaveRoomMenuItemProps> = (props) => {
-  const dispatch = useDispatch();
   const { room } = useVideoContext();
   const history = useHistory();
+  const leave = useRoomStore((r) => r.api.leave);
   const leaveRoom = React.useCallback(() => {
     room?.disconnect();
-    dispatch(actions.leave());
+    leave();
     history.push(RouteNames.ROOT);
-  }, [history, room, dispatch]);
+  }, [history, room, leave]);
 
   return (
     <MenuItem onClick={leaveRoom}>

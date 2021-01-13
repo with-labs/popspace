@@ -722,7 +722,13 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           padding: `${spacing(2)}px ${spacing(3)}px`,
           fontSize: typography.pxToRem(16),
           lineHeight: 22 / 16,
-          fontWeight: typography.fontWeightMedium,
+        },
+        standardInfo: {
+          backgroundColor: palette.background.paper,
+          color: palette.common.black,
+          '& > $icon': {
+            color: palette.brandColors.lavender.ink,
+          },
         },
       },
       MuiSlider: {
@@ -828,16 +834,25 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiDialogTitle: {
         root: {
           padding: '28px 32px 22px 32px',
+          [breakpoints.down('sm')]: {
+            padding: '12px 16px 6px 16px',
+          },
         },
       },
       MuiDialogContent: {
         root: {
           padding: '0 32px 32px 32px',
+          [breakpoints.down('sm')]: {
+            padding: '0 16px 16px 16px',
+          },
         },
       },
       MuiDialogActions: {
         root: {
           padding: '0 32px 32px 32px',
+          [breakpoints.down('sm')]: {
+            padding: '0 16px 16px 16px',
+          },
         },
       },
       MuiDrawer: {

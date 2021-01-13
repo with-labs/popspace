@@ -4,16 +4,12 @@ import { useGesture } from 'react-use-gesture';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { makeStyles } from '@material-ui/core';
 import { useRoomViewport } from './RoomViewport';
-import { useSelector } from 'react-redux';
-import { actions } from './roomSlice';
-import { useCoordinatedDispatch } from './CoordinatedDispatchProvider';
 import { Vector2 } from '../../types/spatials';
 import { addVectors, roundVector, subtractVectors } from '../../utils/math';
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../../state/store';
 import { throttle } from 'lodash';
 import { AutoPan } from './AutoPan';
 import { SPRINGS } from '../../constants/springs';
+import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -43,6 +39,10 @@ export interface IDraggableProps {
    * Optional callback to listen for drag start events
    */
   onDragStart?: () => void;
+  /**
+   * Required so we know which actions to use to report changes
+   */
+  kind: 'widget' | 'person';
 }
 
 const useStyles = makeStyles({
@@ -73,65 +73,58 @@ const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.Keybo
  * function you should call, then pass the result directly to the draggable
  * portion of your widget.
  */
-export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0, onDragEnd, onDragStart }) => {
+export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0, onDragEnd, onDragStart, kind }) => {
   const styles = useStyles();
 
-  // creating a memoized selector for position, this will hopefully
-  // reduce re-rendering if the position hasn't changed - which is
-  // really important if we don't want performance to be reduced
-  // rapidly as we add more room objects.
-  const positionSelector = React.useMemo(
-    () =>
-      createSelector(
-        (state: RootState) => state.room.positions,
-        (_: any, objectId: string) => objectId,
-        (positions, objectId) =>
-          positions[objectId] ?? {
-            position: { x: 0, y: 0 },
-            size: null,
-          }
-      ),
-    []
-  );
-  const { position } = useSelector((state: RootState) => positionSelector(state, id));
-
   // dispatcher for movement changes
-  const coordinatedDispatch = useCoordinatedDispatch();
+  const api = useRoomStore((store) => store.api);
   const onMove = React.useCallback(
     throttle((newPosition: Vector2) => {
-      coordinatedDispatch(
-        actions.moveObject({
-          id,
-          position: newPosition,
-        })
-      );
+      if (kind === 'widget') {
+        api.moveWidget({ widgetId: id, position: newPosition });
+      } else {
+        api.moveSelf({ position: newPosition });
+      }
     }, MOVE_THROTTLE_PERIOD),
-    [coordinatedDispatch, id]
+    [api, id, kind]
   );
 
   const viewport = useRoomViewport();
 
+  const selectPosition = React.useCallback(
+    (room: RoomStateShape) =>
+      kind === 'widget' ? room.widgetPositions[id]?.position : room.userPositions[id]?.position ?? { x: 0, y: 0 },
+    [kind, id]
+  );
+
   // This spring gradually interpolates the object into its desired position
   // after a change. That change might happen because the user dragged it,
   // or a new position has come in from the server.
+  const { current: initialPosition } = React.useRef(selectPosition(useRoomStore.getState()));
   const [{ x, y, grabbing }, set] = useSpring(() => ({
     // initial values
-    x: position.x,
-    y: position.y,
+    x: initialPosition.x,
+    y: initialPosition.y,
     grabbing: false,
     config: SPRINGS.RESPONSIVE,
   }));
 
-  // Update the spring when any of the monitored spatial values change
-  React.useEffect(() => {
-    // only update position from Redux if we are not dragging right now
-    if (!grabbing.get()) {
-      set({
-        x: position.x,
-        y: position.y,
-      });
-    }
-  }, [position.x, position.y, set, grabbing]);
+  // Update the spring when any of the monitored spatial values change,
+  // without triggering a React re-render - we subscribe directly to the
+  // store in an effect.
+  React.useEffect(
+    () =>
+      useRoomStore.subscribe<Vector2 | null>((pos) => {
+        // only update position from Redux if we are not dragging right now
+        if (pos && !grabbing.get()) {
+          set({
+            x: pos.x,
+            y: pos.y,
+          });
+        }
+      }, selectPosition),
+    [set, grabbing, selectPosition]
+  );
 
   const grabDisplacementRef = React.useRef<Vector2 | null>(null);
 
@@ -179,7 +172,8 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
         if (state.first) {
           // capture the initial displacement between the cursor and the
           // object's center to add to each subsequent position
-          grabDisplacementRef.current = subtractVectors(position, worldPosition);
+          const currentPosition = selectPosition(useRoomStore.getState());
+          grabDisplacementRef.current = subtractVectors(currentPosition, worldPosition);
           displacement = grabDisplacementRef.current;
         } else {
           // if it's not the first frame, use the memoized value from the previous frame
@@ -254,10 +248,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
     >
       <animated.div
         style={{
-          transform: to(
-            [x, y],
-            (xv, yv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px) translate(-50%, -50%)`
-          ),
+          transform: to([x, y], (xv, yv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px)`),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}

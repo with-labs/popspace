@@ -19,6 +19,8 @@ function useTrackPublication(track: LocalAudioTrack | LocalVideoTrack | LocalDat
     if (!localParticipant) return;
 
     if (track) {
+      logger.debug(`(re)publishing track ${localParticipant.identity}:${track.name}`);
+
       const timeout = setTimeout(() => {
         setError(new Error(t('error.messages.catastrophicMediaError')));
       }, 10000);
@@ -29,6 +31,7 @@ function useTrackPublication(track: LocalAudioTrack | LocalVideoTrack | LocalDat
         publishedPromise
           .then(() => {
             try {
+              logger.debug(`unpublishing track ${localParticipant.identity}:${track.name}`);
               const pub = localParticipant.unpublishTrack(track);
               if (pub) {
                 localParticipant.emit('trackUnpublished', pub);

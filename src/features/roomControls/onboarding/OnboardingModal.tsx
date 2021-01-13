@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Box, Typography, Button, ThemeProvider } from '@material-ui/core';
 import { Modal } from '../../../components/Modal/Modal';
@@ -10,13 +9,13 @@ import { snow } from '../../../theme/theme';
 import { USER_ONBOARDING } from '../../../constants/User';
 import { BackIcon } from '../../../components/icons/BackIcon';
 import { ForwardIcon } from '../../../components/icons/ForwardIcon';
-import { selectors as controlSelectors, actions as controlsActions } from '../roomControlsSlice';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 import onboardingImg1 from './images/onboarding_1.png';
 import onboardingImg2 from './images/onboarding_2.png';
 import onboardingImg3 from './images/onboarding_3.png';
 import onboardingImg4 from './images/onboarding_4.png';
+import { useRoomModalStore } from '../useRoomModalStore';
 
 interface IOnboardingModalProps {}
 
@@ -79,8 +78,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
-  const dispatch = useDispatch();
-  const isOpen = useSelector(controlSelectors.selectIsOnboardingModalOpen);
+  const isOpen = useRoomModalStore((modals) => modals.onboarding);
+  const { closeModal, openModal } = useRoomModalStore((modals) => modals.api);
   const { t } = useTranslation();
   const classes = useStyles();
   const [currentStep, setCurrentStep] = useState(0);
@@ -93,14 +92,14 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
     // will only have to see onboarding once per account
     const completedOnboarding = localStorage.getItem(USER_ONBOARDING);
     if (!completedOnboarding) {
-      dispatch(controlsActions.setIsOnboardingModalOpen({ isOpen: true }));
+      openModal('onboarding');
     }
-  }, [dispatch]);
+  }, [openModal]);
 
   const onCloseHandler = () => {
     // set a local cookie if the user has completed
     localStorage.setItem(USER_ONBOARDING, 'completed');
-    dispatch(controlsActions.setIsOnboardingModalOpen({ isOpen: false }));
+    closeModal('onboarding');
   };
 
   const nextStep = () => {

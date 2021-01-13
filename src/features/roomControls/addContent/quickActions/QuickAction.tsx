@@ -26,7 +26,7 @@ export const QuickAction: React.FC<IQuickActionProps> = ({ value }) => {
   }
 };
 
-const QuickActionAddAccessory: React.FC<{ value: AddAccessoryQuickAction }> = ({ value }) => {
+const QuickActionAddAccessory: React.FC<{ value: AddAccessoryQuickAction<any> }> = ({ value }) => {
   return (
     <>
       <ListItemIcon>

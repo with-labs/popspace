@@ -10,7 +10,7 @@ interface IPageNotFoundProps {
 }
 
 export const PageNotFound: React.FC<IPageNotFoundProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -20,6 +20,7 @@ export const PageNotFound: React.FC<IPageNotFoundProps> = (props) => {
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={t('errorPages.takeMeHomeBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.pageNotFound.quoteText')}

@@ -1,9 +1,9 @@
 import { LinkWidget } from './LinkWidget';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
-import { WidgetType } from '../../../../types/room';
 import { withViewport } from '../../../../stories/__decorators__/withViewport';
 import { Box } from '@material-ui/core';
+import { WidgetType } from '../../../../roomState/types/widgets';
 
 export default {
   title: 'widgets/Link',
@@ -15,7 +15,6 @@ export default {
 const Template: Story<{
   url: string;
   title: string;
-  isDraft: boolean;
   mediaUrl?: string;
   mediaContentType?: string;
 }> = (args) => (
@@ -23,12 +22,11 @@ const Template: Story<{
     <LinkWidget
       onClose={() => {}}
       state={{
-        id: 'example',
-        kind: 'widget',
-        participantSid: 'me',
-        isDraft: args.isDraft,
+        widgetId: 'example',
+        ownerId: 'me',
+        ownerDisplayName: 'Me',
         type: WidgetType.Link,
-        data: {
+        widgetState: {
           title: args.title,
           url: args.url,
           mediaUrl: args.mediaUrl,
@@ -43,14 +41,12 @@ export const Default = Template.bind({});
 Default.args = {
   title: 'Google',
   url: 'https://google.com',
-  isDraft: false,
 };
 
 export const Draft = Template.bind({});
 Draft.args = {
   title: '',
   url: '',
-  isDraft: true,
 };
 
 export const Media = Template.bind({});

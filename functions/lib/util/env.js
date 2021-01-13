@@ -1,9 +1,15 @@
 const env = {
   init: (envVars) => {
-    for(const key of Object.keys(envVars)) {
-      process.env[key] = envVars[key];
+    const definedEnv = process.env.NODE_ENV
+    console.log(`definedEnv`, definedEnv)
+    for (const key of Object.keys(envVars)) {
+      process.env[key] = envVars[key]
     }
-    return env;
+    // restore defined env if it was present
+    if (definedEnv) {
+      process.env.NODE_ENV = definedEnv
+    }
+    return env
   },
 
   isDev: () => {
@@ -11,7 +17,7 @@ const env = {
   },
 
   appUrl: (netlifyEvent, netlifyContext) => {
-    if(netlifyEvent.headers.host) {
+    if (netlifyEvent.headers.host) {
       const protocol = env.isDev() ? "http" : "https"
       return `${protocol}://${netlifyEvent.headers.host}`
     } else {
@@ -25,7 +31,8 @@ const env = {
       // but it includes the /path after the url, like
       // https://deploy-preview-157--with-app.netlify.app/signup
       const data = netlifyContext.clientContext.custom.netlify
-      const url = JSON.parse(Buffer.from(data, "base64").toString("utf-8")).site_url
+      const url = JSON.parse(Buffer.from(data, "base64").toString("utf-8"))
+        .site_url
       return `${url}`
     }
   }

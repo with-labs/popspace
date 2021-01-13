@@ -2,19 +2,17 @@ import { makeStyles, Box } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { StickyNoteWidgetData } from '../../../../types/room';
 import { useTranslation } from 'react-i18next';
 import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
 import { Link } from '../../../../components/Link/Link';
-
-type RequiredStickyNoteData = Omit<StickyNoteWidgetData, 'author'>;
+import { StickyNoteWidgetState } from '../../../../roomState/types/widgets';
 
 export interface IEditStickyNoteWidgetFormProps {
-  onSave: (data: RequiredStickyNoteData) => any;
-  initialValues: RequiredStickyNoteData;
+  onSave: (data: StickyNoteWidgetState) => any;
+  initialValues: StickyNoteWidgetState;
 }
 
-const EMPTY_VALUES: RequiredStickyNoteData = {
+const EMPTY_VALUES: StickyNoteWidgetState = {
   text: '',
 };
 

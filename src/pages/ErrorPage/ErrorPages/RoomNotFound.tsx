@@ -10,7 +10,7 @@ interface IRoomNotFoundProps {
 }
 
 export const RoomNotFound: React.FC<IRoomNotFoundProps> = (props) => {
-  const { errorMsg } = props;
+  const { errorMsg, ...rest } = props;
   const history = useHistory();
   const { t } = useTranslation();
 
@@ -20,6 +20,7 @@ export const RoomNotFound: React.FC<IRoomNotFoundProps> = (props) => {
 
   return (
     <GenericErrorPage
+      {...rest}
       buttonText={t('errorPages.takeMeHomeBtn')}
       onClick={onButtonClick}
       quoteText={t('errorPages.roomNotFound.quoteText')}

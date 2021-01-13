@@ -70,10 +70,11 @@ export const GenericErrorPage: React.FC<IGenericErrorPageProps> = (props) => {
     subMessage,
     isLoading,
     pageTitle,
+    ...rest
   } = props;
 
   return (
-    <main className={classes.root}>
+    <main className={classes.root} {...rest}>
       <PageTitle title={pageTitle} />
       {isLoading ? (
         <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1}>

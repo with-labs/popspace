@@ -1,10 +1,7 @@
-import { selectors } from '../../features/room/roomSlice';
-import { useSelector } from 'react-redux';
-import { useLocalParticipant } from '../useLocalParticipant/useLocalParticipant';
-import { RootState } from '../../state/store';
-import { createSelector } from '@reduxjs/toolkit';
 import { vectorDistance } from '../../utils/math';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
+import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
+import { useRoomStore } from '../../roomState/useRoomStore';
 
 // in world space coordinates - this is the farthest possible distance
 // you can hear someone / something from - even if very faintly.
@@ -20,22 +17,31 @@ function computeVolumeFalloff(percentOfMaxRange: number) {
  * Compute the audio volume based on the position of an object relative to the
  * active person.
  *
+ * TODO: make this accept a callback instead, which updates the volume
+ * outside of the React render loop - otherwise it re-renders everything
+ * on move!
+ *
  * @param objectId The ID of any object in the room state - widget or person
  */
-export function useSpatialAudioVolume(objectId?: string) {
-  const useSpatialAudio = useSelector(selectors.selectUseSpatialAudio);
-  const localParticipant = useLocalParticipant();
-  const positionSelector = useMemo(
-    () =>
-      createSelector(
-        (state: RootState) => state.room.positions,
-        (_: any, id?: string) => id,
-        (positions, id) => (id && positions[id]?.position) || { x: 0, y: 0 }
-      ),
-    []
-  );
-  const localUserPosition = useSelector((state: RootState) => positionSelector(state, localParticipant?.sid));
-  const otherPosition = useSelector((state: RootState) => positionSelector(state, objectId));
+export function useSpatialAudioVolume(objectKind: 'widget' | 'user', objectId: string | null) {
+  const { user } = useCurrentUserProfile();
+  const localUserId = user?.id ?? null;
+
+  const localUserPosition = useRoomStore(
+    useCallback((room) => room.userPositions[localUserId ?? '']?.position, [localUserId])
+  ) ?? { x: 0, y: 0 };
+  const otherPosition = useRoomStore(
+    useCallback(
+      (room) =>
+        objectKind === 'widget'
+          ? room.widgetPositions[objectId ?? '']?.position
+          : room.userPositions[objectId ?? '']?.position,
+      [objectId, objectKind]
+    )
+  ) ?? {
+    x: 0,
+    y: 0,
+  };
 
   const distance = vectorDistance(localUserPosition, otherPosition);
 
@@ -51,19 +57,11 @@ export function useSpatialAudioVolume(objectId?: string) {
 
   // The below limits and calculation derived from cosine curve, linked here
   // https://www.desmos.com/calculator/jobehh1xex
-  let volume;
-
-  // If spatial audio is turned off for the room, volume is always max
-  if (!useSpatialAudio) {
-    volume = 1;
-    // if localParticipant is in a huddle with participant, participant volume should be max
-  } else {
-    // The equation used here is arbitrary. It was selected because the curve
-    // it produces matches the design team's desire for how user's experince
-    // audio in the space of the room. Look at the link above to see the
-    // curve generated (desmos.com link).
-    volume = computeVolumeFalloff(dist);
-  }
+  // The equation used here is arbitrary. It was selected because the curve
+  // it produces matches the design team's desire for how user's experince
+  // audio in the space of the room. Look at the link above to see the
+  // curve generated (desmos.com link).
+  const volume = computeVolumeFalloff(dist);
 
   return volume;
 }

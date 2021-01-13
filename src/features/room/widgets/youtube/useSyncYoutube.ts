@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
 import { PlayState } from './VideoControls';
 import { useSpatialAudioVolume } from '../../../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { YoutubeWidgetState, YoutubeWidgetShape } from '../../../../roomState/types/widgets';
 
 function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: string | null) {
   if (lastPlayedUTC) {
@@ -27,15 +27,15 @@ export function useSyncYoutube({
   onLoad,
   isMuted,
 }: {
-  state: YoutubeWidgetState;
-  onChange: (data: Partial<YoutubeWidgetData>) => any;
+  state: YoutubeWidgetShape;
+  onChange: (data: Partial<YoutubeWidgetState>) => any;
   onLoad?: () => void;
   isMuted?: boolean;
 }) {
-  const isPlaying = state.data.isPlaying || false;
+  const isPlaying = state.widgetState.isPlaying || false;
   const playState = isPlaying ? PlayState.Playing : PlayState.Paused;
-  const timestamp = state.data.timestamp ?? 0;
-  const playStartedTimestampUTC = state.data.playStartedTimestampUTC;
+  const timestamp = state.widgetState.timestamp ?? 0;
+  const playStartedTimestampUTC = state.widgetState.playStartedTimestampUTC;
   const [duration, setDuration] = React.useState(0);
   const ytPlayerRef = React.useRef<YT.Player | null>(null);
   const [realtimeTimestamp, setRealtimeTimestamp] = React.useState(0);
@@ -114,7 +114,7 @@ export function useSyncYoutube({
   );
 
   // get the current spacial volume state of the player
-  const naturalVolume = useSpatialAudioVolume(state.id);
+  const naturalVolume = useSpatialAudioVolume('widget', state.widgetId);
   const volume = isMuted ? 0 : naturalVolume;
 
   // when the YT player is in a ready state, immediately synchronize it to the latest

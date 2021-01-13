@@ -1,20 +1,20 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
-import { YoutubeWidgetState, YoutubeWidgetData } from '../../../../types/room';
 import { MuteButton } from '../MuteButton';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
+import { YoutubeWidgetShape } from '../../../../roomState/types/widgets';
+import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 export interface IYoutubeWidgetProps {
-  state: YoutubeWidgetState;
+  state: YoutubeWidgetShape & { ownerId: string };
   /**
    * Called when the user hits the X to close the widget
    */
@@ -62,39 +62,43 @@ const useStyles = makeStyles((theme) => ({
 
 export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose }) => {
   const classes = useStyles();
-  const localParticipant = useLocalParticipant();
   const { t } = useTranslation();
 
-  const saveWidget = useSaveWidget(state.id);
+  const { user } = useCurrentUserProfile();
+  const localUserId = user?.id;
+
+  const saveWidget = useSaveWidget(state.widgetId);
 
   const [isMuted, setIsMuted] = React.useState(false);
   const toggleMuted = () => setIsMuted((v) => !v);
 
-  const isPlaying = !!state.data.isPlaying;
+  const isPlaying = !!state.widgetState.isPlaying;
 
-  const handleVideoChange = (data: Partial<YoutubeWidgetData>) => {
-    saveWidget(data);
-  };
-
-  if (state.isDraft && state.participantSid === localParticipant?.sid) {
-    return (
-      <WidgetFrame color="cherry" widgetId={state.id}>
-        <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
-        <WidgetContent>
-          <EditYoutubeWidgetForm onSave={saveWidget} />
-        </WidgetContent>
-      </WidgetFrame>
-    );
+  if (!state.widgetState.videoId) {
+    if (state.ownerId === localUserId) {
+      return (
+        <WidgetFrame color="cherry" widgetId={state.widgetId}>
+          <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
+          <WidgetContent>
+            <EditYoutubeWidgetForm onSave={saveWidget} />
+          </WidgetContent>
+        </WidgetFrame>
+      );
+    } else {
+      // somebody else made this but the video ID is not defined yet (i.e. they haven't pasted a URL in yet)
+      // don't show it.
+      return null;
+    }
   }
 
   return (
-    <WidgetFrame color="cherry" widgetId={state.id}>
+    <WidgetFrame color="cherry" widgetId={state.widgetId}>
       <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
         <WidgetResizeContainer
-          widgetId={state.id}
+          widgetId={state.widgetId}
           minWidth={480}
           minHeight={270}
           maxWidth={1440}
@@ -102,7 +106,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
           className={classes.videoContainer}
           mode="scale"
         >
-          <YouTubePlayer state={state} onChange={handleVideoChange} isMuted={isMuted} />
+          <YouTubePlayer state={state} onChange={saveWidget} isMuted={isMuted} />
           <WidgetResizeHandle />
         </WidgetResizeContainer>
       </WidgetContent>

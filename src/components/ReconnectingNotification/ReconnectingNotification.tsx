@@ -1,41 +1,20 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-
-import InfoIcon from '@material-ui/icons/Info';
 import Snackbar from '@material-ui/core/Snackbar';
-import { SnackbarContent } from '@material-ui/core';
-
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import { RoomState } from '../../constants/twilio';
-
-const useStyles = makeStyles((theme) => ({
-  snackbar: {
-    backgroundColor: theme.palette.success.light,
-  },
-  message: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  icon: {
-    marginRight: '0.8em',
-  },
-}));
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { useTranslation } from 'react-i18next';
 
 export default function ReconnectingNotification() {
-  const classes = useStyles();
+  const { t } = useTranslation();
   const roomState = useRoomState();
 
   return (
-    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} open={roomState === RoomState.Reconnecting}>
-      <SnackbarContent
-        className={classes.snackbar}
-        message={
-          <span className={classes.message}>
-            <InfoIcon className={classes.icon} />
-            Reconnecting&hellip;
-          </span>
-        }
-      />
+    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} open={roomState === RoomState.Reconnecting}>
+      <Alert severity="info">
+        <AlertTitle>{t('error.messages.mediaReconnectingTitle')}</AlertTitle>
+        {t('error.messages.mediaReconnectingDetails')}
+      </Alert>
     </Snackbar>
   );
 }

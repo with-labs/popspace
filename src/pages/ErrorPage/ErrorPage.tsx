@@ -17,32 +17,32 @@ interface IErrorPageProps {
 // Master error control, by default it will render an unexpected error.
 // will render a dfferent error page based on the error type
 export const ErrorPage: React.FC<IErrorPageProps> = (props) => {
-  const { type, errorMessage } = props;
-  var errorPage = <Unexpected errorMsg={errorMessage} />;
+  const { type, errorMessage, ...rest } = props;
+  var errorPage = <Unexpected errorMsg={errorMessage} {...rest} />;
   switch (type) {
     case ErrorCodes.UNAUTHORIZED_ROOM_ACCESS:
-      errorPage = <InvalidRoomPermission errorMsg={errorMessage} />;
+      errorPage = <InvalidRoomPermission errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.LINK_EXPIRED:
-      errorPage = <LinkExpired errorMsg={errorMessage} />;
+      errorPage = <LinkExpired errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.INVALID_LINK:
-      errorPage = <InvalidLink errorMsg={errorMessage} />;
+      errorPage = <InvalidLink errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.PAGE_NOT_FOUND:
-      errorPage = <PageNotFound errorMsg={errorMessage} />;
+      errorPage = <PageNotFound errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.ROOM_NOT_FOUND:
-      errorPage = <RoomNotFound errorMsg={errorMessage} />;
+      errorPage = <RoomNotFound errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.UNEXPECTED:
-      errorPage = <Unexpected errorMsg={errorMessage} />;
+      errorPage = <Unexpected errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.CLAIM_LINK_EXPIRED:
-      errorPage = <ClaimLinkExpired errorMsg={errorMessage} />;
+      errorPage = <ClaimLinkExpired errorMsg={errorMessage} {...rest} />;
       break;
     case ErrorCodes.JOIN_ROOM_LINK_EXPIRED:
-      errorPage = <JoinRoomExpired errorMsg={errorMessage} />;
+      errorPage = <JoinRoomExpired errorMsg={errorMessage} {...rest} />;
       break;
   }
 

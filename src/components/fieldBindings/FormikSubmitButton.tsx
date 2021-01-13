@@ -10,6 +10,7 @@ export type FormikSubmitButtonProps = ButtonProps & {
    * if the form has just 1 field.
    */
   showErrorInside?: boolean;
+  activeOnChange?: boolean;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -32,11 +33,12 @@ export const FormikSubmitButton: React.FC<FormikSubmitButtonProps> = ({
   disabled,
   children,
   showErrorInside,
+  activeOnChange,
   ...props
 }) => {
   const classes = useStyles();
-
   const context = useFormikContext();
+  const formChanged = activeOnChange ? context.dirty : true;
 
   // this assumes the error shape is flat... might not be good as we go on...
   // to compensate for uncertainty, we call .toString() below before interpolating into JSX
@@ -54,7 +56,7 @@ export const FormikSubmitButton: React.FC<FormikSubmitButtonProps> = ({
   }
 
   return (
-    <Button type="submit" disabled={!context.isValid || disabled} {...props}>
+    <Button type="submit" disabled={!context.isValid || !formChanged || disabled} {...props}>
       {showError ? firstValidationError.toString() : children}
     </Button>
   );

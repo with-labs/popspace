@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { MenuItem, ListItemText } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { actions as controlsActions } from '../roomControlsSlice';
+import { useRoomModalStore } from '../useRoomModalStore';
 
 export interface IChangelogMenuItemProps {
   onClick?: () => void;
@@ -9,14 +8,13 @@ export interface IChangelogMenuItemProps {
 }
 
 export const ChangelogMenuItem = React.forwardRef<HTMLLIElement, IChangelogMenuItemProps>((props, ref) => {
-  // we don't want to sync this state to peers.
-  const dispatch = useDispatch();
+  const openModal = useRoomModalStore((modals) => modals.api.openModal);
 
   return (
     <MenuItem
       ref={ref}
       onClick={() => {
-        dispatch(controlsActions.setIsChangelogModalOpen({ isOpen: true }));
+        openModal('changelog');
         props.onClick?.();
       }}
       dense

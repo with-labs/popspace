@@ -85,8 +85,7 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const { currentUserProfile } = useCurrentUserProfile();
-  const user = currentUserProfile?.user;
+  const { user } = useCurrentUserProfile();
 
   const onOpenHandler = () => {
     setShowConfirmation(false);

@@ -1,47 +1,39 @@
 import * as React from 'react';
 import { RouteNames } from './constants/RouteNames';
 import { Admin } from './pages/Admin/Admin';
-import Room from './pages/room';
 import { Signin } from './pages/SignIn/Signin';
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
-import { JoinRoom } from './pages/JoinRoom/JoinRoom';
-import { useRoomName } from './hooks/useRoomName/useRoomName';
-import { useAppState } from './state';
 import useQueryParams from './hooks/useQueryParams/useQueryParams';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
-
+import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
+import RoomPage from './pages/room';
+import { JoinRoom } from './pages/JoinRoom/JoinRoom';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
 
-// -------- here is the where we set up the with application
-const NamedRoom = () => {
-  const roomName = useRoomName();
-  const { error, setError } = useAppState();
-
-  if (!roomName) {
-    return <Redirect to={RouteNames.ROOT} />;
-  }
-
-  return <Room name={roomName} error={error} setError={setError} />;
-};
-
 const RootView = () => {
-  const { error, setError } = useAppState();
   const query = useQueryParams();
   const room: string | null = query.get('r');
+  const history = useHistory();
+
+  React.useEffect(() => {
+    if (room) {
+      history.replace(`/${room}`);
+    }
+  }, [room, history]);
 
   // we still support the use o the r query param, so we check if youre
   // trying to get in to a room, if we have it send you to the room
   if (room) {
-    return <Room name={room} error={error} setError={setError} />;
+    return null;
   } else {
     // send them to the dash
     return <Dashboard />;
@@ -51,9 +43,9 @@ const RootView = () => {
 export const Routes: React.FC<IRoutesProps> = (props) => {
   return (
     <Switch>
-      <Route exact path={RouteNames.ROOT}>
+      <AuthenticatedRoute exact path={RouteNames.ROOT}>
         <RootView />
-      </Route>
+      </AuthenticatedRoute>
 
       <Route exact path={RouteNames.SIGN_IN}>
         <Signin />
@@ -72,12 +64,12 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <VerifyEmail />
       </Route>
 
-      <Route path={RouteNames.JOIN_ROOM}>
-        <JoinRoom />
-      </Route>
-
       <Route path={RouteNames.LOGIN_IN_WITH_EMAIL}>
         <LoginWithEmail />
+      </Route>
+
+      <Route path={RouteNames.JOIN_ROOM}>
+        <JoinRoom />
       </Route>
 
       <AdminRoute path={RouteNames.ADMIN}>
@@ -98,9 +90,12 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         </React.Suspense>
       </Route>
 
-      <Route path="/:room_name">
-        <NamedRoom />
-      </Route>
+      <AuthenticatedRoute
+        path="/:roomName"
+        render={(renderProps) => {
+          return <RoomPage name={renderProps.match.params.roomName} />;
+        }}
+      />
     </Switch>
   );
 };

@@ -1,40 +1,29 @@
-import React, { useMemo, useEffect } from 'react';
+import React from 'react';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
 import { Person } from './people/Person';
-import { useSelector } from 'react-redux';
-import { selectors } from './roomSlice';
 import { Widget } from './widgets/Widget';
 import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { useCleanupDisconnectedPeople } from './useCleanupDisconnectedPeople';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
-import { ParticipantState } from '../../constants/twilio';
-import { Hidden } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { actions } from './roomSlice';
-import { useRoomName } from '../../hooks/useRoomName/useRoomName';
-import { PageTitle } from '../../components/PageTitle/PageTitle';
+import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
 import { EnterRoomModal } from '../roomControls/enterRoomModal/EnterRoomModal';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
+import { Hidden } from '@material-ui/core';
+import { PageTitle } from '../../components/PageTitle/PageTitle';
+import { useRoomName } from '../../hooks/useRoomName/useRoomName';
+import shallow from 'zustand/shallow';
 
 interface IRoomProps {}
-
-const CleanupDisconnectedPeople = React.memo(() => {
-  useCleanupDisconnectedPeople();
-  return null;
-});
 
 export const Room: React.FC<IRoomProps> = () => (
   <>
     <RoomViewportWrapper />
     <RoomSettingsModal />
-    <CleanupDisconnectedPeople />
     <SpeakingStateObserver />
     <UserSettingsModal />
     <EnterRoomModal />
@@ -43,34 +32,18 @@ export const Room: React.FC<IRoomProps> = () => (
   </>
 );
 
+const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgets);
+const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.users);
+
 const RoomViewportWrapper = React.memo<IRoomProps>(() => {
-  const bounds = useSelector(selectors.selectRoomBounds);
-  const widgetIds = useSelector(selectors.selectWidgetIds);
-  const backgroundUrl = useSelector(selectors.selectWallpaperUrl);
-  const dispatch = useDispatch();
+  // shallow comparator so component won't re-render if keys don't change
+  const widgetIds = useRoomStore(selectWidgetIds, shallow);
+  const peopleIds = useRoomStore(selectPeopleIds, shallow);
+
   const roomName = useRoomName();
-
-  const { allParticipants, room } = useVideoContext();
-  // only show participants who are actually connected
-  const connectedParticipants = useMemo(() => allParticipants.filter((p) => p.state === ParticipantState.Connected), [
-    allParticipants,
-  ]);
-
-  useEffect(() => {
-    return () => {
-      // When the room unmounts we should disconnect the user
-      // the main case for this is if a user hits the back button
-      // disconnecting from the room will prevent a user from doubling up
-      // if they rejoin the room after hitting back
-      room?.disconnect();
-      dispatch(actions.leave());
-    };
-  }, [room, dispatch]);
 
   return (
     <RoomViewport
-      bounds={bounds}
-      backgroundUrl={backgroundUrl}
       uiControls={
         <>
           <RoomControls />
@@ -87,8 +60,8 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
           <Widget id={id} key={id} />
         ))}
       </ErrorBoundary>
-      {connectedParticipants.map((participant) => (
-        <Person participant={participant} key={participant.sid} />
+      {peopleIds.map((id) => (
+        <Person key={id} personId={id} />
       ))}
     </RoomViewport>
   );

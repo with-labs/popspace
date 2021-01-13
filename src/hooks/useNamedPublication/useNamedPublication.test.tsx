@@ -14,11 +14,11 @@ class MockParticipant extends EventEmitter {
 
 describe('useNamedPublication hook', () => {
   it('retrieves a publication by name', async () => {
-    const mockParticipant = new MockParticipant([{ trackName: 'camera-13456' }]);
+    const mockParticipant = new MockParticipant([{ trackName: 'camera#13456' }]);
 
     const { result } = renderHook(() => useNamedPublication(mockParticipant as any, 'camera'));
 
-    expect(result.current).toEqual({ trackName: 'camera-13456' });
+    expect(result.current).toEqual({ trackName: 'camera#13456' });
   });
 
   it('adds the track when it is published', async () => {
@@ -29,21 +29,21 @@ describe('useNamedPublication hook', () => {
     expect(result.current).toBe(null);
 
     act(() => {
-      mockParticipant.emit('trackPublished', { trackName: 'camera-1234' });
+      mockParticipant.emit('trackPublished', { trackName: 'camera#1234' });
     });
 
-    expect(result.current).toEqual({ trackName: 'camera-1234' });
+    expect(result.current).toEqual({ trackName: 'camera#1234' });
   });
 
   it('removes the track when unpublished', async () => {
-    const mockParticipant = new MockParticipant([{ trackName: 'camera-1234' }]);
+    const mockParticipant = new MockParticipant([{ trackName: 'camera#1234' }]);
 
     const { result } = renderHook(() => useNamedPublication(mockParticipant as any, 'camera'));
 
-    expect(result.current).toEqual({ trackName: 'camera-1234' });
+    expect(result.current).toEqual({ trackName: 'camera#1234' });
 
     act(() => {
-      mockParticipant.emit('trackUnpublished', { trackName: 'camera-1234' });
+      mockParticipant.emit('trackUnpublished', { trackName: 'camera#1234' });
     });
 
     expect(result.current).toBe(null);

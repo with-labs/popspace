@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectors as controlSelectors, actions as controlsActions } from '../roomControlsSlice';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { APP_VERSION, USER_ONBOARDING } from '../../../constants/User';
+import { useRoomModalStore } from '../useRoomModalStore';
 
 interface IChangelogModalProps {}
 
@@ -24,14 +23,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ChangelogModal: React.FC<IChangelogModalProps> = (props) => {
-  const dispatch = useDispatch();
-  const isOpen = useSelector(controlSelectors.selectIsChangelogModalOpen);
+  const isOpen = useRoomModalStore((modals) => modals.changelog);
+  const { openModal, closeModal } = useRoomModalStore((modals) => modals.api);
 
   const { t } = useTranslation();
   const classes = useStyles();
 
   const onCloseHandler = () => {
-    dispatch(controlsActions.setIsChangelogModalOpen({ isOpen: false }));
+    closeModal('changelog');
   };
 
   useEffect(() => {
@@ -47,13 +46,13 @@ export const ChangelogModal: React.FC<IChangelogModalProps> = (props) => {
 
       // if the version dont match, then just pop the whats new modal on load
       if (currentVersion !== savedVersion) {
-        dispatch(controlsActions.setIsChangelogModalOpen({ isOpen: true }));
+        openModal('changelog');
       }
 
       // save of the current app version
       localStorage.setItem(APP_VERSION, currentVersion);
     }
-  }, [dispatch]);
+  }, [openModal]);
 
   return (
     <Modal onClose={onCloseHandler} isOpen={isOpen} fullWidth={false}>

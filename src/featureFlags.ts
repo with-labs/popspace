@@ -10,6 +10,9 @@ const flagDefinitions = {
   opengraph: {
     description: 'Allows rich link previews with OpenGraph.io',
   },
+  mockUsers: {
+    description: 'Allows creating Mock User widgets',
+  },
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

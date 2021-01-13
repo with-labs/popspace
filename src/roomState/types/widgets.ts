@@ -6,6 +6,8 @@ export enum WidgetType {
   Whiteboard = 'WHITEBOARD',
   YouTube = 'YOU_TUBE',
   SidecarStream = 'SIDECAR_STREAM',
+  // not used by end-users - this is just for demos
+  MockUser = 'MOCK_USER',
 }
 
 export interface StickyNoteWidgetState {
@@ -45,6 +47,11 @@ export interface SidecarStreamWidgetState {
   audioTrackName?: string;
 }
 
+export interface MockUserWidgetState {
+  displayName: string;
+  video: string;
+}
+
 /** Common properties to all widgets */
 export interface BaseWidgetShape {
   widgetId: string;
@@ -59,6 +66,7 @@ export type WidgetStateByType = {
   [WidgetType.Whiteboard]: WhiteboardWidgetState;
   [WidgetType.YouTube]: YoutubeWidgetState;
   [WidgetType.SidecarStream]: SidecarStreamWidgetState;
+  [WidgetType.MockUser]: MockUserWidgetState;
 };
 export type WidgetShapeByType = {
   [WidgetType.StickyNote]: BaseWidgetShape & {
@@ -76,6 +84,9 @@ export type WidgetShapeByType = {
   [WidgetType.SidecarStream]: BaseWidgetShape & {
     widgetState: SidecarStreamWidgetState;
   };
+  [WidgetType.MockUser]: BaseWidgetShape & {
+    widgetState: MockUserWidgetState;
+  };
 };
 export type WidgetShapeForType<T extends WidgetType> = WidgetShapeTable[T];
 
@@ -92,6 +103,7 @@ export type StickyNoteWidgetShape = WidgetShapeTable[WidgetType.StickyNote];
 export type WhiteboardWidgetShape = WidgetShapeTable[WidgetType.Whiteboard];
 export type YoutubeWidgetShape = WidgetShapeTable[WidgetType.YouTube];
 export type ScreenShareWidgetShape = WidgetShapeTable[WidgetType.SidecarStream];
+export type MockUserWidgetShape = WidgetShapeTable[WidgetType.MockUser];
 
 export type WidgetShape = Unionize<WidgetShapeTable>;
 

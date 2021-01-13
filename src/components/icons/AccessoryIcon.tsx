@@ -7,7 +7,7 @@ import { ReactComponent as WhiteboardIcon } from './svg/tray_whiteboard.svg';
 import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
 import { WidgetType } from '../../roomState/types/widgets';
 
-const icons: Record<WidgetType, React.FC<any>> = {
+const icons: Partial<Record<WidgetType, React.FC<any>>> = {
   [WidgetType.Link]: LinkIcon,
   [WidgetType.StickyNote]: StickyNoteIcon,
   [WidgetType.Whiteboard]: WhiteboardIcon,
@@ -23,7 +23,7 @@ export function AccessoryIcon({ type, ...props }: AccessoryIconProps) {
   const Glyph = icons[type];
   return (
     <SvgIcon {...props} viewBox="0 0 32 32">
-      <Glyph />
+      {Glyph && <Glyph />}
     </SvgIcon>
   );
 }

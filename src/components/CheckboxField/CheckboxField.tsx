@@ -12,7 +12,7 @@ const useLabelStyles = makeStyles((theme) => ({
   },
 }));
 
-export interface ICheckboxProps {
+export interface ICheckboxFieldProps {
   className?: string;
   label: string | React.ReactNode;
   checked: boolean;
@@ -26,7 +26,7 @@ export interface ICheckboxProps {
 /**
  * Extends the Checkbox into a field with a label
  */
-export const CheckboxField: React.FC<ICheckboxProps> = (props) => {
+export const CheckboxField: React.FC<ICheckboxFieldProps> = (props) => {
   const {
     className,
     label: labelText,

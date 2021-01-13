@@ -35,3 +35,8 @@ interface Fonts extends EventSource {
 declare interface Document {
   fonts: Fonts;
 }
+
+declare module '*.mp4' {
+  const path: string;
+  export default path;
+}

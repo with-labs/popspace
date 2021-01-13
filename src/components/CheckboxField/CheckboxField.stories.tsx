@@ -1,4 +1,4 @@
-import { CheckboxField, ICheckboxProps } from './CheckboxField';
+import { CheckboxField, ICheckboxFieldProps } from './CheckboxField';
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 
@@ -8,7 +8,7 @@ export default {
   argTypes: {},
 };
 
-const Template: Story<ICheckboxProps> = (args) => <CheckboxField {...args} />;
+const Template: Story<ICheckboxFieldProps> = (args) => <CheckboxField {...args} />;
 
 export const Primary = Template.bind({});
 Primary.args = {

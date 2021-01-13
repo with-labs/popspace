@@ -6,6 +6,7 @@ import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { WidgetShape, WidgetType } from '../../../roomState/types/widgets';
+import { MockUserWidget } from './mockUser/MockUserWidget';
 
 export interface IWidgetProps {
   id: string;
@@ -52,5 +53,7 @@ const WidgetContent = React.memo<IWidgetContentProps>(({ widget, onClose }) => {
       return <YoutubeWidget state={widget} onClose={onClose} />;
     case WidgetType.SidecarStream:
       return <ScreenShareWidget state={widget} onClose={onClose} />;
+    case WidgetType.MockUser:
+      return <MockUserWidget state={widget} onClose={onClose} />;
   }
 });

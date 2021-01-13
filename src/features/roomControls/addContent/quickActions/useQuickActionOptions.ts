@@ -2,6 +2,7 @@ import { QuickAction, QuickActionKind } from './types';
 import { useTranslation } from 'react-i18next';
 import { parseYoutubeLink } from '../../../../utils/youtube';
 import { WidgetType } from '../../../../roomState/types/widgets';
+import { useFeatureFlag } from 'flagg';
 
 function useStickyNoteQuickActions(prompt: string): QuickAction[] {
   const { t } = useTranslation();
@@ -159,6 +160,30 @@ function useStatusQuickActions(prompt: string): QuickAction[] {
   return [];
 }
 
+function useMockuserQuickActions(prompt: string): QuickAction[] {
+  const [hasMockUsers] = useFeatureFlag('mockUsers');
+
+  if (!hasMockUsers) return [];
+
+  if (prompt && prompt === 'mockuser') {
+    return [
+      {
+        kind: QuickActionKind.AddAccessory,
+        accessoryData: {
+          displayName: '',
+          video: '',
+          muted: false,
+        },
+        accessoryType: WidgetType.MockUser,
+        confidence: 10,
+        displayName: 'Add mock user',
+      },
+    ];
+  }
+
+  return [];
+}
+
 /**
  * This function processes the input the user typed and
  * determines which actions are available, as well as what
@@ -172,5 +197,6 @@ export function useQuickActionOptions(prompt: string): QuickAction[] {
     ...useYoutubeQuickActions(trimmed),
     ...useStatusQuickActions(trimmed),
     ...useWhiteboardQuickActions(trimmed),
+    ...useMockuserQuickActions(trimmed),
   ].sort((a, b) => b.confidence - a.confidence);
 }

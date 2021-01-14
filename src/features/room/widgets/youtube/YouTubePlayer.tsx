@@ -50,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: 'none',
 
     zIndex: 5,
+    // BUGFIX: chromium #1068474, layers are composited incorrectly with iframe/canvas and the controls are
+    // hidden beneath the video despite being above it
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1068474&q=overflow%20hidden%20scale&can=2
+    // will-change: top fixes this behavior as a hack.
+    willChange: 'top',
 
     '&:focus-within': {
       visibility: 'visible',

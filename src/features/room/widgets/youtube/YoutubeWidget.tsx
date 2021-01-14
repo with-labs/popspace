@@ -58,6 +58,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: '100%',
   },
+  resizeHandle: {
+    // BUGFIX: chromium #1068474, layers are composited incorrectly with iframe/canvas and the controls are
+    // hidden beneath the video despite being above it
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1068474&q=overflow%20hidden%20scale&can=2
+    // will-change: top fixes this behavior as a hack.
+    willChange: 'top',
+  },
 }));
 
 export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose }) => {
@@ -107,7 +114,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
           mode="scale"
         >
           <YouTubePlayer state={state} onChange={saveWidget} isMuted={isMuted} />
-          <WidgetResizeHandle />
+          <WidgetResizeHandle className={classes.resizeHandle} />
         </WidgetResizeContainer>
       </WidgetContent>
     </WidgetFrame>

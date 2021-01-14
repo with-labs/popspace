@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { ResizeHandle } from '../../../components/ResizeContainer/ResizeHandle';
+import clsx from 'clsx';
 
-export interface IWidgetResizeHandleProps {}
+export interface IWidgetResizeHandleProps {
+  className?: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,5 +18,5 @@ const useStyles = makeStyles((theme) => ({
 export const WidgetResizeHandle: React.FC<IWidgetResizeHandleProps> = (props) => {
   const classes = useStyles();
 
-  return <ResizeHandle className={classes.root} />;
+  return <ResizeHandle className={clsx(classes.root, props.className)} />;
 };

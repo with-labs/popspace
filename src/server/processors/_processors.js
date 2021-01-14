@@ -3,6 +3,6 @@ module.exports = {
   AuthProcessor: require("./auth_processor"),
   UpdateProcessor: require("./update_processor"),
   GetProcessor: require("./get_processor"),
-  EchoProcessor: require("./echo_processor"),
+  PassthroughProcessor: require("./passthrough_processor"),
   DeleteProcessor: require("./delete_processor")
 }

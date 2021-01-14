@@ -136,4 +136,34 @@ module.exports = {
       roomStateAfterDelete
     }
   }),
+
+  "passthrough": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {
+    const sender = testEnvironment.loggedInUsers[0].client
+    const event = sender.makeEvent("passthrough", {payload: {anything: "canGoHere"}})
+    const received = []
+    const receivals = new Promise((resolve, reject) => {
+      const receivers = testEnvironment
+        .loggedInUsers
+        .map((loggedInUser) => (loggedInUser.client))
+        .splice(1)
+      let remaining = receivers.length
+      receivers.forEach((receiver) => {
+        receiver.on("event.passthrough", (event) => {
+          received.push(event)
+          remaining--
+          if(remaining <= 0) {
+            resolve()
+          }
+        })
+      })
+    })
+    // No response for passthrough events
+    await sender.sendEvent(event)
+    await receivals
+
+    return {
+      sentEvent: event,
+      receivedEvents: received
+    }
+  })
 }

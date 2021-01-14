@@ -7,13 +7,14 @@ const ACTION_BY_EVENT_KIND = {
   "transformSelf": "update",
   "updateSelf": "update",
   "updateRoomState": "update",
-  "echo": "echo",
   "leave": "delete",
   "deleteWidget": "delete",
   "getRoom": "get",
   "getWidget": "get",
   "auth": "auth",
-  "ping": "echo"
+  "ping": "passthrough",
+  "echo": "passthrough",
+  "passthrough": "passthrough"
 }
 
 const PUBLIC_EVENT_KINDS = {
@@ -26,7 +27,7 @@ const processors = {
   create: new _processors.CreateProcessor(),
   update: new _processors.UpdateProcessor(),
   get: new _processors.GetProcessor(),
-  echo: new _processors.EchoProcessor(),
+  passthrough: new _processors.PassthroughProcessor(),
   delete: new _processors.DeleteProcessor(),
 
 }

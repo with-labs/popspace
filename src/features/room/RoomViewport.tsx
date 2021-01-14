@@ -88,12 +88,6 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     transformOrigin: 'center center',
     borderRadius: 10,
     backgroundSize: 'cover',
-    // Important! This forces the canvas to be its own composition layer in the browser
-    // render pipeline. That means the canvas (which contains all the widgets, people,
-    // and other room objects) will be rasterized separately from the background
-    // and any foreground (controls) elements. This seems to have a huge
-    // impact on rendering performance.
-    willChange: 'transform',
   },
 });
 
@@ -134,7 +128,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
+  const [{ centerX, centerY, isPanning }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
     isPanning: false,
@@ -228,15 +222,16 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: centerY.goal,
       });
 
-      setZoomSpring({
-        zoom: clamped,
-        config: spring ?? VIEWPORT_ZOOM_SPRING,
-      });
-      setPanSpring({
+      const panPromise = setPanSpring({
         centerX: clampedPan.x,
         centerY: clampedPan.y,
         config: spring ?? VIEWPORT_PAN_SPRING,
       });
+      const zoomPromise = setZoomSpring({
+        zoom: clamped,
+        config: spring ?? VIEWPORT_ZOOM_SPRING,
+      });
+      return Promise.all([panPromise, zoomPromise]);
     },
     [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring]
   );
@@ -245,7 +240,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     (delta: number, spring?: SpringConfig) => {
       const currentZoom = zoom.goal;
       const added = currentZoom + delta;
-      doAbsoluteZoom(added, spring);
+      return doAbsoluteZoom(added, spring);
     },
     [doAbsoluteZoom, zoom]
   );
@@ -262,9 +257,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: centerY.goal - delta.y / zoom.goal,
       });
 
-      setPanSpring({
+      return setPanSpring({
         centerX: clamped.x,
         centerY: clamped.y,
+        isPanning: true,
         config: spring ?? VIEWPORT_PAN_SPRING,
       });
     },
@@ -285,7 +281,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   React.useEffect(() => {
     if (!isReady) return;
 
-    const timeout = setTimeout(() => {
+    const timeout = setTimeout(async () => {
       if (!userId) return;
 
       // find user's position
@@ -293,9 +289,15 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       const userPosition = room.userPositions[userId];
       const point = userPosition.position;
 
+      // set flags to control rasterization optimizations
+      setPanSpring({ isPanning: true });
+      setZoomSpring({ isZooming: true });
       // zoom in
-      doAbsoluteZoomRef.current(INITIAL_ZOOM, RELAXED_SPRING);
-      doPanRef.current(point, RELAXED_SPRING);
+      const zoomResult = doAbsoluteZoomRef.current(INITIAL_ZOOM, RELAXED_SPRING);
+      const panResult = doPanRef.current(point, RELAXED_SPRING);
+      await Promise.all([zoomResult, panResult]);
+      setPanSpring({ isPanning: false });
+      setZoomSpring({ isZooming: false });
     }, 1000);
     return () => clearTimeout(timeout);
   }, [userId, isReady, setPanSpring, setZoomSpring, doPanRef, doAbsoluteZoomRef]);
@@ -438,6 +440,17 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
                 // 4. Translate the center according to the pan position
                 return `translate(${-halfCanvasWidth}px, ${-halfCanvasHeight}px) translate(${halfWindowWidth}px, ${halfWindowHeight}px) scale(${zoomv}, ${zoomv}) translate(${cx}px, ${cy}px)`;
               }),
+              /**
+               * Animating will-change is very important for both performance and render quality.
+               * By setting will-change=transform while the viewport pans or zooms, we tell the browser
+               * to minimize repainting during these animations, keeping them smooth. By setting it
+               * back to initial after the animation ends, we tell the browser to re-rasterize the
+               * scene at the current scale and position - this makes text and images crisp up as
+               * if they were being natively rendered at their current pixel size.
+               */
+              willChange: to([isZooming, isPanning], (zoomingv, panningv) =>
+                zoomingv || panningv ? 'transform' : 'initial'
+              ) as any,
             }}
           >
             {/*

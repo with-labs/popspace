@@ -46,18 +46,6 @@ describe('the useRoom hook', () => {
     expect(window.addEventListener).toHaveBeenCalledWith('beforeunload', expect.any(Function));
   });
 
-  it('should remove the listener for the "beforeUnload" event when the room is disconnected', async () => {
-    jest.spyOn(window, 'removeEventListener');
-    const { result, waitForNextUpdate } = renderHook(() => useRoom(() => {}, {}));
-    act(() => {
-      result.current.connect('token');
-    });
-    await waitForNextUpdate();
-    result.current.room!.emit('disconnected');
-    await waitForNextUpdate();
-    expect(window.removeEventListener).toHaveBeenCalledWith('beforeunload', expect.any(Function));
-  });
-
   it('should call onError and set isConnecting to false when there is an error', async () => {
     const mockOnError = jest.fn();
     mockVideoConnect.mockImplementationOnce(() => Promise.reject('mockError'));
@@ -76,8 +64,9 @@ describe('the useRoom hook', () => {
     });
     await waitForNextUpdate();
     expect(result.current.room!.state).toBe('connected');
-    result.current.room!.emit('disconnected');
-    await waitForNextUpdate();
+    act(() => {
+      result.current.room!.emit('disconnected', result.current.room!);
+    });
     expect(result.current.room).toBe(null);
   });
 });

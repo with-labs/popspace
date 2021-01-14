@@ -1,9 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useEffect } from 'react';
 import { ConnectOptions, Room, LocalParticipant, RemoteParticipant } from 'twilio-video';
-import { Callback } from '../../types/twilio';
 import AttachVisibilityHandler from './AttachVisibilityHandler/AttachVisibilityHandler';
-import useHandleRoomDisconnectionErrors from './useHandleRoomDisconnectionErrors/useHandleRoomDisconnectionErrors';
-import useHandleOnDisconnect from './useHandleOnDisconnect/useHandleOnDisconnect';
 import useHandleTrackPublicationFailed from './useHandleTrackPublicationFailed/useHandleTrackPublicationFailed';
 import useRoom from './useRoom/useRoom';
 import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalTrackPublications';
@@ -35,9 +32,6 @@ export class FatalError extends Error {
 export interface IVideoContext {
   room: Room | null;
   isConnecting: boolean;
-  connect: (token: string) => Promise<Room | null>;
-  onError: (err: Error) => void;
-  onDisconnect: Callback;
   allParticipants: (LocalParticipant | RemoteParticipant)[];
 }
 
@@ -46,7 +40,6 @@ export const VideoContext = createContext<IVideoContext>(null!);
 interface VideoProviderProps {
   options?: ConnectOptions;
   onError: (err: Error) => void;
-  onDisconnect?: Callback;
   children: ReactNode;
   roomName: string;
 }
@@ -56,13 +49,7 @@ const TrackPublisher = () => {
   return null;
 };
 
-export function VideoProvider({
-  options,
-  children,
-  onError = noop,
-  onDisconnect = noop,
-  roomName,
-}: VideoProviderProps) {
+export function VideoProvider({ options, children, onError = noop, roomName }: VideoProviderProps) {
   const { t } = useTranslation();
 
   const onErrorCallback = useCallback(
@@ -105,9 +92,7 @@ export function VideoProvider({
   }, [connect, roomName, onErrorCallback, t]);
 
   // Register onError and onDisconnect callback functions.
-  useHandleRoomDisconnectionErrors(room, onError);
   useHandleTrackPublicationFailed(room, onError);
-  useHandleOnDisconnect(room, onDisconnect);
 
   const allParticipants = useAllParticipants(room);
 
@@ -116,9 +101,6 @@ export function VideoProvider({
       value={{
         room,
         isConnecting,
-        onError: onErrorCallback,
-        onDisconnect,
-        connect,
         allParticipants,
       }}
     >

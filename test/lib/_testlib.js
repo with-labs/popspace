@@ -1,6 +1,9 @@
 require("dotenv").config()
+if(process.env.NODE_ENV != 'test') {
+  throw "NODE_ENV must be test"
+}
+
 require("jest")
-process.env.NODE_ENV = 'test'
 
 const tlib = {
   util: require("./util"),

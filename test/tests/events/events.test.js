@@ -54,4 +54,13 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
     expect(result.roomStateAfterCreate.payload.widgets.length - 1).toEqual(result.roomStateAfterDelete.payload.widgets.length)
   })
 
+  test('passthrough events', async () => {
+    const result = await scenarios["passthrough"]()
+    expect(result.sentEvent.kind).toEqual("passthrough")
+    for(const receivedEvent of result.receivedEvents) {
+      expect(receivedEvent.kind).toEqual("passthrough")
+      expect(receivedEvent.payload).toEqual(result.sentEvent.payload)
+    }
+  })
+
 })

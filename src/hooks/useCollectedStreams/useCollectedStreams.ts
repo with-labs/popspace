@@ -23,6 +23,7 @@ function getParticipantStreams(participant: Participant): { av: Stream | null; s
   return {
     av: !!(camera || microphone)
       ? {
+          kind: 'av',
           videoPublication: camera,
           audioPublication: microphone,
           id: `${participant.identity}-av`,
@@ -31,6 +32,7 @@ function getParticipantStreams(participant: Participant): { av: Stream | null; s
       : null,
     screen: !!(screenVideo || screenAudio)
       ? {
+          kind: 'screen',
           videoPublication: screenVideo,
           audioPublication: screenAudio,
           id: `${participant.identity}-screen`,

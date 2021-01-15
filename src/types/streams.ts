@@ -13,4 +13,5 @@ export type Stream = {
   videoPublication: RemoteTrackPublication | LocalTrackPublication | null;
   audioPublication: RemoteTrackPublication | LocalTrackPublication | null;
   participantIdentity: string;
+  kind: 'av' | 'screen';
 };

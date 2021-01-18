@@ -17,7 +17,7 @@ class Magic extends DbAccess {
 
   async createUnsubscribe(userId) {
     const existingLink = await db.pg.massive.magic_links.findOne({
-      userId: userId,
+      user_id: userId,
       expires_at: null,
       resolved_at: null,
       action: Magic.actions.UNSUBSCRIBE

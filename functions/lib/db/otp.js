@@ -4,6 +4,19 @@ const moment = require("moment")
 const STANDARD_REQUEST_DURATION_MILLIS = 60 * 60 * 1000
 const ONE_DAY_MILLIS = 24 * 60 * 60 * 1000
 
+/**
+Some mail services visit email links to check for viruses.
+
+This resolves the magic link before the user actually clicks on it.
+To prevent this, we retain link validity for some time after they are
+initially resolved.
+*/
+const RESOLVED_AT_DOUBLE_RESOLVE_BUFFER_MILLIS = 15 * 60 * 1000
+
+const isPastResolvedOtpBuffer = (resolvedAt) => {
+  return moment.utc().valueOf() - moment(resolvedAt).valueOf() > RESOLVED_AT_DOUBLE_RESOLVE_BUFFER_MILLIS
+}
+
 const otplib = {
   isExpired: (entity) => {
     if(!entity.expires_at) return false;
@@ -15,7 +28,9 @@ const otplib = {
     if(!request || request.otp != otp || request.revoked_at) {
       return { error: lib.db.ErrorCodes.otp.INVALID_OTP }
     }
-    if(request.resolved_at) {
+    // Note: one other thing we can do that may be equivalent is to
+    // just rely on the expiry, and allow resolved unexpired links to be reused
+    if(request.resolved_at && isPastResolvedOtpBuffer(request.resolved_at)) {
       return { error: lib.db.ErrorCodes.otp.RESOLVED_OTP }
     }
     if(otplib.isExpired(request)) {

@@ -10,12 +10,12 @@ export const OpenInNewTabOption = () => {
   const { t } = useTranslation();
   const {
     widget: {
-      widgetState: { mediaUrl },
+      widgetState: { url },
     },
   } = useWidgetContext<WidgetType.Link>();
 
   return (
-    <MenuItem button component={Link} to={mediaUrl!} newTab>
+    <MenuItem button component={Link} to={url} newTab disableStyling>
       <ListItemIcon>
         <OpenIcon />
       </ListItemIcon>

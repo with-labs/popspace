@@ -72,7 +72,31 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
         },
       ];
     } catch (err) {
-      return [];
+      // it's not a link verbatim, check more options below
+    }
+  }
+
+  const iframeMatch = /^<iframe .*src="(.+?)".*<\/iframe>$/.exec(prompt);
+  if (iframeMatch) {
+    const src = iframeMatch[1];
+    try {
+      new URL(src);
+      return [
+        {
+          kind: QuickActionKind.AddAccessory,
+          accessoryType: WidgetType.Link,
+          displayName: t('widgets.link.quickActionAddEmbed'),
+          accessoryData: {
+            url: src,
+            title: t('widgets.link.embedTitle'),
+            iframeUrl: src,
+            showIframe: true,
+          },
+          confidence: 8,
+        },
+      ];
+    } catch (err) {
+      // malformed iframe tag, keep going below.
     }
   }
 
@@ -91,7 +115,9 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
         displayName: t('widgets.youtube.quickActionTitle'),
         accessoryData: {
           videoId: null,
-          playStartedTimestampUTC: null,
+          mediaState: {
+            playStartedTimestampUTC: null,
+          },
         },
         confidence: 5,
       },
@@ -107,9 +133,11 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
           displayName: t('widgets.youtube.quickActionTitle'),
           accessoryData: {
             videoId: parsed.videoId,
-            timestamp: parsed.timestamp || parsed.start || 0,
-            isPlaying: true,
-            playStartedTimestampUTC: new Date().toUTCString(),
+            mediaState: {
+              timestamp: parsed.timestamp || parsed.start || 0,
+              isPlaying: true,
+              playStartedTimestampUTC: new Date().toUTCString(),
+            },
           },
           confidence: 10,
         },

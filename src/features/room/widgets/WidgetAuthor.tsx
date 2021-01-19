@@ -1,23 +1,15 @@
 import * as React from 'react';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useWidgetContext } from './useWidgetContext';
 
-export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {
-  widgetId: string;
-}
+export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {}
 
 /**
  * Renders the name of a widget's author
  */
-export const WidgetAuthor: React.FC<IWidgetAuthorProps> = ({ widgetId, ...rest }) => {
-  const authorName = useRoomStore(
-    React.useCallback(
-      (room) => {
-        const widget = room.widgets[widgetId];
-        return widget?.ownerDisplayName ?? 'Anonymous';
-      },
-      [widgetId]
-    )
-  );
+export const WidgetAuthor: React.FC<IWidgetAuthorProps> = (props) => {
+  const {
+    widget: { ownerDisplayName: authorName },
+  } = useWidgetContext();
 
-  return <span {...rest}>{authorName}</span>;
+  return <span {...props}>{authorName ?? 'Anonymous'}</span>;
 };

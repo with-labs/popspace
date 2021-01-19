@@ -1,7 +1,7 @@
 import { vectorDistance } from '../../utils/math';
-import { useCallback } from 'react';
-import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
-import { useRoomStore } from '../../roomState/useRoomStore';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
+import { logger } from '../../utils/logger';
 
 // in world space coordinates - this is the farthest possible distance
 // you can hear someone / something from - even if very faintly.
@@ -14,54 +14,53 @@ function computeVolumeFalloff(percentOfMaxRange: number) {
 }
 
 /**
- * Compute the audio volume based on the position of an object relative to the
- * active person.
+ * Calls the supplied callback every time the volume changes based on
+ * the room object you provide and its position relative to the user
  *
- * TODO: make this accept a callback instead, which updates the volume
- * outside of the React render loop - otherwise it re-renders everything
- * on move!
- *
- * @param objectId The ID of any object in the room state - widget or person
+ * @returns a ref to the last recorded volume value for out-of-band usage
  */
-export function useSpatialAudioVolume(objectKind: 'widget' | 'user', objectId: string | null) {
-  const { user } = useCurrentUserProfile();
-  const localUserId = user?.id ?? null;
+export function useSpatialAudioVolume(
+  objectKind: 'widget' | 'user',
+  objectId: string | null,
+  callback: (volume: number) => any
+) {
+  // storing in a ref to keep a stable reference
+  const callbackRef = useRef(callback);
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
 
-  const localUserPosition = useRoomStore(
-    useCallback((room) => room.userPositions[localUserId ?? '']?.position, [localUserId])
-  ) ?? { x: 0, y: 0 };
-  const otherPosition = useRoomStore(
-    useCallback(
-      (room) =>
+  const lastValue = useRef(0);
+
+  useEffect(() => {
+    const selectVolume = (room: RoomStateShape) => {
+      if (!room.sessionId) return Infinity;
+
+      const objPosition =
         objectKind === 'widget'
           ? room.widgetPositions[objectId ?? '']?.position
-          : room.userPositions[objectId ?? '']?.position,
-      [objectId, objectKind]
-    )
-  ) ?? {
-    x: 0,
-    y: 0,
-  };
+          : room.userPositions[objectId ?? '']?.position;
+      const userPosition = room.userPositions[room.sessionLookup[room.sessionId]]?.position;
 
-  const distance = vectorDistance(localUserPosition, otherPosition);
+      if (!objPosition || !userPosition) return 0;
 
-  // The math for calculating the volume of a participant
-  // is based on positioning of elements from top, left with a relative
-  // range from 0 - 1, then multiplied by the screen width and height. There is
-  // an assumption that all values for top and left are between 0 and 1.
-  // However, there can be top and left values outside of that range, by dragging
-  // and dropping a participant partially "off screen." Those scenarios cause
-  // issues with the math needed to create the volume curves. So, I'm forcing
-  // the valued between 0 and 1, via Math.min and Math.max
-  const dist = Math.max(Math.min(distance, MAX_RANGE), 0) / MAX_RANGE;
+      const normalizedDistance =
+        Math.max(Math.min(vectorDistance(objPosition, userPosition), MAX_RANGE), 0) / MAX_RANGE;
+      return computeVolumeFalloff(normalizedDistance);
+    };
 
-  // The below limits and calculation derived from cosine curve, linked here
-  // https://www.desmos.com/calculator/jobehh1xex
-  // The equation used here is arbitrary. It was selected because the curve
-  // it produces matches the design team's desire for how user's experince
-  // audio in the space of the room. Look at the link above to see the
-  // curve generated (desmos.com link).
-  const volume = computeVolumeFalloff(dist);
+    lastValue.current = selectVolume(useRoomStore.getState());
 
-  return volume;
+    return useRoomStore.subscribe((volume: number) => {
+      lastValue.current = volume;
+      // sanity check
+      if (!isNaN(volume)) {
+        callbackRef.current(volume);
+      } else {
+        logger.warn(`NaN volume for ${objectId}!`);
+      }
+    }, selectVolume);
+  }, [objectId, objectKind, callbackRef]);
+
+  return lastValue;
 }

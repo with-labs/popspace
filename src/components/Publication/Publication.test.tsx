@@ -11,7 +11,9 @@ const mockUseTrack = useTrack as jest.Mock<any>;
 
 jest.mock('../../hooks/useSpatialAudioVolume/useSpatialAudioVolume');
 const mockUseSpatialAudioVolume = useSpatialAudioVolume as jest.Mock<any>;
-mockUseSpatialAudioVolume.mockImplementation(() => 0.5);
+mockUseSpatialAudioVolume.mockImplementation(() => {
+  return { current: 1 };
+});
 
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {
@@ -114,22 +116,5 @@ describe('the Publication component', () => {
     );
     expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
     expect(wrapper.container.querySelectorAll('*').length).toBe(0);
-  });
-
-  it('should render null when media is not ready (no user gesture yet)', () => {
-    mockUseTrack.mockImplementation(() => ({
-      kind: 'audio',
-      name: 'mic',
-      attach: jest.fn(),
-      detach: jest.fn(),
-      setPriority: jest.fn(),
-    }));
-    const wrapper = render(
-      <MediaReadinessContext.Provider value={{ isReady: false, onReady: jest.fn() }}>
-        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
-      </MediaReadinessContext.Provider>
-    );
-    expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
-    expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
   });
 });

@@ -6,6 +6,11 @@ export interface IResponsiveMenuProps {
   open: boolean;
   onClose: () => void;
   className?: string;
+  /**
+   * Listen for any bubbled click events within the menu - good
+   * for closing the menu after a selection has been made
+   */
+  onClick?: (ev: React.MouseEvent) => void;
 }
 
 const noop = () => {};

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { debounce } from '@material-ui/core';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { logger } from '../../../utils/logger';
+import { useRoomStore } from '../../../roomState/useRoomStore';
 
 function getFileDropItems(ev: DragEvent) {
   const items: File[] = [];
@@ -44,6 +45,7 @@ export function useFileDrop() {
   const { enqueueSnackbar } = useSnackbar();
 
   const addWidget = useAddAccessory();
+  const updateWidget = useRoomStore((room) => room.api.updateWidget);
 
   const onDrop = useCallback(
     (ev: DragEvent) => {
@@ -64,6 +66,27 @@ export function useFileDrop() {
           if (!success) {
             enqueueSnackbar(t('error.messages.fileDropUnknownFailure'), { color: 'error' });
           } else {
+            // immediately add a pending widget, but don't block on it yet
+            const widgetAddedPromise = addWidget({
+              type: WidgetType.Link,
+              initialData: {
+                url: downloadUrl,
+                mediaUrl: downloadUrl,
+                title: file.name,
+                mediaContentType: file.type,
+                uploadProgress: 0,
+              },
+              screenCoordinate: mousePosition,
+            }).then((response) => {
+              // this isn't super semantic, but basically running two logic threads
+              // in parallel here - this promise chain will run while we upload
+              // the file to S3. The goal is to remove the drop preview placeholder
+              // as soon as we have a widget to replace it with, then return
+              // the widget response.
+              setTargetPosition(null);
+              return response;
+            });
+
             // read file as arraybuffer
             const fileBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
               const reader = new FileReader();
@@ -81,28 +104,29 @@ export function useFileDrop() {
               body: new Blob([fileBuffer], { type: file.type }),
             });
 
-            addWidget({
-              type: WidgetType.Link,
-              initialData: {
+            // wait for widget creation to complete too
+            const widget = await widgetAddedPromise;
+
+            // add the URL data to the widget now that the file is ready
+            updateWidget({
+              widgetId: widget.widgetId,
+              widgetState: {
+                ...widget.widgetState,
                 url: downloadUrl,
-                title: file.name,
-                mediaContentType: file.type,
-                mediaUrl: downloadUrl,
+                uploadProgress: 100,
               },
-              screenCoordinate: mousePosition,
             });
           }
         } catch (err) {
           logger.error(err);
         } finally {
-          setTargetPosition(null);
           isFileDropRef.current = false;
         }
       };
 
       files.map(createWidget);
     },
-    [addWidget, enqueueSnackbar, t]
+    [addWidget, updateWidget, enqueueSnackbar, t]
   );
 
   const onDragEnter = useCallback((ev: DragEvent) => {

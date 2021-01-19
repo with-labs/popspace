@@ -10,6 +10,23 @@ export enum WidgetType {
   MockUser = 'MOCK_USER',
 }
 
+/**
+ * A common data interface related to media playback which
+ * is synchronized between peers
+ */
+export interface WidgetMediaState {
+  timestamp?: number;
+  /**
+   * If the media is currently playing,
+   * this records when it started. The client can use
+   * this to compute a more exact timestamp, by adding
+   * the elapsed time since play started to the recorded
+   * timestamp.
+   */
+  playStartedTimestampUtc: string | null;
+  isPlaying?: boolean;
+}
+
 export interface StickyNoteWidgetState {
   text: string;
 }
@@ -19,7 +36,20 @@ export interface LinkWidgetState {
   title?: string;
   mediaUrl?: string;
   mediaContentType?: string;
-  description?: string;
+  /**
+   * Percentage progress of upload, from 0-100
+   */
+  uploadProgress?: number;
+  /**
+   * Should everyone see this link as an iframe?
+   */
+  showIframe?: boolean;
+  /**
+   * If the link has any embeddable content, this property will
+   * be the URL to provide to the iframe.
+   */
+  iframeUrl?: string | null;
+  mediaState?: WidgetMediaState;
 }
 
 export interface WhiteboardWidgetState {
@@ -27,16 +57,7 @@ export interface WhiteboardWidgetState {
 }
 
 export interface YoutubeWidgetState {
-  timestamp?: number;
-  /**
-   * If the video is currently playing,
-   * this records when it started. The client can use
-   * this to compute a more exact timestamp, by adding
-   * the elapsed time since play started to the recorded
-   * timestamp.
-   */
-  playStartedTimestampUTC: string | null;
-  isPlaying?: boolean;
+  mediaState?: WidgetMediaState;
   videoId: string;
 }
 

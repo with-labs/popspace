@@ -7,6 +7,7 @@ import { DraggableContext } from '../Draggable';
 export interface IWidgetContentProps {
   disablePadding?: boolean;
   className?: string;
+  enableTextSelection?: boolean;
 }
 
 const useStyles = makeStyles<Theme, IWidgetContentProps>((theme) => ({
@@ -18,9 +19,15 @@ const useStyles = makeStyles<Theme, IWidgetContentProps>((theme) => ({
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    userSelect: 'text',
   }),
+  enableTextSelection: {
+    userSelect: 'text',
+  },
 }));
+
+function preventDefault(ev: React.DragEvent) {
+  ev.preventDefault();
+}
 
 export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
   const classes = useStyles(props);
@@ -32,10 +39,15 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
 
   return (
     <animated.div
-      className={clsx(classes.root, props.className)}
+      className={clsx(classes.root, props.className, props.enableTextSelection && classes.enableTextSelection)}
       style={{
         pointerEvents: to([isDraggingAnimatedValue], (dr) => (dr ? 'none' : undefined)) as any,
       }}
+      // prevents bubbled drag events from working - i.e. if a drag
+      // event is not explicitly handled and propagation stopped (like resize handle),
+      // it will be prevented. This avoids unwanted behavior like drag-and-drop with
+      // embedded images
+      onDragStart={preventDefault}
     >
       {props.children}
     </animated.div>

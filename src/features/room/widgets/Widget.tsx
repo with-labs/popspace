@@ -5,8 +5,17 @@ import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import { WidgetShape, WidgetType } from '../../../roomState/types/widgets';
+import { WidgetShape, WidgetShapeForType, WidgetStateByType, WidgetType } from '../../../roomState/types/widgets';
 import { MockUserWidget } from './mockUser/MockUserWidget';
+import { useDeleteWidget } from './useDeleteWidget';
+import { useSaveWidget } from './useSaveWidget';
+
+export type WidgetContextValue<T extends WidgetType> = {
+  widget: WidgetShapeForType<T>;
+  save: (state: Partial<WidgetStateByType[T]>) => void;
+  remove: () => void;
+};
+export const WidgetContext = React.createContext<WidgetContextValue<any> | null>(null);
 
 export interface IWidgetProps {
   id: string;
@@ -18,42 +27,51 @@ export interface IWidgetProps {
  */
 export const Widget = React.memo<IWidgetProps>(({ id }) => {
   const widget = useRoomStore(React.useCallback((room) => room.widgets[id], [id]));
-  const deleteWidget = useRoomStore((room) => room.api.deleteWidget);
+  const handleRemove = useDeleteWidget(id);
+  const handleSave = useSaveWidget(id);
 
-  const handleRemove = React.useCallback(() => {
-    deleteWidget({ widgetId: id });
-  }, [deleteWidget, id]);
+  const ctx = React.useMemo(
+    () => ({
+      widget,
+      remove: handleRemove,
+      save: handleSave,
+    }),
+    [widget, handleRemove, handleSave]
+  );
 
   if (!widget) {
     // FIXME: why are widgets which arent in the store sometimes being rendered?
     return null;
   }
 
-  return <WidgetContent widget={widget} onClose={handleRemove} />;
+  return (
+    <WidgetContext.Provider value={ctx}>
+      <WidgetContent widget={widget} />
+    </WidgetContext.Provider>
+  );
 });
 
 interface IWidgetContentProps {
   widget: WidgetShape & { ownerId: string };
-  onClose: () => void;
 }
 
 /**
  * Renders any Widget content, deciding how to render based on the
  * Widget's `type`.
  */
-const WidgetContent = React.memo<IWidgetContentProps>(({ widget, onClose }) => {
+const WidgetContent = React.memo<IWidgetContentProps>(({ widget }) => {
   switch (widget.type) {
     case WidgetType.Link:
-      return <LinkWidget state={widget} onClose={onClose} />;
+      return <LinkWidget />;
     case WidgetType.StickyNote:
-      return <StickyNoteWidget state={widget} onClose={onClose} />;
+      return <StickyNoteWidget />;
     case WidgetType.Whiteboard:
-      return <WhiteboardWidget state={widget} onClose={onClose} />;
+      return <WhiteboardWidget />;
     case WidgetType.YouTube:
-      return <YoutubeWidget state={widget} onClose={onClose} />;
+      return <YoutubeWidget />;
     case WidgetType.SidecarStream:
-      return <ScreenShareWidget state={widget} onClose={onClose} />;
+      return <ScreenShareWidget />;
     case WidgetType.MockUser:
-      return <MockUserWidget state={widget} onClose={onClose} />;
+      return <MockUserWidget />;
   }
 });

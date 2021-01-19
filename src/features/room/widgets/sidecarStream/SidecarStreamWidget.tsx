@@ -11,7 +11,7 @@ import { Fullscreen } from '@material-ui/icons';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
 import { useNamedPublication } from '../../../../hooks/useNamedPublication/useNamedPublication';
-import { ScreenShareWidgetShape, SidecarStreamWidgetState } from '../../../../roomState/types/widgets';
+import { ScreenShareWidgetShape, SidecarStreamWidgetState, WidgetType } from '../../../../roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useParticipantByIdentity } from '../../../../hooks/useParticipantByIdentity/useParticipantByIdentity';
 import { FullscreenableMedia } from '../../../../components/FullscreenableMedia/FullscreenableMedia';
@@ -20,6 +20,7 @@ import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLo
 import { useLocalTracks } from '../../../../components/LocalTracksProvider/useLocalTracks';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../../constants/User';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
+import { useWidgetContext } from '../useWidgetContext';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.
@@ -27,10 +28,7 @@ import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
  */
 const WAIT_FOR_RECONNECT_TIME = 10000;
 
-export interface IScreenShareWidgetProps {
-  state: ScreenShareWidgetShape;
-  onClose: () => void;
-}
+export interface IScreenShareWidgetProps {}
 
 const useStyles = makeStyles((theme) => ({
   screenShare: {
@@ -48,9 +46,11 @@ function inferStreamType(widgetState: SidecarStreamWidgetState): 'screen' | 'av'
   }
 }
 
-export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, onClose }) => {
+export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { remove: onClose, widget: state } = useWidgetContext<WidgetType.SidecarStream>();
 
   const participant = useParticipantByIdentity(state.widgetState.twilioParticipantIdentity);
 
@@ -102,7 +102,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
     t('widgets.sidecarStream.titleLocalUser')
   ) : (
     <span>
-      <WidgetAuthor widgetId={state.widgetId} />
+      <WidgetAuthor />
       {t('widgets.sidecarStream.titleEnding')}
     </span>
   );
@@ -112,8 +112,8 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
   if (!hasAnyMedia) return null;
 
   return (
-    <WidgetFrame color="slate" widgetId={state.widgetId}>
-      <WidgetTitlebar title={title}>
+    <WidgetFrame color="slate">
+      <WidgetTitlebar title={title} disableRemove>
         {/* Remote users can mute the stream for themselves */}
         {isSharingAudio && !isOwnStream && (
           <MuteButton isMuted={isLocalMuted} isPlaying onClick={() => setIsLocalMuted((v) => !v)} />
@@ -135,14 +135,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = ({ state, on
         )}
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer
-          widgetId={state.widgetId}
-          mode="free"
-          minWidth={400}
-          minHeight={200}
-          maxWidth={2000}
-          maxHeight={2000}
-        >
+        <WidgetResizeContainer mode="free" minWidth={400} minHeight={200} maxWidth={2000} maxHeight={2000}>
           <FullscreenableMedia
             className={classes.screenShare}
             isFullscreen={isFullscreen}

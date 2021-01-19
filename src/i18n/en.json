@@ -12,7 +12,8 @@
       "emailInput": { "placeHolder": "dorothy@emerald.so", "label": "Email Address" },
       "cancel": "Cancel",
       "error": "Error",
-      "confirm": "Got it"
+      "confirm": "Got it",
+      "link": "Link"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -152,7 +153,14 @@
         "urlLabel": "Url",
         "addBtn": "Add a link",
         "errorInvalidUrl": "Not a URL",
-        "quickActionTitle": "Add a Link"
+        "quickActionTitle": "Add a Link",
+        "openInNewTab": "Open in new tab",
+        "uploading": "Uploading",
+        "uploadedBy": "Uploaded by ",
+        "expandInline": "Expand inline",
+        "collapse": "Collapse",
+        "quickActionAddEmbed": "Add embed",
+        "embedTitle": "Embed"
       },
       "whiteboard": {
         "name": "Whiteboard",

@@ -28,7 +28,7 @@ function checkAbsoluteURL(path: string) {
 }
 
 const newTabProps = {
-  target: '_none',
+  target: '_blank',
   rel: 'noopener noreferrer',
 };
 
@@ -36,7 +36,7 @@ const newTabProps = {
  * Wraps various Link functionality into one easy component - link to absolute or relative
  * URLs, open in new tab, remove link default styling, etc.
  */
-export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, to, ...props }) => {
+export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(({ disableStyling, newTab, to, ...props }, ref) => {
   const classes = useStyles();
 
   const isAbsoluteURL = typeof to === 'string' && checkAbsoluteURL(to);
@@ -59,21 +59,21 @@ export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, to, ...prop
 
     if (disableStyling) {
       return (
-        <a className={clsx(classes.disableStyling, props.className)} href={href} {...extraProps}>
+        <a className={clsx(classes.disableStyling, props.className)} href={href} ref={ref} {...extraProps}>
           {props.children}
         </a>
       );
     }
 
     return (
-      <MuiLink href={href} {...props} {...extraProps}>
+      <MuiLink href={href} ref={ref} {...props} {...extraProps}>
         {props.children}
       </MuiLink>
     );
   }
 
   if (disableStyling) {
-    return <RouterLink className={classes.disableStyling} to={to} {...props} {...extraProps} />;
+    return <RouterLink className={classes.disableStyling} to={to} ref={ref} {...props} {...extraProps} />;
   }
 
   return (
@@ -81,8 +81,9 @@ export const Link: React.FC<ILinkProps> = ({ disableStyling, newTab, to, ...prop
       component={RouterLink}
       underline={disableStyling ? 'none' : undefined}
       to={to}
+      ref={ref}
       {...props}
       {...extraProps}
     />
   );
-};
+});

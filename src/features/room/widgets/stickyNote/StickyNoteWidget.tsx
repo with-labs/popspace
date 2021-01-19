@@ -11,17 +11,12 @@ import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { StickyNoteWidgetShape } from '../../../../roomState/types/widgets';
+import { StickyNoteWidgetShape, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
+import { useWidgetContext } from '../useWidgetContext';
 
-export interface IStickyNoteWidgetProps {
-  state: StickyNoteWidgetShape & { ownerId: string };
-  /**
-   * Called when the user hits the X to close the widget
-   */
-  onClose: () => void;
-}
+export interface IStickyNoteWidgetProps {}
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -50,9 +45,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onClose }) => {
+export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
 
   const { user } = useCurrentUserProfile();
   const localUserId = user?.id;
@@ -65,7 +62,6 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
     return (
       <StickyNoteFrame
         title={t('widgets.stickyNote.addWidgetTitle')}
-        onClose={onClose}
         widgetId={state.widgetId}
         contentClassName={classes.content}
       >
@@ -77,7 +73,6 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
   return (
     <StickyNoteFrame
       title={t('widgets.stickyNote.publishedTitle')}
-      onClose={onClose}
       widgetId={state.widgetId}
       contentClassName={classes.content}
       disableInitialSizing={!isOwnedByLocalUser}
@@ -88,7 +83,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
             <Markdown>{state.widgetState.text}</Markdown>
           ) : (
             <span className={classes.typingPlaceholder}>
-              <WidgetAuthor widgetId={state.widgetId} />
+              <WidgetAuthor />
               {t('widgets.stickyNote.userIsTyping')}
             </span>
           )}
@@ -96,7 +91,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
       </WidgetScrollPane>
       <Typography variant="caption" className={classes.author}>
         <Trans i18nKey="widgets.stickyNote.addedBy">
-          Added by <WidgetAuthor widgetId={state.widgetId} />
+          Added by <WidgetAuthor />
         </Trans>
       </Typography>
     </StickyNoteFrame>
@@ -105,18 +100,16 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = ({ state, onCl
 
 const StickyNoteFrame: React.FC<{
   title: string;
-  onClose: () => any;
   widgetId: string;
   disablePadding?: boolean;
   contentClassName?: string;
   disableInitialSizing?: boolean;
-}> = ({ children, title, onClose, widgetId, disablePadding, contentClassName, disableInitialSizing }) => (
-  <WidgetFrame color="mandarin" widgetId={widgetId}>
-    <WidgetTitlebar title={title} onClose={onClose}>
+}> = ({ children, title, widgetId, disablePadding, contentClassName, disableInitialSizing }) => (
+  <WidgetFrame color="mandarin">
+    <WidgetTitlebar title={title}>
       <AddStickyNoteButton parentId={widgetId} />
     </WidgetTitlebar>
     <WidgetResizeContainer
-      widgetId={widgetId}
       mode="free"
       minWidth={250}
       minHeight={80}
@@ -125,7 +118,9 @@ const StickyNoteFrame: React.FC<{
       className={contentClassName}
       disableInitialSizing={disableInitialSizing}
     >
-      <WidgetContent disablePadding={disablePadding}>{children}</WidgetContent>
+      <WidgetContent disablePadding={disablePadding} enableTextSelection>
+        {children}
+      </WidgetContent>
       <WidgetResizeHandle />
     </WidgetResizeContainer>
   </WidgetFrame>

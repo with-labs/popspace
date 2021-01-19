@@ -2,7 +2,12 @@ import create from 'zustand';
 import { SocketConnection } from './SocketConnection';
 import { Vector2, Bounds } from '../types/spatials';
 import { logger } from '../utils/logger';
-import { IncomingAuthResponseMessage, IncomingSocketMessage, OutgoingSocketMessage } from './types/socketProtocol';
+import {
+  IncomingAuthResponseMessage,
+  IncomingSocketMessage,
+  IncomingWidgetCreatedMessage,
+  OutgoingSocketMessage,
+} from './types/socketProtocol';
 import { combineAndImmer } from './combineAndImmer';
 import { wallPaperOptions } from '../features/roomControls/roomSettings/WallpaperOptions';
 import { WidgetShape, WidgetType, WidgetStateByType, WidgetState } from './types/widgets';
@@ -287,8 +292,23 @@ function createRoomStore() {
               message,
               'Room state cannot be modified before the socket is connected!'
             );
+            throw new Error('Invalid socket state');
           } else {
             socket.send(message);
+          }
+        };
+
+        const sendMessageWithResponse = <M extends IncomingSocketMessage>(message: OutgoingSocketMessage) => {
+          const socket = get().socket;
+          if (!socket) {
+            logger.critical(
+              `Message not sent: `,
+              message,
+              'Room state cannot be modified before the socket is connected!'
+            );
+            throw new Error('Invalid socket state');
+          } else {
+            return socket.sendAndWaitForResponse<M>(message);
           }
         };
 
@@ -333,7 +353,12 @@ function createRoomStore() {
             // subscribe to incoming messages
             socket.on('message', onSocketMessage);
           },
-          addWidget<Type extends WidgetType>(payload: {
+          /**
+           * Creates a widget. You can await the call to receive the
+           * final widget state with ID once it has been returned
+           * from the server.
+           */
+          async addWidget<Type extends WidgetType>(payload: {
             type: Type;
             widgetState: WidgetStateByType[Type];
             transform: RoomPositionState;
@@ -341,10 +366,12 @@ function createRoomStore() {
             // we don't know the Widget ID until the server rebroadcasts
             // this event to everyone with the ID provided - so there is no
             // optimistic change, just sending the event.
-            sendMessage({
+            const response = await sendMessageWithResponse<IncomingWidgetCreatedMessage>({
               kind: 'createWidget',
               payload,
             });
+            // the incoming created message will be handled by the main incoming message
+            return response.payload;
           },
           moveSelf(payload: { position: Vector2 }) {
             const userId = getOwnUserId();

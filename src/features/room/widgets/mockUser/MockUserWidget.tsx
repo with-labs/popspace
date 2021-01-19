@@ -2,27 +2,24 @@ import { makeStyles, MenuItem, Typography } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
 import { AudioIndicator } from '../../../../components/AudioIndicator/AudioIndicator';
-import { FormikCheckboxField } from '../../../../components/fieldBindings/FormikCheckboxField';
 import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
 import { MuteIconSmall } from '../../../../components/icons/MuteIconSmall';
-import { MediaReadinessContext } from '../../../../components/MediaReadinessProvider/MediaReadinessProvider';
-import { useSpatialAudioVolume } from '../../../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { MockUserWidgetShape } from '../../../../roomState/types/widgets';
+import { SpatialVideo } from '../../../../components/SpatialVideo/SpatialVideo';
+import { WidgetType } from '../../../../roomState/types/widgets';
 import { Draggable } from '../../Draggable';
 import { DraggableHandle } from '../../DraggableHandle';
-import { useSaveWidget } from '../useSaveWidget';
+import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import videos from './videos';
 
-export interface IMockUserWidgetProps {
-  state: MockUserWidgetShape;
-  onClose: () => void;
-}
-
 const useStyles = makeStyles((theme) => ({
+  draggable: {
+    // you hate to see it, but since this is an internal hacky tool anyway...
+    zIndex: `10000 !important` as any,
+  },
   root: {
     width: 280,
     height: 280,
@@ -104,27 +101,14 @@ const useStyles = makeStyles((theme) => ({
  * or long-term, we should refactor this to utilize shared visual components to
  * ensure consistency.
  */
-export const MockUserWidget: React.FC<IMockUserWidgetProps> = ({ state, onClose }) => {
+export const MockUserWidget: React.FC = () => {
   const classes = useStyles();
-  const onSave = useSaveWidget(state.widgetId);
-
-  // sets the volume on change. needs to rely on isReady so that it will
-  // be run again when isReady = true and the audio node is mounted.
-  const ref = React.useRef<HTMLVideoElement>(null);
-  const { isReady } = React.useContext(MediaReadinessContext);
-  const volume = useSpatialAudioVolume('widget', state.widgetId);
-  React.useEffect(() => {
-    if (!ref.current || !isReady) return;
-    // sanity check
-    if (!isNaN(volume)) {
-      ref.current.volume = volume;
-    }
-  }, [volume, isReady]);
+  const { save: onSave, widget: state, remove: onClose } = useWidgetContext<WidgetType.MockUser>();
 
   if (!state.widgetState.displayName || !state.widgetState.video) {
     return (
-      <WidgetFrame color="cherry" widgetId={state.widgetId}>
-        <WidgetTitlebar title="Create mock user" onClose={onClose} />
+      <WidgetFrame color="cherry">
+        <WidgetTitlebar title="Create mock user" />
         <WidgetContent>
           <Formik onSubmit={onSave} initialValues={state.widgetState}>
             <Form>
@@ -148,11 +132,21 @@ export const MockUserWidget: React.FC<IMockUserWidgetProps> = ({ state, onClose 
   const muted = src.includes('listening');
 
   return (
-    <Draggable id={state.widgetId} kind="widget">
+    <Draggable id={state.widgetId} kind="widget" className={classes.draggable}>
       <div className={classes.root}>
         <DraggableHandle className={classes.handle}>
           <div className={classes.videoContainer}>
-            {src && <video autoPlay ref={ref} className={classes.video} muted={muted} src={src} />}
+            {src && (
+              <SpatialVideo
+                objectId={state.widgetId}
+                objectKind="widget"
+                autoPlay
+                loop
+                className={classes.video}
+                muted={muted}
+                src={src}
+              />
+            )}
           </div>
           <div className={classes.bottomSection}>
             <Typography className={classes.name}>{state.widgetState.displayName}</Typography>

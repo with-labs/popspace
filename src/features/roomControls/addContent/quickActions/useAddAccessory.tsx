@@ -41,28 +41,27 @@ export function useAddAccessory() {
         y: Math.random() * 50 - 25,
       });
 
-      if (userId) {
-        // a bit of an awkward edge case - perhaps we could refactor how this works.
-        // add opengraph data to links
-        let data = initialData;
-        // kind of a heuristic - only fetch opengraph data if we don't already
-        // have a media preview
-        if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
-          // FIXME: any cast
-          data = (await getLinkData((initialData as LinkWidgetState).url)) as any;
-
-          // reset the url we get from open graph, to the url the user provided
-          (data as LinkWidgetState).url = (initialData as LinkWidgetState).url;
-        }
-
-        addWidget({
-          type,
-          transform: {
-            position,
-          },
-          widgetState: data,
-        });
+      if (!userId) {
+        throw new Error('Cannot create a widget without logging in');
       }
+
+      // a bit of an awkward edge case - perhaps we could refactor how this works.
+      // add opengraph data to links
+      let data = initialData;
+      // kind of a heuristic - only fetch opengraph data if we don't already
+      // have a media preview
+      if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
+        // FIXME: any cast
+        data = (await getLinkData(initialData as LinkWidgetState)) as any;
+      }
+
+      return addWidget({
+        type,
+        transform: {
+          position,
+        },
+        widgetState: data,
+      });
     },
     [addWidget, userId, viewport, getLinkData, hasOpengraph]
   );

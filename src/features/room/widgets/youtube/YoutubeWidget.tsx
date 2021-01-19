@@ -10,16 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
-import { YoutubeWidgetShape } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetType } from '../../../../roomState/types/widgets';
 
-export interface IYoutubeWidgetProps {
-  state: YoutubeWidgetShape & { ownerId: string };
-  /**
-   * Called when the user hits the X to close the widget
-   */
-  onClose: () => void;
-}
+export interface IYoutubeWidgetProps {}
 
 const useStyles = makeStyles((theme) => ({
   videoContainer: {
@@ -67,9 +62,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose }) => {
+export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { widget: state } = useWidgetContext<WidgetType.YouTube>();
 
   const { user } = useCurrentUserProfile();
   const localUserId = user?.id;
@@ -79,13 +76,13 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   const [isMuted, setIsMuted] = React.useState(false);
   const toggleMuted = () => setIsMuted((v) => !v);
 
-  const isPlaying = !!state.widgetState.isPlaying;
+  const isPlaying = !!state.widgetState.mediaState?.isPlaying;
 
   if (!state.widgetState.videoId) {
     if (state.ownerId === localUserId) {
       return (
-        <WidgetFrame color="cherry" widgetId={state.widgetId}>
-          <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose} />
+        <WidgetFrame color="cherry">
+          <WidgetTitlebar title={t('widgets.youtube.title')} />
           <WidgetContent>
             <EditYoutubeWidgetForm onSave={saveWidget} />
           </WidgetContent>
@@ -99,13 +96,12 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = ({ state, onClose })
   }
 
   return (
-    <WidgetFrame color="cherry" widgetId={state.widgetId}>
-      <WidgetTitlebar title={t('widgets.youtube.title')} onClose={onClose}>
+    <WidgetFrame color="cherry">
+      <WidgetTitlebar title={t('widgets.youtube.title')}>
         <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
         <WidgetResizeContainer
-          widgetId={state.widgetId}
           minWidth={480}
           minHeight={270}
           maxWidth={1440}

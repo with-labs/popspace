@@ -7,13 +7,13 @@
 
 require("./globals")
 
-global.lib = {}
-
-global.lib.util = require("./util/index.js")
-global.lib.db = require("./db/index.js")
-global.lib.email = require("./email/index.js")
-global.lib.s3 = require("./s3/s3.js")
-global.lib.opengraph = require("./opengraph/opengraph")
+const lib = (global.lib = {
+  util: require("./util"),
+  db: require("./db"),
+  email: require("./email"),
+  s3: require("./s3/s3"),
+  opengraph: require("./opengraph/opengraph")
+})
 
 lib.init = async (appUrl) => {
   global.gcfg = {
@@ -33,6 +33,6 @@ lib.cleanup = async () => {
 
 global.util = lib.util
 global.db = lib.db
-global.log = util.log
+global.log = lib.util.log
 
 module.exports = lib

@@ -227,6 +227,8 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     const bindResizeHandle = useGesture(
       {
         onDrag: (state) => {
+          // use case: consider a resizeable container within a draggable container -
+          // when the user grabs the resize handle, we want to disable dragging
           state.event?.stopPropagation();
 
           let initialPosition;
@@ -275,7 +277,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
         },
       },
       {
-        eventOptions: { capture: true },
+        eventOptions: { capture: false },
       }
     );
 

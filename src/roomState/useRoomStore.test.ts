@@ -506,7 +506,7 @@ describe('the central room state store (useRoomStore)', () => {
         };
         api.addWidget(payload);
 
-        expect(socket.send).toHaveBeenCalledWith({
+        expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
           kind: 'createWidget',
           payload,
         });

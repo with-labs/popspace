@@ -29,12 +29,8 @@ export type ApiRoom = {
 };
 
 export type ApiOpenGraphResult = {
-  url: string;
-  title?: string;
-  image?: string;
-  description?: string;
-  type: string;
-  site_name?: string;
+  title: string | null;
+  iframeUrl: string | null;
 };
 
 export type ApiRoomMember = {

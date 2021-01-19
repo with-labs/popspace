@@ -239,6 +239,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         fontSize: typography.pxToRem(16),
         fontWeight: typography.fontWeightMedium,
         lineHeight: 22 / 16,
+        textTransform: 'none',
       },
     },
     shadows: finalShadows,
@@ -472,7 +473,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiButton: {
         root: {
           borderRadius: shape.contentBorderRadius,
-          textTransform: 'none',
           padding: '11.5px 30px',
         },
         contained: {

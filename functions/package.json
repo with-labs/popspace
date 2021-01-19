@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "lib": "file:lib",
+    "lib": "file:./lib",
     "uuid": "^8.3.1"
   },
   "scripts": {

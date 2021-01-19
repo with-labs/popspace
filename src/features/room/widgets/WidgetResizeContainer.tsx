@@ -4,9 +4,9 @@ import { ResizeContainer, ResizeMode } from '../../../components/ResizeContainer
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useWidgetContext } from './useWidgetContext';
 
 export interface IWidgetResizeContainerProps {
-  widgetId: string;
   maxWidth?: number;
   minWidth?: number;
   maxHeight?: number;
@@ -14,6 +14,7 @@ export interface IWidgetResizeContainerProps {
   mode?: ResizeMode;
   className?: string;
   disableInitialSizing?: boolean;
+  disabled?: boolean;
 }
 
 const useStyles = makeStyles({
@@ -30,13 +31,16 @@ const useStyles = makeStyles({
  * ResizeContainer which connects to the Room state to store and update sizing.
  */
 export const WidgetResizeContainer: React.FC<IWidgetResizeContainerProps> = ({
-  widgetId,
   mode,
   children,
   className,
   ...restProps
 }) => {
   const classes = useStyles();
+
+  const {
+    widget: { widgetId },
+  } = useWidgetContext();
 
   const size = useRoomStore(React.useCallback((room) => room.widgetPositions[widgetId]?.size ?? null, [widgetId]));
   const resizeWidget = useRoomStore((room) => room.api.resizeWidget);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import YouTube from 'react-youtube';
-import { VideoControls } from './VideoControls';
+import { MediaControls } from '../common/MediaControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
 import { makeStyles } from '@material-ui/core';
@@ -99,7 +99,7 @@ export const YouTubePlayer: React.FC<IYouTubePlayerProps> = ({ state, onChange, 
         className={classes.video}
         {...youtubeBindings}
       />
-      <VideoControls className={classes.videoControls} {...videoControlBindings} />
+      <MediaControls className={classes.videoControls} {...videoControlBindings} />
     </div>
   );
 };

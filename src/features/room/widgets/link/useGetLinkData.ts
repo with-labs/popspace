@@ -2,20 +2,20 @@ import { useCallback } from 'react';
 import api from '../../../../utils/api';
 import { logger } from '../../../../utils/logger';
 import { useFeatureFlag } from 'flagg';
+import { useTranslation } from 'react-i18next';
+import { LinkWidgetState } from '../../../../roomState/types/widgets';
 
 /** Returns a function to call to retrieve opengraph data for a URL */
 export function useGetLinkData() {
+  const { t } = useTranslation();
   const isOpenGraphEnabled = useFeatureFlag('opengraph');
 
   const handleSave = useCallback(
-    async (rawUrl: string) => {
-      const url = rawUrl.trim();
+    async (baseData: LinkWidgetState) => {
+      const url = baseData.url.trim();
 
-      if (!isOpenGraphEnabled) {
-        return {
-          url,
-          title: url,
-        };
+      if (!isOpenGraphEnabled || !url) {
+        return baseData;
       }
 
       try {
@@ -25,21 +25,16 @@ export function useGetLinkData() {
         }
 
         return {
-          url: result.url || url,
-          title: result.title || url,
-          mediaUrl: result.image,
-          mediaContentType: result.image ? 'image' : undefined,
-          description: result.description,
+          ...baseData,
+          title: result.title ?? baseData.title ?? (t('common.link') as string),
+          iframeUrl: result.iframeUrl,
         };
       } catch (err) {
         logger.error(`Failed to get OpenGraph data for ${url}`, err);
-        return {
-          url: url,
-          title: url,
-        };
+        return baseData;
       }
     },
-    [isOpenGraphEnabled]
+    [isOpenGraphEnabled, t]
   );
 
   return handleSave;

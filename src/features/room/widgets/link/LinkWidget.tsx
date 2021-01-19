@@ -1,54 +1,35 @@
-import { Link, makeStyles, Tooltip } from '@material-ui/core';
 import * as React from 'react';
-import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditLinkWidgetForm } from './EditLinkWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { MediaLinkWidget } from './MediaLinkWidget';
-import { LinkWidgetShape, LinkWidgetState } from '../../../../roomState/types/widgets';
+import { MediaLinkWidget } from './media/MediaLinkWidget';
+import { LinkWidgetShape, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
+import { useWidgetContext } from '../useWidgetContext';
 
-export interface ILinkWidgetProps {
-  state: LinkWidgetShape & { ownerId: string };
-  /**
-   * Called when the user hits the X to close the widget
-   */
-  onClose: () => void;
+export interface ILinkWidgetProps {}
+
+function isMedia(widget: LinkWidgetShape) {
+  return widget.widgetState.mediaContentType && /^(image|video|audio)/.test(widget.widgetState.mediaContentType);
 }
 
-const useStyles = makeStyles((theme) => ({
-  link: {
-    position: 'relative',
-    display: 'inline-block',
-    textDecoration: 'none',
-    textOverflow: 'ellipsis',
-    width: '100%',
-    maxWidth: 400,
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: theme.typography.fontWeightRegular,
-    color: theme.palette.grey[900],
-  },
-}));
-
-export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
-  const classes = useStyles();
+export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   const { t } = useTranslation();
 
   const { user } = useCurrentUserProfile();
 
-  const saveWidget = useSaveWidget(state.widgetId);
+  const { save, widget: state } = useWidgetContext<WidgetType.Link>();
 
   if (!state.widgetState.url) {
     if (state.ownerId === user?.id) {
       return (
-        <WidgetFrame color="lavender" widgetId={state.widgetId}>
-          <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} onClose={onClose} />
+        <WidgetFrame color="lavender">
+          <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} />
           <WidgetContent>
-            <EditLinkWidgetForm onSave={saveWidget} />
+            <EditLinkWidgetForm onSave={save} />
           </WidgetContent>
         </WidgetFrame>
       );
@@ -60,32 +41,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = ({ state, onClose }) => {
   }
 
   // media links are rendered differently
-  if (state.widgetState.mediaUrl && state.widgetState.mediaContentType) {
-    return (
-      <MediaLinkWidget
-        widgetId={state.widgetId}
-        data={state.widgetState as Required<LinkWidgetState>}
-        onClose={onClose}
-      />
-    );
-  }
+  const isMediaWidget = isMedia(state);
 
-  return (
-    <WidgetFrame color="lavender" widgetId={state.widgetId}>
-      <WidgetTitlebar title={state.widgetState.title || t('widgets.link.title')} onClose={onClose} />
-      <WidgetContent>
-        <Tooltip title={state.widgetState.url} placement="bottom">
-          <Link
-            href={state.widgetState.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            className={classes.link}
-          >
-            {state.widgetState.url}
-          </Link>
-        </Tooltip>
-      </WidgetContent>
-    </WidgetFrame>
-  );
+  return isMediaWidget ? <MediaLinkWidget /> : <DocumentLinkWidget />;
 };

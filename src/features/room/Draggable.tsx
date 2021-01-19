@@ -10,6 +10,7 @@ import { throttle } from 'lodash';
 import { AutoPan } from './AutoPan';
 import { SPRINGS } from '../../constants/springs';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
+import clsx from 'clsx';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -43,6 +44,10 @@ export interface IDraggableProps {
    * Required so we know which actions to use to report changes
    */
   kind: 'widget' | 'person';
+  /**
+   * Applies a CSS class name to the drag container
+   */
+  className?: string;
 }
 
 const useStyles = makeStyles({
@@ -73,7 +78,15 @@ const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.Keybo
  * function you should call, then pass the result directly to the draggable
  * portion of your widget.
  */
-export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0, onDragEnd, onDragStart, kind }) => {
+export const Draggable: React.FC<IDraggableProps> = ({
+  id,
+  children,
+  zIndex = 0,
+  onDragEnd,
+  onDragStart,
+  kind,
+  className,
+}) => {
   const styles = useStyles();
 
   // dispatcher for movement changes
@@ -155,8 +168,19 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
   const bindDragHandle = useGesture(
     {
       onDrag: (state) => {
-        // prevent a drag event from bubbling up to the canvas
-        state.event?.stopPropagation();
+        if (state.distance > 10) {
+          set({ grabbing: true });
+        }
+
+        if (state.event?.target) {
+          // BUGFIX: a patch which is intended to prevent a bug where opening a menu
+          // or other popover from within a draggable allows dragging by clicking anywhere
+          // on the screen, since the whole screen is covered by a click-blocker element
+          // ignore drag events which target an aria-hidden element
+          if ((state.event.target as HTMLElement).getAttribute('aria-hidden')) {
+            return;
+          }
+        }
 
         // convert to world position, clamping to room bounds
         const worldPosition = viewport.toWorldCoordinate(
@@ -193,9 +217,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
         autoPan.update({ x: state.xy[0], y: state.xy[1] });
       },
       onDragStart: (state) => {
-        state.event?.stopPropagation();
         viewport.onObjectDragStart();
-        set({ grabbing: true });
         autoPan.start({ x: state.xy[0], y: state.xy[1] });
         onDragStart?.();
       },
@@ -209,7 +231,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
     },
     {
       eventOptions: {
-        capture: true,
+        capture: false,
       },
     }
   );
@@ -252,7 +274,7 @@ export const Draggable: React.FC<IDraggableProps> = ({ id, children, zIndex = 0,
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
-        className={styles.root}
+        className={clsx(styles.root, className)}
         onKeyDown={stopPropagation}
         onKeyUp={stopPropagation}
         {...bindRoot()}

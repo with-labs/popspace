@@ -5,13 +5,13 @@ import { DraggableHandle } from '../DraggableHandle';
 import { DeleteIcon } from '../../../components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
+import { useWidgetContext } from './useWidgetContext';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
-  /** If not provided, no close button will be rendered. */
-  onClose?: () => void;
+  disableRemove?: boolean;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -49,17 +49,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({ title, children, className, onClose, ...rest }) => {
+export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
+  title,
+  children,
+  className,
+  disableRemove,
+  ...rest
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { remove } = useWidgetContext();
 
   return (
     <DraggableHandle className={clsx(classes.root, className)}>
       <div className={classes.title}>{title}</div>
       <div className={classes.controls}>{children}</div>
-      {onClose && (
+      {!disableRemove && (
         <div className={classes.controls}>
-          <WidgetTitlebarButton onClick={onClose} aria-label={t('widgets.common.close')}>
+          <WidgetTitlebarButton onClick={remove} aria-label={t('widgets.common.close')}>
             <DeleteIcon fontSize="small" color="inherit" />
           </WidgetTitlebarButton>
         </div>

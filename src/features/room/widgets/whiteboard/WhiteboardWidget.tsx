@@ -13,15 +13,10 @@ import { WhiteboardTools } from '../../../../components/Whiteboard/WhiteboardToo
 import { WhiteboardState } from '../../../../components/Whiteboard/types';
 import { ERASER_COLOR } from '../../../../components/Whiteboard/constants';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
-import { WhiteboardWidgetShape } from '../../../../roomState/types/widgets';
+import { WidgetType } from '../../../../roomState/types/widgets';
+import { useWidgetContext } from '../useWidgetContext';
 
-export interface IWhiteboardWidgetProps {
-  state: WhiteboardWidgetShape & { ownerId: string };
-  /**
-   * Called when the user hits the X to close the widget
-   */
-  onClose: () => void;
-}
+export interface IWhiteboardWidgetProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,9 +32,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onClose }) => {
+export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { widget: state } = useWidgetContext<WidgetType.Whiteboard>();
 
   const update = useSaveWidget(state.widgetId);
 
@@ -60,8 +57,8 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = ({ state, onCl
   const handleExport = useExport(exportToImageURL);
 
   return (
-    <WidgetFrame color="snow" widgetId={state.widgetId}>
-      <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />} onClose={onClose}>
+    <WidgetFrame color="snow">
+      <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />}>
         <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />
         </WidgetTitlebarButton>

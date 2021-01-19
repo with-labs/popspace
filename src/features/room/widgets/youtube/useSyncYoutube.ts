@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { PlayState } from './VideoControls';
+import { PlayState } from '../common/MediaControls';
 import { useSpatialAudioVolume } from '../../../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { YoutubeWidgetState, YoutubeWidgetShape } from '../../../../roomState/types/widgets';
 
@@ -32,10 +32,13 @@ export function useSyncYoutube({
   onLoad?: () => void;
   isMuted?: boolean;
 }) {
-  const isPlaying = state.widgetState.isPlaying || false;
+  const { isPlaying = false, timestamp = 0, playStartedTimestampUtc = null } = state.widgetState.mediaState || {
+    isPlaying: false,
+    timestamp: 0,
+    playStartedTimestampUtc: null,
+  };
+
   const playState = isPlaying ? PlayState.Playing : PlayState.Paused;
-  const timestamp = state.widgetState.timestamp ?? 0;
-  const playStartedTimestampUTC = state.widgetState.playStartedTimestampUTC;
   const [duration, setDuration] = React.useState(0);
   const ytPlayerRef = React.useRef<YT.Player | null>(null);
   const [realtimeTimestamp, setRealtimeTimestamp] = React.useState(0);
@@ -46,9 +49,11 @@ export function useSyncYoutube({
   const onPlayStateChanged = React.useCallback(
     (s: PlayState, time: number) => {
       onChange({
-        isPlaying: s === PlayState.Playing,
-        playStartedTimestampUTC: s === PlayState.Playing ? new Date().toUTCString() : null,
-        timestamp: time,
+        mediaState: {
+          isPlaying: s === PlayState.Playing,
+          playStartedTimestampUtc: s === PlayState.Playing ? new Date().toUTCString() : null,
+          timestamp: time,
+        },
       });
     },
     [onChange]
@@ -65,12 +70,15 @@ export function useSyncYoutube({
       // don't sent it to others until the user has released the scrubber handle
       if (!scrubbing) {
         onChange({
-          timestamp: time,
-          playStartedTimestampUTC: playState === PlayState.Playing ? new Date().toUTCString() : null,
+          mediaState: {
+            isPlaying,
+            timestamp: time,
+            playStartedTimestampUtc: playState === PlayState.Playing ? new Date().toUTCString() : null,
+          },
         });
       }
     },
-    [onChange, playState]
+    [onChange, playState, isPlaying]
   );
 
   // when the YT player is playing, update Redux to play too and
@@ -85,9 +93,11 @@ export function useSyncYoutube({
       }
 
       onChange({
-        isPlaying: true,
-        timestamp: player.getCurrentTime(),
-        playStartedTimestampUTC: new Date().toUTCString(),
+        mediaState: {
+          isPlaying: true,
+          timestamp: player.getCurrentTime(),
+          playStartedTimestampUtc: new Date().toUTCString(),
+        },
       });
     },
     [isPlaying, onChange]
@@ -105,17 +115,31 @@ export function useSyncYoutube({
       }
 
       onChange({
-        isPlaying: false,
-        timestamp: player.getCurrentTime(),
-        playStartedTimestampUTC: null,
+        mediaState: {
+          isPlaying: false,
+          timestamp: player.getCurrentTime(),
+          playStartedTimestampUtc: null,
+        },
       });
     },
     [isPlaying, onChange]
   );
 
+  const handleSpatialVolumeChange = React.useCallback(
+    (newVolume: number) => {
+      ytPlayerRef.current?.setVolume(newVolume * 100);
+    },
+    [ytPlayerRef]
+  );
+
   // get the current spacial volume state of the player
-  const naturalVolume = useSpatialAudioVolume('widget', state.widgetId);
-  const volume = isMuted ? 0 : naturalVolume;
+  const lastSpatialVolumeRef = useSpatialAudioVolume('widget', state.widgetId, handleSpatialVolumeChange);
+
+  // handle muting
+  React.useEffect(() => {
+    const vol = isMuted ? 0 : lastSpatialVolumeRef.current * 100;
+    ytPlayerRef.current?.setVolume(vol);
+  }, [isMuted, ytPlayerRef, lastSpatialVolumeRef]);
 
   // when the YT player is in a ready state, immediately synchronize it to the latest
   // redux data
@@ -126,11 +150,15 @@ export function useSyncYoutube({
       if (!p) return;
 
       // set the current volume based on the spacial audio
-      p.setVolume(volume * 100);
+      if (isMuted) {
+        p.setVolume(0);
+      } else {
+        p.setVolume(lastSpatialVolumeRef.current * 100);
+      }
 
       // immediately sync to current timestamp and play state, utilizing
       // the time since the last play event
-      const cumulativeTimestamp = addTimeSinceLastPlayToTimestamp(timestamp, playStartedTimestampUTC);
+      const cumulativeTimestamp = addTimeSinceLastPlayToTimestamp(timestamp, playStartedTimestampUtc);
       p.seekTo(cumulativeTimestamp, true);
       setRealtimeTimestamp(cumulativeTimestamp);
       if (!isPlaying) {
@@ -145,17 +173,17 @@ export function useSyncYoutube({
       // finally, invoke the load handler if provided
       onLoad?.();
     },
-    [timestamp, isPlaying, playStartedTimestampUTC, volume, onLoad]
+    [timestamp, isPlaying, playStartedTimestampUtc, isMuted, lastSpatialVolumeRef, onLoad]
   );
 
   // when the Redux timestamp changes, seek in the YT player too
   React.useEffect(() => {
     if (!ytPlayerRef.current) return;
 
-    const cumulativeTimestamp = addTimeSinceLastPlayToTimestamp(timestamp, playStartedTimestampUTC);
+    const cumulativeTimestamp = addTimeSinceLastPlayToTimestamp(timestamp, playStartedTimestampUtc);
     // don't seek forward in time if the user is still scrubbing
     ytPlayerRef.current.seekTo(cumulativeTimestamp, !isScrubbing);
-  }, [timestamp, playStartedTimestampUTC, isScrubbing]);
+  }, [timestamp, playStartedTimestampUtc, isScrubbing]);
 
   // when the Redux play state changes, change the YT player state in response
   React.useEffect(() => {
@@ -189,11 +217,6 @@ export function useSyncYoutube({
       }
     };
   }, []);
-
-  // change the volume using spatial audio
-  React.useEffect(() => {
-    ytPlayerRef.current?.setVolume(volume * 100);
-  }, [volume]);
 
   return {
     videoControlBindings: {

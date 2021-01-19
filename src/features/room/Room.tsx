@@ -17,6 +17,7 @@ import { Hidden } from '@material-ui/core';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
 import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import shallow from 'zustand/shallow';
+import { CursorLayer } from './cursors/CursorLayer';
 
 interface IRoomProps {}
 
@@ -63,6 +64,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
       {peopleIds.map((id) => (
         <Person key={id} personId={id} />
       ))}
+      <CursorLayer />
     </RoomViewport>
   );
 });

@@ -45,6 +45,11 @@ export type RoomUserStateShape = {
   sessionIds: Set<string>;
 };
 
+export type RoomCursorStateShape = {
+  position: Vector2;
+  active: boolean;
+};
+
 export type RoomStateShape = {
   id: string | null;
   widgets: Record<string, WidgetShape & { ownerId: string }>;
@@ -56,6 +61,7 @@ export type RoomStateShape = {
   userPositions: Record<string, RoomPositionState>;
   socket: SocketConnection | null;
   sessionId: string | null;
+  cursors: Record<string, RoomCursorStateShape>;
 };
 
 const emptyState: RoomStateShape = {
@@ -77,6 +83,7 @@ const emptyState: RoomStateShape = {
   userPositions: {},
   socket: null,
   sessionId: null,
+  cursors: {},
 };
 
 // this requires some additional logic to reshape the user payload information
@@ -229,6 +236,7 @@ function createRoomStore() {
                 // someday we may mark them as 'inactive' instead here
                 delete draft.users[userId];
                 delete draft.userPositions[userId];
+                delete draft.cursors[userId];
               }
               // cleanup entry in session lookup table
               delete draft.sessionLookup[payload.sessionId];
@@ -239,6 +247,11 @@ function createRoomStore() {
             set((draft) => {
               if (!draft.users[payload.id]) return;
               Object.assign(draft.users[payload.id].participantState, payload.participantState);
+            });
+          },
+          updateCursor(payload: { userId: string; cursorState: RoomCursorStateShape }) {
+            set((draft) => {
+              draft.cursors[payload.userId] = payload.cursorState;
             });
           },
         };
@@ -275,6 +288,11 @@ function createRoomStore() {
               });
             case 'roomStateUpdated':
               return internalApi.updateRoomState(message.payload);
+            case 'passthrough':
+              switch (message.payload.kind) {
+                case 'cursorUpdate':
+                  return internalApi.updateCursor(message.payload);
+              }
           }
         };
 
@@ -451,6 +469,16 @@ function createRoomStore() {
           leave() {
             get().socket?.close();
             internalApi.reset();
+          },
+          updateCursor(payload: RoomCursorStateShape) {
+            sendMessage({
+              kind: 'passthrough',
+              payload: {
+                kind: 'cursorUpdate',
+                userId: getOwnUserId(),
+                cursorState: payload,
+              },
+            });
           },
         };
 

@@ -1,6 +1,7 @@
 import { WidgetShape, WidgetState } from '../widgets';
 import { ParticipantShape, ParticipantState } from '../participants';
 import { RoomPositionState } from '../common';
+import { PassthroughPayload } from '../passthrough';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -112,6 +113,12 @@ export interface IncomingParticipantLeftMessage extends BaseIncomingSocketMessag
   };
 }
 
+export interface IncomingPassthroughMessage<T extends PassthroughPayload = PassthroughPayload>
+  extends BaseIncomingSocketMessage {
+  kind: 'passthrough';
+  payload: T;
+}
+
 export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
@@ -124,4 +131,5 @@ export type IncomingSocketMessage =
   | IncomingWidgetDeletedMessage
   | IncomingParticipantLeftMessage
   | IncomingParticipantUpdatedMessage
-  | IncomingRoomStateUpdatedMessage;
+  | IncomingRoomStateUpdatedMessage
+  | IncomingPassthroughMessage;

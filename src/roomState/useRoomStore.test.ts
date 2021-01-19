@@ -174,6 +174,7 @@ describe('the central room state store (useRoomStore)', () => {
             },
           },
           sessionId: 'session-id',
+          cursors: {},
         });
       });
     });

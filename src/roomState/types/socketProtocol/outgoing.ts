@@ -1,5 +1,6 @@
 import { WidgetShape, WidgetShapeForType } from '../widgets';
 import { RoomPositionState } from '../common';
+import { PassthroughPayload } from '../passthrough';
 
 /**
  * Outgoing socket message protocol type definitions.
@@ -89,6 +90,12 @@ export interface OutgoingUpdateRoomStateMessage extends BaseOutgoingSocketMessag
   };
 }
 
+export interface OutgoingPassthroughMessage<T extends PassthroughPayload = PassthroughPayload>
+  extends BaseOutgoingSocketMessage {
+  kind: 'passthrough';
+  payload: T;
+}
+
 export type OutgoingSocketMessage =
   | PingMessage
   | AuthMessage
@@ -99,4 +106,5 @@ export type OutgoingSocketMessage =
   | OutgoingDeleteWidgetMessage
   | OutgoingUpdateParticipantMessage
   | OutgoingLeaveMessage
-  | OutgoingUpdateRoomStateMessage;
+  | OutgoingUpdateRoomStateMessage
+  | OutgoingPassthroughMessage;

@@ -11,6 +11,7 @@ import { FileDropLayer } from './files/FileDropLayer';
 import { mandarin as theme } from '../../theme/theme';
 import { useRoomStore } from '../../roomState/useRoomStore';
 import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
+import { useTrackCursor } from './useTrackCursor';
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -348,6 +349,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     }
   );
 
+  const onCursorMove = useTrackCursor();
+
   const bindPassiveGestures = useGesture({
     onDrag: ({ delta: [x, y] }) => {
       doPan({ x: -x, y: -y });
@@ -371,6 +374,9 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       } else {
         setPanSpring({ isPanning: false });
       }
+    },
+    onMove: ({ xy }) => {
+      onCursorMove(toWorldCoordinate({ x: xy[0], y: xy[1] }));
     },
   });
 

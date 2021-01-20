@@ -68,11 +68,9 @@ class RoomData {
     return newState
   }
 
-  async updateParticipantState(participant, stateUpdate, currentState=null) {
+  async updateParticipantState(participant, stateUpdate) {
     const userId = participant.user.id
-    if(!currentState) {
-      currentState = await this.dynamo.getParticipantState(userId)
-    }
+    let currentState = await participant.getState()
     const newState = Object.assign(currentState || {}, stateUpdate)
     if(stateUpdate.display_name) {
       await shared.db.pg.massive.query(`

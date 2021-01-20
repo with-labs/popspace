@@ -111,9 +111,7 @@ class Participant {
       this.transform = DEFAULT_STATE_IN_ROOM
       await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.transform)
     }
-    this.participantState = await lib.roomData.dynamo.getParticipantState(this.user.id)
-    this.participantState = this.participantState || {}
-    this.participantState.display_name = this.participantState.display_name || this.user.display_name
+    await this.getState()
     this.authenticated = true
     return true
   }
@@ -180,13 +178,37 @@ class Participant {
     })
   }
 
+  async getState() {
+    if(this.participantState) {
+      return this.participantState
+    } else {
+      this.participantState = await lib.roomData.dynamo.getParticipantState(this.user.id)
+      this.participantState = this.participantState || {}
+      if(!this.participantState.display_name) {
+        /*
+          Perhaps it would be better if these were just set at account creation.
+          Even still this fallback wouldn't hurt in case something goes wrong there.
+          Originally, the account creation process couldn't have dynamo hooked up,
+          as we didn't yet have shared code available to the netlify app.
+        **/
+        this.participantState.display_name = this.user.display_name
+        await lib.roomData.dynamo.setParticipantState(this.user.id, this.participantState)
+      }
+      return this.participantState
+    }
+  }
+
+  async getTransform() {
+    return this.transform
+  }
+
   updateState(newState) {
-    // TODO: maybe move the broadcast out here
+    // TODO: maybe move the broadcast and dynamo write out here
     this.participantState = newState
   }
 
   updateTransform(newTransform) {
-    // TODO: maybe move the broadcast out here
+    // TODO: maybe move the broadcast and dynamo write out here
     this.transform = newTransform
   }
 

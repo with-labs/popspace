@@ -1,14 +1,17 @@
 const SENDER = 'notify@with.so'
 
 module.exports = {
-  sendRoomInviteEmail: async (toEmail, roomName, inviteUrl) => {
-    const owner = await db.rooms.ownerByRoomName(roomName)
+  sendRoomInviteEmail: async (toEmail, roomName, inviteUrl, inviterUser) => {
     return await lib.email.named.sendRoomStatusEmail(
       'room_invite',
       toEmail,
       roomName,
       {
-        ownerFirstName: owner.first_name,
+        // TODO: we should update the email to rely on
+        // inviterFirstName so it's named appropriately.
+        // Meantime, pass both
+        ownerFirstName: inviterUser.first_name,
+        inviterFirstName: inviterUser.first_name,
         ctaUrl: inviteUrl
       }
     )

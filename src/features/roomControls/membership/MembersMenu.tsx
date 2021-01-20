@@ -3,7 +3,6 @@ import { IconButton, Hidden } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
-import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 export interface IMembersMenuProps {}
@@ -16,8 +15,6 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
   const anchorRef = React.useRef<any>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
-
-  const isRoomOwner = useIsRoomOwner();
 
   const onOpen = React.useCallback(() => {
     setIsOpen(true);
@@ -33,8 +30,7 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
 
   return (
     <div ref={ref}>
-      {/* TODO: public member list of avatars */}
-      {isRoomOwner && (
+      {
         <>
           <IconButton onClick={openAndFocusInvite}>
             <InviteIcon />
@@ -48,7 +44,7 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
             <MembershipManagement autoFocusInvite={autoFocusInvite} />
           </ResponsiveMenu>
         </>
-      )}
+      }
     </div>
   );
 });

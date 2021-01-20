@@ -15,6 +15,7 @@ import {
   Typography,
   ThemeProvider,
   CircularProgress,
+  Divider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
@@ -35,6 +36,8 @@ import { logger } from '../../../../utils/logger';
 
 import { DialogModal, DialogMessage } from '../../../../components/DialogModal/DialogModal';
 import { getErrorMessageFromResponse } from '../../../../utils/ErrorMessage';
+
+import { useIsRoomOwner } from '../../../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 export type UserListMemberInfo = {
   avatar_url: string | null;
@@ -57,6 +60,9 @@ const useStyles = makeStyles((theme) => ({
   deleteColor: {
     color: theme.palette.brandColors.cherry.bold,
   },
+  deleteDisabledColor: {
+    color: theme.palette.brandColors.cherry.light,
+  },
   activeTextColor: {
     color: theme.palette.brandColors.ink.regular,
   },
@@ -65,6 +71,13 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonMargin: {
     marginTop: theme.spacing(2),
+  },
+  cancelMembershipDisabledContents: {
+    margin: 5,
+  },
+  cancelMembershipDisabledTooltip: {
+    width: '172px',
+    display: 'block',
   },
 }));
 
@@ -85,6 +98,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   const { t } = useTranslation();
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
+  const isRoomOwner = useIsRoomOwner();
 
   const formatErrorMessage = (response: BaseResponse) => {
     return {
@@ -187,6 +201,49 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     }
   };
 
+  const renderRemoveMemberMenuItem = (isInviteAccepted: boolean) => {
+    let text;
+    let clickHandler;
+    if (isInviteAccepted) {
+      text = t('modals.inviteUserModal.removeUser');
+      clickHandler = removeUserHandler;
+    } else {
+      text = t('modals.inviteUserModal.deleteInvite');
+      clickHandler = cancelInviteHandler;
+    }
+    if (isRoomOwner) {
+      return (
+        <MenuItem onClick={clickHandler}>
+          <Box>
+            <ListItem>
+              <ListItemIcon>
+                <DeleteIcon className={classes.deleteColor} />
+              </ListItemIcon>
+              <ListItemText primary={text} className={classes.deleteColor} />
+            </ListItem>
+          </Box>
+        </MenuItem>
+      );
+    } else {
+      return (
+        <Box>
+          <ListItem>
+            <ListItemIcon>
+              <DeleteIcon className={classes.deleteDisabledColor} />
+            </ListItemIcon>
+            <ListItemText primary={text} className={classes.deleteDisabledColor} />
+          </ListItem>
+          <Box>
+            <Divider />
+            <Typography variant="caption" className={classes.cancelMembershipDisabledTooltip}>
+              Only the room owner can remove members.
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Box overflow="auto">
       <List className={classes.memberList}>
@@ -231,30 +288,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {selectedMember?.has_accepted ? (
-          <MenuItem onClick={removeUserHandler}>
-            <ListItemIcon>
-              <DeleteIcon className={classes.deleteColor} />
-            </ListItemIcon>
-            <ListItemText primary={t('modals.inviteUserModal.removeUser')} className={classes.deleteColor} />
-          </MenuItem>
-        ) : (
-          <div>
-            {/* TODO: commenting this out until we fix resend email on the backend */}
-            {/* <MenuItem onClick={inviteResendHandler}>
-              <ListItemIcon>
-                <EmailIcon />
-              </ListItemIcon>
-              <ListItemText primary={t('modals.inviteUserModal.resendInvite')} />
-            </MenuItem> */}
-            <MenuItem onClick={cancelInviteHandler}>
-              <ListItemIcon>
-                <DeleteIcon className={classes.deleteColor} />
-              </ListItemIcon>
-              <ListItemText primary={t('modals.inviteUserModal.deleteInvite')} className={classes.deleteColor} />
-            </MenuItem>
-          </div>
-        )}
+        {renderRemoveMemberMenuItem(selectedMember?.has_accepted)}
       </Menu>
       <Modal isOpen={confirmIsOpen} onClose={() => setConfirmIsOpen(false)} maxWidth="xs">
         <ModalTitleBar title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name })} />

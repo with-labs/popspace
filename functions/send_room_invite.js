@@ -24,10 +24,12 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     )
   }
 
-  if(parseInt(room.owner_id) != parseInt(user.id)) {
+  const inviterIsMember = await lib.db.rooms.isMember(user.id, room.id)
+  const canInvite = (parseInt(room.owner_id) == parseInt(user.id))  || inviterIsMember
+  if(!canInvite) {
     return await lib.util.http.fail(
       callback,
-      `You are not currently logged in as the owner of that room.`,
+      `Only owners and members can invite to a room.`,
       { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
     )
   }
@@ -77,7 +79,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
   const invitation = await db.rooms.createInvitation(room.id, params.email)
   const inviteUrl = await db.rooms.getInviteUrl(lib.util.env.appUrl(event, context), invitation)
-  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl)
+  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user)
 
   const newMember = {
     display_name: "",

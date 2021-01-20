@@ -19,7 +19,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   if(!roomOwner || roomOwner.id != room.owner_id) {
     return await lib.util.http.fail(
       callback,
-      "Must be logged in as room owner.",
+      "Only the room owner can remove other members",
       { errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED }
     )
   }

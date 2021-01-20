@@ -25,7 +25,7 @@ class Participant {
     this.unauthenticate()
 
     this.dieFromTimeout = () => {
-      log.app.info(`Participant dying from timeout (participant.id: ${this.id})`)
+      log.app.info(`Participant dying from timeout ${this.sessionName()}`)
       this.disconnect()
     }
 
@@ -43,12 +43,12 @@ class Participant {
         - sanitize input: protect from js-injection attacks on peers
       */
       log.received.info(message)
-      log.dev.debug(`Got message from ${this.id} ${message}`)
+      log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
         event = new lib.event.MercuryEvent(this, message)
       } catch {
-        log.app.error(`Invalid event format ${message}`)
+        log.app.error(`Invalid event format ${this.sessionName()} ${message}`)
         return this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
       }
 
@@ -65,10 +65,14 @@ class Participant {
     this.keepalive()
   }
 
+  sessionName() {
+    return `(uid ${this.user ? this.user.id : null}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+  }
+
   keepalive() {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
-    log.app.info(`Keepalive pid ${this.id} socketGroup ${this.socketGroup ? this.socketGroup.id : null}`)
+    log.app.info(`Keepalive ${this.sessionName()}`)
   }
 
   sessionId() {
@@ -150,7 +154,7 @@ class Participant {
 
   sendEvent(event) {
     const message = JSON.stringify(camelcaseKeys(event.serialize(), CAMELCASE_DEEP))
-    log.sent.info(message)
+    log.sent.info(`${this.sessionName()} ${message}`)
     this.socket.send(message)
   }
 

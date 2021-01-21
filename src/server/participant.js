@@ -142,7 +142,7 @@ class Participant {
       this.socketGroup = null
       socketGroup.removeParticipant(this)
       socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
-      await lib.analytics.participantLeaving(socketGroup)
+      await lib.analytics.participantLeft(socketGroup)
     }
   }
 

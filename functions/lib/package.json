@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@withso/with-shared": "^1.2.12",
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.739.0",
     "axios": "^0.21.1",

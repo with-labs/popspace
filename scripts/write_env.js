@@ -2,6 +2,8 @@ require("dotenv").config()
 
 if(!process.env.NODE_ENV) {
   throw "write_env dumps build-time env vars into a context available at runtime. No build-time env vars found."
+} else {
+  console.log("Writing environment:", process.env.NODE_ENV)
 }
 
 const fs = require('fs')

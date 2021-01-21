@@ -19,6 +19,8 @@ lib.init = async (appUrl) => {
   global.gcfg = {
     appUrl: () => appUrl
   }
+  // Pull this in after the env vas are loaded
+  global.shared = require("@withso/with-shared")
   // order is not important, running in parallel
   await Promise.all([lib.db.init(), lib.s3.init(), lib.opengraph.init()])
 }

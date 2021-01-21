@@ -120,7 +120,6 @@ class Participant {
     await this.getState()
     this.authenticated = true
     log.app.info(`Authenticated ${this.sessionName()}`)
-    await lib.analytics.participantAuthorized(this)
     return true
   }
 
@@ -133,12 +132,13 @@ class Participant {
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
     this.keepalive()
+    await lib.analytics.participantJoinedSocketGroup(this)
   }
 
   async leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
-      await lib.analytics.participantAuthorized(this)
+      await lib.analytics.participantLeaving(this)
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       this.socketGroup = null

@@ -32,7 +32,7 @@ class Analytics {
     await shared.db.pg.massive.analytics_room_participant_count.insert({
       measured_at: shared.db.time.now(),
       room_id: socketGroup.getRoom().id,
-      participant_count: socketGroup.authenticatedParticipants().length - 1
+      participant_count: socketGroup.authenticatedParticipants().length
     })
   }
 }

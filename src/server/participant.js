@@ -138,9 +138,9 @@ class Participant {
   async leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
-      await lib.analytics.participantLeaving(this)
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
+      await lib.analytics.participantLeaving(this)
       this.socketGroup = null
     }
   }

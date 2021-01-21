@@ -10,12 +10,7 @@ class Analytics {
     })
   }
 
-  async participantJoinedSocketGroup(participant) {
-    const socketGroup = participant.getSocketGroup()
-    if(!socketGroup) {
-      log.app.error(`Reporting participant joined, but socketGroup is null ${participant.sessionName()}`)
-      return
-    }
+  async participantJoinedSocketGroup(socketGroup) {
     await shared.db.pg.massive.analytics_room_participant_count.insert({
       measured_at: shared.db.time.now(),
       room_id: socketGroup.getRoom().id,
@@ -23,12 +18,7 @@ class Analytics {
     })
   }
 
-  async participantLeaving(participant) {
-    const socketGroup = participant.getSocketGroup()
-    if(!socketGroup) {
-      log.app.error(`Reporting participant leaving, but socketGroup is null ${participant.sessionName()}`)
-      return
-    }
+  async participantLeaving(socketGroup) {
     await shared.db.pg.massive.analytics_room_participant_count.insert({
       measured_at: shared.db.time.now(),
       room_id: socketGroup.getRoom().id,

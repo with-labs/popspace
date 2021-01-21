@@ -68,7 +68,7 @@ class Participant {
   }
 
   sessionName() {
-    return `(uid ${this.user ? this.user.id : null}, rid ${this.room ? this.room.id : null}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+    return `(uid ${this.userId()}, rid ${this.roomId()}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
   }
 
   keepalive() {
@@ -132,16 +132,17 @@ class Participant {
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
     this.keepalive()
-    await lib.analytics.participantJoinedSocketGroup(this)
+    await lib.analytics.participantJoinedSocketGroup(socketGroup)
   }
 
   async leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
-      this.socketGroup.removeParticipant(this)
-      this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
-      await lib.analytics.participantLeaving(this)
+      const socketGroup = this.socketGroup
       this.socketGroup = null
+      socketGroup.removeParticipant(this)
+      socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
+      await lib.analytics.participantLeaving(socketGroup)
     }
   }
 

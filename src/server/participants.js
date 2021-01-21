@@ -26,7 +26,7 @@ class Participants {
     if(!this.socketGroupsByRoomId[roomId]) {
       this.socketGroupsByRoomId[roomId] = new SocketGroup(participant.room)
     }
-    participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
+    await participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
   }
 
   addSocket(socket) {
@@ -36,6 +36,9 @@ class Participants {
     participant.setEventHandler(this.onEventReceived)
     socket.on('close', () => (this.removeParticipant(participant)))
     log.dev.debug(`New client - ${participant.id}`)
+
+    const currentCount = Object.keys(this.participants).length
+    lib.analytics.participantCountChanged(currentCount)
   }
 
   removeParticipant(participant) {

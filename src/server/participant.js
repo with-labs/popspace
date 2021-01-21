@@ -68,7 +68,7 @@ class Participant {
   }
 
   sessionName() {
-    return `(uid ${this.user ? this.user.id : null}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+    return `(uid ${this.user ? this.user.id : null}, rid ${this.room ? this.room.id : null}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
   }
 
   keepalive() {
@@ -120,19 +120,25 @@ class Participant {
     await this.getState()
     this.authenticated = true
     log.app.info(`Authenticated ${this.sessionName()}`)
+    await lib.analytics.participantAuthorized(this)
     return true
   }
 
-  joinSocketGroup(socketGroup) {
-    this.leaveSocketGroup()
+  getSocketGroup() {
+    return this.socketGroup
+  }
+
+  async joinSocketGroup(socketGroup) {
+    await this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
     this.keepalive()
   }
 
-  leaveSocketGroup() {
+  async leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
+      await lib.analytics.participantAuthorized(this)
       this.socketGroup.removeParticipant(this)
       this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       this.socketGroup = null
@@ -174,7 +180,7 @@ class Participant {
   }
 
   async disconnect() {
-    this.leaveSocketGroup()
+    await this.leaveSocketGroup()
     this.unauthenticate()
     if([ws.CLOSING, ws.CLOSED].includes(this.socket.readyState)) {
       return true

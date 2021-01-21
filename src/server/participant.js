@@ -24,6 +24,8 @@ class Participant {
     this.id = id++ // perhaps a decent more verbose name is sessionId
     this.unauthenticate()
 
+    log.app.info(`New participant ${this.id}`)
+
     this.dieFromTimeout = () => {
       log.app.info(`Participant dying from timeout ${this.sessionName()}`)
       this.disconnect()
@@ -117,6 +119,7 @@ class Participant {
     }
     await this.getState()
     this.authenticated = true
+    log.app.info(`Authenticated ${this.sessionName()}`)
     return true
   }
 

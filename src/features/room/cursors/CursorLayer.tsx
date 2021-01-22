@@ -19,12 +19,12 @@ const useStyles = makeStyles((theme) => ({
 export function CursorLayer() {
   const classes = useStyles();
   const cursorUserIds = useRoomStore((room) => Object.keys(room.cursors), shallow);
+  // used below to not render your own cursor
+  const ownUserId = useRoomStore((room) => room.sessionId && room.sessionLookup[room.sessionId]);
 
   return (
     <div className={classes.root}>
-      {cursorUserIds.map((userId) => (
-        <Cursor userId={userId} key={userId} />
-      ))}
+      {cursorUserIds.map((userId) => (userId === ownUserId ? null : <Cursor userId={userId} key={userId} />))}
     </div>
   );
 }

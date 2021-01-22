@@ -37,8 +37,11 @@ class Participant {
     }
 
     this.dieFromNoAuth = () => {
-      log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName}`)
-      this.disconnect()
+      // I think we currently rely on connecting to mercury w/o authenticating
+      // in the dashboard; but we should move away from that behavior
+
+      // log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName()}`)
+      // this.disconnect()
     }
 
     this.unauthenticate()

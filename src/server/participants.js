@@ -37,13 +37,13 @@ class Participants {
     socket.on('close', () => (this.removeParticipant(participant)))
     log.dev.debug(`New client - ${participant.id}`)
 
-    const currentCount = Object.keys(this.participants).length
-    lib.analytics.participantCountChanged(currentCount)
+    lib.analytics.participantCountChanged(Object.keys(this.participants).length)
   }
 
   removeParticipant(participant) {
     delete this.participants[participant.id]
     participant.disconnect()
+    lib.analytics.participantCountChanged(Object.keys(this.participants).length)
   }
 
   async disconnectAll() {

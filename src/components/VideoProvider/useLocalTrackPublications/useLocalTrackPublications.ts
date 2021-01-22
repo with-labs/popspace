@@ -1,5 +1,5 @@
 import { LocalDataTrack, LocalAudioTrack, LocalVideoTrack } from 'twilio-video';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { useLocalTracks } from '../../LocalTracksProvider/useLocalTracks';
 import { useAppState } from '../../../state';
 import { useTranslation } from 'react-i18next';
@@ -7,16 +7,19 @@ import { logger } from '../../../utils/logger';
 import useRoomState from '../../../hooks/useRoomState/useRoomState';
 import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { RoomState } from '../../../constants/twilio';
+import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
 
 function useTrackPublication(track: LocalAudioTrack | LocalVideoTrack | LocalDataTrack | null) {
   const { setError } = useAppState();
   const { t } = useTranslation();
   const roomState = useRoomState();
   const localParticipant = useLocalParticipant();
+  const { isReady } = useContext(MediaReadinessContext);
 
   useEffect(() => {
     if (roomState !== RoomState.Connected) return;
     if (!localParticipant) return;
+    if (!isReady) return;
 
     if (track) {
       logger.debug(`(re)publishing track ${localParticipant.identity}:${track.name}`);
@@ -45,7 +48,7 @@ function useTrackPublication(track: LocalAudioTrack | LocalVideoTrack | LocalDat
           });
       };
     }
-  }, [track, localParticipant, roomState, setError, t]);
+  }, [track, localParticipant, roomState, setError, t, isReady]);
 }
 
 export function useLocalTrackPublications() {

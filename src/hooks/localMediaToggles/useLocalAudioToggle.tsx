@@ -4,8 +4,10 @@ import { useLocalParticipant } from '../useLocalParticipant/useLocalParticipant'
 import { MIC_TRACK_NAME } from '../../constants/User';
 import { useLocalMediaToggle } from './useLocalMediaToggle';
 
-export default function useLocalAudioToggle() {
-  const { startAudio, stopAudio } = useLocalTracks();
+export default function useLocalAudioToggle(isLocal?: boolean) {
+  const { startAudio, stopAudio, audioTrack } = useLocalTracks();
   const audioPub = useNamedPublication(useLocalParticipant(), MIC_TRACK_NAME);
-  return useLocalMediaToggle(audioPub, startAudio, stopAudio);
+  const isPublished = isLocal ? audioTrack : audioPub;
+
+  return useLocalMediaToggle(!!isPublished, startAudio, stopAudio);
 }

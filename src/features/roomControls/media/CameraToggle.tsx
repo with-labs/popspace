@@ -11,9 +11,10 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 
-export const CameraToggle = (props: { className?: string }) => {
+export const CameraToggle = (props: any) => {
+  const { className, isLocal, ...otherProps } = props;
   const { t } = useTranslation();
-  const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle();
+  const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);
 
   useHotkeys(
     KeyShortcut.ToggleVideo,
@@ -40,7 +41,14 @@ export const CameraToggle = (props: { className?: string }) => {
         }
       >
         <div onContextMenu={handleContextMenu}>
-          <ToggleButton value="video" selected={isVideoOn} onChange={toggleVideoOn} disabled={busy} {...props}>
+          <ToggleButton
+            value="video"
+            selected={isVideoOn}
+            onChange={toggleVideoOn}
+            disabled={busy}
+            className={className}
+            {...otherProps}
+          >
             {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
           </ToggleButton>
         </div>

@@ -7,6 +7,7 @@ interface IModalProps {
   onClose?: () => void;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
+  disableBackdropClick?: boolean;
 }
 
 const noop = () => {};
@@ -17,6 +18,7 @@ export const Modal: React.FC<IModalProps> = ({
   onClose = noop,
   maxWidth = 'md',
   fullWidth = true,
+  disableBackdropClick = false,
 }) => {
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
 
@@ -29,7 +31,13 @@ export const Modal: React.FC<IModalProps> = ({
   }
 
   return (
-    <Dialog open={isOpen} onClose={onClose} maxWidth={maxWidth} fullWidth={fullWidth}>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      maxWidth={maxWidth}
+      fullWidth={fullWidth}
+      disableBackdropClick={disableBackdropClick}
+    >
       {children}
     </Dialog>
   );

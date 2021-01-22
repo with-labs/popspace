@@ -23,10 +23,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MicToggle = (props: { className?: string }) => {
+export const MicToggle = (props: any) => {
+  const { isLocal, className, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const [isMicOn, doMicToggle, busy] = useLocalAudioToggle();
+  const [isMicOn, doMicToggle, busy] = useLocalAudioToggle(isLocal);
   const { muteSession } = useRemoteControl();
 
   const toggleMicOn = React.useCallback(() => {
@@ -78,8 +79,8 @@ export const MicToggle = (props: { className?: string }) => {
             onChange={toggleMicOn}
             onContextMenu={handleContextMenu}
             disabled={busy}
-            {...props}
-            className={clsx(classes.root, props.className)}
+            {...otherProps}
+            className={clsx(classes.root, className)}
           >
             {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
           </ToggleButton>

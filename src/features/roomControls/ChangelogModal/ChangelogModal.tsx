@@ -6,6 +6,7 @@ import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { APP_VERSION, USER_ONBOARDING } from '../../../constants/User';
 import { useRoomModalStore } from '../useRoomModalStore';
+import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
 
 interface IChangelogModalProps {}
 
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 export const ChangelogModal: React.FC<IChangelogModalProps> = (props) => {
   const isOpen = useRoomModalStore((modals) => modals.changelog);
   const { openModal, closeModal } = useRoomModalStore((modals) => modals.api);
+  const { isReady } = React.useContext(MediaReadinessContext);
 
   const { t } = useTranslation();
   const classes = useStyles();
@@ -55,7 +57,7 @@ export const ChangelogModal: React.FC<IChangelogModalProps> = (props) => {
   }, [openModal]);
 
   return (
-    <Modal onClose={onCloseHandler} isOpen={isOpen} fullWidth={false}>
+    <Modal onClose={onCloseHandler} isOpen={isReady && isOpen} fullWidth={false}>
       <ModalTitleBar title={t('modals.changelogModal.title')} onClose={onCloseHandler} />
       <ModalContentWrapper className={classes.content}>
         <iframe

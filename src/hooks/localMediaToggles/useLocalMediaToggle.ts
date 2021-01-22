@@ -1,16 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import { logger } from '../../utils/logger';
 
 /**
  * Manages toggle state for a local media track publication, along with busy
  * status to disable the toggle while the track publishes.
  */
-export function useLocalMediaToggle(
-  publication: LocalTrackPublication | RemoteTrackPublication | null,
-  start: () => Promise<any>,
-  stop: () => void
-) {
+export function useLocalMediaToggle(isPublished: boolean | null, start: () => Promise<any>, stop: () => void) {
   const [busy, setBusy] = useState(false);
 
   // prevent setting state on unmounted component.
@@ -30,10 +25,10 @@ export function useLocalMediaToggle(
     }, 2000);
   }, []);
 
-  // reset busy when the publication changes (publishes / unpublishes)
+  // reset busy when the isPublished changes (publishes / unpublishes)
   useEffect(() => {
     setBusy(false);
-  }, [publication]);
+  }, [isPublished]);
 
   // throttled to prevent rapid on/off toggling - wait a moment for the
   // stream to start.
@@ -43,7 +38,7 @@ export function useLocalMediaToggle(
     startBusyTimeout();
 
     try {
-      if (publication) {
+      if (isPublished) {
         stop();
       } else {
         await start();
@@ -51,7 +46,7 @@ export function useLocalMediaToggle(
     } catch (err) {
       logger.error(err);
     }
-  }, [publication, start, stop, startBusyTimeout]);
+  }, [isPublished, start, stop, startBusyTimeout]);
 
-  return [!!publication, toggleAudioEnabled, busy] as const;
+  return [!!isPublished, toggleAudioEnabled, busy] as const;
 }

@@ -399,11 +399,6 @@
         }
       },
       "changelogModal": { "title": "What's new?" },
-      "enterRoomModal": {
-        "title": "Enter the room",
-        "content": "You can take a moment to set up your camera and microphone if you like.",
-        "buttonText": "Enter the room"
-      },
       "bugReportModal": {
         "title": "Report a bug",
         "explanationText": "Please explain what happened",
@@ -411,6 +406,18 @@
         "imgAltText": "Report a bug",
         "confirmationText": "Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!",
         "errorMessage": "Something unexpected has happened. Please contact us directly at support@with.so."
+      },
+      "devicePermissionsModal": {
+        "title": "Audio & video access",
+        "requestPermissonsButton": "Request Access",
+        "permissionExplainationText": "For others to see and hear you, your browser needs access to your microphone and to your camera.<br/><br/><strong>You can turn them off at any time.</strong>",
+        "setupExplaination": "Take a moment to set up your camera and microphone if you like.",
+        "enterRoomButton": "Enter Room",
+        "continueWithoutPermissionsButton": "Continue without devices",
+        "goToSupportButton": "Go to support",
+        "permissionDeinedExplaination": "Oops! Seems like With doesn’t have access to your camera and microphone.",
+        "loadingMessage": "Preparing the room for you",
+        "cameraPermissionDenied": "Camera permission denied"
       }
     }
   }

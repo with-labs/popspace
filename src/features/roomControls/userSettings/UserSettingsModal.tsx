@@ -1,9 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import { Box, makeStyles, Button, Typography, useTheme } from '@material-ui/core';
+import { Box, makeStyles, Button, useTheme } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
-import { Avatar } from '../../../components/Avatar/Avatar';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalPane } from '../../../components/Modal/ModalPane';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
@@ -16,6 +15,7 @@ import { TFunction } from 'i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 
 export type UserSettingFormData = {
   displayName: string;
@@ -52,61 +52,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.brandColors.sand.regular,
     borderRadius: theme.shape.borderRadius,
   },
-  avatarRoot: {
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: `4px solid ${theme.palette.background.paper}`,
-    transition: theme.transitions.create('border-color'),
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: theme.mainShadows.surface,
-    borderRadius: '100%',
-    width: 140,
-    height: 140,
+  bubble: {
     marginBottom: theme.spacing(5),
-  },
-  mainContent: {
-    overflow: 'hidden',
-    width: '100%',
-    height: '100%',
-    pointerEvents: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    borderRadius: '100%',
-  },
-  avatar: {
-    width: '100%',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    bottom: 41,
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-    overflow: 'hidden',
-  },
-  name: {
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: theme.typography.fontWeightMedium,
-    textOverflow: 'ellipsis',
-    margin: '0 auto',
-    maxWidth: '80%',
-  },
-  bottomSection: {
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    lineHeight: '1',
-    height: 16,
-  },
-  background: {
-    width: '100%',
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-    overflow: 'hidden',
-    height: 91,
   },
 }));
 
@@ -180,15 +127,12 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
               <Box display="flex" className={classes.userInputWrapper} alignItems="center" justifyContent="center">
                 <ModalPane className={classes.avatarPannel}>
                   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-                    <div className={classes.avatarRoot}>
-                      <div className={classes.mainContent}>
-                        <div className={classes.background} style={{ backgroundColor }} />
-                        <Avatar className={classes.avatar} name={avatarName || ''} />
-                        <div className={classes.bottomSection}>
-                          <Typography className={classes.name}>{displayIdentity}</Typography>
-                        </div>
-                      </div>
-                    </div>
+                    <PseudoUserBubble
+                      avatarName={avatarName}
+                      displayIdentity={displayIdentity}
+                      isVideoOn={false}
+                      className={classes.bubble}
+                    />
                     <Button onClick={() => setIsAvatarSelectionOpen(true)} color="primary" fullWidth={false}>
                       {t('modals.userSettingsModal.editAvatarButton')}
                     </Button>

@@ -11,13 +11,14 @@ import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModa
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
 import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
-import { EnterRoomModal } from '../roomControls/enterRoomModal/EnterRoomModal';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
 import { Hidden } from '@material-ui/core';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
 import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
+
+import { RequestPermissionModal } from '../roomControls/requestPermissionModal/RequestPermissionModal';
 
 interface IRoomProps {}
 
@@ -27,9 +28,9 @@ export const Room: React.FC<IRoomProps> = () => (
     <RoomSettingsModal />
     <SpeakingStateObserver />
     <UserSettingsModal />
-    <EnterRoomModal />
     <ChangelogModal />
     <OnboardingModal />
+    <RequestPermissionModal />
   </>
 );
 

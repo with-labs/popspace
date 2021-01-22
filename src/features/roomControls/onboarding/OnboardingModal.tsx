@@ -10,6 +10,7 @@ import { USER_ONBOARDING } from '../../../constants/User';
 import { BackIcon } from '../../../components/icons/BackIcon';
 import { ForwardIcon } from '../../../components/icons/ForwardIcon';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
+import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
 
 import onboardingImg1 from './images/onboarding_1.png';
 import onboardingImg2 from './images/onboarding_2.png';
@@ -84,6 +85,7 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
   const classes = useStyles();
   const [currentStep, setCurrentStep] = useState(0);
   const isRoomOwner = useIsRoomOwner();
+  const { isReady } = React.useContext(MediaReadinessContext);
 
   useEffect(() => {
     // check to see if the user has completed the onboarding or not,
@@ -120,7 +122,7 @@ export const OnboardingModal: React.FC<IOnboardingModalProps> = (props) => {
   const endButtonText = isRoomOwner ? 'modals.onboardingModal.finishInvite' : 'modals.onboardingModal.finishText';
 
   return (
-    <Modal onClose={onCloseHandler} isOpen={isOpen}>
+    <Modal onClose={onCloseHandler} isOpen={isReady && isOpen}>
       <ModalTitleBar title={t(onboardingSteps[currentStep].title)} onClose={onCloseHandler} />
       <ModalContentWrapper>
         <ModalPane>

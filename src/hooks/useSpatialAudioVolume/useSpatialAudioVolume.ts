@@ -34,7 +34,7 @@ export function useSpatialAudioVolume(
 
   useEffect(() => {
     const selectVolume = (room: RoomStateShape) => {
-      if (!room.sessionId) return Infinity;
+      if (!room.sessionId) return 0;
 
       const objPosition =
         objectKind === 'widget'
@@ -54,7 +54,7 @@ export function useSpatialAudioVolume(
     return useRoomStore.subscribe((volume: number) => {
       lastValue.current = volume;
       // sanity check
-      if (!isNaN(volume)) {
+      if (!isNaN(volume) && Number.isFinite(volume)) {
         callbackRef.current(volume);
       } else {
         logger.warn(`NaN volume for ${objectId}!`);

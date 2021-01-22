@@ -34,6 +34,9 @@ class MockWebSocket extends MockEventSource {
   readyState = WebSocket.CONNECTING;
 
   send = jest.fn();
+  close = jest.fn(() => {
+    this.readyState = WebSocket.CLOSING;
+  });
 }
 
 function createConnection() {
@@ -265,6 +268,8 @@ describe('SocketConnection', () => {
 
     // a new socket indicates we've attempted a reconnect
     expect(harness.socket).not.toBe(oldSocket);
+    // the old socket was closed
+    expect(oldSocket.close).toHaveBeenCalled();
 
     // emulate a connection failure
     harness.error(new Error('Connection failure'));
@@ -346,6 +351,7 @@ describe('SocketConnection', () => {
 
     // emulate open event
     harness.open();
+    let oldSocket = harness.socket;
 
     // run timers to heartbeat
     jest.advanceTimersByTime(HEARTBEAT_INTERVAL + 1);
@@ -357,22 +363,34 @@ describe('SocketConnection', () => {
     // the response wait time - if the timeout is fired, the connection should
     // enter reconnecting mode. So, run timers!
     jest.advanceTimersByTime(HEARTBEAT_TIMEOUT);
+    await new Promise<void>((resolve) => {
+      setImmediate(() => {
+        expect(oldSocket.close).toHaveBeenCalled();
+        resolve();
+      });
+    });
 
     // the reconnect is exponential backoff, so we run the timer to the delay
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY);
+    harness.close();
     // ...and then again, multiplied, and so on up to the reconnect attempt limit.
     // each time we check to be sure the connection refused error has not been thrown
     // too early.
     expect(harness.onError).not.toHaveBeenCalled();
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER);
+    harness.close();
     expect(harness.onError).not.toHaveBeenCalled();
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** 2);
+    harness.close();
     expect(harness.onError).not.toHaveBeenCalled();
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** 3);
+    harness.close();
     expect(harness.onError).not.toHaveBeenCalled();
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** 4);
+    harness.close();
     expect(harness.onError).not.toHaveBeenCalled();
     jest.advanceTimersByTime(INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** 5);
+    harness.close();
 
     // this is wrapped in a setImmediate because
     // of JS event loop quirks

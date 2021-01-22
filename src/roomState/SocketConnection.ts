@@ -22,16 +22,16 @@ const DEADLETTER_QUEUE_LIMIT = 1000;
 // for the first reconnection attempt, in ms.
 export const INITIAL_BACKOFF_DELAY = 100;
 // each time we reconnect, multiply delay by this constant
-export const BACKOFF_MULTIPLIER = 4;
+export const BACKOFF_MULTIPLIER = 3;
 // max number of retries before aborting connection attempt
-const BACKOFF_RETRIES = 5;
+const BACKOFF_RETRIES = 6;
 // computed maximum delay time before we stop retrying
 export const MAX_BACKOFF_DELAY = INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** BACKOFF_RETRIES;
 // interval in ms for ping heartbeat
 export const HEARTBEAT_INTERVAL = 15 * 1000;
 // number of ms to wait for a heartbeat response before
 // we consider the connection lost
-export const HEARTBEAT_TIMEOUT = 2000;
+export const HEARTBEAT_TIMEOUT = 5000;
 
 // full typing for the event emitter
 export interface SocketConnectionEvents {
@@ -110,8 +110,21 @@ export class SocketConnection extends EventEmitter {
     this.tryReconnect();
   };
 
+  private cancelReconnect = () => {
+    if (this.reconnectTimeout) {
+      clearTimeout(this.reconnectTimeout);
+      this.reconnectTimeout = null;
+    }
+  };
+
   private tryReconnect = () => {
-    if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+    this.cancelReconnect();
+
+    // if the existing socket is open, close it
+    if (this.ws && ![WebSocket.CLOSED, WebSocket.CLOSING].includes(this.ws.readyState)) {
+      this.doClose();
+    }
+
     if (this.backoffDelay >= MAX_BACKOFF_DELAY) {
       this.emit('error', new ConnectionFailedError());
       return;
@@ -131,7 +144,7 @@ export class SocketConnection extends EventEmitter {
 
   private onOpen = () => {
     // once connected, stop any reconnect loop
-    if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
+    this.cancelReconnect();
     // start or resume heartbeat loop
     this.startHeartbeatLoop();
 
@@ -324,18 +337,18 @@ export class SocketConnection extends EventEmitter {
     });
   };
 
+  private doClose = () => {
+    // cancel all reconnection, we are closing the socket.
+    this.ws.removeEventListener('close', this.onClose);
+    this.cancelReconnect();
+    this.ws.close();
+  };
+
   /**
    * Ends the socket connection
    */
   close = () => {
-    // cancel all reconnection, we are closing the socket.
-    this.ws.removeEventListener('close', this.tryReconnect);
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-    }
-    // close the socket - this.onClose handler will emit the event to our
-    // listeners automatically.
-    this.ws.close();
+    this.doClose();
     this.emit('closed');
   };
 

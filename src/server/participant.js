@@ -10,6 +10,12 @@ const DEFAULT_STATE_IN_ROOM = {
   status: null
 }
 
+/*
+  Require that users authenticate within a certain time
+  to avoid zombie socket connections
+*/
+const COUNTDOWN_TO_AUTHENTICATE_MILLIS = 120000
+
 /* The JSON API is camelcase, but the database has underscore column names */
 const CAMELCASE_DEEP = { deep: true }
 
@@ -22,7 +28,6 @@ class Participant {
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
     this.id = id++ // perhaps a decent more verbose name is sessionId
-    this.unauthenticate()
 
     log.app.info(`New participant ${this.id}`)
 
@@ -31,11 +36,22 @@ class Participant {
       this.disconnect()
     }
 
+    this.dieFromNoAuth = () => {
+      log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName}`)
+      this.disconnect()
+    }
+
+    this.unauthenticate()
+
     this.socket.on('disconnect', () => {
+      clearTimeout(this.heartbeatTimeout)
+      clearTimeout(this.dieUnlessAuthenticateTimeout)
       this.leaveSocketGroup()
     })
 
     this.socket.on('close', () => {
+      clearTimeout(this.heartbeatTimeout)
+      clearTimeout(this.dieUnlessAuthenticateTimeout)
       this.leaveSocketGroup()
     })
 
@@ -65,6 +81,7 @@ class Participant {
     })
 
     this.keepalive()
+    this.dieUnlessAuthenticate()
   }
 
   sessionName() {
@@ -75,6 +92,10 @@ class Participant {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
     log.app.info(`Keepalive ${this.sessionName()}`)
+  }
+
+  dieUnlessAuthenticate() {
+    this.dieUnlessAuthenticateTimeout = setTimeout(this.dieFromNoAuth, COUNTDOWN_TO_AUTHENTICATE_MILLIS)
   }
 
   sessionId() {
@@ -119,6 +140,7 @@ class Participant {
     }
     await this.getState()
     this.authenticated = true
+    clearTimeout(this.dieUnlessAuthenticateTimeout)
     log.app.info(`Authenticated ${this.sessionName()}`)
     return true
   }
@@ -232,6 +254,7 @@ class Participant {
     this.room = {}
     this.transform = null
     this.participantState = null
+    this.dieUnlessAuthenticate()
   }
 
   serialize() {

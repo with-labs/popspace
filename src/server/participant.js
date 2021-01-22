@@ -63,7 +63,7 @@ class Participant {
         - ratelimit
         - sanitize input: protect from js-injection attacks on peers
       */
-      log.received.info(`${this.sessionName()} message`)
+      log.received.info(`${this.sessionName()} ${message}`)
       log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
@@ -95,6 +95,11 @@ class Participant {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
     log.app.info(`Keepalive ${this.sessionName()}`)
+    /*
+      We don't really need to do this synchronously,
+      since we expect write time to be much less than the time between heartbeats
+    */
+    lib.analytics.updateSessionLength(this)
   }
 
   dieUnlessAuthenticate() {
@@ -159,6 +164,7 @@ class Participant {
     this.keepalive()
     log.app.info(`Joined socket group ${this.sessionName()}`)
     await lib.analytics.participantJoinedSocketGroup(socketGroup)
+    await lib.analytics.beginSession(this, socketGroup)
   }
 
   async leaveSocketGroup() {

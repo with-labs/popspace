@@ -1,6 +1,6 @@
 class Analytics {
   constructor() {
-
+    this.roomUsageIdByParticipantId = {}
   }
 
   async participantCountChanged(newCount) {
@@ -24,6 +24,38 @@ class Analytics {
       room_id: socketGroup.getRoom().id,
       participant_count: socketGroup.authenticatedParticipants().length
     })
+  }
+
+  async beginSession(participant, socketGroup) {
+    const roomUsageEntry = await shared.db.pg.massive.analytics_room_usage.insert({
+      room_id: participant.roomId(),
+      user_id: participant.userId(),
+      participant_id: participant.sessionId(),
+      socket_group_id: socketGroup.getId(),
+      began_at: shared.db.time.now(),
+      last_heartbeat_at: shared.db.time.now()
+    })
+    /*
+      Since participant_ids reset between mercury run, we can't rely on them
+      to identify a usage session.
+
+      So instead, every time beginSession() is called, remember the id of
+      the analytics entry. That in-memory store will be reset if participant ids are reset,
+      and even if we have the same participant_id - we'll know it maps to
+      a different analytics entry.
+    */
+    this.roomUsageIdByParticipantId[participant.sessionId()] = roomUsageEntry.id
+  }
+
+  async updateSessionLength(participant) {
+    const entryId = this.roomUsageIdByParticipantId[participant.sessionId()]
+    if(!entryId) {
+      return
+    }
+    await shared.db.pg.massive.analytics_room_usage.update(
+      {id: entryId},
+      {last_heartbeat_at: shared.db.time.now()}
+    )
   }
 }
 

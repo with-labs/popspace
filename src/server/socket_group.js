@@ -13,6 +13,10 @@ class SocketGroup {
     this._participants = []
   }
 
+  getId() {
+    return this.id
+  }
+
   getRoom() {
     return this._room
   }

@@ -6,7 +6,7 @@ const log4jsConfig = {
     console: { type: 'console' },
     dev: {type: 'file', filename: 'logs/dev.log'},
     received: {type: 'file', filename: 'logs/received.log'},
-    sent: {type: 'file', filename: 'logs/sent.log'},
+    sent: {type: 'file', filename: 'logs/sent.log'}
   },
   categories: {
     default: { appenders: ['console'], level: 'info' },

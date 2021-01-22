@@ -33,10 +33,5 @@ const useStyles = makeStyles((theme) => ({
  */
 export const FileDropGhost: React.FC<IFileDropGhostProps> = ({ position }) => {
   const classes = useStyles();
-  return (
-    <div
-      className={classes.root}
-      style={{ transform: `translate(-50%, -50%) translate(${position.x}px, ${position.y}px)` }}
-    />
-  );
+  return <div className={classes.root} style={{ transform: `translate(${position.x}px, ${position.y}px)` }} />;
 };

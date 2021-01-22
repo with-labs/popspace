@@ -31,7 +31,10 @@ const connectionOptions: ConnectOptions = {
   },
   dominantSpeaker: false,
   maxAudioBitrate: 48000,
-  networkQuality: { local: 1, remote: 1 },
+  // disabled since we don't use it - we could re-enable this to
+  // display network quality level to users, but without using it it just
+  // wastes CPU cycles
+  // networkQuality: { local: 1, remote: 1 },
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
 };
 

@@ -12,6 +12,22 @@ import { mandarin as theme } from '../../theme/theme';
 import { useRoomStore } from '../../roomState/useRoomStore';
 import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
 import { useTrackCursor } from './useTrackCursor';
+import { EventEmitter } from 'events';
+
+export interface ViewportEventHandlers {
+  zoomEnd: () => void;
+}
+export declare interface ViewportEvents {
+  on<U extends keyof ViewportEventHandlers>(event: U, listener: ViewportEventHandlers[U]): this;
+  off<U extends keyof ViewportEventHandlers>(event: U, listener: ViewportEventHandlers[U]): this;
+  emit<U extends keyof ViewportEventHandlers>(event: U, ...args: Parameters<ViewportEventHandlers[U]>): boolean;
+}
+/**
+ * ViewportEvents is a typed EventEmitter which provides a way for components further down
+ * in the tree to react to changes in the viewport. Right now we just support an event
+ * fired when a zoom has completed.
+ */
+export class ViewportEvents extends EventEmitter {}
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;
@@ -22,6 +38,7 @@ export const RoomViewportContext = React.createContext<null | {
   zoom: (delta: number) => void;
   width: number;
   height: number;
+  events: ViewportEvents;
 }>(null);
 
 export function useRoomViewport() {
@@ -75,6 +92,11 @@ const RELAXED_SPRING = {
 };
 
 const useStyles = makeStyles<Theme, IRoomViewportProps>({
+  fileDropLayer: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+  },
   viewport: {
     width: '100%',
     height: '100%',
@@ -83,6 +105,7 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     cursor: 'move',
     position: 'relative',
     touchAction: 'none',
+    contain: 'strict',
   },
   canvas: {
     position: 'absolute',
@@ -97,16 +120,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
   const { children, minZoom = 1 / 4, maxZoom = 2, uiControls, ...rest } = props;
 
+  const [events] = React.useState(() => new ViewportEvents());
+
   const bounds = useRoomStore((room) => room.state.bounds);
   const backgroundUrl = useRoomStore((room) => room.state.wallpaperUrl);
-
-  const centeredSpaceTransformerStyles = React.useMemo(
-    () => ({
-      overflow: 'visible',
-      transform: `translate(${bounds.width / 2}px, ${bounds.height / 2}px)`,
-    }),
-    [bounds.width, bounds.height]
-  );
 
   const domTarget = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -129,7 +146,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY, isPanning }, setPanSpring] = useSpring(() => ({
+  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
     isPanning: false,
@@ -299,9 +316,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       await Promise.all([zoomResult, panResult]);
       setPanSpring({ isPanning: false });
       setZoomSpring({ isZooming: false });
+      events.emit('zoomEnd');
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [userId, isReady, setPanSpring, setZoomSpring, doPanRef, doAbsoluteZoomRef]);
+  }, [userId, isReady, setPanSpring, setZoomSpring, doPanRef, doAbsoluteZoomRef, events]);
 
   // active is required to prevent default behavior, which
   // we want to do for zoom.
@@ -329,6 +347,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onPinchEnd: ({ event }) => {
         event?.preventDefault();
         setZoomSpring({ isZooming: false });
+        events.emit('zoomEnd');
       },
     },
     {
@@ -374,6 +393,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       } else {
         setPanSpring({ isPanning: false });
       }
+      events.emit('zoomEnd');
     },
     onMove: ({ xy }) => {
       onCursorMove(toWorldCoordinate({ x: xy[0], y: xy[1] }));
@@ -410,11 +430,15 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       onObjectDragStart,
       onObjectDragEnd,
       pan: doPan,
-      zoom: doZoom,
+      zoom: async (delta: number, spring?: any) => {
+        await doZoom(delta, spring);
+        events.emit('zoomEnd');
+      },
       width: bounds.width,
       height: bounds.height,
+      events,
     }),
-    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height]
+    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height, events]
   );
 
   const { props: keyControlProps } = useKeyboardControls({
@@ -434,7 +458,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         {...bindPassiveGestures()}
         {...rest}
       >
-        <FileDropLayer>
+        <FileDropLayer className={styles.fileDropLayer}>
           <animated.div
             className={styles.canvas}
             ref={canvasRef}
@@ -446,28 +470,9 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
                 // 4. Translate the center according to the pan position
                 return `translate(${-halfCanvasWidth}px, ${-halfCanvasHeight}px) translate(${halfWindowWidth}px, ${halfWindowHeight}px) scale(${zoomv}, ${zoomv}) translate(${cx}px, ${cy}px)`;
               }),
-              /**
-               * Animating will-change is very important for both performance and render quality.
-               * By setting will-change=transform while the viewport pans or zooms, we tell the browser
-               * to minimize repainting during these animations, keeping them smooth. By setting it
-               * back to initial after the animation ends, we tell the browser to re-rasterize the
-               * scene at the current scale and position - this makes text and images crisp up as
-               * if they were being natively rendered at their current pixel size.
-               */
-              willChange: to([isZooming, isPanning], (zoomingv, panningv) =>
-                zoomingv || panningv ? 'transform' : 'initial'
-              ) as any,
             }}
           >
-            {/*
-              Converts from top-left coords to center-based coords -
-              widgets in the room use center-based coords but their DOM
-              placement still needs to be adjusted because the DOM lays out
-              from top-left. This CSS class just translates the entire
-              container element to the center and allows elements with negative
-              positions to still be visible with overflow: visible.
-              */}
-            <div style={centeredSpaceTransformerStyles}>{children}</div>
+            {children}
           </animated.div>
         </FileDropLayer>
       </animated.div>

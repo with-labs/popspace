@@ -54,6 +54,7 @@ const useStyles = makeStyles({
   root: {
     position: 'absolute',
     touchAction: 'none',
+    willChange: 'transform',
   },
 });
 
@@ -89,6 +90,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
 }) => {
   const styles = useStyles();
 
+  const ref = React.useRef<HTMLDivElement>(null);
+
   // dispatcher for movement changes
   const api = useRoomStore((store) => store.api);
   const onMove = React.useCallback(
@@ -103,6 +106,42 @@ export const Draggable: React.FC<IDraggableProps> = ({
   );
 
   const viewport = useRoomViewport();
+
+  React.useEffect(() => {
+    /**
+     * Dirty trick ahead - literally!
+     * This function forces an invalidation of the rasterized layer for
+     * this draggable (hence the 'dirty' joke, get it?). It does that by toggling
+     * off will-change: transform for one frame, then toggling it back on again. This
+     * effectively 'flattens' the layer which is created for this specific item back into
+     * the canvas (will-change: initial), then recreates the layer again (will-change: transform).
+     * Doing so re-rasterizes the layer at the current scale level, so that even 2x images and text
+     * are re-sharpened.
+     *
+     * We need this trick because just applying `will-change: transform` all the time doesn't seem
+     * to properly re-rasterize when the scale changes, leading to blurriness. By manually invalidating
+     * the layer (read: not just invalidating but trashing and re-creating - this could be less than
+     * desirable) we can choose to re-sharpen the contents after the user has changed the zoom of the
+     * viewport, which is the most logical and only necessary time to do it.
+     *
+     * TODO: if we need to optimize this even further, we could avoid re-rasterizing widgets which are
+     * currently offscreen!
+     */
+    const rerasterize = () => {
+      requestAnimationFrame(() => {
+        if (!ref.current) return;
+        ref.current.style.willChange = 'initial';
+        requestAnimationFrame(() => {
+          if (!ref.current) return;
+          ref.current.style.willChange = 'transform';
+        });
+      });
+    };
+    viewport.events.on('zoomEnd', rerasterize);
+    return () => {
+      viewport.events.off('zoomEnd', rerasterize);
+    };
+  }, [viewport.events]);
 
   const selectPosition = React.useCallback(
     (room: RoomStateShape) =>
@@ -269,14 +308,19 @@ export const Draggable: React.FC<IDraggableProps> = ({
       }}
     >
       <animated.div
+        ref={ref}
         style={{
-          transform: to([x, y], (xv, yv) => `translate(${Math.round(xv)}px, ${Math.round(yv)}px)`),
+          transform: to(
+            [x, y],
+            (xv, yv) => `translate(${Math.round(xv + viewport.width / 2)}px, ${Math.round(yv + viewport.height / 2)}px)`
+          ),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
         }}
         className={clsx(styles.root, className)}
         onKeyDown={stopPropagation}
         onKeyUp={stopPropagation}
+        id={`${kind}-${id}`}
         {...bindRoot()}
       >
         {children}

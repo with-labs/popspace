@@ -185,35 +185,38 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     React.useEffect(() => {
       if (!needsRemeasure) return;
 
-      requestAnimationFrame(async () => {
-        if (!contentRef.current) return;
+      const remeasure = () =>
+        requestAnimationFrame(async () => {
+          if (!contentRef.current) return;
 
-        // wait for fonts to load before resizing
-        if (document.fonts.ready) {
-          // race the promise load with a 3 second timer (i.e. timeout if wait is too long)
-          await Promise.race([document.fonts.ready, new Promise((res) => setTimeout(res, 3000))]);
-        }
+          const naturalWidth = contentRef.current.clientWidth;
+          const naturalHeight = contentRef.current.clientHeight;
 
-        const naturalWidth = contentRef.current.clientWidth;
-        const naturalHeight = contentRef.current.clientHeight;
+          const aspect = naturalWidth / naturalHeight;
+          setOriginalAspectRatio(aspect);
 
-        const aspect = naturalWidth / naturalHeight;
-        setOriginalAspectRatio(aspect);
+          onResize(
+            clampAndEnforceMode({
+              width: naturalWidth,
+              height: naturalHeight,
+              minHeight,
+              minWidth,
+              maxHeight,
+              maxWidth,
+              mode,
+              originalAspectRatio: aspect,
+            })
+          );
+          setNeedsRemeasure(false);
+        });
 
-        onResize(
-          clampAndEnforceMode({
-            width: naturalWidth,
-            height: naturalHeight,
-            minHeight,
-            minWidth,
-            maxHeight,
-            maxWidth,
-            mode,
-            originalAspectRatio: aspect,
-          })
-        );
-        setNeedsRemeasure(false);
-      });
+      // wait for fonts to load before resizing
+      if (document.fonts.ready) {
+        // race the promise load with a 3 second timer (i.e. timeout if wait is too long)
+        Promise.race([document.fonts.ready, new Promise((res) => setTimeout(res, 3000))]).then(remeasure);
+      } else {
+        remeasure();
+      }
     }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
 
     // this effect updates the spring dimensions when the `size` prop changes

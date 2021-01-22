@@ -1,6 +1,6 @@
 import React from 'react';
 import { Story } from '@storybook/react/types-6-0';
-import { RoomViewportContext } from '../../features/room/RoomViewport';
+import { RoomViewportContext, ViewportEvents } from '../../features/room/RoomViewport';
 
 const value = {
   toWorldCoordinate: () => ({ x: 0, y: 0 }),
@@ -11,6 +11,7 @@ const value = {
   zoom: () => {},
   width: 1000,
   height: 1000,
+  events: new ViewportEvents(),
 };
 
 export function withViewport(S: Story) {

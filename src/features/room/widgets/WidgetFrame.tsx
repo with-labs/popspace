@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Paper, makeStyles, ThemeProvider } from '@material-ui/core';
+import { makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
 import { Draggable } from '../Draggable';
@@ -28,9 +28,9 @@ function useZIndex(widgetId: string) {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
-    height: '100%',
     background: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: theme.mainShadows.surface,
     overflow: 'hidden',
     cursor: 'default',
     display: 'flex',
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
  * The external window frame of a floating widget. Defines the color
  * palette of the widget as well.
  */
-export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, ...props }) => {
+export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, color, ...rest }) => {
   const classes = useStyles();
 
   const {
@@ -56,13 +56,19 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, ...props }
     bringToFrontAction({ widgetId });
   }, [bringToFrontAction, widgetId]);
 
-  const theme = themes[props.color || 'lavender'];
+  const theme = themes[color || 'lavender'];
 
   return (
-    <Draggable id={widgetId} zIndex={zIndex} onDragStart={bringToFront} kind="widget" className={className}>
-      <ThemeProvider theme={theme}>
-        <Paper {...props} elevation={1} className={classes.root} />
-      </ThemeProvider>
-    </Draggable>
+    <ThemeProvider theme={theme}>
+      <Draggable
+        id={widgetId}
+        zIndex={zIndex}
+        onDragStart={bringToFront}
+        kind="widget"
+        className={clsx(classes.root, className)}
+      >
+        {children}
+      </Draggable>
+    </ThemeProvider>
   );
 };

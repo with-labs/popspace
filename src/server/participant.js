@@ -63,7 +63,7 @@ class Participant {
         - ratelimit
         - sanitize input: protect from js-injection attacks on peers
       */
-      log.received.info(message)
+      log.received.info(`${this.sessionName()} message`)
       log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
@@ -157,6 +157,7 @@ class Participant {
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
     this.keepalive()
+    log.app.info(`Joined socket group ${this.sessionName()}`)
     await lib.analytics.participantJoinedSocketGroup(socketGroup)
   }
 

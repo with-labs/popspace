@@ -1,20 +1,18 @@
 import { useCallback } from 'react';
 import api from '../../../../utils/api';
 import { logger } from '../../../../utils/logger';
-import { useFeatureFlag } from 'flagg';
 import { useTranslation } from 'react-i18next';
 import { LinkWidgetState } from '../../../../roomState/types/widgets';
 
 /** Returns a function to call to retrieve opengraph data for a URL */
 export function useGetLinkData() {
   const { t } = useTranslation();
-  const isOpenGraphEnabled = useFeatureFlag('opengraph');
 
   const handleSave = useCallback(
     async (baseData: LinkWidgetState) => {
       const url = baseData.url.trim();
 
-      if (!isOpenGraphEnabled || !url) {
+      if (!url) {
         return baseData;
       }
 
@@ -34,7 +32,7 @@ export function useGetLinkData() {
         return baseData;
       }
     },
-    [isOpenGraphEnabled, t]
+    [t]
   );
 
   return handleSave;

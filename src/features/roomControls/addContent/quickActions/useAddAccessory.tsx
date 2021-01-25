@@ -3,7 +3,6 @@ import { addVectors } from '../../../../utils/math';
 import { useRoomViewport } from '../../../room/RoomViewport';
 import { Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
-import { useFeatureFlag } from 'flagg';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
@@ -19,7 +18,6 @@ export function useAddAccessory() {
   const viewport = useRoomViewport();
 
   const getLinkData = useGetLinkData();
-  const [hasOpengraph] = useFeatureFlag('opengraph');
 
   const addWidget = useRoomStore((room) => room.api.addWidget);
 
@@ -50,7 +48,7 @@ export function useAddAccessory() {
       let data = initialData;
       // kind of a heuristic - only fetch opengraph data if we don't already
       // have a media preview
-      if (hasOpengraph && type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
+      if (type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
         // FIXME: any cast
         data = (await getLinkData(initialData as LinkWidgetState)) as any;
       }
@@ -63,6 +61,6 @@ export function useAddAccessory() {
         widgetState: data,
       });
     },
-    [addWidget, userId, viewport, getLinkData, hasOpengraph]
+    [addWidget, userId, viewport, getLinkData]
   );
 }

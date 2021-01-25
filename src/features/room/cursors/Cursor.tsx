@@ -6,6 +6,7 @@ import { RoomStateShape, useRoomStore } from '../../../roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
+import { useRoomViewport } from '../RoomViewport';
 
 export interface ICursorProps {
   userId: string;
@@ -41,6 +42,8 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
 
+  const viewport = useRoomViewport();
+
   const [styles, setStyles] = useSpring(() => ({
     // populate initial state from store
     ...selectPosition(useRoomStore.getState()),
@@ -50,13 +53,16 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
 
   React.useEffect(() => {
     useRoomStore.subscribe<Vector2>((pos) => {
-      setStyles(pos);
+      setStyles({
+        x: pos.x + viewport.width / 2,
+        y: pos.y + viewport.height / 2,
+      });
     }, selectPosition);
 
     useRoomStore.subscribe<boolean>((active) => {
       setStyles({ visibility: active ? 'visible' : 'hidden' });
     }, selectActive);
-  }, [selectPosition, selectActive, setStyles]);
+  }, [selectPosition, selectActive, setStyles, viewport]);
 
   const contrastColor = React.useMemo(() => {
     const ratio = getContrastRatio(theme.palette.common.black, color);

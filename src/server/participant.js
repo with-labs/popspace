@@ -10,6 +10,12 @@ const DEFAULT_STATE_IN_ROOM = {
   status: null
 }
 
+/*
+  Require that users authenticate within a certain time
+  to avoid zombie socket connections
+*/
+const COUNTDOWN_TO_AUTHENTICATE_MILLIS = 120000
+
 /* The JSON API is camelcase, but the database has underscore column names */
 const CAMELCASE_DEEP = { deep: true }
 
@@ -22,7 +28,6 @@ class Participant {
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
     this.id = id++ // perhaps a decent more verbose name is sessionId
-    this.unauthenticate()
 
     log.app.info(`New participant ${this.id}`)
 
@@ -31,11 +36,25 @@ class Participant {
       this.disconnect()
     }
 
+    this.dieFromNoAuth = () => {
+      // I think we currently rely on connecting to mercury w/o authenticating
+      // in the dashboard; but we should move away from that behavior
+
+      // log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName()}`)
+      // this.disconnect()
+    }
+
+    this.unauthenticate()
+
     this.socket.on('disconnect', () => {
+      clearTimeout(this.heartbeatTimeout)
+      clearTimeout(this.dieUnlessAuthenticateTimeout)
       this.leaveSocketGroup()
     })
 
     this.socket.on('close', () => {
+      clearTimeout(this.heartbeatTimeout)
+      clearTimeout(this.dieUnlessAuthenticateTimeout)
       this.leaveSocketGroup()
     })
 
@@ -44,7 +63,7 @@ class Participant {
         - ratelimit
         - sanitize input: protect from js-injection attacks on peers
       */
-      log.received.info(message)
+      log.received.info(`${this.sessionName()} ${message}`)
       log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
@@ -65,16 +84,26 @@ class Participant {
     })
 
     this.keepalive()
+    this.dieUnlessAuthenticate()
   }
 
   sessionName() {
-    return `(uid ${this.user ? this.user.id : null}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+    return `(uid ${this.userId()}, rid ${this.roomId()}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
   }
 
   keepalive() {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
     log.app.info(`Keepalive ${this.sessionName()}`)
+    /*
+      We don't really need to do this synchronously,
+      since we expect write time to be much less than the time between heartbeats
+    */
+    lib.analytics.updateSessionLength(this)
+  }
+
+  dieUnlessAuthenticate() {
+    this.dieUnlessAuthenticateTimeout = setTimeout(this.dieFromNoAuth, COUNTDOWN_TO_AUTHENTICATE_MILLIS)
   }
 
   sessionId() {
@@ -119,23 +148,33 @@ class Participant {
     }
     await this.getState()
     this.authenticated = true
+    clearTimeout(this.dieUnlessAuthenticateTimeout)
     log.app.info(`Authenticated ${this.sessionName()}`)
     return true
   }
 
-  joinSocketGroup(socketGroup) {
-    this.leaveSocketGroup()
+  getSocketGroup() {
+    return this.socketGroup
+  }
+
+  async joinSocketGroup(socketGroup) {
+    await this.leaveSocketGroup()
     this.socketGroup = socketGroup
     socketGroup.addParticipant(this)
     this.keepalive()
+    log.app.info(`Joined socket group ${this.sessionName()}`)
+    await lib.analytics.participantJoinedSocketGroup(socketGroup)
+    await lib.analytics.beginSession(this, socketGroup)
   }
 
-  leaveSocketGroup() {
+  async leaveSocketGroup() {
     clearTimeout(this.heartbeatTimeout)
     if(this.socketGroup) {
-      this.socketGroup.removeParticipant(this)
-      this.socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
+      const socketGroup = this.socketGroup
       this.socketGroup = null
+      socketGroup.removeParticipant(this)
+      socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
+      await lib.analytics.participantLeft(socketGroup)
     }
   }
 
@@ -174,7 +213,7 @@ class Participant {
   }
 
   async disconnect() {
-    this.leaveSocketGroup()
+    await this.leaveSocketGroup()
     this.unauthenticate()
     if([ws.CLOSING, ws.CLOSED].includes(this.socket.readyState)) {
       return true
@@ -225,6 +264,7 @@ class Participant {
     this.room = {}
     this.transform = null
     this.participantState = null
+    this.dieUnlessAuthenticate()
   }
 
   serialize() {

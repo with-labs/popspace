@@ -11,9 +11,11 @@ lib.dto = require("./dto/_dto")
 lib.event = require("./event/_events")
 
 const RoomData = require("./room_data")
+const Analytics = require("./analytics")
 
 lib.init = async () => {
   lib.roomData = new RoomData()
+  lib.analytics = new Analytics()
   await lib.roomData.init()
   await global.shared.db.pg.init()
 }

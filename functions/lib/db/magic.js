@@ -1,14 +1,12 @@
-const DbAccess = require("./pg/db_access")
-
 /**
 Manages life cycle of magic links.
 
 Magic links permit executing various restricted access for
 a given user account: e.g. unsubscribing from a mailing list.
 */
-class Magic extends DbAccess {
+class Magic {
+  // TODO: move out to shared
   constructor() {
-    super()
   }
 
   async unsubscribeUrl(appUrl, magicLink) {
@@ -16,7 +14,7 @@ class Magic extends DbAccess {
   }
 
   async createUnsubscribe(userId) {
-    const existingLink = await db.pg.massive.magic_links.findOne({
+    const existingLink = await shared.db.pg.massive.magic_links.findOne({
       user_id: userId,
       expires_at: null,
       resolved_at: null,
@@ -27,8 +25,8 @@ class Magic extends DbAccess {
     }
     const request = {
       user_id: userId,
-      otp: lib.db.otp.generate(),
-      issued_at: this.now(),
+      otp: shared.lib.otp.generate(),
+      issued_at: shared.db.time.now(),
       /**
         According to the CAN SPAM guidelines
         https://www.ftc.gov/tips-advice/business-center/guidance/can-spam-act-compliance-guide-business
@@ -40,15 +38,15 @@ class Magic extends DbAccess {
       expires_at: null,
       action: Magic.actions.UNSUBSCRIBE
     }
-    return await db.pg.massive.magic_links.insert(request)
+    return await shared.db.pg.massive.magic_links.insert(request)
   }
 
   async magicLinkById(magicLinkId) {
-    return await db.pg.massive.magic_links.find(magicLinkId)
+    return await shared.db.pg.massive.magic_links.find(magicLinkId)
   }
 
   async tryToResolveMagicLink(request, otp) {
-    const verification = lib.db.otp.verify(request, otp)
+    const verification = shared.lib.otp.verify(request, otp)
     if(verification.error != null) {
       return verification
     }
@@ -57,13 +55,13 @@ class Magic extends DbAccess {
         return await this.unsubscribe(request, otp)
         break;
       default:
-        return { error: lib.db.ErrorCodes.otp.INVALID_ACTION }
+        return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION }
     }
   }
 
   async tryToUnsubscribe(request, otp) {
     if(request.action != Magic.actions.UNSUBSCRIBE) {
-      return { error: lib.db.ErrorCodes.otp.INVALID_ACTION }
+      return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION }
     }
     return await this.tryToResolveMagicLink(request, otp)
   }
@@ -71,14 +69,14 @@ class Magic extends DbAccess {
   // Private
   async unsubscribe(request, otp) {
     const userId = request.user_id
-    const user = await db.pg.massive.users.find(userId)
+    const user = await shared.db.pg.massive.users.find(userId)
     if(!user) {
-        return { error : lib.db.ErrorCodes.user.NO_SUCH_USER }
+        return { error : shared.error.code.NO_SUCH_USER }
     }
     // Usually we'd want to mark the magic link as expired in a transaction,
     // but there is no reason to invalidate unsubscribe links.
     // https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
-    await lib.db.pg.massive.users.update({id: userId}, {newsletter_opt_in: false})
+    await shared.db.pg.massive.users.update({id: userId}, {newsletter_opt_in: false})
     return { }
   }
 }

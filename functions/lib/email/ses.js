@@ -29,14 +29,14 @@ class Ses {
     */
     if(err) {
       log.email.error(`Failed to send ${emailMessage.name} to ${to}`, err)
-      return await db.pg.massive.ses_email_messages.update({id: emailMessage.id}, {
-        aws_responded_at: db.time.now(),
+      return await shared.db.pg.massive.ses_email_messages.update({id: emailMessage.id}, {
+        aws_responded_at: shared.db.time.now(),
         error: err
       })
     } else {
       log.email.info(`Sent ${emailMessage.name}`, info)
-      return await db.pg.massive.ses_email_messages.update({id: emailMessage.id}, {
-        aws_responded_at: db.time.now(),
+      return await shared.db.pg.massive.ses_email_messages.update({id: emailMessage.id}, {
+        aws_responded_at: shared.db.time.now(),
         response: info.response,
         // messageId has the @us-east-2.amazonses.com suffix which we don't want,
         // since the SNS message we'll get later won't include it
@@ -47,11 +47,11 @@ class Ses {
 
   async logSesRequest(emailName, version, from, to) {
     log.email.info(`Sending ${emailName}: ${from} -> ${to}`)
-    const result = await db.pg.massive.ses_email_messages.insert({
+    const result = await shared.db.pg.massive.ses_email_messages.insert({
       name: emailName,
       version: version,
       to_email: to,
-      aws_requested_at: db.time.now()
+      aws_requested_at: shared.db.time.now()
     })
     return result
   }

@@ -10,6 +10,9 @@ const basicLog = (tag) => {
     return new Date()
   }
   return {
+    debug: (...args) => {
+      console.log(timestamp(), tag, args)
+    },
     info: (...args) => {
       console.log(timestamp(), tag, args)
     },
@@ -23,5 +26,6 @@ const basicLog = (tag) => {
 }
 
 module.exports = {
-  email: basicLog("-[email]- ")
+  email: basicLog("-[email]- "),
+  app: basicLog("-[app]-"),
 }

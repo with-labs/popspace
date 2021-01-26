@@ -2,7 +2,7 @@ const lib = require("lib");
 const env = lib.util.env.init(require("./env.json"))
 
 const validExistingClaim = (claimResult, email, roomName) => {
-  if(claimResult.error != lib.db.ErrorCodes.room.CLAIM_UNIQUENESS) {
+  if(claimResult.error != shared.error.code.CLAIM_UNIQUENESS) {
     return false
   }
   return claimResult.claim &&
@@ -16,18 +16,18 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Must be logged in as admin",
-      { errorCode: lib.db.ErrorCodes.user.ADMIN_ONLY_RESTRICTED }
+      { errorCode: shared.error.code.ADMIN_ONLY_RESTRICTED }
     )
   }
 
   const params = JSON.parse(event.body)
-  params.email = util.args.consolidateEmailString(params.email)
-  params.roomName = params.roomName || await db.rooms.generateRoomId()
+  params.email = shared.lib.args.consolidateEmailString(params.email)
+  params.roomName = params.roomName || await shared.db.rooms.generateUniqueRoomId()
 
   const allowRegistered = true
   const createNewRooms = true
   const allowTransfer = false
-  const claimResult = await db.rooms.tryToCreateClaim(params.email, params.roomName, allowRegistered, createNewRooms, allowTransfer)
+  const claimResult = await shared.db.room.claims.tryToCreateClaim(params.email, params.roomName, allowRegistered, createNewRooms, allowTransfer)
 
   if(claimResult.error && !validExistingClaim(claimResult, params.email, params.roomName)) {
     return await lib.util.http.fail(callback,
@@ -36,14 +36,14 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     )
   }
 
-  const url = await db.rooms.getClaimUrl(lib.util.env.appUrl(event, context), claimResult.claim)
+  const url = await lib.db.rooms.getClaimUrl(lib.util.env.appUrl(event, context), claimResult.claim)
   try {
-    await lib.db.rooms.claimUpdateEmailedAt(claimResult.claim.id)
+    await shared.db.room.claims.claimUpdateEmailedAt(claimResult.claim.id)
     await lib.email.room.sendRoomClaimEmail(params.email, params.roomName, url)
   } catch(e) {
     return await lib.util.http.fail(callback,
       "Unable to send email",
-      { errorCode: lib.db.ErrorCodes.UNEXPECTER_ERROR }
+      { errorCode: shared.error.code.UNEXPECTER_ERROR }
     )
   }
 

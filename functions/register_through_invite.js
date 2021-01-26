@@ -3,15 +3,15 @@ lib.util.env.init(require("./env.json"))
 
 
 const tryToSetUpNewAccount = async (params) => {
-  let existingAccountCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
+  let existingAccountCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
   if(existingAccountCreateRequest) {
-    const resolve = await db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
+    const resolve = await shared.db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
     if(!resolve.error) {
       return resolve
     }
   }
-  const createRequest = await db.accounts.tryToCreateAccountRequest(params)
-  return await db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
+  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params)
+  return await shared.db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
 }
 
 /**
@@ -29,24 +29,24 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const inviteId = body.inviteId
   const sessionToken = body.token
 
-  params.email = util.args.consolidateEmailString(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
 
-  const invite = await db.rooms.inviteById(inviteId)
+  const invite = await shared.db.room.invites.inviteById(inviteId)
   if(!invite) {
     return await lib.util.http.fail(
       callback,
       "Invalid room invitation",
-      { errorCode: lib.db.ErrorCodes.room.INVALID_INVITE }
+      { errorCode: shared.error.code.INVALID_INVITE }
     )
   }
-  const verification = db.rooms.isValidInvitation(invite, params.email, otp)
+  const verification = shared.lib.otp.isValidForEmail(otp, params.email, invite)
   if(verification.error) {
     // refuse to create user if the invitation is not valid
-    return await lib.db.otp.handleAuthFailure(verification.error, callback)
+    return await util.http.authFail(verification.error, callback)
   }
 
   let user = null
-  const existingUser = await db.accounts.userByEmail(params.email)
+  const existingUser = await shared.db.accounts.userByEmail(params.email)
   if(existingUser) {
     // This is a registration endpoint, so something must have gone wrong if we hit this.
     // However, if the invite OTP is correct, if verifies access of the caller to the email.
@@ -56,27 +56,27 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     // Make sure to create the user before resolving the invitation
     const accountCreate = await tryToSetUpNewAccount(params)
     if(accountCreate.error != null)  {
-      return await lib.db.otp.handleAuthFailure(accountCreate.error, callback)
+      return await util.http.authFail(accountCreate.error, callback)
     }
     user = accountCreate.newUser
     // Note: we want to give people a free room when they join,
     // but only after we're ready for rapid growth
-    // await db.rooms.generateRoom(user.id)
+    // await shared.db.rooms.generateRoom(user.id)
   }
 
-  const resolve = await db.rooms.resolveInvitation(invite, user, otp)
+  const resolve = await shared.db.room.invites.resolveInvitation(invite, user, otp)
   if(resolve.error) {
-    return await lib.db.otp.handleAuthFailure(resolve.error, callback)
+    return await util.http.authFail(resolve.error, callback)
   }
 
   const response = {}
-  const shouldIssueToken = await db.accounts.needsNewSessionToken(sessionToken, user)
+  const shouldIssueToken = await shared.db.accounts.needsNewSessionToken(sessionToken, user)
   if(shouldIssueToken) {
-    const session = await db.accounts.createSession(user.id)
-    response.newSessionToken = db.accounts.tokenFromSession(session)
+    const session = await shared.db.accounts.createSession(user.id)
+    response.newSessionToken = shared.db.accounts.tokenFromSession(session)
   }
 
-  const roomNameEntry = await db.rooms.preferredNameById(invite.room_id)
+  const roomNameEntry = await shared.db.rooms.preferredNameById(invite.room_id)
   response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);

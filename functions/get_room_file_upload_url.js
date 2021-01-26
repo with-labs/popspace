@@ -8,7 +8,7 @@ module.exports.handler = util.netlify.postEndpoint(
       return await lib.util.http.fail(
         callback,
         "Must be logged in to upload files",
-        { errorCode: util.http.ERRORS.user.UNAUTHORIZED }
+        { errorCode: shared.error.code.UNAUTHORIZED }
       )
     }
 

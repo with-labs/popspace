@@ -17,16 +17,16 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
     uid = parseInt(uid)
   } catch {
-    return await lib.db.otp.handleAuthFailure(lib.db.ErrorCodes.otp.INVALID_OTP, callback)
+    return await util.http.authFail(shared.error.code.INVALID_OTP, callback)
   }
 
-  const result = await db.accounts.resolveLoginRequest(uid, otp)
+  const result = await shared.db.accounts.resolveLoginRequest(uid, otp)
   if(result.error != null) {
-    return await lib.db.otp.handleAuthFailure(result.error, callback)
+    return await util.http.authFail(result.error, callback)
   }
 
   const session = result.session
-  const token = db.accounts.tokenFromSession(session)
+  const token = shared.db.accounts.tokenFromSession(session)
 
   return await util.http.succeed(callback, {token: token});
 })

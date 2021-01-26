@@ -22,19 +22,19 @@ lib.init = async (appUrl) => {
   // Pull this in after the env vas are loaded
   global.shared = require("@withso/with-shared")
   // order is not important, running in parallel
-  await Promise.all([lib.db.init(), lib.s3.init(), lib.opengraph.init()])
+  await Promise.all([lib.db.init(), shared.init(), lib.s3.init(), lib.opengraph.init()])
 }
 
 lib.cleanup = async () => {
   await Promise.all([
-    lib.db.cleanup(),
+    shared.cleanup(),
     lib.s3.cleanup(),
+    lib.db.cleanup(),
     lib.opengraph.cleanup()
   ])
 }
 
 global.util = lib.util
-global.db = lib.db
 global.log = lib.util.log
 
 module.exports = lib

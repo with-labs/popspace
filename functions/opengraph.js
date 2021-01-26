@@ -7,7 +7,7 @@ module.exports.handler = lib.util.netlify.postEndpoint(
       return await lib.util.http.fail(
         callback,
         "Must be logged in to get open graph data",
-        { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+        { errorCode: shared.error.code.UNAUTHORIZED }
       )
     }
 
@@ -20,7 +20,7 @@ module.exports.handler = lib.util.netlify.postEndpoint(
       return await lib.util.http.fail(
         callback,
         "No data available for that URL",
-        { errorCode: lib.db.ErrorCodes.opengraph.NO_DATA }
+        { errorCode: shared.error.code.OPENGRAPH_NO_DATA }
       )
     }
   }

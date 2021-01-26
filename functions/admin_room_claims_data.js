@@ -7,14 +7,14 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Must be logged in as admin",
-      { errorCode: lib.db.ErrorCodes.user.ADMIN_ONLY_RESTRICTED }
+      { errorCode: shared.error.code.ADMIN_ONLY_RESTRICTED }
     )
   }
 
   const params = JSON.parse(event.body)
-  params.email = util.args.consolidateEmailString(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
 
-  const claimData = await db.pg.massive.query(`
+  const claimData = await shared.db.pg.massive.query(`
     SELECT
       room_claims.room_id, email, issued_at, emailed_at, resolved_at, name
     FROM

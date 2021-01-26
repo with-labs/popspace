@@ -265,7 +265,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `The room_name submitted is incorrect.`,
-      { errorCode: lib.db.ErrorCodes.rooms.UNKNOWN_ROOM }
+      { errorCode: shared.error.code.UNKNOWN_ROOM }
     )
   }
 
@@ -274,7 +274,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Incorrect passcode`,
-      { errorCode: lib.db.ErrorCodes.rooms.INCORRECT_ROOM_PASSCODE }
+      { errorCode: shared.error.code.INCORRECT_ROOM_PASSCODE }
     )
   }
 
@@ -283,7 +283,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       `Missing user_identity`,
-      { errorCode: lib.db.ErrorCodes.rooms.INVALID_USER_IDENTITY }
+      { errorCode: shared.error.code.INVALID_USER_IDENTITY }
     )
   }
 
@@ -295,7 +295,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   token.identity = `${user_identity}#!${userUuid4}`;
 
   let roomId = room_name
-  const room = await lib.db.rooms.roomByName(room_name)
+  const room = await shared.db.rooms.roomByName(room_name)
   if(room) {
     roomId = `${process.env.NODE_ENV}_${room.id}`
   }

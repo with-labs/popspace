@@ -2,17 +2,17 @@ const lib = require("lib");
 
 const handleRoomCreateError = (errorCode, callback) => {
   switch(errorCode) {
-    case lib.db.ErrorCodes.room.TOO_MANY_OWNED_ROOMS:
+    case shared.error.code.TOO_MANY_OWNED_ROOMS:
       return util.http.fail(
         callback,
         "You have exceeded your tier limits for # of rooms.",
-        {errorCode: lib.db.ErrorCodes.room.TOO_MANY_OWNED_ROOMS}
+        {errorCode: errorCode}
       );
     default:
       return util.http.fail(
         callback,
         "An unexpected error happened. Please try again.",
-        { errorCode: lib.db.ErrorCodes.UNEXPECTED }
+        { errorCode: shared.error.code.UNEXPECTED }
       );
   }
 }
@@ -26,15 +26,15 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await util.http.fail(
       callback,
       "Must be authenticated to create rooms.",
-      { errorCode: lib.db.ErrorCodes.UNAUTHORIZED }
+      { errorCode: shared.error.code.UNAUTHORIZED }
     );
   }
 
-  const result = await db.rooms.tryToGenerateRoom(user.id)
+  const result = await lib.db.rooms.tryToGenerateRoom(user.id)
   if(result.error) {
     return await handleRoomCreateError(result.error, callback)
   }
 
-  const namedRoom = await db.rooms.namedRoomById(result.room.id)
+  const namedRoom = await shared.db.rooms.namedRoomById(result.room.id)
   return await lib.util.http.succeed(callback, { newRoom: namedRoom })
 })

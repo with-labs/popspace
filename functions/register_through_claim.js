@@ -19,15 +19,15 @@ lib.util.env.init(require("./env.json"))
 
 
 const tryToSetUpNewAccount = async (params) => {
-  let existingAccountCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
+  let existingAccountCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
   if(existingAccountCreateRequest) {
-    const resolve = await db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
+    const resolve = await shared.db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
     if(!resolve.error) {
       return resolve
     }
   }
-  const createRequest = await db.accounts.tryToCreateAccountRequest(params)
-  return await db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
+  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params)
+  return await shared.db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
 }
 
 /**
@@ -45,27 +45,25 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const claimId = body.claimId
   const sessionToken = body.token
 
-  params.email = util.args.consolidateEmailString(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
 
-  const claim = await db.pg.massive.room_claims.findOne({id: claimId})
+  const claim = await shared.db.pg.massive.room_claims.findOne({id: claimId})
   if(!claim) {
     return await lib.util.http.fail(
       callback,
       "Invalid room claim",
-      { errorCode: lib.db.ErrorCodes.room.INVALID_ROOM_CLAIM }
+      { errorCode: shared.error.code.INVALID_ROOM_CLAIM }
     )
   }
 
-
-  // claims have the exact same verification logic as invites
-  const verification = db.rooms.isValidInvitation(claim, params.email, otp)
+  const verification = shared.lib.otp.isValidForEmail(otp, params.email, claim)
   if(verification.error) {
     // refuse to create user if the invitation is not valid
-    return await lib.db.otp.handleAuthFailure(verification.error, callback)
+    return await util.http.authFail(verification.error, callback)
   }
 
   let user = null
-  const existingUser = await db.accounts.userByEmail(params.email)
+  const existingUser = await shared.db.accounts.userByEmail(params.email)
   if(existingUser) {
     // This is a registration endpoint, so something must have gone wrong if we hit this.
     // However, if the invite OTP is correct, if verifies access of the caller to the email.
@@ -75,26 +73,26 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     // Make sure to create the user before resolving the invitation
     const accountCreate = await tryToSetUpNewAccount(params)
     if(accountCreate.error != null)  {
-      return await lib.db.otp.handleAuthFailure(accountCreate.error, callback)
+      return await util.http.authFail(accountCreate.error, callback)
     }
     user = accountCreate.newUser
     // In the invite proces, we generate a room here
     // For claims it's not necessary: they'll get the claimed room
   }
 
-  const resolve = await db.rooms.resolveClaim(claim, user, otp)
+  const resolve = await shared.db.room.claims.resolveClaim(claim, user, otp)
   if(resolve.error) {
-    return await lib.db.otp.handleAuthFailure(resolve.error, callback)
+    return await util.http.authFail(resolve.error, callback)
   }
 
   const response = {}
-  const shouldIssueToken = await db.accounts.needsNewSessionToken(sessionToken, user)
+  const shouldIssueToken = await shared.db.accounts.needsNewSessionToken(sessionToken, user)
   if(shouldIssueToken) {
-    const session = await db.accounts.createSession(user.id)
-    response.newSessionToken = db.accounts.tokenFromSession(session)
+    const session = await shared.db.accounts.createSession(user.id)
+    response.newSessionToken = shared.db.accounts.tokenFromSession(session)
   }
 
-  const roomNameEntry = await db.rooms.preferredNameById(claim.room_id)
+  const roomNameEntry = await shared.db.rooms.preferredNameById(claim.room_id)
   response.roomName = roomNameEntry.name
 
   return await lib.util.http.succeed(callback, response);

@@ -37,12 +37,12 @@ const getUser = async (event, context) => {
   if (!token) {
     return false
   }
-  const session = await db.accounts.sessionFromToken(token)
+  const session = await shared.db.accounts.sessionFromToken(token)
   if (!session) {
     return false
   }
   const userId = parseInt(session.user_id)
-  const user = await db.accounts.userById(userId)
+  const user = await shared.db.accounts.userById(userId)
   if (!user) {
     return false
   }

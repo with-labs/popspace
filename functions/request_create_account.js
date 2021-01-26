@@ -16,31 +16,31 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const params = context.params
 
   // Make sure we don't distinguish emails just by whitespace
-  params.email = util.args.consolidateEmailString(params.email)
-  const existingUser = await db.accounts.userByEmail(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
+  const existingUser = await shared.db.accounts.userByEmail(params.email)
 
   if(existingUser) {
     return await lib.util.http.fail(
       callback,
       "Email already registered. Please log in!",
-      { errorCode: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+      { errorCode: shared.error.code.ALREADY_REGISTERED }
     )
   }
 
-  const existingCreateRequest = await db.accounts.getLatestAccountCreateRequest(params.email)
+  const existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
 
   if(existingCreateRequest) {
-    if(!lib.db.otp.isExpired(existingCreateRequest)) {
+    if(!shared.lib.otp.isExpired(existingCreateRequest)) {
       return await lib.util.http.fail(
         callback,
         "Email already registered. Check your email for a verification link.",
-        { errorCode: lib.db.ErrorCodes.user.ALREADY_REGISTERED }
+        { errorCode: shared.error.code.ALREADY_REGISTERED }
       )
     }
   }
 
-  const createRequest = await db.accounts.tryToCreateAccountRequest(params)
-  const signupUrl = db.accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
+  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params)
+  const signupUrl = shared.db.accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
   await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
 
   return await lib.util.http.succeed(callback, {});

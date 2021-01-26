@@ -13,7 +13,7 @@ module.exports = {
         // the equivalent of a 500
         console.error("Unexpected error during request", err)
         await lib.util.http.fail(callback, "Unexpected error", {
-          errorCode: lib.db.ErrorCodes.UNEXPECTED_ERROR
+          errorCode: shared.error.code.UNEXPECTED_ERROR
         })
       }
     }
@@ -41,7 +41,7 @@ module.exports = {
         // the equivalent of a 500
         console.error("Unexpected error during request", err)
         await lib.util.http.fail(callback, "Unexpected error", {
-          errorCode: lib.db.ErrorCodes.UNEXPECTED_ERROR
+          errorCode: shared.error.code.UNEXPECTED_ERROR
         })
       }
     }

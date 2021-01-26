@@ -51,18 +51,18 @@ const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV]
 
 const canEnterRoom = async (user, room) => {
   if (user.id == room.owner_id) return true
-  return await lib.db.rooms.isMember(user.id, room.id)
+  return await shared.db.room.memberships.isMember(user.id, room.id)
 }
 
 module.exports.handler = util.netlify.postEndpoint(
   async (event, context, callback) => {
     const body = context.params
     const roomName = body.roomName
-    const room = await lib.db.rooms.roomByName(roomName)
+    const room = await shared.db.rooms.roomByName(roomName)
 
     if (!room) {
       return await lib.util.http.fail(callback, `Room not found: ${roomName}`, {
-        errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM
+        errorCode: shared.error.code.UNKNOWN_ROOM
       })
     }
 
@@ -71,14 +71,14 @@ module.exports.handler = util.netlify.postEndpoint(
       return await lib.util.http.fail(
         callback,
         `Must be logged in to join room`,
-        { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+        { errorCode: shared.error.code.UNAUTHORIZED }
       )
     }
 
     const canEnter = await canEnterRoom(user, room)
     if (!canEnter) {
       return await lib.util.http.fail(callback, `Unauthorized access`, {
-        errorCode: lib.db.ErrorCodes.room.UNAUTHORIZED_ROOM_ACCESS
+        errorCode: shared.error.code.UNAUTHORIZED_ROOM_ACCESS
       })
     }
 

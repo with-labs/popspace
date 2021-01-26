@@ -19,18 +19,18 @@ Log in flow
  */
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const email = util.args.consolidateEmailString(context.params.email)
-  const user = await db.accounts.userByEmail(email)
+  const user = await shared.db.accounts.userByEmail(email)
 
   if(!user) {
     return await util.http.fail(
       callback,
       "This email address is not associated with an account.",
-      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+      { errorCode: shared.error.code.UNAUTHORIZED }
     )
   }
 
-  const loginRequest = await db.accounts.createLoginRequest(user)
-  const logInUrl = await db.accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
+  const loginRequest = await shared.db.accounts.createLoginRequest(user)
+  const logInUrl = await shared.db.accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
 
   await lib.email.account.sendLoginOtpEmail(email, logInUrl)
   return await util.http.succeed(callback, {});

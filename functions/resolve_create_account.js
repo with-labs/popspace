@@ -9,23 +9,23 @@ lib.util.env.init(require("./env.json"))
  */
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const params = context.params
-  params.email = util.args.consolidateEmailString(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
 
   const otp = params.otp;
   const email = params.email;
 
-  const result = await db.accounts.findAndResolveAccountCreateRequest(email, otp)
+  const result = await shared.db.accounts.findAndResolveAccountCreateRequest(email, otp)
   if(result.error != null) {
-    return await lib.db.otp.handleAuthFailure(result.error, callback)
+    return await util.http.authFail(result.error, callback)
   }
 
   const userId = result.newUser.id
   // Note: we want to start giving away free rooms on signup
   // after we're better equipped to handle growth
-  // await db.rooms.generateRoom(userId)
+  // await shared.db.rooms.generateRoom(userId)
 
-  const session = await db.accounts.createSession(userId);
-  const token = db.accounts.tokenFromSession(session)
+  const session = await shared.db.accounts.createSession(userId);
+  const token = shared.db.accounts.tokenFromSession(session)
 
   return await util.http.succeed(callback, {token: token});
 })

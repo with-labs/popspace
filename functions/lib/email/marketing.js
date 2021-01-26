@@ -6,7 +6,7 @@ module.exports = {
     const subject = `Bigger! 🎉`
     const tags = [{Name: "type", Value: "welcome"}]
 
-    const user = await db.accounts.userByEmail(email)
+    const user = await shared.db.accounts.userByEmail(email)
 
     if(!user) {
       throw `Email not registered ${user.email}`
@@ -17,7 +17,7 @@ module.exports = {
       return
     }
 
-    const magicLink = await db.magic.createUnsubscribe(user.id)
+    const magicLink = await lib.db.magic.createUnsubscribe(user.id)
     const unsubscribeUrl = await lib.db.magic.unsubscribeUrl(appUrl, magicLink)
     const firstName = user.first_name;
     const url = `${appUrl}/${util.routes.static.dashboard()}`

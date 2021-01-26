@@ -5,9 +5,10 @@ const readline = require('readline');
 
 const APP_URL = {
   "development": "http://localhost:8888",
-  "staging": "https://dev.app.with.so",
+  "staging": "https://staging.app.with.so",
   "production": "https://app.with.so"
 }
+
 
 const usage = () =>{
   return `Usage:\n npm run email:send_one --to=xx@yy.zxz --name=signin_or_other --args="['hello', 'world']"`

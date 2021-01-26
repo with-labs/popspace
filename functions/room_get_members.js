@@ -12,20 +12,20 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Must be logged in",
-      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+      { errorCode: shared.error.code.UNAUTHORIZED }
     )
   }
 
-  const room = await lib.db.rooms.roomByName(context.params.roomName)
+  const room = await shared.db.rooms.roomByName(context.params.roomName)
   if(!room) {
     return await lib.util.http.fail(
       callback,
       `Non-existent room ${params.roomName}`,
-      { errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
+      { errorCode: shared.error.code.UNKNOWN_ROOM }
     )
   }
 
-  const members = await lib.db.rooms.getRoomMembers(room.id)
+  const members = await shared.db.room.memberships.getRoomMembers(room.id)
   const assembledEmails = new Set()
   const result = []
 
@@ -42,8 +42,8 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     }
   })
 
-  const invites = await lib.db.rooms.getRoomInvites(room.id)
-  const invitedUsers = await lib.db.accounts.usersByEmails(invites.map((i) => (i.email)))
+  const invites = await shared.db.room.invites.getRoomInvites(room.id)
+  const invitedUsers = await shared.db.accounts.usersByEmails(invites.map((i) => (i.email)))
   const userByEmail = {}
   invitedUsers.map((iu) => (userByEmail[iu.email] = iu))
 

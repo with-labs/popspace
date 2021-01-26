@@ -1,3 +1,8 @@
+const isLocalhost = (host) => {
+  return host.includes("localhost") || host.includes("127.0.0.1")
+}
+
+
 const env = {
   init: (envVars) => {
     const definedEnv = process.env.NODE_ENV
@@ -13,12 +18,13 @@ const env = {
   },
 
   isDev: () => {
-    return process.env.NODE_ENV == "development"
+    return process.env.NODE_ENV === "development"
   },
 
   appUrl: (netlifyEvent, netlifyContext) => {
     if (netlifyEvent.headers.host) {
-      const protocol = env.isDev() ? "http" : "https"
+      console.log("Through netlifyEvent", netlifyEvent.headers.host)
+      const protocol = env.isDev() || isLocalhost(netlifyEvent.headers.host) ? "http" : "https"
       return `${protocol}://${netlifyEvent.headers.host}`
     } else {
       // Note: this is weird, huh?
@@ -33,6 +39,7 @@ const env = {
       const data = netlifyContext.clientContext.custom.netlify
       const url = JSON.parse(Buffer.from(data, "base64").toString("utf-8"))
         .site_url
+      console.log("Through clientContext", url)
       return `${url}`
     }
   }

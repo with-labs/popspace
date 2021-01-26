@@ -1,7 +1,7 @@
 const SENDER = 'notify@with.so'
 
 const getEmail = async (name) => {
-  const email = await db.dynamo.getLatestEmail(name)
+  const email = await lib.db.dynamo.getLatestEmail(name)
   if(!email) {
     throw `No such email: ${name}`
   }
@@ -35,11 +35,11 @@ const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
 
 class NamedEmails {
   async sendNamedUserMarketingEmail(name, email, arg={}) {
-    const user = await db.accounts.userByEmail(email)
+    const user = await shared.db.accounts.userByEmail(email)
     if(!user) {
       throw "No such user"
     }
-    const magicLink = await db.magic.createUnsubscribe(user.id)
+    const magicLink = await lib.db.magic.createUnsubscribe(user.id)
     arg.firstName = user.first_name
     arg.email = user.email
     arg.appUrl = appUrl()
@@ -49,7 +49,7 @@ class NamedEmails {
   }
 
   async sendNamedTransactionEmail(name, email, arg={}) {
-    const user = await db.accounts.userByEmail(email)
+    const user = await shared.db.accounts.userByEmail(email)
     if(!user) {
       throw "No such user"
     }

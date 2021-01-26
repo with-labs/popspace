@@ -9,28 +9,28 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Must be logged in",
-      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+      { errorCode: shared.error.code.UNAUTHORIZED }
     )
   }
 
   const params = context.params
   params.email = util.args.consolidateEmailString(params.email)
-  const room = await lib.db.rooms.roomByName(params.roomName)
+  const room = await shared.db.rooms.roomByName(params.roomName)
   if(!room) {
     return await lib.util.http.fail(
       callback,
       `Non-existent room ${params.roomName}`,
-      { errorCode: lib.db.ErrorCodes.room.UNKNOWN_ROOM }
+      { errorCode: shared.error.code.UNKNOWN_ROOM }
     )
   }
 
-  const inviterIsMember = await lib.db.rooms.isMember(user.id, room.id)
+  const inviterIsMember = await shared.db.room.memberships.isMember(user.id, room.id)
   const canInvite = (parseInt(room.owner_id) == parseInt(user.id))  || inviterIsMember
   if(!canInvite) {
     return await lib.util.http.fail(
       callback,
       `Only owners and members can invite to a room.`,
-      { errorCode: lib.db.ErrorCodes.user.UNAUTHORIZED }
+      { errorCode: shared.error.code.UNAUTHORIZED }
     )
   }
 
@@ -38,33 +38,33 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Can not invite yourself",
-      { errorCode: lib.db.ErrorCodes.room.CANT_INVITE_SELF }
+      { errorCode: shared.error.code.CANT_INVITE_SELF }
     )
   }
 
-  const currentInvites = await db.rooms.getRoomInvites(room.id)
-  const currentMembers = await db.rooms.getRoomMembers(room.id)
+  const currentInvites = await shared.db.room.invites.getRoomInvites(room.id)
+  const currentMembers = await shared.db.room.memberships.getRoomMembers(room.id)
   if((currentInvites.length + currentMembers.length) >= MAX_ROOM_INVITES) {
     return await lib.util.http.fail(
       callback,
       `Invite limit reached: ${currentInvites.length}/${MAX_ROOM_INVITES}`,
-      { errorCode: lib.db.ErrorCodes.room.TOO_MANY_INVITES }
+      { errorCode: shared.error.code.TOO_MANY_INVITES }
     )
   }
 
-  const invitee = await db.accounts.userByEmail(params.email)
+  const invitee = await shared.db.accounts.userByEmail(params.email)
   if(invitee) {
-    const alreadyMember = await db.rooms.isMember(invitee.id, room.id)
+    const alreadyMember = await shared.db.room.memberships.isMember(invitee.id, room.id)
     if(alreadyMember) {
       return await lib.util.http.fail(
         callback,
         `${user.email} is already a member of this room.`,
-        { errorCode: lib.db.ErrorCodes.room.ALREADY_INVITED }
+        { errorCode: shared.error.code.ALREADY_INVITED }
       )
     }
   }
 
-  const existingRoomInvitation = await db.rooms.latestRoomInvitation(room.id, params.email)
+  const existingRoomInvitation = await shared.db.room.invites.latestRoomInvitation(room.id, params.email)
   if(existingRoomInvitation && !db.otp.isExpired(existingRoomInvitation)) {
     // This could be too strict, but should be ok to start
     // E.g. the email could have failed to deliver.
@@ -73,12 +73,12 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     return await lib.util.http.fail(
       callback,
       "Invite email already sent.",
-      { errorCode: lib.db.ErrorCodes.room.ALREADY_INVITED }
+      { errorCode: shared.error.code.ALREADY_INVITED }
     )
   }
 
-  const invitation = await db.rooms.createInvitation(room.id, params.email)
-  const inviteUrl = await db.rooms.getInviteUrl(lib.util.env.appUrl(event, context), invitation)
+  const invitation = await shared.db.room.invites.createInvitation(room.id, params.email)
+  const inviteUrl = await lib.db.rooms.getInviteUrl(lib.util.env.appUrl(event, context), invitation)
   await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user)
 
   const newMember = {

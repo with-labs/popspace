@@ -11,7 +11,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const result = await lib.db.magic.tryToUnsubscribe(request, otp)
 
   if(result.error) {
-    return await lib.db.otp.handleAuthFailure(result.error, callback)
+    return await util.http.authFail(result.error, callback)
   }
 
   return await util.http.succeed(callback, { });

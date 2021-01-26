@@ -7,7 +7,7 @@ const updateEmailStatus = async (messageId, statusAtField, body, message) => {
     message_id: messageId
   }
   statRecord[statusAtField] = moment(body.Timestamp).utc().format()
-  return await db.pg.massive.ses_email_stats.save(statRecord)
+  return await shared.db.pg.massive.ses_email_stats.save(statRecord)
 }
 
 const processEmailNotification = async (messageId, body, message) => {

@@ -3,7 +3,6 @@ import { render, cleanup, wait, act } from '@testing-library/react';
 import { RoomStateProvider } from './RoomStateProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { useRoomStore } from './useRoomStore';
-import { ConnectionFailedError } from './SocketConnection';
 
 jest.mock('./SocketConnection');
 jest.mock('../utils/sessionToken', () => ({
@@ -75,7 +74,7 @@ describe('RoomStateProvider component', () => {
 
     // now disconnect
     act(() => {
-      socket.emit('reconnecting');
+      socket.emit('closed');
     });
 
     // expect reconnect alert to be displayed

@@ -106,6 +106,7 @@
     "react-use-gesture": "^8.0.1",
     "react-use-measure": "^2.0.2",
     "react-youtube": "^7.11.3",
+    "reconnecting-websocket": "^4.4.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "remark-gfm": "^1.0.0",

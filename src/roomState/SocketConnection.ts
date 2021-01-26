@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { v4 } from 'uuid';
 import { IncomingSocketMessage, IncomingErrorMessage, OutgoingSocketMessage } from './types/socketProtocol';
 import camelcase from 'camelcase-keys';
+import ReconnectingWebsocket, { ErrorEvent, CloseEvent } from 'reconnecting-websocket';
 
 export class MessageTimeoutError extends Error {
   constructor() {
@@ -16,17 +17,10 @@ export class ConnectionFailedError extends Error {
   }
 }
 
-// this limit helps avoid endless memory accumulation
-// during a long disconnection period.
-const DEADLETTER_QUEUE_LIMIT = 1000;
-// for the first reconnection attempt, in ms.
-export const INITIAL_BACKOFF_DELAY = 100;
 // each time we reconnect, multiply delay by this constant
 export const BACKOFF_MULTIPLIER = 3;
-// max number of retries before aborting connection attempt
-const BACKOFF_RETRIES = 6;
 // computed maximum delay time before we stop retrying
-export const MAX_BACKOFF_DELAY = INITIAL_BACKOFF_DELAY * BACKOFF_MULTIPLIER ** BACKOFF_RETRIES;
+export const MAX_BACKOFF_DELAY = 30 * 1000;
 // interval in ms for ping heartbeat
 export const HEARTBEAT_INTERVAL = 15 * 1000;
 // number of ms to wait for a heartbeat response before
@@ -39,7 +33,6 @@ export interface SocketConnectionEvents {
   connected: () => void;
   closed: () => void;
   message: (msg: IncomingSocketMessage) => void;
-  reconnecting: () => void;
   sent: (msg: OutgoingSocketMessage & { id: string }) => void;
 }
 
@@ -76,81 +69,47 @@ export class SocketMessageRejectionError extends Error {
 export class SocketConnection extends EventEmitter {
   // although this starts out null, it is assigned in the constructor -
   // just not in a way that TS can infer.
-  private ws: WebSocket;
-  // the deadletter queue stores all the messages we couldn't
-  // send while we were disconnected.
-  private deadletterQueue = new Array<any>();
-  // stored delay value for backoff on reconnect attempts
-  private backoffDelay = INITIAL_BACKOFF_DELAY;
-  // stores the timeout handle for any pending reconnect operation
-  private reconnectTimeout: NodeJS.Timeout | null = null;
-  // stores the interval for the heartbeat message loop
-  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private ws: ReconnectingWebsocket;
+  // stores the handle for the next frame of the heartbeat message loop
+  private heartbeatTimeout: NodeJS.Timeout | null = null;
+  // tracks a "generation" - basically the number of reconnections
+  // made on this instance. This is useful because we have occasional
+  // long-running async tasks which might want to know if there was
+  // a reconnect while they were running
+  private generation = 0;
 
-  constructor(private url: string, private environment = { WebSocket: window.WebSocket }) {
+  constructor(url: string) {
     super();
     // reconnect will synchronously assign this.ws to a new socket instance
-    this.ws = this.reconnect();
+    this.ws = new ReconnectingWebsocket(url, undefined, {
+      maxEnqueuedMessages: 1000,
+      debug: !!localStorage.getItem('DEBUG'),
+      maxReconnectionDelay: MAX_BACKOFF_DELAY,
+      reconnectionDelayGrowFactor: BACKOFF_MULTIPLIER,
+    });
+    this.ws.addEventListener('open', this.onOpen);
+    this.ws.addEventListener('error', this.onError);
+    this.ws.addEventListener('message', this.onMessage);
+    this.ws.addEventListener('close', this.onClose);
   }
 
-  private reconnect = () => {
-    const socket = new this.environment.WebSocket(this.url);
-    socket.addEventListener('open', this.onOpen);
-    socket.addEventListener('error', this.onError);
-    socket.addEventListener('message', this.onMessage);
-    socket.addEventListener('close', this.onClose);
-    this.ws = socket;
-    return socket;
-  };
-
-  private onClose = () => {
-    logger.debug('Socket connection closed');
-    this.stopHeartbeatLoop();
-    // begin a backoff reconnect cycle
-    this.tryReconnect();
-  };
-
-  private cancelReconnect = () => {
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-  };
-
-  private tryReconnect = () => {
-    this.cancelReconnect();
-
-    // if the existing socket is open, close it
-    if (this.ws && ![WebSocket.CLOSED, WebSocket.CLOSING].includes(this.ws.readyState)) {
-      this.doClose();
-    }
-
-    if (this.backoffDelay >= MAX_BACKOFF_DELAY) {
-      this.emit('error', new ConnectionFailedError());
-      return;
-    }
-
-    this.reconnectTimeout = setTimeout(this.reconnect, this.backoffDelay);
-    logger.debug(`Reconnecting to server in ${this.backoffDelay / 1000} s ...`);
-
-    this.backoffDelay *= BACKOFF_MULTIPLIER;
-    this.emit('reconnecting');
-  };
-
-  private onError = (ev: Event) => {
-    logger.error((ev as any).error ?? 'Socket error emitted, but no error present');
+  private onError = (ev: ErrorEvent) => {
+    logger.error(ev.error ?? 'Socket error emitted, but no error present');
     this.emit('error', new Error('The socket encountered an error'));
   };
 
+  private onClose = (ev: CloseEvent) => {
+    logger.info(`Socket connection closed`, ev.code, ev.reason, new Date());
+    this.stopHeartbeatLoop();
+    this.generation++;
+    this.emit('closed');
+  };
+
   private onOpen = () => {
-    // once connected, stop any reconnect loop
-    this.cancelReconnect();
     // start or resume heartbeat loop
     this.startHeartbeatLoop();
 
-    // send any messages we failed to send while disconnected
-    this.dequeueDeadletters();
-    logger.debug('Connected to socket');
+    logger.info('Connected to socket', new Date());
     this.emit('connected');
   };
 
@@ -166,7 +125,12 @@ export class SocketConnection extends EventEmitter {
   private startHeartbeatLoop = () => {
     // stop any previous interval
     this.stopHeartbeatLoop();
-    this.heartbeatInterval = setInterval(this.heartbeat, HEARTBEAT_INTERVAL);
+    this.heartbeatTimeout = setTimeout(this.heartbeat, HEARTBEAT_INTERVAL);
+  };
+
+  private manuallyReconnect = () => {
+    logger.debug(`Triggering manual reconnection`);
+    this.ws.reconnect();
   };
 
   /**
@@ -174,21 +138,25 @@ export class SocketConnection extends EventEmitter {
    * doesn't arrive within the interval, begin a reconnect cycle
    */
   private heartbeat = async () => {
+    // grab a freeze of the current generation - heartbeat timeout
+    // can take a while, and there's a chance we reconnect a dead socket
+    // during that time. If the heartbeat times out alongside a dead
+    // socket scenario, the timeout will trigger an extra forced reconnect -
+    // unless we compare generations and recognize the reconnect already happened.
+    const currentGeneration = this.generation;
     try {
-      // two different timeouts cover different use cases -
-      // the first explicit setTimeout covers the case where the message is deadlettered,
-      // the timeout passed to sendAndWaitForResponse covers the case where the connection
-      // is live but the server doesn't respond in time.
-      const timeoutHandle = setTimeout(() => this.onClose, HEARTBEAT_TIMEOUT);
+      logger.debug(`Sending heartbeat`);
       await this.sendAndWaitForResponse({ kind: 'ping' }, HEARTBEAT_TIMEOUT);
-      clearTimeout(timeoutHandle);
-      // only after a successful heartbeat do we reset the backoff interval - this ensures that
-      // if we continually reconnect successfully to a broken server which errors on heartbeats,
-      // we don't enter a tight disconnect-reconnect thrashing loop.
-      this.backoffDelay = INITIAL_BACKOFF_DELAY;
+      // queue another heartbeat
+      this.heartbeatTimeout = setTimeout(this.heartbeat, HEARTBEAT_INTERVAL);
     } catch (err) {
-      // begin the reconnect cycle
-      this.onClose();
+      logger.debug(`Missed heartbeat`, err);
+      // check to see if there was a reconnect while we were waiting -
+      // if there was, we don't force a new one.
+      if (this.generation === currentGeneration) {
+        // begin the reconnect cycle
+        this.manuallyReconnect();
+      }
       if (!(err instanceof MessageTimeoutError)) {
         // if this wasn't a timeout error (i.e. if the server responded to 'ping' with 'error'),
         // we probably want to know about that, so log it
@@ -198,33 +166,8 @@ export class SocketConnection extends EventEmitter {
   };
 
   private stopHeartbeatLoop = () => {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-    }
-  };
-
-  // this is recursive, it drains the queue until it either
-  // reaches the end or encounters an error.
-  private dequeueDeadletters = () => {
-    if (this.deadletterQueue.length === 0 || !this.ws) return;
-    const nextMessage = this.deadletterQueue.shift();
-    try {
-      this.rawSend(nextMessage);
-      // if the send was successful, it's time for the next item
-      this.dequeueDeadletters();
-    } catch (err) {
-      // oops, it didn't send. Put it back at the front of the queue
-      // and stop trying to dequeue - we will wait for the next
-      // reconnection.
-      logger.error(err);
-      this.deadletterQueue.unshift(nextMessage);
-    }
-  };
-
-  private enequeueDeadletter = (message: any) => {
-    this.deadletterQueue.push(message);
-    if (this.deadletterQueue.length > DEADLETTER_QUEUE_LIMIT) {
-      this.deadletterQueue.splice(DEADLETTER_QUEUE_LIMIT, this.deadletterQueue.length - DEADLETTER_QUEUE_LIMIT);
+    if (this.heartbeatTimeout) {
+      clearTimeout(this.heartbeatTimeout);
     }
   };
 
@@ -235,21 +178,6 @@ export class SocketConnection extends EventEmitter {
     if (!this.ws) throw new Error('No socket connection');
     this.ws.send(JSON.stringify(message));
     this.emit('sent', message);
-  };
-
-  /**
-   * Extracts the behavior of sending a message or enqueuing it on
-   * the deadletter queue if the connection is closed. Returns
-   * true if the message was sent immediately, false otherwise.
-   */
-  private sendOrEnqueue = (message: any) => {
-    if (this.readyState === WebSocket.OPEN) {
-      this.rawSend(message);
-      return true;
-    } else {
-      this.enequeueDeadletter(message);
-      return false;
-    }
   };
 
   private isErrorMessage = (message: any): message is IncomingErrorMessage => message.kind === 'error';
@@ -268,21 +196,16 @@ export class SocketConnection extends EventEmitter {
    * @returns The final message we sent - including random ID. If no message
    *   was sent (i.e. dropIfClosed is true and we are disconnected), returns null
    */
-  send = <T extends OutgoingSocketMessage>(message: T, retryIfClosed: boolean = false): (T & { id: string }) | null => {
+  send = <T extends OutgoingSocketMessage>(message: T): (T & { id: string }) | null => {
     // assign a random ID to the message so its response can be tracked
     // and attach user ID
     const augmentedMessage = this.prepareMessage(message);
 
-    if (retryIfClosed) {
-      this.sendOrEnqueue(augmentedMessage);
+    if (this.readyState === WebSocket.OPEN) {
+      this.rawSend(augmentedMessage);
       return augmentedMessage;
     } else {
-      if (this.readyState === WebSocket.OPEN) {
-        this.rawSend(augmentedMessage);
-        return augmentedMessage;
-      } else {
-        return null;
-      }
+      return null;
     }
   };
 
@@ -296,25 +219,10 @@ export class SocketConnection extends EventEmitter {
     message: OutgoingSocketMessage,
     timeout: number = 1000
   ) => {
-    const sentMessage = this.prepareMessage(message);
-    // just because we called this.send doesn't mean the message has
-    // yet gone out to the server - the connection may be CLOSED
-    // or RECONNECTING, in which case the message went into the
-    // deadletter queue. We don't want to begin awaiting a
-    // response until the message has actually gone out, so
-    // we add a handler looking for it on a 'sent' event. So,
-    // if the message got enqueued (the returned value of sendOrEnqueue is false),
-    // wait for it to be dequeued and sent
-    if (!this.sendOrEnqueue(sentMessage)) {
-      await new Promise<void>((resolve) => {
-        const checkSentMessage = (outgoingMessage: OutgoingSocketMessage & { id: string }) => {
-          if (outgoingMessage.id === sentMessage.id) {
-            this.off('sent', checkSentMessage);
-            resolve();
-          }
-        };
-        this.on('sent', checkSentMessage);
-      });
+    const sentMessage = this.send(message);
+
+    if (!sentMessage) {
+      throw new Error('Could not send message; connection is not established');
     }
 
     return new Promise<ExpectedResponse>((resolve, reject) => {
@@ -337,18 +245,11 @@ export class SocketConnection extends EventEmitter {
     });
   };
 
-  private doClose = () => {
-    // cancel all reconnection, we are closing the socket.
-    this.ws.removeEventListener('close', this.onClose);
-    this.cancelReconnect();
-    this.ws.close();
-  };
-
   /**
    * Ends the socket connection
    */
   close = () => {
-    this.doClose();
+    this.ws.close();
     this.emit('closed');
   };
 

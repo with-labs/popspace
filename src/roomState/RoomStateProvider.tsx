@@ -46,8 +46,7 @@ const useSocketConnection = (roomName: string) => {
     connect(sock);
 
     sock.on('error', (err) => {
-      logger.error(err);
-      console.debug(typeof err);
+      if (err) logger.error(err);
       if (isMountedRef.current) {
         // this error indicates the socket completely failed to connect after
         // automatic reconnection attempts failed
@@ -57,7 +56,7 @@ const useSocketConnection = (roomName: string) => {
       }
     });
 
-    sock.on('reconnecting', () => {
+    sock.on('closed', () => {
       if (isMountedRef.current) setReconnecting(true);
     });
     // the SocketConnection can disconnect and auto-reconnect at any time -

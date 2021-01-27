@@ -17,6 +17,7 @@ import { PageTitle } from '../../components/PageTitle/PageTitle';
 import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
+import { MembershipManagementModal } from '../roomControls/membership/MemberMangementModal';
 
 import { RequestPermissionModal } from '../roomControls/requestPermissionModal/RequestPermissionModal';
 
@@ -31,6 +32,7 @@ export const Room: React.FC<IRoomProps> = () => (
     <ChangelogModal />
     <OnboardingModal />
     <RequestPermissionModal />
+    <MembershipManagementModal />
   </>
 );
 

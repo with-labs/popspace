@@ -27,6 +27,8 @@ const EMPTY_VALUES: MembershipFormData = {
 
 interface IMembershipManagementModalProps {
   autoFocusInvite?: boolean;
+  className?: string;
+  size?: 'small' | 'large';
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +69,7 @@ const MAX_INVITE_COUNT = 20;
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  ({ autoFocusInvite }, ref) => {
+  ({ autoFocusInvite, className }, ref) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const roomName = useRoomName();
@@ -133,7 +135,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
     const remainingInvites = MAX_INVITE_COUNT - members.length;
 
     return (
-      <div ref={ref}>
+      <div ref={ref} className={className}>
         <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
           <Form>
             <Box display="flex" flexDirection="row" alignItems="flex-start">

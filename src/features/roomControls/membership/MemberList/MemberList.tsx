@@ -214,14 +214,12 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     if (isRoomOwner) {
       return (
         <MenuItem onClick={clickHandler}>
-          <Box>
-            <ListItem>
-              <ListItemIcon>
-                <DeleteIcon className={classes.deleteColor} />
-              </ListItemIcon>
-              <ListItemText primary={text} className={classes.deleteColor} />
-            </ListItem>
-          </Box>
+          <>
+            <ListItemIcon>
+              <DeleteIcon className={classes.deleteColor} />
+            </ListItemIcon>
+            <ListItemText primary={text} className={classes.deleteColor} />
+          </>
         </MenuItem>
       );
     } else {

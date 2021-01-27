@@ -1,11 +1,17 @@
 import * as React from 'react';
-import { IconButton, Hidden } from '@material-ui/core';
+import { IconButton, Hidden, makeStyles } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 export interface IMembersMenuProps {}
+
+const useStyles = makeStyles((theme) => ({
+  largeMenu: {
+    width: 360,
+  },
+}));
 
 /**
  * Renders the members dropdown menu and the grouping of controls which
@@ -15,6 +21,7 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
   const anchorRef = React.useRef<any>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
+  const classes = useStyles();
 
   const onOpen = React.useCallback(() => {
     setIsOpen(true);
@@ -41,7 +48,7 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
             </IconButton>
           </Hidden>
           <ResponsiveMenu anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-            <MembershipManagement autoFocusInvite={autoFocusInvite} />
+            <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
           </ResponsiveMenu>
         </>
       }

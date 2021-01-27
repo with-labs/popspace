@@ -66,6 +66,7 @@ export const ResizeContainerContext = React.createContext<{
    * when content changes to reset the container to the size of the content.
    */
   remeasure: () => void;
+  size: Bounds | null;
 } | null>(null);
 
 export function useResizeContext() {
@@ -164,7 +165,8 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     // components about a remeasure until the measure has taken place and
     // the new result is passed to onResize - this helps simplify usage
     const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
-    const [originalAspectRatio, setOriginalAspectRatio] = React.useState(1);
+    console.debug(`NeedsRemeasure ${needsRemeasure} Size ${size}`);
+    const [originalAspectRatio, setOriginalAspectRatio] = React.useState(size ? size.width / size.height : 1);
 
     // dimensions are initialized to the provided size, or
     // the minimum size, or 0 - if there was no provided size we
@@ -293,6 +295,7 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
       isResizingSpringValue: resizing,
       disableResize: !!disabled,
       remeasure: forceRemeasure,
+      size,
     };
 
     return (

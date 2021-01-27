@@ -42,7 +42,14 @@ export const FullSizeMediaWidget: React.FC = () => (
   <WidgetFrame color="snow">
     <DraggableHandle>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer mode="scale" minWidth={340} minHeight={54} maxWidth={1440} maxHeight={900}>
+        <WidgetResizeContainer
+          mode="scale"
+          minWidth={340}
+          minHeight={54}
+          maxWidth={1440}
+          maxHeight={900}
+          disableInitialSizing
+        >
           <FullSizeMediaWidgetContent />
         </WidgetResizeContainer>
       </WidgetContent>
@@ -56,12 +63,14 @@ const FullSizeMediaWidgetContent: React.FC = () => {
     widget: { widgetId },
   } = useWidgetContext<WidgetType.Link>();
 
-  const { remeasure } = useResizeContext();
+  const { remeasure, size } = useResizeContext();
 
   const ref = React.useRef<HTMLVideoElement | HTMLImageElement>(null);
 
+  // if a size hasn't been measured yet, wait for the content to load and
+  // measure it
   React.useEffect(() => {
-    if (ref.current) {
+    if (ref.current && !size) {
       const el = ref.current;
       el.addEventListener('resize', remeasure);
       el.addEventListener('load', remeasure);
@@ -70,7 +79,7 @@ const FullSizeMediaWidgetContent: React.FC = () => {
         el.removeEventListener('load', remeasure);
       };
     }
-  }, [remeasure]);
+  }, [remeasure, size]);
 
   return (
     <>

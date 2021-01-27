@@ -6,6 +6,7 @@ import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 import { Stream } from '../../../types/streams';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
+import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
 
 const MAX_Z_INDEX = 2147483647;
 
@@ -51,6 +52,14 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
     allStreams.find((stream) => stream.kind === 'av' && !!stream.videoPublication) ??
     null;
   const sidecarStreams = allStreams.filter((s) => s !== mainStream);
+
+  // play a sound when any other person first enters the room
+  const { playSound } = useSoundEffects();
+  React.useEffect(() => {
+    if (person && !isMe) {
+      playSound('join');
+    }
+  }, [person, isMe, playSound]);
 
   if (!person) {
     return null;

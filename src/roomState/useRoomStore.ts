@@ -35,12 +35,7 @@ export type RoomDetailsStateShape = {
  */
 export type RoomUserStateShape = {
   id: string;
-  participantState: {
-    displayName: string;
-    avatarName: string;
-    emoji: string | null;
-    statusText: string | null;
-  };
+  participantState: ParticipantState;
   authenticated: boolean;
   sessionIds: Set<string>;
 };

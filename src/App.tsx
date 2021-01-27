@@ -13,6 +13,7 @@ import { ReactQueryDevtools } from 'react-query-devtools';
 import { queryCache } from './queryCache';
 import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
+import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 
 export interface IAppProps {}
 
@@ -67,7 +68,9 @@ export const App: React.FC<IAppProps> = () => {
                 <Router history={history}>
                   <AppStateProvider>
                     <MediaReadinessProvider>
-                      <Routes />
+                      <SoundEffectProvider>
+                        <Routes />
+                      </SoundEffectProvider>
                     </MediaReadinessProvider>
                   </AppStateProvider>
                 </Router>

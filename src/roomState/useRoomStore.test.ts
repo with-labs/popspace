@@ -530,6 +530,10 @@ describe('the central room state store (useRoomStore)', () => {
 
         expect(useRoomStore.getState().widgets['mock-widget-id']).toEqual(omit(widget, 'transform'));
         expect(useRoomStore.getState().widgetPositions['mock-widget-id']).toEqual(widget.transform);
+        // adds the id to the end of the zorder
+        expect(useRoomStore.getState().state.zOrder[useRoomStore.getState().state.zOrder.length - 1]).toEqual(
+          widget.widgetId
+        );
       });
 
       it('moves a widget, sending to server', () => {
@@ -601,6 +605,7 @@ describe('the central room state store (useRoomStore)', () => {
           kind: 'deleteWidget',
           payload,
         });
+        expect(useRoomStore.getState().state.zOrder.includes(payload.widgetId)).toBe(false);
       });
 
       it('responds to a server widget move', () => {

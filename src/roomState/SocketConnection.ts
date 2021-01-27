@@ -83,7 +83,6 @@ export class SocketConnection extends EventEmitter {
     // reconnect will synchronously assign this.ws to a new socket instance
     this.ws = new ReconnectingWebsocket(url, undefined, {
       maxEnqueuedMessages: 1000,
-      debug: !!localStorage.getItem('DEBUG'),
       maxReconnectionDelay: MAX_BACKOFF_DELAY,
       reconnectionDelayGrowFactor: BACKOFF_MULTIPLIER,
     });

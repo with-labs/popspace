@@ -27,7 +27,12 @@ export declare interface ViewportEvents {
  * in the tree to react to changes in the viewport. Right now we just support an event
  * fired when a zoom has completed.
  */
-export class ViewportEvents extends EventEmitter {}
+export class ViewportEvents extends EventEmitter {
+  constructor() {
+    super();
+    this.setMaxListeners(100000);
+  }
+}
 
 export const RoomViewportContext = React.createContext<null | {
   toWorldCoordinate: (screenCoordinate: Vector2, clampToBounds?: boolean) => Vector2;

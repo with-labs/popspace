@@ -179,12 +179,20 @@ function createRoomStore() {
               draft.id = room.id.toString();
               // store our own sessionId, just so we know
               draft.sessionId = init.sender.sessionId;
+              // housekeeping: clean up the zOrder list
+              draft.state.zOrder = draft.state.zOrder.reduce<string[]>((newList, id) => {
+                if (draft.widgets[id]) {
+                  newList.push(id);
+                }
+                return newList;
+              }, []);
             });
           },
           addWidget({ transform, ...widget }: WidgetShape & { transform: RoomPositionState; ownerId: string }) {
             set((draft) => {
               draft.widgets[widget.widgetId] = widget;
               draft.widgetPositions[widget.widgetId] = transform;
+              draft.state.zOrder.push(widget.widgetId);
             });
           },
           moveWidget({ widgetId: id, transform }: { widgetId: string; transform: Partial<RoomPositionState> }) {
@@ -208,6 +216,10 @@ function createRoomStore() {
             set((draft) => {
               delete draft.widgets[id];
               delete draft.widgetPositions[id];
+              const zIndex = draft.state.zOrder.indexOf(id);
+              if (zIndex !== -1) {
+                draft.state.zOrder.splice(zIndex, 1);
+              }
             });
           },
           bringToFront({ widgetId: id }: { widgetId: string }) {

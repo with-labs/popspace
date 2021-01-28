@@ -42,12 +42,15 @@ class Participants {
 
   removeParticipant(participant) {
     delete this.participants[participant.id]
-    participant.disconnect()
+    const promise = participant.disconnect()
     lib.analytics.participantCountChanged(Object.keys(this.participants).length)
+    return promise
   }
 
   async disconnectAll() {
-    return Object.values(this.participants).forEach((p) => (this.removeParticipant(p)))
+    return Promise.all(
+      Object.values(this.participants).map((p) => (this.removeParticipant(p)))
+    )
   }
 
   count() {

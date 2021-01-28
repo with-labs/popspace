@@ -21,6 +21,7 @@ const fetchEnvVars = () => {
   }
 }
 
+
 // https://community.netlify.com/t/support-guide-using-environment-variables-on-netlify-correctly/267/5
 // https://community.netlify.com/t/netlify-functions-and-env-variables-from-netlify-toml/4404/13
 // The intention is to make some of the build-time nev vars of netlify available at runtime.

@@ -59,22 +59,23 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
     [activeLine, finalOnChange, finalState]
   );
 
-  const handlePointerMove = React.useCallback(
-    throttle(
-      (ev: Konva.KonvaEventObject<MouseEvent>) => {
-        const { x, y } = getMousePosition(ev);
+  const handlePointerMove = React.useMemo(
+    () =>
+      throttle(
+        (ev: Konva.KonvaEventObject<MouseEvent>) => {
+          const { x, y } = getMousePosition(ev);
 
-        setActiveLine(
-          (cur) =>
-            cur && {
-              ...cur,
-              path: [...cur.path, x, y],
-            }
-        );
-      },
-      20,
-      { leading: true, trailing: true }
-    ),
+          setActiveLine(
+            (cur) =>
+              cur && {
+                ...cur,
+                path: [...cur.path, x, y],
+              }
+          );
+        },
+        20,
+        { leading: true, trailing: true }
+      ),
     []
   );
 

@@ -1,6 +1,6 @@
 const BUCKET_PATH = 'https://s3.us-east-2.amazonaws.com/with.static/mockusers/';
 
-export default [
+const videos = [
   `${BUCKET_PATH}arooba_talking.mp4`,
   `${BUCKET_PATH}arooba_listening.mp4`,
   `${BUCKET_PATH}eleanor_talking.mp4`,
@@ -16,3 +16,5 @@ export default [
   `${BUCKET_PATH}zareena_listening.mp4`,
   `${BUCKET_PATH}zareena_talking.mp4`,
 ];
+
+export default videos;

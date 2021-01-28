@@ -48,8 +48,10 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
       }
     }, [canMount, internalRef, lastVolumeRef]);
 
+    const finalRef = useMergedRef(internalRef, ref);
+
     if (rest.autoPlay && !isReady) return null;
 
-    return <audio ref={useMergedRef(internalRef, ref)} {...rest} />;
+    return <audio ref={finalRef} {...rest} />;
   }
 );

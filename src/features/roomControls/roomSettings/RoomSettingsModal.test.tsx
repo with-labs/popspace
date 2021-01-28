@@ -3,7 +3,7 @@ const updateRoomState = jest.fn();
 jest.mock('../../../roomState/useRoomStore', () => ({ useRoomStore: () => updateRoomState }));
 
 import React from 'react';
-import { render, fireEvent, waitForElement, wait } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { RoomSettingsModal } from './RoomSettingsModal';
 import { MuiThemeProvider } from '@material-ui/core';
 import { mandarin as theme } from '../../../theme/theme';
@@ -47,10 +47,8 @@ describe('RoomSettingsModal component', () => {
 
     // notes for how to test fomik changes and submits, see this article
     // https://dev.to/charlespeters/formik-react-testing-library-and-screaming-at-a-computer-for-an-hour-5h5f
-    const input = await waitForElement(() =>
-      result.getByLabelText('Link to an image ( JPG, PNG, WEBP, and GIF are supported )')
-    );
-    const button = await waitForElement(() => result.getByRole('button', { name: 'custom-wallpaper-submit-button' }));
+    const input = await result.findByLabelText('Link to an image ( JPG, PNG, WEBP, and GIF are supported )');
+    const button = await result.findByTestId('custom-wallpaper-submit-button');
 
     fireEvent.change(input, {
       target: {
@@ -60,7 +58,7 @@ describe('RoomSettingsModal component', () => {
 
     fireEvent.click(button);
 
-    wait(() => {
+    waitFor(() => {
       expect(updateRoomState).toHaveBeenCalledWith({
         wallpaperUrl: 'https://imaginary.images/unicorn.png',
         isCustomWallpaper: true,
@@ -74,10 +72,8 @@ describe('RoomSettingsModal component', () => {
       wrapper: Wrapper,
     });
 
-    const input = await waitForElement(() =>
-      result.getByLabelText('Link to an image ( JPG, PNG, WEBP, and GIF are supported )')
-    );
-    const button = await waitForElement(() => result.getByRole('button', { name: 'custom-wallpaper-submit-button' }));
+    const input = await result.findByLabelText('Link to an image ( JPG, PNG, WEBP, and GIF are supported )');
+    const button = await result.findByTestId('custom-wallpaper-submit-button');
 
     fireEvent.change(input, {
       target: {
@@ -86,8 +82,6 @@ describe('RoomSettingsModal component', () => {
     });
 
     fireEvent.click(button);
-    wait(() => {
-      expect(updateRoomState).not.toHaveBeenCalled();
-    });
+    expect(updateRoomState).not.toHaveBeenCalled();
   });
 });

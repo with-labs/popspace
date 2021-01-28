@@ -82,6 +82,8 @@ export const MediaLinkMedia = React.forwardRef<
     allowFullscreen: !!mediaContentType?.startsWith('video'),
   });
 
+  const finalRef = useMergedRef(mediaRef, ref as any);
+
   if (mediaContentType?.startsWith('image')) {
     return <img src={mediaUrl} alt={title} className={className} ref={ref as any} />;
   } else if (mediaContentType?.startsWith('video')) {
@@ -94,7 +96,7 @@ export const MediaLinkMedia = React.forwardRef<
           title={title}
           controls={false}
           className={classes.video}
-          ref={useMergedRef(mediaRef, ref as React.Ref<HTMLVideoElement>)}
+          ref={finalRef}
         />
         <MediaControls {...mediaControlsProps} className={classes.videoControls} />
       </div>
@@ -109,7 +111,7 @@ export const MediaLinkMedia = React.forwardRef<
           title={title}
           controls={false}
           className={classes.hiddenAudio}
-          ref={useMergedRef(mediaRef, ref as React.Ref<HTMLAudioElement>)}
+          ref={finalRef}
         />
         <MediaControls {...mediaControlsProps} className={classes.audioControls} />
       </div>

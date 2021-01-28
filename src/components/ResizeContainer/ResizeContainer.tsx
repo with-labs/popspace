@@ -165,7 +165,6 @@ export const ResizeContainer = React.memo<IResizeContainerProps>(
     // components about a remeasure until the measure has taken place and
     // the new result is passed to onResize - this helps simplify usage
     const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
-    console.debug(`NeedsRemeasure ${needsRemeasure} Size ${size}`);
     const [originalAspectRatio, setOriginalAspectRatio] = React.useState(size ? size.width / size.height : 1);
 
     // dimensions are initialized to the provided size, or

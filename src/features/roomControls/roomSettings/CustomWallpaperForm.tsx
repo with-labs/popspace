@@ -89,7 +89,7 @@ export const CustomWallpaperForm: React.FC<ICustomWallpaperFormProps> = ({ onCha
             validate={(url: string) => validateUrl(url, t)}
             fullWidth
           />
-          <FormikSubmitButton className={classes.submitBtn} aria-label="custom-wallpaper-submit-button">
+          <FormikSubmitButton className={classes.submitBtn} data-testid="custom-wallpaper-submit-button">
             {t('features.room.submitButtonText')}
           </FormikSubmitButton>
         </Box>

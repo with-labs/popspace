@@ -94,14 +94,15 @@ export const Draggable: React.FC<IDraggableProps> = ({
 
   // dispatcher for movement changes
   const api = useRoomStore((store) => store.api);
-  const onMove = React.useCallback(
-    throttle((newPosition: Vector2) => {
-      if (kind === 'widget') {
-        api.moveWidget({ widgetId: id, position: newPosition });
-      } else {
-        api.moveSelf({ position: newPosition });
-      }
-    }, MOVE_THROTTLE_PERIOD),
+  const onMove = React.useMemo(
+    () =>
+      throttle((newPosition: Vector2) => {
+        if (kind === 'widget') {
+          api.moveWidget({ widgetId: id, position: newPosition });
+        } else {
+          api.moveSelf({ position: newPosition });
+        }
+      }, MOVE_THROTTLE_PERIOD),
     [api, id, kind]
   );
 

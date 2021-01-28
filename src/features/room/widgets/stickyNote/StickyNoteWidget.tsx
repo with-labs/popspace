@@ -11,7 +11,7 @@ import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { StickyNoteWidgetShape, WidgetType } from '../../../../roomState/types/widgets';
+import { WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';

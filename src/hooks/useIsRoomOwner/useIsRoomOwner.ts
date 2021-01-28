@@ -5,7 +5,9 @@ import { useMemo } from 'react';
 export function useIsRoomOwner() {
   const roomName = useRoomName();
   const { profile: currentUserProfile } = useCurrentUserProfile();
-  const owned = currentUserProfile?.rooms?.owned ?? [];
-  const isRoomOwner = useMemo(() => owned.some((room) => room.name === roomName), [owned, roomName]);
+  const isRoomOwner = useMemo(() => {
+    const owned = currentUserProfile?.rooms?.owned ?? [];
+    return owned.some((room) => room.name === roomName);
+  }, [currentUserProfile, roomName]);
   return isRoomOwner;
 }

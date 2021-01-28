@@ -1,5 +1,6 @@
 import { WhiteboardState } from '../../components/Whiteboard/types';
 
+// eslint-disable-next-line no-shadow
 export enum WidgetType {
   Link = 'LINK',
   StickyNote = 'STICKY_NOTE',

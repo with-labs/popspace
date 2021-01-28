@@ -11,7 +11,7 @@ import { Fullscreen } from '@material-ui/icons';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
 import { useNamedPublication } from '../../../../hooks/useNamedPublication/useNamedPublication';
-import { ScreenShareWidgetShape, SidecarStreamWidgetState, WidgetType } from '../../../../roomState/types/widgets';
+import { SidecarStreamWidgetState, WidgetType } from '../../../../roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useParticipantByIdentity } from '../../../../hooks/useParticipantByIdentity/useParticipantByIdentity';
 import { FullscreenableMedia } from '../../../../components/FullscreenableMedia/FullscreenableMedia';

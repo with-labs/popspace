@@ -9,6 +9,7 @@ import { WidgetShape, WidgetShapeForType, WidgetStateByType, WidgetType } from '
 import { MockUserWidget } from './mockUser/MockUserWidget';
 import { useDeleteWidget } from './useDeleteWidget';
 import { useSaveWidget } from './useSaveWidget';
+import { logger } from '../../../utils/logger';
 
 export type WidgetContextValue<T extends WidgetType> = {
   widget: WidgetShapeForType<T>;
@@ -73,5 +74,8 @@ const WidgetContent = React.memo<IWidgetContentProps>(({ widget }) => {
       return <ScreenShareWidget />;
     case WidgetType.MockUser:
       return <MockUserWidget />;
+    default:
+      logger.debug(`Rendered unknown widget type: ${(widget as any).type}`);
+      return null;
   }
 });

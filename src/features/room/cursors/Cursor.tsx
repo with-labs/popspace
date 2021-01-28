@@ -66,7 +66,6 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
 
   const contrastColor = React.useMemo(() => {
     const ratio = getContrastRatio(theme.palette.common.black, color);
-    console.debug(ratio);
     if (ratio < 8) {
       return theme.palette.common.white;
     } else {

@@ -47,8 +47,10 @@ export const SpatialVideo = React.forwardRef<HTMLVideoElement, SpatialVideoProps
       }
     }, [canMount, internalRef, lastVolumeRef]);
 
+    const finalRef = useMergedRef(internalRef, ref);
+
     if (rest.autoPlay && !isReady) return null;
 
-    return <video ref={useMergedRef(internalRef, ref)} {...rest} />;
+    return <video ref={finalRef} {...rest} />;
   }
 );

@@ -5,7 +5,7 @@ export type WithColorPalette = {
   ink?: string;
 };
 
-export default {
+const palette = {
   slate: {
     light: '#F4F5F8',
     regular: '#E2E5EE',
@@ -46,3 +46,5 @@ export default {
     regular: '#333333',
   },
 };
+
+export default palette;

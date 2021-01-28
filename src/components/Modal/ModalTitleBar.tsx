@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import { DialogTitle, makeStyles, Typography, IconButton, Box } from '@material-ui/core';
 import { CloseIcon } from '../../components/icons/CloseIcon';
 import { BackIcon } from '../../components/icons/BackIcon';

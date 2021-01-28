@@ -1,6 +1,6 @@
 import React from 'react';
 import { createMuiTheme } from '@material-ui/core';
-import { PaletteOptions } from '@material-ui/core/styles/createPalette';
+import { PaletteOptions as MuiPaletteOptions } from '@material-ui/core/styles/createPalette';
 import brandPalette, { WithColorPalette } from './palette';
 import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
 import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
@@ -119,7 +119,7 @@ function createFocusRing(color: string, outside: boolean = false) {
  * @param colors Color palette configuration
  */
 const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
-  const finalPalette: PaletteOptions = {
+  const finalPalette: MuiPaletteOptions = {
     // all themes use this grey, for now.
     grey: {
       50: brandPalette.slate.light,
@@ -908,6 +908,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   });
 };
 
+// eslint-disable-next-line no-shadow
 export enum ThemeName {
   Mandarin = 'mandarin',
   Cherry = 'cherry',

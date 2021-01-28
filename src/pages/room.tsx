@@ -38,10 +38,6 @@ const connectionOptions: ConnectOptions = {
   preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
 };
 
-interface IAppProps {
-  roomName: string;
-}
-
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     width: '100vw',

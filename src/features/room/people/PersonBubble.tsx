@@ -14,7 +14,6 @@ import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 import { RoomUserStateShape } from '../../../roomState/useRoomStore';
 import { Stream } from '../../../types/streams';
 import { PersonAvatar } from './PersonAvatar';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 
 const EXPANDED_SIZE = 280;
 const SMALL_SIZE = 140;

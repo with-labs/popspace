@@ -2,10 +2,11 @@ import React from 'react';
 import AttachVisibilityHandler from './AttachVisibilityHandler';
 import useLocalVideoToggle from '../../../hooks/localMediaToggles/useLocalVideoToggle';
 import { render } from '@testing-library/react';
-import * as utils from '../../../utils/environment';
+import { isMobile } from '../../../utils/environment';
 
 jest.mock('../../../hooks/useVideoContext/useVideoContext', () => () => ({ room: {} }));
 jest.mock('../../../hooks/localMediaToggles/useLocalVideoToggle');
+jest.mock('../../../utils/environment', () => ({ isMobile: jest.fn().mockReturnValue(false) }));
 
 const mockUseLocalVideoToggle = useLocalVideoToggle as jest.Mock<any>;
 const mockToggleVideoEnabled = jest.fn();
@@ -16,26 +17,22 @@ mockUseLocalVideoToggle.mockImplementation(() => [true, mockToggleVideoEnabled])
 describe('the AttachVisibilityHandler component', () => {
   describe('when isMobile is false', () => {
     it('should not add a visibilitychange event handler to the document', () => {
-      // @ts-ignore
-      utils.isMobile = false;
+      (isMobile as jest.Mock).mockReturnValue(false);
       jest.spyOn(document, 'addEventListener');
       render(<AttachVisibilityHandler />);
-      expect(document.addEventListener).not.toHaveBeenCalled();
+      expect(document.addEventListener).not.toHaveBeenCalledWith('visibilitychange', expect.anything());
     });
   });
 
   describe('when isMobile is true', () => {
     beforeAll(() => {
-      // @ts-ignore
-      utils.isMobile = true;
+      (isMobile as jest.Mock).mockReturnValue(true);
     });
-
-    beforeEach(jest.clearAllMocks);
 
     it('should add a visibilitychange event handler to the document', () => {
       jest.spyOn(document, 'addEventListener');
       render(<AttachVisibilityHandler />);
-      expect(document.addEventListener).toHaveBeenCalled();
+      expect(document.addEventListener).toHaveBeenCalledWith('visibilitychange', expect.anything());
     });
 
     it('should correctly toggle video when it is already enabled', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, cleanup, wait, act } from '@testing-library/react';
+import { render, cleanup, waitFor, act } from '@testing-library/react';
 import { RoomStateProvider } from './RoomStateProvider';
 import { BrowserRouter } from 'react-router-dom';
 import { useRoomStore } from './useRoomStore';
@@ -14,7 +14,7 @@ const testContent = <div data-testid="content" />;
 
 async function getSocketConnection() {
   // wait for socket instance to be provided to the room store
-  await wait(() => {
+  await waitFor(() => {
     expect(useRoomStore.getState().socket).toBeDefined();
   });
 
@@ -39,7 +39,7 @@ describe('RoomStateProvider component', () => {
       socket.emit('connected');
     });
 
-    await wait(() => {
+    await waitFor(() => {
       expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
         kind: 'auth',
         payload: {
@@ -61,7 +61,7 @@ describe('RoomStateProvider component', () => {
     act(() => {
       socket.emit('connected');
     });
-    await wait(() => {
+    await waitFor(() => {
       expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
         kind: 'auth',
         payload: {
@@ -78,7 +78,7 @@ describe('RoomStateProvider component', () => {
     });
 
     // expect reconnect alert to be displayed
-    await wait(() => {
+    await waitFor(() => {
       expect(result.getByTestId('roomStateReconnecting')).toBeDefined();
     });
     // content is still visible (we don't hide content while reconnecting)
@@ -88,7 +88,7 @@ describe('RoomStateProvider component', () => {
     act(() => {
       socket.emit('connected');
     });
-    await wait(() => {
+    await waitFor(() => {
       expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
         kind: 'auth',
         payload: {
@@ -99,7 +99,7 @@ describe('RoomStateProvider component', () => {
     });
 
     // expect reconnect alert to be gone
-    await wait(() => {
+    await waitFor(() => {
       expect(() => result.getByTestId('roomStateReconnecting')).toThrow();
     });
   });

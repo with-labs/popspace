@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import { Box, makeStyles, Button, useTheme } from '@material-ui/core';
+import { Box, makeStyles, Button } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalPane } from '../../../components/Modal/ModalPane';
@@ -9,7 +9,6 @@ import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
-import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { AvatarCategory } from './AvatarCategory';
 import { TFunction } from 'i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
@@ -58,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
-  const theme = useTheme();
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -79,8 +77,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
   const { user } = useCurrentUserProfile();
   const userId = user?.id;
   const person = useRoomStore((room) => room.users[userId ?? '']);
-  const { avatarName } = person?.participantState;
-  const { backgroundColor } = useAvatar(avatarName || '') ?? { backgroundColor: theme.palette.grey[50] };
+  const { avatarName } = person?.participantState ?? {};
 
   // visible screen name
   const displayIdentity = person?.participantState.displayName;

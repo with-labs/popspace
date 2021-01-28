@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { makeStyles, Divider, MenuItem, ListItemIcon, ListItemText, Box, IconButton } from '@material-ui/core';
+import { makeStyles, Divider, MenuItem, ListItemText, Box, IconButton } from '@material-ui/core';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ChangelogMenuItem } from './ChangelogMenuItem';
-import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
-import { EmailIcon } from '../../../components/icons/EmailIcon';
 import { useTranslation } from 'react-i18next';
 import { Link } from '../../../components/Link/Link';
 import { Links } from '../../../constants/Links';
@@ -41,24 +39,13 @@ export const RoomMenu = () => {
         <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
-        <Link to={Links.FEEDBACK} disableStyling>
-          <MenuItem>
-            <ListItemIcon>
-              <FeedbackIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('features.roomMenu.voteOnFeatures')} />
-          </MenuItem>
-        </Link>
+        <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
+        <Divider />
         <Link to={`mailto:${USER_SUPPORT_EMAIL}`} disableStyling>
-          <MenuItem>
-            <ListItemIcon>
-              <EmailIcon />
-            </ListItemIcon>
+          <MenuItem dense>
             <ListItemText primary={t('features.roomMenu.contactUs')} />
           </MenuItem>
         </Link>
-        <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
-        <Divider />
         <ChangelogMenuItem onClick={onClose}>{t('features.roomMenu.changelog')}</ChangelogMenuItem>
         <Link to={Links.TOS} disableStyling>
           <MenuItem dense>

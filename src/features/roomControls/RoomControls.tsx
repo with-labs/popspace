@@ -5,6 +5,8 @@ import { MediaControls } from './media/MediaControls';
 import { RoomMenu } from './roomMenu/RoomMenu';
 import { MembersMenu } from './membership/MembersMenu';
 import { BugReport } from './BugReport/BugReport';
+import { SendFeedback } from './SendFeedback/SendFeedback';
+import clsx from 'clsx';
 
 export interface IRoomControlsProps {}
 
@@ -31,10 +33,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 16,
     padding: theme.spacing(1.5),
   },
-  bugReport: {
-    width: 185,
+  reportButton: {
     marginTop: theme.spacing(2),
     pointerEvents: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      width: 64,
+    },
+  },
+  buttonPadding: {
+    marginRight: theme.spacing(2),
   },
 }));
 
@@ -49,7 +56,10 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
           <RoomAddContent />
           <MediaControls />
         </Box>
-        <BugReport className={classes.bugReport} />
+        <Box display="flex" flexDirection="row">
+          <BugReport className={clsx(classes.reportButton, classes.buttonPadding)} />
+          <SendFeedback className={classes.reportButton} />
+        </Box>
       </Box>
       {
         <Box component={Paper} className={classes.membersMenu}>

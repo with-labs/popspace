@@ -75,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
   reportButtonText: {
     marginLeft: theme.spacing(2),
     textTransform: 'none',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
 }));
 
@@ -91,6 +94,7 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
     setShowConfirmation(false);
     setIsOpen(true);
   };
+
   const onCloseHandler = () => {
     setIsOpen(false);
   };
@@ -159,7 +163,7 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
         onClick={onOpenHandler}
       >
         <BugIcon />
-        <Typography variant="button" className={classes.reportButtonText}>
+        <Typography aira-hidden={true} variant="button" className={classes.reportButtonText}>
           {t('modals.bugReportModal.title')}
         </Typography>
       </IconButton>

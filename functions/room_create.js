@@ -3,7 +3,10 @@ lib.util.env.init(require("./env.json"))
 
 const MAX_FREE_ROOMS = 4
 const underMaxOwnedRoomLimit = async (userId) => {
-  const count = await shared.db.pg.massive.rooms.count({owner_id: userId})
+  const count = await shared.db.pg.massive.rooms.count({
+    owner_id: userId,
+    deleted_at: null
+  })
   return count < MAX_FREE_ROOMS
 }
 

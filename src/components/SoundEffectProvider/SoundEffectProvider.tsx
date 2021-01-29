@@ -28,7 +28,9 @@ export const SoundEffectProvider: React.FC = ({ children }) => {
 
   const play = React.useCallback((name: SoundEffectName) => {
     if (!isReadyRef.current) return;
-    howl.play(name);
+    // TODO: Renable this once we are done with our demo
+    // 1-28-2021
+    //howl.play(name);
   }, []);
 
   return <SoundEffectContext.Provider value={{ playSound: play }}>{children}</SoundEffectContext.Provider>;

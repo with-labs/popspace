@@ -39,6 +39,21 @@ const useStyles = makeStyles((theme) => ({
     width: 172,
     textAlign: 'center',
   },
+  userMangementPannel: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      height: '100%',
+    },
+  },
+  membershipMangement: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      maxHeight: 360,
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+  },
 }));
 
 export const MembershipManagementModal: React.FC<IMembershipManagementModalProps> = (props) => {
@@ -58,7 +73,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
         <ModalPane className={classes.imgPane}>
           <img src={membersImg} alt="Members" className={classes.image} />
         </ModalPane>
-        <ModalPane>
+        <ModalPane className={classes.userMangementPannel}>
           <MembershipManagement />
         </ModalPane>
       </ModalContentWrapper>

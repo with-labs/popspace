@@ -124,12 +124,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
               <Box display="flex" className={classes.userInputWrapper} alignItems="center" justifyContent="center">
                 <ModalPane className={classes.avatarPannel}>
                   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-                    <PseudoUserBubble
-                      avatarName={avatarName}
-                      displayIdentity={displayIdentity}
-                      isVideoOn={false}
-                      className={classes.bubble}
-                    />
+                    <PseudoUserBubble userId={userId} isVideoOn={false} isMicOn={true} className={classes.bubble} />
                     <Button onClick={() => setIsAvatarSelectionOpen(true)} color="primary" fullWidth={false}>
                       {t('modals.userSettingsModal.editAvatarButton')}
                     </Button>

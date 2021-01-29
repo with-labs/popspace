@@ -163,7 +163,7 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
         onClick={onOpenHandler}
       >
         <BugIcon />
-        <Typography aira-hidden={true} variant="button" className={classes.reportButtonText}>
+        <Typography aria-hidden="true" variant="button" className={classes.reportButtonText}>
           {t('modals.bugReportModal.title')}
         </Typography>
       </IconButton>

@@ -17,7 +17,6 @@ import { MicToggle } from '../media/MicToggle';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import ErrorDialog from '../../../components/ErrorDialog/ErrorDialog';
 import VideoTrack from '../../../components/VideoTrack/VideoTrack';
-import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { logger } from '../../../utils/logger';
@@ -27,7 +26,7 @@ import permissionVideo from './media/Permission Setting_final_fixed.mp4';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 360,
+    maxWidth: 360,
   },
   contentWrapper: {
     marginTop: theme.spacing(3),
@@ -67,7 +66,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   permissionVideo: {
-    height: 310,
+    maxHeight: 310,
+    width: '100%',
   },
 }));
 
@@ -126,12 +126,9 @@ export const RequestPermissionModal: React.FC = () => {
 
   const { user } = useCurrentUserProfile();
   const userId = user?.id;
-  const person = useRoomStore((room) => room.users[userId ?? '']);
-  const { avatarName } = person?.participantState;
-  const displayIdentity = person?.participantState.displayName;
 
   // these are twillio tracks
-  const { videoTrack } = useLocalTracks();
+  const { videoTrack, audioTrack } = useLocalTracks();
 
   useEffect(() => {
     if (!isReady) {
@@ -260,10 +257,10 @@ export const RequestPermissionModal: React.FC = () => {
             >
               <img src={bg} className={classes.bgImg} alt="background-img" />
               <PseudoUserBubble
-                avatarName={avatarName}
-                displayIdentity={displayIdentity}
+                userId={userId}
                 isVideoOn={!!videoTrack}
                 className={classes.bubble}
+                isMicOn={!!audioTrack}
               >
                 {videoTrack && <VideoTrack classNames={classes.video} track={videoTrack as LocalVideoTrack} />}
               </PseudoUserBubble>

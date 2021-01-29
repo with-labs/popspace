@@ -9,7 +9,14 @@ export interface IMembersMenuProps {}
 
 const useStyles = makeStyles((theme) => ({
   largeMenu: {
-    width: 360,
+    width: '100%',
+    maxHeight: 360,
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      width: 360,
+    },
   },
 }));
 

@@ -42,7 +42,7 @@ export const SendFeedback: React.FC<ISendFeedback> = (props) => {
       onClick={onClickHandler}
     >
       <FeatureIcon />
-      <Typography aira-hidden={true} variant="button" className={classes.buttonText}>
+      <Typography aria-hidden="true" variant="button" className={classes.buttonText}>
         {t('features.room.sendFeedbackBtn')}
       </Typography>
     </IconButton>

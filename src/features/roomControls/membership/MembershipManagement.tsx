@@ -42,7 +42,11 @@ const useStyles = makeStyles((theme) => ({
   },
   submitBtn: {
     height: '48px',
-    width: '100px',
+    width: 100,
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      marginBottom: theme.spacing(2),
+    },
   },
   imgPane: {
     [theme.breakpoints.down('sm')]: {
@@ -56,6 +60,12 @@ const useStyles = makeStyles((theme) => ({
   inviteText: {
     width: 172,
     textAlign: 'center',
+  },
+  formWrapper: {
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
   },
 }));
 
@@ -138,7 +148,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       <div ref={ref} className={className}>
         <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
           <Form>
-            <Box display="flex" flexDirection="row" alignItems="flex-start">
+            <Box display="flex" className={classes.formWrapper} alignItems="flex-start">
               <FormikTextField
                 className={classes.emailField}
                 name="inviteeEmail"

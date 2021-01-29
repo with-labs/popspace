@@ -76,6 +76,18 @@ class Api {
     return await this.post('/create_room', {});
   }
 
+  async roomCreate(displayName: string) {
+    return await this.post('/room_create', { displayName });
+  }
+
+  async roomRename(roomId: number, newDisplayName: string) {
+    return await this.post('/room_rename', { roomId, newDisplayName });
+  }
+
+  async roomDelete(roomId: number) {
+    return await this.post('/room_delete', { roomId });
+  }
+
   async sendRoomInvite(roomName: string, email: string) {
     return await this.post<BaseResponse & { newMember: ApiRoomMember }>('/send_room_invite', { roomName, email });
   }

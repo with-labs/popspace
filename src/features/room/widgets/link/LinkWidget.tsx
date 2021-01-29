@@ -9,6 +9,7 @@ import { LinkWidgetShape, WidgetType } from '../../../../roomState/types/widgets
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
+import { UploadingWidget } from './UploadingWidget';
 
 export interface ILinkWidgetProps {}
 
@@ -42,6 +43,10 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
 
   // media links are rendered differently
   const isMediaWidget = isMedia(state);
+
+  if (state.widgetState.uploadProgress !== undefined && state.widgetState.uploadProgress < 100) {
+    return <UploadingWidget />;
+  }
 
   return isMediaWidget ? <MediaLinkWidget /> : <DocumentLinkWidget />;
 };

@@ -3,7 +3,6 @@ import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { FullSizeMediaWidget } from './FullSizeMediaWidget';
 import { FramedMediaWidget } from './FramedMediaWidget';
-import { UploadingWidget } from './UploadingWidget';
 
 export interface IMediaLinkWidgetProps {}
 
@@ -15,10 +14,6 @@ export const MediaLinkWidget: React.FC<IMediaLinkWidgetProps> = () => {
   const {
     widget: { widgetState: data },
   } = useWidgetContext<WidgetType.Link>();
-
-  if (data.uploadProgress !== undefined && data.uploadProgress < 100) {
-    return <UploadingWidget />;
-  }
 
   if (
     data.mediaContentType &&

@@ -1,8 +1,10 @@
+import { AccessoryIconType } from '../../../../components/icons/AccessoryIcon';
 import { WidgetType, WidgetStateByType } from '../../../../roomState/types/widgets';
 
 export enum QuickActionKind {
   AddAccessory,
   SetStatus,
+  AddFile,
 }
 
 type BaseQuickAction = {
@@ -18,6 +20,11 @@ type BaseQuickAction = {
    * note) should be graded lower.
    */
   confidence: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  /**
+   * What icon should be shown as part of the item? This corresponds to
+   * the multi-variant icon component AccessoryIcon
+   */
+  icon: AccessoryIconType;
 };
 
 export type AddAccessoryQuickAction<Type extends WidgetType> = BaseQuickAction & {
@@ -31,8 +38,12 @@ export type SetStatusQuickAction = BaseQuickAction & {
   status: string;
 };
 
+export type AddFileQuickAction = BaseQuickAction & {
+  kind: QuickActionKind.AddFile;
+};
+
 // TODO: union other types of actions into this discriminated union type
-export type QuickAction = AddAccessoryQuickAction<any> | SetStatusQuickAction;
+export type QuickAction = AddAccessoryQuickAction<any> | SetStatusQuickAction | AddFileQuickAction;
 
 /**
  * A quick action provider is a function that generates valid quick

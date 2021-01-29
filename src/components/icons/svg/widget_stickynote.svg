@@ -8,8 +8,8 @@
 <g opacity="0.5" filter="url(#filter0_f)">
 <path d="M32.4002 18L16.7101 18.9806C14.8884 19.0945 13.6203 20.8385 14.0737 22.6066L17.2002 34.8L32.4002 18Z" fill="#F3A110"/>
 </g>
-<path d="M32.0001 17.5996H23.6001C20.2864 17.5996 17.6001 20.2859 17.6001 23.5996V31.9996L32.0001 17.5996Z" fill="#FFED8E"/>
-<path d="M32.0001 17.5996H23.6001C20.2864 17.5996 17.6001 20.2859 17.6001 23.5996V31.9996L32.0001 17.5996Z" fill="url(#paint0_linear)"/>
+<path d="M32.0001 17.6001H23.6001C20.2864 17.6001 17.6001 20.2864 17.6001 23.6001V32.0001L32.0001 17.6001Z" fill="#FFED8E"/>
+<path d="M32.0001 17.6001H23.6001C20.2864 17.6001 17.6001 20.2864 17.6001 23.6001V32.0001L32.0001 17.6001Z" fill="url(#paint0_linear)"/>
 </g>
 </g>
 <defs>
@@ -18,7 +18,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="2.18182" result="effect1_foregroundBlur"/>
 </filter>
-<linearGradient id="paint0_linear" x1="18.4001" y1="18.3996" x2="25.2001" y2="29.1996" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear" x1="18.4001" y1="18.4001" x2="25.2001" y2="29.2001" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
 <stop offset="1" stop-color="white" stop-opacity="0"/>
 </linearGradient>

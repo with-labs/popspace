@@ -12,6 +12,7 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: WidgetType.StickyNote,
         accessoryType: WidgetType.StickyNote,
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
@@ -25,6 +26,7 @@ function useStickyNoteQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: WidgetType.StickyNote,
         accessoryType: WidgetType.StickyNote,
         displayName: t('widgets.stickyNote.quickActionTitle'),
         accessoryData: {
@@ -44,6 +46,7 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: WidgetType.Link,
         accessoryType: WidgetType.Link,
         displayName: t('widgets.link.quickActionTitle'),
         accessoryData: {
@@ -62,6 +65,7 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
       return [
         {
           kind: QuickActionKind.AddAccessory,
+          icon: WidgetType.Link,
           accessoryType: WidgetType.Link,
           displayName: t('widgets.link.quickActionTitle'),
           accessoryData: {
@@ -84,6 +88,7 @@ function useLinkQuickActions(prompt: string): QuickAction[] {
       return [
         {
           kind: QuickActionKind.AddAccessory,
+          icon: 'embed',
           accessoryType: WidgetType.Link,
           displayName: t('widgets.link.quickActionAddEmbed'),
           accessoryData: {
@@ -111,6 +116,7 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: WidgetType.YouTube,
         accessoryType: WidgetType.YouTube,
         displayName: t('widgets.youtube.quickActionTitle'),
         accessoryData: {
@@ -129,6 +135,7 @@ function useYoutubeQuickActions(prompt: string): QuickAction[] {
       return [
         {
           kind: QuickActionKind.AddAccessory,
+          icon: WidgetType.YouTube,
           accessoryType: WidgetType.YouTube,
           displayName: t('widgets.youtube.quickActionTitle'),
           accessoryData: {
@@ -155,6 +162,7 @@ function useWhiteboardQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: WidgetType.Whiteboard,
         accessoryType: WidgetType.Whiteboard,
         accessoryData: {
           whiteboardState: {
@@ -178,6 +186,7 @@ function useStatusQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.SetStatus,
+        icon: 'status',
         status: prompt.trim(),
         displayName: t('features.status.quickActionTitle'),
         confidence: 1,
@@ -197,6 +206,7 @@ function useMockuserQuickActions(prompt: string): QuickAction[] {
     return [
       {
         kind: QuickActionKind.AddAccessory,
+        icon: 'status',
         accessoryData: {
           displayName: '',
           video: '',
@@ -205,6 +215,24 @@ function useMockuserQuickActions(prompt: string): QuickAction[] {
         accessoryType: WidgetType.MockUser,
         confidence: 10,
         displayName: 'Add mock user',
+      },
+    ];
+  }
+
+  return [];
+}
+
+function useFileQuickActions(prompt: string): QuickAction[] {
+  const { t } = useTranslation();
+
+  if (!prompt) {
+    // for empty quick action bar, show an option to add a file
+    return [
+      {
+        kind: QuickActionKind.AddFile,
+        icon: 'file',
+        confidence: 5,
+        displayName: t('widgets.link.quickActionAddFile'),
       },
     ];
   }
@@ -225,6 +253,7 @@ export function useQuickActionOptions(prompt: string): QuickAction[] {
     ...useYoutubeQuickActions(trimmed),
     ...useStatusQuickActions(trimmed),
     ...useWhiteboardQuickActions(trimmed),
+    ...useFileQuickActions(trimmed),
     ...useMockuserQuickActions(trimmed),
   ].sort((a, b) => b.confidence - a.confidence);
 }

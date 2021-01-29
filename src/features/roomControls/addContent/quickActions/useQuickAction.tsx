@@ -3,6 +3,8 @@ import { useAddAccessory } from './useAddAccessory';
 import { QuickAction, QuickActionKind } from './types';
 import { useQuickActionOptions } from './useQuickActionOptions';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { useAddFile } from '../../../room/files/useAddFile';
+import { browseForFile } from '../../../../utils/browseForFile';
 
 export function useQuickAction() {
   const [inputValue, setInputValue] = React.useState('');
@@ -15,6 +17,13 @@ export function useQuickAction() {
   const addAccessory = useAddAccessory();
 
   const updateSelf = useRoomStore((room) => room.api.updateSelf);
+
+  const addFile = useAddFile();
+
+  const uploadFile = React.useCallback(async () => {
+    const files = await browseForFile(true);
+    files?.forEach((file) => addFile(file));
+  }, [addFile]);
 
   const handleSelection = React.useCallback(
     (ev: any, value: QuickAction | null) => {
@@ -39,9 +48,12 @@ export function useQuickAction() {
             emoji: null,
           });
           break;
+        case QuickActionKind.AddFile:
+          uploadFile();
+          break;
       }
     },
-    [addAccessory, updateSelf]
+    [addAccessory, updateSelf, uploadFile]
   );
 
   return {

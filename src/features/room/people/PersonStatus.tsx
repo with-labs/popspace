@@ -250,7 +250,11 @@ function useStatusEditing({
   // don't allow editing for remote users
   const open = () => {
     if (isLocal) {
-      setEditing(true);
+      // need to delay til next frame so that the click action doesn't
+      // immediately close the editor
+      setImmediate(() => {
+        setEditing(true);
+      });
     }
   };
 

@@ -132,6 +132,10 @@ function clampAndEnforceMode({
   };
 }
 
+export type ResizeContainerImperativeApi = {
+  remeasure(): void;
+};
+
 /**
  * A content container which allows the user to resize it using a
  * resize handle, which you can render as you like anywhere within the
@@ -143,190 +147,199 @@ function clampAndEnforceMode({
  * The container also allows selecting a resize mode - see
  * `mode` prop for details.
  */
-export const ResizeContainer = React.memo<IResizeContainerProps>(
-  ({
-    mode = 'free',
-    disabled,
-    size,
-    resizeScaleFactor = 1,
-    onResize,
-    maxWidth,
-    maxHeight,
-    minWidth,
-    minHeight,
-    children,
-    disableInitialSizing,
-  }) => {
-    const classes = useStyles();
+export const ResizeContainer = React.memo(
+  React.forwardRef<ResizeContainerImperativeApi, IResizeContainerProps>(
+    (
+      {
+        mode = 'free',
+        disabled,
+        size,
+        resizeScaleFactor = 1,
+        onResize,
+        maxWidth,
+        maxHeight,
+        minWidth,
+        minHeight,
+        children,
+        disableInitialSizing,
+      },
+      ref
+    ) => {
+      const classes = useStyles();
 
-    const viewport = useRoomViewport();
+      const viewport = useRoomViewport();
 
-    // we track the need to remeasure internally, and don't inform external
-    // components about a remeasure until the measure has taken place and
-    // the new result is passed to onResize - this helps simplify usage
-    const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
-    const [originalAspectRatio, setOriginalAspectRatio] = React.useState(size ? size.width / size.height : 1);
+      // we track the need to remeasure internally, and don't inform external
+      // components about a remeasure until the measure has taken place and
+      // the new result is passed to onResize - this helps simplify usage
+      const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
+      const [originalAspectRatio, setOriginalAspectRatio] = React.useState(size ? size.width / size.height : 1);
 
-    // dimensions are initialized to the provided size, or
-    // the minimum size, or 0 - if there was no provided size we
-    // will be remeasuring immediately, so starting at minimum
-    // size reduces the magnitude of the 'pop-in' effect.
-    const providedWidth = size?.width || minWidth || 0;
-    const providedHeight = size?.height || minHeight || 0;
+      // dimensions are initialized to the provided size, or
+      // the minimum size, or 0 - if there was no provided size we
+      // will be remeasuring immediately, so starting at minimum
+      // size reduces the magnitude of the 'pop-in' effect.
+      const providedWidth = size?.width || minWidth || 0;
+      const providedHeight = size?.height || minHeight || 0;
 
-    const [{ width, height, resizing }, set] = useSpring(() => ({
-      width: providedWidth,
-      height: providedHeight,
-      resizing: false,
-    }));
-
-    const contentRef = React.useRef<HTMLDivElement>(null);
-
-    // this effect handles remeasuring the content when needed
-    React.useEffect(() => {
-      if (!needsRemeasure) return;
-
-      const remeasure = () =>
-        requestAnimationFrame(async () => {
-          if (!contentRef.current) return;
-
-          const naturalWidth = contentRef.current.clientWidth;
-          const naturalHeight = contentRef.current.clientHeight;
-
-          const aspect = naturalWidth / naturalHeight;
-          setOriginalAspectRatio(aspect);
-
-          onResize(
-            clampAndEnforceMode({
-              width: naturalWidth,
-              height: naturalHeight,
-              minHeight,
-              minWidth,
-              maxHeight,
-              maxWidth,
-              mode,
-              originalAspectRatio: aspect,
-            })
-          );
-          setNeedsRemeasure(false);
-        });
-
-      // wait for fonts to load before resizing
-      if (document.fonts.ready) {
-        // race the promise load with a 3 second timer (i.e. timeout if wait is too long)
-        Promise.race([document.fonts.ready, new Promise((res) => setTimeout(res, 3000))]).then(remeasure);
-      } else {
-        remeasure();
-      }
-    }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
-
-    // this effect updates the spring dimensions when the `size` prop changes
-    React.useEffect(() => {
-      set({
+      const [{ width, height, resizing }, set] = useSpring(() => ({
         width: providedWidth,
         height: providedHeight,
-      });
-    }, [providedWidth, providedHeight, set]);
+        resizing: false,
+      }));
 
-    const bindResizeHandle = useGesture(
-      {
-        onDrag: (state) => {
-          // use case: consider a resizeable container within a draggable container -
-          // when the user grabs the resize handle, we want to disable dragging
-          state.event?.stopPropagation();
+      const contentRef = React.useRef<HTMLDivElement>(null);
 
-          let initialPosition;
-          if (state.first) {
-            initialPosition = state.xy;
-          } else {
-            initialPosition = state.memo;
-          }
+      // this effect handles remeasuring the content when needed
+      React.useEffect(() => {
+        if (!needsRemeasure) return;
 
-          const deltaX = state.xy[0] - initialPosition[0];
-          const deltaY = state.xy[1] - initialPosition[1];
+        const remeasure = () =>
+          requestAnimationFrame(async () => {
+            if (!contentRef.current) return;
 
-          const newWidth = providedWidth + deltaX * resizeScaleFactor;
-          const newHeight = providedHeight + deltaY * resizeScaleFactor;
+            const naturalWidth = contentRef.current.clientWidth;
+            const naturalHeight = contentRef.current.clientHeight;
 
-          set(
-            clampAndEnforceMode({
-              width: newWidth,
-              height: newHeight,
-              minHeight,
-              minWidth,
-              maxHeight,
-              maxWidth,
-              originalAspectRatio,
-              mode,
-            })
-          );
+            const aspect = naturalWidth / naturalHeight;
+            setOriginalAspectRatio(aspect);
 
-          // memoize initialPosition for future events to reference
-          return initialPosition;
-        },
-        onDragStart: (state) => {
-          state.event?.stopPropagation();
-          viewport.onObjectDragStart();
-          set({ resizing: true });
-        },
-        onDragEnd: (state) => {
-          state.event?.stopPropagation();
-          viewport.onObjectDragEnd();
-          set({ resizing: false });
-          // report change to parent
-          onResize({
-            width: width.goal,
-            height: height.goal,
+            onResize(
+              clampAndEnforceMode({
+                width: naturalWidth,
+                height: naturalHeight,
+                minHeight,
+                minWidth,
+                maxHeight,
+                maxWidth,
+                mode,
+                originalAspectRatio: aspect,
+              })
+            );
+            setNeedsRemeasure(false);
           });
+
+        // wait for fonts to load before resizing
+        if (document.fonts.ready) {
+          // race the promise load with a 3 second timer (i.e. timeout if wait is too long)
+          Promise.race([document.fonts.ready, new Promise((res) => setTimeout(res, 3000))]).then(remeasure);
+        } else {
+          remeasure();
+        }
+      }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
+
+      // this effect updates the spring dimensions when the `size` prop changes
+      React.useEffect(() => {
+        set({
+          width: providedWidth,
+          height: providedHeight,
+        });
+      }, [providedWidth, providedHeight, set]);
+
+      const bindResizeHandle = useGesture(
+        {
+          onDrag: (state) => {
+            // use case: consider a resizeable container within a draggable container -
+            // when the user grabs the resize handle, we want to disable dragging
+            state.event?.stopPropagation();
+
+            let initialPosition;
+            if (state.first) {
+              initialPosition = state.xy;
+            } else {
+              initialPosition = state.memo;
+            }
+
+            const deltaX = state.xy[0] - initialPosition[0];
+            const deltaY = state.xy[1] - initialPosition[1];
+
+            const newWidth = providedWidth + deltaX * resizeScaleFactor;
+            const newHeight = providedHeight + deltaY * resizeScaleFactor;
+
+            set(
+              clampAndEnforceMode({
+                width: newWidth,
+                height: newHeight,
+                minHeight,
+                minWidth,
+                maxHeight,
+                maxWidth,
+                originalAspectRatio,
+                mode,
+              })
+            );
+
+            // memoize initialPosition for future events to reference
+            return initialPosition;
+          },
+          onDragStart: (state) => {
+            state.event?.stopPropagation();
+            viewport.onObjectDragStart();
+            set({ resizing: true });
+          },
+          onDragEnd: (state) => {
+            state.event?.stopPropagation();
+            viewport.onObjectDragEnd();
+            set({ resizing: false });
+            // report change to parent
+            onResize({
+              width: width.goal,
+              height: height.goal,
+            });
+          },
         },
-      },
-      {
-        eventOptions: { capture: false },
-      }
-    );
+        {
+          eventOptions: { capture: false },
+        }
+      );
 
-    const forceRemeasure = React.useCallback(() => {
-      setNeedsRemeasure(true);
-    }, []);
+      const forceRemeasure = React.useCallback(() => {
+        setNeedsRemeasure(true);
+      }, []);
 
-    const contextValue = {
-      handleProps: bindResizeHandle(),
-      isResizingSpringValue: resizing,
-      disableResize: !!disabled,
-      remeasure: forceRemeasure,
-      size,
-    };
+      const contextValue = {
+        handleProps: bindResizeHandle(),
+        isResizingSpringValue: resizing,
+        disableResize: !!disabled,
+        remeasure: forceRemeasure,
+        size,
+      };
 
-    return (
-      <ResizeContainerContext.Provider value={contextValue}>
-        <animated.div
-          className={classes.root}
-          data-resizable-container
-          style={{
-            width,
-            height,
-            pointerEvents: resizing.to((v) => (v ? 'none' : undefined)) as any,
-          }}
-        >
-          <div
-            // Until the content has been measured (or re-measured), we render it in an absolute
-            // positioned overflowing frame to try to estimate its innate size, which we will
-            // use as the new explicit size of the draggable once measuring is complete
-            className={clsx({
-              [classes.contentSizer]: !needsRemeasure,
-              [classes.unmeasuredContentSizer]: needsRemeasure,
-            })}
-            // while we are measuring, because of word-wrapping and other css overflow rules,
-            // we want to enforce at least the minimum sizes - otherwise text wraps and creates
-            // a taller measurement than we would want
-            style={{ minWidth, minHeight, maxWidth, maxHeight }}
-            ref={contentRef}
-            data-content-sizer
+      React.useImperativeHandle(ref, () => ({
+        remeasure: forceRemeasure,
+      }));
+
+      return (
+        <ResizeContainerContext.Provider value={contextValue}>
+          <animated.div
+            className={classes.root}
+            data-resizable-container
+            style={{
+              width,
+              height,
+              pointerEvents: resizing.to((v) => (v ? 'none' : undefined)) as any,
+            }}
           >
-            {children}
-          </div>
-        </animated.div>
-      </ResizeContainerContext.Provider>
-    );
-  }
+            <div
+              // Until the content has been measured (or re-measured), we render it in an absolute
+              // positioned overflowing frame to try to estimate its innate size, which we will
+              // use as the new explicit size of the draggable once measuring is complete
+              className={clsx({
+                [classes.contentSizer]: !needsRemeasure,
+                [classes.unmeasuredContentSizer]: needsRemeasure,
+              })}
+              // while we are measuring, because of word-wrapping and other css overflow rules,
+              // we want to enforce at least the minimum sizes - otherwise text wraps and creates
+              // a taller measurement than we would want
+              style={{ minWidth, minHeight, maxWidth, maxHeight }}
+              ref={contentRef}
+              data-content-sizer
+            >
+              {children}
+            </div>
+          </animated.div>
+        </ResizeContainerContext.Provider>
+      );
+    }
+  )
 );

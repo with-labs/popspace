@@ -10,6 +10,7 @@ import { StickyNoteWidgetState } from '../../../../roomState/types/widgets';
 export interface IEditStickyNoteWidgetFormProps {
   onSave: (data: StickyNoteWidgetState) => any;
   initialValues: StickyNoteWidgetState;
+  editing: boolean;
 }
 
 const EMPTY_VALUES: StickyNoteWidgetState = {
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> = ({
   initialValues = EMPTY_VALUES,
   onSave,
+  editing,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -54,7 +56,9 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
           disableErrorState
         />
         <Box mt={1}>
-          <FormikSubmitButton>{t('widgets.stickyNote.addBtn')}</FormikSubmitButton>
+          <FormikSubmitButton>
+            {editing ? t('widgets.stickyNote.saveBtn') : t('widgets.stickyNote.addBtn')}
+          </FormikSubmitButton>
         </Box>
         <Box mt={1} textAlign="center">
           <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>

@@ -3,18 +3,19 @@ import * as React from 'react';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
-import { AddStickyNoteButton } from './AddStickyNoteButton';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { WidgetContent } from '../WidgetContent';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetType } from '../../../../roomState/types/widgets';
+import { StickyNoteWidgetState, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
+import { StickyNoteMenu } from './StickyNoteMenu';
+import { ResizeContainerImperativeApi, useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -49,34 +50,84 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  const resizeContainerRef = React.useRef<ResizeContainerImperativeApi>(null);
+
   const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
 
   const { user } = useCurrentUserProfile();
   const localUserId = user?.id;
 
-  const saveWidget = useSaveWidget(state.widgetId);
+  const isOwnedByLocalUser = state.ownerId === localUserId;
+
+  const [editing, setEditing] = React.useState(false);
+
+  const doSave = useSaveWidget(state.widgetId);
+
+  const saveWidget = (data: StickyNoteWidgetState) => {
+    doSave(data);
+    setEditing(false);
+  };
+
+  const startEditing = () => {
+    setEditing(true);
+    resizeContainerRef.current?.remeasure();
+  };
+
+  return (
+    <WidgetFrame color="mandarin">
+      <WidgetTitlebar
+        title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}
+        disableRemove
+      >
+        <StickyNoteMenu onEdit={isOwnedByLocalUser ? startEditing : undefined} />
+      </WidgetTitlebar>
+      <WidgetResizeContainer
+        ref={resizeContainerRef}
+        mode="free"
+        minWidth={250}
+        minHeight={80}
+        maxWidth={600}
+        maxHeight={800}
+        className={classes.content}
+      >
+        <StickyNoteContent onSave={saveWidget} editing={editing} setEditing={setEditing} />
+        <WidgetResizeHandle />
+      </WidgetResizeContainer>
+    </WidgetFrame>
+  );
+};
+
+const StickyNoteContent: React.FC<{
+  onSave: (data: StickyNoteWidgetState) => void;
+  editing: boolean;
+  setEditing: (val: boolean) => void;
+}> = ({ onSave, editing, setEditing }) => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
+
+  const { user } = useCurrentUserProfile();
+  const localUserId = user?.id;
 
   const isOwnedByLocalUser = state.ownerId === localUserId;
 
-  if (!state.widgetState.text && isOwnedByLocalUser) {
+  const { remeasure } = useResizeContext();
+  const saveWidget = (data: StickyNoteWidgetState) => {
+    onSave(data);
+    remeasure();
+  };
+
+  if ((editing || !state.widgetState.text) && isOwnedByLocalUser) {
     return (
-      <StickyNoteFrame
-        title={t('widgets.stickyNote.addWidgetTitle')}
-        widgetId={state.widgetId}
-        contentClassName={classes.content}
-      >
-        <EditStickyNoteWidgetForm initialValues={state.widgetState} onSave={saveWidget} />
-      </StickyNoteFrame>
+      <WidgetContent>
+        <EditStickyNoteWidgetForm initialValues={state.widgetState} onSave={saveWidget} editing={editing} />
+      </WidgetContent>
     );
   }
 
   return (
-    <StickyNoteFrame
-      title={t('widgets.stickyNote.publishedTitle')}
-      widgetId={state.widgetId}
-      contentClassName={classes.content}
-      disableInitialSizing={!isOwnedByLocalUser}
-    >
+    <WidgetContent enableTextSelection>
       <WidgetScrollPane className={classes.scrollContainer}>
         <Typography paragraph variant="body1" component="div" className={classes.text}>
           {state.widgetState.text ? (
@@ -89,39 +140,6 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
           )}
         </Typography>
       </WidgetScrollPane>
-      <Typography variant="caption" className={classes.author}>
-        <Trans i18nKey="widgets.stickyNote.addedBy">
-          Added by <WidgetAuthor />
-        </Trans>
-      </Typography>
-    </StickyNoteFrame>
+    </WidgetContent>
   );
 };
-
-const StickyNoteFrame: React.FC<{
-  title: string;
-  widgetId: string;
-  disablePadding?: boolean;
-  contentClassName?: string;
-  disableInitialSizing?: boolean;
-}> = ({ children, title, widgetId, disablePadding, contentClassName, disableInitialSizing }) => (
-  <WidgetFrame color="mandarin">
-    <WidgetTitlebar title={title}>
-      <AddStickyNoteButton parentId={widgetId} />
-    </WidgetTitlebar>
-    <WidgetResizeContainer
-      mode="free"
-      minWidth={250}
-      minHeight={80}
-      maxWidth={600}
-      maxHeight={800}
-      className={contentClassName}
-      disableInitialSizing={disableInitialSizing}
-    >
-      <WidgetContent disablePadding={disablePadding} enableTextSelection>
-        {children}
-      </WidgetContent>
-      <WidgetResizeHandle />
-    </WidgetResizeContainer>
-  </WidgetFrame>
-);

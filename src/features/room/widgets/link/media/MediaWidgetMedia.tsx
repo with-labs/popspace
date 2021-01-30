@@ -80,7 +80,6 @@ export const MediaLinkMedia = React.forwardRef<
 
   const [mediaRef, mediaControlsProps] = useBindMediaControls(mediaState, onMediaStateChanged, {
     allowFullscreen: !!mediaContentType?.startsWith('video'),
-    allowRepeat: true,
   });
 
   const finalRef = useMergedRef(mediaRef, ref as any);

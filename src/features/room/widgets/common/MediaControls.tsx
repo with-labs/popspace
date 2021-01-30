@@ -5,7 +5,6 @@ import { PauseIcon } from '../../../../components/icons/PauseIcon';
 import { PlayIcon } from '../../../../components/icons/PlayIcon';
 import { WidgetMediaState } from '../../../../roomState/types/widgets';
 import { Fullscreen } from '@material-ui/icons';
-import { LoopIcon } from '../../../../components/icons/LoopIcon';
 
 export enum PlayState {
   Playing,
@@ -21,8 +20,6 @@ export interface IMediaControlsProps {
   className?: string;
   duration: number;
   onFullscreen?: () => void;
-  repeat?: boolean;
-  onRepeatChanged?: (newValue: boolean) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -55,8 +52,6 @@ export const MediaControls: React.FC<IMediaControlsProps> = ({
   className,
   duration,
   onFullscreen,
-  repeat,
-  onRepeatChanged,
 }) => {
   const classes = useStyles();
 
@@ -120,16 +115,6 @@ export const MediaControls: React.FC<IMediaControlsProps> = ({
         max={duration}
       />
       <TimeDisplay value={timestamp} className={classes.timeDisplay} />
-      {onRepeatChanged && (
-        <IconButton
-          onClick={() => {
-            onRepeatChanged(!repeat);
-          }}
-          style={{ opacity: repeat ? 1 : 0.5 }}
-        >
-          <LoopIcon />
-        </IconButton>
-      )}
       {onFullscreen && (
         <IconButton onClick={onFullscreen}>
           <Fullscreen />
@@ -172,13 +157,6 @@ function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: strin
   return timestamp;
 }
 
-const defaultMediaState = {
-  isPlaying: false,
-  timestamp: 0,
-  playStartedTimestampUtc: null,
-  isRepeatOn: false,
-};
-
 /**
  * A hook for binding a basic HTML media element (<video /> or <audio />) to MediaControls.
  * Pass the provided ref to the media element, and spread the props into the MediaControls.
@@ -186,25 +164,15 @@ const defaultMediaState = {
 export function useBindMediaControls(
   mediaState: WidgetMediaState | undefined,
   onMediaStateChanged: (mediaState: WidgetMediaState) => void,
-  { allowFullscreen, allowRepeat }: { allowFullscreen: boolean; allowRepeat: boolean } = {
-    allowFullscreen: false,
-    allowRepeat: false,
-  }
+  { allowFullscreen }: { allowFullscreen: boolean } = { allowFullscreen: false }
 ) {
   // this hook can be called without a current mediaState - we sub in defaults. This
   // seamlessly adds a mediaState when media playback begins
-  const defaultedMediaState = mediaState || defaultMediaState;
-  const { isPlaying, timestamp = 0, playStartedTimestampUtc, isRepeatOn = false } = defaultedMediaState;
-
-  const saveState = React.useCallback(
-    (state: Partial<WidgetMediaState>) => {
-      onMediaStateChanged({
-        ...defaultedMediaState,
-        ...state,
-      });
-    },
-    [onMediaStateChanged, defaultedMediaState]
-  );
+  const { isPlaying, timestamp = 0, playStartedTimestampUtc } = mediaState || {
+    isPlaying: false,
+    timestamp: 0,
+    playStartedTimestampUtc: null,
+  };
 
   const mediaRef = React.useRef<HTMLVideoElement | HTMLAudioElement>();
 
@@ -224,7 +192,7 @@ export function useBindMediaControls(
 
       // only send to server when scrubber is released
       if (!stillSeeking) {
-        saveState({
+        onMediaStateChanged({
           isPlaying,
           timestamp: ts,
           // if not playing, we don't set this timestamp - it will be set when a user
@@ -233,27 +201,18 @@ export function useBindMediaControls(
         });
       }
     },
-    [isPlaying, saveState]
+    [isPlaying, onMediaStateChanged]
   );
 
   const onPlayStateChanged = React.useCallback(
     (playState: PlayState, ts: number) => {
-      saveState({
+      onMediaStateChanged({
         isPlaying: playState === PlayState.Playing,
         playStartedTimestampUtc: playState === PlayState.Playing ? new Date().toUTCString() : null,
         timestamp: ts,
       });
     },
-    [saveState]
-  );
-
-  const onRepeatChanged = React.useCallback(
-    (newState: boolean) => {
-      saveState({
-        isRepeatOn: newState,
-      });
-    },
-    [saveState]
+    [onMediaStateChanged]
   );
 
   const onFullscreen = React.useCallback(() => {
@@ -312,12 +271,6 @@ export function useBindMediaControls(
     }
   }, [isPlaying]);
 
-  // when repeat state changes, update the media
-  React.useEffect(() => {
-    if (!mediaRef.current) return;
-    mediaRef.current.loop = isRepeatOn;
-  }, [isRepeatOn]);
-
   const controlsProps = {
     duration,
     timestamp: realtimeTimestamp,
@@ -325,8 +278,6 @@ export function useBindMediaControls(
     onSeek,
     onPlayStateChanged,
     onFullscreen: allowFullscreen ? onFullscreen : undefined,
-    repeat: isRepeatOn,
-    onRepeatChanged: allowRepeat ? onRepeatChanged : undefined,
   };
 
   return [mediaRef, controlsProps] as const;

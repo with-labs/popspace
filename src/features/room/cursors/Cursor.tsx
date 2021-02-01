@@ -14,7 +14,7 @@ export interface ICursorProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'relative',
+    position: 'absolute',
     overflow: 'visible',
   },
   nameWrapper: {

@@ -156,12 +156,14 @@
         "quickActionTitle": "Add a Link",
         "openInNewTab": "Open in new tab",
         "uploading": "Uploading",
+        "uploadCancel": "Cancel",
         "uploadedBy": "Uploaded by ",
         "expandInline": "Expand inline",
         "collapse": "Collapse",
         "quickActionAddEmbed": "Add embed",
         "embedTitle": "Embed",
-        "quickActionAddFile": "Upload file"
+        "quickActionAddFile": "Upload file",
+        "confirmCloseTabDuringUpload": "A file upload is in progress and may not complete. Are you sure you want to leave?"
       },
       "whiteboard": {
         "name": "Whiteboard",

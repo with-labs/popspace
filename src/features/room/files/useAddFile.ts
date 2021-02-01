@@ -16,6 +16,14 @@ export function useAddFile() {
 
   const createWidget = useCallback(
     async (file: File, position?: Vector2) => {
+      // prevent closing the tab while uploading unless the user confirms.
+      function confirmClose(e: Event) {
+        e.preventDefault();
+        e.returnValue = true;
+        return t('widgets.link.confirmCloseTabDuringUpload');
+      }
+      window.addEventListener('beforeunload', confirmClose, true);
+
       // get our signed upload url to send the file directly to S3
       const { success, uploadUrl, downloadUrl } = await api.getRoomFileUploadUrl(file.name, file.type);
 
@@ -64,6 +72,8 @@ export function useAddFile() {
             uploadProgress: 100,
           },
         });
+
+        window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
     [addWidget, enqueueSnackbar, t, updateWidget]

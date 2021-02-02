@@ -1,5 +1,3 @@
-const RoomDynamo = require("./room_data/room_dynamo")
-
 const DEFAULT_PARTICIPANT_STATE = {
   position: {
     x: 0,
@@ -9,62 +7,43 @@ const DEFAULT_PARTICIPANT_STATE = {
 
 class RoomData {
   constructor() {
-    this.dynamo = new RoomDynamo()
   }
 
   async init() {
-    await this.dynamo.init()
   }
 
+  /* Perhaps this can go into shared */
   async getRoomData(roomId) {
+    /**
+      TODO: probably make a RoomData model in shared
+      that captures this format and has helpers like
+      being constructed from roomId
+    */
     const room = {}
-    const widgetsInRoom = await this.getWidgetsInRoom(roomId)
+    const widgetsInRoom = await shared.db.room.widgets.getWidgetsInRoom(roomId)
     room.widgets = widgetsInRoom.map((w) => (w.serialize()))
     room.id = roomId
-    room.state = await this.dynamo.getRoomState(roomId)
+    room.state = await shared.db.dynamo.room.getRoomState(roomId)
     return room
   }
 
-  async getWidgetsInRoom(roomId) {
-    roomId = parseInt(roomId)
-    const widgets = await shared.db.pg.massive.query(`
-      SELECT
-        widgets.id AS id,
-        widgets._type as _type,
-        widgets.owner_id as owner_id,
-        users.display_name as owner_display_name
-      FROM
-        widgets
-          JOIN room_widgets ON widgets.id = room_widgets.widget_id
-          JOIN users        ON widgets.owner_id = users.id
-      WHERE
-        room_widgets.room_id = $1
-        AND
-        widgets.deleted_at IS NULL
-        AND
-        widgets.archived_at IS NULL
-    `, [roomId])
-    return await this.dynamo.getRoomWidgets(roomId, widgets)
-  }
-
-  async addWidgetInRoom(roomWidget) {
-    return Promise.all([
-      this.dynamo.setWidgetData(roomWidget.widgetId(), roomWidget.widgetState()),
-      this.dynamo.setRoomWidgetState(roomWidget.roomId(), roomWidget.widgetId(), roomWidget.roomState())
-    ])
-  }
-
+  /*
+    Participant-related maangement probably does not go into shared,
+    at least not yet.
+    But with most other things moving out, perhaps this should just go
+    straight into Particiants, and room_data sould be dropped.
+  */
   async addParticipantInRoom(roomId, userId, state=DEFAULT_PARTICIPANT_STATE) {
-    await this.dynamo.setRoomParticipantState(roomId, userId, state)
+    await shared.db.dynamo.room.setRoomParticipantState(roomId, userId, state)
   }
 
   async updateRoomParticipantState(roomId, participant, stateUpdate, currentState=null) {
     const userId = participant.user.id
     if(!currentState) {
-      currentState = await this.dynamo.getRoomParticipantState(roomId, userId)
+      currentState = await shared.db.dynamo.room.getRoomParticipantState(roomId, userId)
     }
     const newState = Object.assign(currentState || {}, stateUpdate)
-    await this.dynamo.setRoomParticipantState(roomId, userId, newState)
+    await shared.db.dynamo.room.setRoomParticipantState(roomId, userId, newState)
     return newState
   }
 
@@ -77,7 +56,7 @@ class RoomData {
         UPDATE users SET display_name = $1 WHERE id = $2
       `, [stateUpdate.display_name, userId])
     }
-    await this.dynamo.setParticipantState(userId, newState)
+    await shared.db.dynamo.room.setParticipantState(userId, newState)
     return newState
   }
 
@@ -89,45 +68,8 @@ class RoomData {
       If the user or room is deleted though there's no reason to keep the data entry around.
       Perhaps the best way to handle that is just with a background sweep job.
     */
-    return this.dynamo.deleteParticipant(roomId, participant.user.id)
+    return shared.db.dynamo.room.deleteParticipant(roomId, participant.user.id)
   }
-
-  async softDeleteWidget(widgetId) {
-    widgetId = parseInt(widgetId)
-    return shared.db.pg.massive.query(`
-      UPDATE widgets SET deleted_at = now() WHERE id = $1
-    `, widgetId)
-  }
-
-  async eraseWidget(widgetId) {
-    widgetId = parseInt(widgetId)
-    const roomIdEntries = await shared.db.pg.massive.query(`
-      SELECT room_id FROM room_widgets WHERE widget_id = $1
-    `, [widgetId])
-    const roomIds = roomIdEntries.map((r) => (r.room_id))
-    await shared.db.pg.massive.query(`
-      DELETE FROM widgets WHERE id = $1
-    `, [widgetId])
-    await shared.db.pg.massive.query(`
-      DELETE FROM room_widgets WHERE widget_id = $1
-    `, [widgetId])
-    return this.dynamo.deleteWidget(roomIds, widgetId)
-  }
-
-  async updateWidgetRoomState(roomId, widgetId, stateUpdate, widgetRoomState=null) {
-    if(!widgetRoomState) {
-      widgetRoomState = await this.dynamo.getRoomWidgetState(roomId, widgetId)
-    }
-    Object.assign(widgetRoomState, stateUpdate)
-    return await this.dynamo.setRoomWidgetState(roomId, widgetId, widgetRoomState)
-  }
-
-  async updateWidgetState(widgetId, stateUpdate) {
-    const widgetState = await this.dynamo.getWidgetState(widgetId)
-    Object.assign(widgetState, stateUpdate)
-    return await this.dynamo.setWidgetData(widgetId, widgetState)
-  }
-
 }
 
 module.exports = RoomData

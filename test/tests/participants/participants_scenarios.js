@@ -15,9 +15,15 @@ module.exports = {
     let remainingNotifications = participantCountAtStart - 1
     return new Promise(async (resolve, reject) => {
       loggedInUsers.forEach((u) => {
-        u.client.on("event.participantLeft", () => {
+        u.client.on("event.participantLeft", (event) => {
           remainingNotifications--
-          if(remainingNotifications <= 0) {
+          if(remainingNotifications == 0) {
+            /*
+              We'll actually get some final notifications as mercury
+              is shutting down - since we try to gracefuly disconect clients,
+              which sends other clients participantLeft notifications.
+              So compare == instead of <=
+            */
             resolve({
               participantCountAtStart,
               countsAtEnd: loggedInUsers.filter((lu) => (lu != loggedInUsers[0])).map((lu) => (lu.client.authenticatedPeers().length))

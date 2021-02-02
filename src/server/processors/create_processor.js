@@ -52,8 +52,8 @@ class CreateProcessor {
       return widget
     })
 
-    const roomWidget = new lib.dto.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetOwner.display_name)
-    await lib.roomData.addWidgetInRoom(roomWidget)
+    const roomWidget = new shared.models.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetOwner.display_name)
+    await shared.db.room.widgets.addWidgetInRoom(roomWidget)
 
     sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")
     sender.broadcastPeerEvent("widgetCreated", roomWidget.serialize())

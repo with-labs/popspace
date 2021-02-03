@@ -85,6 +85,34 @@ export const WallpaperMetadata = {
         name: 'Farrah Yoo',
       },
     },
+    {
+      file: 'alexis_taylor_1612300284',
+      title: 'Flow',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300311',
+      title: 'Funfetti',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300535',
+      title: 'Negative Space',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300569',
+      title: 'Simple Cream',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
   ],
   calendars: [
     {
@@ -120,6 +148,13 @@ export const WallpaperMetadata = {
       title: 'Desert Night View',
       artist: {
         name: 'Farrah Yoo',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300204',
+      title: 'Clipboard',
+      artist: {
+        name: 'Alexis Taylor',
       },
     },
   ],
@@ -160,6 +195,13 @@ export const WallpaperMetadata = {
       },
     },
     {
+      file: 'alexis_taylor_1612300263',
+      title: 'Empathy Map',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
       file: 'farrah_yoo_1609883922',
       title: 'Boxes — Night Leaves',
       artist: {
@@ -171,6 +213,136 @@ export const WallpaperMetadata = {
       title: 'Venn Diagram — Overlapping',
       artist: {
         name: 'Farrah Yoo',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300699',
+      title: 'Word Bubble',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+  ],
+  flat: [
+    {
+      file: 'alexis_taylor_1612300330',
+      title: 'Grid',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300509',
+      title: 'Lines',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300601',
+      title: 'Simple Latte',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300661',
+      title: 'Simple',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300772',
+      title: 'Dots',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612301068',
+      title: 'Wigglywobbly',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294430',
+      title: 'Ink',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294606',
+      title: 'Slate',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294655',
+      title: 'Frame',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294690',
+      title: 'Mandarin Surface',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294716',
+      title: 'Oregano Surface',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294745',
+      title: 'Blueberry Surface',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294771',
+      title: 'Lavender Surface',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294856',
+      title: 'Slate Surface',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+    {
+      file: 'laurent-baumann-1612294922',
+      title: 'Blueberry',
+      artist: {
+        name: 'Laurent Baumann',
+      },
+    },
+  ],
+  places: [
+    {
+      file: 'alexis_taylor_1612301052',
+      title: 'Tree House',
+      artist: {
+        name: 'Alexis Taylor',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612300998',
+      title: 'Platformer',
+      artist: {
+        name: 'Alexis Taylor',
       },
     },
   ],
@@ -259,6 +431,13 @@ export const WallpaperMetadata = {
       title: 'Zesty Lemons',
       artist: {
         name: 'Farrah Yoo',
+      },
+    },
+    {
+      file: 'alexis_taylor_1612301013',
+      title: 'Red Fruits',
+      artist: {
+        name: 'Alexis Taylor',
       },
     },
   ],

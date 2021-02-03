@@ -127,9 +127,10 @@ export function useSyncYoutube({
 
   const handleSpatialVolumeChange = React.useCallback(
     (newVolume: number) => {
+      if (isMuted) return;
       ytPlayerRef.current?.setVolume(newVolume * 100);
     },
-    [ytPlayerRef]
+    [ytPlayerRef, isMuted]
   );
 
   // get the current spacial volume state of the player

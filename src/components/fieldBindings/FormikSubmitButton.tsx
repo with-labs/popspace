@@ -50,7 +50,7 @@ export const FormikSubmitButton: React.FC<FormikSubmitButtonProps> = ({
   if (context.isSubmitting) {
     return (
       <Button type="submit" disabled className={classes.loading} {...props}>
-        <CircularProgress size={24} className={classes.spinner} />
+        <CircularProgress size={22} className={classes.spinner} />
       </Button>
     );
   }

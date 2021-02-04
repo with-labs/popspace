@@ -37,5 +37,10 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     )
   }
   const result = await shared.db.rooms.setDisplayName(room.id, params.newDisplayName)
-  return await lib.util.http.succeed(callback, { success: true, urlName: result.name })
+  return await lib.util.http.succeed(callback, {
+    success: true,
+    route: result.routeEntry.name,
+    url_id: result.urlIdEntry.name,
+    display_name: result.assignedDisplayName
+  })
 })

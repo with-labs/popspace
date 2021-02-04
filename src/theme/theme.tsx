@@ -235,6 +235,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         lineHeight: 22 / 16,
         fontWeight: typography.fontWeightMedium,
       },
+      h4: {
+        fontSize: typography.pxToRem(16),
+        lineHeight: 13 / 13,
+        fontWeight: typography.fontWeightMedium,
+      },
       button: {
         fontSize: typography.pxToRem(16),
         fontWeight: typography.fontWeightMedium,

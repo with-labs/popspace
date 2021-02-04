@@ -17,7 +17,7 @@ interface IDialogModalProps {
   message: DialogMessage | null;
 }
 
-export const DialogModal: React.FC<IDialogModalProps> = ({ message, onClose }) => {
+export const DialogModal: React.FC<IDialogModalProps> = ({ message, onClose, children }) => {
   const { t } = useTranslation();
 
   // open when an error is supplied
@@ -32,7 +32,10 @@ export const DialogModal: React.FC<IDialogModalProps> = ({ message, onClose }) =
   return (
     <Modal isOpen={internalOpen} onClose={handleClose} maxWidth="xs">
       {!!message && <ModalTitleBar title={message.title} />}
-      <ModalContentWrapper>{!!message && <Typography variant="body1">{message.body}</Typography>}</ModalContentWrapper>
+      <ModalContentWrapper>
+        {!children && !!message && message.body && <Typography variant="body1">{message.body}</Typography>}
+        {children}
+      </ModalContentWrapper>
       <ModalActions>
         <Button onClick={handleClose} color="primary">
           {t('common.confirm')}

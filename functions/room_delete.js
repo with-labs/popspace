@@ -13,6 +13,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
       { errorCode: shared.error.code.UNAUTHORIZED_USER }
     )
   }
+  const params = context.params
   const room = await shared.db.rooms.roomById(params.roomId)
   if(!room) {
     return await util.http.fail(

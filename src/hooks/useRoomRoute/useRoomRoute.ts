@@ -1,9 +1,9 @@
 import useQueryParams from '../useQueryParams/useQueryParams';
 import { useParams } from 'react-router-dom';
 
-export function useRoomName() {
+export function useRoomRoute() {
   const query = useQueryParams();
-  const params = useParams<{ roomName: string }>();
+  const params = useParams<{ roomRoute: string }>();
 
-  return params['roomName'] || query.get('r');
+  return params['roomRoute'] || query.get('r');
 }

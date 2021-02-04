@@ -14,7 +14,6 @@ import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
 import { Hidden } from '@material-ui/core';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
-import { useRoomName } from '../../hooks/useRoomName/useRoomName';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
 import { MembershipManagementModal } from '../roomControls/membership/MemberMangementModal';
@@ -44,7 +43,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
 
-  const roomName = useRoomName();
+  const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
 
   return (
     <RoomViewport

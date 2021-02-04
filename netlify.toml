@@ -15,9 +15,9 @@
 [context.deploy-preview.environment]
   REACT_APP_ANALYTICS_ENV = "staging"
   TWILIO_API_KEYS_ENV = "staging"
-  NODE_ENV="preview"
+  NODE_ENV="staging"
 
 [context.branch-deploy.environment]
   REACT_APP_ANALYTICS_ENV = "staging"
   TWILIO_API_KEYS_ENV = "staging"
-  NODE_ENV="branch-deploy"
+  NODE_ENV="staging"

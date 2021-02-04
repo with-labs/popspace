@@ -1,5 +1,6 @@
 import { ErrorCodes } from '../constants/ErrorCodes';
 import { getSessionToken } from './sessionToken';
+import { RoomInfo } from '../types/api';
 
 export type BaseResponse = {
   success: boolean;
@@ -19,13 +20,6 @@ export type ApiUser = {
   id: string;
   last_name: string;
   newsletter_opt_in: boolean;
-};
-
-export type ApiRoom = {
-  id: string;
-  name: string;
-  owner_id: string;
-  priority_level: number;
 };
 
 export type ApiOpenGraphResult = {
@@ -64,27 +58,23 @@ class Api {
         profile?: {
           user: ApiUser;
           rooms: {
-            owned: ApiRoom[];
-            member: ApiRoom[];
+            owned: RoomInfo[];
+            member: RoomInfo[];
           };
         };
       }
     >('/user_profile', {});
   }
 
-  async createRoom() {
-    return await this.post('/create_room', {});
-  }
-
   async roomCreate(displayName: string) {
     return await this.post('/room_create', { displayName });
   }
 
-  async roomRename(roomId: number, newDisplayName: string) {
+  async roomRename(roomId: string, newDisplayName: string) {
     return await this.post('/room_rename', { roomId, newDisplayName });
   }
 
-  async roomDelete(roomId: number) {
+  async roomDelete(roomId: string) {
     return await this.post('/room_delete', { roomId });
   }
 

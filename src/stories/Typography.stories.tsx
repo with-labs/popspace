@@ -28,6 +28,12 @@ H3.args = {
   children: 'Kerning & Ligatures 3',
 };
 
+export const H4 = Template.bind({});
+H4.args = {
+  variant: 'h4',
+  children: 'Kerning & Ligatures 4',
+};
+
 export const Body1 = Template.bind({});
 Body1.args = {
   variant: 'body1',

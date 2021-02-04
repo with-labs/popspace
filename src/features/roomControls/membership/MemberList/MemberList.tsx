@@ -50,7 +50,8 @@ export type UserListMemberInfo = {
 interface IMemberListProps {
   members: any[];
   onMemberRemove: (member: any) => void;
-  roomName: string;
+  roomRoute: string;
+  className?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomName }) => {
+export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomRoute, className }) => {
   const classes = useStyles();
   const [error, setError] = useState<DialogMessage | null>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -98,7 +99,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   const { t } = useTranslation();
 
   const [confirmIsOpen, setConfirmIsOpen] = useState(false);
-  const isRoomOwner = useIsRoomOwner();
+  const isRoomOwner = useIsRoomOwner(roomRoute);
 
   const formatErrorMessage = (response: BaseResponse) => {
     return {
@@ -131,7 +132,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     try {
       setMenuAnchorEl(null);
       setIsBusy(true);
-      const result: BaseResponse = await Api.sendRoomInvite(roomName, selectedMember.email);
+      const result: BaseResponse = await Api.sendRoomInvite(roomRoute, selectedMember.email);
       if (result.success) {
         enqueueSnackbar(t('modals.inviteUserModal.resendInviteSuccess'), { variant: 'success' });
       } else {
@@ -154,7 +155,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     try {
       setMenuAnchorEl(null);
       setIsBusy(true);
-      const result: BaseResponse = await Api.cancelRoomInvite(roomName, selectedMember.email);
+      const result: BaseResponse = await Api.cancelRoomInvite(roomRoute, selectedMember.email);
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {
@@ -182,7 +183,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
     try {
       setConfirmIsOpen(false);
       setIsBusy(true);
-      const result: BaseResponse = await Api.removeRoomMember(roomName, selectedMember.email);
+      const result: BaseResponse = await Api.removeRoomMember(roomRoute, selectedMember.email);
       if (result.success) {
         onMemberRemove(selectedMember);
       } else {
@@ -243,7 +244,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
   };
 
   return (
-    <Box overflow="auto">
+    <Box overflow="auto" className={className}>
       <List className={classes.memberList}>
         {members.map((member, index) => {
           return (

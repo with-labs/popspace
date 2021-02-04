@@ -2,10 +2,11 @@ import { ErrorCodes } from '../constants/ErrorCodes';
 
 // data types from the backend
 export type RoomInfo = {
-  id: string;
-  name: string;
+  room_id: string;
   owner_id: string;
-  priority_level: number;
+  preview_image_url: string;
+  display_name: string;
+  route: string;
 };
 
 export type UserInfo = {

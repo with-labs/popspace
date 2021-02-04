@@ -458,10 +458,11 @@ function createRoomStore() {
             });
           },
           updateRoomState(payload: Partial<RoomDetailsStateShape>) {
-            internalApi.updateRoomState(payload);
+            const defaulted = { ...get().state, ...payload };
+            internalApi.updateRoomState(defaulted);
             sendMessage({
               kind: 'updateRoomState',
-              payload,
+              payload: defaulted,
             });
           },
           updateSelf(payload: Partial<ParticipantState>) {

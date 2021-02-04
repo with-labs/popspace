@@ -65,7 +65,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   }
 
   const existingRoomInvitation = await shared.db.room.invites.latestRoomInvitation(room.id, params.email)
-  if(existingRoomInvitation && !db.otp.isExpired(existingRoomInvitation)) {
+  if(existingRoomInvitation && !shared.lib.otp.isExpired(existingRoomInvitation)) {
     // This could be too strict, but should be ok to start
     // E.g. the email could have failed to deliver.
     // But to address those cases, we need to greatly improve our handling of emails,

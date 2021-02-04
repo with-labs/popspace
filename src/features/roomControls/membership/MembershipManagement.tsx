@@ -7,7 +7,7 @@ import { FormikTextField } from '../../../components/fieldBindings/FormikTextFie
 import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
 import { isEmailValid } from '../../../utils/CheckEmail';
 import Api, { ApiRoomMember, ApiError } from '../../../utils/api';
-import { useRoomName } from '../../../hooks/useRoomName/useRoomName';
+import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/sessionToken';
 import { DialogModal } from '../../../components/DialogModal/DialogModal';
@@ -25,10 +25,15 @@ const EMPTY_VALUES: MembershipFormData = {
   inviteeEmail: '',
 };
 
+// todo: update this to fix the roonName terminology,
+// we are really looking for the url route, not roomName,
+// confusing
 interface IMembershipManagementModalProps {
   autoFocusInvite?: boolean;
   className?: string;
   size?: 'small' | 'large';
+  roomRoute?: string;
+  memberListClasses?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -79,10 +84,11 @@ const MAX_INVITE_COUNT = 20;
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  ({ autoFocusInvite, className }, ref) => {
+  ({ autoFocusInvite, roomRoute, memberListClasses, className }, ref) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const roomName = useRoomName();
+    const currentRoomRoute = useRoomRoute();
+    const inviteRoomRoute = roomRoute || currentRoomRoute;
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
 
     const cache = useQueryCache();
@@ -90,7 +96,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       [
         ROOM_MEMBERS_QUERY,
         {
-          roomName,
+          roomName: inviteRoomRoute,
         },
       ],
       {
@@ -115,13 +121,16 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
 
     const onSubmitHandler = async (values: MembershipFormData, actions: FormikHelpers<MembershipFormData>) => {
       try {
-        if (sessionTokenExists(sessionToken) && roomName) {
-          const response = await Api.sendRoomInvite(roomName, values.inviteeEmail);
+        if (sessionTokenExists(sessionToken) && inviteRoomRoute) {
+          const response = await Api.sendRoomInvite(inviteRoomRoute, values.inviteeEmail);
           if (response.success) {
             // update query cache for members list query
-            cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName }], (cur) => ({
-              result: [...(cur?.result ?? []), response.newMember],
-            }));
+            cache.setQueryData<{ result: ApiRoomMember[] }>(
+              [ROOM_MEMBERS_QUERY, { roomName: inviteRoomRoute }],
+              (cur) => ({
+                result: [...(cur?.result ?? []), response.newMember],
+              })
+            );
           } else {
             // TODO: convert to try/catch when api module throws errors
             setDialogError(formatErrorMessage(new ApiError(response)));
@@ -137,7 +146,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
 
     const onMemberRemove = (member: any) => {
       // remove member from the query cache
-      cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName }], (cur) => ({
+      cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName: inviteRoomRoute }], (cur) => ({
         result: cur?.result ? cur.result.filter((m) => m !== member) : [],
       }));
     };
@@ -170,8 +179,13 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
             </Box>
           </Form>
         </Formik>
-        {members.length > 0 && roomName ? (
-          <MemberList members={members} onMemberRemove={onMemberRemove} roomName={roomName} />
+        {members.length > 0 && inviteRoomRoute ? (
+          <MemberList
+            className={memberListClasses}
+            members={members}
+            onMemberRemove={onMemberRemove}
+            roomRoute={inviteRoomRoute}
+          />
         ) : (
           <Box display="flex" justifyContent="center" alignItems="center" flexGrow={1} flexShrink={0} flexBasis="auto">
             {isLoading ? (

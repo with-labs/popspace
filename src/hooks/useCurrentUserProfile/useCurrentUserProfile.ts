@@ -1,9 +1,10 @@
 import { useQuery } from 'react-query';
-import { ApiUser, ApiRoom, ApiError } from '../../utils/api';
+import { ApiUser, ApiError } from '../../utils/api';
 import { useMemo } from 'react';
+import { RoomInfo } from '../../types/api';
 
 export function useCurrentUserProfile() {
-  const result = useQuery<{ profile?: { user: ApiUser; rooms: { member: ApiRoom[]; owned: ApiRoom[] } } }, ApiError>(
+  const result = useQuery<{ profile?: { user: ApiUser; rooms: { member: RoomInfo[]; owned: RoomInfo[] } } }, ApiError>(
     '/user_profile'
   );
 

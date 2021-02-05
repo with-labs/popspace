@@ -71,7 +71,7 @@ const emptyState: RoomStateShape = {
       width: 2400,
       height: 2400,
     },
-    displayName: 'Room',
+    displayName: '',
     zOrder: [],
   },
   widgetPositions: {},

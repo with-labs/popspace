@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
 import Api from '../../utils/api';
-import { Box, makeStyles, Typography, Button, CircularProgress } from '@material-ui/core';
+import { Box, makeStyles, Typography, Button } from '@material-ui/core';
 import { RouteNames } from '../../constants/RouteNames';
 
 import { RoomSummary } from './RoomSummary/RoomSummary';

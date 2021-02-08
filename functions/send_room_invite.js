@@ -14,7 +14,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   }
 
   const params = context.params
-  params.email = util.args.consolidateEmailString(params.email)
+  params.email = shared.lib.args.consolidateEmailString(params.email)
   const room = await shared.db.rooms.roomByName(params.roomName)
   if(!room) {
     return await lib.util.http.fail(

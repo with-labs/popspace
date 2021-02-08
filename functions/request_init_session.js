@@ -18,7 +18,7 @@ Log in flow
  * Send a magic link to the provided email which will initiate a session.
  */
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
-  const email = util.args.consolidateEmailString(context.params.email)
+  const email = shared.lib.args.consolidateEmailString(context.params.email)
   const user = await shared.db.accounts.userByEmail(email)
 
   if(!user) {

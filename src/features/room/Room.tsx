@@ -17,8 +17,9 @@ import { PageTitle } from '../../components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
 import { MembershipManagementModal } from '../roomControls/membership/MemberMangementModal';
-
 import { RequestPermissionModal } from '../roomControls/requestPermissionModal/RequestPermissionModal';
+import { PasteConfirmModal } from './pasting/PasteConfirmModal';
+import { useBindPaste } from './pasting/useBindPaste';
 
 interface IRoomProps {}
 
@@ -45,6 +46,8 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
 
   const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
 
+  useBindPaste();
+
   return (
     <RoomViewport
       uiControls={
@@ -67,6 +70,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
         <Person key={id} personId={id} />
       ))}
       <CursorLayer />
+      <PasteConfirmModal />
     </RoomViewport>
   );
 });

@@ -3,9 +3,10 @@ import { makeStyles, TextField, Paper, Box } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { QuickAction } from '../quickActions/QuickAction';
 import { useQuickAction } from '../quickActions/useQuickAction';
-import { QuickAction as QuickActionData } from '../quickActions/types';
+import { QuickAction as QuickActionData } from '../../../quickActions/types';
 import { QuickActionEmpty } from '../quickActions/QuickActionEmpty';
 import { useTranslation } from 'react-i18next';
+import { useQuickActionAutocomplete } from '../quickActions/useQuickActionAutocomplete';
 
 export interface IOmnibarProps {}
 
@@ -35,7 +36,7 @@ export const Omnibar: React.FC<IOmnibarProps> = (props) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { autocompleteProps } = useQuickAction();
+  const { autocompleteProps } = useQuickActionAutocomplete();
 
   return (
     <Autocomplete<QuickActionData>

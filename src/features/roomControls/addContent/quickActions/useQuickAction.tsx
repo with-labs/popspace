@@ -1,35 +1,24 @@
 import * as React from 'react';
 import { useAddAccessory } from './useAddAccessory';
-import { QuickAction, QuickActionKind } from './types';
-import { useQuickActionOptions } from './useQuickActionOptions';
+import { QuickAction, QuickActionKind } from '../../../quickActions/types';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { useAddFile } from '../../../room/files/useAddFile';
 import { browseForFile } from '../../../../utils/browseForFile';
 
+/**
+ * Processes a QuickAction object, applying the action
+ */
 export function useQuickAction() {
-  const [inputValue, setInputValue] = React.useState('');
-  const handleInputChange = React.useCallback((ev: any, value: string) => {
-    setInputValue(value);
-  }, []);
-
-  const options = useQuickActionOptions(inputValue);
-
   const addAccessory = useAddAccessory();
-
   const updateSelf = useRoomStore((room) => room.api.updateSelf);
-
   const addFile = useAddFile();
-
   const uploadFile = React.useCallback(async () => {
     const files = await browseForFile(true);
     files?.forEach((file) => addFile(file));
   }, [addFile]);
 
-  const handleSelection = React.useCallback(
-    (ev: any, value: QuickAction | null) => {
-      // reset input value
-      setInputValue('');
-
+  return React.useCallback(
+    (value: QuickAction | null) => {
       if (!value) return;
 
       // handle the action
@@ -55,21 +44,4 @@ export function useQuickAction() {
     },
     [addAccessory, updateSelf, uploadFile]
   );
-
-  return {
-    autocompleteProps: {
-      inputValue,
-      onInputChange: handleInputChange,
-      onChange: handleSelection,
-      options,
-      // this is a hack - Autocomplete will only show options whose label
-      // matches the inputValue, but all of our options are selected specifically
-      // so there is no need to do that test - TODO: override the filter function
-      // instead...
-      getOptionLabel: () => inputValue,
-      // the value is always null - we never actually "select"
-      // anything, we just use the options to do particular actions.
-      value: null,
-    },
-  };
 }

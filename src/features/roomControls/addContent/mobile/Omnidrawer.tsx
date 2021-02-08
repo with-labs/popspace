@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Fab, TextField, List, makeStyles, Box, MenuItem } from '@material-ui/core';
 import { PlusIcon } from '../../../../components/icons/PlusIcon';
 import { ResponsiveMenu } from '../../../../components/ResponsiveMenu/ResponsiveMenu';
-import { useQuickAction } from '../quickActions/useQuickAction';
 import { useAutocomplete } from '@material-ui/lab';
 import { QuickAction } from '../quickActions/QuickAction';
 import { QuickActionEmpty } from '../quickActions/QuickActionEmpty';
 import { useTranslation } from 'react-i18next';
+import { useQuickActionAutocomplete } from '../quickActions/useQuickActionAutocomplete';
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -53,7 +53,7 @@ export const Omnidrawer = () => {
     }
   }, [anchorEl]);
 
-  const { autocompleteProps } = useQuickAction();
+  const { autocompleteProps } = useQuickActionAutocomplete();
   // creating our own "destructured" autocomplete - the options will be visible
   // directly below the input at all times, no menu.
   const {

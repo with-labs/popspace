@@ -338,6 +338,11 @@
         "micToggle": "Toggle voice",
         "videoToggle": "Toggle video",
         "screenShareToggle": "Toggle screen share"
+      },
+      "paste": {
+        "modalTitle": "Paste content",
+        "modalDetails": "Are you sure you want to add this to the room?",
+        "confirm": "Paste"
       }
     },
     "modals": {

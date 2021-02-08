@@ -857,6 +857,18 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           padding: '0 32px 32px 32px',
           [breakpoints.down('sm')]: {
             padding: '0 16px 16px 16px',
+            flexDirection: 'column',
+            '& > button': {
+              width: '100%',
+            },
+          },
+        },
+        spacing: {
+          [breakpoints.down('sm')]: {
+            '& > :not(:first-child)': {
+              marginLeft: 'auto',
+              marginTop: spacing(0.5),
+            },
           },
         },
       },

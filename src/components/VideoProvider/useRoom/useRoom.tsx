@@ -9,12 +9,12 @@ export default function useRoom(onError: Callback, options?: ConnectOptions) {
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connect = useCallback(
-    async (token) => {
+    async (roomName: string) => {
       setIsConnecting(true);
       try {
         logger.debug(`Connecting to room`);
 
-        const connection = new ReconnectingTwilioRoom(token, { ...options, tracks: [] });
+        const connection = new ReconnectingTwilioRoom(roomName, { ...options, tracks: [] });
         connection.on('error', onError);
         connection.on('connected', setRoom);
         connection.on('disconnected', () => {

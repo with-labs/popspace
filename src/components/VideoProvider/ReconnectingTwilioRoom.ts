@@ -3,11 +3,23 @@ import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
 import { RoomEvent } from '../../constants/twilio';
 import { logger } from '../../utils/logger';
 import i18n from '../../i18n';
+import api from '../../utils/api';
+import { ErrorCodes } from '../../constants/ErrorCodes';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
 // if we encounter two errors within this timeframe, we will stop retrying
 const LAST_ERROR_TOO_RECENT_MS = 5000;
 
+export class JoinError extends Error {
+  constructor(message: string, public errorCode: ErrorCodes) {
+    super(message);
+  }
+}
+export class FatalError extends Error {
+  constructor(message: string, public errorCode: ErrorCodes) {
+    super(message);
+  }
+}
 export interface ReconnectingTwilioRoomEvents {
   error: (error: Error) => void;
   connecting: () => void;
@@ -29,14 +41,27 @@ export class ReconnectingTwilioRoom extends EventEmitter {
   room: Room | null = null;
   private lastDisconnectErrorTime: Date | null = null;
 
-  constructor(private token: string, private options: ConnectOptions) {
+  constructor(private roomName: string, private options: ConnectOptions) {
     super();
     window.addEventListener('beforeunload', this.handleUnload);
   }
 
   connect = async () => {
     this.emit('connecting');
-    this.room = await Video.connect(this.token, this.options);
+    const tokenResult = await api.loggedInEnterRoom(this.roomName);
+    if (!tokenResult.success || !tokenResult.token) {
+      if (tokenResult.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
+        throw new JoinError(i18n.t('error.messages.roomAccess'), tokenResult.errorCode);
+      } else if (tokenResult.errorCode === ErrorCodes.UNKNOWN_ROOM) {
+        throw new FatalError(i18n.t('error.messages.unknownRoom'), tokenResult.errorCode);
+      } else if (tokenResult.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
+        throw new JoinError(i18n.t('error.messages.unauthorized'), tokenResult.errorCode);
+      } else {
+        logger.error(`Unhandled exception during room join`, tokenResult.errorCode, tokenResult.message);
+        throw new JoinError(i18n.t('error.messages.joinRoomUnknownFailure'), ErrorCodes.JOIN_ROOM_UNKNOWN);
+      }
+    }
+    this.room = await Video.connect(tokenResult.token, this.options);
     this.emit('connected', this.room);
     this.room.setMaxListeners(40);
     this.room.on(RoomEvent.Disconnected, this.handleDisconnect);

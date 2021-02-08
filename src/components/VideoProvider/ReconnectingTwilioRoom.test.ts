@@ -1,9 +1,15 @@
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
 jest.mock('twilio-video');
+jest.mock('../../utils/api', () => ({
+  loggedInEnterRoom: jest.fn().mockResolvedValue({
+    success: true,
+    token: 'token',
+  }),
+}));
 
 describe('ReconnectingTwilioRoom wrapper', () => {
   it('connects to Twilio, and reconnects on disconnect error', async () => {
-    const conn = new ReconnectingTwilioRoom('token', {});
+    const conn = new ReconnectingTwilioRoom('roomName', {});
 
     const onConnecting = jest.fn();
     conn.on('connecting', onConnecting);
@@ -32,7 +38,7 @@ describe('ReconnectingTwilioRoom wrapper', () => {
   });
 
   it("doesn't reconnect if there was no error during disconnect", async () => {
-    const conn = new ReconnectingTwilioRoom('token', {});
+    const conn = new ReconnectingTwilioRoom('roomName', {});
 
     const onConnecting = jest.fn();
     conn.on('connecting', onConnecting);
@@ -58,7 +64,7 @@ describe('ReconnectingTwilioRoom wrapper', () => {
   });
 
   it('disconnects on window unload', async () => {
-    const conn = new ReconnectingTwilioRoom('token', {});
+    const conn = new ReconnectingTwilioRoom('roomName', {});
     await conn.connect();
     window.dispatchEvent(new Event('beforeunload'));
     expect(conn.room?.disconnect).toHaveBeenCalled();

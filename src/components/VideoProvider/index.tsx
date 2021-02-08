@@ -7,20 +7,7 @@ import { useLocalTrackPublications } from './useLocalTrackPublications/useLocalT
 import { useAllParticipants } from './useAllParticipants/useAllParticipants';
 import { logger } from '../../utils/logger';
 import { noop } from 'lodash';
-import api from '../../utils/api';
-import { ErrorCodes } from '../../constants/ErrorCodes';
 import { useTranslation } from 'react-i18next';
-
-export class JoinError extends Error {
-  constructor(message: string, public errorCode: ErrorCodes) {
-    super(message);
-  }
-}
-export class FatalError extends Error {
-  constructor(message: string, public errorCode: ErrorCodes) {
-    super(message);
-  }
-}
 
 /*
  *  The hooks used by the VideoProvider component are different than the hooks found in the 'hooks/' directory. The hooks
@@ -66,25 +53,7 @@ export function VideoProvider({ options, children, onError = noop, roomName }: V
   useEffect(() => {
     (async function () {
       try {
-        const result = await api.loggedInEnterRoom(roomName);
-        if (!result.success || !result.token) {
-          if (result.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
-            // user is logged in but doesnt have room access
-            throw new JoinError(t('error.messages.noRoomAccess'), ErrorCodes.UNAUTHORIZED_ROOM_ACCESS);
-          } else if (result.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-            // trying to join a room that does not exist
-            throw new FatalError(t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
-          }
-          if (result.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
-            // user is not logged in
-            throw new JoinError(t('error.messages.unauthorized'), ErrorCodes.UNAUTHORIZED_USER);
-          } else {
-            logger.error(`Unhandled expection in useJoin`, result.errorCode, result.message);
-            throw new JoinError(t('error.messages.joinRoomUnknownFailure'), ErrorCodes.JOIN_ROOM_UNKNOWN);
-          }
-        }
-        const token = result.token;
-        await connect(token);
+        await connect(roomName);
       } catch (err) {
         onErrorCallback(err);
       }

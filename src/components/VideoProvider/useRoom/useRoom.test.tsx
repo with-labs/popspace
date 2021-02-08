@@ -2,6 +2,12 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import { mockRoom } from '../../../__mocks__/twilio-video';
 import useRoom from './useRoom';
 import Video from 'twilio-video';
+jest.mock('../../../utils/api', () => ({
+  loggedInEnterRoom: jest.fn().mockResolvedValue({
+    success: true,
+    token: 'token',
+  }),
+}));
 
 const mockVideoConnect = Video.connect as jest.Mock<any>;
 

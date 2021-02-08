@@ -1,8 +1,9 @@
 export type WithColorPalette = {
-  light?: string;
-  regular: string;
-  bold?: string;
   ink?: string;
+  bold?: string;
+  regular: string;
+  light?: string;
+  surface?: string;
 };
 
 const palette = {
@@ -13,28 +14,39 @@ const palette = {
     ink: '#949CBA',
   },
   mandarin: {
-    light: '#FFE5A1',
-    regular: '#FFCB45',
-    bold: '#F3A110',
-    ink: '#7C4F00',
+    ink: '#624104',
+    bold: '#EFA726',
+    regular: '#FED07F',
+    light: '#FFF0CB',
+    surface: '#FFF8E7',
   },
   lavender: {
-    light: '#EEECFF',
-    regular: '#D9D6FF',
-    bold: '#9F97FF',
-    ink: '#544BCB',
+    ink: '#6B66B1',
+    bold: '#938ED8',
+    regular: '#CBC7EB',
+    light: '#E6E4F9',
+    surface: '#F1EFFE',
   },
   cherry: {
-    light: '#FFD5D1',
-    regular: '#FFB5AF',
-    bold: '#EE6659',
-    ink: '#9C2F08',
+    ink: '#A36962',
+    bold: '#EB9B95',
+    regular: '#FEBEB9',
+    light: '#FADFDC',
+    surface: '#FFF3F1',
   },
   oregano: {
-    light: '#CDF7F3',
-    regular: '#ABF1EA',
-    bold: '#6DCBC2',
-    ink: '#00786D',
+    ink: '#3A7F75',
+    bold: '#71ABA3',
+    regular: '#9FD1CA',
+    light: '#DAF4F1',
+    surface: '#E7F8F5',
+  },
+  blueberry: {
+    ink: '#597F9B',
+    bold: '#7CA6C5',
+    regular: '#B0D7EF',
+    light: '#DAEDF9',
+    surface: '#EEF8FF',
   },
   sand: {
     regular: '#fff8f0',

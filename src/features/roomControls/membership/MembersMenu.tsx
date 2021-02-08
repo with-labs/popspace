@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { IconButton, Hidden, makeStyles } from '@material-ui/core';
+import { IconButton, Hidden, makeStyles, Typography } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
+import { InviteLink } from '../InviteLink/InviteLink';
+import { useFeatureFlag } from 'flagg';
+import { useTranslation } from 'react-i18next';
 
 export interface IMembersMenuProps {}
 
@@ -18,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
       width: 360,
     },
   },
+  title: {
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 /**
@@ -29,6 +35,9 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
   const [isOpen, setIsOpen] = React.useState(false);
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
   const classes = useStyles();
+  const { t } = useTranslation();
+
+  const [hasInviteLink] = useFeatureFlag('inviteLink');
 
   const onOpen = React.useCallback(() => {
     setIsOpen(true);
@@ -55,7 +64,20 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
             </IconButton>
           </Hidden>
           <ResponsiveMenu anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-            <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
+            {hasInviteLink && (
+              <div>
+                <div className={classes.title}>
+                  <Typography variant="h3">{t('features.roomControls.linkInviteTitle')}</Typography>
+                </div>
+                <InviteLink />
+              </div>
+            )}
+            <div>
+              <div className={classes.title}>
+                <Typography variant="h3">{t('features.roomControls.emailInviteTitle')}</Typography>
+              </div>
+              <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
+            </div>
           </ResponsiveMenu>
         </>
       }

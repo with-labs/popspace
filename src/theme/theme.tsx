@@ -921,6 +921,42 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           minWidth: 40,
         },
       },
+      MuiSwitch: {
+        root: {
+          width: 42,
+          height: 26,
+          padding: 0,
+          margin: spacing(1),
+        },
+        colorSecondary: {
+          '&$checked': {
+            '& + $track': {
+              backgroundColor: palette.brandColors.snow.regular,
+              opacity: 1,
+            },
+          },
+        },
+        switchBase: {
+          padding: 1,
+          '&$checked': {
+            transform: 'translateX(16px)',
+            '& + $track': {
+              border: `1px solid ${palette.success.main}`,
+            },
+          },
+        },
+        thumb: {
+          width: 24,
+          height: 24,
+        },
+        track: {
+          borderRadius: shape.borderRadius,
+          border: `1px solid ${palette.grey[400]}`,
+          backgroundColor: palette.brandColors.snow.regular,
+          opacity: 1,
+          transition: transitions.create(['background-color', 'border']),
+        },
+      },
     },
   });
 };

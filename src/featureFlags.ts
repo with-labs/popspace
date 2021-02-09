@@ -4,6 +4,9 @@ const flagDefinitions = {
   mockUsers: {
     description: 'Allows creating Mock User widgets',
   },
+  pictureInPicture: {
+    description: 'Lets you see the room while the window is backgrounded',
+  },
   inviteLink: {
     description: 'Displays the invite link ui',
   },

@@ -32,6 +32,14 @@ export function multiplyVector(vec: Vector2, mult: number) {
   };
 }
 
+export function normalizeVector(vec: Vector2) {
+  const len = vectorLength(vec);
+  if (len === 0) {
+    return { x: 0, y: 0 };
+  }
+  return multiplyVector(vec, 1 / len);
+}
+
 export function roundVector(vector: Vector2) {
   return {
     x: Math.round(vector.x),

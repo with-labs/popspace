@@ -11,7 +11,12 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 
-export const CameraToggle = (props: any) => {
+export interface ICameraToggleProps {
+  isLocal?: boolean;
+  className?: string;
+}
+
+export const CameraToggle = (props: ICameraToggleProps) => {
   const { className, isLocal, ...otherProps } = props;
   const { t } = useTranslation();
   const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);

@@ -1,7 +1,6 @@
 import { Story } from '@storybook/react/types-6-0';
 import React from 'react';
 import { Avatar } from './Avatar';
-import { options } from '../../utils/AvatarOptions';
 
 export default {
   title: 'components/Avatar',
@@ -10,9 +9,7 @@ export default {
     name: {
       control: {
         type: 'select',
-        options: Object.keys(options).reduce(function (r, k) {
-          return r.concat(options[k].map((avatar) => avatar.name));
-        }, [] as string[]),
+        options: ['blobby', 'millie'],
       },
     },
   },

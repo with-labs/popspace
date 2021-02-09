@@ -339,6 +339,15 @@
         "videoToggle": "Toggle video",
         "screenShareToggle": "Toggle screen share"
       },
+      "updates": {
+        "title": "Update available!",
+        "description": "Reload for the latest features",
+        "reload": "Reload"
+      },
+      "pictureInPicture": {
+        "toggle": "Toggle picture-in-picture",
+        "autoPictureInPicture": "Automatically enter picture-in-picture when minimized"
+      },
       "paste": {
         "modalTitle": "Paste content",
         "modalDetails": "Are you sure you want to add this to the room?",

@@ -3,6 +3,7 @@ import { makeStyles, Typography, Box } from '@material-ui/core';
 import { options as avatarOptions } from '../../../utils/AvatarOptions';
 import { AvatarGrid } from './AvatarGrid';
 import { useTranslation } from 'react-i18next';
+import { groupBy } from 'lodash';
 
 export interface IAvatarCategoryProps {
   onChange: (avatarName: string) => void;
@@ -27,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const categorizedAvatars = groupBy(avatarOptions, 'category');
+
 export const AvatarCategory: React.FC<IAvatarCategoryProps> = ({ onChange, value }) => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -40,13 +43,13 @@ export const AvatarCategory: React.FC<IAvatarCategoryProps> = ({ onChange, value
       flexBasis={'auto'}
       className={classes.wrapper}
     >
-      {Object.keys(avatarOptions).map((category, idx) => {
+      {Object.keys(categorizedAvatars).map((category) => {
         return (
-          <div key={`${category}_${idx}`} className={classes.category}>
+          <div key={category} className={classes.category}>
             <Typography variant="h3" className={classes.title}>
               {t(`modals.userSettingsModal.category.${category}`)}
             </Typography>
-            <AvatarGrid avatarList={avatarOptions[category]} onChange={onChange} value={value} />
+            <AvatarGrid avatarList={categorizedAvatars[category]} onChange={onChange} value={value} />
           </div>
         );
       })}

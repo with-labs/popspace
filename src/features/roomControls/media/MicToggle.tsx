@@ -23,7 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MicToggle = (props: any) => {
+export interface IMicToggleProps {
+  isLocal?: boolean;
+  className?: string;
+}
+
+export const MicToggle = (props: IMicToggleProps) => {
   const { isLocal, className, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();

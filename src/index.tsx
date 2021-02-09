@@ -2,11 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 import { App } from './App';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './i18n';
 import './with.css';
+import { useUpdateStore } from './features/updates/useUpdatesStore';
 
-const version = `with-app@${VERSION || 'unknown'}`;
+let version: string;
+try {
+  version = `with-app@${VERSION}`;
+} catch (err) {
+  version = 'unknown';
+}
+
 // @ts-ignore
 window.__with_version__ = version;
 if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') {
@@ -29,3 +37,24 @@ ReactDOM.render(
   // Modal.setAppElement('#root');
   document.getElementById('root')
 );
+
+serviceWorkerRegistration.register({
+  onUpdate: (registration) => {
+    // subscribe to a change in the updateAccepted flag,
+    // which will indicate the user has requested to update to the latest
+    // app version immediately
+    useUpdateStore.subscribe<boolean>(
+      (accepted) => {
+        if (!accepted) return;
+
+        // posting this message will promote the waiting service worker to become
+        // active immediately.
+        registration.waiting?.postMessage({
+          type: 'SKIP_WAITING',
+        });
+      },
+      (store) => store.updateAccepted
+    );
+    useUpdateStore.getState().api.onUpdateReady();
+  },
+});

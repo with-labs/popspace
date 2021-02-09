@@ -1,0 +1,21 @@
+{
+  "name": "With",
+  "short_name": "With",
+  "description": "A virtual space for your work sessions. With helps teams collaborate more efficiently, build companionship, and create serendipity.",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#F4F5F8",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicons/favicon_32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "favicons/favicon_256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

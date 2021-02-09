@@ -15,6 +15,9 @@ import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
+import { AutoPIPToggle } from './AutoPIPToggle';
+import { isAutoPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
+import { useFeatureFlag } from 'flagg';
 
 export type UserSettingFormData = {
   displayName: string;
@@ -47,12 +50,20 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
     },
   },
-  avatarPannel: {
+  avatarPanel: {
     backgroundColor: theme.palette.brandColors.sand.regular,
     borderRadius: theme.shape.borderRadius,
   },
   bubble: {
     marginBottom: theme.spacing(5),
+  },
+  nameField: {
+    flex: 1,
+  },
+  submitButton: {
+    marginLeft: theme.spacing(1),
+    marginTop: 24,
+    height: 48,
   },
 }));
 
@@ -104,6 +115,8 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
     [updateSelf, userId]
   );
 
+  const [hasPip] = useFeatureFlag('pictureInPicture');
+
   return (
     <Modal onClose={onCloseHandler} isOpen={isOpen}>
       <ModalTitleBar
@@ -122,7 +135,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
           <animated.div style={animatedStyle as any}>
             <div style={{ width: '100%', height: '100%' }}>
               <Box display="flex" className={classes.userInputWrapper} alignItems="center" justifyContent="center">
-                <ModalPane className={classes.avatarPannel}>
+                <ModalPane className={classes.avatarPanel}>
                   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
                     <PseudoUserBubble userId={userId} isVideoOn={false} isMicOn={true} className={classes.bubble} />
                     <Button onClick={() => setIsAvatarSelectionOpen(true)} color="primary" fullWidth={false}>
@@ -138,25 +151,32 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                     enableReinitialize
                   >
                     <Form>
-                      <Box display="flex" flexDirection="column">
-                        <Box flexGrow={1}>
-                          <FormikTextField
-                            id="userSetters-displayName"
-                            className=""
-                            name="displayName"
-                            placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
-                            label={t('modals.userSettingsModal.displayNameInput.label')}
-                            margin="normal"
-                            helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
-                            validate={(newDisplayName) => validateDisplayName(newDisplayName, t)}
-                          />
-                        </Box>
-                        <FormikSubmitButton activeOnChange>
+                      <Box display="flex" flexDirection="row" mb={2} alignItems="flex-start">
+                        <FormikTextField
+                          id="userSetters-displayName"
+                          className={classes.nameField}
+                          name="displayName"
+                          placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
+                          label={t('modals.userSettingsModal.displayNameInput.label')}
+                          margin="normal"
+                          helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
+                          validate={(newDisplayName) => validateDisplayName(newDisplayName, t)}
+                        />
+                        <FormikSubmitButton activeOnChange fullWidth={false} className={classes.submitButton}>
                           {t('modals.userSettingsModal.submitButton')}
                         </FormikSubmitButton>
                       </Box>
                     </Form>
                   </Formik>
+                  {/*
+                    If auto picture-in-picture feature is available, show
+                    a setting to enable or disable it.
+                   */}
+                  {isAutoPIPAvailable && hasPip && (
+                    <Box p={2}>
+                      <AutoPIPToggle />
+                    </Box>
+                  )}
                 </ModalPane>
               </Box>
             </div>

@@ -2,12 +2,7 @@ import { vectorDistance } from '../../utils/math';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import { logger } from '../../utils/logger';
-
-// in world space coordinates - this is the farthest possible distance
-// you can hear someone / something from - even if very faintly.
-// To allow people to find quiet spaces, we probably want this to be
-// no larger than 3/4 the room size, maybe smaller
-const MAX_RANGE = 1200;
+import { MAX_AUDIO_RANGE as MAX_RANGE } from '../../constants/room';
 
 function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);

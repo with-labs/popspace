@@ -1,4 +1,4 @@
-import { AvatarMetadata, AvatarMetadataType } from '../constants/AvatarMetadata';
+import { AvatarMetadata } from '../constants/AvatarMetadata';
 import seedRandom from 'seed-random';
 
 export interface IAvatar {
@@ -6,38 +6,31 @@ export interface IAvatar {
   image: string;
   blink: string;
   backgroundColor: string;
+  category: string;
 }
 
 const AVATAR_HOST = `https://s3.us-east-2.amazonaws.com/with.avatars`;
 
-const initAvatars = (avatarList: { [key: string]: AvatarMetadataType[] }) => {
-  const options: { [key: string]: IAvatar[] } = {};
+const options: { [name: string]: IAvatar } = {};
 
-  for (const avatarCategory in avatarList) {
-    const rawMetaData = avatarList[avatarCategory];
-    const avatars = [];
-    for (const avatar of rawMetaData) {
-      avatars.push({
-        name: avatar.name,
-        image: `${AVATAR_HOST}/${avatar.name}.png`,
-        blink: `${AVATAR_HOST}/${avatar.name}_blink.png`,
-        backgroundColor: avatar.color,
-      });
-    }
-    options[avatarCategory] = avatars;
+for (const avatarCategory of Object.keys(AvatarMetadata)) {
+  const rawMetaData = AvatarMetadata[avatarCategory as keyof typeof AvatarMetadata];
+  for (const avatar of rawMetaData) {
+    const avatarData: IAvatar = {
+      name: avatar.name,
+      image: `${AVATAR_HOST}/${avatar.name}.png`,
+      blink: `${AVATAR_HOST}/${avatar.name}_blink.png`,
+      backgroundColor: avatar.color,
+      category: avatarCategory,
+    };
+    options[avatar.name] = avatarData;
   }
-  return options;
-};
-
-const options: { [key: string]: IAvatar[] } = initAvatars(AvatarMetadata);
+}
 
 const randomAvatar = (seed?: string) => {
-  // get the sections
-  const categories = Object.keys(options);
-  // randomly select a section
-  const randomCategory = categories[Math.floor(seedRandom(seed)() * categories.length)];
-  // return a random avatar from that section
-  return options[randomCategory][Math.floor(seedRandom(seed)() * options[randomCategory].length)];
+  const names = Object.keys(options);
+  const name = names[Math.floor(seedRandom(seed)() * names.length)];
+  return options[name]!;
 };
 
 export { options, randomAvatar };

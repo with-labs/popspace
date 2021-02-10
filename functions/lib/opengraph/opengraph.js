@@ -1,16 +1,12 @@
 const axios = require("axios").default
-const metascraper = require("metascraper")
-const titleRule = require("metascraper-title")
-const iframeRule = require("metascraper-iframe")
+const cheerio = require("cheerio")
 
 /**
  * Provides metadata for webpage URLs. Right now this provides
  * a minimal set of properties we care about in With.
  */
 class OpenGraph {
-  async init() {
-    this.scraper = metascraper([titleRule(), iframeRule()])
-  }
+  async init() {}
 
   async cleanup() {}
 
@@ -19,11 +15,14 @@ class OpenGraph {
    *
    * @param {string} url - url of the page to scrape
    *
-   * @typedef {Object} LinkMetadata
+   * @typedef {Object} LinkMetadata - Compiled metadata from all available sources for a link
    * @property {string} iframeUrl - A URL associated with the page which can be embedded cross-origin. Might be the same URL.
    * @property {string} title - The title of the page, inferred from OpenGraph or HTML
    *
    * @returns {Promise<LinkMetadata>} The response will include a title, and an iframeUrl if one could be detected (or null)
+   *
+   * @typedef {Object} HTMLMetadata - Raw metadata extracted from an HTML string response
+   * @property {string} title - The title of the page
    */
   async getGraphData(url) {
     const res = await axios.get(url)
@@ -33,15 +32,12 @@ class OpenGraph {
      * Will only include .title and .iframe, properties are added by the
      * rules we define and pass to the initializer above.
      */
-    const { iframe, ...metadata } = await this.scraper({ html, url })
+    const { title } = this.extractMetadata(html)
     const isProvidedUrlIframeCompatible = this.isIframeCompatible(res)
 
-    const extractedIframeSource = this.extractIframeSource(iframe)
-
     return {
-      ...metadata,
-      iframeUrl:
-        extractedIframeSource || (isProvidedUrlIframeCompatible ? url : null)
+      title: title || url,
+      iframeUrl: isProvidedUrlIframeCompatible ? url : null
     }
   }
 
@@ -70,16 +66,16 @@ class OpenGraph {
   }
 
   /**
-   * Extracts the src value from an <iframe /> tag string
+   * @param {string} html - Raw HTML string
+   * @returns {HTMLMetadata}
    */
-  extractIframeSource(iframeEl) {
-    if (!iframeEl) return null
-
-    const iframeMatch = /<iframe .*src="(.+?)".*<\/iframe>/.exec(iframeEl)
-    if (iframeMatch) {
-      return iframeMatch[1]
+  extractMetadata(html) {
+    const $ = cheerio.load(html)
+    // TODO: more?
+    const titleEl = $('meta[property="og:title"]')
+    return {
+      title: (titleEl && titleEl.attr("content")) ?? null
     }
-    return null
   }
 }
 

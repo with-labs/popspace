@@ -15,6 +15,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import { FullscreenLoading } from '../components/FullscreenLoading/FullscreenLoading';
 
 const WS_SERVER = process.env.REACT_APP_SOCKET_HOST || 'wss://test.with.so:8443';
+const AUTH_RESPONSE_TIMEOUT = 10 * 1000; // 10 seconds
 
 export interface IRoomStateProviderProps {
   roomName: string;
@@ -75,13 +76,16 @@ const useSocketConnection = (roomName: string) => {
         // authenticate and wait for response - this will automatically
         // trigger state rehydration when the server responds, which is
         // handled in the room store message handler paths
-        await sock.sendAndWaitForResponse<IncomingAuthResponseMessage>({
-          kind: 'auth',
-          payload: {
-            roomName,
-            token: sessionToken,
+        await sock.sendAndWaitForResponse<IncomingAuthResponseMessage>(
+          {
+            kind: 'auth',
+            payload: {
+              roomName,
+              token: sessionToken,
+            },
           },
-        });
+          AUTH_RESPONSE_TIMEOUT
+        );
 
         if (isMountedRef.current) {
           setReady(true);

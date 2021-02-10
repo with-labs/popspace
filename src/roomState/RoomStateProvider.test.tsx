@@ -40,13 +40,16 @@ describe('RoomStateProvider component', () => {
     });
 
     await waitFor(() => {
-      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
-        kind: 'auth',
-        payload: {
-          roomName: props.roomName,
-          token: 'MOCK TOKEN', // this is from the mocked module above
+      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith(
+        {
+          kind: 'auth',
+          payload: {
+            roomName: props.roomName,
+            token: 'MOCK TOKEN', // this is from the mocked module above
+          },
         },
-      });
+        10000
+      );
     });
 
     expect(result.getByTestId('content')).toBeDefined();
@@ -62,13 +65,16 @@ describe('RoomStateProvider component', () => {
       socket.emit('connected');
     });
     await waitFor(() => {
-      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
-        kind: 'auth',
-        payload: {
-          roomName: props.roomName,
-          token: 'MOCK TOKEN', // this is from the mocked module above
+      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith(
+        {
+          kind: 'auth',
+          payload: {
+            roomName: props.roomName,
+            token: 'MOCK TOKEN', // this is from the mocked module above
+          },
         },
-      });
+        10000
+      );
     });
     expect(result.getByTestId('content')).toBeDefined();
 
@@ -89,13 +95,16 @@ describe('RoomStateProvider component', () => {
       socket.emit('connected');
     });
     await waitFor(() => {
-      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
-        kind: 'auth',
-        payload: {
-          roomName: props.roomName,
-          token: 'MOCK TOKEN', // this is from the mocked module above
+      expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith(
+        {
+          kind: 'auth',
+          payload: {
+            roomName: props.roomName,
+            token: 'MOCK TOKEN', // this is from the mocked module above
+          },
         },
-      });
+        10000
+      );
     });
 
     // expect reconnect alert to be gone

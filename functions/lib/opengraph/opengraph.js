@@ -74,7 +74,7 @@ class OpenGraph {
     // TODO: more?
     const titleEl = $('meta[property="og:title"]')
     return {
-      title: (titleEl && titleEl.attr("content")) ?? null
+      title: (titleEl && titleEl.attr("content")) || null
     }
   }
 }

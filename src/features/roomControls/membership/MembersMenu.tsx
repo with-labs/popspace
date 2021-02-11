@@ -3,10 +3,10 @@ import { IconButton, Hidden, makeStyles, Typography } from '@material-ui/core';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
-import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 import { InviteLink } from '../InviteLink/InviteLink';
 import { useFeatureFlag } from 'flagg';
 import { useTranslation } from 'react-i18next';
+import { ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
 
 export interface IMembersMenuProps {}
 
@@ -53,34 +53,30 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
 
   return (
     <div ref={ref}>
-      {
-        <>
-          <IconButton onClick={openAndFocusInvite}>
-            <InviteIcon />
-          </IconButton>
-          <Hidden smDown>
-            <IconButton ref={anchorRef} onClick={onOpen}>
-              <DropdownIcon />
-            </IconButton>
-          </Hidden>
-          <ResponsiveMenu anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-            {hasInviteLink && (
-              <div>
-                <div className={classes.title}>
-                  <Typography variant="h3">{t('features.roomControls.linkInviteTitle')}</Typography>
-                </div>
-                <InviteLink />
-              </div>
-            )}
-            <div>
-              <div className={classes.title}>
-                <Typography variant="h3">{t('features.roomControls.emailInviteTitle')}</Typography>
-              </div>
-              <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
+      <IconButton onClick={openAndFocusInvite}>
+        <InviteIcon />
+      </IconButton>
+      <Hidden smDown>
+        <IconButton ref={anchorRef} onClick={onOpen}>
+          <DropdownIcon />
+        </IconButton>
+      </Hidden>
+      <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
+        {hasInviteLink && (
+          <div>
+            <div className={classes.title}>
+              <Typography variant="h3">{t('features.roomControls.linkInviteTitle')}</Typography>
             </div>
-          </ResponsiveMenu>
-        </>
-      }
+            <InviteLink />
+          </div>
+        )}
+        <div>
+          <div className={classes.title}>
+            <Typography variant="h3">{t('features.roomControls.emailInviteTitle')}</Typography>
+          </div>
+          <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
+        </div>
+      </ResponsivePopover>
     </div>
   );
 });

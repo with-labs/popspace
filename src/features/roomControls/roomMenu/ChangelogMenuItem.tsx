@@ -7,19 +7,22 @@ export interface IChangelogMenuItemProps {
   children: React.ReactNode;
 }
 
-export const ChangelogMenuItem = React.forwardRef<HTMLLIElement, IChangelogMenuItemProps>((props, ref) => {
-  const openModal = useRoomModalStore((modals) => modals.api.openModal);
+export const ChangelogMenuItem = React.forwardRef<HTMLLIElement, IChangelogMenuItemProps>(
+  ({ onClick, children, ...rest }, ref) => {
+    const openModal = useRoomModalStore((modals) => modals.api.openModal);
 
-  return (
-    <MenuItem
-      ref={ref}
-      onClick={() => {
-        openModal('changelog');
-        props.onClick?.();
-      }}
-      dense
-    >
-      <ListItemText primary={props.children} />
-    </MenuItem>
-  );
-});
+    return (
+      <MenuItem
+        ref={ref}
+        onClick={() => {
+          openModal('changelog');
+          onClick?.();
+        }}
+        dense
+        {...rest}
+      >
+        <ListItemText primary={children} />
+      </MenuItem>
+    );
+  }
+);

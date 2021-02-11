@@ -31,7 +31,7 @@ export const StickyNoteMenu: React.FC<IStickyNoteMenuProps> = ({ onEdit, ...prop
         onClick={() => setAnchorEl(null)}
       >
         {onEdit && (
-          <MenuItem onClick={onEdit}>
+          <MenuItem button onClick={onEdit}>
             <ListItemIcon>
               <EditIcon />
             </ListItemIcon>
@@ -39,7 +39,7 @@ export const StickyNoteMenu: React.FC<IStickyNoteMenuProps> = ({ onEdit, ...prop
           </MenuItem>
         )}
         <AddNoteMenuItem />
-        <MenuItem onClick={remove}>
+        <MenuItem button onClick={remove}>
           <ListItemIcon>
             <DeleteIcon />
           </ListItemIcon>

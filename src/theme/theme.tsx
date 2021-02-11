@@ -326,7 +326,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         // fighting the inner typography span
         disableTypography: true,
       },
-      MuiMenu: {
+      MuiPopover: {
         getContentAnchorEl: null,
         anchorOrigin: {
           horizontal: 'left',
@@ -600,7 +600,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '& + &': {
             marginTop: spacing(0.5),
           },
-          '&$selected, &:hover, &$selected:hover': {
+          '&$selected, &:hover, &$selected:hover, &:focus': {
             backgroundColor: palette.grey[50],
           },
           '&:active': {

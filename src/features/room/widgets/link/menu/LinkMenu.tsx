@@ -30,10 +30,16 @@ export function LinkMenu(props: LinkMenuProps) {
 
   return (
     <>
-      <IconButton onClick={(ev) => setAnchorEl(ev.currentTarget)} {...props}>
+      <IconButton
+        onClick={(ev) => setAnchorEl(ev.currentTarget)}
+        aria-haspopup
+        aria-controls={!!anchorEl ? 'linkMenu' : undefined}
+        {...props}
+      >
         <OptionsIcon />
       </IconButton>
       <ResponsiveMenu
+        id="linkMenu"
         open={!!anchorEl}
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}

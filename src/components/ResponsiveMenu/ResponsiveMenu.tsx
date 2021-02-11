@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useMediaQuery, Theme, Menu, SwipeableDrawer } from '@material-ui/core';
+import { MenuList } from '@material-ui/core';
+import { ResponsivePopover } from '../ResponsivePopover/ResponsivePopover';
 
 export interface IResponsiveMenuProps {
   anchorEl?: HTMLElement | null;
@@ -11,29 +12,28 @@ export interface IResponsiveMenuProps {
    * for closing the menu after a selection has been made
    */
   onClick?: (ev: React.MouseEvent) => void;
+  id?: string;
 }
-
-const noop = () => {};
 
 /**
  * Renders a Menu on desktop and a Drawer on mobile
  */
-export const ResponsiveMenu: React.FC<IResponsiveMenuProps> = ({ anchorEl, open, onClose, className, ...rest }) => {
-  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
+export const ResponsiveMenu: React.FC<IResponsiveMenuProps> = ({ children, onClose, ...rest }) => {
+  const handleListKeyDown = React.useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
-  if (isSmall) {
-    return (
-      <SwipeableDrawer
-        disableSwipeToOpen
-        onOpen={noop}
-        anchor="bottom"
-        open={open}
-        onClose={onClose}
-        PaperProps={{ className }}
-        {...rest}
-      />
-    );
-  }
-
-  return <Menu anchorEl={anchorEl} open={open} onClose={onClose} className={className} {...rest} />;
+  return (
+    <ResponsivePopover onClose={onClose} {...rest}>
+      <MenuList variant="menu" autoFocusItem={rest.open} onKeyDown={handleListKeyDown}>
+        {children}
+      </MenuList>
+    </ResponsivePopover>
+  );
 };

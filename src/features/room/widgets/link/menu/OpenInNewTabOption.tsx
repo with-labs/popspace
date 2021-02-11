@@ -1,12 +1,12 @@
-import { ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
+import { ListItemIcon, ListItemText } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { OpenIcon } from '../../../../../components/icons/OpenIcon';
-import { Link } from '../../../../../components/Link/Link';
+import { LinkMenuItem } from '../../../../../components/LinkMenuItem/LinkMenuItem';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 
-export const OpenInNewTabOption = () => {
+export const OpenInNewTabOption = React.forwardRef<HTMLLIElement, {}>((props, ref) => {
   const { t } = useTranslation();
   const {
     widget: {
@@ -15,11 +15,11 @@ export const OpenInNewTabOption = () => {
   } = useWidgetContext<WidgetType.Link>();
 
   return (
-    <MenuItem button component={Link} to={url} newTab disableStyling>
+    <LinkMenuItem to={url} newTab disableStyling ref={ref} {...props}>
       <ListItemIcon>
         <OpenIcon />
       </ListItemIcon>
       <ListItemText>{t('widgets.link.openInNewTab')}</ListItemText>
-    </MenuItem>
+    </LinkMenuItem>
   );
-};
+});

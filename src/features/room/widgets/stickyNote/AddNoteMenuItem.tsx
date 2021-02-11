@@ -11,7 +11,7 @@ import { useWidgetContext } from '../useWidgetContext';
 
 export interface IAddNoteMenuItemProps {}
 
-export const AddNoteMenuItem: React.FC<IAddNoteMenuItemProps> = () => {
+export const AddNoteMenuItem = React.forwardRef<HTMLLIElement, IAddNoteMenuItemProps>((props, ref) => {
   const { t } = useTranslation();
   const { user } = useCurrentUserProfile();
   const userId = user?.id ?? null;
@@ -49,11 +49,11 @@ export const AddNoteMenuItem: React.FC<IAddNoteMenuItemProps> = () => {
   }, [currentPosition, toWorldCoordinate, userId, addWidget]);
 
   return (
-    <MenuItem onClick={handleCreateNew}>
+    <MenuItem onClick={handleCreateNew} ref={ref} {...props}>
       <ListItemIcon>
         <AddIcon />
       </ListItemIcon>
       <ListItemText primary={t('widgets.stickyNote.quickAddButton')} />
     </MenuItem>
   );
-};
+});

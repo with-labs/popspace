@@ -59,7 +59,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(({ disableSt
 
     if (disableStyling) {
       return (
-        <a className={clsx(classes.disableStyling, props.className)} href={href} ref={ref} {...extraProps}>
+        <a className={clsx(classes.disableStyling, props.className)} href={href} ref={ref} {...props} {...extraProps}>
           {props.children}
         </a>
       );

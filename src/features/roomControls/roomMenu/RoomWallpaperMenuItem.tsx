@@ -18,6 +18,7 @@ export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpa
         openModal('settings');
         props.onClick?.();
       }}
+      button
     >
       <ListItemIcon>
         <SettingsIcon />

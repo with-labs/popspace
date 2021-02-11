@@ -8,21 +8,25 @@ export interface IUserSettingsMenuItemProps {
   children: React.ReactNode;
 }
 
-export const UserSettingsMenuItem = React.forwardRef<HTMLLIElement, IUserSettingsMenuItemProps>((props, ref) => {
-  const openModal = useRoomModalStore((room) => room.api.openModal);
+export const UserSettingsMenuItem = React.forwardRef<HTMLLIElement, IUserSettingsMenuItemProps>(
+  ({ children, onClick, ...rest }, ref) => {
+    const openModal = useRoomModalStore((room) => room.api.openModal);
 
-  return (
-    <MenuItem
-      ref={ref}
-      onClick={() => {
-        openModal('userSettings');
-        props.onClick?.();
-      }}
-    >
-      <ListItemIcon>
-        <SettingsIcon />
-      </ListItemIcon>
-      <ListItemText primary={props.children} />
-    </MenuItem>
-  );
-});
+    return (
+      <MenuItem
+        ref={ref}
+        onClick={() => {
+          openModal('userSettings');
+          onClick?.();
+        }}
+        button
+        {...rest}
+      >
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+        <ListItemText primary={children} />
+      </MenuItem>
+    );
+  }
+);

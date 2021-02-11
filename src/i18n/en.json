@@ -360,7 +360,8 @@
         "linkInviteResetText": "You can <1>reset this link</1> to generate a new invite link.",
         "linkInviteExplanation": "Only users with a With account can use this link.",
         "emailInviteTitle": "Invite via email",
-        "copySuccess": "Invite link copied!"
+        "copySuccess": "Invite link copied!",
+        "guestExplanation": "Only the room owner can enable this setting."
       }
     },
     "modals": {

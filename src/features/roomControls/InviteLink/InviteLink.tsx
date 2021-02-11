@@ -93,7 +93,7 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
       })}
     >
       <Box display="flex" flexDirection="row" mb={1}>
-        {linkActive ? (
+        {isRoomOwner && linkActive ? (
           <Typography variant="body1" component={'span'}>
             <Trans i18nKey="features.roomControls.linkInviteResetText">
               You can reset
@@ -112,8 +112,9 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
           <Typography variant="body1">{t('features.roomControls.linkInviteToggleText')}</Typography>
         )}
         <Switch
+          disabled={!linkActive && !isRoomOwner}
           checked={linkActive}
-          onChange={() => isRoomOwner && setLinkActive(!linkActive)}
+          onChange={() => setLinkActive(!linkActive)}
           name="toggle-invite-link"
           inputProps={{ 'aria-label': t('features.roomControls.linkInviteAriaLabel') }}
         />
@@ -142,7 +143,7 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
       </animated.div>
       <Box className={classes.explanationTextWrapper}>
         <Typography variant="body2" className={classes.explanationText}>
-          {t('features.roomControls.linkInviteExplanation')}
+          {t(`features.roomControls.${!isRoomOwner && !linkActive ? 'guestExplanation' : 'linkInviteExplanation'}`)}
         </Typography>
       </Box>
     </Box>

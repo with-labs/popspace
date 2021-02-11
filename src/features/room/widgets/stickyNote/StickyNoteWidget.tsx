@@ -1,4 +1,4 @@
-import { makeStyles, Typography } from '@material-ui/core';
+import { Box, makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
@@ -140,6 +140,10 @@ const StickyNoteContent: React.FC<{
           )}
         </Typography>
       </WidgetScrollPane>
+      <Typography variant="caption">
+        {t('widgets.stickyNote.addedBy')}
+        <WidgetAuthor />
+      </Typography>
     </WidgetContent>
   );
 };

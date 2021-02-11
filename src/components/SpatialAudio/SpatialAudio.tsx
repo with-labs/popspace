@@ -32,7 +32,7 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
     const internalRef = React.useRef<HTMLAudioElement>();
 
     const lastVolumeRef = useSpatialAudioVolume(objectKind, objectId, (vol) => {
-      if (internalRef.current) internalRef.current.volume = vol;
+      if (internalRef.current && !disableSpatialAudio) internalRef.current.volume = vol;
     });
 
     // for autoPlay elements, we wait until user has interacted so
@@ -44,9 +44,13 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
     // initial volume we trigger an effect when the element mounts.
     React.useEffect(() => {
       if (canMount && internalRef.current) {
-        internalRef.current.volume = lastVolumeRef.current;
+        if (disableSpatialAudio) {
+          internalRef.current.volume = 1;
+        } else {
+          internalRef.current.volume = lastVolumeRef.current;
+        }
       }
-    }, [canMount, internalRef, lastVolumeRef]);
+    }, [canMount, internalRef, lastVolumeRef, disableSpatialAudio]);
 
     const finalRef = useMergedRef(internalRef, ref);
 

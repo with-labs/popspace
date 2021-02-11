@@ -49,7 +49,7 @@ export const FullSizeMediaWidget: React.FC = () => (
       <WidgetContent disablePadding>
         <WidgetResizeContainer
           mode="scale"
-          minWidth={340}
+          minWidth={100}
           minHeight={54}
           maxWidth={1440}
           maxHeight={900}

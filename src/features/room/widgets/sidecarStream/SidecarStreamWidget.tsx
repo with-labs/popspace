@@ -135,7 +135,18 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
         )}
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer mode="free" minWidth={400} minHeight={200} maxWidth={2000} maxHeight={2000}>
+        <WidgetResizeContainer
+          mode="free"
+          minWidth={400}
+          minHeight={200}
+          maxWidth={2000}
+          maxHeight={2000}
+          /*
+            Initial sizing is disabled for everyone but the broadcasting device - otherwise
+            when new users join the room they will mount the widget and it will be remeasured and resized.
+          */
+          disableInitialSizing={!isLocalDeviceStream}
+        >
           <FullscreenableMedia
             className={classes.screenShare}
             isFullscreen={isFullscreen}

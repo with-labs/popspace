@@ -3,6 +3,9 @@
 
 import { logger } from './utils/logger';
 
+// hourly
+const UPDATE_CHECK_INTERVAL = 60 * 60 * 1000;
+
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
 // will only see deployed updates on subsequent visits to a page, after all the
@@ -59,10 +62,17 @@ export function register(config?: Config) {
   }
 }
 
-function registerValidSW(swUrl: string, config?: Config) {
+async function registerValidSW(swUrl: string, config?: Config) {
+  const hasExistingRegistrations = !!(await navigator.serviceWorker.getRegistration(swUrl));
+
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
+      // periodically check for app updates
+      setInterval(() => {
+        registration.update();
+      }, UPDATE_CHECK_INTERVAL);
+
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
@@ -108,7 +118,8 @@ function registerValidSW(swUrl: string, config?: Config) {
   // other assets using the new worker.
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (refreshing) return;
+    // prevent refresh if this was the first SW install
+    if (refreshing || !hasExistingRegistrations) return;
     window.location.reload();
     refreshing = true;
   });

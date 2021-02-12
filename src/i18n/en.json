@@ -309,7 +309,19 @@
         "export": "Save room to file",
         "import": "Load room from file",
         "submitButtonText": "Apply",
-        "sendFeedbackBtn": "Feedback"
+        "sendFeedbackBtn": "Feedback",
+        "statusMenu": {
+          "statusPlaceHolder": "Whats your status?",
+          "clearStatusButton": "Clear status",
+          "historyTitle": "History",
+          "suggestionsTitle": "Suggestions",
+          "emojiTitle": "Pick an emoji",
+          "suggestions": {
+            "suggestion1": "Be right back. Meeting.",
+            "suggestion2": "Away from keyboard",
+            "suggestion3": "Walking the dog"
+          }
+        }
       },
       "status": {
         "placeholder": "What's your status?",
@@ -360,8 +372,11 @@
         "linkInviteResetText": "You can <1>reset this link</1> to generate a new invite link.",
         "linkInviteExplanation": "Only users with a With account can use this link.",
         "emailInviteTitle": "Invite via email",
-        "copySuccess": "Invite link copied!",
-        "guestExplanation": "Only the room owner can enable this setting."
+        "guestExplanation": "Only the room owner can enable this setting.",
+        "copySuccess": "Invite link copied!"
+      },
+      "statusControls": {
+        "toolTip": "Set your status"
       }
     },
     "modals": {

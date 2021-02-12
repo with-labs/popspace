@@ -292,6 +292,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiTextField: {
         variant: 'filled',
         fullWidth: true,
+        hiddenLabel: true,
       },
       MuiCheckbox: {
         checkedIcon: <CheckboxChecked />,

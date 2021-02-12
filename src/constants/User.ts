@@ -14,3 +14,5 @@ export const SCREEN_SHARE_TRACK_NAME = 'screen-video';
 export const SCREEN_SHARE_AUDIO_TRACK_NAME = 'screen-audio';
 export const CAMERA_TRACK_NAME = 'camera';
 export const MIC_TRACK_NAME = 'microphone';
+
+export const STATUS_HISTORY = '__statusHistory';

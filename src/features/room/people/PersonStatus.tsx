@@ -50,8 +50,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   input: {
-    minWidth: 224,
-    marginLeft: theme.spacing(1),
+    minWidth: 260,
   },
 }));
 
@@ -122,14 +121,18 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHo
     return (
       <ClickAwayListener onClickAway={close}>
         <div className={clsx(classes.root, classes.rootEditing, className)} style={{ visibility }}>
-          <IconButton size="small" className={classes.emoji} {...emojiButtonProps}>
-            {emoji ? <CurrentEmojiButtonContent emoji={emoji} /> : <EmojiIcon fontSize="inherit" />}
-          </IconButton>
           <FilledInput
             placeholder={t('features.status.placeholder')}
             autoFocus
             onFocus={handleFocusSelectAll}
             className={classes.input}
+            startAdornment={
+              <InputAdornment position="start">
+                <IconButton size="small" className={classes.emoji} {...emojiButtonProps}>
+                  {emoji ? <CurrentEmojiButtonContent emoji={emoji} /> : <EmojiIcon fontSize="inherit" />}
+                </IconButton>
+              </InputAdornment>
+            }
             endAdornment={
               <InputAdornment position="end">
                 <IconButton

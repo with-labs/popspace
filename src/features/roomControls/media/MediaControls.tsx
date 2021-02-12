@@ -6,6 +6,7 @@ import { CameraToggle } from './CameraToggle';
 import { MicToggle } from './MicToggle';
 import { PictureInPictureToggle } from './PictureInPictureToggle';
 import { ScreenShareToggle } from './ScreenShareToggle';
+import { StatusControls } from './StatusControls';
 
 const useStyles = makeStyles((theme) => ({
   toggleButton: {
@@ -25,6 +26,7 @@ export const MediaControls = () => {
     <Box display="flex" flexDirection="row" alignItems="center" color="grey.900" pl={1}>
       <CameraToggle className={classes.toggleButton} />
       <MicToggle className={classes.toggleButton} />
+      <StatusControls className={classes.toggleButton} />
       <Hidden smDown>
         <ScreenShareToggle className={classes.toggleButton} />
       </Hidden>

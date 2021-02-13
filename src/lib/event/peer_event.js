@@ -1,5 +1,3 @@
-const snakecaseKeys = require('snakecase-keys')
-
 /**
   Represents events sent from peers
 */
@@ -60,7 +58,7 @@ PeerEvent.fromMessage = function(sender, message) {
     // in psql, double quotes turn a column name into case-sensitive,
     // so a query like "select widget_id from room_widgets;" becomes
     // 'select "WidgetId" from "RoomWidgets";'.
-    data = snakecaseKeys(JSON.parse(message))
+    data = lib.util.camelToSnakeCase(JSON.parse(message))
   } catch(e) {
     throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "events must be JSON")
   }

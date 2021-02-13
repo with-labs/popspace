@@ -53,7 +53,6 @@ class UpdateProcessor {
     this.sendToPeersAndSelf(event, "roomStateUpdated")
   }
 
-
   sendToPeersAndSelf(event, kind) {
     const sender = event.senderParticipant()
     sender.broadcastPeerEvent(kind, event.payload())

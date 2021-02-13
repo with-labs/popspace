@@ -1,5 +1,5 @@
-global.tlib = require("../../lib/_testlib")
-const Client = require("../../../src/client/client")
+global.tlib = require("../../../lib/_testlib")
+const Client = require("../../../../src/client/client")
 
 module.exports = {
   "connect_send_disconnect": tlib.TestTemplate.testServerClients(1, async (clients) => {

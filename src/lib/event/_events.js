@@ -3,5 +3,6 @@ module.exports = {
   MercuryEvent: require("./mercury_event"),
   ResponseEvent: require("./response_event"),
   MercuryError: require("./mercury_error"),
-  ErrorEvent: require("./error_event")
+  ErrorEvent: require("./error_event"),
+  SystemEvent: require("./system_event"),
 }

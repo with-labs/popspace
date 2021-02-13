@@ -6,7 +6,8 @@ const log4jsConfig = {
     console: { type: 'console' },
     dev: {type: 'file', filename: 'logs/dev.log'},
     received: {type: 'file', filename: 'logs/received.log'},
-    sent: {type: 'file', filename: 'logs/sent.log'}
+    sent: {type: 'file', filename: 'logs/sent.log'},
+    error: {type: 'file', filename: 'logs/error.log'}
   },
   categories: {
     default: { appenders: ['console'], level: 'info' },
@@ -17,7 +18,8 @@ const log4jsConfig = {
       level: ['developoment'].includes(process.env.NODE_ENV) ? 'trace' : 'off'
     },
     received: { appenders: ['received'], level: 'trace' },
-    sent: { appenders: ['sent'], level: 'trace' }
+    sent: { appenders: ['sent'], level: 'trace' },
+    error: { appenders: ['error'], level: 'trace'}
   }
 }
 log4js.configure(log4jsConfig)
@@ -32,6 +34,7 @@ logging = {
   dev: log4js.getLogger('dev'),
   received: log4js.getLogger('received'),
   sent: log4js.getLogger('sent'),
+  error: log4js.getLogger('error'),
   all: (level, message) => {
     Object.keys(log4jsConfig.categories).map((category) => (log4js.getLogger(category)[level](message)));
   }

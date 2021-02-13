@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "console": "node --experimental-repl-await ./scripts/console.js",
-    "test": "jest --runInBand"
+    "test:all": "NODE_ENV=test jest --runInBand",
+    "test:api": "NODE_ENV=test jest --runInBand ./tests/api",
+    "test:ws": "NODE_ENV=test jest --runInBand ./tests/ws",
+    "test:one": "NODE_ENV=test node scripts/run_scenario.js"
   },
   "repository": {
     "type": "git",
@@ -19,8 +22,9 @@
   },
   "homepage": "https://github.com/with-labs/mercury#readme",
   "dependencies": {
-    "@withso/with-shared": "^1.1.2",
+    "@withso/with-shared": "file:../with-shared",
     "aws-sdk": "^2.797.0",
+    "btoa": "^1.2.1",
     "camelcase-keys": "^6.2.2",
     "chance": "^1.1.7",
     "commander": "^6.2.0",

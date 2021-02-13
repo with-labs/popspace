@@ -1,4 +1,5 @@
 require("dotenv").config()
+console.log(`Starting console - ${process.env.NODE_ENV}`)
 const lib = require("../src/lib/_lib.js")
 
 const repl = require("repl")

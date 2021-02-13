@@ -571,10 +571,8 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/with-shared@^1.1.2":
-  version "1.3.45"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.3.45.tgz#9b21e1f753487fe6407207eb0ab38a4e13ad2f8b"
-  integrity sha512-PeOpZXrnT1jopFpY87BffKn5VZytQoyRyOCu87PvBEWAOKodckRCd6JydhjSbZmYlfLgo9u4MJ6KVq8r+rlpZg==
+"@withso/with-shared@file:../with-shared":
+  version "1.3.49"
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
@@ -758,9 +756,9 @@ aws-sdk@^2.797.0:
     xml2js "0.4.19"
 
 aws-sdk@^2.834.0:
-  version "2.834.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.834.0.tgz#1d9f8ed7cf2ed885041142d67e29f45cbb8621b7"
-  integrity sha512-9WRULrn4qAmgXI+tEW/IG5s/6ixJGZqjPOrmJsFZQev7/WRkxAZmJAjcwd4Ifm/jsJbXx2FSwO76gOPEvu2LqA==
+  version "2.840.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.840.0.tgz#f5529c9bd3bf0be7f8e855a23ff9c12b1705418f"
+  integrity sha512-ngesHJqb0PXYjJNnCsAX4yLkR6JFQJB+3eDGwh3mYRjcq9voix5RfbCFQT1lwWu7bcMBPCrRIA2lJkkTMYXq+A==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -939,6 +937,11 @@ bser@2.1.1:
   integrity sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==
   dependencies:
     node-int64 "^0.4.0"
+
+btoa@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
+  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
 
 buffer-from@^1.0.0:
   version "1.1.1"

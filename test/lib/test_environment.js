@@ -16,7 +16,8 @@ module.exports = class {
         await shared.db.roomMemberships.forceMembership(room.id, user)
       }
     } else {
-      let roomInfo = await shared.db.rooms.generateRoom(user.id)
+      const isEmptyRoom = true
+      let roomInfo = await shared.db.rooms.generateRoom(user.id, isEmptyRoom)
       room = roomInfo.room
       roomNameEntry = roomInfo.roomNameEntry
     }

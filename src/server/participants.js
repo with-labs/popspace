@@ -13,6 +13,10 @@ class Participants {
     }
   }
 
+  getSocketGroup(roomId) {
+    return this.socketGroupsByRoomId[roomId]
+  }
+
   setMessageHandler(messageHandler) {
     this.messageHandler = messageHandler
   }

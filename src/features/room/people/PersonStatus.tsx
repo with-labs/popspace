@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   emoji: {
     fontSize: 18,
-    lineHeight: 0,
+    lineHeight: 1,
   },
   text: {
     textOverflow: 'ellipsis',
@@ -160,7 +160,11 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHo
   const statusContent = (
     <>
       <div className={classes.emoji}>
-        {!!status || !!emoji ? <Emoji emoji={emoji || 'speech_balloon'} size={18} /> : <EmojiIcon fontSize="inherit" />}
+        {!!status || !!emoji ? (
+          <Emoji native emoji={emoji || 'speech_balloon'} size={16} />
+        ) : (
+          <EmojiIcon fontSize="inherit" />
+        )}
       </div>
       <SizeTransition transitionKey={displayedStatus}>
         {!!displayedStatus ? <StatusDisplay>{displayedStatus}</StatusDisplay> : null}
@@ -216,7 +220,9 @@ const CurrentEmojiButtonContent = ({ emoji }: { emoji: EmojiData | string }) => 
   };
 
   return (
-    <div {...contentProps}>{isHovered ? <CloseIcon fontSize="inherit" /> : <Emoji emoji={emoji} size={18} />}</div>
+    <div {...contentProps}>
+      {isHovered ? <CloseIcon fontSize="inherit" /> : <Emoji emoji={emoji} size={16} native />}
+    </div>
   );
 };
 

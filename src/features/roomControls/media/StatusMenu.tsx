@@ -153,7 +153,11 @@ export const StatusMenu: React.FC<IStatusMenuProps> = ({ open, onClose, anchorEl
                 onClick={(ev: React.MouseEvent<HTMLElement>) => setEmojiAnchorEl(ev.target as any)}
                 size="small"
               >
-                {emoji ? <Emoji emoji={emoji ?? 'speech_balloon'} size={24} /> : <EmojiIcon fontSize="default" />}
+                {emoji ? (
+                  <Emoji native emoji={emoji ?? 'speech_balloon'} size={24} />
+                ) : (
+                  <EmojiIcon fontSize="default" />
+                )}
               </IconButton>
             </InputAdornment>
             <ResponsivePopover anchorEl={emojiAnchorEl} open={!!emojiAnchorEl} onClose={() => setEmojiAnchorEl(null)}>

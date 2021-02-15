@@ -179,7 +179,9 @@ export const StatusMenu: React.FC<IStatusMenuProps> = ({ open, onClose, anchorEl
           setInputValue(ev.target.value);
         }}
       />
-      <Button onClick={clearStatus}>{t('features.room.statusMenu.clearStatusButton')}</Button>
+      <Button onClick={clearStatus} disabled={inputValue.length === 0 && !emoji}>
+        {t('features.room.statusMenu.clearStatusButton')}
+      </Button>
 
       <ListSubheader disableGutters>{t('features.room.statusMenu.historyTitle')}</ListSubheader>
       <MenuList variant="menu">

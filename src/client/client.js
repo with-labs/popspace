@@ -141,7 +141,8 @@ class Client extends EventEmitter {
     this.send(JSON.stringify(event))
   }
 
-  async sendHttpPost(endpoint, data) {
+  async sendHttpPost(endpoint, data={}) {
+    const authHeader = this.authToken ? `Bearer ${btoa(this.authToken)}` : ""
     const options = {
       host: lib.app.apiHost(),
       port: lib.app.apiPort(),
@@ -151,7 +152,7 @@ class Client extends EventEmitter {
       ca: [fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')],
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${btoa(this.authToken)}`
+        'Authorization': authHeader
       },
     }
     let responseChunks = []

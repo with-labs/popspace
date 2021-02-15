@@ -16,7 +16,7 @@ const runScenario = async () => {
   await lib.init()
   console.log("Running", commander.test, commander.scenario)
   const result = await testSuite[commander.scenario]()
-  console.log("Test result: ", result)
+  console.log("Test result: ", JSON.stringify(result))
   process.exit(0)
 }
 

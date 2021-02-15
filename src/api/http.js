@@ -5,7 +5,7 @@ const http = {
     res.send(error)
   },
 
-  succeed: async (req, res, data) => {
+  succeed: async (req, res, data={}) => {
     res.send(Object.assign(lib.util.snakeToCamelCase(data), {success: true}))
   },
 

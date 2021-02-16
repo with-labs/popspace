@@ -1,4 +1,5 @@
 const bodyParser = require("body-parser")
+const cors = require("cors")
 const base64Decode = (str) => Buffer.from(str, "base64").toString("utf-8")
 const getUser = async (req, res) => {
   // support Authorization header with a bearer token,
@@ -34,6 +35,7 @@ const getAppUrl = async (req, res) => {
 class MercuryMiddleware {
   constructor(express) {
     this.express = express
+    this.express.use(cors())
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use((req, res, next) => {

@@ -24,28 +24,28 @@ class MercuryApi {
       so it'd be more like ownerEndpoint((req, res) => ()), memberEndpoint(...), ...
     **/
     this.api.loggedInPostEndpoint("/enable_public_invite_link", async (req, res) => {
-      if(!req.body.room_id) {
+      if(!req.body.room_route) {
         log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
-        return http.fail(req, res, "Must provide room_id", {errorCode: shared.error.code.INVALID_API_PARAMS})
+        return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
-      const room = await shared.db.rooms.roomById(req.body.room_id)
+      const room = await shared.db.rooms.roomByRoute(req.body.room_route)
       if(!room) {
-        return http.fail(req, res, "Unknown room", {errorCode: shared.error.code.UNKNOWN_ROOM})
+        return http.fail(req, res, `Unknown room ${req.body.room_route}`, {errorCode: shared.error.code.UNKNOWN_ROOM})
       }
       if(req.user.id != room.owner_id) {
         return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
       }
-      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.body.room_id)
+      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(room.id)
       const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
       http.succeed(req, res, { inviteRoute, otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })
 
     this.api.loggedInPostEndpoint("/get_public_invite_routes", async (req, res) => {
-      if(!req.body.room_id) {
+      if(!req.body.room_route) {
         log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
-        return http.fail(req, res, "Must provide room_id", {errorCode: shared.error.code.INVALID_API_PARAMS})
+        return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
-      const room = await shared.db.rooms.roomById(req.body.room_id)
+      const room = await shared.db.rooms.roomByRoute(req.body.room_route)
       if(!room) {
         return http.fail(req, res, "Unknown room", {errorCode: shared.error.code.UNKNOWN_ROOM})
       }
@@ -53,7 +53,7 @@ class MercuryApi {
       if(!canGetRoute) {
         return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
       }
-      const routeEntries = await shared.db.room.invites.getActivePublicInviteUrls(req.body.room_id)
+      const routeEntries = await shared.db.room.invites.getActivePublicInviteUrls(room.id)
       const routesList = routeEntries.map((entry) => (routes.publicInviteRoute(entry.otp)))
       http.succeed(req, res, { routes: routesList })
     })
@@ -75,18 +75,18 @@ class MercuryApi {
     })
 
     this.api.loggedInPostEndpoint("/disable_public_invite_link", async (req, res) => {
-      if(!req.body.room_id) {
+      if(!req.body.room_route) {
         log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
-        return http.fail(req, res, "Must provide room_id", {errorCode: shared.error.code.INVALID_API_PARAMS})
+        return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
-      const room = await shared.db.rooms.roomById(req.body.room_id)
+      const room = await shared.db.rooms.roomByRoute(req.body.room_route)
       if(!room) {
         return http.fail(req, res, "Unknown room", {errorCode: shared.error.code.UNKNOWN_ROOM})
       }
       if(req.user.id != room.owner_id) {
         return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
       }
-      const result = await shared.db.room.invites.disablePublicInviteUrl(req.body.room_id)
+      const result = await shared.db.room.invites.disablePublicInviteUrl(room.id)
       http.succeed(req, res)
     })
   }

@@ -373,7 +373,10 @@
         "linkInviteExplanation": "Only users with a With account can use this link.",
         "emailInviteTitle": "Invite via email",
         "guestExplanation": "Only the room owner can enable this setting.",
-        "copySuccess": "Invite link copied!"
+        "copySuccess": "Secret link copied!",
+        "inviteLinkReset": "Secret link reset.",
+        "CopyLinkButtonText": "Copy link",
+        "copyLinkButtonAria": "Copy the secret link to the clipboard"
       },
       "statusControls": {
         "toolTip": "Set your status"

@@ -15,6 +15,9 @@ import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
 import RoomPage from './pages/room';
 import { JoinRoom } from './pages/JoinRoom/JoinRoom';
+import { InviteLink } from './pages/InviteLink/InviteLink';
+import { useFeatureFlag } from 'flagg';
+
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
@@ -41,6 +44,8 @@ const RootView = () => {
 };
 
 export const Routes: React.FC<IRoutesProps> = (props) => {
+  const [hasInviteLink] = useFeatureFlag('inviteLink');
+
   return (
     <Switch>
       <AuthenticatedRoute exact path={RouteNames.ROOT}>
@@ -71,6 +76,8 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
       <Route path={RouteNames.JOIN_ROOM}>
         <JoinRoom />
       </Route>
+
+      {hasInviteLink && <Route path={RouteNames.INVITE} component={InviteLink} />}
 
       <AdminRoute path={RouteNames.ADMIN}>
         <Admin />

@@ -1,17 +1,7 @@
-import React, { useState, useRef, forwardRef } from 'react';
-import {
-  IconButton,
-  makeStyles,
-  Box,
-  Switch,
-  Typography,
-  FilledInput,
-  InputAdornment,
-  Button,
-} from '@material-ui/core';
+import React, { useState, forwardRef } from 'react';
+import { makeStyles, Box, Switch, Typography, Button } from '@material-ui/core';
 import { useTranslation, Trans } from 'react-i18next';
 import clsx from 'clsx';
-import { CopyIcon } from '../../../components/icons/CopyIcon';
 import { useSpring, animated } from '@react-spring/web';
 import { useSnackbar } from 'notistack';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
@@ -51,39 +41,46 @@ const useStyles = makeStyles((theme) => ({
     verticalAlign: 'baseline',
     minWidth: 0,
   },
-  linkField: {
-    backgroundColor: theme.palette.brandColors.snow.regular,
-    '&:hover': {
-      backgroundColor: theme.palette.brandColors.snow.regular,
-    },
-  },
 }));
 
 export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, ref) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const copyLinkRef = useRef<HTMLInputElement>(null);
   const { enqueueSnackbar } = useSnackbar();
   const isRoomOwner = useIsRoomOwner();
 
   const [linkActive, setLinkActive] = useState(false);
+  const [secretLink, setSecretLink] = useState<string | null>(null);
 
   const copyLinkStyles = useSpring({
     from: { height: 0, opacity: 0 },
     to: { height: linkActive ? 40 : 0, opacity: linkActive ? 1 : 0 },
   });
 
-  const onCopyPressed = async () => {
+  const toggleSwitch = async () => {
     try {
-      await navigator.clipboard.writeText('Put link here!');
-      enqueueSnackbar(t('features.roomControls.copySuccess'), { variant: 'success' });
-    } catch (err) {
-      // TODO: handle error case
-      console.log(err);
-    }
+      // TODO: Handle error states and hook up to api
+      setLinkActive(!linkActive);
+      setSecretLink('test link');
+    } catch (err) {}
   };
 
-  const onResetLinkPressed = () => {};
+  const onCopyPressed = async () => {
+    // TODO: Handle error states and hook up to api
+    try {
+      if (secretLink) {
+        await navigator.clipboard.writeText('Put link here!');
+        enqueueSnackbar(t('features.roomControls.copySuccess'), { variant: 'success' });
+      }
+    } catch (err) {}
+  };
+
+  const onResetLinkPressed = async () => {
+    try {
+      // TOOD: hookup api and handle error state, show fail toast?
+      enqueueSnackbar(t('features.roomControls.inviteLinkReset'), { variant: 'success' });
+    } catch (err) {}
+  };
 
   return (
     <Box
@@ -114,32 +111,20 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
         <Switch
           disabled={!linkActive && !isRoomOwner}
           checked={linkActive}
-          onChange={() => setLinkActive(!linkActive)}
+          onChange={toggleSwitch}
           name="toggle-invite-link"
           inputProps={{ 'aria-label': t('features.roomControls.linkInviteAriaLabel') }}
         />
       </Box>
       <animated.div style={copyLinkStyles as any}>
-        <FilledInput
-          ref={copyLinkRef}
-          id="invite-link"
-          defaultValue="Hello World"
-          readOnly
-          classes={{ root: classes.linkField }}
+        <Button
+          color="default"
+          onClick={onCopyPressed}
           fullWidth
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={t('features.status.altClearButton')}
-                onClick={onCopyPressed}
-                edge="end"
-                size="small"
-              >
-                <CopyIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
+          aria-label={t('features.roomControls.copyLinkButtonAria')}
+        >
+          {t('features.roomControls.CopyLinkButtonText')}
+        </Button>
       </animated.div>
       <Box className={classes.explanationTextWrapper}>
         <Typography variant="body2" className={classes.explanationText}>

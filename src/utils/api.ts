@@ -147,6 +147,10 @@ class Api {
     });
   }
 
+  async roomMembershipThroughSharableLink(otp: string) {
+    // todo: attach to backend
+  }
+
   async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', `/.netlify/functions${endpoint}`, true);

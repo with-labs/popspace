@@ -252,6 +252,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
         set({
           x: finalPosition.x,
           y: finalPosition.y,
+          immediate: true,
         });
 
         autoPan.update({ x: state.xy[0], y: state.xy[1] });

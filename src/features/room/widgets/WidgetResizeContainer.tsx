@@ -9,6 +9,7 @@ import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
+import { useRoomViewport } from '../RoomViewport';
 
 export interface IWidgetResizeContainerProps extends Omit<IResizeContainerProps, 'onResize' | 'size'> {
   className?: string;
@@ -34,6 +35,8 @@ export const WidgetResizeContainer = React.forwardRef<ResizeContainerImperativeA
     const {
       widget: { widgetId },
     } = useWidgetContext();
+    const { getZoom } = useRoomViewport();
+    const getScaleFactor = React.useCallback(() => 1 / getZoom(), [getZoom]);
 
     const size = useRoomStore(React.useCallback((room) => room.widgetPositions[widgetId]?.size ?? null, [widgetId]));
     const resizeWidget = useRoomStore((room) => room.api.resizeWidget);
@@ -49,7 +52,14 @@ export const WidgetResizeContainer = React.forwardRef<ResizeContainerImperativeA
     );
 
     return (
-      <ResizeContainer size={size} onResize={onResize} mode={mode} ref={ref} {...restProps}>
+      <ResizeContainer
+        size={size}
+        onResize={onResize}
+        mode={mode}
+        ref={ref}
+        getResizeScaleFactor={getScaleFactor}
+        {...restProps}
+      >
         <div className={clsx(classes.content, className)}>{children}</div>
       </ResizeContainer>
     );

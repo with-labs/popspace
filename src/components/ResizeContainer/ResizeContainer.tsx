@@ -24,7 +24,7 @@ export interface IResizeContainerProps {
    * corner  should scale resize changes by 2 to account for the fact that the
    * content will resize both toward the handle and away from it at the same rate.
    */
-  resizeScaleFactor?: number;
+  getResizeScaleFactor?: () => number;
   /**
    * Prevent user resizing, even if the handle is present.
    */
@@ -136,6 +136,11 @@ export type ResizeContainerImperativeApi = {
   remeasure(): void;
 };
 
+// static reference to maintain referential equality and avoid
+// unnecessary rerenders.
+// don't you love programming?
+const return1 = () => 1;
+
 /**
  * A content container which allows the user to resize it using a
  * resize handle, which you can render as you like anywhere within the
@@ -154,7 +159,7 @@ export const ResizeContainer = React.memo(
         mode = 'free',
         disabled,
         size,
-        resizeScaleFactor = 1,
+        getResizeScaleFactor = return1,
         onResize,
         maxWidth,
         maxHeight,
@@ -253,11 +258,11 @@ export const ResizeContainer = React.memo(
             const deltaX = state.xy[0] - initialPosition[0];
             const deltaY = state.xy[1] - initialPosition[1];
 
-            const newWidth = providedWidth + deltaX * resizeScaleFactor;
-            const newHeight = providedHeight + deltaY * resizeScaleFactor;
+            const newWidth = providedWidth + deltaX * getResizeScaleFactor();
+            const newHeight = providedHeight + deltaY * getResizeScaleFactor();
 
-            set(
-              clampAndEnforceMode({
+            set({
+              ...clampAndEnforceMode({
                 width: newWidth,
                 height: newHeight,
                 minHeight,
@@ -266,8 +271,9 @@ export const ResizeContainer = React.memo(
                 maxWidth,
                 originalAspectRatio,
                 mode,
-              })
-            );
+              }),
+              immediate: true,
+            });
 
             // memoize initialPosition for future events to reference
             return initialPosition;

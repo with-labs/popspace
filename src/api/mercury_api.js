@@ -37,7 +37,7 @@ class MercuryApi {
       }
       const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(room.id)
       const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
-      http.succeed(req, res, { inviteRoute, otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
+      return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })
 
     this.api.loggedInPostEndpoint("/get_public_invite_routes", async (req, res) => {
@@ -55,7 +55,7 @@ class MercuryApi {
       }
       const routeEntries = await shared.db.room.invites.getActivePublicInviteUrls(room.id)
       const routesList = routeEntries.map((entry) => (routes.publicInviteRoute(entry.otp)))
-      http.succeed(req, res, { routes: routesList })
+      return http.succeed(req, res, { routes: routesList })
     })
 
     this.api.loggedInPostEndpoint("/room_membership_through_shareable_link", async (req, res) => {
@@ -63,15 +63,15 @@ class MercuryApi {
       const inviteId = req.body.invite_id
       const invite = await shared.db.room.invites.inviteById(inviteId)
       if(!invite) {
-        return await http.fail(req, res,  "No such invite", { errorCode: shared.error.code.INVALID_INVITE })
+        return http.fail(req, res,  "No such invite", { errorCode: shared.error.code.INVALID_INVITE })
       }
 
       const resolve = await shared.db.room.invites.joinRoomThroughPublicInvite(invite, req.user, otp)
       if(resolve.error) {
-        return await http.fail(req, res, "Unable to become member.", { errorCode: resolve.error} )
+        return http.fail(req, res, "Unable to become member.", { errorCode: resolve.error} )
       }
 
-      return await http.succeed(req, res)
+      return http.succeed(req, res)
     })
 
     this.api.loggedInPostEndpoint("/disable_public_invite_link", async (req, res) => {
@@ -87,7 +87,7 @@ class MercuryApi {
         return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
       }
       const result = await shared.db.room.invites.disablePublicInviteUrl(room.id)
-      http.succeed(req, res)
+      return http.succeed(req, res)
     })
   }
 

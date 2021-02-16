@@ -25,11 +25,16 @@ module.exports = class {
   }
 
   async logIntoRoom(client, user, room, roomNameEntry) {
-    const session = await factory.create("session", {user_id: user.id})
-    const token = await shared.lib.auth.tokenFromSession(session)
+    const { session, token } = await this.initiateLoggedInSession(user.id)
     const environmentUser = { user, session, token, room, client, roomNameEntry }
     this.loggedInUsers.push(environmentUser)
     return environmentUser
+  }
+
+  async initiateLoggedInSession(userId) {
+    const session = await factory.create("session", {user_id: userId})
+    const token = await shared.lib.auth.tokenFromSession(session)
+    return { session, token }
   }
 
   async authenticate(environmentUser) {

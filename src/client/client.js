@@ -171,14 +171,18 @@ class Client extends EventEmitter {
     })
   }
 
+  async logIn(token) {
+    this.authToken = token
+  }
+
   async authenticate(token, roomName) {
     const response = await this.sendEventWithPromise("auth", { token, roomName })
     if(response.kind == "error") {
       throw response
     } else {
+      await this.logIn(token)
       this.roomData = new ClientRoomData(response.payload)
     }
-    this.authToken = token
     return response
   }
 

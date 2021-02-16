@@ -57,4 +57,11 @@ tlib.TestTemplate.describeWithLib('invites', () => {
     expect(result.disableResponse.errorCode).toEqual(shared.error.code.PERMISSION_DENIED)
   })
 
+  test("Upon hitting an invite URL, users become room members", async () => {
+    const result = await scenarios["logged_in_users_become_members"]()
+    expect(result.isMemberBeforeJoin).toEqual(false)
+    expect(result.isMemberAfterJoin).toEqual(true)
+  })
+
+
 })

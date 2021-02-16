@@ -63,5 +63,12 @@ tlib.TestTemplate.describeWithLib('invites', () => {
     expect(result.isMemberAfterJoin).toEqual(true)
   })
 
+  test("Upon hitting a revoked invite URL, receive error", async () => {
+    const result = await scenarios["revoked_links_fail"]()
+    expect(result.response.success).toEqual(false)
+    expect(result.response.errorCode).toEqual(shared.error.code.REVOKED_OTP)
+  })
+
+
 
 })

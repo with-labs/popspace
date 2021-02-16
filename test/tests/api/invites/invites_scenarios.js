@@ -94,6 +94,19 @@ module.exports = {
       const response = await joiningClient.sendHttpPost("/room_membership_through_shareable_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
       const isMemberAfterJoin = await shared.db.room.memberships.isMember(joiningUser.id, userInfo.room.id)
       return { response, isMemberBeforeJoin, isMemberAfterJoin }
+  }),
+
+
+  "revoked_links_fail":  tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
+      const userInfo = testEnvironment.loggedInUsers[0]
+      const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_id: userInfo.room.id})
+      const joiningUser = await factory.create("user")
+      const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)
+      const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
+      await joiningClient.logIn(token)
+      const disableResponse = await userInfo.client.sendHttpPost("/disable_public_invite_link", {room_id: userInfo.room.id})
+      const response = await joiningClient.sendHttpPost("/room_membership_through_shareable_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
+      return { response }
   })
 
 

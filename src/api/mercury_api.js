@@ -54,8 +54,8 @@ class MercuryApi {
         return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
       }
       const routeEntries = await shared.db.room.invites.getActivePublicInviteUrls(room.id)
-      const routesList = routeEntries.map((entry) => (routes.publicInviteRoute(entry.otp)))
-      return http.succeed(req, res, { routes: routesList })
+      const inviteDetails = routeEntries.map((entry) => ({inviteId: entry.id, otp: entry.otp} ))
+      return http.succeed(req, res, { inviteDetails })
     })
 
     this.api.loggedInPostEndpoint("/room_membership_through_shareable_link", async (req, res) => {
@@ -72,6 +72,11 @@ class MercuryApi {
       }
 
       return http.succeed(req, res)
+    })
+
+
+    this.api.loggedInPostEndpoint("/reset_public_invite_link", async (req, res) => {
+
     })
 
     this.api.loggedInPostEndpoint("/disable_public_invite_link", async (req, res) => {

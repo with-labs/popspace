@@ -96,7 +96,7 @@ const RELAXED_SPRING = {
   mass: 10,
 };
 
-const useStyles = makeStyles<Theme, IRoomViewportProps>({
+const useStyles = makeStyles<Theme, IRoomViewportProps>((theme) => ({
   fileDropLayer: {
     width: '100%',
     height: '100%',
@@ -111,14 +111,17 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>({
     position: 'relative',
     touchAction: 'none',
     contain: 'strict',
+    '&:focus': {
+      outline: 'none',
+    },
   },
   canvas: {
     position: 'absolute',
     transformOrigin: 'center center',
-    borderRadius: 10,
+    borderRadius: theme.shape.borderRadius,
     backgroundSize: 'cover',
   },
-});
+}));
 
 export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const styles = useStyles(props);
@@ -142,7 +145,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
   // initializes canvas size
   React.useLayoutEffect(() => {
-    const canvasEl = canvasRef.current!;
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) return;
     canvasEl.style.width = `${bounds.width}px`;
     canvasEl.style.height = `${bounds.height}px`;
     canvasEl.style.backgroundImage = `url(${backgroundUrl})`;
@@ -209,12 +213,12 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
       return transformedPoint;
     },
-    [zoom.goal, centerX.goal, centerY.goal, halfWindowWidth, halfWindowHeight, halfCanvasWidth, halfCanvasHeight]
+    [zoom, centerX, centerY, halfWindowWidth, halfWindowHeight, halfCanvasWidth, halfCanvasHeight]
   );
 
   const clampPanPosition = React.useCallback(
     (panPosition: Vector2) => {
-      const scale = zoom.goal;
+      const scale = zoom?.goal ?? 1;
 
       const worldScreenWidth = windowWidth / scale;
       const worldScreenHeight = windowHeight / scale;
@@ -241,8 +245,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       // also update pan position as the user zooms, since
       // the allowed boundary changes slightly as the zoom changes
       const clampedPan = clampPanPosition({
-        x: centerX.goal,
-        y: centerY.goal,
+        x: centerX?.goal ?? 0,
+        y: centerY?.goal ?? 0,
       });
 
       const panPromise = setPanSpring({
@@ -261,7 +265,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
   const doZoom = React.useCallback(
     (delta: number, spring?: SpringConfig) => {
-      const currentZoom = zoom.goal;
+      const currentZoom = zoom?.goal ?? 1;
       const added = currentZoom + delta;
       return doAbsoluteZoom(added, spring);
     },
@@ -276,8 +280,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       // instead of hard-constraining the value (advantage: we can
       // have some elasticity to the boundary collision)
       const clamped = clampPanPosition({
-        x: centerX.goal - delta.x / zoom.goal,
-        y: centerY.goal - delta.y / zoom.goal,
+        x: (centerX?.goal ?? 0) - delta.x / (zoom?.goal ?? 1),
+        y: (centerY?.goal ?? 0) - delta.y / (zoom?.goal ?? 1),
       });
 
       return setPanSpring({
@@ -431,7 +435,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const infoContextValue = React.useMemo(
     () => ({
       toWorldCoordinate,
-      getZoom: zoom.get.bind(zoom),
+      getZoom: () => zoom.get(),
       onObjectDragStart,
       onObjectDragEnd,
       pan: doPan,

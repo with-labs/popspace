@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { makeStyles, TextField, Paper, Box } from '@material-ui/core';
+import { makeStyles, TextField, Paper, Box, Popper } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { QuickAction } from '../quickActions/QuickAction';
-import { useQuickAction } from '../quickActions/useQuickAction';
 import { QuickAction as QuickActionData } from '../../../quickActions/types';
 import { QuickActionEmpty } from '../quickActions/QuickActionEmpty';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,7 @@ export interface IOmnibarProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    minWidth: 264,
+    minWidth: 178,
   },
   addMenuButton: {
     // according to design system rules, this button is within an input within
@@ -20,15 +19,23 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 2,
   },
   inputRoot: {
+    backgroundColor: 'transparent',
     '&[class*="MuiFilledInput-root"]': {
       // reset the Autocomplete padding change...
-      paddingTop: 4,
-      paddingBottom: 4,
+      paddingTop: 2,
+      paddingBottom: 1,
       paddingLeft: 8,
     },
+    '& input': {
+      width: 120,
+      transition: theme.transitions.create('width'),
+      '&:focus': {
+        width: 240,
+      },
+    },
   },
-  input: {
-    paddingLeft: 8,
+  arrow: {
+    display: 'none',
   },
 }));
 
@@ -59,8 +66,10 @@ export const Omnibar: React.FC<IOmnibarProps> = (props) => {
       {...autocompleteProps}
       // When the input is empty we show a special popup with a message
       PaperComponent={autocompleteProps.inputValue ? Paper : EmptyPaper}
+      PopperComponent={CustomPopper}
       classes={{
         inputRoot: classes.inputRoot,
+        endAdornment: classes.arrow,
       }}
     />
   );
@@ -74,3 +83,5 @@ const EmptyPaper = (props: any) => (
     {props.children}
   </Paper>
 );
+
+const CustomPopper = (props: any) => <Popper {...props} style={{ width: 294 }} placement="bottom-start" />;

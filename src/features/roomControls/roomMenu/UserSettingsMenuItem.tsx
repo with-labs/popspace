@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { SettingsIcon } from '../../../components/icons/SettingsIcon';
 import { useRoomModalStore } from '../useRoomModalStore';
+import { UserIcon } from '../../../components/icons/UserIcon';
 
 export interface IUserSettingsMenuItemProps {
   onClick?: () => void;
@@ -23,7 +23,7 @@ export const UserSettingsMenuItem = React.forwardRef<HTMLLIElement, IUserSetting
         {...rest}
       >
         <ListItemIcon>
-          <SettingsIcon />
+          <UserIcon />
         </ListItemIcon>
         <ListItemText primary={children} />
       </MenuItem>

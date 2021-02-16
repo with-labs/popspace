@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { makeStyles, Divider, ListItemText, Box, IconButton } from '@material-ui/core';
+import { makeStyles, Divider, ListItemText, IconButton } from '@material-ui/core';
 import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ChangelogMenuItem } from './ChangelogMenuItem';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +13,11 @@ import { RouteNames } from '../../../constants/RouteNames';
 import { LinkMenuItem } from '../../../components/LinkMenuItem/LinkMenuItem';
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    marginRight: theme.spacing(1),
+  button: {},
+  menu: {
+    [theme.breakpoints.up('md')]: {
+      transform: `translateX(-4px)`,
+    },
   },
 }));
 
@@ -26,7 +29,7 @@ export const RoomMenu = () => {
   const onClose = () => setAnchorEl(null);
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center">
+    <>
       <IconButton
         aria-label={t('features.roomMenu.title')}
         onClick={(ev) => setAnchorEl(ev.currentTarget)}
@@ -37,7 +40,7 @@ export const RoomMenu = () => {
       >
         <HamburgerIcon />
       </IconButton>
-      <ResponsiveMenu id="roomMenu" anchorEl={anchorEl} open={!!anchorEl} onClose={onClose}>
+      <ResponsiveMenu id="roomMenu" anchorEl={anchorEl} open={!!anchorEl} onClose={onClose} className={classes.menu}>
         <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
         <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
         <Divider />
@@ -57,6 +60,6 @@ export const RoomMenu = () => {
           <ListItemText primary={t('features.roomMenu.licenses')} />
         </LinkMenuItem>
       </ResponsiveMenu>
-    </Box>
+    </>
   );
 };

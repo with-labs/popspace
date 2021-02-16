@@ -1,4 +1,4 @@
-import { Box, makeStyles, Hidden } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
 import { isPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
@@ -17,19 +17,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MediaControls = () => {
+export const MediaControls: React.FC<{ className?: string }> = ({ className }) => {
   const classes = useStyles();
 
   const [hasPip] = useFeatureFlag('pictureInPicture');
 
   return (
-    <Box display="flex" flexDirection="row" alignItems="center" color="grey.900" pl={1}>
+    <Box display="flex" flexDirection="row" alignItems="center" color="grey.900" className={className}>
       <CameraToggle className={classes.toggleButton} />
       <MicToggle className={classes.toggleButton} />
       <StatusControls className={classes.toggleButton} />
-      <Hidden smDown>
-        <ScreenShareToggle className={classes.toggleButton} />
-      </Hidden>
+      <ScreenShareToggle className={classes.toggleButton} />
       {isPIPAvailable && hasPip && <PictureInPictureToggle className={classes.soloButton} />}
     </Box>
   );

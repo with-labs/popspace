@@ -16,7 +16,7 @@ export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'ti
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    borderRadius: `10px 10px 0 0`,
+    borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
     flex: '0 0 auto',

@@ -5,7 +5,7 @@ import { DropdownFilledIcon } from '../../../components/icons/DropdownFilledIcon
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.grey[50],
+    backgroundColor: theme.palette.common.white,
     position: 'relative',
     zIndex: 1,
     left: -8,

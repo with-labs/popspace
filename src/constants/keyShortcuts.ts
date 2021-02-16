@@ -3,4 +3,5 @@ export enum KeyShortcut {
   ToggleVideo = 'v',
   TogglePictureInPicture = 'p',
   ToggleStatus = 's',
+  ToggleAway = 'q',
 }

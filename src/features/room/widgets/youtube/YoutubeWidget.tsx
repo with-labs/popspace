@@ -13,6 +13,7 @@ import { YouTubePlayer } from './YouTubePlayer';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '../../../../roomState/types/widgets';
+import { useIsAway } from '../../../roomControls/away/useIsAway';
 
 export interface IYoutubeWidgetProps {}
 
@@ -75,6 +76,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
 
   const [isMuted, setIsMuted] = React.useState(false);
   const toggleMuted = () => setIsMuted((v) => !v);
+  const [isAway] = useIsAway();
 
   const isPlaying = !!state.widgetState.mediaState?.isPlaying;
 
@@ -95,10 +97,12 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
     }
   }
 
+  const finalMuted = isMuted || isAway;
+
   return (
     <WidgetFrame color="cherry">
       <WidgetTitlebar title={t('widgets.youtube.title')}>
-        <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
+        <MuteButton isPlaying={isPlaying} isMuted={finalMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
         <WidgetResizeContainer
@@ -109,7 +113,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
           className={classes.videoContainer}
           mode="scale"
         >
-          <YouTubePlayer state={state} onChange={saveWidget} isMuted={isMuted} />
+          <YouTubePlayer state={state} onChange={saveWidget} isMuted={finalMuted} />
           <WidgetResizeHandle className={classes.resizeHandle} />
         </WidgetResizeContainer>
       </WidgetContent>

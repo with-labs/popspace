@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, IconButton } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
@@ -19,6 +19,7 @@ import { logger } from '../../../utils/logger';
 import { v4 } from 'uuid';
 
 import bugReportImg from './images/bugReport.png';
+import { ResponsiveIconButton } from '../../../components/ResponsiveIconButton/ResponsiveIconButton';
 
 type BugReportFormData = {
   description: string;
@@ -69,15 +70,7 @@ const useStyles = makeStyles((theme) => ({
   reportButton: {
     backgroundColor: theme.palette.brandColors.snow.regular,
     borderRadius: theme.shape.borderRadius,
-    padding: `${theme.spacing(1.5)}px 20px`,
     boxShadow: theme.mainShadows.surface,
-  },
-  reportButtonText: {
-    marginLeft: theme.spacing(2),
-    textTransform: 'none',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
   },
 }));
 
@@ -156,17 +149,17 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
 
   return (
     <>
-      <IconButton
-        aria-label={t('modals.bugReportModal.title')}
+      <ResponsiveIconButton
         color="inherit"
         className={clsx(classes.reportButton, className)}
         onClick={onOpenHandler}
+        size="small"
+        startIcon={<BugIcon fontSize="small" />}
+        fullWidth={false}
+        label={t('modals.bugReportModal.title')}
       >
-        <BugIcon />
-        <Typography aria-hidden="true" variant="button" className={classes.reportButtonText}>
-          {t('modals.bugReportModal.title')}
-        </Typography>
-      </IconButton>
+        {t('modals.bugReportModal.title')}
+      </ResponsiveIconButton>
       <Modal onClose={onCloseHandler} isOpen={isOpen}>
         <ModalTitleBar title={t('modals.bugReportModal.title')} onClose={onCloseHandler} />
         <ModalContentWrapper>

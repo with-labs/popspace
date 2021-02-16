@@ -330,7 +330,7 @@
         "altClearButton": "Clear status"
       },
       "omnibar": {
-        "placeholder": "Add content to the room",
+        "placeholder": "Add content",
         "label": "Quick action bar",
         "quickActionEmpty": "Type or paste anything you want to add to the room, or select an action below."
       },
@@ -377,6 +377,14 @@
       },
       "statusControls": {
         "toolTip": "Set your status"
+      },
+      "away": {
+        "leave": "Toggle away mode",
+        "return": "I'm back",
+        "tooltip": "Toggle away mode",
+        "explainerTitle": "You're away",
+        "explainerText": "While away, your camera is off, your mic is muted, and the room is silent.",
+        "explainerImgAlt": "An illustration with a grayed-out avatar bubble"
       }
     },
     "modals": {
@@ -506,7 +514,8 @@
         "validateMessage": "Room names must match"
       },
       "inviteMemberModal": {
-        "title": "Invite members"
+        "title": "Invite members",
+        "defaultRoomName": "Room"
       }
     }
   }

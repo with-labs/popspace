@@ -7,6 +7,7 @@ export interface ParticipantState {
   displayName: string;
   statusText: string | null;
   emoji: string | null;
+  isAway: boolean;
 }
 
 export interface ParticipantShape {

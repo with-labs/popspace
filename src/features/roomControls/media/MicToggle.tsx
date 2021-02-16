@@ -17,10 +17,7 @@ import { useRemoteControl } from '../../../hooks/useRemoteControl/useRemoteContr
 import { MIC_TRACK_NAME } from '../../../constants/User';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    // default (inactive) state is red
-    backgroundColor: theme.palette.error.light,
-  },
+  root: {},
 }));
 
 export interface IMicToggleProps {

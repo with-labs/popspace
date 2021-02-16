@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
-import clsx from 'clsx';
 import Publication from '../../../components/Publication/Publication';
-import { useSpring, animated } from '@react-spring/web';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { PersonStatus } from './PersonStatus';
 import { SidecarStreamPreview } from './SidecarStreamPreview';
@@ -13,23 +11,14 @@ import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingS
 import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 import { RoomUserStateShape } from '../../../roomState/useRoomStore';
 import { Stream } from '../../../types/streams';
-import { PersonAvatar } from './PersonAvatar';
-
-const EXPANDED_SIZE = 280;
-const SMALL_SIZE = 140;
-const VOICE_ICON_SPRINGS = {
-  VISIBLE: {
-    mass: 0.5,
-    tension: 700,
-    friction: 20,
-  },
-  INVISIBLE: {
-    mass: 0.1,
-    tension: 800,
-    friction: 30,
-  },
-};
-
+import { PersonBubbleFrame } from './PersonBubbleFrame';
+import { PersonBubbleContent } from './PersonBubbleContent';
+import { PersonBubbleBackground } from './PersonBubbleBackground';
+import { PersonBubbleLabel } from './PersonBubbleLabel';
+import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
+import { PersonBubbleStatus } from './PersonBubbleStatus';
+import { PersonBubbleAvatar } from './PersonBubbleAvatar';
+import { AwayIcon } from '../../../components/icons/AwayIcon';
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   isMe: boolean;
   person: RoomUserStateShape;
@@ -38,27 +27,10 @@ export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    border: `4px solid ${theme.palette.background.paper}`,
-    transition: theme.transitions.create('border-color'),
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: theme.mainShadows.surface,
-  },
   handle: {
     overflow: 'hidden',
     width: '100%',
     height: '100%',
-  },
-  mainContent: {
-    overflow: 'hidden',
-    width: '100%',
-    height: '100%',
-    pointerEvents: 'none',
-    display: 'flex',
-    flexDirection: 'column',
   },
   video: {
     width: '100%',
@@ -68,26 +40,6 @@ const useStyles = makeStyles((theme) => ({
   },
   audio: {
     display: 'none',
-  },
-  avatar: {
-    width: '100%',
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    bottom: 41,
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-    overflow: 'hidden',
-  },
-  background: {
-    width: '100%',
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-    overflow: 'hidden',
-  },
-  status: {
-    position: 'absolute',
-    zIndex: 1,
   },
   screenSharePreviewContainer: {
     position: 'absolute',
@@ -103,14 +55,6 @@ const useStyles = makeStyles((theme) => ({
     border: `2px solid ${theme.palette.background.paper}`,
     borderRadius: theme.shape.contentBorderRadius,
   },
-  bottomSection: {
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   name: {
     fontSize: theme.typography.pxToRem(13),
     fontWeight: theme.typography.fontWeightMedium,
@@ -119,11 +63,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '70%',
     overflow: 'hidden',
     whiteSpace: 'nowrap',
-  },
-  voiceIndicator: {
-    bottom: -8,
-    position: 'absolute',
-    transform: 'translate(50%, -50%)',
   },
   mutedIcon: {
     width: 16,
@@ -138,12 +77,19 @@ const useStyles = makeStyles((theme) => ({
     // tweak to visually align it with mute icon
     top: 7,
   },
+  awayIcon: {
+    width: 20,
+    height: 20,
+    position: 'relative',
+    top: 4,
+    fontSize: theme.typography.pxToRem(20),
+    // TODO: better color palettes - this is blueberry vibrant
+    color: '#65B2E2',
+  },
 }));
 
 /**
- * Renders the 'bubble' which represents a user in the room.
- * TODO: break this component down (both the JSX and the hook logic)
- * so it's easier to read / maintain / reuse pieces
+ * Renders the 'bubble' which represents a user in the room with full interactivity.
  */
 export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>(
   ({ isMe: isLocal, person, mainStream, sidecarStreams, ...rest }, ref) => {
@@ -175,79 +121,10 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const statusText = person?.participantState.statusText;
     const displayIdentity = person?.participantState.displayName;
     const avatarName = person?.participantState.avatarName;
+    const isAway = !!person?.participantState.isAway;
 
     // determine background color based on avatar
     const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
-
-    // this spring animates the outer bubble container
-    const rootStyles = useSpring({
-      borderRadius: isVideoOn ? 32 : '100%',
-      width: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
-      height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
-    });
-
-    // this spring animates the main internal layout structure
-    const mainContentStyles = useSpring({
-      // reduce border radius to align based on border width
-      borderRadius: isVideoOn ? 28 : '100%',
-    });
-
-    // this spring animates the video / avatar container and background
-    const graphicStyles = useSpring({
-      height: isVideoOn ? EXPANDED_SIZE - 32 : SMALL_SIZE - 49,
-      backgroundColor,
-    });
-
-    // this spring animates the speaking indicator position as the
-    // bubble transitions from video to avatar
-    const [speakingIndicatorStyles, setSpeakingIndicatorStyles] = useSpring(() => ({
-      right: isVideoOn ? '8%' : '50%',
-      bottom: isVideoOn ? -10 : -8,
-      opacity: 1,
-      config: VOICE_ICON_SPRINGS.VISIBLE,
-    }));
-
-    // scripted animation for the transition to and from video for the speaking indicator
-    // graphic - this makes the transition of the position of the icon feel less
-    // awkward by hiding it while it moves, popping it in later
-    React.useEffect(() => {
-      (async function () {
-        if (isVideoOn) {
-          await setSpeakingIndicatorStyles({ opacity: 0, config: VOICE_ICON_SPRINGS.VISIBLE });
-          await setSpeakingIndicatorStyles({
-            right: '8%',
-            bottom: -20,
-            // modify spring for this operation - the icon is invisible at this point
-            // we just want this to move quickly to the next position
-            config: VOICE_ICON_SPRINGS.INVISIBLE,
-          });
-          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -10, config: VOICE_ICON_SPRINGS.VISIBLE });
-        } else {
-          await setSpeakingIndicatorStyles({ opacity: 0, config: VOICE_ICON_SPRINGS.VISIBLE });
-          await setSpeakingIndicatorStyles({
-            right: '50%',
-            bottom: -18,
-            // modify spring for this operation - the icon is invisible at this point
-            // we just want this to move quickly to the next position
-            config: VOICE_ICON_SPRINGS.INVISIBLE,
-          });
-          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -8, config: VOICE_ICON_SPRINGS.VISIBLE });
-        }
-      })();
-    }, [isVideoOn, setSpeakingIndicatorStyles]);
-
-    // this spring animates the display name
-    const bottomSectionStyles = useSpring({
-      lineHeight: '1',
-      height: isVideoOn ? 24 : 16,
-    });
-
-    // this spring animates the status indicator
-    const statusStyles = useSpring({
-      left: isVideoOn ? 8 : 16,
-      top: isVideoOn ? 8 : 0,
-      x: isVideoOn ? '0%' : '-100%',
-    });
 
     // we only activate hover effects if the user isn't on mobile
     const handlers = isMobileOnly
@@ -258,18 +135,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         };
 
     return (
-      <animated.div
-        {...rest}
-        ref={ref}
-        className={clsx(classes.root, rest.className)}
-        style={rootStyles as any}
-        data-test-person={displayIdentity}
-        {...handlers}
-      >
+      <PersonBubbleFrame {...rest} isVideoOn={isVideoOn} ref={ref} data-test-person={displayIdentity} {...handlers}>
         <DraggableHandle disabled={!isLocal} className={classes.handle}>
-          <animated.div className={classes.mainContent} style={mainContentStyles}>
+          <PersonBubbleContent isVideoOn={isVideoOn}>
             {/* Still a typing issue with react-spring :( */}
-            <animated.div className={classes.background} style={graphicStyles as any}>
+            <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor} grayscale={isAway}>
               {mainStream?.videoPublication && (
                 <Publication
                   classNames={classes.video}
@@ -279,8 +149,10 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
                   objectKind="user"
                 />
               )}
-            </animated.div>
-            {!mainStream?.videoPublication && <PersonAvatar className={classes.avatar} personId={userId} />}
+            </PersonBubbleBackground>
+            {!mainStream?.videoPublication && (
+              <PersonBubbleAvatar userId={userId} grayscale={isAway} freeze={isAway ? 'eyesClosed' : false} />
+            )}
             {mainStream?.audioPublication && (
               <Publication
                 classNames={classes.audio}
@@ -291,21 +163,23 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
                 disableAudio={isLocal}
               />
             )}
-            <animated.div className={clsx(classes.bottomSection)} style={bottomSectionStyles}>
+            <PersonBubbleLabel isVideoOn={isVideoOn}>
               <Typography className={classes.name}>{displayIdentity}</Typography>
-            </animated.div>
-            <animated.div className={classes.voiceIndicator} style={speakingIndicatorStyles as any}>
-              {isMicOn ? (
+            </PersonBubbleLabel>
+            <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
+              {isAway ? (
+                <AwayIcon className={classes.awayIcon} fontSize="inherit" />
+              ) : isMicOn ? (
                 <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
               ) : (
                 <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
               )}
-            </animated.div>
-          </animated.div>
+            </PersonBubbleVoiceIndicator>
+          </PersonBubbleContent>
         </DraggableHandle>
-        <animated.div className={classes.status} style={statusStyles}>
+        <PersonBubbleStatus isVideoOn={isVideoOn}>
           <PersonStatus emoji={emoji} status={statusText} isParentHovered={isHovered} isLocal={isLocal} />
-        </animated.div>
+        </PersonBubbleStatus>
         {hasSidecars && (
           <div className={classes.screenSharePreviewContainer}>
             {sidecarStreams.map((stream) => (
@@ -318,7 +192,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             ))}
           </div>
         )}
-      </animated.div>
+      </PersonBubbleFrame>
     );
   }
 );

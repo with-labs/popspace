@@ -1,10 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, IconButton, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { Links } from '../../../constants/Links';
+import { ResponsiveIconButton } from '../../../components/ResponsiveIconButton/ResponsiveIconButton';
+import { FeedbackIcon } from '../../../components/icons/FeedbackIcon';
 
-import { ReactComponent as FeatureIcon } from '../../../images/icons/feature.svg';
 interface ISendFeedback {
   className?: string;
 }
@@ -13,15 +14,7 @@ const useStyles = makeStyles((theme) => ({
   button: {
     backgroundColor: theme.palette.brandColors.snow.regular,
     borderRadius: theme.shape.borderRadius,
-    padding: `${theme.spacing(1.5)}px 20px`,
     boxShadow: theme.mainShadows.surface,
-  },
-  buttonText: {
-    marginLeft: theme.spacing(2),
-    textTransform: 'none',
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
   },
 }));
 
@@ -35,16 +28,16 @@ export const SendFeedback: React.FC<ISendFeedback> = (props) => {
   };
 
   return (
-    <IconButton
-      aria-label={t('features.room.sendFeedbackBtn')}
+    <ResponsiveIconButton
       color="inherit"
       className={clsx(classes.button, className)}
       onClick={onClickHandler}
+      size="small"
+      startIcon={<FeedbackIcon fontSize="small" />}
+      fullWidth={false}
+      label={t('features.room.sendFeedbackBtn')}
     >
-      <FeatureIcon />
-      <Typography aria-hidden="true" variant="button" className={classes.buttonText}>
-        {t('features.room.sendFeedbackBtn')}
-      </Typography>
-    </IconButton>
+      {t('features.room.sendFeedbackBtn')}
+    </ResponsiveIconButton>
   );
 };

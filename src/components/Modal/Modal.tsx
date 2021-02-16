@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Dialog, useMediaQuery, Theme, SwipeableDrawer } from '@material-ui/core';
 
-interface IModalProps {
+export interface IModalProps {
   children?: ReactNode;
   isOpen: boolean;
   onClose?: () => void;

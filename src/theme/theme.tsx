@@ -175,8 +175,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       fontWeightMedium: SEMIBOLD_WEIGHT,
     },
     shape: {
-      borderRadius: 14,
-      contentBorderRadius: 6,
+      borderRadius: 6,
+      contentBorderRadius: 4,
       innerBorderRadius: 2,
       borderWidth: 2,
     },
@@ -199,7 +199,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
     breakpoints: {
       values: {
         sm: 440,
-        md: 768,
+        // accommodates the entire room controls with all available features
+        md: 850,
         lg: 960,
       },
     },
@@ -522,6 +523,30 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         outlined: {
           borderWidth: 2,
         },
+        text: {
+          '&:focus, &$focusVisible': {
+            boxShadow: focusRings.create(palette.secondary.dark),
+          },
+        },
+        sizeSmall: {
+          padding: '6px 12px',
+          '& $startIcon': {
+            marginRight: 4,
+          },
+          '& $endIcon': {
+            marginLeft: 4,
+          },
+        },
+        startIcon: {
+          paddingLeft: 0,
+          marginLeft: 0,
+          marginRight: 8,
+        },
+        endIcon: {
+          paddingRight: 0,
+          marginRight: 0,
+          marginLeft: 8,
+        },
       },
       MuiIconButton: {
         root: {
@@ -769,7 +794,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           borderRadius: '100%',
           borderWidth: 0,
           color: palette.grey[900],
-          backgroundColor: palette.grey[50],
+          backgroundColor: 'transparent',
           padding: 8,
           boxShadow: focusRings.idle,
 
@@ -790,8 +815,8 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           },
 
           '&$selected': {
-            color: palette.secondary.dark,
-            backgroundColor: palette.secondary.light,
+            color: palette.secondary.main,
+            backgroundColor: 'transparent',
 
             '& + &': {
               // remove the default conjoining of toggle buttons
@@ -891,8 +916,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiFab: {
         root: {
           minHeight: 32,
+          width: 48,
+          height: 48,
           // unlike other buttons, these have a drop shadow so need to use border for focus effect
           border: `2px solid ${palette.background.paper}`,
+          borderRadius: shape.borderRadius,
           backgroundColor: palette.background.paper,
           color: palette.grey[900],
           '&:focus, &$focusVisible': {

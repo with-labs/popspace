@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     height: 'auto',
     display: 'block',
     objectFit: 'cover',
-    borderRadius: 14,
+    borderRadius: theme.shape.borderRadius,
   },
 }));
 

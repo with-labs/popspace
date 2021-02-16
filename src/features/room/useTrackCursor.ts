@@ -2,6 +2,7 @@ import throttle from 'lodash.throttle';
 import { useRef, useMemo, useCallback, useEffect } from 'react';
 import { useRoomStore } from '../../roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
+import { useIsAway } from '../roomControls/away/useIsAway';
 
 /**
  * Tracks cursor position and sends updates to the socket connection
@@ -12,15 +13,17 @@ export function useTrackCursor() {
   const update = useRoomStore((room) => room.api.updateCursor);
   const throttledUpdate = useMemo(() => throttle(update, 500), [update]);
 
+  const [isAway] = useIsAway();
+
   const onMove = useCallback(
     (pos: Vector2) => {
       lastKnownPositionRef.current = pos;
       throttledUpdate({
         position: pos,
-        active: true,
+        active: !isAway,
       });
     },
-    [lastKnownPositionRef, throttledUpdate]
+    [lastKnownPositionRef, throttledUpdate, isAway]
   );
 
   useEffect(() => {

@@ -4,12 +4,14 @@ import clsx from 'clsx';
 import { useAvatar } from '../../hooks/useAvatar/useAvatar';
 import { makeStyles } from '@material-ui/core';
 
-interface IAvatarProps {
+export interface IAvatarProps {
   name: string;
   className?: string;
   size?: number | string;
   baseImageClassName?: string;
   useFallback?: boolean;
+  /** Stop animation and show the avatar in the specified state */
+  freeze?: 'eyesOpen' | 'eyesClosed' | false;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +33,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClassName, size, useFallback = false }) => {
+export const Avatar: React.FC<IAvatarProps> = ({
+  name,
+  className,
+  baseImageClassName,
+  size,
+  useFallback = false,
+  freeze = false,
+}) => {
   const classes = useStyles();
 
   const avatar = useAvatar(name);
@@ -41,7 +50,9 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
 
   // Effect to set the blinking state in a somewhat random manner.
   useEffect(() => {
-    if (avatar) {
+    if (freeze) {
+      setIsBlinking(freeze === 'eyesClosed');
+    } else if (avatar) {
       // Timeout up to 5000ms for non-blinking state. 100ms for blinking state.
       const timeoutMillis = isBlinking ? 100 : Math.floor(Math.random() * 5000);
       const blinkTimeout = setTimeout(() => {
@@ -52,7 +63,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
         clearTimeout(blinkTimeout);
       };
     }
-  }, [isBlinking, avatar]);
+  }, [isBlinking, avatar, freeze]);
 
   if (avatar) {
     // Use two img tags and toggle visibility on them so that both images are fetched and cached by the browser
@@ -76,7 +87,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, baseImageClass
       </div>
     );
   } else if (useFallback && name) {
-    // this allows us to pass in an avater that isnt part of the avatar list while
+    // this allows us to pass in an avatar that isn't part of the avatar list while
     // also keeping the same behavior
     return (
       <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>

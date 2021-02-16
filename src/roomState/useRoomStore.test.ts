@@ -78,6 +78,7 @@ describe('the central room state store (useRoomStore)', () => {
                 displayName: 'Cat',
                 emoji: '🙀',
                 statusText: 'testing',
+                isAway: false,
               },
             },
             participants: [
@@ -92,6 +93,7 @@ describe('the central room state store (useRoomStore)', () => {
                   displayName: 'Cat',
                   emoji: '🙀',
                   statusText: 'testing',
+                  isAway: false,
                 },
                 transform: {
                   position: { x: 0, y: 0 },
@@ -155,6 +157,7 @@ describe('the central room state store (useRoomStore)', () => {
                 avatarName: 'cat',
                 statusText: 'testing',
                 emoji: '🙀',
+                isAway: false,
               },
               sessionIds: expect.any(Set),
             },
@@ -193,6 +196,7 @@ describe('the central room state store (useRoomStore)', () => {
                 displayName: 'Cat',
                 statusText: null,
                 emoji: null,
+                isAway: false,
               },
               id: 'user1',
             },
@@ -204,6 +208,7 @@ describe('the central room state store (useRoomStore)', () => {
                 displayName: 'Bunny',
                 statusText: 'hoppin',
                 emoji: null,
+                isAway: false,
               },
               id: 'user2',
             },
@@ -254,6 +259,7 @@ describe('the central room state store (useRoomStore)', () => {
           emoji: null,
           displayName: 'Cat',
           avatarName: 'cat',
+          isAway: false,
         });
         expect(socket.send).toHaveBeenCalledWith({
           kind: 'updateSelf',
@@ -279,6 +285,7 @@ describe('the central room state store (useRoomStore)', () => {
               avatarName: 'bear',
               emoji: null,
               statusText: null,
+              isAway: false,
             },
             sessionId: 'new-session',
             transform: {
@@ -297,6 +304,7 @@ describe('the central room state store (useRoomStore)', () => {
             avatarName: 'bear',
             emoji: null,
             statusText: null,
+            isAway: false,
           },
           authenticated: true,
           sessionIds: expect.any(Set),
@@ -322,6 +330,7 @@ describe('the central room state store (useRoomStore)', () => {
               avatarName: 'bear',
               emoji: null,
               statusText: null,
+              isAway: false,
             },
             sessionId: 'new-session',
             transform: {
@@ -340,6 +349,7 @@ describe('the central room state store (useRoomStore)', () => {
             avatarName: 'bear',
             emoji: null,
             statusText: null,
+            isAway: false,
           },
           authenticated: true,
           sessionIds: expect.any(Set),
@@ -364,6 +374,7 @@ describe('the central room state store (useRoomStore)', () => {
               avatarName: 'bear',
               emoji: null,
               statusText: null,
+              isAway: false,
             },
             sessionId: 'new-session',
             transform: {
@@ -393,6 +404,7 @@ describe('the central room state store (useRoomStore)', () => {
             avatarName: 'bear',
             emoji: null,
             statusText: null,
+            isAway: false,
           },
           authenticated: true,
           sessionIds: expect.any(Set),
@@ -447,6 +459,7 @@ describe('the central room state store (useRoomStore)', () => {
             avatarName: 'bunny',
             statusText: 'eatin',
             emoji: null,
+            isAway: false,
           },
           sessionIds: expect.any(Set),
         });

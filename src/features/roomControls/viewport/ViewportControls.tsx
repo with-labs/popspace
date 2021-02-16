@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
   },
   controlCluster: {
     padding: theme.spacing(1),
-    borderRadius: 12,
 
     display: 'flex',
     flexDirection: 'row',

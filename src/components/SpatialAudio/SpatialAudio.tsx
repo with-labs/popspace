@@ -1,5 +1,6 @@
 import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
+import { useIsAway } from '../../features/roomControls/away/useIsAway';
 import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 
@@ -51,6 +52,13 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
         }
       }
     }, [canMount, internalRef, lastVolumeRef, disableSpatialAudio]);
+
+    const [isAway] = useIsAway();
+    React.useEffect(() => {
+      if (internalRef.current) {
+        internalRef.current.muted = isAway;
+      }
+    }, [isAway]);
 
     const finalRef = useMergedRef(internalRef, ref);
 

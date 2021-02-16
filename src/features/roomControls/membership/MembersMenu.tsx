@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { IconButton, Hidden, makeStyles, Typography } from '@material-ui/core';
-import { InviteIcon } from '../../../components/icons/InviteIcon';
+import { makeStyles, Typography } from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
 import { InviteLink } from '../InviteLink/InviteLink';
 import { useFeatureFlag } from 'flagg';
 import { useTranslation } from 'react-i18next';
 import { ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
+import { useRoomStore } from '../../../roomState/useRoomStore';
+import { ResponsiveIconButton } from '../../../components/ResponsiveIconButton/ResponsiveIconButton';
+import { truncate } from '../../../utils/truncate';
+import { RoomIcon } from '../../../components/icons/RoomIcon';
 
 export interface IMembersMenuProps {}
 
@@ -24,6 +27,12 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginBottom: theme.spacing(2),
   },
+  button: {
+    paddingTop: 8,
+    paddingBottom: 8,
+    maxWidth: 240,
+    whiteSpace: 'nowrap',
+  },
 }));
 
 /**
@@ -36,12 +45,10 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
   const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
   const classes = useStyles();
   const { t } = useTranslation();
+  const displayName = useRoomStore((room) => room.state.displayName);
 
   const [hasInviteLink] = useFeatureFlag('inviteLink');
 
-  const onOpen = React.useCallback(() => {
-    setIsOpen(true);
-  }, []);
   const openAndFocusInvite = React.useCallback(() => {
     setIsOpen(true);
     setAutoFocusInvite(true);
@@ -53,14 +60,18 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
 
   return (
     <div ref={ref}>
-      <IconButton onClick={openAndFocusInvite}>
-        <InviteIcon />
-      </IconButton>
-      <Hidden smDown>
-        <IconButton ref={anchorRef} onClick={onOpen}>
-          <DropdownIcon />
-        </IconButton>
-      </Hidden>
+      <ResponsiveIconButton
+        ref={anchorRef}
+        variant="text"
+        color="inherit"
+        onClick={openAndFocusInvite}
+        className={classes.button}
+        startIcon={<RoomIcon fontSize="default" />}
+        endIcon={<DropdownIcon fontSize="default" />}
+        label={displayName}
+      >
+        {truncate(displayName || t('modals.inviteMemberModal.defaultRoomName'), 20)}
+      </ResponsiveIconButton>
       <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
         {hasInviteLink && (
           <div>

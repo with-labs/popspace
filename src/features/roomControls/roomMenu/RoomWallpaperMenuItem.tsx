@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { SettingsIcon } from '../../../components/icons/SettingsIcon';
 import { useRoomModalStore } from '../useRoomModalStore';
+import { WallpaperIcon } from '../../../components/icons/WallpaperIcon';
 
 export interface IRoomWallpaperMenuItemProps {
   onClick?: () => void;
@@ -21,7 +21,7 @@ export const RoomWallpaperMenuItem = React.forwardRef<HTMLLIElement, IRoomWallpa
       button
     >
       <ListItemIcon>
-        <SettingsIcon />
+        <WallpaperIcon />
       </ListItemIcon>
       <ListItemText primary={props.children} />
     </MenuItem>

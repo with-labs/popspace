@@ -25,7 +25,12 @@ class MercuryApi {
     **/
     this.api.loggedInPostEndpoint("/enable_public_invite_link", async (req, res) => {
       if(!req.body.room_route) {
-        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
+        /*
+          It may be nice to introduce a general-purpose params verification system.
+          I'll leave this for now as a reminder - I think the best point to make a decision here
+          is when I'm refactoring the shared endpoint pre-requisites, like the room existance.
+        */
+        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.body)}`)
         return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
       const room = await shared.db.rooms.roomByRoute(req.body.room_route)
@@ -42,7 +47,7 @@ class MercuryApi {
 
     this.api.loggedInPostEndpoint("/get_public_invite_details", async (req, res) => {
       if(!req.body.room_route) {
-        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
+        log.error.error(`Invalid get_public_invite_details request ${JSON.stringify(req.body)}`)
         return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
       const room = await shared.db.rooms.roomByRoute(req.body.room_route)
@@ -76,7 +81,7 @@ class MercuryApi {
 
     this.api.loggedInPostEndpoint("/reset_public_invite_link", async (req, res) => {
       if(!req.body.room_route) {
-        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
+        log.error.error(`Invalid reset_public_invite_link request ${JSON.stringify(req.user)}`)
         return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
       const room = await shared.db.rooms.roomByRoute(req.body.room_route)
@@ -94,7 +99,7 @@ class MercuryApi {
 
     this.api.loggedInPostEndpoint("/disable_public_invite_link", async (req, res) => {
       if(!req.body.room_route) {
-        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
+        log.error.error(`Invalid disable_public_invite_link request ${JSON.stringify(req.body)}`)
         return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
       }
       const room = await shared.db.rooms.roomByRoute(req.body.room_route)

@@ -37,7 +37,7 @@ tlib.TestTemplate.describeWithLib('invites', () => {
 
   test("It's possible to retrieve enabled links", async () => {
     const result = await scenarios["retrieve_invite_link"]()
-    expect(result.response.routes.length).toBeGreaterThanOrEqual(1)
+    expect(result.response.inviteDetails.length).toBeGreaterThanOrEqual(1)
   })
 
   test("Unauthorized users can't fetch invite links", async () => {

@@ -40,7 +40,7 @@ class MercuryApi {
       return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })
 
-    this.api.loggedInPostEndpoint("/get_public_invite_routes", async (req, res) => {
+    this.api.loggedInPostEndpoint("/get_public_invite_details", async (req, res) => {
       if(!req.body.room_route) {
         log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
         return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})

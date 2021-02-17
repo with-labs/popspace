@@ -74,9 +74,22 @@ class MercuryApi {
       return http.succeed(req, res)
     })
 
-
     this.api.loggedInPostEndpoint("/reset_public_invite_link", async (req, res) => {
-
+      if(!req.body.room_route) {
+        log.error.error(`Invalid enable_public_invite_link request ${JSON.stringify(req.user)}`)
+        return http.fail(req, res, "Must provide room_route", {errorCode: shared.error.code.INVALID_API_PARAMS})
+      }
+      const room = await shared.db.rooms.roomByRoute(req.body.room_route)
+      if(!room) {
+        return http.fail(req, res, "Unknown room", {errorCode: shared.error.code.UNKNOWN_ROOM})
+      }
+      if(req.user.id != room.owner_id) {
+        return http.fail(req, res, "Insufficient permission", {errorCode: shared.error.code.PERMISSION_DENIED})
+      }
+      await shared.db.room.invites.disablePublicInviteUrl(room.id)
+      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(room.id)
+      const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
+      return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })
 
     this.api.loggedInPostEndpoint("/disable_public_invite_link", async (req, res) => {

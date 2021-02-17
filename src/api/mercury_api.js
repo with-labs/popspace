@@ -73,10 +73,14 @@ class MercuryApi {
 
       const resolve = await shared.db.room.invites.joinRoomThroughPublicInvite(invite, req.user, otp)
       if(resolve.error) {
+        if(resolve.error == shared.error.code.JOIN_ALREADY_MEMBER) {
+          const roomNameEntry = await shared.db.rooms.preferredNameById(invite.room_id)
+          return http.succeed(req, res, { roomRoute: roomNameEntry.name })
+        }
         return http.fail(req, res, "Unable to become member.", { errorCode: resolve.error} )
       }
-
-      return http.succeed(req, res)
+      const roomNameEntry = await shared.db.rooms.preferredNameById(invite.room_id)
+      return http.succeed(req, res, { roomRoute: roomNameEntry.name })
     })
 
     this.api.loggedInPostEndpoint("/reset_public_invite_link", async (req, res) => {

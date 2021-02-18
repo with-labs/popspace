@@ -66,6 +66,9 @@ class MercuryApi {
     this.api.loggedInPostEndpoint("/room_membership_through_public_invite_link", async (req, res) => {
       const otp = req.body.otp
       const inviteId = req.body.invite_id
+      if(!inviteId) {
+        return http.fail(req, res, "Must provide inviteId", {errorCode: shared.error.code.INVALID_API_PARAMS})
+      }
       const invite = await shared.db.room.invites.inviteById(inviteId)
       if(!invite) {
         return http.fail(req, res,  "No such invite", { errorCode: shared.error.code.INVALID_INVITE })

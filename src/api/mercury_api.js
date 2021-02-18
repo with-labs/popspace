@@ -73,7 +73,10 @@ class MercuryApi {
       if(!invite) {
         return http.fail(req, res,  "No such invite", { errorCode: shared.error.code.INVALID_INVITE })
       }
-
+      const tooManyMembers = await shared.db.room.memberships.hasReachedMaxMemberships(invite.room_id)
+      if(tooManyMembers) {
+        return http.fail(req, res,  "Too many members", { errorCode: shared.error.code.TOO_MANY_ROOM_MEMBERS })
+      }
       const resolve = await shared.db.room.invites.joinRoomThroughPublicInvite(invite, req.user, otp)
       if(resolve.error) {
         if(resolve.error == shared.error.code.JOIN_ALREADY_MEMBER) {

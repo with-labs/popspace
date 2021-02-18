@@ -54,7 +54,7 @@ module.exports = {
   "retrieve_invite_link": tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
     const userInfo = testEnvironment.loggedInUsers[0]
     const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
-    const retrieveResponse = await userInfo.client.sendHttpPost("/get_public_invite_routes", {room_route: userInfo.roomNameEntry.name})
+    const retrieveResponse = await userInfo.client.sendHttpPost("/get_public_invite_details", {room_route: userInfo.roomNameEntry.name})
     return { response: retrieveResponse }
   }),
 
@@ -63,7 +63,7 @@ module.exports = {
       const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
       const unauthorizedClients = await tlib.util.addClients(testEnvironment.mercury, 1)
       const unauthorizedClient = unauthorizedClients[0]
-      const retrieveResponse = await unauthorizedClient.sendHttpPost("/get_public_invite_routes", {room_route: userInfo.roomNameEntry.name})
+      const retrieveResponse = await unauthorizedClient.sendHttpPost("/get_public_invite_details", {room_route: userInfo.roomNameEntry.name})
       return { response: retrieveResponse }
   }),
 
@@ -91,7 +91,7 @@ module.exports = {
       const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
       await joiningClient.logIn(token)
       const isMemberBeforeJoin = await shared.db.room.memberships.isMember(joiningUser.id, userInfo.room.id)
-      const response = await joiningClient.sendHttpPost("/room_membership_through_shareable_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
+      const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
       const isMemberAfterJoin = await shared.db.room.memberships.isMember(joiningUser.id, userInfo.room.id)
       return { response, isMemberBeforeJoin, isMemberAfterJoin }
   }),
@@ -105,8 +105,23 @@ module.exports = {
       const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
       await joiningClient.logIn(token)
       const disableResponse = await userInfo.client.sendHttpPost("/disable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
-      const response = await joiningClient.sendHttpPost("/room_membership_through_shareable_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
+      const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
       return { response }
+  }),
+
+  "max_members_respected": tlib.TestTemplate.nAuthenticatedUsers(2, async (testEnvironment) => {
+    const replacedGetMaxMembers = shared.db.room.memberships.getMaxRoomMembers
+    shared.db.room.memberships.getMaxRoomMembers = () => (1)
+    const userInfo = testEnvironment.loggedInUsers[0]
+    const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
+    const joiningUser = await factory.create("user")
+
+    const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)
+    const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
+    await joiningClient.logIn(token)
+    const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
+    shared.db.room.memberships.getMaxRoomMembers = replacedGetMaxMembers
+    return { response }
   })
 
 

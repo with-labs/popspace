@@ -16,6 +16,10 @@ import clsx from 'clsx';
 // network. Setting this too high will make movement look laggy for peers,
 // but doesn't affect the local experience.
 const MOVE_THROTTLE_PERIOD = 50;
+const TOP_LEFT_ORIGIN = {
+  vertical: 0,
+  horizontal: 0,
+};
 
 export interface IDraggableProps {
   /**
@@ -48,6 +52,15 @@ export interface IDraggableProps {
    * Applies a CSS class name to the drag container
    */
   className?: string;
+  /**
+   * Optionally, you can customize how the draggable positions itself
+   * relative to its position coordinate value. Values are 0-1.0,
+   * representing percentages.
+   */
+  origin?: {
+    vertical: number;
+    horizontal: number;
+  };
 }
 
 const useStyles = makeStyles({
@@ -87,6 +100,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
   onDragStart,
   kind,
   className,
+  origin = TOP_LEFT_ORIGIN,
 }) => {
   const styles = useStyles();
 
@@ -314,7 +328,10 @@ export const Draggable: React.FC<IDraggableProps> = ({
         style={{
           transform: to(
             [x, y],
-            (xv, yv) => `translate(${Math.round(xv + viewport.width / 2)}px, ${Math.round(yv + viewport.height / 2)}px)`
+            (xv, yv) =>
+              `translate(${Math.round(xv + viewport.width / 2)}px, ${Math.round(
+                yv + viewport.height / 2
+              )}px) translate(${-origin.horizontal * 100}%, ${-origin.vertical * 100}%)`
           ),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),

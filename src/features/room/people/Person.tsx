@@ -9,6 +9,7 @@ import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useColle
 import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
 
 const MAX_Z_INDEX = 2147483647;
+const CENTER_ORIGIN = { horizontal: 0.5, vertical: 0.5 };
 
 export interface IPersonProps {
   personId: string;
@@ -66,7 +67,7 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
   }
 
   return (
-    <Draggable id={personId} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1} kind="person">
+    <Draggable id={personId} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1} kind="person" origin={CENTER_ORIGIN}>
       <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />
     </Draggable>
   );

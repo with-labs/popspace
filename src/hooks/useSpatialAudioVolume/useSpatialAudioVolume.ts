@@ -1,4 +1,4 @@
-import { vectorDistance } from '../../utils/math';
+import { addVectors, vectorDistance } from '../../utils/math';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import { logger } from '../../utils/logger';
@@ -31,16 +31,23 @@ export function useSpatialAudioVolume(
     const selectVolume = (room: RoomStateShape) => {
       if (!room.sessionId) return 0;
 
-      const objPosition =
-        objectKind === 'widget'
-          ? room.widgetPositions[objectId ?? '']?.position
-          : room.userPositions[objectId ?? '']?.position;
+      const objTransform =
+        objectKind === 'widget' ? room.widgetPositions[objectId ?? ''] : room.userPositions[objectId ?? ''];
       const userPosition = room.userPositions[room.sessionLookup[room.sessionId]]?.position;
+
+      const objPosition = objTransform?.position;
 
       if (!objPosition || !userPosition) return 0;
 
+      // for widgets with a size, center the spatial audio computation position
+      // in the center of the widget.
+      const finalPosition =
+        objectKind === 'widget' && objTransform.size
+          ? addVectors(objPosition, { x: objTransform.size.width / 2, y: objTransform.size.height / 2 })
+          : objPosition;
+
       const normalizedDistance =
-        Math.max(Math.min(vectorDistance(objPosition, userPosition), MAX_RANGE), 0) / MAX_RANGE;
+        Math.max(Math.min(vectorDistance(finalPosition, userPosition), MAX_RANGE), 0) / MAX_RANGE;
       return computeVolumeFalloff(normalizedDistance);
     };
 

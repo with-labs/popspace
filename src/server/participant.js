@@ -184,6 +184,13 @@ class Participant {
     return this.authenticated
   }
 
+  async hasAuthorizedRoomAccess() {
+    if(!this.authenticated) {
+      return false
+    }
+    return await shared.db.roomMemberships.hasAccess(this.user.id, this.room.id)
+  }
+
   setEventHandler(handler) {
     // Events are JSON objects sent over the socket
     this.eventHandler = handler

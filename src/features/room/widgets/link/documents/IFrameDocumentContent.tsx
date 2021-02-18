@@ -40,6 +40,7 @@ export function IFrameDocumentContent() {
             allow="encrypted-media"
             allowFullScreen
             allowTransparency
+            sandbox="allow-presentation allow-scripts allow-same-origin allow-forms "
             className={classes.iframe}
           />
         </div>

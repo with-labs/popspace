@@ -21,6 +21,9 @@ export function DocumentLinkWidget() {
     widget: { widgetState },
   } = useWidgetContext<WidgetType.Link>();
 
+  // disable sandbox for PDFs specifically, it breaks in Chrome
+  const isPDF = widgetState.mediaContentType === 'application/pdf';
+
   return (
     <WidgetFrame color="snow">
       <WidgetResizeContainer
@@ -31,7 +34,7 @@ export function DocumentLinkWidget() {
         maxHeight={900}
         className={classes.resizeContainer}
       >
-        {widgetState.showIframe ? <IFrameDocumentContent /> : <CollapsedDocumentContent />}
+        {widgetState.showIframe ? <IFrameDocumentContent disableSandbox={isPDF} /> : <CollapsedDocumentContent />}
       </WidgetResizeContainer>
     </WidgetFrame>
   );

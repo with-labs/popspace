@@ -63,7 +63,7 @@ class MercuryApi {
       return http.succeed(req, res, { inviteDetails })
     })
 
-    this.api.loggedInPostEndpoint("/room_membership_through_shareable_link", async (req, res) => {
+    this.api.loggedInPostEndpoint("/room_membership_through_public_invite_link", async (req, res) => {
       const otp = req.body.otp
       const inviteId = req.body.invite_id
       const invite = await shared.db.room.invites.inviteById(inviteId)

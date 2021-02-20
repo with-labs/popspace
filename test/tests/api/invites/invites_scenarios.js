@@ -47,6 +47,7 @@ module.exports = {
       so this type of test mirrors reality more ("it's not a bug, it's a feature")
     */
     loggedOutClient.authToken = ""
+    console.log("================ sending request")
     const response = await loggedOutClient.sendHttpPost("/enable_public_invite_link", {room_route: ""})
     return { response }
   }),
@@ -108,21 +109,5 @@ module.exports = {
       const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
       return { response }
   }),
-
-  "max_members_respected": tlib.TestTemplate.nAuthenticatedUsers(2, async (testEnvironment) => {
-    const replacedGetMaxMembers = shared.db.room.memberships.getMaxRoomMembers
-    shared.db.room.memberships.getMaxRoomMembers = () => (1)
-    const userInfo = testEnvironment.loggedInUsers[0]
-    const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
-    const joiningUser = await factory.create("user")
-
-    const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)
-    const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
-    await joiningClient.logIn(token)
-    const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
-    shared.db.room.memberships.getMaxRoomMembers = replacedGetMaxMembers
-    return { response }
-  })
-
 
 }

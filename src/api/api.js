@@ -4,21 +4,50 @@ const http = require("./http")
 class Api {
   constructor(express) {
     this.express = express
-    this.loggedInPostMiddleware = new MercuryMiddleware(express)
-    this.loggedInPostMiddleware.initLoggedInPost()
+    this.middleware = new MercuryMiddleware(express)
   }
 
-  loggedInPostEndpoint(endpoint, handler) {
-    this.express.post(endpoint, async (req, res) => {
-      await this.loggedInPostMiddleware.run(req, res)
-      if(!req.user) {
-        return http.fail(req, res, "Must be logged in", {error_code: shared.error.code.UNAUTHORIZED_USER})
-      }
+  setupGenericErrorHandling() {
+    this.express.use((err, req, res, next) => {
+      http.fail(req, res, err.message, {errorCode: err.errorCode}, err.httpCode)
+    })
+  }
+
+  memberOrOwnerRoomRouteEndpoint(endpoint, handler) {
+    const middlewareList = [
+      this.middleware.requireRoomMemberOrOwner()
+    ]
+    return this.roomRouteEndpoint(endpoint, handler, middlewareList)
+  }
+
+  ownerOnlyRoomRouteEndpoint(endpoint, handler) {
+    const middlewareList = [
+      this.middleware.requireRoomOwner()
+    ]
+    return this.roomRouteEndpoint(endpoint, handler, middlewareList)
+  }
+
+  roomRouteEndpoint(endpoint, handler, additionalMiddleware=[]) {
+    const middlewareList = [
+      this.middleware.roomFromRoute(),
+      this.middleware.requireRoom(),
+      ...additionalMiddleware
+    ]
+    return this.loggedInPostEndpoint(endpoint, handler, middlewareList)
+  }
+
+  loggedInPostEndpoint(endpoint, handler, additionalMiddleware=[]) {
+    const middlewareList = [
+      this.middleware.getUser(),
+      this.middleware.requireUser(),
+      ...additionalMiddleware
+    ]
+    this.express.post(endpoint, middlewareList, async (req, res) => {
       handler(req, res)
     })
   }
 
-  loggedOutPostEndpoint(endpoint, handler) {
+  loggedOutPostEndpoint(endpoint, handler,) {
     this.express.post(endpoint, (req, res) => {
       handler(req, res)
     })

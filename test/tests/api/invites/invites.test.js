@@ -69,12 +69,4 @@ tlib.TestTemplate.describeWithLib('invites', () => {
     expect(result.response.errorCode).toEqual(shared.error.code.REVOKED_OTP)
   })
 
-  test("Fails when too many memberships", async () => {
-    const result = await scenarios["max_members_respected"]()
-    expect(result.response.success).toEqual(false)
-    expect(result.response.errorCode).toEqual(shared.error.code.TOO_MANY_ROOM_MEMBERS)
-  })
-
-
-
 })

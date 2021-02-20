@@ -47,7 +47,6 @@ module.exports = {
       so this type of test mirrors reality more ("it's not a bug, it's a feature")
     */
     loggedOutClient.authToken = ""
-    console.log("================ sending request")
     const response = await loggedOutClient.sendHttpPost("/enable_public_invite_link", {room_route: ""})
     return { response }
   }),

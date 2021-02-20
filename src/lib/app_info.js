@@ -1,6 +1,6 @@
 const url = require("url")
 
-const app = {
+const appInfo = {
   webUrl: (req) => {
 
     if(req) {
@@ -90,4 +90,4 @@ const app = {
   }
 }
 
-module.exports = app
+module.exports = appInfo

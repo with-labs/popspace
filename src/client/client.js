@@ -40,7 +40,7 @@ class Client extends EventEmitter {
   async connect() {
     return new Promise((resolve, reject) => {
       this.socket = new ws(this.serverUrl, {
-        rejectUnauthorized: lib.app.isProduction()
+        rejectUnauthorized: lib.appInfo.isProduction()
       })
       this.socket.on('open', () => {
         this.startHeartbeat()
@@ -144,11 +144,11 @@ class Client extends EventEmitter {
   async sendHttpPost(endpoint, data={}) {
     const authHeader = this.authToken ? `Bearer ${btoa(this.authToken)}` : ""
     const options = {
-      host: lib.app.apiHost(),
-      port: lib.app.apiPort(),
+      host: lib.appInfo.apiHost(),
+      port: lib.appInfo.apiPort(),
       path: endpoint,
       method: 'POST',
-      rejectUnauthorized: lib.app.isProduction(),
+      rejectUnauthorized: lib.appInfo.isProduction(),
       ca: [fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')],
       headers: {
         'Content-Type': 'application/json',

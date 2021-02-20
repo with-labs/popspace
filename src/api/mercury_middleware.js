@@ -76,8 +76,8 @@ class MercuryMiddleware {
     })
     this.express.use((req, res, next) => {
       req.mercury = {
-        webUrl: lib.app.webUrl(req),
-        apiUrl: lib.app.apiUrl(req),
+        webUrl: lib.appInfo.webUrl(req),
+        apiUrl: lib.appInfo.apiUrl(req),
       }
       next()
     })

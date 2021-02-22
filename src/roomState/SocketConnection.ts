@@ -27,6 +27,9 @@ export const HEARTBEAT_INTERVAL = 15 * 1000;
 // we consider the connection lost
 export const HEARTBEAT_TIMEOUT = 5000;
 
+// a list of message kinds we shouldn't log (generally because there are too many)
+const LOG_IGNORE_KINDS: (IncomingSocketMessage['kind'] | OutgoingSocketMessage['kind'])[] = ['pong', 'passthrough'];
+
 // full typing for the event emitter
 export interface SocketConnectionEvents {
   error: (error: Error) => void;
@@ -98,7 +101,8 @@ export class SocketConnection extends EventEmitter {
   };
 
   private onClose = (ev: CloseEvent) => {
-    logger.info(`Socket connection closed`, ev.code, ev.reason, new Date());
+    logger.info(`Socket connection closed`, ev.code, ev.reason);
+    logger.debug(new Date());
     this.stopHeartbeatLoop();
     this.generation++;
     this.emit('closed');
@@ -108,14 +112,14 @@ export class SocketConnection extends EventEmitter {
     // start or resume heartbeat loop
     this.startHeartbeatLoop();
 
-    logger.info('Connected to socket', new Date());
+    logger.info('Connected to socket');
+    logger.debug(new Date());
     this.emit('connected');
   };
 
   private onMessage = (ev: MessageEvent) => {
     const parsed = camelcase(JSON.parse(ev.data), { deep: true }) as IncomingSocketMessage;
-    // don't breadcrumb heartbeat messages, there's too many
-    if (parsed.kind !== 'pong') {
+    if (!LOG_IGNORE_KINDS.includes(parsed.kind)) {
       logger.breadcrumb({ category: 'mercury', message: `Socket message: ${ev.data}` });
     }
     this.emit('message', parsed);

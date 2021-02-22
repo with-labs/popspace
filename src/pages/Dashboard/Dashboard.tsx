@@ -47,12 +47,13 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   roomWrapper: {
-    with: '100%',
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
   },
   roomGrid: {
     height: '100%',
+    width: '100%',
     display: 'grid',
     'grid-gap': '32px',
     'grid-template-columns': '100%',

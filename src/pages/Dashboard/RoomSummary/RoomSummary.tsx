@@ -60,12 +60,10 @@ const useStyles = makeStyles((theme) => ({
   wallpaper: {
     marginTop: theme.spacing(2),
     height: 268,
+    width: 268,
     justifyContent: 'center',
-  },
-  wallpaperImg: {
-    minHeight: 0,
-    maxWidth: '100%',
-    maxHeight: '100%',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
     borderRadius: theme.shape.contentBorderRadius,
   },
   deleteColor: {
@@ -125,13 +123,14 @@ export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
           {isOwner ? t('pages.dashboard.roomSummary.owner') : t('pages.dashboard.roomSummary.guest')}
         </Typography>
       </Box>
-      <Box className={classes.wallpaper} display="flex" flexBasis="auto" flexGrow="1" flexShrink="1">
-        <img
-          className={classes.wallpaperImg}
-          src={roomInfo.preview_image_url}
-          alt={`${roomInfo.display_name} wallpaper`}
-        />
-      </Box>
+      <Box
+        className={classes.wallpaper}
+        display="flex"
+        flexBasis="auto"
+        flexGrow="1"
+        flexShrink="1"
+        style={{ backgroundImage: `url(${roomInfo.preview_image_url})` }}
+      ></Box>
       <ResponsiveMenu
         anchorEl={anchorRef.current}
         open={isOpen}

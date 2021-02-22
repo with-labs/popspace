@@ -68,6 +68,8 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHo
     isLocal,
   });
 
+  const { onClear, ...filledInputProps } = inputProps;
+
   const isEmpty = !emoji && !status;
   // the visibility of the status if this person bubble represents the local user:
   // visible if the user is hovering the bubble, or if they are actively editing (keeps the
@@ -137,7 +139,7 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHo
               <InputAdornment position="end">
                 <IconButton
                   aria-label={t('features.status.altClearButton')}
-                  onClick={() => inputProps.onChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)}
+                  onClick={() => onClear({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)}
                   edge="end"
                   size="small"
                 >
@@ -145,7 +147,7 @@ export const PersonStatus: React.FC<IPersonStatusProps> = ({ isLocal, isParentHo
                 </IconButton>
               </InputAdornment>
             }
-            {...inputProps}
+            {...filledInputProps}
           />
           <Menu {...emojiMenuProps}>
             <Picker native title={t('features.status.emojiTitle')} onSelect={(dat) => onEmojiChange(dat.id!)} />
@@ -280,6 +282,10 @@ function useStatusEditing({
         if (ev.key === 'Tab' || ev.key === 'Enter') {
           close();
         }
+      },
+      onClear: (ev: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(ev.target.value);
+        updateSelf({ emoji: null });
       },
     },
     emojiButtonProps: {

@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   bodyText: {
     display: 'flex',
     flex: '1 1 auto',
-    overflowY: 'scroll',
+    overflowY: 'auto',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     whiteSpace: 'pre-line',

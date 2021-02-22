@@ -493,7 +493,6 @@
         "continueWithoutPermissionsButton": "Continue without devices",
         "goToSupportButton": "Go to support",
         "permissionDeinedExplaination": "Oops! Seems like With doesn’t have access to your camera and microphone.",
-        "loadingMessage": "Preparing the room for you",
         "cameraPermissionDenied": "Camera permission denied"
       },
       "createRoomModal": {

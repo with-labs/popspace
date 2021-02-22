@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
   },
   videoContainer: {
-    minHeight: 280,
+    minHeight: 310,
     position: 'relative',
   },
   bgImg: {
@@ -53,13 +53,11 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: theme.shape.borderRadius,
   },
   bubble: {
-    margin: '20px',
-  },
-  loadingRoot: {
-    height: 535,
-  },
-  loadingText: {
-    marginTop: theme.spacing(4),
+    //marginTop: '20px',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%,-50%)',
   },
   cameraDenied: {
     backgroundColor: theme.palette.brandColors.slate.light,
@@ -207,7 +205,7 @@ export const RequestPermissionModal: React.FC = () => {
   return (
     <Dialog open={isOpen} disableBackdropClick>
       <Box className={classes.root}>
-        {state.status === STATUS.INITAL && (
+        {(state.status === STATUS.INITAL || state.status === STATUS.REQUESTED) && (
           <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
             <video className={classes.permissionVideo} autoPlay loop muted>
               <source src={permissionVideo} type="video/mp4" />
@@ -231,30 +229,18 @@ export const RequestPermissionModal: React.FC = () => {
             </DialogContent>
             <DialogActions className={classes.actionsWrapper}>
               <Button onClick={onRequestPermissions} fullWidth>
-                {t('modals.devicePermissionsModal.requestPermissonsButton')}
+                {state.status === STATUS.REQUESTED ? (
+                  <CircularProgress size={22} />
+                ) : (
+                  t('modals.devicePermissionsModal.requestPermissonsButton')
+                )}
               </Button>
             </DialogActions>
           </Box>
         )}
-        {state.status === STATUS.REQUESTED && (
-          <DialogContent className={classes.loadingRoot}>
-            <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-              <CircularProgress />
-              <Typography variant="body1" className={classes.loadingText}>
-                {t('modals.devicePermissionsModal.loadingMessage')}
-              </Typography>
-            </Box>
-          </DialogContent>
-        )}
         {(state.status === STATUS.GRANTED || state.status === STATUS.DENIED) && (
           <Box>
-            <Box
-              className={classes.videoContainer}
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              justifyContent="center"
-            >
+            <Box className={classes.videoContainer}>
               <img src={bg} className={classes.bgImg} alt="background-img" />
               <PseudoUserBubble
                 userId={userId}

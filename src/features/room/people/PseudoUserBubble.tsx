@@ -106,11 +106,9 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
     <PersonBubbleFrame isVideoOn={isVideoOn} className={className} {...rest}>
       <PersonBubbleContent isVideoOn={isVideoOn}>
         <PersonBubbleBackground isVideoOn={isVideoOn} grayscale={isAway} backgroundColor={backgroundColor}>
-          {!isVideoOn && (
-            <PersonBubbleAvatar grayscale={isAway} userId={userId} freeze={isAway ? 'eyesClosed' : false} />
-          )}
           {isVideoOn && <Box className={classes.video}>{children}</Box>}
         </PersonBubbleBackground>
+        {!isVideoOn && <PersonBubbleAvatar grayscale={isAway} userId={userId} freeze={isAway ? 'eyesClosed' : false} />}
         <PersonBubbleLabel isVideoOn={isVideoOn}>
           <Typography className={classes.name}>{displayIdentity}</Typography>
         </PersonBubbleLabel>

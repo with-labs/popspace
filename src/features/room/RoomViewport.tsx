@@ -120,6 +120,7 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>((theme) => ({
     transformOrigin: 'center center',
     borderRadius: theme.shape.borderRadius,
     backgroundSize: 'cover',
+    backgroundPosition: 'center',
   },
 }));
 

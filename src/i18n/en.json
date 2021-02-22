@@ -218,11 +218,23 @@
         },
         "INVALID_LINK": {
           "title": "Oops, this link appears to be incomplete.",
-          "body": "If you copied the link from an email, please make sure you copy the complete link."
+          "body": "Please make sure you copied the complete link."
         },
         "EXPIRED_OTP": {
           "title": "This link has expired",
           "body": "This one-time link has expired. Please sign in and request a new one-time link."
+        },
+        "INVITE_EXPIRED": {
+          "title": "Oops, this link appears to be expired.",
+          "body": "Someone might have revoked this link. Please ask a room admin for a new code."
+        },
+        "NOT_LOGGED_IN": {
+          "title": "Please sign in.",
+          "body": "You need to be signed in to use this link. Please sign in and click the link again."
+        },
+        "TOO_MANY_ROOM_MEMBERS": {
+          "title": "TOO_MANY_ROOM_MEMBERS title",
+          "body": "TOO_MANY_ROOM_MEMBERS body"
         }
       },
       "messages": {
@@ -367,16 +379,15 @@
       },
       "roomControls": {
         "linkInviteAriaLabel": "Toggle invite link",
-        "linkInviteTitle": "Invite via a secret link",
-        "linkInviteToggleText": "Share a secret link to invite people to this room.",
-        "linkInviteResetText": "You can <1>reset this link</1> to generate a new invite link.",
-        "linkInviteExplanation": "Only users with a With account can use this link.",
-        "emailInviteTitle": "Invite via email",
-        "guestExplanation": "Only the room owner can enable this setting.",
+        "linkInviteTitle": "Secret link invite",
         "copySuccess": "Secret link copied!",
         "inviteLinkReset": "Secret link reset.",
         "CopyLinkButtonText": "Copy link",
-        "copyLinkButtonAria": "Copy the secret link to the clipboard"
+        "copyLinkButtonAria": "Copy the secret link to the clipboard",
+        "resetLinkButtonText": "Reset link",
+        "resetLinkButtonAria": "Reset the secret link",
+        "linkCopied": "Copied!",
+        "linkInviteName": "Secret link invite"
       },
       "statusControls": {
         "toolTip": "Set your status"

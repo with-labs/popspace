@@ -77,7 +77,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <JoinRoom />
       </Route>
 
-      {hasInviteLink && <Route path={RouteNames.INVITE} component={InviteLink} />}
+      <Route path={RouteNames.INVITE} component={InviteLink} />
 
       <AdminRoute path={RouteNames.ADMIN}>
         <Admin />

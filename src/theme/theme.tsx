@@ -979,7 +979,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           height: 24,
         },
         track: {
-          borderRadius: shape.borderRadius,
+          borderRadius: 14,
           border: `1px solid ${palette.grey[400]}`,
           backgroundColor: palette.brandColors.snow.regular,
           opacity: 1,

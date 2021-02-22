@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from './MembershipManagement';
 import { InviteLink } from '../InviteLink/InviteLink';
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     [theme.breakpoints.up('md')]: {
-      width: 360,
+      width: 380,
     },
   },
   title: {
@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((_, ref) => {
   const anchorRef = React.useRef<any>(null);
   const [isOpen, setIsOpen] = React.useState(false);
-  const [autoFocusInvite, setAutoFocusInvite] = React.useState(false);
   const classes = useStyles();
   const { t } = useTranslation();
   const displayName = useRoomStore((room) => room.state.displayName);
@@ -51,11 +50,9 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
 
   const openAndFocusInvite = React.useCallback(() => {
     setIsOpen(true);
-    setAutoFocusInvite(true);
   }, []);
   const onClose = React.useCallback(() => {
     setIsOpen(false);
-    setAutoFocusInvite(false);
   }, []);
 
   return (
@@ -73,20 +70,8 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
         {truncate(displayName || t('modals.inviteMemberModal.defaultRoomName'), 20)}
       </ResponsiveIconButton>
       <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-        {hasInviteLink && (
-          <div>
-            <div className={classes.title}>
-              <Typography variant="h3">{t('features.roomControls.linkInviteTitle')}</Typography>
-            </div>
-            <InviteLink />
-          </div>
-        )}
-        <div>
-          <div className={classes.title}>
-            <Typography variant="h3">{t('features.roomControls.emailInviteTitle')}</Typography>
-          </div>
-          <MembershipManagement autoFocusInvite={autoFocusInvite} className={classes.largeMenu} />
-        </div>
+        <MembershipManagement autoFocusInvite={!hasInviteLink} className={classes.largeMenu} />
+        {hasInviteLink && <InviteLink />}
       </ResponsivePopover>
     </div>
   );

@@ -2,11 +2,15 @@ import { ErrorCodes } from '../constants/ErrorCodes';
 import i18next, { TFunction } from 'i18next';
 import { BaseResponse } from './api';
 
-export function getErrorDialogText(errorCode: ErrorCodes | null, t: TFunction) {
+export function getErrorDialogText(errorCode: ErrorCodes | null, t: TFunction, errorTitle?: string) {
   let retMessage = null;
   if (errorCode && i18next.exists(`error.modal.${errorCode}`)) {
     retMessage = {
-      title: i18next.exists(`error.modal.${errorCode}.title`) ? t(`error.modal.${errorCode}.title`) : '',
+      title: errorTitle
+        ? errorTitle
+        : i18next.exists(`error.modal.${errorCode}.title`)
+        ? t(`error.modal.${errorCode}.title`)
+        : '',
       body: i18next.exists(`error.modal.${errorCode}.body`) ? t(`error.modal.${errorCode}.body`) : '',
     };
   }

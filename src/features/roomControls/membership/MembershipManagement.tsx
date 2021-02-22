@@ -80,7 +80,6 @@ function validateEmail(email: string, translate: TFunction) {
   }
 }
 
-const MAX_INVITE_COUNT = 20;
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
@@ -151,8 +150,6 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       }));
     };
 
-    const remainingInvites = MAX_INVITE_COUNT - members.length;
-
     return (
       <div ref={ref} className={className}>
         <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
@@ -165,12 +162,6 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
                 aria-label={t('common.emailInput.label')}
                 margin="normal"
                 validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
-                helperText={t(
-                  remainingInvites === 0
-                    ? 'modals.inviteUserModal.noInvitesLeft'
-                    : 'modals.inviteUserModal.invitesLeft',
-                  { count: remainingInvites }
-                )}
                 autoFocus={autoFocusInvite}
               />
               <FormikSubmitButton className={classes.submitBtn}>

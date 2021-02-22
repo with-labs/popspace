@@ -2,11 +2,18 @@ import { ErrorCodes } from '../constants/ErrorCodes';
 import { getSessionToken } from './sessionToken';
 import { RoomInfo } from '../types/api';
 
+const MERCURY_SERVER = process.env.REACT_APP_API_HOST || 'https://test.with.so:8443';
+
 export type BaseResponse = {
   success: boolean;
   message?: string;
   errorCode?: ErrorCodes;
   [key: string]: any;
+};
+
+export type InviteDetails = {
+  otp: string;
+  inviteId: string;
 };
 
 export type ApiUser = {
@@ -35,6 +42,15 @@ export type ApiRoomMember = {
   has_accepted: boolean;
 };
 
+export type ApiInviteDetails = {
+  success: boolean;
+  inviteDetails?: InviteDetails[];
+};
+
+export enum SERVICE {
+  NETLIFY = 'NETLIFY',
+  MERCURY = 'MERCURY',
+}
 class Api {
   async signup(data: any) {
     return await this.post('/request_create_account', data);
@@ -147,13 +163,32 @@ class Api {
     });
   }
 
-  async roomMembershipThroughSharableLink(otp: string) {
-    // todo: attach to backend
+  async roomMembershipThroughPublicInviteLink(otp: string, inviteId: string) {
+    return await this.post('/room_membership_through_public_invite_link', { otp, inviteId }, SERVICE.MERCURY);
   }
 
-  async post<Response extends BaseResponse>(endpoint: string, data: any): Promise<Response> {
+  async enablePublicInviteLink(roomRoute: string) {
+    return await this.post('/enable_public_invite_link', { roomRoute }, SERVICE.MERCURY);
+  }
+
+  async disablePublicInviteLink(roomRoute: string) {
+    return await this.post('/disable_public_invite_link', { roomRoute }, SERVICE.MERCURY);
+  }
+
+  async getCurrentPublicInviteLink(roomRoute: string) {
+    return await this.post('/get_public_invite_details', { roomRoute }, SERVICE.MERCURY);
+  }
+
+  async resetPublicInviteLink(roomRoute: string) {
+    return await this.post('/reset_public_invite_link', { roomRoute }, SERVICE.MERCURY);
+  }
+
+  async post<Response extends BaseResponse>(endpoint: string, data: any, service?: SERVICE): Promise<Response> {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `/.netlify/functions${endpoint}`, true);
+
+    const serviceUrl = service === SERVICE.MERCURY ? MERCURY_SERVER : '/.netlify/functions';
+
+    xhr.open('POST', `${serviceUrl}${endpoint}`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     const token = getSessionToken();
     if (token) {

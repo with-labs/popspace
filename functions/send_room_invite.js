@@ -1,8 +1,6 @@
 const lib = require("lib");
 const env = lib.util.env.init(require("./env.json"))
 
-const MAX_ROOM_INVITES = 20
-
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
   const user = context.user
   if(!user) {
@@ -39,16 +37,6 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
       callback,
       "Can not invite yourself",
       { errorCode: shared.error.code.CANT_INVITE_SELF }
-    )
-  }
-
-  const currentInvites = await shared.db.room.invites.getRoomInvites(room.id)
-  const currentMembers = await shared.db.room.memberships.getRoomMembers(room.id)
-  if((currentInvites.length + currentMembers.length) >= MAX_ROOM_INVITES) {
-    return await lib.util.http.fail(
-      callback,
-      `Invite limit reached: ${currentInvites.length}/${MAX_ROOM_INVITES}`,
-      { errorCode: shared.error.code.TOO_MANY_INVITES }
     )
   }
 

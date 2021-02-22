@@ -335,9 +335,13 @@ export const ResizeContainer = React.memo(
                 [classes.unmeasuredContentSizer]: needsRemeasure,
               })}
               // while we are measuring, because of word-wrapping and other css overflow rules,
-              // we want to enforce at least the minimum sizes - otherwise text wraps and creates
-              // a taller measurement than we would want
-              style={{ minWidth, minHeight, maxWidth, maxHeight }}
+              // we want to enforce at least the width bounds - otherwise text wraps and creates
+              // a taller measurement than we would want. But we don't want to specify on
+              // both axes - if we did, we would be enforcing a specific incorrect aspect ratio
+              // for content that was smaller or larger than the bounds. One axis must be free to
+              // resize so that the correct aspect ratio can be measured, then the whole content
+              // will be scaled according to the bounds of both axes in the logic above.
+              style={{ minWidth, maxWidth }}
               ref={contentRef}
               data-content-sizer
             >

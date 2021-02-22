@@ -24,6 +24,8 @@ class RoomData {
     room.widgets = widgetsInRoom.map((w) => (w.serialize()))
     room.id = roomId
     room.state = await shared.db.dynamo.room.getRoomState(roomId)
+    const activePublicInviteUrls = await shared.db.room.invites.getActivePublicInviteUrls(roomId)
+    room.public_invite_url = activePublicInviteUrls[0]
     return room
   }
 

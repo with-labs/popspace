@@ -43,9 +43,18 @@ class EventProcessor {
       if(!processors[action]) {
         return sender.sendError(mercuryEvent, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event ${mercuryEvent.kind()}.`)
       }
-      if(!PUBLIC_EVENT_KINDS[eventKind] && !sender.isAuthenticated()) {
-        return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+
+      if(!PUBLIC_EVENT_KINDS[eventKind]) {
+        if(!sender.isAuthenticated()) {
+          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+        }
+        const hasAuthorizedRoomAccess = await sender.hasAuthorizedRoomAccess()
+        if(!hasAuthorizedRoomAccess) {
+          /* This can happen if a user was kicked */
+          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Lost authorization")
+        }
       }
+
       try {
         return await processors[action].process(mercuryEvent, this.participants)
       } catch(e) {

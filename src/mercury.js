@@ -15,6 +15,7 @@ class Mercury {
   constructor(port, heartbeatTimeoutMillis) {
     this.port = port
     this.express = express()
+    this.api = new api.MercuryApi(this)
     this.participants = new Participants(heartbeatTimeoutMillis)
     this.eventProcessor =  new EventProcessor(this.participants)
 
@@ -26,6 +27,14 @@ class Mercury {
     this.ws.on('close', () => {
       log.app.warn("socket server shut down")
     })
+  }
+
+  getExpress() {
+    return this.express
+  }
+
+  async getSocketGroup(roomId) {
+    return this.participants.getSocketGroup(roomId)
   }
 
   async start() {
@@ -42,10 +51,6 @@ class Mercury {
       this.listen = this.server.listen(this.port, () => {
         log.app.info(`Server live on port ${this.port}`)
         resolve()
-      })
-
-      this.express.get('/', (req, res) => {
-        res.send("hello")
       })
     })
   }

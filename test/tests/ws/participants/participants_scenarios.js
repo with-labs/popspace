@@ -1,4 +1,4 @@
-global.tlib = require("../../lib/_testlib")
+global.tlib = require("../../../lib/_testlib")
 
 module.exports = {
   "participants_see_each_other": tlib.TestTemplate.nAuthenticatedUsers(5, async (testEnvironment) => {

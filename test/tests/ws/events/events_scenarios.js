@@ -1,4 +1,4 @@
-global.tlib = require("../../lib/_testlib")
+global.tlib = require("../../../lib/_testlib")
 
 const requestStickyNoteCreate = async (client) => {
   return await client.sendEventWithPromise("createWidget", {

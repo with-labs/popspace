@@ -60,6 +60,9 @@ module.exports = {
             }
           })
         })
+        if(joinsRemaining <= 0) {
+          resolve()
+        }
       })
 
       const inits = clients.map(async (client) => {

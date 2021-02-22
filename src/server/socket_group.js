@@ -43,6 +43,20 @@ class SocketGroup {
     return this._participants.filter((p) => (p.authenticated))
   }
 
+  broadcastRoomStateFieldChanged(field, newValue) {
+    const payload = { kind: "roomStateFieldChange", params: {}}
+    payload.params[field] = newValue
+    for(const participant of this._participants) {
+      participant.sendSystemEvent(payload)
+    }
+  }
+
+  broadcastSystemEvent(payload) {
+    for(const participant of this._participants) {
+      participant.sendSystemEvent(payload)
+    }
+  }
+
   broadcastPeerEvent(sender, kind, payload, eventId=null) {
     for(const participant of this._participants) {
       if(participant != sender) {

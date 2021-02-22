@@ -1,4 +1,4 @@
-global.tlib = require("../../lib/_testlib")
+global.tlib = require("../../../lib/_testlib")
 
 module.exports = {
   "restarts_correclty": async () => {

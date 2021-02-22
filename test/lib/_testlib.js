@@ -13,7 +13,7 @@ const tlib = {
   TestEnvironment: require("./test_environment")
 }
 
-global.lib = lib
+require("../../src/globals")
 global.chance = require("chance")()
 
 

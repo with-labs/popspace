@@ -2,6 +2,9 @@ const ws = require('ws');
 const EventEmitter = require('events');
 let count = 0
 const ClientRoomData = require('./client_room_data')
+const https = require('https')
+const btoa = require('btoa')
+const fs = require('fs')
 
 class Client extends EventEmitter {
   constructor(serverUrl, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) {
@@ -37,7 +40,7 @@ class Client extends EventEmitter {
   async connect() {
     return new Promise((resolve, reject) => {
       this.socket = new ws(this.serverUrl, {
-        rejectUnauthorized: process.env.NODE_ENV == 'production'
+        rejectUnauthorized: lib.appInfo.isProduction()
       })
       this.socket.on('open', () => {
         this.startHeartbeat()
@@ -138,11 +141,46 @@ class Client extends EventEmitter {
     this.send(JSON.stringify(event))
   }
 
+  async sendHttpPost(endpoint, data={}) {
+    const authHeader = this.authToken ? `Bearer ${btoa(this.authToken)}` : ""
+    const options = {
+      host: lib.appInfo.apiHost(),
+      port: lib.appInfo.apiPort(),
+      path: endpoint,
+      method: 'POST',
+      rejectUnauthorized: lib.appInfo.isProduction(),
+      ca: [fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')],
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authHeader
+      },
+    }
+    let responseChunks = []
+    return new Promise((resolve, reject) => {
+      const request = https.request(options, (res) => {
+        res.on('data', (d) => {
+          responseChunks.push(d)
+        })
+        res.on('end', () => {
+          resolve(JSON.parse(Buffer.concat(responseChunks)))
+        })
+        res.on('error', (e) => (reject(e)))
+      })
+      request.write(JSON.stringify(data))
+      request.end()
+    })
+  }
+
+  async logIn(token) {
+    this.authToken = token
+  }
+
   async authenticate(token, roomName) {
     const response = await this.sendEventWithPromise("auth", { token, roomName })
     if(response.kind == "error") {
       throw response
     } else {
+      await this.logIn(token)
       this.roomData = new ClientRoomData(response.payload)
     }
     return response

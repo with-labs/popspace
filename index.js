@@ -1,11 +1,12 @@
 require("dotenv").config()
 
-global.lib = require("./src/lib/_lib")
+require("./src/globals")
 const Mercury = require("./src/mercury")
 
 const begin = async () => {
   await lib.init()
-  new Mercury(process.env.EXPRESS_PORT, process.env.HEARTBEAT_TIMEOUT_MILLIS || 60000).start()
+  const mercury = new Mercury(process.env.EXPRESS_PORT, process.env.HEARTBEAT_TIMEOUT_MILLIS || 60000).start()
+  global.mercury = mercury
 }
 
 begin()

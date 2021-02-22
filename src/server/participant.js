@@ -1,5 +1,4 @@
 const ws = require('ws')
-const camelcaseKeys = require('camelcase-keys')
 
 const DEFAULT_STATE_IN_ROOM = {
   position: {
@@ -15,10 +14,6 @@ const DEFAULT_STATE_IN_ROOM = {
   to avoid zombie socket connections
 */
 const COUNTDOWN_TO_AUTHENTICATE_MILLIS = 120000
-
-/* The JSON API is camelcase, but the database has underscore column names */
-const CAMELCASE_DEEP = { deep: true }
-
 // TODO: eventually we'll care to recycle these, or make them more semantic
 let id = 0
 
@@ -189,13 +184,20 @@ class Participant {
     return this.authenticated
   }
 
+  async hasAuthorizedRoomAccess() {
+    if(!this.authenticated) {
+      return false
+    }
+    return await shared.db.roomMemberships.hasAccess(this.user.id, this.room.id)
+  }
+
   setEventHandler(handler) {
     // Events are JSON objects sent over the socket
     this.eventHandler = handler
   }
 
   sendEvent(event) {
-    const message = JSON.stringify(camelcaseKeys(event.serialize(), CAMELCASE_DEEP))
+    const message = JSON.stringify(lib.util.snakeToCamelCase(event.serialize()))
     log.sent.info(`${this.sessionName()} ${message}`)
     this.socket.send(message)
   }
@@ -206,6 +208,10 @@ class Participant {
 
   sendPeerEvent(sender, kind, payload, eventId=null) {
     this.sendEvent(new lib.event.PeerEvent(sender, kind, payload, eventId))
+  }
+
+  sendSystemEvent(payload) {
+    this.sendEvent(new lib.event.SystemEvent(payload))
   }
 
   sendError(requestEvent, errorCode, errorMessage, payload={}) {

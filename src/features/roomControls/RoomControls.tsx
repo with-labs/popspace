@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(2),
 
     '& > * ': {
-      pointerEvents: 'auto',
+      pointerEvents: 'initial',
     },
 
     [theme.breakpoints.down('sm')]: {
@@ -69,6 +69,12 @@ const useStyles = makeStyles((theme) => ({
   },
   mediaControls: {
     marginRight: theme.spacing(1),
+  },
+  feedback: {
+    pointerEvents: 'none',
+    '& > *': {
+      pointerEvents: 'initial',
+    },
   },
 }));
 
@@ -118,7 +124,12 @@ export const RoomControls = React.memo<IRoomControlsProps>((props) => {
           <MembersMenu />
         </Box>
 
-        <Box gridArea="feedback" visibility={isAway ? 'hidden' : 'initial'} flexDirection="row">
+        <Box
+          gridArea="feedback"
+          visibility={isAway ? 'hidden' : 'initial'}
+          flexDirection="row"
+          className={classes.feedback}
+        >
           <BugReport className={classes.buttonPadding} />
           <SendFeedback />
         </Box>

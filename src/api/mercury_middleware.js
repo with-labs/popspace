@@ -81,8 +81,6 @@ class MercuryMiddleware {
       }
       next()
     })
-
-    this.handlers = []
   }
 
   getUser() {

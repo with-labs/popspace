@@ -1,5 +1,16 @@
 global.tlib = require("../../../lib/_testlib")
 
+const addUserAndJoin = async (testEnvironment, roomId, inviteId, inviteOtp) => {
+    const joiningUser = await factory.create("user")
+    const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)
+    const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
+    await joiningClient.logIn(token)
+    const isMemberBeforeJoin = await shared.db.room.memberships.isMember(joiningUser.id, roomId)
+    const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: inviteId, otp: inviteOtp})
+    const isMemberAfterJoin = await shared.db.room.memberships.isMember(joiningUser.id, roomId)
+    return {isMemberBeforeJoin, response, isMemberAfterJoin}
+}
+
 module.exports = {
   "enable_invite_link": tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
     const userInfo = testEnvironment.loggedInUsers[0]
@@ -86,16 +97,20 @@ module.exports = {
   "logged_in_users_become_members":  tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
       const userInfo = testEnvironment.loggedInUsers[0]
       const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
-      const joiningUser = await factory.create("user")
-      const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)
-      const joiningClient = (await tlib.util.addClients(testEnvironment.mercury, 1))[0]
-      await joiningClient.logIn(token)
-      const isMemberBeforeJoin = await shared.db.room.memberships.isMember(joiningUser.id, userInfo.room.id)
-      const response = await joiningClient.sendHttpPost("/room_membership_through_public_invite_link", {invite_id: enableResponse.inviteId, otp: enableResponse.otp})
-      const isMemberAfterJoin = await shared.db.room.memberships.isMember(joiningUser.id, userInfo.room.id)
+      const {response, isMemberBeforeJoin, isMemberAfterJoin} = await addUserAndJoin(testEnvironment, userInfo.room.id, enableResponse.inviteId, enableResponse.otp)
       return { response, isMemberBeforeJoin, isMemberAfterJoin }
   }),
 
+  "reusable_links":  tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
+      const userInfo = testEnvironment.loggedInUsers[0]
+      const enableResponse = await userInfo.client.sendHttpPost("/enable_public_invite_link", {room_route: userInfo.roomNameEntry.name})
+      const joinInfo1 = await addUserAndJoin(testEnvironment, userInfo.room.id, enableResponse.inviteId, enableResponse.otp)
+      const joinInfo2 = await addUserAndJoin(testEnvironment, userInfo.room.id, enableResponse.inviteId, enableResponse.otp)
+      const joinInfo3 = await addUserAndJoin(testEnvironment, userInfo.room.id, enableResponse.inviteId, enableResponse.otp)
+      return {
+        joins: [joinInfo1, joinInfo2, joinInfo3]
+      }
+  }),
 
   "revoked_links_fail":  tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
       const userInfo = testEnvironment.loggedInUsers[0]

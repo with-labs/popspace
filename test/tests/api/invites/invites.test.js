@@ -60,7 +60,17 @@ tlib.TestTemplate.describeWithLib('invites', () => {
   test("Upon hitting an invite URL, users become room members", async () => {
     const result = await scenarios["logged_in_users_become_members"]()
     expect(result.isMemberBeforeJoin).toEqual(false)
+    expect(result.response.roomRoute).toBeTruthy()
     expect(result.isMemberAfterJoin).toEqual(true)
+  })
+
+  test("Links continue to work as more users join", async () => {
+    const result = await scenarios["reusable_links"]()
+    result.joins.forEach((joinInfo) => {
+      expect(joinInfo.isMemberBeforeJoin).toEqual(false)
+      expect(joinInfo.isMemberAfterJoin).toEqual(true)
+    })
+
   })
 
   test("Upon hitting a revoked invite URL, receive error", async () => {

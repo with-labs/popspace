@@ -29,7 +29,7 @@ import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWr
 
 import { cherry, snow } from '../../../../theme/theme';
 import Api from '../../../../utils/api';
-import { useSnackbar } from 'notistack';
+import { toast } from 'react-hot-toast';
 import { BaseResponse } from '../../../../utils/api';
 import { ErrorCodes } from '../../../../constants/ErrorCodes';
 import { logger } from '../../../../utils/logger';
@@ -85,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
 export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove, roomRoute, className }) => {
   const classes = useStyles();
   const [error, setError] = useState<DialogMessage | null>(null);
-  const { enqueueSnackbar } = useSnackbar();
   const [isBusy, setIsBusy] = useState(false);
 
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -134,7 +133,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
       setIsBusy(true);
       const result: BaseResponse = await Api.sendRoomInvite(roomRoute, selectedMember.email);
       if (result.success) {
-        enqueueSnackbar(t('modals.inviteUserModal.resendInviteSuccess'), { variant: 'success' });
+        toast.success(t('modals.inviteUserModal.resendInviteSuccess') as string);
       } else {
         setError(formatErrorMessage(result));
       }

@@ -1,69 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { Page } from '../../Layouts/Page/Page';
-import { Column } from '../../Layouts/TwoColLayout/Column/Column';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import Api from '../../utils/api';
+import Api, { ApiError } from '../../utils/api';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
-import { Header } from '../../components/Header/Header';
-import signinImg from '../../images/SignIn.png';
-import { makeStyles, Button, TextField, Link, Typography, Box } from '@material-ui/core';
-import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
+import signinImg from '../../images/illustrations/magic.svg';
+import { makeStyles, Link } from '@material-ui/core';
 import { ErrorCodes } from '../../constants/ErrorCodes';
-import { ErrorInfo } from '../../types/api';
 import { useTranslation, Trans } from 'react-i18next';
-import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
-import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
 import { logger } from '../../utils/logger';
 import { getSessionToken, setSessionToken } from '../../utils/sessionToken';
+import { Form, Formik } from 'formik';
+import { FormPage } from '../../Layouts/formPage/FormPage';
+import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
+import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { Row } from '../../components/Row/Row';
+import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
+import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
+import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
+import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
+import { useAppState } from '../../state';
+import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
+import { FormikCheckboxField } from '../../components/fieldBindings/FormikCheckboxField';
+import { isEmailValid } from '../../utils/CheckEmail';
+import i18n from '../../i18n';
 
 interface IFinalizeAccountProps {}
 
+const validateEmail = (value: string) => {
+  if (!isEmailValid(value)) {
+    return i18n.t('pages.signup.email.invalid');
+  }
+};
+
+type FinalizeAccountFormData = {
+  firstName: string;
+  lastName: string;
+  acceptTos: boolean;
+  newsletterOptIn: boolean;
+  email: string;
+};
+
 const useStyles = makeStyles((theme) => ({
-  colRow: {
-    flexDirection: 'column',
-    [theme.breakpoints.up('md')]: {
-      flexDirection: 'row',
-    },
-  },
-  checkBoxes: {
-    marginTop: theme.spacing(2.5),
-  },
   button: {
     marginTop: theme.spacing(5),
-  },
-  title: {
-    marginBottom: theme.spacing(5),
   },
   text: {
     marginBottom: theme.spacing(5),
   },
-  firstName: {
-    marginRight: theme.spacing(2.5),
-    [theme.breakpoints.only('sm')]: {
-      marginRight: 0,
-      marginBottom: theme.spacing(2),
-    },
-  },
-  lastName: {
-    [theme.breakpoints.only('sm')]: {
-      marginTop: theme.spacing(1.25),
-    },
-  },
 }));
 
-export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
+export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
   const history = useHistory();
   const { t } = useTranslation();
   const classes = useStyles();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [acceptTos, setAcceptTos] = useState(false);
-  const [receiveMarketing, setReceiveMarketing] = useState(false);
-  const [error, setError] = useState<ErrorInfo>(null!);
-  const [isLoading, setIsLoading] = useState(false);
+  const { setError } = useAppState();
+  const [isLoading, setIsLoading] = useState(true);
 
   // get the query params from the invite
   const query = useQueryParams();
@@ -73,11 +65,22 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
   const otp = query.get('otp') || '';
   const email = query.get('email') || '';
   const claimId = query.get('cid') || null;
+  const inviteId = query.get('iid') || null;
 
   useEffect(() => {
-    setIsLoading(true);
-    // check to see if the room has already been claimed
-    Api.resolveRoomClaim(otp, claimId)
+    const apiMethod = claimId
+      ? Api.resolveRoomClaim(otp, claimId)
+      : inviteId
+      ? Api.resolveRoomInvite(otp, inviteId)
+      : null;
+
+    if (!apiMethod) {
+      // neither cid nor iid was provided, we can't do anything
+      history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
+      return;
+    }
+
+    apiMethod
       .then((result: any) => {
         if (result.success) {
           // the user exists in the database, and has succussfully had the room associated with them
@@ -104,11 +107,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
           }
         } else if (result.errorCode === ErrorCodes.EXPIRED_OTP) {
           // OTP is expired, so we will show the link expired page
-          logger.warn(`Error claiming room for ${email}: linked expired`, result.message, result.errorCode);
-          setError({
-            errorCode: ErrorCodes.CLAIM_LINK_EXPIRED,
-            error: result,
-          });
+          logger.warn(`Error joining room for ${email}: linked expired`, result.message, result.errorCode);
+          setError(new ApiError(result));
         } else if (result.errorCode === ErrorCodes.RESOLVED_OTP) {
           // this link has already been clicked before
           // check to see if the user has a session token set
@@ -134,40 +134,28 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         } else {
           // something unexpected has happened
           logger.error(`Error claiming room for ${email}: unexpected error message`, result.message, result.errorCode);
-          setError({
-            errorCode: ErrorCodes.UNEXPECTED,
-            error: result,
-          });
+          setError(new ApiError(result));
         }
       })
       .catch((e: any) => {
         // unexpected error
         logger.error(`Error claiming room for ${email}`, e);
-        setError({
-          errorCode: ErrorCodes.UNEXPECTED,
-          error: e,
-        });
+        setError(e);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, [history, otp, email, claimId, t]);
+  }, [history, otp, email, claimId, t, setError, inviteId]);
 
-  const onFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = {
-      firstName,
-      lastName,
-      email,
-      acceptTos,
-      receiveMarketing,
-    };
-
+  const handleSubmit = async (data: FinalizeAccountFormData) => {
     try {
-      const result = await Api.registerThroughClaim(data, otp, claimId);
+      const apiMethod = claimId
+        ? Api.registerThroughClaim(data, otp, claimId)
+        : Api.registerThroughInvite(data, otp, inviteId);
+      const result = await apiMethod;
       if (result.success) {
         // invitee was able to register
-        if (result.neSessionToken) {
+        if (result.newSessionToken) {
           // refresh the session token if we have it
           setSessionToken(result.newSessionToken);
         }
@@ -175,62 +163,70 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
         // user is done creating they account,
         // redirect them to the room
         history.push(`/${result.roomName}`);
-      } else if (
-        result.errorCode === ErrorCodes.INVALID_OTP ||
-        result.errorCode === ErrorCodes.EXPIRED_OTP ||
-        result.errorCode === ErrorCodes.RESOLVED_OTP
-      ) {
-        logger.warn(`Warning: finalizing acount for ${email}: otp error`, result.message, result.errorCode);
-        setError({
-          errorCode: ErrorCodes.LINK_EXPIRED,
-          error: result,
-        });
       } else {
-        logger.error(`Error finializing account for ${email} on submit`, result.message, result.errorCode);
-        setError({
-          errorCode: ErrorCodes.UNEXPECTED,
-        });
+        setError(new ApiError(result));
+
+        if (
+          result.errorCode === ErrorCodes.INVALID_OTP ||
+          result.errorCode === ErrorCodes.EXPIRED_OTP ||
+          result.errorCode === ErrorCodes.RESOLVED_OTP
+        ) {
+          logger.warn(`Warning: finalizing acount for ${email}: otp error`, result.message, result.errorCode);
+        } else {
+          logger.error(`Error finializing account for ${email} on submit`, result.message, result.errorCode);
+        }
       }
     } catch (e) {
       // something unexpected has happened, display the unexpected error page
       logger.error(`Error finializing account for ${email} on submit`, e);
-      setError({
-        errorCode: ErrorCodes.UNEXPECTED,
-      });
+      setError(e);
     }
   };
 
-  // TODO: convert form to formik?
+  if (isLoading) {
+    return <FullscreenLoading />;
+  }
+
   return (
-    <Page isLoading={isLoading} error={error}>
-      <Header />
-      <TwoColLayout>
-        <Column centerContent={true} useColMargin={true}>
-          <PanelContainer>
-            <Typography variant="h2" className={classes.title}>
-              {t('pages.finalizeAccount.title')}
-            </Typography>
-            <form onSubmit={onFormSubmit}>
-              <Box display="flex" className={classes.colRow}>
-                <TextField
-                  id="firstName"
-                  value={firstName}
-                  onChange={(event) => setFirstName(event.target.value)}
-                  placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
-                  label={t('pages.finalizeAccount.fistNameLabel')}
-                  className={classes.firstName}
+    <Formik<FinalizeAccountFormData>
+      initialValues={{ firstName: '', lastName: '', email, acceptTos: false, newsletterOptIn: false }}
+      onSubmit={handleSubmit}
+      validateOnBlur={false}
+    >
+      {() => (
+        <FormPage>
+          <FormPageContent>
+            <FormPageTitle>{t('pages.finalizeAccount.title')}</FormPageTitle>
+            <Form>
+              <FormPageFields>
+                <Row>
+                  <FormikTextField
+                    id="firstName"
+                    name="firstName"
+                    placeholder={t('pages.finalizeAccount.firstNamePlaceholder')}
+                    label={t('pages.finalizeAccount.fistNameLabel')}
+                    margin="normal"
+                    required
+                  />
+                  <FormikTextField
+                    id="lastName"
+                    name="lastName"
+                    placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
+                    label={t('pages.finalizeAccount.lastNameLabel')}
+                    margin="normal"
+                    required
+                  />
+                </Row>
+                <FormikTextField
+                  id="email"
+                  name="email"
+                  placeholder={t('pages.finalizeAccount.email.placeholder')}
+                  label={t('pages.finalizeAccount.email.label')}
+                  margin="normal"
+                  required
+                  validate={validateEmail}
                 />
-                <TextField
-                  id="lastName"
-                  value={lastName}
-                  onChange={(event) => setLastName(event.target.value)}
-                  placeholder={t('pages.finalizeAccount.lastNamePlaceholder')}
-                  label={t('pages.finalizeAccount.lastNameLabel')}
-                  className={classes.lastName}
-                />
-              </Box>
-              <div className={classes.checkBoxes}>
-                <CheckboxField
+                <FormikCheckboxField
                   label={
                     <span>
                       <Trans i18nKey="pages.joinRoom.tosCheck">
@@ -241,27 +237,28 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = (props) => {
                       </Trans>
                     </span>
                   }
-                  checked={acceptTos}
-                  onChange={() => setAcceptTos(!acceptTos)}
-                  name={t('pages.finalizeAccount.tosCheckboxName')}
+                  name="acceptTos"
+                  value="acceptTos"
+                  required
+                  validate={(val) => {
+                    if (!val) return t('pages.signup.tos.invalid') as string;
+                  }}
                 />
-                <CheckboxField
+                <FormikCheckboxField
                   label={t('pages.finalizeAccount.marketingCheckboxText')}
-                  checked={receiveMarketing}
-                  onChange={() => setReceiveMarketing(!receiveMarketing)}
-                  name={t('pages.finalizeAccount.martketingCheckboxName')}
+                  name="newsletterOptIn"
+                  value="newsletterOptIn"
                 />
-              </div>
-              <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
+              </FormPageFields>
+              <FormikSubmitButton className={classes.button}>
                 {t('pages.finalizeAccount.submitBtnText')}
-              </Button>
-            </form>
-          </PanelContainer>
-        </Column>
-        <Column centerContent={true} hide="sm">
-          <PanelImage src={signinImg} altTextKey="pages.finalizeAccount.imgAltText" />
-        </Column>
-      </TwoColLayout>
-    </Page>
+              </FormikSubmitButton>
+            </Form>
+          </FormPageContent>
+
+          <FormPageImage src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
+        </FormPage>
+      )}
+    </Formik>
   );
 };

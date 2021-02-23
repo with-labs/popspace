@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { makeStyles, StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
-import { SnackbarProvider } from 'notistack';
+import { StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
 import { mandarin as theme } from './theme/theme';
 import { Router } from 'react-router';
 import AppStateProvider from './state';
@@ -15,43 +14,9 @@ import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { UpdateNotification } from './features/updates/UpdateNotification';
+import { Toaster } from './components/Toaster/Toaster';
 
 export interface IAppProps {}
-
-// styles to override the default styles
-const useStyles = makeStyles((themeObj) => ({
-  success: {
-    color: `${themeObj.palette.common.black} !important`,
-    backgroundColor: `${themeObj.palette.success.main} !important`,
-  },
-  error: {
-    color: themeObj.palette.success.contrastText,
-    backgroundColor: `${themeObj.palette.error.main} !important`,
-  },
-  snackBarFonts: {
-    lineHeight: themeObj.typography.h3.lineHeight,
-    fontWeight: themeObj.typography.h3.fontWeight,
-    fontSize: themeObj.typography.h3.fontSize,
-  },
-}));
-
-const SnackbarWrapper = (props: any) => {
-  const { children } = props;
-  const styles = useStyles();
-  return (
-    <SnackbarProvider
-      maxSnack={3}
-      classes={{
-        variantSuccess: styles.success,
-        variantError: styles.error,
-      }}
-      hideIconVariant
-      className={styles.snackBarFonts}
-    >
-      {children}
-    </SnackbarProvider>
-  );
-};
 
 export const App: React.FC<IAppProps> = () => {
   // on load, if the user is logged in, identify them to various
@@ -64,19 +29,18 @@ export const App: React.FC<IAppProps> = () => {
         <FlaggProvider featureFlags={featureFlags}>
           <StylesProvider injectFirst>
             <MuiThemeProvider theme={theme}>
-              <SnackbarWrapper>
-                <CssBaseline />
-                <Router history={history}>
-                  <AppStateProvider>
-                    <MediaReadinessProvider>
-                      <SoundEffectProvider>
-                        <Routes />
-                        <UpdateNotification />
-                      </SoundEffectProvider>
-                    </MediaReadinessProvider>
-                  </AppStateProvider>
-                </Router>
-              </SnackbarWrapper>
+              <Toaster />
+              <CssBaseline />
+              <Router history={history}>
+                <AppStateProvider>
+                  <MediaReadinessProvider>
+                    <SoundEffectProvider>
+                      <Routes />
+                      <UpdateNotification />
+                    </SoundEffectProvider>
+                  </MediaReadinessProvider>
+                </AppStateProvider>
+              </Router>
             </MuiThemeProvider>
           </StylesProvider>
         </FlaggProvider>

@@ -10,14 +10,12 @@ import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
-import { FlaggAdmin } from 'flagg/dist/react';
+import { FlaggAdmin, useFeatureFlag } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
 import RoomPage from './pages/room';
-import { JoinRoom } from './pages/JoinRoom/JoinRoom';
 import { InviteLink } from './pages/InviteLink/InviteLink';
-import { useFeatureFlag } from 'flagg';
-
+import { Signup } from './pages/Signup/Signup';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
@@ -44,7 +42,7 @@ const RootView = () => {
 };
 
 export const Routes: React.FC<IRoutesProps> = (props) => {
-  const [hasInviteLink] = useFeatureFlag('inviteLink');
+  const [hasSignup] = useFeatureFlag('signup');
 
   return (
     <Switch>
@@ -56,10 +54,11 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <Signin />
       </Route>
 
-      {/* commented out since we dont want people to hit this yet */}
-      {/* <Route exact path={RouteNames.SIGN_UP}>
-        <Signup />
-      </Route> */}
+      {hasSignup && (
+        <Route exact path={RouteNames.SIGN_UP}>
+          <Signup />
+        </Route>
+      )}
 
       <Route path={RouteNames.CLAIM_ROOM}>
         <FinalizeAccount />
@@ -74,7 +73,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
       </Route>
 
       <Route path={RouteNames.JOIN_ROOM}>
-        <JoinRoom />
+        <FinalizeAccount />
       </Route>
 
       <Route path={RouteNames.INVITE} component={InviteLink} />

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Api from '../../utils/api';
 import { useHistory } from 'react-router-dom';
-import { RouteNames } from '../../constants/RouteNames';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
@@ -9,6 +8,7 @@ import { logger } from '../../utils/logger';
 import { getSessionToken } from '../../utils/sessionToken';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { RouteComponentProps } from 'react-router';
+import { RouteNames } from '../../constants/RouteNames';
 
 interface MatchParams {
   otp: string;

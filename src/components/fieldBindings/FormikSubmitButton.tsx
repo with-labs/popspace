@@ -55,8 +55,16 @@ export const FormikSubmitButton: React.FC<FormikSubmitButtonProps> = ({
     );
   }
 
+  /**
+   * Support multiple validation approaches -
+   * 1. If validation happens on change/blur, we prevent submission of invalid data.
+   * 2. If validation does NOT happen on change/blur, we allow the user to attempt to submit
+   *    and then validate their submission afterward.
+   */
+  const isInvalidAndPreventInvalidSubmission = !context.isValid && context.validateOnBlur === true;
+
   return (
-    <Button type="submit" disabled={!context.isValid || !formChanged || disabled} {...props}>
+    <Button type="submit" disabled={isInvalidAndPreventInvalidSubmission || !formChanged || disabled} {...props}>
       {showError ? firstValidationError.toString() : children}
     </Button>
   );

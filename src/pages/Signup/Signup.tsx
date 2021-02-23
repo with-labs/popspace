@@ -1,215 +1,170 @@
-// TODO: WIP
-import React, { useState } from 'react';
-import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import { Page } from '../../Layouts/Page/Page';
-import { useTranslation, Trans } from 'react-i18next';
-import { Button, TextField, Link, Typography, makeStyles } from '@material-ui/core';
-import Api from '../../utils/api';
-
-import { Header } from '../../components/Header/Header';
-import { CheckboxField } from '../../components/CheckboxField/CheckboxField';
-import { ErrorInfo } from '../../types/api';
+import React, { useCallback } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Typography } from '@material-ui/core';
+import Api, { ApiError } from '../../utils/api';
+import signinImg from '../../images/illustrations/key.svg';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
+import { isEmailValid } from '../../utils/CheckEmail';
+import i18n from '../../i18n';
+import { useHistory } from 'react-router';
+import { FormikCheckboxField } from '../../components/fieldBindings/FormikCheckboxField';
 import { Links } from '../../constants/Links';
-import signinImg from '../../images/SignIn.png';
-import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
-import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { Link } from '../../components/Link/Link';
+import { SignupComplete } from './SignupComplete';
+import { RouteNames } from '../../constants/RouteNames';
+import { ErrorCodes } from '../../constants/ErrorCodes';
+import { toast } from 'react-hot-toast';
+import { useAppState } from '../../state';
+import { FormPage } from '../../Layouts/formPage/FormPage';
+import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
+import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
+import { Row } from '../../components/Row/Row';
+import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
+import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 
 interface ISignupProps {}
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: 10,
-  },
-  checkboxes: {
-    marginTop: theme.spacing(2),
-  },
-  email: {
-    marginTop: theme.spacing(2),
-  },
-  nameWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    [theme.breakpoints.up('md')]: {
-      flexDirection: 'row',
-    },
-  },
-  firstName: {
-    marginRight: theme.spacing(2.5),
-    [theme.breakpoints.only('sm')]: {
-      marginRight: 0,
-      marginBottom: theme.spacing(2),
-    },
-  },
-  lastName: {
-    [theme.breakpoints.only('sm')]: {
-      marginTop: theme.spacing(1.25),
-      marginBottom: theme.spacing(2),
-    },
-  },
-  button: {
-    marginTop: theme.spacing(5),
-  },
-}));
+const validateEmail = (value: string) => {
+  if (!isEmailValid(value)) {
+    return i18n.t('pages.signup.email.invalid');
+  }
+};
 
-export const Signup: React.FC<ISignupProps> = (props) => {
-  const classes = useStyles();
+const validateTos = (value: boolean) => {
+  if (!value) {
+    return i18n.t('pages.signup.tos.invalid');
+  }
+};
+
+type SignupFormValues = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  newsletterOptIn: boolean;
+};
+
+export const Signup: React.FC<ISignupProps> = () => {
   const { t } = useTranslation();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [acceptTos, setAcceptTos] = useState(false);
-  const [receiveMarketing, setReceiveMarketing] = useState(false);
-  const [error] = useState<ErrorInfo>(null!);
-  const [isLoading] = useState(false);
+  const { setError } = useAppState();
 
-  /**
-   * from the old page, use as notes
-   *   const register = async (input: any) => {
-    const result: any = await Api.signup(input);
-    const temp: any = document.getElementById('temp') || {};
+  // get the query params, if any
+  const query = useQueryParams();
+  const isJoinFlow = query.get('joinFlow');
 
-    if (result && result.success) {
-      const signupUrl = (result || {}).signupUrl;
-      temp['innerHTML'] = `<div>Check your email to complete signup! </a>`;
-    } else {
-      alert(result.message);
-    }
-  };
+  // if there's an email cached in history state from signin page, apply it to
+  // initial props
+  const history = useHistory<{ email?: string }>();
+  const email = history.location.state?.email || '';
 
-  const finishSignup = async () => {
-    const input = getInput();
-    const validation = checkInput(input);
-    if (validation.valid) {
-      if (props.register) {
-        // Support embedding the signup form with custom behavior
-        // e.g. for processing email invitations.
-        await props.register(input);
-      } else {
-        await register(input);
+  const handleSubmit = useCallback(
+    async (values: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
+      try {
+        const result = await Api.signup(values);
+        if (!result.success) {
+          if (result.errorCode === ErrorCodes.ALREADY_REGISTERED) {
+            toast(t('pages.signup.alreadyRegistered') as string);
+            history.push(RouteNames.SIGN_IN, { email: values.email });
+          } else {
+            throw new ApiError(result);
+          }
+        }
+        util.setStatus({ sent: true });
+      } catch (err) {
+        setError(err);
       }
-    } else {
-      alert(`Invalid fields: ${JSON.stringify(Object.keys(validation.invalidFields))}`);
-      console.log(validation);
-    }
-  };
-
-  const getInputValue = (fieldId: string) => {
-    const input = document.getElementById(fieldId) as HTMLInputElement;
-    return input.value;
-  };
-
-  const getCheckedValue = (checkboxId: string) => {
-    const checked = document.getElementById(checkboxId) as HTMLInputElement;
-    return checked.checked;
-  };
-
-  const getInput = () => {
-    return {
-      firstName: getInputValue('first_name'),
-      lastName: getInputValue('last_name'),
-      email: getInputValue('email'),
-      acceptTos: getCheckedValue('accept_tos'),
-      receiveMarketing: getCheckedValue('receive_marketing'),
-    };
-  };
-
-  const checkInput = (input: { [key: string]: any }) => {
-    // In principle all string input is vulnerable to XSS
-    // E.g. the name could be <script>sendLocalStorageContentsToMyServer()</script>
-    // TODO: input validation should prevent XSS, e.g. disallow < and >
-    const invalidFields: any = {};
-    // TODO: we can hook up some npm package for field validation
-    if (!input['firstName']) invalidFields['first_name'] = true;
-    if (!input['lastName']) invalidFields['last_name'] = true;
-    // We don't need to validate email too much, since we'll verify it via otp
-    if (!input['email']) invalidFields['email'] = true;
-    if (!input['acceptTos']) invalidFields['accept_tos'] = true;
-
-    if (Object.keys(invalidFields).length > 0) {
-      return {
-        valid: false,
-        invalidFields: invalidFields,
-      };
-    } else {
-      return { valid: true };
-    }
-  };
-
-   */
-
-  const onFormSubmit = async () => {
-    try {
-    } catch (err) {}
-  };
+    },
+    [history, t, setError]
+  );
 
   return (
-    <Page isLoading={isLoading} error={error}>
-      <Header />
-      <TwoColLayout>
-        <Column centerContent={true}>
-          <PanelContainer>
-            <Typography variant="h2" className={classes.title}>
-              {t('pages.signup.title')}
-            </Typography>
-            <form onSubmit={onFormSubmit}>
-              <div className={classes.nameWrapper}>
-                <TextField
-                  id="firstName"
-                  value={firstName}
-                  onChange={(event) => setFirstName(event.target.value)}
-                  placeholder={t('pages.signup.firstName.placeholder')}
-                  label={t('pages.signup.firstName.label')}
-                  className={classes.firstName}
-                />
-                <TextField
-                  id="lastName"
-                  value={lastName}
-                  onChange={(event) => setLastName(event.target.value)}
-                  placeholder={t('pages.signup.lastName.placeholder')}
-                  label={t('pages.signup.lastName.label')}
-                  className={classes.lastName}
-                />
-              </div>
-              <TextField
-                id="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder={t('pages.signup.email.placeholder')}
-                label={t('pages.signup.email.placeholder')}
-                className={classes.email}
-              />
-              <div className={classes.checkboxes}>
-                <CheckboxField
-                  label={
-                    <span>
-                      I agree to the{' '}
-                      <Link href={Links.TOS} target="_blank" rel="noopener noreferrer">
-                        Terms of Service
-                      </Link>
-                    </span>
-                  }
-                  checked={acceptTos}
-                  onChange={() => setAcceptTos(!acceptTos)}
-                  name="terms of service checkbox"
-                />
-                <CheckboxField
-                  label="It’s ok to send me occasional emails"
-                  checked={receiveMarketing}
-                  onChange={() => setReceiveMarketing(!receiveMarketing)}
-                  name="end me occasional emails checkbox"
-                />
-              </div>
-              <Button className={classes.button} type="submit" disabled={!firstName || !lastName || !acceptTos}>
-                {t('pages.signup.submitButtonText')}
-              </Button>
-            </form>
-          </PanelContainer>
-        </Column>
-        <Column centerContent={true} hide="sm">
-          <PanelImage src={signinImg} altTextKey="pages.signup.imgAltText" />
-        </Column>
-      </TwoColLayout>
-    </Page>
+    <Formik<SignupFormValues>
+      onSubmit={handleSubmit}
+      initialStatus={{ sent: false }}
+      initialValues={{ email, firstName: '', lastName: '', newsletterOptIn: false }}
+      validateOnBlur={false}
+    >
+      {({ setStatus, status, values, submitForm }) =>
+        status?.sent ? (
+          <SignupComplete
+            resend={async () => {
+              submitForm();
+              toast.success(t('pages.signup.resentEmail') as string);
+            }}
+            email={values.email}
+          />
+        ) : (
+          <FormPage>
+            <FormPageContent>
+              <FormPageTitle>{t('pages.signup.title')}</FormPageTitle>
+              {isJoinFlow && <Typography paragraph>{t('pages.signup.joinFlow')}</Typography>}
+              <Form>
+                <FormPageFields>
+                  <Row>
+                    <FormikTextField
+                      id="firstName"
+                      name="firstName"
+                      placeholder={t('pages.signup.firstName.placeholder')}
+                      label={t('pages.signup.firstName.label')}
+                      required
+                      margin="normal"
+                      autoComplete="given-name"
+                      autoFocus
+                    />
+                    <FormikTextField
+                      id="lastName"
+                      name="lastName"
+                      placeholder={t('pages.signup.lastName.placeholder')}
+                      label={t('pages.signup.lastName.label')}
+                      required
+                      margin="normal"
+                      autoComplete="family-name"
+                    />
+                  </Row>
+                  <FormikTextField
+                    id="email"
+                    name="email"
+                    placeholder={t('pages.signup.email.placeholder')}
+                    label={t('pages.signup.email.label')}
+                    validate={validateEmail}
+                    margin="normal"
+                    autoComplete="email"
+                    required
+                  />
+                  <FormikCheckboxField
+                    id="tos"
+                    name="tos"
+                    value="tos"
+                    label={
+                      <Trans i18nKey="pages.signup.tos.label">
+                        I agree to the <Link to={Links.TOS}>{t('header.tos')}</Link>
+                      </Trans>
+                    }
+                    required
+                    validate={validateTos}
+                  />
+                  <FormikCheckboxField
+                    id="newsletterOptIn"
+                    name="newsletterOptIn"
+                    value="newsletterOptIn"
+                    label={t('pages.signup.newsletterOptIn.label')}
+                  />
+                </FormPageFields>
+                <FormikSubmitButton>{t('pages.signup.submitButtonText')}</FormikSubmitButton>
+                <Typography style={{ marginTop: 16 }}>
+                  <Trans as="span" i18nKey="pages.signup.signInInstead">
+                    {`Already have an account? `}
+                    <Link to={RouteNames.SIGN_IN}>{t('pages.signup.signIn')}</Link>.
+                  </Trans>
+                </Typography>
+              </Form>
+            </FormPageContent>
+            <FormPageImage src={signinImg} alt={t('pages.signup.imgAltText')} />
+          </FormPage>
+        )
+      }
+    </Formik>
   );
 };

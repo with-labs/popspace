@@ -29,9 +29,9 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
       history.push(RouteNames.ROOT);
     } else {
       Api.completeSignup(otp, email)
-        .then((result: any) => {
+        .then((result) => {
           setIsLoading(false);
-          if (result.succuess) {
+          if (result.success) {
             setSessionToken(result.token);
             history.push(RouteNames.ROOT);
           } else {
@@ -41,7 +41,7 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
             });
           }
         })
-        .catch((e: any) => {
+        .catch((e) => {
           setIsLoading(false);
           logger.error(`Error verifying email for ${email}`, e);
           setError({

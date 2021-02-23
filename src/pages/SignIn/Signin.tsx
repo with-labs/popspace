@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import { Page } from '../../Layouts/Page/Page';
-import { Header } from '../../components/Header/Header';
 import { ConfirmationView } from './ConfirmationView';
 import { isEmailValid } from '../../utils/CheckEmail';
 import Api from '../../utils/api';
-import { makeStyles, Typography, Box } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
-import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { Typography } from '@material-ui/core';
+import { Trans, useTranslation } from 'react-i18next';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
@@ -21,15 +15,17 @@ import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
-
-import signinImg from '../../images/SignIn.png';
+import signinImg from '../../images/illustrations/key.svg';
+import { Link } from '../../components/Link/Link';
+import { useFeatureFlag } from 'flagg';
+import { FormPage } from '../../Layouts/formPage/FormPage';
+import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
+import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
+import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 
 export type SignInFormData = {
   email: string;
-};
-
-const EMPTY_VALUES: SignInFormData = {
-  email: '',
 };
 
 function validateEmail(email: string, translate: TFunction) {
@@ -40,19 +36,15 @@ function validateEmail(email: string, translate: TFunction) {
 
 interface ISigninProps {}
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: theme.spacing(5),
-  },
-}));
-
-export const Signin: React.FC<ISigninProps> = (props) => {
-  const history = useHistory();
-  const classes = useStyles();
-  const [email, setEmail] = useState('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
+export const Signin: React.FC<ISigninProps> = () => {
   const { t } = useTranslation();
-  const { user, isLoading } = useCurrentUserProfile();
+
+  const history = useHistory<{ email?: string }>();
+  const preloadedEmail = history.location.state?.email || '';
+
+  const [email, setEmail] = useState(preloadedEmail);
+
+  const { user } = useCurrentUserProfile();
 
   // get the query params, if any
   const query = useQueryParams();
@@ -76,7 +68,7 @@ export const Signin: React.FC<ISigninProps> = (props) => {
       if (loginRequest.success) {
         setEmail(cleanEmail);
         // we have sent off the magic link to the user, so render success page
-        setShowConfirmation(true);
+        actions.setStatus({ sent: true });
       } else {
         // we have an error
         actions.setFieldError('email', loginRequest.message);
@@ -94,20 +86,24 @@ export const Signin: React.FC<ISigninProps> = (props) => {
     }
   };
 
+  const [hasSignup] = useFeatureFlag('signup');
+
   return (
-    <Page isLoading={isLoading}>
-      <Header />
-      {showConfirmation ? (
-        <ConfirmationView email={email} />
-      ) : (
-        <TwoColLayout>
-          <Column centerContent={true} useColMargin={true}>
-            <PanelContainer>
-              <Typography variant="h2" className={classes.title}>
-                {t('pages.signin.title')}
-              </Typography>
-              <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmit} validateOnMount>
-                <Form>
+    <Formik
+      initialValues={{ email: preloadedEmail }}
+      onSubmit={onSubmit}
+      validateOnBlur={false}
+      initialStatus={{ sent: false }}
+    >
+      {({ values, status }) =>
+        status.sent ? (
+          <ConfirmationView email={email} />
+        ) : (
+          <FormPage>
+            <FormPageContent>
+              <FormPageTitle>{t('pages.signin.title')}</FormPageTitle>
+              <Form>
+                <FormPageFields>
                   <FormikTextField
                     id="SignIn-email"
                     name="email"
@@ -115,20 +111,37 @@ export const Signin: React.FC<ISigninProps> = (props) => {
                     label={t('pages.signin.email.label')}
                     validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
                     fullWidth
+                    autoComplete="email"
+                    autoFocus
+                    margin="normal"
+                    required
                   />
-                  <Box mt={5}>
-                    <FormikSubmitButton>{t('pages.signin.submitButtonText')}</FormikSubmitButton>
-                  </Box>
-                </Form>
-              </Formik>
-            </PanelContainer>
-          </Column>
-          <Column centerContent={true} hide="sm">
-            <PanelImage src={signinImg} altTextKey="pages.signin.imgAltText" />
-          </Column>
-        </TwoColLayout>
-      )}
-      <DialogModal message={errorMsg} onClose={clearUrlError} />
-    </Page>
+                </FormPageFields>
+                <FormikSubmitButton>{t('pages.signin.submitButtonText')}</FormikSubmitButton>
+                {hasSignup && (
+                  <Typography style={{ marginTop: 16 }}>
+                    <Trans as="span" i18nKey="pages.signin.signUpInstead">
+                      {`No account yet? `}
+                      <Link
+                        to="#"
+                        onClick={(ev) => {
+                          ev.preventDefault();
+                          history.push(RouteNames.SIGN_UP, { email: values.email });
+                        }}
+                      >
+                        {t('pages.signin.signUp')}
+                      </Link>
+                      .
+                    </Trans>
+                  </Typography>
+                )}
+              </Form>
+            </FormPageContent>
+            <FormPageImage src={signinImg} alt={t('pages.signin.imgAltText')} />
+            <DialogModal message={errorMsg} onClose={clearUrlError} />
+          </FormPage>
+        )
+      }
+    </Formik>
   );
 };

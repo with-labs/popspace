@@ -1,14 +1,20 @@
 import React, { ChangeEvent } from 'react';
-import { Checkbox, makeStyles, FormControlLabel } from '@material-ui/core';
+import { Checkbox, makeStyles, FormControlLabel, Tooltip } from '@material-ui/core';
 import { Positions } from '../../constants/PositionEnum';
+import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import { ErrorOutlined } from '@material-ui/icons';
 
-const useLabelStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   label: {
-    color: theme.palette.brandColors.ink.regular,
+    color: 'inherit',
     fontStyle: 'normal',
     fontWeight: 400,
     fontSize: '16px',
     lineHeight: '22px',
+  },
+  invalid: {
+    color: theme.palette.error.contrastText,
   },
 }));
 
@@ -21,6 +27,7 @@ export interface ICheckboxFieldProps {
   disabled?: boolean;
   ariaLabelText?: string;
   name?: string;
+  invalid?: boolean;
 }
 
 /**
@@ -36,26 +43,46 @@ export const CheckboxField: React.FC<ICheckboxFieldProps> = (props) => {
     disabled: isDisabled = false,
     ariaLabelText,
     name: checkboxName,
+    invalid,
   } = props;
 
-  const labelClasses = useLabelStyles();
+  const classes = useStyles();
 
   return (
-    <div className={className}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={checked}
-            onChange={onChange}
-            name={checkboxName}
-            inputProps={{ 'aria-label': ariaLabelText }}
-          />
-        }
-        disabled={isDisabled}
-        label={labelText}
-        labelPlacement={labelPosition}
-        classes={labelClasses}
-      />
-    </div>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={checked}
+          onChange={onChange}
+          name={checkboxName}
+          inputProps={{ 'aria-label': ariaLabelText }}
+        />
+      }
+      disabled={isDisabled}
+      label={
+        invalid ? (
+          <span>
+            {labelText} <InvalidTooltip />
+          </span>
+        ) : (
+          labelText
+        )
+      }
+      labelPlacement={labelPosition}
+      classes={{
+        label: classes.label,
+      }}
+      className={clsx(invalid && classes.invalid, className)}
+    />
+  );
+};
+
+const InvalidTooltip = () => {
+  const { t } = useTranslation();
+
+  return (
+    <Tooltip title={t('error.messages.checkboxRequired') as string}>
+      <ErrorOutlined />
+    </Tooltip>
   );
 };

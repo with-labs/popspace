@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
-import { useSnackbar } from 'notistack';
+import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
 export function useSaveFile() {
-  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
 
   const handleExport = useCallback(
@@ -11,7 +10,7 @@ export function useSaveFile() {
       const blob = new Blob([fileContents], { type: contentType });
       const url = URL.createObjectURL(blob);
       if (!url) {
-        enqueueSnackbar(t('errors.messages.downloadFailed'), { variant: 'error' });
+        toast.error(t('error.messages.downloadFailed') as string);
         return;
       }
 
@@ -31,7 +30,7 @@ export function useSaveFile() {
 
       a.click();
     },
-    [enqueueSnackbar, t]
+    [t]
   );
 
   return handleExport;

@@ -1,4 +1,4 @@
-import { useSnackbar } from 'notistack';
+import { toast } from 'react-hot-toast';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
@@ -11,7 +11,6 @@ export function useAddFile() {
   const { t } = useTranslation();
 
   const addWidget = useAddAccessory();
-  const { enqueueSnackbar } = useSnackbar();
   const updateWidget = useRoomStore((room) => room.api.updateWidget);
 
   const createWidget = useCallback(
@@ -28,7 +27,7 @@ export function useAddFile() {
       const { success, uploadUrl, downloadUrl } = await api.getRoomFileUploadUrl(file.name, file.type);
 
       if (!success) {
-        enqueueSnackbar(t('error.messages.fileDropUnknownFailure'), { color: 'error' });
+        toast.error(t('error.messages.fileDropUnknownFailure') as string);
       } else {
         // immediately add a pending widget, but don't block on it yet
         const widgetAddedPromise = addWidget({
@@ -76,7 +75,7 @@ export function useAddFile() {
         window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
-    [addWidget, enqueueSnackbar, t, updateWidget]
+    [addWidget, t, updateWidget]
   );
 
   return createWidget;

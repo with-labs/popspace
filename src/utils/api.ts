@@ -52,8 +52,14 @@ export enum SERVICE {
   MERCURY = 'MERCURY',
 }
 class Api {
-  async signup(data: any) {
-    return await this.post('/request_create_account', data);
+  async signup(data: {
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    displayName?: string;
+    newsletterOptIn?: boolean;
+  }) {
+    return await this.post<BaseResponse>('/request_create_account', data);
   }
 
   async completeSignup(otp: string, email: string) {
@@ -212,9 +218,9 @@ class Api {
 
 export default new Api();
 
-/** TODO: throw one of these one very failed request */
+/** TODO: throw one of these on every failed request */
 export class ApiError extends Error {
-  code: string;
+  private code: ErrorCodes;
 
   get errorCode() {
     return this.code;
@@ -222,6 +228,6 @@ export class ApiError extends Error {
 
   constructor(response: BaseResponse) {
     super(response.message || 'Unexpected error');
-    this.code = response.errorCode?.toString() || ErrorCodes.UNEXPECTED;
+    this.code = (response.errorCode?.toString() as ErrorCodes) || ErrorCodes.UNEXPECTED;
   }
 }

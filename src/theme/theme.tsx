@@ -185,7 +185,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       modal: `0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729)`,
     },
     focusRings: {
-      primary: createFocusRing(brandPalette.oregano.ink),
+      primary: createFocusRing(brandPalette.oregano.bold),
       create: createFocusRing,
       idle: `inset 0 0 0 0 transparent`,
     },
@@ -402,9 +402,17 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '&:-webkit-autofill': {
             borderRadius: 'inherit',
           },
+          '&::placeholder': {
+            color: palette.grey[900],
+            opacity: 1,
+          },
         },
         inputMarginDense: {
           paddingTop: 6,
+        },
+        inputHiddenLabel: {
+          paddingTop: '14.5px',
+          paddingBottom: '14.5px',
         },
       },
       MuiInputLabel: {
@@ -480,7 +488,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiButton: {
         root: {
           borderRadius: shape.contentBorderRadius,
-          padding: '11.5px 30px',
+          padding: '13px 30px',
         },
         contained: {
           boxShadow: focusRings.idle,
@@ -524,6 +532,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           borderWidth: 2,
         },
         text: {
+          padding: '13px 30px',
           '&:focus, &$focusVisible': {
             boxShadow: focusRings.create(palette.secondary.dark),
           },
@@ -539,12 +548,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         },
         startIcon: {
           paddingLeft: 0,
-          marginLeft: 0,
+          marginLeft: -22,
           marginRight: 8,
         },
         endIcon: {
           paddingRight: 0,
-          marginRight: 0,
+          marginRight: -22,
           marginLeft: 8,
         },
       },
@@ -592,6 +601,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           },
           '& input:focus + svg': {
             color: palette.secondary.contrastText,
+            backgroundColor: palette.secondary.light,
           },
           '&$checked': {
             color: palette.secondary.contrastText,
@@ -719,6 +729,10 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         root: {
           fontWeight: typography.fontWeightBold,
           color: palette.text.primary,
+
+          '&:focus': {
+            outlineColor: palette.secondary.dark,
+          },
         },
       },
       MuiDivider: {
@@ -760,6 +774,13 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '& > $icon': {
             color: palette.brandColors.lavender.ink,
           },
+        },
+        icon: {
+          padding: 0,
+        },
+        message: {
+          padding: 0,
+          fontWeight: typography.fontWeightMedium,
         },
       },
       MuiSlider: {

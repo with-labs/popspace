@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
-import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { Column } from '../../Layouts/TwoColLayout/Column/Column';
-import checkEmailImg from '../../images/CheckEmail.png';
-import { useSnackbar } from 'notistack';
+import checkEmailImg from '../../images/illustrations/mailbox.svg';
+import { toast } from 'react-hot-toast';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Api from '../../utils/api';
 import { isEmailValid } from '../../utils/CheckEmail';
 import { useTranslation, Trans } from 'react-i18next';
-import { PanelImage } from '../../Layouts/PanelImage/PanelImage';
-import { PanelContainer } from '../../Layouts/PanelContainer/PanelContainer';
+import { FormPage } from '../../Layouts/formPage/FormPage';
+import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
+import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
+import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
 
 interface IConfirmationViewProps {
   email: string;
 }
 
 const useStyles = makeStyles((theme) => ({
-  title: {
-    marginBottom: theme.spacing(5),
-  },
   error: {
     marginTop: theme.spacing(2),
     color: theme.palette.error.dark,
@@ -33,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
 export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
   const classes = useStyles();
   const { email } = props;
-  const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation();
 
   const [error, setError] = useState('');
@@ -50,14 +46,14 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
         // we have sent off the magic link to the user,
         // clear any error
         setError('');
-        enqueueSnackbar(t('pages.confirmationView.snackSuccessMsg'), { variant: 'success' });
+        toast.success(t('pages.confirmationView.snackSuccessMsg') as string);
       } else {
         // we have an error
         // TODO: update this once the error messaging from the backend is standarized
         setError(loginRequest.message);
       }
     } else {
-      enqueueSnackbar(t('pages.confirmationView.snackFailMsg'), { variant: 'error' });
+      toast.error(t('pages.confirmationView.snackFailMsg') as string);
       setError(t('error.messages.invalidEmail'));
     }
   };
@@ -69,35 +65,29 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
   );
 
   return (
-    <TwoColLayout>
-      <Column centerContent={true} useColMargin={true}>
-        <PanelContainer>
-          <Typography variant="h2" className={classes.title}>
-            {t('pages.confirmationView.title')}
-          </Typography>
-          <Typography variant="body1">
-            {/* the child of the trans component maps the components to our i18n string and will serve as fallback as well */}
-            <Trans i18nKey="pages.confirmationView.bodyText" values={{ email: email, test: test }}>
-              We sent a magic link to {{ email }}
-              Click on the link in the email and you will be automatically logged in. If you didn’t receive the email,
-              you can
-              <Button
-                className={classes.buttonLink}
-                onClick={handleResendLink}
-                fullWidth={false}
-                style={{ backgroundColor: 'transparent' }}
-              >
-                request a new link
-              </Button>
-              . Don't forget to check your spam folder!
-            </Trans>
-          </Typography>
-          <div className={classes.error}>{error}</div>
-        </PanelContainer>
-      </Column>
-      <Column centerContent={true} hide="sm">
-        <PanelImage src={checkEmailImg} altTextKey="pages.confirmationView.imgAltText" />
-      </Column>
-    </TwoColLayout>
+    <FormPage>
+      <FormPageContent>
+        <FormPageTitle>{t('pages.confirmationView.title')}</FormPageTitle>
+        <Typography variant="body1">
+          {/* the child of the trans component maps the components to our i18n string and will serve as fallback as well */}
+          <Trans i18nKey="pages.confirmationView.bodyText" values={{ email: email, test: test }}>
+            We sent a magic link to {{ email }}
+            Click on the link in the email and you will be automatically logged in. If you didn’t receive the email, you
+            can
+            <Button
+              className={classes.buttonLink}
+              onClick={handleResendLink}
+              fullWidth={false}
+              style={{ backgroundColor: 'transparent' }}
+            >
+              request a new link
+            </Button>
+            . Don't forget to check your spam folder!
+          </Trans>
+        </Typography>
+        <div className={classes.error}>{error}</div>
+      </FormPageContent>
+      <FormPageImage src={checkEmailImg} alt={t('pages.confirmationView.imgAltText')} />
+    </FormPage>
   );
 };

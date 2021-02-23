@@ -5,7 +5,9 @@
       "feedback": "Feedback",
       "tos": "Terms of Service",
       "privacyPolicy": "Privacy Policy",
-      "logout": "Logout"
+      "logout": "Logout",
+      "signup": "Sign Up",
+      "signin": "Sign In"
     },
     "common": {
       "with": "With",
@@ -73,18 +75,36 @@
     },
     "pages": {
       "signin": {
-        "title": "Sign in",
+        "title": "Sign In",
         "email": { "placeHolder": "dorothy@emerald.so", "label": "Email Address" },
         "submitButtonText": "Sign In",
-        "imgAltText": "sign in image"
+        "imgAltText": "sign in image",
+        "signUpInstead": "No account yet? <1>Sign up</1>.",
+        "signUp": "Sign up"
       },
       "signup": {
-        "title": "Create an account",
-        "email": { "placeholder": "dorothy@emerald.so", "label": "Email Address" },
-        "firstName": { "placeholder": "Dorothy", "label": "First Name" },
-        "lastName": { "placeholder": "Gale", "label": "Last Name" },
-        "submitButtonText": "Sign in with email",
-        "imgAltText": "sign up image"
+        "title": "Sign Up",
+        "email": {
+          "placeholder": "dorothy@emerald.so",
+          "label": "Your email address",
+          "invalid": "Please enter a valid email"
+        },
+        "firstName": { "placeholder": "Dorothy", "label": "First name" },
+        "lastName": { "placeholder": "Gale", "label": "Last name" },
+        "tos": { "label": "I agree to the <1>Terms of Service</1>", "invalid": "You must agree to continue" },
+        "submitButtonText": "Sign up",
+        "imgAltText": "A key floating magically in the air. A With logo is emblazoned on the attached key tag.",
+        "invitationSent": "Invitation sent!",
+        "invitationDestination": "We sent an invitation to <1>email@domain.tld</1>",
+        "invitationHelp": "If you didn't receive the email, you can <1>request a new link</1>. Don't forget to check your spam folder!",
+        "invitationRequestNewLink": "request a new link",
+        "invitationImgAltText": "A postmarked letter flying through the air",
+        "signInInstead": "Already have an account? <1>Sign in</1>.",
+        "signIn": "Sign in",
+        "newsletterOptIn": { "label": "It's ok to send me updates" },
+        "alreadyRegistered": "You've got a With account already — please sign in!",
+        "joinFlow": "You'll need an account to join someone's room. After you've created one, try clicking that link again.",
+        "resentEmail": "We sent you another link!"
       },
       "confirmationView": {
         "title": "Check your email",
@@ -120,7 +140,12 @@
         "marketingCheckboxText": "It’s ok to send me occasional emails",
         "submitBtnText": "Finalize my account",
         "imgAltText": "sign in",
-        "tosCheck": "I agree to the <1>Terms of Service</1>"
+        "tosCheck": "I agree to the <1>Terms of Service</1>",
+        "email": {
+          "placeholder": "dorothy@emerald.so",
+          "label": "Your email address",
+          "invalid": "Please enter a valid email"
+        }
       },
       "room": {
         "joinTitle": "Joining {{roomName}}",
@@ -179,7 +204,8 @@
         "doubleTapEraserToClear": "Double tap Eraser to clear",
         "export": "Save whiteboard as an image",
         "quickActionTitle": "Add a Whiteboard",
-        "quickActionPrompt": "/whiteboard"
+        "quickActionPrompt": "/whiteboard",
+        "exportFailed": "That didn't work - try again?"
       },
       "youtube": {
         "name": "YouTube",
@@ -264,7 +290,8 @@
         "socketUnavailable": "We couldn't connect to our servers. Check your internet status and contact us if this persists.",
         "mediaUnavailable": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status and contact us if this persists.",
         "emptyRoomName": "Room name cannot be blank.",
-        "maxRoomNameCharacters": "Room name cannot be more then {{maxChar}} characters."
+        "maxRoomNameCharacters": "Room name cannot be more then {{maxChar}} characters.",
+        "checkboxRequired": "Please check this box to proceed"
       },
       "widgetsFallback": {
         "title": "Accessories error",

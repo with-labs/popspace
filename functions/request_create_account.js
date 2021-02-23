@@ -1,4 +1,4 @@
-const lib = require("lib");
+const lib = require("lib")
 lib.util.env.init(require("./env.json"))
 
 /*
@@ -11,37 +11,35 @@ Sign up flow
 5. Create/store session
 */
 
+module.exports.handler = util.netlify.postEndpoint(
+  async (event, context, callback) => {
+    const params = context.params
 
-module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
-  const params = context.params
+    // Make sure we don't distinguish emails just by whitespace
+    params.email = shared.lib.args.consolidateEmailString(params.email)
+    const existingUser = await shared.db.accounts.userByEmail(params.email)
 
-  // Make sure we don't distinguish emails just by whitespace
-  params.email = shared.lib.args.consolidateEmailString(params.email)
-  const existingUser = await shared.db.accounts.userByEmail(params.email)
-
-  if(existingUser) {
-    return await lib.util.http.fail(
-      callback,
-      "Email already registered. Please log in!",
-      { errorCode: shared.error.code.ALREADY_REGISTERED }
-    )
-  }
-
-  const existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
-
-  if(existingCreateRequest) {
-    if(!shared.lib.otp.isExpired(existingCreateRequest)) {
+    if (existingUser) {
       return await lib.util.http.fail(
         callback,
-        "Email already registered. Check your email for a verification link.",
+        "Email already registered. Please log in!",
         { errorCode: shared.error.code.ALREADY_REGISTERED }
       )
     }
+
+    const existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(
+      params.email
+    )
+
+    const createRequest =
+      existingCreateRequest ||
+      (await shared.db.accounts.tryToCreateAccountRequest(params))
+    const signupUrl = shared.db.accounts.getSignupUrl(
+      lib.util.env.appUrl(event, context),
+      createRequest
+    )
+    await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
+
+    return await lib.util.http.succeed(callback, {})
   }
-
-  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params)
-  const signupUrl = shared.db.accounts.getSignupUrl(lib.util.env.appUrl(event, context), createRequest)
-  await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
-
-  return await lib.util.http.succeed(callback, {});
-})
+)

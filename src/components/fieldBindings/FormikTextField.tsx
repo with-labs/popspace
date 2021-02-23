@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldHookConfig, useField } from 'formik';
+import { FieldHookConfig, useField, useFormikContext } from 'formik';
 import { TextField, TextFieldProps } from '@material-ui/core';
 
 export type FormikTextFieldProps = FieldHookConfig<string> & Omit<TextFieldProps, 'value' | 'onChange'>;
@@ -12,11 +12,16 @@ export type FormikTextFieldProps = FieldHookConfig<string> & Omit<TextFieldProps
 export const FormikTextField: React.FC<FormikTextFieldProps> = ({ helperText, validate, ...props }) => {
   // validate is pulled out separately so that we don't pass it to the TextField
   const [field, meta] = useField({ validate, ...props });
+  const context = useFormikContext();
 
   // don't show an error unless the user has touched the field -
   // avoids things like required fields being in error state when the
   // form first mounts.
-  const shownError = meta.touched && meta.error;
+  // There's another rule too - if the form doesn't validate on blur
+  // (like Signup or Signin forms), don't show validation
+  // problems until after first submission.
+  const readyToValidate = context.validateOnBlur || context.submitCount > 0;
+  const shownError = readyToValidate && meta.touched && meta.error;
 
   return (
     <TextField

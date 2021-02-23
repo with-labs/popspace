@@ -1,17 +1,17 @@
 import { useCallback } from 'react';
 import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
-import { useSnackbar } from 'notistack';
+import { toast } from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 export function useExport(exportToImageURL: () => string) {
   const { room } = useVideoContext();
   const roomName = room?.name;
-
-  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
 
   const handleExport = useCallback(() => {
     const url = exportToImageURL();
     if (!url) {
-      enqueueSnackbar("That didn't work - try again?", { variant: 'error' });
+      toast.error(t('widgets.whiteboard.exportFailed') as string);
       return;
     }
 
@@ -30,7 +30,7 @@ export function useExport(exportToImageURL: () => string) {
     a.addEventListener('click', clickHandler, false);
 
     a.click();
-  }, [enqueueSnackbar, exportToImageURL, roomName]);
+  }, [t, exportToImageURL, roomName]);
 
   return handleExport;
 }

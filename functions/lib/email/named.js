@@ -1,8 +1,8 @@
-const SENDER = 'notify@with.so'
+const SENDER = "notify@with.so"
 
 const getEmail = async (name) => {
   const email = await lib.db.dynamo.getLatestEmail(name)
-  if(!email) {
+  if (!email) {
     throw `No such email: ${name}`
   }
   return email
@@ -29,14 +29,23 @@ const fetchAndProcessEmail = async (emailName, arg) => {
 
 const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
   const e = await fetchAndProcessEmail(emailName, arg)
-  const tags = [{Name: "type", Value: emailName}]
-  return await lib.email.ses.sendMail(e.name, e.version, SENDER, toEmailAddress, e.subject, e.html, e.plaintext, tags)
+  const tags = [{ Name: "type", Value: emailName }]
+  return await lib.email.ses.sendMail(
+    e.name,
+    e.version,
+    SENDER,
+    toEmailAddress,
+    e.subject,
+    e.html,
+    e.plaintext,
+    tags
+  )
 }
 
 class NamedEmails {
-  async sendNamedUserMarketingEmail(name, email, arg={}) {
+  async sendNamedUserMarketingEmail(name, email, arg = {}) {
     const user = await shared.db.accounts.userByEmail(email)
-    if(!user) {
+    if (!user) {
       throw "No such user"
     }
     const magicLink = await lib.db.magic.createUnsubscribe(user.id)
@@ -44,27 +53,40 @@ class NamedEmails {
     arg.email = user.email
     arg.appUrl = appUrl()
     arg.ctaUrl = arg.ctaUrl || `${arg.appUrl}/${util.routes.static.dashboard()}`
-    arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(gcfg.appUrl(), magicLink)
+    arg.unsubscribeUrl = await lib.db.magic.unsubscribeUrl(
+      gcfg.appUrl(),
+      magicLink
+    )
     await fetchEmailAndSend(name, user.email, arg)
   }
 
-  async sendNamedTransactionEmail(name, email, arg={}) {
+  async sendNamedTransactionEmail(name, email, arg = {}) {
     const user = await shared.db.accounts.userByEmail(email)
-    if(!user) {
-      throw "No such user"
+    if (!user) {
+      // if no user exists, we fall back to look for an account creation request, which
+      // is basically a pending account. That lets us send emails to people who have
+      // signed up but not finished account creation.
+      const account_request = await shared.db.accounts.getLatestAccountCreateRequest(
+        email
+      )
+      if (!account_request) {
+        throw new Error("No such user")
+      }
+      arg.firstName = account_request.first_name
+    } else {
+      arg.firstName = user.first_name
     }
-    arg.firstName = user.first_name
     arg.email = email
     arg.appUrl = appUrl()
     arg.ctaUrl = arg.ctaUrl || `${arg.appUrl}/${util.routes.static.dashboard()}`
-    await fetchEmailAndSend(name, user.email, arg)
+    await fetchEmailAndSend(name, email, arg)
   }
 
   async sendWhatsNew(email) {
     return await this.sendNamedUserMarketingEmail("marketing", email)
   }
 
-  async sendRoomStatusEmail(name, toEmail, roomName, arg={}) {
+  async sendRoomStatusEmail(name, toEmail, roomName, arg = {}) {
     arg.roomName = roomName
     arg.appUrl = appUrl()
     await fetchEmailAndSend(name, toEmail, arg)

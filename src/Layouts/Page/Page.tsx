@@ -7,7 +7,7 @@ import { ErrorInfo } from '../../types/api';
 
 interface IPageProps {
   isLoading?: boolean;
-  error?: ErrorInfo;
+  error?: ErrorInfo | null;
   className?: string;
   children?: React.ReactNode;
   pageTitle?: string;

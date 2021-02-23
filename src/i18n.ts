@@ -23,7 +23,6 @@ i18n
       escapeValue: false, // react already safes from xss
     },
     react: {
-      defaultTransParent: 'div', // a valid react element - required before react 16
       transEmptyNodeValue: '', // what to return for empty Trans
       transSupportBasicHtmlNodes: true, // allow <br/> and simple html elements in translations
       transKeepBasicHtmlNodesFor: ['br', 'strong', 'i'], // don't convert to <1></1> if simple react elements

@@ -59,7 +59,7 @@ module.exports = {
       clientsAfterTimeout,
       readyBeforeTimeout,
       readyAfterTimeout,
-      leaveEvent
+      leaveEvent: leaveEvent.data()
     }
   }),
 

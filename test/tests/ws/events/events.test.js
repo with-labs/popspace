@@ -22,7 +22,7 @@ tlib.TestTemplate.describeWithLib('mercury_events', () => {
   test("authentication should fail when no such room", async () => {
     const results = await scenarios["authenticate_fail_no_such_room"]()
     expect(results.auth.kind).toEqual("error")
-    expect(results.auth.code).toEqual("AUTH_FAILED")
+    expect(results.auth.code).toEqual("UNKNOWN_ROOM")
     expect(results.afterAuth.code).toEqual("UNAUTHORIZED")
   })
 

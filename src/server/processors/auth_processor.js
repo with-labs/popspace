@@ -13,8 +13,29 @@ class AuthProcessor {
   }
 
   async authenticate(mercuryEvent, participants) {
-    const sender = mercuryEvent.senderParticipant()
     const payload = mercuryEvent.payload()
+    const room = await shared.db.rooms.roomByName(payload.room_name)
+    const sender = mercuryEvent.senderParticipant()
+
+    if(!room) {
+      return sender.sendError(
+        mercuryEvent,
+        shared.error.code.UNKNOWN_ROOM,
+        `No such room`,
+        {room_route: payload.room_name}
+      )
+    }
+
+    const socketGroup = participants.getSocketGroup(room.id)
+    if(socketGroup && socketGroup.hasExceededMaxParticipantsLimit()) {
+      return sender.sendError(
+        mercuryEvent,
+        lib.ErrorCodes.TOO_MANY_PARTICIPANTS,
+        `The current participant limit has been exceeded.`,
+        {limit: socketGroup.getMaxParticipants()}
+      )
+    }
+
     const success = await sender.authenticate(payload.token, payload.room_name)
     if(success) {
       /*

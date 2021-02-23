@@ -42,7 +42,7 @@ const sendMarketingBlast = async (emailName, args, production) => {
   if(production) {
     delete criteriaObject["email ILIKE"]
   }
-  const targets = await db.pg.massive.users.find(criteriaObject)
+  const targets = await shared.db.pg.massive.users.find(criteriaObject)
   console.log("Target emails: ", targets.map((t) => (t.email)).join(', '))
   console.log("Total", targets.length)
   const confirmation = await awaitUserInput()

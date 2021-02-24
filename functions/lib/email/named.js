@@ -27,7 +27,7 @@ const fetchAndProcessEmail = async (emailName, arg) => {
   }
 }
 
-const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
+const fetchEmailAndSend = async (emailName, toEmailAddress, arg, trackClicks=true) => {
   const e = await fetchAndProcessEmail(emailName, arg)
   const tags = [{ Name: "type", Value: emailName }]
   return await lib.email.ses.sendMail(
@@ -38,7 +38,8 @@ const fetchEmailAndSend = async (emailName, toEmailAddress, arg) => {
     e.subject,
     e.html,
     e.plaintext,
-    tags
+    tags,
+    trackClicks
   )
 }
 
@@ -57,7 +58,7 @@ class NamedEmails {
       gcfg.appUrl(),
       magicLink
     )
-    await fetchEmailAndSend(name, user.email, arg)
+    await fetchEmailAndSend(name, user.email, arg, true)
   }
 
   async sendNamedTransactionEmail(name, email, arg = {}) {
@@ -79,7 +80,7 @@ class NamedEmails {
     arg.email = email
     arg.appUrl = appUrl()
     arg.ctaUrl = arg.ctaUrl || `${arg.appUrl}/${util.routes.static.dashboard()}`
-    await fetchEmailAndSend(name, email, arg)
+    await fetchEmailAndSend(name, email, arg, false)
   }
 
   async sendWhatsNew(email) {
@@ -89,7 +90,7 @@ class NamedEmails {
   async sendRoomStatusEmail(name, toEmail, roomName, arg = {}) {
     arg.roomName = roomName
     arg.appUrl = appUrl()
-    await fetchEmailAndSend(name, toEmail, arg)
+    await fetchEmailAndSend(name, toEmail, arg, false)
   }
 }
 

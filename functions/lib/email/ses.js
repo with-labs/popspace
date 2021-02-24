@@ -56,14 +56,36 @@ class Ses {
     return result
   }
 
-  async sendMail(emailName, version, from, to, subject, html, plaintextFallback, tags, user) {
+  async sendMail(emailName, version, from, to, subject, html, plaintextFallback, tags, user, trackClicks=true) {
     if(user) {
       to = `${user.display_name} <${user.email}>`
     }
     const headers = {}
     if(process.env.NODE_ENV == "production") {
-      // track send/open data only in production for now
-      headers['X-SES-CONFIGURATION-SET'] = 'with_ses'
+      /*
+        We're disabling click tracking for transactional emails
+        until we set up a custom domain for click tracking.
+        It's caused issues like people being blocked from
+        reaching their destination for invites/signups unless
+        they copy+paste the link.
+
+        It's also not clear if using SES tracking domains
+        lower our email/spam score.
+        https://with.height.app/lets-ship-it/T-522
+
+        TODO: enable tracking for all emails once we configure a custom domain
+      */
+      if(trackClicks) {
+        // track send/open data only in production for now
+        headers['X-SES-CONFIGURATION-SET'] = 'with_ses'
+        /*
+          If we want to experiment with disabling click tracking only,
+          there is another configuration set availabe:
+          headers['X-SES-CONFIGURATION-SET'] = 'sns_bounce_open_only'
+          Potentially this could salvage some data while still
+          protecting us from any ses-tracking related issues
+        */
+      }
     }
     return new Promise(async (resolve, reject) => {
       const emailMessage = await this.logSesRequest(emailName, version, from, to)

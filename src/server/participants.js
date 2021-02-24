@@ -1,5 +1,4 @@
 const Participant = require("./participant")
-const SocketGroup = require("./socket_group")
 
 class Participants {
   constructor(heartbeatTimeoutMillis) {
@@ -28,7 +27,7 @@ class Participants {
   async joinRoom(participant) {
     const roomId = participant.roomId()
     if(!this.socketGroupsByRoomId[roomId]) {
-      this.socketGroupsByRoomId[roomId] = new SocketGroup(participant.room)
+      this.socketGroupsByRoomId[roomId] = new lib.SocketGroup(participant.room)
     }
     await participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
   }

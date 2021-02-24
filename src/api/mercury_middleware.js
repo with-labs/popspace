@@ -64,6 +64,15 @@ const requireRoomMemberOrOwner = async (req, res, next) => {
   next()
 }
 
+/*
+  This should be restructured.
+
+  One proposal is to export individual functions, and replace the constructor
+  with a function; the actual middleware also become individually exported
+  functions.
+
+  https://github.com/with-labs/mercury/pull/8#discussion_r580298594
+*/
 class MercuryMiddleware {
   constructor(express) {
     this.express = express

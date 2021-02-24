@@ -13,6 +13,15 @@ class SocketGroup {
     this._participants = []
   }
 
+
+  getMaxParticipants() {
+    return 20
+  }
+
+  hasExceededMaxParticipantsLimit() {
+    return this._participants.length >= this.getMaxParticipants()
+  }
+
   getId() {
     return this.id
   }

@@ -52,6 +52,32 @@ module.exports = {
     return {
       moveResult, beforeMove
     }
+  }),
+
+
+  "max_participants_respected": tlib.TestTemplate.nAuthenticatedUsers(2, async (testEnvironment) => {
+    const loggedInUsers = testEnvironment.loggedInUsers
+    const maxParticipantsGetter = lib.SocketGroup.prototype.getMaxParticipants
+    const mockUserLimit = 2
+    lib.SocketGroup.prototype.getMaxParticipants = () => (mockUserLimit)
+    const ownerInfo = testEnvironment.loggedInUsers[0]
+
+    const room = ownerInfo.room
+    const roomNameEntry = ownerInfo.roomNameEntry
+    const clientWithRoomAccess = await testEnvironment.createClientWithRoomAccess(room, roomNameEntry)
+    try {
+      await clientWithRoomAccess.initiateLoggedInSession()
+      await clientWithRoomAccess.authenticateSocket()
+    } catch (error) {
+      return {
+        error,
+        mockUserLimit
+      }
+    } finally {
+      lib.SocketGroup.prototype.getMaxParticipants = maxParticipantsGetter
+    }
+
+    return "No error"
   })
 
 }

@@ -6,6 +6,8 @@ const https = require('https')
 const btoa = require('btoa')
 const fs = require('fs')
 
+const ClientReceivedEvent = require("./client_received_event")
+
 class Client extends EventEmitter {
   constructor(serverUrl, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) {
     super()
@@ -54,7 +56,7 @@ class Client extends EventEmitter {
       this.socket.on('message', (message) => {
         log.dev.debug(`${this.id} received ${message}`)
         try {
-          const event = this.parseEvent(message)
+          const event = new ClientReceivedEvent(this, message)
           if(this.promiseResolvers.length > 0) {
             const newResolvers = []
             this.promiseResolvers.forEach((resolver) => {
@@ -70,7 +72,7 @@ class Client extends EventEmitter {
           this.emit('event', event)
           this.emit(`event.${event.kind}`, event)
         } catch(e) {
-          // Not an event no problem, nothing to do
+          log.app.error(e)
         }
       })
     })
@@ -112,12 +114,14 @@ class Client extends EventEmitter {
 
   async getRoomState() {
     this.requireReady()
-    return this.sendEventWithPromise("getRoom", {})
+    const response = await this.sendEventWithPromise("getRoom", {})
+    return response.data()
   }
 
   async getWidgetState(widgetId) {
     this.requireReady()
-    return this.sendEventWithPromise("getWidget", { widget_id: widgetId })
+    const response = await this.sendEventWithPromise("getWidget", { widget_id: widgetId })
+    return response.data()
   }
 
   isReady() {
@@ -130,15 +134,10 @@ class Client extends EventEmitter {
     }
   }
 
-  parseEvent(message) {
-    const event = JSON.parse(message)
-    event._receiver = this
-    event._message = message
-    return event
-  }
-
   sendEvent(event) {
-    this.send(JSON.stringify(event))
+    const stringEvent = JSON.stringify(event)
+    log.dev.info(`Sending event ${stringEvent}`)
+    this.send(stringEvent)
   }
 
   async sendHttpPost(endpoint, data={}) {
@@ -225,8 +224,9 @@ class Client extends EventEmitter {
       resolvePromise = resolve
     })
     const resolver = (receivedEvent) => {
-      if(receivedEvent.requestId == event.id) {
-        resolvePromise(receivedEvent)
+      const response = receivedEvent
+      if(response.requestId == event.id) {
+        resolvePromise(response)
         return true
       }
       return false
@@ -238,6 +238,9 @@ class Client extends EventEmitter {
   }
 
   handleEvent(event) {
+    if(!this.roomData) {
+      return
+    }
     switch(event.kind) {
       case 'participantJoined':
         /*

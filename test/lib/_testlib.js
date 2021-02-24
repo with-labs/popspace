@@ -10,7 +10,8 @@ const tlib = {
   factories: require("./factories/_factories"),
   lib: require("../../src/lib/_lib"),
   TestTemplate: require("./test_template"),
-  TestEnvironment: require("./test_environment")
+  TestEnvironment: require("./test_environment"),
+  models: require("./models/_models"),
 }
 
 require("../../src/globals")

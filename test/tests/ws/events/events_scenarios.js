@@ -1,7 +1,7 @@
 global.tlib = require("../../../lib/_testlib")
 
 const requestStickyNoteCreate = async (client) => {
-  return await client.sendEventWithPromise("createWidget", {
+  const response = await client.sendEventWithPromise("createWidget", {
     type: "sticky_note",
     transform: {
       position: { x: 0, y: 0 },
@@ -11,13 +11,14 @@ const requestStickyNoteCreate = async (client) => {
       text: "Hello world!"
     }
   })
+  return response.data()
 }
 
 const getOrCreateWidget = async (client, authData) => {
    const widgetsInRoom = authData.room.widgets
     if(widgetsInRoom.length < 1) {
-      const createResponse = await requestStickyNoteCreate(client)
-      return createResponse.payload
+      const createData = await requestStickyNoteCreate(client)
+      return createData.payload
     } else {
       return widgetsInRoom[0]
     }
@@ -31,9 +32,9 @@ module.exports = {
     const auth = await clients[0].authenticate(token, roomNameEntry.name)
     const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
     return {
-      beforeAuth,
-      auth,
-      afterAuth
+      beforeAuth: beforeAuth.data(),
+      auth: auth.data(),
+      afterAuth: afterAuth.data()
     }
   }),
 
@@ -47,38 +48,37 @@ module.exports = {
       response = e
     }
 
-    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
+    const afterAuthCreateWidgetResponse = await clients[0].sendEventWithPromise("createWidget", {})
     return {
-      auth: response,
-      afterAuth
+      auth: response.data(),
+      afterAuth: afterAuthCreateWidgetResponse.data()
     }
   }),
 
   "authenticate_fail_no_such_room": tlib.TestTemplate.testServerClients(1, async (clients) => {
     const testEnvironment = new tlib.TestEnvironment()
-    const { user, session, token, room, roomNameEntry } = await testEnvironment.createLoggedInUser()
     let response = null
     try {
       response = await clients[0].authenticate("{}", "faken_ame2000_")
     } catch(e) {
       response = e
     }
-    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
+    const afterAuthCreateWidgetResponse = await clients[0].sendEventWithPromise("createWidget", {})
     return {
-      auth: response,
-      afterAuth
+      auth: response.data(),
+      afterAuth: afterAuthCreateWidgetResponse.data()
     }
   }),
 
   "create_a_widget": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
     const client = testEnvironment.loggedInUsers[0].client
     const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
-    const createResponse = await requestStickyNoteCreate(client)
-    const getResponse = await client.getRoomState()
+    const createData = await requestStickyNoteCreate(client)
+    const endRoomState = await client.getRoomState()
     return {
-      createResponse,
+      createResponse: createData,
       beginWidgetCount: startRoomData.widgets.length,
-      endWidgetCount: getResponse.payload.widgets.length
+      endWidgetCount: endRoomState.payload.widgets.length
     }
   }),
 
@@ -112,10 +112,10 @@ module.exports = {
     const updateResponse = await client.sendEventWithPromise("updateRoomState", {
       wallpaperUrl: "https://s3-us-west-2.amazonaws.com/with.wallpapers/To-Do_Board_Galaxy.jpg"
     })
-    const getResponse = await client.getRoomState()
+    const newRoomState = await client.getRoomState()
     return {
-      updateResponse,
-      newRoomState: getResponse
+      updateResponse: updateResponse.data(),
+      newRoomState
     }
   }),
 
@@ -123,15 +123,15 @@ module.exports = {
     const client = testEnvironment.loggedInUsers[0].client
     const startRoomData = testEnvironment.loggedInUsers[0].auth.payload.room
 
-    const createResponse = await requestStickyNoteCreate(client)
-    const widgetId = createResponse.payload.widgetId
+    const createData = await requestStickyNoteCreate(client)
+    const widgetId = createData.payload.widgetId
     const roomStateAfterCreate = await client.getRoomState()
     const deleteResponse = await client.sendEventWithPromise("deleteWidget", {widgetId})
     const roomStateAfterDelete = await client.getRoomState()
 
     return {
-      createResponse,
-      deleteResponse,
+      createResponse: createData,
+      deleteResponse: deleteResponse.data(),
       roomStateAfterCreate,
       roomStateAfterDelete
     }
@@ -149,7 +149,7 @@ module.exports = {
       let remaining = receivers.length
       receivers.forEach((receiver) => {
         receiver.on("event.passthrough", (event) => {
-          received.push(event)
+          received.push(event.data())
           remaining--
           if(remaining <= 0) {
             resolve()

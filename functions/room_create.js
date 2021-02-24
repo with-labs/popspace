@@ -1,7 +1,16 @@
 const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
-const MAX_FREE_ROOMS = 20
+/**
+Our intention is to have unlimited rooms.
+
+However, our app is realistically not ready to support that.
+
+For now, we're choosing a high number to protect ourselves
+against extreme cases, which to most users should feel infinite.
+https://with.height.app/lets-ship-it/T-516
+*/
+const MAX_FREE_ROOMS = 200
 const underMaxOwnedRoomLimit = async (userId) => {
   const count = await shared.db.pg.massive.rooms.count({
     owner_id: userId,

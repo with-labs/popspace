@@ -1,4 +1,4 @@
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
@@ -70,8 +70,9 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 
   const startEditing = () => {
     setEditing(true);
-    resizeContainerRef.current?.remeasure();
   };
+
+  const isEditMode = editing || (!state.widgetState.text && isOwnedByLocalUser);
 
   return (
     <WidgetFrame color="mandarin">
@@ -85,12 +86,15 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
         ref={resizeContainerRef}
         mode="free"
         minWidth={250}
-        minHeight={80}
+        minHeight={isEditMode ? 250 : 80}
         maxWidth={600}
         maxHeight={800}
+        defaultWidth={250}
+        defaultHeight={250}
         className={classes.content}
+        disableInitialSizing
       >
-        <StickyNoteContent onSave={saveWidget} editing={editing} setEditing={setEditing} />
+        <StickyNoteContent onSave={saveWidget} editing={isEditMode} setEditing={setEditing} />
         <WidgetResizeHandle />
       </WidgetResizeContainer>
     </WidgetFrame>
@@ -107,18 +111,13 @@ const StickyNoteContent: React.FC<{
 
   const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
 
-  const { user } = useCurrentUserProfile();
-  const localUserId = user?.id;
-
-  const isOwnedByLocalUser = state.ownerId === localUserId;
-
   const { remeasure } = useResizeContext();
   const saveWidget = (data: StickyNoteWidgetState) => {
     onSave(data);
     remeasure();
   };
 
-  if ((editing || !state.widgetState.text) && isOwnedByLocalUser) {
+  if (editing) {
     return (
       <WidgetContent>
         <EditStickyNoteWidgetForm initialValues={state.widgetState} onSave={saveWidget} editing={editing} />

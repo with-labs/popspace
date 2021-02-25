@@ -48,6 +48,16 @@ export interface IResizeContainerProps {
   minWidth?: number;
   maxHeight?: number;
   minHeight?: number;
+  /**
+   * If no size is provided and disableInitialSizing = false,
+   * this will automatically set the initial width
+   */
+  defaultWidth?: number;
+  /**
+   * If no size is provided and disableInitialSizing = false,
+   * this will automatically set the initial height
+   */
+  defaultHeight?: number;
 
   children: React.ReactNode;
 
@@ -65,7 +75,7 @@ export const ResizeContainerContext = React.createContext<{
    * Forces the container to remeasure the native size of its content. Invoke this
    * when content changes to reset the container to the size of the content.
    */
-  remeasure: () => void;
+  remeasure: (requestedSize?: Bounds) => void;
   size: Bounds | null;
 } | null>(null);
 
@@ -167,6 +177,8 @@ export const ResizeContainer = React.memo(
         minHeight,
         children,
         disableInitialSizing,
+        defaultHeight,
+        defaultWidth,
       },
       ref
     ) => {
@@ -178,14 +190,28 @@ export const ResizeContainer = React.memo(
       // components about a remeasure until the measure has taken place and
       // the new result is passed to onResize - this helps simplify usage
       const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
-      const [originalAspectRatio, setOriginalAspectRatio] = React.useState(size ? size.width / size.height : 1);
+      const requestedSizeRef = React.useRef<Bounds | null>(null);
+      const [originalAspectRatio, setOriginalAspectRatio] = React.useState(() => {
+        if (size) {
+          return size.width / (size.height || 1);
+        } else if (defaultWidth && defaultHeight) {
+          return defaultWidth / defaultHeight;
+        }
+        return 1;
+      });
 
       // dimensions are initialized to the provided size, or
       // the minimum size, or 0 - if there was no provided size we
       // will be remeasuring immediately, so starting at minimum
       // size reduces the magnitude of the 'pop-in' effect.
-      const providedWidth = size?.width || minWidth || 0;
-      const providedHeight = size?.height || minHeight || 0;
+      const providedWidth = size?.width || defaultWidth || minWidth || 0;
+      const providedHeight = size?.height || defaultHeight || minHeight || 0;
+
+      React.useEffect(() => {
+        if (!size && defaultWidth && defaultHeight) {
+          onResize({ width: defaultWidth, height: defaultHeight });
+        }
+      }, [size, defaultWidth, defaultHeight, onResize]);
 
       const [{ width, height, resizing }, set] = useSpring(() => ({
         width: providedWidth,
@@ -201,10 +227,13 @@ export const ResizeContainer = React.memo(
 
         const remeasure = () =>
           requestAnimationFrame(async () => {
-            if (!contentRef.current) return;
+            if (!contentRef.current && !requestedSizeRef.current) return;
 
-            const naturalWidth = contentRef.current.clientWidth;
-            const naturalHeight = contentRef.current.clientHeight;
+            // give preference to a requested size if the user provided one in their remeasure call,
+            // then try element size, fall back to min size, and finally a simple 100x100
+            const naturalWidth = requestedSizeRef.current?.width ?? contentRef.current?.clientWidth ?? minWidth ?? 100;
+            const naturalHeight =
+              requestedSizeRef.current?.height ?? contentRef.current?.clientHeight ?? minHeight ?? 100;
 
             const aspect = naturalWidth / naturalHeight;
             setOriginalAspectRatio(aspect);
@@ -233,7 +262,7 @@ export const ResizeContainer = React.memo(
         }
       }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
 
-      // this effect updates the spring dimensions when the `size` prop changes
+      // this effect updates the spring dimensions when the size changes
       React.useEffect(() => {
         set({
           width: providedWidth,
@@ -299,8 +328,9 @@ export const ResizeContainer = React.memo(
         }
       );
 
-      const forceRemeasure = React.useCallback(() => {
+      const forceRemeasure = React.useCallback((requestedSize?: Bounds) => {
         setNeedsRemeasure(true);
+        requestedSizeRef.current = requestedSize || null;
       }, []);
 
       const contextValue = {

@@ -77,11 +77,27 @@ const FullSizeMediaWidgetContent: React.FC = () => {
   React.useEffect(() => {
     if (ref.current && !size) {
       const el = ref.current;
-      el.addEventListener('resize', remeasure);
-      el.addEventListener('load', remeasure);
+
+      // when metadata is loaded, we attempt to resize the ResizeContainer
+      // to the natural size of the media
+      function doRemeasure() {
+        if (el.tagName === 'IMG') {
+          remeasure({
+            width: (el as HTMLImageElement).naturalWidth,
+            height: (el as HTMLImageElement).naturalHeight,
+          });
+        } else {
+          remeasure({
+            width: (el as HTMLVideoElement).videoWidth,
+            height: (el as HTMLVideoElement).videoHeight,
+          });
+        }
+      }
+      el.addEventListener('resize', doRemeasure);
+      el.addEventListener('load', doRemeasure);
       return () => {
-        el.removeEventListener('resize', remeasure);
-        el.removeEventListener('load', remeasure);
+        el.removeEventListener('resize', doRemeasure);
+        el.removeEventListener('load', doRemeasure);
       };
     }
   }, [remeasure, size]);

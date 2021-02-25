@@ -17,7 +17,9 @@ import 'emoji-mart/css/emoji-mart.css';
 import { CloseIcon } from '../../../components/icons/CloseIcon';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    width: 40,
+  },
   closeBg: {
     backgroundColor: theme.palette.error.light,
   },
@@ -100,7 +102,7 @@ export const StatusControls = (props: any) => {
             className={clsx(
               emoji && isHovered && classes.closeBg,
               emoji && !isHovered && classes.emojiBg,
-              !emoji && classes.root,
+              classes.root,
               className
             )}
             {...contentProps}
@@ -109,7 +111,7 @@ export const StatusControls = (props: any) => {
               isHovered ? (
                 <CloseIcon fontSize="default" color="error" />
               ) : (
-                <Emoji emoji={emoji ?? 'speech_balloon'} size={24} />
+                <Emoji native emoji={emoji ?? 'speech_balloon'} size={18} />
               )
             ) : (
               <EmojiIcon fontSize="default" />

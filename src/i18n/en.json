@@ -351,7 +351,6 @@
         "sendFeedbackBtn": "Feedback",
         "statusMenu": {
           "statusPlaceHolder": "Whats your status?",
-          "clearStatusButton": "Clear status",
           "historyTitle": "History",
           "suggestionsTitle": "Suggestions",
           "emojiTitle": "Pick an emoji",

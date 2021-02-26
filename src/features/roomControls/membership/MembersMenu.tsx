@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   largeMenu: {
     width: '100%',
     maxHeight: 360,
+    minHeight: 190,
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',

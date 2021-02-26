@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   membershipManagement: {
     width: '100%',
+    height: '100%',
     maxHeight: 360,
     overflow: 'hidden',
     display: 'flex',

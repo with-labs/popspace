@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { makeStyles, Box, Typography, CircularProgress } from '@material-ui/core';
+import { makeStyles, Box, Typography, CircularProgress, InputAdornment, IconButton } from '@material-ui/core';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
 import { isEmailValid } from '../../../utils/CheckEmail';
 import Api, { ApiRoomMember, ApiError } from '../../../utils/api';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
@@ -12,6 +11,7 @@ import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/sessionToken';
 import { DialogModal } from '../../../components/DialogModal/DialogModal';
 import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
+import { SendIcon } from '../../../components/icons/SendIcon';
 
 import { MemberList } from './MemberList/MemberList';
 import { useQuery, useQueryCache } from 'react-query';
@@ -41,9 +41,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     flex: '1 1 auto',
-  },
-  emailField: {
-    marginRight: '16px',
   },
   submitBtn: {
     height: '48px',
@@ -153,22 +150,39 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
     return (
       <div ref={ref} className={className}>
         <Formik initialValues={EMPTY_VALUES} onSubmit={onSubmitHandler} validateOnMount>
-          <Form>
-            <Box display="flex" className={classes.formWrapper} alignItems="flex-start">
-              <FormikTextField
-                className={classes.emailField}
-                name="inviteeEmail"
-                placeholder={t('common.emailInput.placeHolder')}
-                aria-label={t('common.emailInput.label')}
-                margin="normal"
-                validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
-                autoFocus={autoFocusInvite}
-              />
-              <FormikSubmitButton className={classes.submitBtn}>
-                {t('modals.inviteUserModal.inviteBtn')}
-              </FormikSubmitButton>
-            </Box>
-          </Form>
+          {({ isSubmitting, isValid }) => (
+            <Form>
+              <Box display="flex" className={classes.formWrapper} alignItems="flex-start">
+                <FormikTextField
+                  name="inviteeEmail"
+                  placeholder={t('common.emailInput.placeHolder')}
+                  aria-label={t('common.emailInput.label')}
+                  margin="normal"
+                  validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
+                  autoFocus={autoFocusInvite}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {isSubmitting ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          <IconButton
+                            disabled={!isValid}
+                            type="submit"
+                            aria-label={t('features.status.altClearButton')}
+                            edge="end"
+                            size="small"
+                          >
+                            <SendIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            </Form>
+          )}
         </Formik>
         {members.length > 0 && inviteRoomRoute ? (
           <MemberList

@@ -264,7 +264,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
               <ListItemSecondaryAction>
                 <div>
                   {selectedMember?.email === member.email && isBusy ? (
-                    <CircularProgress />
+                    <CircularProgress size={22} />
                   ) : (
                     <IconButton edge="end" aria-label="member_options" onClick={(e) => onMenuOpenHandler(e, index)}>
                       <OptionsIcon />

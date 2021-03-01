@@ -10,6 +10,7 @@ import { useRoomStore } from '../../../roomState/useRoomStore';
 import { ResponsiveIconButton } from '../../../components/ResponsiveIconButton/ResponsiveIconButton';
 import { truncate } from '../../../utils/truncate';
 import { RoomIcon } from '../../../components/icons/RoomIcon';
+import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 
 export interface IMembersMenuProps {}
 
@@ -56,6 +57,12 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
     setIsOpen(false);
   }, []);
 
+  const roomRoute = useRoomRoute();
+
+  if (!roomRoute) {
+    throw new Error('MembersMenu must be rendered on a room page');
+  }
+
   return (
     <div ref={ref}>
       <ResponsiveIconButton
@@ -71,8 +78,8 @@ export const MembersMenu = React.forwardRef<HTMLDivElement, IMembersMenuProps>((
         {truncate(displayName || t('modals.inviteMemberModal.defaultRoomName'), 20)}
       </ResponsiveIconButton>
       <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-        <MembershipManagement autoFocusInvite={!hasInviteLink} className={classes.largeMenu} />
-        {hasInviteLink && <InviteLink />}
+        <MembershipManagement roomRoute={roomRoute} autoFocusInvite={!hasInviteLink} className={classes.largeMenu} />
+        {hasInviteLink && <InviteLink roomRoute={roomRoute} />}
       </ResponsivePopover>
     </div>
   );

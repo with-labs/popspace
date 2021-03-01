@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
-import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import { ErrorCodes } from '../../../constants/ErrorCodes';
 import Api, { ApiInviteDetails } from '../../../utils/api';
 import { getErrorDialogText } from '../../../utils/ErrorMessage';
@@ -22,7 +21,9 @@ import { LinkIcon } from '../../../components/icons/LinkIcon';
 import { cherry, oregano, mandarin } from '../../../theme/theme';
 import { useExpiringToggle } from '../../../hooks/useExpiringToggle/useExpiringToggle';
 
-export interface IInviteLinkProps {}
+export interface IInviteLinkProps {
+  roomRoute: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -116,7 +117,7 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
   const classes = useStyles();
   const { t } = useTranslation();
   const isRoomOwner = useIsRoomOwner();
-  const currentRoomRoute = useRoomRoute();
+  const currentRoomRoute = props.roomRoute;
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false);
 
   const [state, dispatch] = useReducer(InviteLinkReducer, {

@@ -2,7 +2,8 @@ import React, { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import Api, { ApiError } from '../../utils/api';
-import signinImg from '../../images/illustrations/key.svg';
+import img from '../../images/illustrations/welcome_to_with.jpg';
+import mobileImg from '../../images/illustrations/welcome_to_with_responsive.jpg';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
@@ -161,7 +162,7 @@ export const Signup: React.FC<ISignupProps> = () => {
                 </Typography>
               </Form>
             </FormPageContent>
-            <FormPageImage src={signinImg} alt={t('pages.signup.imgAltText')} />
+            <FormPageImage src={img} mobileSrc={mobileImg} />
           </FormPage>
         )
       }

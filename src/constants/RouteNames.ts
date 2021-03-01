@@ -12,4 +12,5 @@ export enum RouteNames {
   FEATURE_FLAGS = '/internal/featureflags',
   LICENSES = '/licenses',
   INVITE = '/invite/:otp',
+  CREATE_ROOM = '/create_room',
 }

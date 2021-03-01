@@ -4,7 +4,8 @@ import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import Api, { ApiError } from '../../utils/api';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
-import signinImg from '../../images/illustrations/magic.svg';
+import signinImg from '../../images/illustrations/sign_in.jpg';
+import signinMobileImg from '../../images/illustrations/sign_in_responsive.jpg';
 import { makeStyles, Link } from '@material-ui/core';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { useTranslation, Trans } from 'react-i18next';
@@ -256,7 +257,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
             </Form>
           </FormPageContent>
 
-          <FormPageImage src={signinImg} alt={t('pages.finalizeAccount.imgAltText')} />
+          <FormPageImage src={signinImg} mobileSrc={signinMobileImg} />
         </FormPage>
       )}
     </Formik>

@@ -11,7 +11,10 @@
     },
     "common": {
       "with": "With",
-      "emailInput": { "placeHolder": "dorothy@emerald.so", "label": "Email Address" },
+      "emailInput": {
+        "placeHolder": "dorothy@emerald.so",
+        "label": "Email Address"
+      },
       "cancel": "Cancel",
       "error": "Error",
       "confirm": "Got it",
@@ -76,7 +79,10 @@
     "pages": {
       "signin": {
         "title": "Sign In",
-        "email": { "placeHolder": "dorothy@emerald.so", "label": "Email Address" },
+        "email": {
+          "placeHolder": "dorothy@emerald.so",
+          "label": "Email Address"
+        },
         "submitButtonText": "Sign In",
         "imgAltText": "sign in image",
         "signUpInstead": "No account yet? <1>Sign up</1>.",
@@ -89,9 +95,18 @@
           "label": "Your email address",
           "invalid": "Please enter a valid email"
         },
-        "firstName": { "placeholder": "Dorothy", "label": "First name" },
-        "lastName": { "placeholder": "Gale", "label": "Last name" },
-        "tos": { "label": "I agree to the <1>Terms of Service</1>", "invalid": "You must agree to continue" },
+        "firstName": {
+          "placeholder": "Dorothy",
+          "label": "First name"
+        },
+        "lastName": {
+          "placeholder": "Gale",
+          "label": "Last name"
+        },
+        "tos": {
+          "label": "I agree to the <1>Terms of Service</1>",
+          "invalid": "You must agree to continue"
+        },
         "submitButtonText": "Sign up",
         "imgAltText": "A key floating magically in the air. A With logo is emblazoned on the attached key tag.",
         "invitationSent": "Invitation sent!",
@@ -101,7 +116,9 @@
         "invitationImgAltText": "A postmarked letter flying through the air",
         "signInInstead": "Already have an account? <1>Sign in</1>.",
         "signIn": "Sign in",
-        "newsletterOptIn": { "label": "It's ok to send me updates" },
+        "newsletterOptIn": {
+          "label": "It's ok to send me updates"
+        },
         "alreadyRegistered": "You've got a With account already — please sign in!",
         "joinFlow": "You'll need an account to join someone's room. After you've created one, try clicking that link again.",
         "resentEmail": "We sent you another link!"
@@ -175,6 +192,17 @@
         "submitBtnText": "Finalize my account",
         "imgAltText": "sign in",
         "tosCheck": "I agree to the <1>Terms of Service</1>"
+      },
+      "createRoom": {
+        "nameRoom": {
+          "title": "Name your room",
+          "explainer": "We gave your room a nice name, but feel free to rename it!",
+          "continue": "Continue"
+        },
+        "invitePeople": {
+          "continue": "Continue",
+          "title": "Invite your team"
+        }
       }
     },
     "widgets": {
@@ -233,8 +261,13 @@
         "titleEnding": "'s stream",
         "titleLocalUser": "Your stream"
       },
-      "unknown": { "name": "Accessory" },
-      "common": { "close": "Remove accessory", "mutedForYou": "Muted for you" }
+      "unknown": {
+        "name": "Accessory"
+      },
+      "common": {
+        "close": "Remove accessory",
+        "mutedForYou": "Muted for you"
+      }
     },
     "error": {
       "modal": {
@@ -301,7 +334,10 @@
         "title": "Well, this is awkward...",
         "msg": "An unexpected error has occurred. Please try refreshing the page and rejoining the room."
       },
-      "noteError": { "title": "A sidenote", "btnText": "Got it" },
+      "noteError": {
+        "title": "A sidenote",
+        "btnText": "Got it"
+      },
       "api": {
         "TOO_MANY_OWNED_ROOMS": {
           "message": "You have reached your limit of number of rooms you can create."
@@ -319,7 +355,9 @@
         "UNAUTHORIZED_USER": {},
         "ADMIN_ONLY_RESTRICTED": {},
         "NO_SUCH_USER": {},
-        "UNEXPECTED": { "message": "Something unexpected has happened. Please try again later." },
+        "UNEXPECTED": {
+          "message": "Something unexpected has happened. Please try again later."
+        },
         "LINK_EXPIRED": {},
         "PAGE_NOT_FOUND": {},
         "ROOM_NOT_FOUND": {},
@@ -462,7 +500,9 @@
           "places": "Places"
         }
       },
-      "avModal": { "title": "Audio & Video" },
+      "avModal": {
+        "title": "Audio & Video"
+      },
       "onboardingModal": {
         "nextBtnText": "Next",
         "PreviousText": "Previous",
@@ -512,7 +552,9 @@
           "withCharacters": "With Characters"
         }
       },
-      "changelogModal": { "title": "What's new?" },
+      "changelogModal": {
+        "title": "What's new?"
+      },
       "bugReportModal": {
         "title": "Report a bug",
         "explanationText": "Please explain what happened",
@@ -523,14 +565,16 @@
       },
       "devicePermissionsModal": {
         "title": "Audio & video access",
-        "requestPermissonsButton": "Request Access",
-        "permissionExplainationText": "For others to see and hear you, your browser needs access to your microphone and to your camera.<br/><br/><strong>You can turn them off at any time.</strong>",
-        "setupExplaination": "Take a moment to set up your camera and microphone if you like.",
+        "requestPermissionsButton": "Request Access",
+        "permissionExplanationText": "For others to see and hear you, your browser needs access to your microphone and to your camera.<br/><br/><strong>You can turn them off at any time.</strong>",
+        "setupExplanation": "Take a moment to set up your camera and microphone if you like.",
         "enterRoomButton": "Enter Room",
         "continueWithoutPermissionsButton": "Continue without devices",
         "goToSupportButton": "Go to support",
-        "permissionDeinedExplaination": "Oops! Seems like With doesn’t have access to your camera and microphone.",
-        "cameraPermissionDenied": "Camera permission denied"
+        "permissionDeniedExplanation": "Oops! Seems like With doesn’t have access to your camera and microphone.",
+        "cameraPermissionDenied": "Camera permission denied",
+        "prepareTitle": "Welcome!",
+        "namePlaceholder": "Your name"
       },
       "createRoomModal": {
         "placeholder": "Emerald City",

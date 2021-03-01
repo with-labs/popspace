@@ -9,7 +9,7 @@ import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
-import { AvatarCategory } from './AvatarCategory';
+import { AvatarSelector } from '../avatar/AvatarSelector';
 import { TFunction } from 'i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '../../../roomState/useRoomStore';
@@ -86,7 +86,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
 
   // get the current users information
   const { user } = useCurrentUserProfile();
-  const userId = user?.id;
+  const userId = user?.id ?? '';
   const person = useRoomStore((room) => room.users[userId ?? '']);
   const { avatarName } = person?.participantState ?? {};
 
@@ -181,7 +181,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
               </Box>
             </div>
             <div style={{ width: '100%', height: '100%' }}>
-              <AvatarCategory onChange={setAvatar} value={avatarName ?? null} />
+              <AvatarSelector onChange={setAvatar} value={avatarName ?? null} />
             </div>
           </animated.div>
         </div>

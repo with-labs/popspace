@@ -2,7 +2,8 @@ import { Typography } from '@material-ui/core';
 import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from '../../components/Link/Link';
-import invitationImg from '../../images/illustrations/mail.svg';
+import img from '../../images/illustrations/check_your_email.jpg';
+import mobileImg from '../../images/illustrations/check_your_email_responsive.jpg';
 import { FormPage } from '../../Layouts/formPage/FormPage';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
@@ -30,7 +31,7 @@ export function SignupComplete({ resend, email }: { resend: () => any; email: st
           </Trans>
         </Typography>
       </FormPageContent>
-      <FormPageImage src={invitationImg} alt={t('pages.signup.invitationImg')} />
+      <FormPageImage src={img} mobileSrc={mobileImg} />
     </FormPage>
   );
 }

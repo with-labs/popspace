@@ -32,7 +32,7 @@ interface IMembershipManagementModalProps {
   autoFocusInvite?: boolean;
   className?: string;
   size?: 'small' | 'large';
-  roomRoute?: string;
+  roomRoute: string;
   memberListClasses?: string;
 }
 
@@ -80,11 +80,9 @@ function validateEmail(email: string, translate: TFunction) {
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  ({ autoFocusInvite, roomRoute, memberListClasses, className }, ref) => {
+  ({ autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className }, ref) => {
     const { t } = useTranslation();
     const classes = useStyles();
-    const currentRoomRoute = useRoomRoute();
-    const inviteRoomRoute = roomRoute || currentRoomRoute;
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
 
     const cache = useQueryCache();

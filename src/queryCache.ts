@@ -19,10 +19,10 @@ export const queryCache = new QueryCache({
     queries: {
       queryFn: defaultQueryFn,
       // don't refetch when switching tabs or windows
-      refetchOnMount: false,
+      refetchOnMount: true,
       refetchOnWindowFocus: false,
-      // 5 minutes default
-      cacheTime: 5 * 60 * 1000,
+      // no cache - for now...
+      cacheTime: 0,
       retry: false,
     },
   },

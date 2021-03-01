@@ -6,22 +6,22 @@ import { RouteNames } from '../../constants/RouteNames';
 
 import { RoomSummary } from './RoomSummary/RoomSummary';
 import { Header } from '../../components/Header/Header';
-import { RoomInfo, ErrorInfo, UserInfo } from '../../types/api';
+import { RoomInfo } from '../../types/api';
 import { ErrorCodes } from '../../constants/ErrorCodes';
-import { sessionTokenExists, getSessionToken, removeSessionToken } from '../../utils/sessionToken';
 import { useTranslation, Trans } from 'react-i18next';
 import { Page } from '../../Layouts/Page/Page';
 import { logger } from '../../utils/logger';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
 import { getErrorDialogText } from '../../utils/ErrorMessage';
-import { CreateRoomModal } from './CreateRoomModal/CreateRoomModal';
 import { RenameRoomModal } from './RenameRoomModal/RenameRoomModal';
 import { DeleteRoomModal } from './DeleteRoomModal/DeleteRoomModal';
 import { InviteModal } from './InviteModal/InviteModal';
 import { getErrorMessageFromResponse } from '../../utils/ErrorMessage';
 import { Link } from '../../components/Link/Link';
 import { USER_SUPPORT_EMAIL } from '../../constants/User';
+import { MAX_FREE_ROOMS } from '../../constants/room';
+import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 
 interface IDashboardProps {}
 
@@ -127,10 +127,24 @@ function DashboadReducer(state: DashboardState, action: DashboardAction) {
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(!sessionTokenExists(getSessionToken()));
-  const [pageError, setPageError] = useState<ErrorInfo>(null!);
-  const [user, setUser] = useState<UserInfo>(null!);
-  const [rooms, setRooms] = useState<{ owned: RoomInfo[]; member: RoomInfo[] }>({ owned: [], member: [] });
+  const { user, profile, error, update, isLoading } = useCurrentUserProfile();
+  const rooms = profile?.rooms || { owned: [], member: [] };
+
+  // boot to signin if there's an error fetching profile data
+  useEffect(() => {
+    if (error) {
+      history.push(RouteNames.SIGN_IN);
+    }
+  }, [error, history]);
+
+  // boot to create room if there are no rooms
+  const hasNoRooms = !isLoading && !error && rooms.owned.length === 0 && rooms.member.length === 0;
+  useEffect(() => {
+    if (hasNoRooms) {
+      history.push(`${RouteNames.CREATE_ROOM}?onboarding=true`);
+    }
+  }, [hasNoRooms, history]);
+
   const { t } = useTranslation();
   const query = useQueryParams();
 
@@ -144,44 +158,6 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const errorInfo = query.get('e');
   const [errorMsg, setErrorMsg] = useState<DialogMessage | null>(getErrorDialogText(errorInfo as ErrorCodes, t));
 
-  // run this on mount
-  useEffect(() => {
-    const sessionToken = getSessionToken();
-    if (sessionTokenExists(sessionToken)) {
-      setIsLoading(true);
-      // TODO: replace this with the updated api
-      // Fix typing
-      Api.getProfile()
-        .then((result: any) => {
-          // there is an edge case that profile a profile will return null if a user doesnt
-          // exist in the db, but they have a valid session token, so just check if there is a profile
-          // if not redirect to the signin page
-          if (result.success && result.profile) {
-            // this means we have a valid token
-            setUser(result.profile.user);
-            setRooms(result.profile.rooms);
-          } else {
-            // we dont have a valid token, so redirect to sign in and remove old token
-            removeSessionToken();
-            history.push(RouteNames.SIGN_IN);
-          }
-        })
-        .catch((e: any) => {
-          logger.error(`Error calling api call getProfile`, e);
-          setPageError({
-            errorCode: ErrorCodes.UNEXPECTED,
-            error: e,
-          });
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else {
-      // we arent logged in so redirect to the sign in page
-      history.push(RouteNames.SIGN_IN);
-    }
-  }, [history]);
-
   const onRoomSummaryError = (msg: string) => {
     setErrorMsg({ body: msg, title: t('error.noteError.title') } as DialogMessage);
   };
@@ -194,43 +170,24 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     }
   };
 
-  const createNewRoom = async (roomDisplayName: string) => {
-    try {
-      const response = await Api.roomCreate(roomDisplayName);
-      if (response.success) {
-        // add new room to the room state
-        setRooms({ owned: [response.newRoom, ...rooms.owned], member: rooms.member });
-        dispatch({ type: ACTIONS.UPDATE_MODAL, payload: { modal: MODAL_OPTS.INVITE, roomInfo: response.newRoom } });
-      } else {
-        // same modal more or less for every error we get back from the backend
-        dispatch({ type: ACTIONS.SET_MANGEMENT_ERROR, payload: t('error.roomMangement.createRoomErrorTitle') });
-      }
-    } catch (err) {
-      setErrorMsg({
-        title: t('common.error'),
-        body: getErrorMessageFromResponse(err, t) ?? '',
-      } as DialogMessage);
-      // unexpected error happened
-      logger.error('Unexpected Error Creating room', err);
-    }
-  };
-
   const deleteRoom = async (roomInfo: RoomInfo) => {
     try {
       const response = await Api.roomDelete(roomInfo.room_id);
       if (response.success) {
-        const ownedIndex = rooms.owned.indexOf(roomInfo);
-        if (ownedIndex > -1) {
-          rooms.owned.splice(ownedIndex, 1);
-          setRooms({ owned: rooms.owned, member: rooms.member });
-        } else {
-          const memberIndex = rooms.member.indexOf(roomInfo);
-          if (memberIndex === -1) {
-            return;
+        // update the query cache to remove the room
+        update((data) => {
+          if (!data || !data.profile) return {};
+          const ownedIndex = data.profile.rooms.owned.indexOf(roomInfo);
+          if (ownedIndex !== -1) {
+            data.profile.rooms.owned.splice(ownedIndex, 1);
+          } else {
+            const memberIndex = data.profile.rooms.member.indexOf(roomInfo);
+            if (memberIndex !== -1) {
+              data.profile.rooms.member.splice(memberIndex, 1);
+            }
           }
-          rooms.member.splice(memberIndex, 1);
-          setRooms({ owned: rooms.owned, member: rooms.member });
-        }
+          return data;
+        });
       } else {
         // same modal more or less for every error we get back from the backend
         dispatch({ type: ACTIONS.SET_MANGEMENT_ERROR, payload: t('error.roomMangement.deleteRoomErrorTitle') });
@@ -249,9 +206,16 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
     try {
       const response = await Api.roomRename(roomInfo.room_id, newName);
       if (response.success) {
-        roomInfo.display_name = response.display_name;
-        roomInfo.route = response.route;
-        setRooms({ owned: rooms.owned, member: rooms.member });
+        // update the query cache to rename the room
+        update((data) => {
+          if (!data || !data.profile) return {};
+          const ownedIndex = data.profile.rooms.owned.findIndex((room) => room.room_id === roomInfo.room_id);
+          if (ownedIndex !== -1) {
+            data.profile.rooms.owned[ownedIndex].display_name = response.display_name;
+            data.profile.rooms.owned[ownedIndex].route = response.route;
+          }
+          return data;
+        });
       } else {
         dispatch({ type: ACTIONS.SET_MANGEMENT_ERROR, payload: t('error.roomMangement.renameRoomErrorTitle') });
       }
@@ -294,17 +258,30 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   // TODO: figure out better room name sorting for display the rooms, I have a feeling we will
   // get a complaint about new rooms or freq. used rooms appearing at the bottom of the list on refresh
   return (
-    <Page isLoading={isLoading} error={pageError}>
+    <Page isLoading={isLoading} error={error}>
       <Box display="flex" justifyContent="center" flexGrow={1}>
         <Box display="flex" flexDirection="column" flexBasis="auto" className={classes.wrapper}>
           <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
           <div className={classes.bgContainer}>
-            <Button
-              className={classes.createRoomButton}
-              onClick={() => dispatch({ type: ACTIONS.UPDATE_MODAL, payload: { modal: MODAL_OPTS.CREATE } })}
-            >
-              {t('pages.dashboard.createRoomButton')}
-            </Button>
+            <Box display="flex" flexDirection="row">
+              <Button
+                className={classes.createRoomButton}
+                component={Link}
+                disableStyling
+                to={RouteNames.CREATE_ROOM}
+                disabled={rooms.owned.length >= MAX_FREE_ROOMS}
+              >
+                {t('pages.dashboard.createRoomButton')}
+              </Button>
+              {rooms.owned.length >= MAX_FREE_ROOMS && (
+                <Box pl={2} pt={0.5} flex={1}>
+                  <Trans i18nKey="modals.createRoomModal.limitBody" values={{ maxRooms: MAX_FREE_ROOMS }}>
+                    We currently have a limit of 20 rooms per user. If you need more rooms, please
+                    <Link to={`mailto:${USER_SUPPORT_EMAIL}`}> contact us</Link>!
+                  </Trans>
+                </Box>
+              )}
+            </Box>
             <div className={classes.roomWrapper}>
               <div className={classes.roomGrid}>
                 {[...rooms.owned, ...rooms.member].map((memberRoom) => {
@@ -330,12 +307,6 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
           </div>
         </Box>
       </Box>
-      <CreateRoomModal
-        isOpen={state.modalOpen === MODAL_OPTS.CREATE}
-        onClose={() => dispatch({ type: ACTIONS.CLOSE_MODAL, payload: null })}
-        onSubmit={createNewRoom}
-        numberOfRoomsOwned={rooms.owned.length}
-      />
       {renderModals()}
       <DialogModal message={errorMsg} onClose={clearUrlError}></DialogModal>
       <DialogModal message={state.error} onClose={() => dispatch({ type: ACTIONS.SET_MANGEMENT_ERROR, payload: null })}>

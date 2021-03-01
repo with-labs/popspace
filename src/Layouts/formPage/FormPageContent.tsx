@@ -6,11 +6,17 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    paddingTop: theme.spacing(14),
+    paddingBottom: theme.spacing(14),
+    paddingLeft: theme.spacing(14),
     overflow: 'auto',
+    gridArea: 'content',
     [theme.breakpoints.down('md')]: {
-      padding: theme.spacing(1),
+      padding: theme.spacing(3),
       overflow: 'hidden',
+      maxWidth: 680,
+      justifySelf: 'center',
     },
   },
 }));

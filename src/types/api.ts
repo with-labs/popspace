@@ -1,13 +1,8 @@
 import { ErrorCodes } from '../constants/ErrorCodes';
+import { ApiNamedRoom } from '../utils/api';
 
 // data types from the backend
-export type RoomInfo = {
-  room_id: string;
-  owner_id: string;
-  preview_image_url: string;
-  display_name: string;
-  route: string;
-};
+export type RoomInfo = ApiNamedRoom;
 
 export type UserInfo = {
   avatar_url: string | null;

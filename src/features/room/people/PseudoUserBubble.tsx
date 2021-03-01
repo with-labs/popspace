@@ -12,7 +12,7 @@ import { PersonBubbleAvatar } from './PersonBubbleAvatar';
 import { AwayIcon } from '../../../components/icons/AwayIcon';
 
 interface IPseudoUserBubbleProps {
-  userId?: string;
+  userId: string;
   isVideoOn?: boolean;
   isMicOn?: boolean;
   className?: string;
@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
  * interactivity.
  */
 export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
-  userId = '',
+  userId,
   isVideoOn = false,
   className,
   children,

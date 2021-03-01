@@ -5,7 +5,7 @@ import { AvatarGrid } from './AvatarGrid';
 import { useTranslation } from 'react-i18next';
 import { groupBy } from 'lodash';
 
-export interface IAvatarCategoryProps {
+export interface IAvatarSelectorProps {
   onChange: (avatarName: string) => void;
   value: string | null;
 }
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const categorizedAvatars = groupBy(avatarOptions, 'category');
 
-export const AvatarCategory: React.FC<IAvatarCategoryProps> = ({ onChange, value }) => {
+export const AvatarSelector: React.FC<IAvatarSelectorProps> = ({ onChange, value }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 

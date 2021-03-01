@@ -47,6 +47,15 @@ export type ApiInviteDetails = {
   inviteDetails?: InviteDetails[];
 };
 
+export type ApiNamedRoom = {
+  room_id: string;
+  owner_id: string;
+  preview_image_url: string;
+  display_name: string;
+  route: string;
+  url_id: string;
+};
+
 export enum SERVICE {
   NETLIFY = 'NETLIFY',
   MERCURY = 'MERCURY',
@@ -89,15 +98,18 @@ class Api {
   }
 
   async roomCreate(displayName: string) {
-    return await this.post('/room_create', { displayName });
+    return await this.post<BaseResponse & { newRoom: ApiNamedRoom }>('/room_create', { displayName });
   }
 
   async roomRename(roomId: string, newDisplayName: string) {
-    return await this.post('/room_rename', { roomId, newDisplayName });
+    return await this.post<BaseResponse & { route: string; url_id: string; display_name: string }>('/room_rename', {
+      roomId,
+      newDisplayName,
+    });
   }
 
   async roomDelete(roomId: string) {
-    return await this.post('/room_delete', { roomId });
+    return await this.post<BaseResponse & { deletedRoomId: number }>('/room_delete', { roomId });
   }
 
   async sendRoomInvite(roomName: string, email: string) {

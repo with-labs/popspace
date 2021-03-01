@@ -16,18 +16,19 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     width: '100%',
-    maxWidth: '1600px',
     alignSelf: 'center',
     height: '100%',
-    padding: theme.spacing(10),
     display: 'grid',
+    gridTemplateAreas: '"content image"',
     gridTemplateColumns: 'minmax(auto, 500px) 1fr',
     gridGap: theme.spacing(4),
     overflow: 'hidden',
+
     [theme.breakpoints.down('md')]: {
-      padding: theme.spacing(2),
       overflow: 'auto',
+      gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
+      gridTemplateRows: 'minmax(auto, 260px) 1fr',
     },
   },
 }));

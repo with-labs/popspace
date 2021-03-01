@@ -17,9 +17,9 @@ import { PageTitle } from '../../components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
 import { MembershipManagementModal } from '../roomControls/membership/MemberMangementModal';
-import { RequestPermissionModal } from '../roomControls/requestPermissionModal/RequestPermissionModal';
 import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
+import { EntryOverlay } from '../roomControls/entryOverlay/EntryOverlay';
 
 interface IRoomProps {}
 
@@ -31,7 +31,7 @@ export const Room: React.FC<IRoomProps> = () => (
     <UserSettingsModal />
     <ChangelogModal />
     <OnboardingModal />
-    <RequestPermissionModal />
+    <EntryOverlay />
     <MembershipManagementModal />
   </>
 );

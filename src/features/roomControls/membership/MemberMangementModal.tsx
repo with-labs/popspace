@@ -9,6 +9,7 @@ import { useRoomModalStore } from '../useRoomModalStore';
 import { MembershipManagement } from './MembershipManagement';
 
 import membersImg from './images/ManageMembers.png';
+import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 
 interface IMembershipManagementModalProps {}
 
@@ -66,6 +67,12 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
     closeModal('membershipMangement');
   };
 
+  const roomRoute = useRoomRoute();
+
+  if (!roomRoute) {
+    throw new Error('MembershipManagementModal must be rendered on a room page');
+  }
+
   return (
     <Modal onClose={onCloseHandler} isOpen={isOpen}>
       <ModalTitleBar title={t('modals.inviteUserModal.title')} onClose={onCloseHandler} />
@@ -74,7 +81,7 @@ export const MembershipManagementModal: React.FC<IMembershipManagementModalProps
           <img src={membersImg} alt="Members" className={classes.image} />
         </ModalPane>
         <ModalPane className={classes.userMangementPannel}>
-          <MembershipManagement />
+          <MembershipManagement roomRoute={roomRoute} />
         </ModalPane>
       </ModalContentWrapper>
     </Modal>

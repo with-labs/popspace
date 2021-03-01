@@ -15,7 +15,8 @@ import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
-import signinImg from '../../images/illustrations/key.svg';
+import signinImg from '../../images/illustrations/sign_in.jpg';
+import signinMobileImg from '../../images/illustrations/sign_in_responsive.jpg';
 import { Link } from '../../components/Link/Link';
 import { useFeatureFlag } from 'flagg';
 import { FormPage } from '../../Layouts/formPage/FormPage';
@@ -137,7 +138,7 @@ export const Signin: React.FC<ISigninProps> = () => {
                 )}
               </Form>
             </FormPageContent>
-            <FormPageImage src={signinImg} alt={t('pages.signin.imgAltText')} />
+            <FormPageImage src={signinImg} mobileSrc={signinMobileImg} />
             <DialogModal message={errorMsg} onClose={clearUrlError} />
           </FormPage>
         )

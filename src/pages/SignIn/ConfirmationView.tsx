@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import checkEmailImg from '../../images/illustrations/mailbox.svg';
+import checkEmailImg from '../../images/illustrations/check_your_email.jpg';
+import checkEmailMobileImg from '../../images/illustrations/check_your_email_responsive.jpg';
 import { toast } from 'react-hot-toast';
 import { Button, makeStyles, Typography } from '@material-ui/core';
 import Api from '../../utils/api';
@@ -87,7 +88,7 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
         </Typography>
         <div className={classes.error}>{error}</div>
       </FormPageContent>
-      <FormPageImage src={checkEmailImg} alt={t('pages.confirmationView.imgAltText')} />
+      <FormPageImage src={checkEmailImg} mobileSrc={checkEmailMobileImg} />
     </FormPage>
   );
 };

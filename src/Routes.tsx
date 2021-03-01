@@ -10,7 +10,7 @@ import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
-import { FlaggAdmin, useFeatureFlag } from 'flagg/dist/react';
+import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
 import RoomPage from './pages/room';
@@ -43,8 +43,6 @@ const RootView = () => {
 };
 
 export const Routes: React.FC<IRoutesProps> = (props) => {
-  const [hasSignup] = useFeatureFlag('signup');
-
   return (
     <Switch>
       <AuthenticatedRoute exact path={RouteNames.ROOT}>
@@ -55,11 +53,9 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <Signin />
       </Route>
 
-      {hasSignup && (
-        <Route exact path={RouteNames.SIGN_UP}>
-          <Signup />
-        </Route>
-      )}
+      <Route exact path={RouteNames.SIGN_UP}>
+        <Signup />
+      </Route>
 
       <Route path={RouteNames.CLAIM_ROOM}>
         <FinalizeAccount />

@@ -313,6 +313,7 @@
         "invalidEmail": "Invalid email.",
         "mediaNotSupported": "Unsupported media type",
         "fileDropUnknownFailure": "Upload failed - please try again",
+        "fileTooLarge": "Too large: files up to {{maxMegabytes}}MB only",
         "catastrophicMediaError": "Something went very wrong while activating your media device. Try refreshing the page to see if that helps.",
         "downloadFailed": "That didn't work - try again?",
         "unauthorized": "Please log in",

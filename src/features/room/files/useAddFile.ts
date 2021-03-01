@@ -7,11 +7,16 @@ import { Vector2 } from '../../../types/spatials';
 import api from '../../../utils/api';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 
+const MAX_MEGABYTES = 30;
+const ONE_MEGABYTE_IN_BYTES = 1024 * 1024;
+const MAX_FILE_BYTE_LENGTH = MAX_MEGABYTES * ONE_MEGABYTE_IN_BYTES;
+
 export function useAddFile() {
   const { t } = useTranslation();
 
   const addWidget = useAddAccessory();
   const updateWidget = useRoomStore((room) => room.api.updateWidget);
+  const deleteWidget = useRoomStore((room) => room.api.deleteWidget);
 
   const createWidget = useCallback(
     async (file: File, position?: Vector2) => {
@@ -42,13 +47,26 @@ export function useAddFile() {
           screenCoordinate: position,
         });
 
+        const abort = async () => {
+          window.removeEventListener('beforeunload', confirmClose, true);
+          const widget = await widgetAddedPromise;
+          await deleteWidget(widget);
+        };
+
         // read file as arraybuffer
         const fileBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
           const reader = new FileReader();
-          reader.addEventListener('loadend', () => {
-            resolve(reader.result as ArrayBuffer);
+          reader.addEventListener('loadend', async () => {
+            const loadedFile: ArrayBuffer = reader.result as ArrayBuffer;
+            if (loadedFile.byteLength > MAX_FILE_BYTE_LENGTH) {
+              toast.error(t('error.messages.fileTooLarge', { maxMegabytes: MAX_MEGABYTES }) as string);
+              await abort();
+              return reject(`File exceeds ${MAX_FILE_BYTE_LENGTH} bytes`);
+            }
+            resolve(loadedFile);
           });
-          reader.addEventListener('error', () => {
+          reader.addEventListener('error', async () => {
+            await abort();
             reject(reader.error);
           });
           reader.readAsArrayBuffer(file);

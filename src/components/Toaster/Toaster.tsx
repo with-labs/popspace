@@ -45,7 +45,7 @@ export const Toaster: React.FC = () => {
             }}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'left',
+              horizontal: 'center',
             }}
             key={toast.id}
           >

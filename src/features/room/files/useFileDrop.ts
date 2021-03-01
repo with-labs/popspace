@@ -50,8 +50,8 @@ export function useFileDrop() {
 
       const createWidget = async (file: File) => {
         try {
-          await addFile(file, mousePosition);
           setTargetPosition(null);
+          await addFile(file, mousePosition);
         } catch (err) {
           logger.error(err);
         } finally {

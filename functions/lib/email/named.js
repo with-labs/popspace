@@ -87,8 +87,13 @@ class NamedEmails {
     return await this.sendNamedUserMarketingEmail("marketing", email)
   }
 
-  async sendRoomStatusEmail(name, toEmail, roomName, arg = {}) {
-    arg.roomName = roomName
+  async sendRoomStatusEmail(name, toEmail, roomRoute, arg = {}) {
+    /*
+      DEPRECATED: use app.roomRoute instead.
+      Delete after all emails have transitioned to roomRoute from roomName.
+    */
+    arg.roomName = roomRoute
+    arg.roomRoute = roomRoute
     arg.appUrl = appUrl()
     await fetchEmailAndSend(name, toEmail, arg, false)
   }

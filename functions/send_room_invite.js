@@ -84,7 +84,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
   const invitation = await shared.db.room.invites.createInvitation(room.id, params.email)
   const inviteUrl = await lib.db.rooms.getInviteUrl(lib.util.env.appUrl(event, context), invitation)
-  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user)
+  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user, room)
 
   const newMember = {
     display_name: "",

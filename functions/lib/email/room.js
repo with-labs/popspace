@@ -1,6 +1,6 @@
 const SENDER = 'notify@with.so'
 
-const getDisplayName = async (roomId) {
+const getDisplayName = async (roomId) => {
   const roomState = await shared.db.dynamo.room.getRoomState(roomId)
   return roomState.display_name
 }

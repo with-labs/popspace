@@ -30,6 +30,7 @@ const fetchAndProcessEmail = async (emailName, arg) => {
 const fetchEmailAndSend = async (emailName, toEmailAddress, arg, trackClicks=true) => {
   const e = await fetchAndProcessEmail(emailName, arg)
   const tags = [{ Name: "type", Value: emailName }]
+  const user = await shared.db.accounts.userByEmail(toEmailAddress)
   return await lib.email.ses.sendMail(
     e.name,
     e.version,
@@ -39,6 +40,7 @@ const fetchEmailAndSend = async (emailName, toEmailAddress, arg, trackClicks=tru
     e.html,
     e.plaintext,
     tags,
+    user,
     trackClicks
   )
 }

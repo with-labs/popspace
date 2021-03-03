@@ -7,7 +7,7 @@ class AccountEmails {
 
   async sendSignupOtpEmail(toEmail, loginUrl) {
     return await lib.email.named.sendNamedTransactionEmail(
-      "signin",
+      "welcome",
       toEmail,
       { ctaUrl: loginUrl }
     )

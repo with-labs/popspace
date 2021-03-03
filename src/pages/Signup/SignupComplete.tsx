@@ -17,12 +17,12 @@ export function SignupComplete({ resend, email }: { resend: () => any; email: st
       <FormPageContent>
         <FormPageTitle>{t('pages.signup.invitationSent')}</FormPageTitle>
         <Typography paragraph>
-          <Trans as="span" i18nKey={t('pages.signup.invitationDestination')}>
-            We went an invitation to <span>{email}</span>
+          <Trans as="span" i18nKey="pages.signup.invitationDestination">
+            We sent an invitation to <span>{email}</span>
           </Trans>
         </Typography>
         <Typography paragraph>
-          <Trans as="span" i18nKey={t('pages.signup.invitationHelp')}>
+          <Trans as="span" i18nKey="pages.signup.invitationHelp">
             If you didn't receive the email, you can{' '}
             <Link to="#" onClick={resend}>
               {t('pages.signup.invitationRequestNewLink')}

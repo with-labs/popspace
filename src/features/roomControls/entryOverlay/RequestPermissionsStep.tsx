@@ -42,6 +42,9 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
       if (err.message === 'Permission denied') {
         // user denied our request - for now we still let them in.
         logger.warn(`User (id: ${userId}) denied permission to media device`);
+        // let them though, we will prompt them to fix their permissions if they attempt to
+        // user the mic / camera after the fact
+        onComplete();
       } else {
         /* handle the error */
         logger.error(`Error getting user media for user (id: ${userId})`);

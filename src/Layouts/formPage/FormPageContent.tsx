@@ -7,9 +7,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     paddingRight: theme.spacing(4),
-    paddingTop: theme.spacing(14),
-    paddingBottom: theme.spacing(14),
-    paddingLeft: theme.spacing(14),
+    paddingTop: theme.spacing(7.5),
+    paddingBottom: theme.spacing(7.5),
+    paddingLeft: theme.spacing(7.5),
     overflow: 'auto',
     gridArea: 'content',
     [theme.breakpoints.down('md')]: {

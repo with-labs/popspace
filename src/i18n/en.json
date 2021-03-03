@@ -109,7 +109,7 @@
         },
         "submitButtonText": "Sign up",
         "imgAltText": "A key floating magically in the air. A With logo is emblazoned on the attached key tag.",
-        "invitationSent": "Invitation sent!",
+        "invitationSent": "Confirm your email",
         "invitationDestination": "We sent an invitation to <1>email@domain.tld</1>",
         "invitationHelp": "If you didn't receive the email, you can <1>request a new link</1>. Don't forget to check your spam folder!",
         "invitationRequestNewLink": "request a new link",
@@ -201,7 +201,8 @@
         },
         "invitePeople": {
           "continue": "Continue",
-          "title": "Invite your team"
+          "title": "Invite your team",
+          "skip": "Skip"
         }
       }
     },

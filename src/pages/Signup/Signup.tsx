@@ -29,7 +29,7 @@ import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 interface ISignupProps {}
 
 const validateEmail = (value: string) => {
-  if (!isEmailValid(value)) {
+  if (!isEmailValid(value.trim())) {
     return i18n.t('pages.signup.email.invalid');
   }
 };
@@ -61,13 +61,18 @@ export const Signup: React.FC<ISignupProps> = () => {
   const email = history.location.state?.email || '';
 
   const handleSubmit = useCallback(
-    async (values: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
+    async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
       try {
-        const result = await Api.signup(values);
+        const result = await Api.signup({
+          email: email.trim(),
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          ...rest,
+        });
         if (!result.success) {
           if (result.errorCode === ErrorCodes.ALREADY_REGISTERED) {
             toast(t('pages.signup.alreadyRegistered') as string);
-            history.push(RouteNames.SIGN_IN, { email: values.email });
+            history.push(RouteNames.SIGN_IN, { email: email.trim() });
           } else {
             throw new ApiError(result);
           }

@@ -6,7 +6,6 @@ import { makeStyles, Box, Typography, CircularProgress, InputAdornment, IconButt
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
 import { isEmailValid } from '../../../utils/CheckEmail';
 import Api, { ApiRoomMember, ApiError } from '../../../utils/api';
-import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/sessionToken';
 import { DialogModal } from '../../../components/DialogModal/DialogModal';
@@ -34,6 +33,7 @@ interface IMembershipManagementModalProps {
   size?: 'small' | 'large';
   roomRoute: string;
   memberListClasses?: string;
+  onChange?: () => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -80,24 +80,18 @@ function validateEmail(email: string, translate: TFunction) {
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  ({ autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className }, ref) => {
+  ({ autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className, onChange }, ref) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
 
     const cache = useQueryCache();
-    const { data, isLoading, error } = useQuery<{ result: ApiRoomMember[] }, ApiError>(
-      [
-        ROOM_MEMBERS_QUERY,
-        {
-          roomName: inviteRoomRoute,
-        },
-      ],
+    const { data, isLoading, error } = useQuery<{ result: ApiRoomMember[] }, ApiError>([
+      ROOM_MEMBERS_QUERY,
       {
-        // 5 min cache time
-        cacheTime: 5 * 60,
-      }
-    );
+        roomName: inviteRoomRoute,
+      },
+    ]);
     const members = data?.result || [];
 
     const formatErrorMessage = (response: any) => {
@@ -125,6 +119,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
                 result: [...(cur?.result ?? []), response.newMember],
               })
             );
+            onChange?.();
           } else {
             // TODO: convert to try/catch when api module throws errors
             setDialogError(formatErrorMessage(new ApiError(response)));

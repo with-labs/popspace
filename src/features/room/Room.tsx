@@ -9,7 +9,6 @@ import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
-import { OnboardingModal } from '../roomControls/onboarding/OnboardingModal';
 import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
 import { Hidden } from '@material-ui/core';
@@ -30,7 +29,6 @@ export const Room: React.FC<IRoomProps> = () => (
     <SpeakingStateObserver />
     <UserSettingsModal />
     <ChangelogModal />
-    <OnboardingModal />
     <EntryOverlay />
     <MembershipManagementModal />
   </>

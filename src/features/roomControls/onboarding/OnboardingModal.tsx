@@ -1,3 +1,5 @@
+// 3-2-2021: disabling this modal for right now, keeping around for a bit if we want to retool this
+// TODO: Remove this if onboarding is completely reworked to not need a modal
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles, Box, Typography, Button, ThemeProvider } from '@material-ui/core';

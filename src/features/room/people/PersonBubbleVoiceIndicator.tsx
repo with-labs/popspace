@@ -38,9 +38,6 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
           await setSpeakingIndicatorStyles({
             right: '8%',
             bottom: -20,
-            // modify spring for this operation - the icon is invisible at this point
-            // we just want this to move quickly to the next position
-            immediate: true,
           });
           await setSpeakingIndicatorStyles({ opacity: 1, bottom: -10 });
         } else {
@@ -48,9 +45,6 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
           await setSpeakingIndicatorStyles({
             right: '50%',
             bottom: -18,
-            // modify spring for this operation - the icon is invisible at this point
-            // we just want this to move quickly to the next position
-            immediate: true,
           });
           await setSpeakingIndicatorStyles({ opacity: 1, bottom: -8 });
         }

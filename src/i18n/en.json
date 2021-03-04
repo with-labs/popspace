@@ -117,7 +117,7 @@
         "signInInstead": "Already have an account? <1>Sign in</1>.",
         "signIn": "Sign in",
         "newsletterOptIn": {
-          "label": "It's ok to send me updates"
+          "label": "Please send me how-to guides and updates"
         },
         "alreadyRegistered": "You've got a With account already — please sign in!",
         "joinFlow": "You'll need an account to join someone's room. After you've created one, try clicking that link again.",

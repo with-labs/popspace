@@ -13,7 +13,7 @@ interface IInviteModalProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: 340,
+    height: 400,
   },
   membershipManagement: {
     width: '100%',

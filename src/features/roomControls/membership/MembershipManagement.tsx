@@ -16,6 +16,8 @@ import { MemberList } from './MemberList/MemberList';
 import { useQuery, useQueryCache } from 'react-query';
 import { logger } from '../../../utils/logger';
 
+import InviteMembersImg from './images/invite_some_people.png';
+
 export type MembershipFormData = {
   inviteeEmail: string;
 };
@@ -68,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       flexDirection: 'row',
     },
+  },
+  inviteImg: {
+    width: 340,
+    height: 220,
   },
 }));
 
@@ -189,9 +195,12 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
             {isLoading ? (
               <CircularProgress />
             ) : (
-              <Typography variant="body1" className={classes.inviteText}>
-                {t('modals.inviteUserModal.getStarted')}
-              </Typography>
+              <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                <img src={InviteMembersImg} className={classes.inviteImg} />
+                <Typography variant="body1" className={classes.inviteText}>
+                  {t('modals.inviteUserModal.getStarted')}
+                </Typography>
+              </Box>
             )}
           </Box>
         )}

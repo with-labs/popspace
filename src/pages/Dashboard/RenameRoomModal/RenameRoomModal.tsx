@@ -16,7 +16,9 @@ interface IRenameRoomModalProps {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    height: 400,
+  },
   spacer: {
     marginTop: theme.spacing(2),
   },
@@ -26,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
     },
+  },
+  form: {
+    height: '100%',
+  },
+  formField: {
+    marginTop: theme.spacing(2),
+    flexGrow: 1,
   },
 }));
 
@@ -61,22 +70,24 @@ export const RenameRoomModal: React.FC<IRenameRoomModalProps> = (props) => {
       </DialogTitle>
       <DialogContent className={classes.root}>
         <Formik initialValues={{ newName: '' }} onSubmit={onSubmit}>
-          <Form className={classes.spacer}>
-            <Box display="flex" flexDirection="column">
+          <Form className={classes.form}>
+            <Box display="flex" flexDirection="column" height="100%">
               <FormikTextField
                 id="renameRoom-newName"
-                className=""
+                className={classes.formField}
                 name="newName"
                 placeholder={t('modals.renameRoomModal.placeholder')}
                 margin="normal"
                 validate={(newName) => validateRoomName(newName, t)}
               />
-              <FormikSubmitButton activeOnChange className={classes.spacer}>
-                {t('modals.renameRoomModal.buttonText')}
-              </FormikSubmitButton>
-              <Button variant="text" color="inherit" onClick={() => onClose()} className={classes.spacer}>
-                {t('common.cancel')}
-              </Button>
+              <Box>
+                <FormikSubmitButton activeOnChange className={classes.spacer}>
+                  {t('modals.renameRoomModal.buttonText')}
+                </FormikSubmitButton>
+                <Button variant="text" color="inherit" onClick={() => onClose()} className={classes.spacer}>
+                  {t('common.cancel')}
+                </Button>
+              </Box>
             </Box>
           </Form>
         </Formik>

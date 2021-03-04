@@ -26,7 +26,7 @@ interface IDeleteRoomModalProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 360,
+    maxWidth: 400,
   },
   spacer: {
     marginTop: theme.spacing(2),

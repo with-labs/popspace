@@ -110,7 +110,7 @@
         "submitButtonText": "Sign up",
         "imgAltText": "A key floating magically in the air. A With logo is emblazoned on the attached key tag.",
         "invitationSent": "Confirm your email",
-        "invitationDestination": "We sent an invitation to <1>email@domain.tld</1>",
+        "invitationDestination": "We sent a confirmation link to <1>{{email}}</1>",
         "invitationHelp": "If you didn't receive the email, you can <1>request a new link</1>. Don't forget to check your spam folder!",
         "invitationRequestNewLink": "request a new link",
         "invitationImgAltText": "A postmarked letter flying through the air",

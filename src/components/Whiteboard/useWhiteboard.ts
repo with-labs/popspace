@@ -65,13 +65,11 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
         (ev: Konva.KonvaEventObject<MouseEvent>) => {
           const { x, y } = getMousePosition(ev);
 
-          setActiveLine(
-            (cur) =>
-              cur && {
-                ...cur,
-                path: [...cur.path, x, y],
-              }
-          );
+          setActiveLine((cur) => {
+            if (!cur) return cur;
+            cur.path.push(x, y);
+            return { ...cur };
+          });
         },
         20,
         { leading: true, trailing: true }

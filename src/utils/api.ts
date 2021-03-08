@@ -66,7 +66,7 @@ class Api {
     firstName?: string;
     lastName?: string;
     displayName?: string;
-    newsletterOptIn?: boolean;
+    receiveMarketing?: boolean;
   }) {
     return await this.post<BaseResponse>('/request_create_account', data);
   }

@@ -38,7 +38,7 @@ type FinalizeAccountFormData = {
   firstName: string;
   lastName: string;
   acceptTos: boolean;
-  newsletterOptIn: boolean;
+  receiveMarketing: boolean;
   email: string;
 };
 
@@ -190,7 +190,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
 
   return (
     <Formik<FinalizeAccountFormData>
-      initialValues={{ firstName: '', lastName: '', email, acceptTos: false, newsletterOptIn: false }}
+      initialValues={{ firstName: '', lastName: '', email, acceptTos: false, receiveMarketing: false }}
       onSubmit={handleSubmit}
       validateOnBlur={false}
     >
@@ -247,8 +247,8 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
                 />
                 <FormikCheckboxField
                   label={t('pages.finalizeAccount.marketingCheckboxText')}
-                  name="newsletterOptIn"
-                  value="newsletterOptIn"
+                  name="receiveMarketing"
+                  value="receiveMarketing"
                 />
               </FormPageFields>
               <FormikSubmitButton className={classes.button}>

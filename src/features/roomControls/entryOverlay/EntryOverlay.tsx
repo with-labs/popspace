@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     gridArea: 'content',
+    overflow: 'auto',
   },
   graphic: {
     gridArea: 'image',

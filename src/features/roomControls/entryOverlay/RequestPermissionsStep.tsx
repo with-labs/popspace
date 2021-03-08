@@ -53,7 +53,7 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
   };
 
   return (
-    <Box height="100%" display="flex" flexDirection="column">
+    <Box minHeight="100%" display="flex" flexDirection="column">
       <Box flex={1} width="100%">
         <Logo style={{ marginBottom: 16 }} />
         <Typography variant="h1" style={{ marginBottom: 72 }}>

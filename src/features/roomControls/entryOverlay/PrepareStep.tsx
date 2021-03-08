@@ -68,7 +68,7 @@ export const PrepareStep: React.FC<IPrepareStepProps> = ({ onComplete }) => {
   };
 
   return (
-    <Box height="100%" display="flex" flexDirection="column">
+    <Box minHeight="100%" display="flex" flexDirection="column">
       <Logo style={{ marginBottom: 16 }} link />
       <Box display="flex" flexDirection="column" flex={1}>
         <Box flex={1} display="flex" flexDirection="column">

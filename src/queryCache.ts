@@ -18,11 +18,8 @@ export const queryCache = new QueryCache({
   defaultConfig: {
     queries: {
       queryFn: defaultQueryFn,
-      // don't refetch when switching tabs or windows
       refetchOnMount: true,
       refetchOnWindowFocus: false,
-      // no cache - for now...
-      cacheTime: 0,
       retry: false,
     },
   },

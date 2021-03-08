@@ -44,7 +44,7 @@ type SignupFormValues = {
   email: string;
   firstName: string;
   lastName: string;
-  newsletterOptIn: boolean;
+  receiveMarketing: boolean;
 };
 
 export const Signup: React.FC<ISignupProps> = () => {
@@ -89,7 +89,7 @@ export const Signup: React.FC<ISignupProps> = () => {
     <Formik<SignupFormValues>
       onSubmit={handleSubmit}
       initialStatus={{ sent: false }}
-      initialValues={{ email, firstName: '', lastName: '', newsletterOptIn: false }}
+      initialValues={{ email, firstName: '', lastName: '', receiveMarketing: false }}
       validateOnBlur={false}
     >
       {({ setStatus, status, values, submitForm }) =>
@@ -152,9 +152,9 @@ export const Signup: React.FC<ISignupProps> = () => {
                     validate={validateTos}
                   />
                   <FormikCheckboxField
-                    id="newsletterOptIn"
-                    name="newsletterOptIn"
-                    value="newsletterOptIn"
+                    id="receiveMarketing"
+                    name="receiveMarketing"
+                    value="receiveMarketing"
                     label={t('pages.signup.newsletterOptIn.label')}
                   />
                 </FormPageFields>

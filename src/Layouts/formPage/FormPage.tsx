@@ -11,8 +11,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100vw',
-    height: '100vh',
+    minHeight: '100vh',
     overflow: 'hidden',
+
+    [theme.breakpoints.up('md')]: {
+      height: '100vh',
+    },
   },
   content: {
     width: '100%',
@@ -29,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
       gridTemplateRows: 'minmax(auto, 260px) 1fr',
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      paddingBottom: '100px',
     },
   },
 }));

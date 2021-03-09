@@ -11,11 +11,11 @@ import { RouteComponentProps } from 'react-router';
 import { RouteNames } from '../../constants/RouteNames';
 
 interface MatchParams {
-  otp: string;
+  inviteCode: string;
 }
 
 export const InviteLink: React.FC<RouteComponentProps<MatchParams>> = (props) => {
-  const { otp } = props.match.params;
+  const { inviteCode } = props.match.params;
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorInfo>(null!);
@@ -33,12 +33,14 @@ export const InviteLink: React.FC<RouteComponentProps<MatchParams>> = (props) =>
         history.push(`${RouteNames.ROOT}?e=${errorCode}`);
       } else {
         // user is not signed in, redirect to the sign in page with invalid link error
-        history.push(`${RouteNames.SIGN_IN}?e=${errorCode}`);
+        // we will attach the invite infomation here if they are redireted to the sign in page
+        // this will allow us to pass this info
+        history.push(`${RouteNames.SIGN_IN}?e=${errorCode}`, { inviteCode, inviteId: iid });
       }
     };
 
     setIsLoading(true);
-    Api.roomMembershipThroughPublicInviteLink(otp, iid)
+    Api.roomMembershipThroughPublicInviteLink(inviteCode, iid)
       .then((result) => {
         setIsLoading(false);
         if (result.success) {
@@ -81,7 +83,7 @@ export const InviteLink: React.FC<RouteComponentProps<MatchParams>> = (props) =>
           error: err,
         });
       });
-  }, [history, otp, iid]);
+  }, [history, inviteCode, iid]);
 
   return <Page isLoading={isLoading} error={error} />;
 };

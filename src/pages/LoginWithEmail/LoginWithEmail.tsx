@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Api from '../../utils/api';
-import { useHistory } from 'react-router-dom';
+import { useHistory, generatePath } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorCodes } from '../../constants/ErrorCodes';
@@ -22,6 +22,8 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
   // pull out the information we need from query string
   const otp = query.get('otp') || '';
   const uid = query.get('uid') || null;
+  const inviteCode = query.get('invite_code') || null;
+  const iid = query.get('iid') || null;
 
   useEffect(() => {
     setIsLoading(true);
@@ -32,8 +34,15 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
           // user has successfully been signed in so we
           // set the new session token for the user
           setSessionToken(result.token);
-          // redirect to the root
-          history.push(RouteNames.ROOT);
+          if (inviteCode && iid) {
+            // if the login link has invite code info, so we redirect to the invite link flow again
+            // to complete the process
+            const baseInvitePath = generatePath(RouteNames.INVITE, { inviteCode });
+            history.push(`${baseInvitePath}?iid=${iid}`);
+          } else {
+            // redirect to the root
+            history.push(RouteNames.ROOT);
+          }
         } else if (result.errorCode === ErrorCodes.INVALID_OTP) {
           // OTP is invalid
           if (getSessionToken()) {
@@ -83,7 +92,7 @@ export const LoginWithEmail: React.FC<ILoginWithEmailProps> = (props) => {
           error: e,
         });
       });
-  }, [otp, uid, history]);
+  }, [otp, uid, history, inviteCode, iid]);
 
   return <Page isLoading={isLoading} error={error} />;
 };

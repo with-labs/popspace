@@ -11,6 +11,6 @@ export enum RouteNames {
   UNSUBSCRIBE = '/unsubscribe',
   FEATURE_FLAGS = '/internal/featureflags',
   LICENSES = '/licenses',
-  INVITE = '/invite/:otp',
+  INVITE = '/invite/:inviteCode',
   CREATE_ROOM = '/create_room',
 }

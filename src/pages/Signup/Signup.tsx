@@ -45,6 +45,8 @@ type SignupFormValues = {
   firstName: string;
   lastName: string;
   receiveMarketing: boolean;
+  inviteId: string;
+  inviteCode: string;
 };
 
 export const Signup: React.FC<ISignupProps> = () => {
@@ -57,8 +59,11 @@ export const Signup: React.FC<ISignupProps> = () => {
 
   // if there's an email cached in history state from signin page, apply it to
   // initial props
-  const history = useHistory<{ email?: string }>();
+  const history = useHistory<{ email?: string; inviteId?: string; inviteCode?: string }>();
   const email = history.location.state?.email || '';
+
+  const inviteCode = history.location.state?.inviteCode || '';
+  const inviteId = history.location.state?.inviteId || '';
 
   const handleSubmit = useCallback(
     async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
@@ -72,7 +77,11 @@ export const Signup: React.FC<ISignupProps> = () => {
         if (!result.success) {
           if (result.errorCode === ErrorCodes.ALREADY_REGISTERED) {
             toast(t('pages.signup.alreadyRegistered') as string);
-            history.push(RouteNames.SIGN_IN, { email: email.trim() });
+            history.push(RouteNames.SIGN_IN, {
+              email: email.trim(),
+              inviteCode: rest.inviteCode,
+              inviteId: rest.inviteId,
+            });
           } else {
             throw new ApiError(result);
           }
@@ -89,7 +98,7 @@ export const Signup: React.FC<ISignupProps> = () => {
     <Formik<SignupFormValues>
       onSubmit={handleSubmit}
       initialStatus={{ sent: false }}
-      initialValues={{ email, firstName: '', lastName: '', receiveMarketing: false }}
+      initialValues={{ email, firstName: '', lastName: '', receiveMarketing: false, inviteCode, inviteId }}
       validateOnBlur={false}
     >
       {({ setStatus, status, values, submitForm }) =>

@@ -116,8 +116,9 @@ function formatPublicInviteLink(inviteDetails: InviteDetails) {
 export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, ref) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const isRoomOwner = useIsRoomOwner();
   const currentRoomRoute = props.roomRoute;
+  const isRoomOwner = useIsRoomOwner(currentRoomRoute);
+
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false);
 
   const [state, dispatch] = useReducer(InviteLinkReducer, {

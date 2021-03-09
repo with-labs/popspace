@@ -67,6 +67,8 @@ class Api {
     lastName?: string;
     displayName?: string;
     receiveMarketing?: boolean;
+    inviteOtp?: string;
+    inviteId?: string;
   }) {
     return await this.post<BaseResponse>('/request_create_account', data);
   }
@@ -75,8 +77,8 @@ class Api {
     return await this.post('/resolve_create_account', { otp, email });
   }
 
-  async requestLoginOtp(email: string) {
-    return await this.post('/request_init_session', { email });
+  async requestLoginOtp(data: { email: string; inviteCode?: string; inviteId?: string }) {
+    return await this.post('/request_init_session', data);
   }
 
   async logIn(otp: string, uid: string | null) {

@@ -27,6 +27,8 @@ import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 
 export type SignInFormData = {
   email: string;
+  inviteId: string;
+  inviteCode: string;
 };
 
 function validateEmail(email: string, translate: TFunction) {
@@ -40,8 +42,12 @@ interface ISigninProps {}
 export const Signin: React.FC<ISigninProps> = () => {
   const { t } = useTranslation();
 
-  const history = useHistory<{ email?: string }>();
+  const history = useHistory<{ email?: string; inviteId?: string; inviteCode?: string }>();
   const preloadedEmail = history.location.state?.email || '';
+
+  // if there's invite information cached in history state from signin page, apply it to
+  const inviteCode = history.location.state?.inviteCode || '';
+  const inviteId = history.location.state?.inviteId || '';
 
   const [email, setEmail] = useState(preloadedEmail);
 
@@ -65,7 +71,11 @@ export const Signin: React.FC<ISigninProps> = () => {
     try {
       const cleanEmail = data.email.trim();
       // TODO: fix typing
-      const loginRequest: any = await Api.requestLoginOtp(cleanEmail);
+      const loginRequest: any = await Api.requestLoginOtp({
+        email: cleanEmail,
+        inviteCode: data.inviteCode,
+        inviteId: data.inviteId,
+      });
       if (loginRequest.success) {
         setEmail(cleanEmail);
         // we have sent off the magic link to the user, so render success page
@@ -80,10 +90,11 @@ export const Signin: React.FC<ISigninProps> = () => {
   };
 
   const clearUrlError = () => {
+    const inviteInfo = inviteCode && inviteId ? { inviteId, inviteCode } : {};
     if (errorInfo) {
       // remove the error from the query string when the user has cleared
       // the error
-      history.replace(RouteNames.SIGN_IN);
+      history.replace(RouteNames.SIGN_IN, { ...inviteInfo });
     }
   };
 
@@ -91,7 +102,7 @@ export const Signin: React.FC<ISigninProps> = () => {
 
   return (
     <Formik
-      initialValues={{ email: preloadedEmail }}
+      initialValues={{ email: preloadedEmail, inviteCode, inviteId }}
       onSubmit={onSubmit}
       validateOnBlur={false}
       initialStatus={{ sent: false }}
@@ -127,7 +138,11 @@ export const Signin: React.FC<ISigninProps> = () => {
                         to="#"
                         onClick={(ev) => {
                           ev.preventDefault();
-                          history.push(RouteNames.SIGN_UP, { email: values.email });
+                          history.push(RouteNames.SIGN_UP, {
+                            email: values.email,
+                            inviteId: values.inviteId,
+                            inviteCode: values.inviteCode,
+                          });
                         }}
                       >
                         {t('pages.signin.signUp')}

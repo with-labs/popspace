@@ -18,7 +18,8 @@ Log in flow
  * Send a magic link to the provided email which will initiate a session.
  */
 module.exports.handler = util.netlify.postEndpoint(async (event, context, callback) => {
-  const email = shared.lib.args.consolidateEmailString(context.params.email)
+  const params = context.params
+  const email = shared.lib.args.consolidateEmailString(params.email)
   const user = await shared.db.accounts.userByEmail(email)
 
   if(!user) {
@@ -30,7 +31,10 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   }
 
   const loginRequest = await shared.db.accounts.createLoginRequest(user)
-  const logInUrl = await shared.db.accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
+  let logInUrl = await shared.db.accounts.getLoginUrl(lib.util.env.appUrl(event, context), loginRequest)
+  if(params.inviteId && params.inviteCode) {
+    logInUrl = `${logInUrl}&iid=${params.inviteId}&invite_code=${params.inviteCode}`
+  }
 
   await lib.email.account.sendLoginOtpEmail(email, logInUrl)
   return await util.http.succeed(callback, {});

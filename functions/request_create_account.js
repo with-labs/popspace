@@ -34,10 +34,13 @@ module.exports.handler = util.netlify.postEndpoint(
     const createRequest =
       existingCreateRequest ||
       (await shared.db.accounts.tryToCreateAccountRequest(params))
-    const signupUrl = shared.db.accounts.getSignupUrl(
+    let signupUrl = shared.db.accounts.getSignupUrl(
       lib.util.env.appUrl(event, context),
       createRequest
     )
+    if(params.inviteId && params.inviteCode) {
+      signupUrl = `${signupUrl}&iid=${params.inviteId}&invite_code=${params.inviteCode}`
+    }
     await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
 
     return await lib.util.http.succeed(callback, {})

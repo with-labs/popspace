@@ -290,7 +290,7 @@
         },
         "NOT_LOGGED_IN": {
           "title": "Please sign in.",
-          "body": "You need to be signed in to use this link. Please sign in and click the link again."
+          "body": "You need to be signed in to use this link. Please sign in."
         },
         "TOO_MANY_ROOM_MEMBERS": {
           "title": "TOO_MANY_ROOM_MEMBERS title",

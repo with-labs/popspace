@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Api from '../../utils/api';
-import { useHistory } from 'react-router-dom';
+import { useHistory, generatePath } from 'react-router-dom';
 import { RouteNames } from '../../constants/RouteNames';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { ErrorCodes } from '../../constants/ErrorCodes';
@@ -21,6 +21,8 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
 
   const otp = useMemo(() => query.get('otp'), [query]);
   const email = useMemo(() => query.get('email'), [query]);
+  const inviteCode = query.get('invite_code') || null;
+  const iid = query.get('iid') || null;
 
   // TODO: when we have signup, update this to specs like loginWithEmail
   useEffect(() => {
@@ -33,7 +35,15 @@ export const VerifyEmail: React.FC<IVerifyEmailProps> = (props) => {
           setIsLoading(false);
           if (result.success) {
             setSessionToken(result.token);
-            history.push(RouteNames.ROOT);
+            if (inviteCode && iid) {
+              // the user signed up from an invite code, so we move them over to the invite flow
+              // to complete the process
+              const baseInvitePath = generatePath(RouteNames.INVITE, { inviteCode });
+              history.push(`${baseInvitePath}?iid=${iid}`);
+            } else {
+              // otherwise we send them to their dashboard
+              history.push(RouteNames.ROOT);
+            }
           } else {
             setError({
               errorCode: ErrorCodes.INVALID_LINK,

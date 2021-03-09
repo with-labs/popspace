@@ -42,7 +42,7 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
 
     if (isValid) {
       // TODO: fix typing
-      const loginRequest: any = await Api.requestLoginOtp(email);
+      const loginRequest: any = await Api.requestLoginOtp({ email });
       if (loginRequest.success) {
         // we have sent off the magic link to the user,
         // clear any error
@@ -59,19 +59,13 @@ export const ConfirmationView: React.FC<IConfirmationViewProps> = (props) => {
     }
   };
 
-  const test = (
-    <button className={classes.buttonLink} onClick={handleResendLink}>
-      <Typography variant="body1">request a new link</Typography>
-    </button>
-  );
-
   return (
     <FormPage>
       <FormPageContent>
         <FormPageTitle>{t('pages.confirmationView.title')}</FormPageTitle>
         <Typography variant="body1">
           {/* the child of the trans component maps the components to our i18n string and will serve as fallback as well */}
-          <Trans i18nKey="pages.confirmationView.bodyText" values={{ email: email, test: test }}>
+          <Trans i18nKey="pages.confirmationView.bodyText" values={{ email: email }}>
             We sent a magic link to {{ email }}
             Click on the link in the email and you will be automatically logged in. If you didn’t receive the email, you
             can

@@ -50,6 +50,8 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     this.emit('connecting');
     const tokenResult = await api.loggedInEnterRoom(this.roomName);
     if (!tokenResult.success || !tokenResult.token) {
+      // TODO: update these error messages to use the utils/ErrorMessage functions to get
+      // error messages from the error it self sicne we dont have some of these error messages right now.
       if (tokenResult.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
         throw new JoinError(i18n.t('error.messages.roomAccess'), tokenResult.errorCode);
       } else if (tokenResult.errorCode === ErrorCodes.UNKNOWN_ROOM) {

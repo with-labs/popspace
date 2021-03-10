@@ -19,7 +19,9 @@
       "cancel": "Cancel",
       "error": "Error",
       "confirm": "Got it",
-      "link": "Link"
+      "link": "Link",
+      "you": "You",
+      "anonymous": "Anonymous"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -256,7 +258,8 @@
         "quickActionTitle": "Add a Sticky Note",
         "quickAddButton": "Add another note",
         "markdownCheatSheet": "Markdown cheat sheet",
-        "userIsTyping": " is typing..."
+        "userIsTyping": " is typing...",
+        "doubleClickEdit": "Double-click to edit"
       },
       "sidecarStream": {
         "name": "Stream",

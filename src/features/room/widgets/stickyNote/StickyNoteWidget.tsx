@@ -1,6 +1,5 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { useSaveWidget } from '../useSaveWidget';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
@@ -10,12 +9,13 @@ import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { StickyNoteWidgetState, WidgetType } from '../../../../roomState/types/widgets';
+import { WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
-import { StickyNoteMenu } from './StickyNoteMenu';
 import { ResizeContainerImperativeApi, useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
+import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
+import { EditIcon } from '../../../../components/icons/EditIcon';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -59,34 +59,26 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 
   const isOwnedByLocalUser = state.ownerId === localUserId;
 
-  const [editing, setEditing] = React.useState(false);
-
-  const doSave = useSaveWidget(state.widgetId);
-
-  const saveWidget = (data: StickyNoteWidgetState) => {
-    doSave(data);
-    setEditing(false);
-  };
+  const [editing, setEditing] = React.useState(!state.widgetState.text && isOwnedByLocalUser);
 
   const startEditing = () => {
     setEditing(true);
   };
 
-  const isEditMode = editing || (!state.widgetState.text && isOwnedByLocalUser);
-
   return (
     <WidgetFrame color="mandarin">
-      <WidgetTitlebar
-        title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}
-        disableRemove
-      >
-        <StickyNoteMenu onEdit={isOwnedByLocalUser ? startEditing : undefined} />
+      <WidgetTitlebar title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}>
+        {isOwnedByLocalUser && !editing && (
+          <WidgetTitlebarButton onClick={startEditing} aria-label={t('widgets.stickyNote.edit')}>
+            <EditIcon />
+          </WidgetTitlebarButton>
+        )}
       </WidgetTitlebar>
       <WidgetResizeContainer
         ref={resizeContainerRef}
         mode="free"
         minWidth={250}
-        minHeight={isEditMode ? 250 : 80}
+        minHeight={editing ? 250 : 80}
         maxWidth={600}
         maxHeight={800}
         defaultWidth={250}
@@ -94,7 +86,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
         className={classes.content}
         disableInitialSizing
       >
-        <StickyNoteContent onSave={saveWidget} editing={isEditMode} setEditing={setEditing} />
+        <StickyNoteContent editing={editing} setEditing={setEditing} isOwnedByLocalUser={isOwnedByLocalUser} />
         <WidgetResizeHandle />
       </WidgetResizeContainer>
     </WidgetFrame>
@@ -102,32 +94,42 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 };
 
 const StickyNoteContent: React.FC<{
-  onSave: (data: StickyNoteWidgetState) => void;
   editing: boolean;
   setEditing: (val: boolean) => void;
-}> = ({ onSave, editing, setEditing }) => {
+  isOwnedByLocalUser: boolean;
+}> = ({ editing, setEditing, isOwnedByLocalUser }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
 
   const { remeasure } = useResizeContext();
-  const saveWidget = (data: StickyNoteWidgetState) => {
-    onSave(data);
+  const onCloseEditing = () => {
+    setEditing(false);
     remeasure();
+  };
+
+  const onDoubleClick = () => {
+    if (isOwnedByLocalUser) {
+      setEditing(true);
+    }
   };
 
   if (editing) {
     return (
       <WidgetContent>
-        <EditStickyNoteWidgetForm initialValues={state.widgetState} onSave={saveWidget} editing={editing} />
+        <EditStickyNoteWidgetForm onClose={onCloseEditing} />
       </WidgetContent>
     );
   }
 
   return (
     <WidgetContent enableTextSelection>
-      <WidgetScrollPane className={classes.scrollContainer}>
+      <WidgetScrollPane
+        className={classes.scrollContainer}
+        onDoubleClick={onDoubleClick}
+        title={isOwnedByLocalUser ? (t('widgets.stickyNote.doubleClickEdit') as string) : undefined}
+      >
         <Typography paragraph variant="body1" component="div" className={classes.text}>
           {state.widgetState.text ? (
             <Markdown>{state.widgetState.text}</Markdown>

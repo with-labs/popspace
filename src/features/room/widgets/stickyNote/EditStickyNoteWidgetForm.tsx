@@ -1,21 +1,15 @@
-import { makeStyles, Box } from '@material-ui/core';
-import { Form, Formik } from 'formik';
+import { makeStyles, Box, TextareaAutosize } from '@material-ui/core';
+import throttle from 'lodash.throttle';
 import * as React from 'react';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { useTranslation } from 'react-i18next';
-import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
 import { Link } from '../../../../components/Link/Link';
-import { StickyNoteWidgetState } from '../../../../roomState/types/widgets';
+import { WidgetType } from '../../../../roomState/types/widgets';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetScrollPane } from '../WidgetScrollPane';
 
 export interface IEditStickyNoteWidgetFormProps {
-  onSave: (data: StickyNoteWidgetState) => any;
-  initialValues: StickyNoteWidgetState;
-  editing: boolean;
+  onClose: () => any;
 }
-
-const EMPTY_VALUES: StickyNoteWidgetState = {
-  text: '',
-};
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -24,10 +18,19 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   textarea: {
-    flex: `1 1 160px`,
     width: '100%',
     resize: 'none',
     padding: 0,
+    fontFamily: theme.typography.fontFamily,
+    fontSize: theme.typography.pxToRem(16),
+    border: 'none',
+    '&:focus': {
+      outline: 'none',
+    },
+  },
+  scrollPane: {
+    flex: `1 1 160px`,
+    width: '100%',
   },
   cheatSheet: {
     fontWeight: theme.typography.fontWeightBold,
@@ -36,36 +39,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> = ({
-  initialValues = EMPTY_VALUES,
-  onSave,
-  editing,
-}) => {
+export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> = ({ onClose }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  const {
+    save,
+    widget: { widgetState },
+  } = useWidgetContext<WidgetType.StickyNote>();
+
+  const [text, setText] = React.useState(widgetState.text);
+
+  const throttledSave = React.useMemo(
+    () =>
+      throttle(
+        (value: string) =>
+          save({
+            text: value,
+          }),
+        200,
+        { leading: true, trailing: true }
+      ),
+    [save]
+  );
+
+  const onChange = (ev: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(ev.target.value);
+    throttledSave(ev.target.value);
+  };
+
+  const checkForClose = (ev: React.KeyboardEvent) => {
+    if ((ev.key === 'Enter' && ev.shiftKey) || ev.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  const moveCursorToEnd = (ev: React.FocusEvent<HTMLTextAreaElement>) => {
+    ev.target.setSelectionRange(ev.target.value.length, ev.target.value.length);
+  };
+
   return (
-    <Formik initialValues={initialValues} onSubmit={onSave}>
-      <Form className={classes.form}>
-        <FormikBorderlessTextarea
+    <Box display="flex" flexDirection="column" height="100%">
+      <WidgetScrollPane className={classes.scrollPane}>
+        <TextareaAutosize
           required
           name="text"
+          value={text}
+          onChange={onChange}
           placeholder={t('widgets.stickyNote.textPlaceholder')}
           className={classes.textarea}
           autoFocus
-          disableErrorState
+          onFocus={moveCursorToEnd}
+          onBlur={onClose}
+          onKeyDown={checkForClose}
         />
-        <Box mt={1}>
-          <FormikSubmitButton>
-            {editing ? t('widgets.stickyNote.saveBtn') : t('widgets.stickyNote.addBtn')}
-          </FormikSubmitButton>
-        </Box>
-        <Box mt={1} textAlign="center">
-          <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
-            {t('widgets.stickyNote.markdownCheatSheet')}
-          </Link>
-        </Box>
-      </Form>
-    </Formik>
+      </WidgetScrollPane>
+
+      <Box mt={1} textAlign="center" flex="0 0 auto">
+        <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
+          {t('widgets.stickyNote.markdownCheatSheet')}
+        </Link>
+      </Box>
+    </Box>
   );
 };

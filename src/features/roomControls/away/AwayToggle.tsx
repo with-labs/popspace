@@ -1,4 +1,4 @@
-import { makeStyles, Tooltip } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { ToggleButton } from '@material-ui/lab';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { useIsAway } from './useIsAway';
+import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 
 export interface IAwayToggleProps {
   className?: string;
@@ -49,10 +50,10 @@ export const AwayToggle: React.FC<IAwayToggleProps> = ({ className }) => {
   );
 
   return (
-    <Tooltip
+    <ResponsiveTooltip
       title={
         <>
-          <KeyShortcutText>{KeyShortcut.ToggleAway}</KeyShortcutText> {t('features.away.tooltip') as string}
+          {t('features.away.tooltip') as string} <KeyShortcutText>{KeyShortcut.ToggleAway}</KeyShortcutText>
         </>
       }
       className={className}
@@ -71,6 +72,6 @@ export const AwayToggle: React.FC<IAwayToggleProps> = ({ className }) => {
           <AwayIcon fontSize="default" />
         </ToggleButton>
       </div>
-    </Tooltip>
+    </ResponsiveTooltip>
   );
 };

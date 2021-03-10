@@ -12,19 +12,27 @@ declare module 'volume-meter' {
   export default volumeMeter;
 }
 
-declare const Canny: (
-  command: 'identify',
-  opts: {
+type CannyOptions = {
+  identify: {
     appID: string;
     user: {
       email: string;
       name: string;
       id: string;
-
       avatarURL?: string;
       created?: string;
     };
-  }
+  };
+  initChangelog: {
+    appID: string;
+    position: 'top' | 'bottom' | 'left' | 'right';
+    align: 'top' | 'bottom' | 'left' | 'right';
+  };
+  closeChangelog: {};
+};
+declare const Canny: <Command extends 'identify' | 'initChangelog' | 'closeChangelog'>(
+  command: Command,
+  opts: CannyOptions[Command] = {}
 ) => void;
 
 interface Fonts extends EventSource {

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useAVSources } from '../../../hooks/useAVSources/useAVSources';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
-import { Menu, MenuItem } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
+import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 export interface IMicDeviceMenuProps {
   open: boolean;
@@ -21,7 +22,7 @@ export const MicDeviceMenu: React.FC<IMicDeviceMenuProps> = ({ open, onClose, an
   const finalOpen = open && initialized;
 
   return (
-    <Menu open={finalOpen} onClose={onClose} anchorEl={anchorEl}>
+    <ResponsiveMenu open={finalOpen} onClose={onClose} anchorEl={anchorEl}>
       {mics.map((mic) => (
         <MenuItem
           value={mic.deviceId}
@@ -35,6 +36,6 @@ export const MicDeviceMenu: React.FC<IMicDeviceMenuProps> = ({ open, onClose, an
           {mic.label}
         </MenuItem>
       ))}
-    </Menu>
+    </ResponsiveMenu>
   );
 };

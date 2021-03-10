@@ -12,7 +12,7 @@ import { DialogModal } from '../../../components/DialogModal/DialogModal';
 import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
 import { SendIcon } from '../../../components/icons/SendIcon';
 
-import { MemberList } from './MemberList/MemberList';
+import { MemberList } from './MemberList';
 import { useQuery, useQueryCache } from 'react-query';
 import { logger } from '../../../utils/logger';
 

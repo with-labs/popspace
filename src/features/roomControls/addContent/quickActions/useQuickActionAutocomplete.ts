@@ -3,7 +3,7 @@ import { QuickAction } from '../../../quickActions/types';
 import { useQuickActionOptions } from './useQuickActionOptions';
 import { useQuickAction } from './useQuickAction';
 
-export function useQuickActionAutocomplete() {
+export function useQuickActionAutocomplete({ onChange }: { onChange?: (value: QuickAction | null) => void } = {}) {
   const [inputValue, setInputValue] = React.useState('');
   const handleInputChange = React.useCallback((ev: any, value: string) => {
     setInputValue(value);
@@ -18,8 +18,9 @@ export function useQuickActionAutocomplete() {
       setInputValue('');
 
       applyAction(value);
+      onChange?.(value);
     },
-    [applyAction]
+    [applyAction, onChange]
   );
 
   return {

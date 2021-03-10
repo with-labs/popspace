@@ -15,7 +15,7 @@ import { Form, Formik } from 'formik';
 import { FormPage } from '../../Layouts/formPage/FormPage';
 import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
-import { Row } from '../../components/Row/Row';
+import { Spacing } from '../../components/Spacing/Spacing';
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
@@ -200,7 +200,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
             <FormPageTitle>{t('pages.finalizeAccount.title')}</FormPageTitle>
             <Form>
               <FormPageFields>
-                <Row>
+                <Spacing>
                   <FormikTextField
                     id="firstName"
                     name="firstName"
@@ -217,7 +217,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
                     margin="normal"
                     required
                   />
-                </Row>
+                </Spacing>
                 <FormikTextField
                   id="email"
                   name="email"

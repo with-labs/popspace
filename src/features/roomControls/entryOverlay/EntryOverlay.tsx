@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateAreas: '"content image"',
     gridTemplateColumns: 'minmax(auto, 500px) 1fr',
     overflow: 'hidden',
-    zIndex: theme.zIndex.speedDial + 1,
+    zIndex: theme.zIndex.modal - 1,
     [theme.breakpoints.down('md')]: {
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',

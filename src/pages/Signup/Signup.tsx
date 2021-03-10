@@ -22,7 +22,7 @@ import { FormPage } from '../../Layouts/formPage/FormPage';
 import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
-import { Row } from '../../components/Row/Row';
+import { Spacing } from '../../components/Spacing/Spacing';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 
@@ -117,7 +117,7 @@ export const Signup: React.FC<ISignupProps> = () => {
               {isJoinFlow && <Typography paragraph>{t('pages.signup.joinFlow')}</Typography>}
               <Form>
                 <FormPageFields>
-                  <Row>
+                  <Spacing>
                     <FormikTextField
                       id="firstName"
                       name="firstName"
@@ -137,7 +137,7 @@ export const Signup: React.FC<ISignupProps> = () => {
                       margin="normal"
                       autoComplete="family-name"
                     />
-                  </Row>
+                  </Spacing>
                   <FormikTextField
                     id="email"
                     name="email"

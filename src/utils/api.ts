@@ -177,6 +177,10 @@ class Api {
     });
   }
 
+  async deleteFile(fileUrl: string) {
+    return await this.post<BaseResponse>('/delete_file', { fileUrl });
+  }
+
   async getOpenGraph(url: string) {
     return await this.post<BaseResponse & { result: ApiOpenGraphResult }>('/opengraph', {
       url,

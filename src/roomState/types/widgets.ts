@@ -52,6 +52,11 @@ export interface LinkWidgetState {
    */
   iframeUrl?: string | null;
   mediaState?: WidgetMediaState;
+  /**
+   * Indicates this is a file uploaded from With.
+   * This just keeps things straight.
+   */
+  isFileUpload?: boolean;
 }
 
 export interface WhiteboardWidgetState {

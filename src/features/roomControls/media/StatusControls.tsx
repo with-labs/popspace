@@ -1,13 +1,11 @@
 import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { ToggleButton } from '@material-ui/lab';
-import { Tooltip, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { EmojiIcon } from '../../../components/icons/EmojiIcon';
 import { SmallMenuButton } from './SmallMenuButton';
 import { StatusMenu } from './StatusMenu';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
-import { useRoomStore } from '../../../roomState/useRoomStore';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -15,6 +13,13 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { Emoji } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { CloseIcon } from '../../../components/icons/CloseIcon';
+import { useUserStatus } from '../../status/useUserStatus';
+import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
+
+export interface IStatusControlsProps {
+  showMenu?: boolean;
+  className?: string;
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,14 +37,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const StatusControls = (props: any) => {
-  const { className, ...otherProps } = props;
+export const StatusControls = (props: IStatusControlsProps) => {
+  const { className, showMenu, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const toggleButtonRef = useRef<HTMLDivElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
-
-  const updateSelf = useRoomStore((room) => room.api.updateSelf);
 
   const [isHovered, setIsHovered] = useState(false);
   const onHover = () => setIsHovered(true);
@@ -52,10 +55,10 @@ export const StatusControls = (props: any) => {
     onBlur: onUnHover,
   };
 
-  const { user } = useCurrentUserProfile();
-  const userInfo = useRoomStore(React.useCallback((room) => room.users[user?.id || ''], [user?.id]));
-  const emoji = userInfo?.participantState.emoji;
-  const statusText = userInfo?.participantState.statusText;
+  const {
+    status: { emoji, statusText },
+    set,
+  } = useUserStatus();
 
   const handleContextMenu = React.useCallback((ev: React.MouseEvent<HTMLElement>) => {
     ev.preventDefault();
@@ -64,7 +67,7 @@ export const StatusControls = (props: any) => {
 
   const toggleStatusBtn = () => {
     if (emoji || statusText) {
-      updateSelf({
+      set({
         statusText: '',
         emoji: null,
       });
@@ -84,10 +87,10 @@ export const StatusControls = (props: any) => {
 
   return (
     <>
-      <Tooltip
+      <ResponsiveTooltip
         title={
           <>
-            <KeyShortcutText>{KeyShortcut.ToggleStatus}</KeyShortcutText> {t('features.statusControls.toolTip')}
+            {t('features.statusControls.toolTip')} <KeyShortcutText>{KeyShortcut.ToggleStatus}</KeyShortcutText>
           </>
         }
       >
@@ -118,8 +121,8 @@ export const StatusControls = (props: any) => {
             )}
           </ToggleButton>
         </div>
-      </Tooltip>
-      <SmallMenuButton onClick={() => setMenuAnchor(toggleButtonRef.current)} />
+      </ResponsiveTooltip>
+      {showMenu && <SmallMenuButton onClick={() => setMenuAnchor(toggleButtonRef.current)} />}
       <StatusMenu
         open={!!menuAnchor}
         anchorEl={menuAnchor}
@@ -127,8 +130,7 @@ export const StatusControls = (props: any) => {
           setMenuAnchor(null);
           setIsHovered(false);
         }}
-        status={statusText}
-        emoji={emoji}
+        marginThreshold={6}
       />
     </>
   );

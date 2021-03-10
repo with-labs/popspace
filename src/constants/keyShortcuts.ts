@@ -4,4 +4,5 @@ export enum KeyShortcut {
   TogglePictureInPicture = 'p',
   ToggleStatus = 's',
   ToggleAway = 'q',
+  ActionBar = 'ctrl+k,command+k',
 }

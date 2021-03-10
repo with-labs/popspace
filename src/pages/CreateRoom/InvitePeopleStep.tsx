@@ -2,7 +2,7 @@ import { Box, Button } from '@material-ui/core';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { InviteLink } from '../../features/roomControls/InviteLink/InviteLink';
+import { InviteLink } from '../../features/roomControls/membership/InviteLink';
 import { MembershipManagement } from '../../features/roomControls/membership/MembershipManagement';
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';

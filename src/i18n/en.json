@@ -7,7 +7,8 @@
       "privacyPolicy": "Privacy Policy",
       "logout": "Logout",
       "signup": "Sign Up",
-      "signin": "Sign In"
+      "signin": "Sign In",
+      "licenses": "License Info"
     },
     "common": {
       "with": "With",
@@ -408,9 +409,11 @@
         "altClearButton": "Clear status"
       },
       "omnibar": {
-        "placeholder": "Add content",
+        "placeholder": "Type or paste content",
         "label": "Quick action bar",
-        "quickActionEmpty": "Type or paste anything you want to add to the room, or select an action below."
+        "quickActionEmpty": "Type or paste links and notes to add them to the room.",
+        "quickActionEmptyMobile": "Type or paste links and notes, or select an action below.",
+        "quickActionButton": "Quick action"
       },
       "roomMenu": {
         "title": "Settings",
@@ -421,13 +424,13 @@
         "roomMembersTitle": "Room members",
         "addAndManage": "Invite people",
         "userSettings": "User Settings",
-        "changelog": "What's new?",
-        "licenses": "License Info"
+        "changelog": "What's new?"
       },
       "mediaControls": {
         "micToggle": "Toggle voice",
         "videoToggle": "Toggle video",
-        "screenShareToggle": "Toggle screen share"
+        "screenShareToggle": "Toggle screen share",
+        "mediaSettings": "Media settings"
       },
       "updates": {
         "title": "Update available!",

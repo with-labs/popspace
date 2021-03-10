@@ -43,6 +43,7 @@ export function useAddFile() {
             title: file.name,
             mediaContentType: file.type,
             uploadProgress: 0,
+            isFileUpload: true,
           },
           screenCoordinate: position,
         });
@@ -93,7 +94,7 @@ export function useAddFile() {
         window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
-    [addWidget, t, updateWidget]
+    [addWidget, t, updateWidget, deleteWidget]
   );
 
   return createWidget;

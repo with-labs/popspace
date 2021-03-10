@@ -1,10 +1,10 @@
-import { Tooltip } from '@material-ui/core';
 import { PictureInPicture } from '@material-ui/icons';
 import { ToggleButton } from '@material-ui/lab';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
+import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { isAutoPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
 import { usePictureInPicture } from '../../pictureInPicture/usePictureInPicture';
@@ -37,11 +37,11 @@ export const PictureInPictureToggle: React.FC<IPictureInPictureToggleProps> = ({
   }
 
   return (
-    <Tooltip
+    <ResponsiveTooltip
       title={
         <>
-          <KeyShortcutText>{KeyShortcut.TogglePictureInPicture}</KeyShortcutText>{' '}
-          {t('features.pictureInPicture.toggle') as string}
+          {t('features.pictureInPicture.toggle') as string}{' '}
+          <KeyShortcutText>{KeyShortcut.TogglePictureInPicture}</KeyShortcutText>
         </>
       }
     >
@@ -50,6 +50,6 @@ export const PictureInPictureToggle: React.FC<IPictureInPictureToggleProps> = ({
           <PictureInPicture fontSize="default" />
         </ToggleButton>
       </div>
-    </Tooltip>
+    </ResponsiveTooltip>
   );
 };

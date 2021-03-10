@@ -1,9 +1,11 @@
 import { TFunction } from 'i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
+import { isSmallScreen } from '../../../utils/environment';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function linkQuickActions(prompt: string, t: TFunction): QuickAction[] {
-  if (!prompt) {
+  // empty default actions are only on mobile right now
+  if (!prompt && isSmallScreen()) {
     // this accessory shows a default option in the empty state
     return [
       {

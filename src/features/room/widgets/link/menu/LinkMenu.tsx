@@ -8,6 +8,8 @@ import { LinkWidgetState, WidgetType } from '../../../../../roomState/types/widg
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 import { IframeOption } from './IframeOption';
+import { logger } from '../../../../../utils/logger';
+import api, { ApiError } from '../../../../../utils/api';
 
 export type LinkMenuProps = {
   className?: string;
@@ -27,6 +29,22 @@ export function LinkMenu(props: LinkMenuProps) {
   const { remove, widget } = useWidgetContext<WidgetType.Link>();
 
   const iframeable = canUseIframe(widget.widgetState);
+
+  const deleteWidget = async () => {
+    // if this is a file widget, try to delete the file first
+    if (widget.widgetState.isFileUpload && widget.widgetState.mediaUrl) {
+      const fileUrl = widget.widgetState.mediaUrl;
+      try {
+        const response = await api.deleteFile(fileUrl);
+        if (!response.success) {
+          throw new ApiError(response);
+        }
+      } catch (err) {
+        logger.error(`Failed to delete file ${fileUrl}`, err);
+      }
+    }
+    remove();
+  };
 
   return (
     <>
@@ -48,7 +66,7 @@ export function LinkMenu(props: LinkMenuProps) {
         {iframeable && <IframeOption />}
         <OpenInNewTabOption />
         <Divider />
-        <MenuItem button onClick={remove}>
+        <MenuItem button onClick={deleteWidget}>
           <ListItemIcon>
             <DeleteIcon />
           </ListItemIcon>

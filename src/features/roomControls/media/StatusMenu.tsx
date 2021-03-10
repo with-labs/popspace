@@ -1,35 +1,13 @@
-import React, { useEffect } from 'react';
-import {
-  makeStyles,
-  MenuItem,
-  Divider,
-  ListSubheader,
-  InputAdornment,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Button,
-  MenuList,
-  FilledInput,
-} from '@material-ui/core';
-import { useLocalStorage } from '../../../hooks/useLocalStorage/useLocalStorage';
+import React from 'react';
+import { makeStyles, MenuItem, Divider, ListSubheader, ListItemIcon, ListItemText, MenuList } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { EmojiIcon } from '../../../components/icons/EmojiIcon';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
-import { STATUS_HISTORY } from '../../../constants/User';
-import { CloseIcon } from '../../../components/icons/CloseIcon';
-import { Emoji, EmojiData, Picker } from 'emoji-mart';
+import { IResponsivePopoverProps, ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
+import { Emoji } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
+import { useUserStatus } from '../../status/useUserStatus';
+import { StatusEditField } from '../../status/StatusEditField';
 
-const MAX_HISTORY = 3;
-export interface IStatusMenuProps {
-  open: boolean;
-  onClose: () => void;
-  anchorEl: HTMLElement | null;
-  emoji?: string | EmojiData | null;
-  status?: string | null;
-}
+export interface IStatusMenuProps extends IResponsivePopoverProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,18 +15,7 @@ const useStyles = makeStyles((theme) => ({
       width: 300,
     },
   },
-  emojiPickerBtn: {
-    marginRight: theme.spacing(1),
-  },
-  inputField: {
-    marginBottom: theme.spacing(2),
-  },
 }));
-
-type statusData = {
-  emoji: string;
-  status: string;
-};
 
 const suggestions = [
   {
@@ -68,143 +35,38 @@ const suggestions = [
 /**
  * Renders a menu with options to set the users status
  */
-export const StatusMenu: React.FC<IStatusMenuProps> = ({ open, onClose, anchorEl, status, emoji }) => {
+export const StatusMenu: React.FC<IStatusMenuProps> = ({ open, onClose, anchorEl, ...rest }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const updateSelf = useRoomStore((room) => room.api.updateSelf);
-  const [statusHistory, setStatusHistory] = useLocalStorage(STATUS_HISTORY, []);
 
-  // also controls menu open state
-  const [emojiAnchorEl, setEmojiAnchorEl] = React.useState<HTMLElement | null>(null);
+  const { set, history } = useUserStatus();
 
-  const [inputValue, setInputValue] = React.useState(status || '');
-
-  useEffect(() => {
-    setInputValue(status || '');
-  }, [status]);
-
-  const updateHistory = (status?: string, emoji?: string | EmojiData | null) => {
-    if (
-      statusHistory
-        .map((history: statusData) => `${history.emoji}${history.status}`)
-        .includes(`${emoji ?? 'speech_balloon'}${status}`)
-    )
-      return;
-
-    const history = [{ emoji: emoji?.toString() || 'speech_balloon', status: status || '' }, ...statusHistory];
-    if (history.length > MAX_HISTORY) {
-      history.pop();
-    }
-    setStatusHistory(history);
-  };
-
-  const onEmojiChange = (id: string) => {
-    updateSelf({
-      emoji: id,
-    });
-    setEmojiAnchorEl(null);
-  };
-
-  const onPresetStatusPressed = (emojiId?: string, status?: string) => {
-    updateHistory(status, emojiId);
-    updateSelf({
+  const onPresetStatusPressed = (emojiId: string | null, status: string) => {
+    set({
       statusText: status,
-      emoji: emojiId,
+      emoji: emojiId ?? null,
     });
-    onClose();
-  };
-
-  const clearStatus = () => {
-    setInputValue('');
-    updateSelf({
-      statusText: '',
-      emoji: null,
-    });
-  };
-
-  const onCloseHandler = () => {
-    // if a user has updated their written status, we will add it to the status history.
-    // if the emoji is blank, we will default to the speech_balloon emoji
-    if (inputValue && inputValue?.length > 0) {
-      updateHistory(inputValue || '', emoji);
-    }
-
-    updateSelf({
-      statusText: inputValue,
-      emoji: emoji?.toString(),
-    });
-
     onClose();
   };
 
   return (
-    <ResponsivePopover open={open} onClose={onCloseHandler} anchorEl={anchorEl}>
+    <ResponsivePopover open={open} onClose={onClose} anchorEl={anchorEl} {...rest}>
       <div className={classes.root}>
-        <FilledInput
-          value={inputValue}
-          name="status"
-          placeholder={t('features.room.statusMenu.statusPlaceHolder')}
-          autoFocus
-          className={classes.inputField}
-          fullWidth
-          startAdornment={
-            <div>
-              <InputAdornment position="start" classes={{ root: classes.emojiPickerBtn }}>
-                <IconButton
-                  aria-label={t('features.room.emojiTitle')}
-                  onClick={(ev: React.MouseEvent<HTMLElement>) => setEmojiAnchorEl(ev.target as any)}
-                  size="small"
-                >
-                  {emoji ? (
-                    <Emoji native emoji={emoji ?? 'speech_balloon'} size={24} />
-                  ) : (
-                    <EmojiIcon fontSize="default" />
-                  )}
-                </IconButton>
-              </InputAdornment>
-              <ResponsivePopover anchorEl={emojiAnchorEl} open={!!emojiAnchorEl} onClose={() => setEmojiAnchorEl(null)}>
-                <Picker
-                  native
-                  title={t('features.room.statusMenu.emojiTitle')}
-                  onSelect={(dat) => onEmojiChange(dat.id!)}
-                />
-              </ResponsivePopover>
-            </div>
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label={t('features.status.altClearButton')}
-                onClick={clearStatus}
-                edge="end"
-                size="small"
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </InputAdornment>
-          }
-          onKeyDown={(ev: any) => {
-            if (ev.key === 'Enter') {
-              onCloseHandler();
-              ev.preventDefault();
-            }
-          }}
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
-            setInputValue(ev.target.value);
-          }}
-        />
-        <ListSubheader disableGutters>{t('features.room.statusMenu.historyTitle')}</ListSubheader>
+        <StatusEditField onEnter={onClose} />
+        <ListSubheader disableGutters style={{ marginTop: 8 }}>
+          {t('features.room.statusMenu.historyTitle')}
+        </ListSubheader>
         <MenuList variant="menu">
-          {statusHistory.map((status: statusData, idx: number) => {
+          {history.map((status, idx) => {
             return (
               <MenuItem
-                key={`status_sugestion_${idx}`}
-                onClick={() => onPresetStatusPressed(status.emoji ?? 'speech_balloon', status.status)}
+                key={`${status.emoji}${status.statusText}`}
+                onClick={() => onPresetStatusPressed(status.emoji ?? 'speech_balloon', status.statusText)}
               >
                 <ListItemIcon>
-                  <Emoji emoji={status.emoji} size={24} />
+                  <Emoji emoji={status.emoji || 'speech_balloon'} native size={24} />
                 </ListItemIcon>
-                <ListItemText primary={status.status} />
+                <ListItemText primary={status.statusText} />
               </MenuItem>
             );
           })}
@@ -219,7 +81,7 @@ export const StatusMenu: React.FC<IStatusMenuProps> = ({ open, onClose, anchorEl
                 onClick={() => onPresetStatusPressed(suggestion.emoji, t(suggestion.status))}
               >
                 <ListItemIcon>
-                  <Emoji emoji={suggestion.emoji} size={24} />
+                  <Emoji emoji={suggestion.emoji} native size={24} />
                 </ListItemIcon>
                 <ListItemText primary={t(suggestion.status)} />
               </MenuItem>

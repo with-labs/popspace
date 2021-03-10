@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useAVSources } from '../../../hooks/useAVSources/useAVSources';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
-import { Menu, MenuItem } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
+import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 
 export interface ICameraDeviceMenuProps {
   open: boolean;
@@ -21,7 +22,7 @@ export const CameraDeviceMenu: React.FC<ICameraDeviceMenuProps> = ({ open, onClo
   const finalOpen = open && initialized;
 
   return (
-    <Menu open={finalOpen} onClose={onClose} anchorEl={anchorEl}>
+    <ResponsiveMenu open={finalOpen} onClose={onClose} anchorEl={anchorEl}>
       {cameras.map((cam) => (
         <MenuItem
           value={cam.deviceId}
@@ -35,6 +36,6 @@ export const CameraDeviceMenu: React.FC<ICameraDeviceMenuProps> = ({ open, onClo
           {cam.label}
         </MenuItem>
       ))}
-    </Menu>
+    </ResponsiveMenu>
   );
 };

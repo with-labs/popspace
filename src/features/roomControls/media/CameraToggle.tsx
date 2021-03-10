@@ -4,12 +4,12 @@ import { CameraOnIcon } from '../../../components/icons/CameraOnIcon';
 import { CameraOffIcon } from '../../../components/icons/CameraOffIcon';
 import useLocalVideoToggle from '../../../hooks/localMediaToggles/useLocalVideoToggle';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
+import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 
 export interface ICameraToggleProps {
   isLocal?: boolean;
@@ -38,10 +38,10 @@ export const CameraToggle = (props: ICameraToggleProps) => {
 
   return (
     <>
-      <Tooltip
+      <ResponsiveTooltip
         title={
           <>
-            <KeyShortcutText>{KeyShortcut.ToggleVideo}</KeyShortcutText> {t('features.mediaControls.videoToggle')}
+            {t('features.mediaControls.videoToggle')} <KeyShortcutText>{KeyShortcut.ToggleVideo}</KeyShortcutText>
           </>
         }
       >
@@ -57,7 +57,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
             {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
           </ToggleButton>
         </div>
-      </Tooltip>
+      </ResponsiveTooltip>
       <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
       <CameraDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
     </>

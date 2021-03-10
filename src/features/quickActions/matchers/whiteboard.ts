@@ -1,9 +1,11 @@
 import { TFunction } from 'i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
+import { isSmallScreen } from '../../../utils/environment';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function whiteboardQuickActions(prompt: string, t: TFunction): QuickAction[] {
-  if (!prompt || prompt === t('widgets.whiteboard.quickActionPrompt')) {
+  // empty default actions are only on mobile right now
+  if ((!prompt && isSmallScreen()) || prompt === t('widgets.whiteboard.quickActionPrompt')) {
     return [
       {
         kind: QuickActionKind.AddAccessory,

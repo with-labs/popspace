@@ -93,7 +93,7 @@ declare module '@material-ui/core/styles/createPalette' {
 
 declare module '@material-ui/core/styles/createBreakpoints' {
   interface BreakpointOverrides {
-    xs: false; // removes the `xs` breakpoint
+    xs: true; // removes the `xs` breakpoint
     sm: true;
     md: true;
     lg: true;
@@ -198,6 +198,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   return createMuiTheme({
     breakpoints: {
       values: {
+        xs: 300,
         sm: 440,
         // accommodates the entire room controls with all available features
         md: 850,
@@ -237,7 +238,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         fontWeight: typography.fontWeightMedium,
       },
       h4: {
-        fontSize: typography.pxToRem(16),
+        fontSize: typography.pxToRem(13),
         lineHeight: 13 / 13,
         fontWeight: typography.fontWeightMedium,
       },
@@ -350,6 +351,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiTooltip: {
         // delay appearance by 500ms
         enterDelay: 500,
+        arrow: true,
       },
       MuiSnackbarContent: {
         elevation: 1,
@@ -633,11 +635,19 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           borderRadius: shape.contentBorderRadius,
           paddingLeft: spacing(1),
           paddingRight: spacing(1),
+          boxShadow: focusRings.idle,
+          transition: transitions.create(['box-shadow']),
           '& + &': {
             marginTop: spacing(0.5),
           },
           '&$selected, &:hover, &$selected:hover, &:focus': {
             backgroundColor: palette.grey[50],
+          },
+          '&:hover': {
+            boxShadow: focusRings.idle,
+          },
+          '&:focus': {
+            boxShadow: focusRings.create(palette.grey[900]),
           },
           '&:active': {
             backgroundColor: palette.grey[500],
@@ -646,11 +656,29 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiListItem: {
         root: {
-          paddingBottom: 0,
-          paddingTop: 0,
+          borderRadius: shape.contentBorderRadius,
+          paddingLeft: spacing(1),
+          paddingRight: spacing(1),
+
           '&$disabled': {
             opacity: 1,
             color: palette.grey[700],
+          },
+        },
+        button: {
+          boxShadow: focusRings.idle,
+          transition: transitions.create(['box-shadow']),
+          '& + &': {
+            marginTop: spacing(0.5),
+          },
+          '&$selected, &$selected:hover': {
+            backgroundColor: palette.grey[50],
+          },
+          '&:hover, &:focus': {
+            boxShadow: focusRings.create(palette.grey[900]),
+          },
+          '&:active': {
+            backgroundColor: palette.grey[500],
           },
 
           // since there's no prop option to disable ripple, this
@@ -685,6 +713,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           fontSize: typography.pxToRem(13),
           lineHeight: 16 / 13,
           fontWeight: typography.fontWeightMedium,
+        },
+      },
+      MuiListSubheader: {
+        root: {
+          lineHeight: 1.5,
         },
       },
       MuiSelect: {
@@ -963,7 +996,16 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiTooltip: {
         tooltip: {
-          backgroundColor: palette.grey[900],
+          padding: spacing(1.5),
+          backgroundColor: palette.background.paper,
+          fontSize: typography.pxToRem(16),
+          fontWeight: typography.fontWeightRegular,
+          color: palette.text.primary,
+          borderRadius: 4,
+          boxShadow: mainShadows.modal,
+        },
+        arrow: {
+          color: palette.background.paper,
         },
       },
       MuiListItemAvatar: {

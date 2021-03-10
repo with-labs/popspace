@@ -8,14 +8,13 @@ import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
-import { ChangelogModal } from '../roomControls/ChangelogModal/ChangelogModal';
+import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
 import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
 import { Hidden } from '@material-ui/core';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
-import { MembershipManagementModal } from '../roomControls/membership/MemberMangementModal';
 import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
 import { EntryOverlay } from '../roomControls/entryOverlay/EntryOverlay';
@@ -30,7 +29,6 @@ export const Room: React.FC<IRoomProps> = () => (
     <UserSettingsModal />
     <ChangelogModal />
     <EntryOverlay />
-    <MembershipManagementModal />
   </>
 );
 

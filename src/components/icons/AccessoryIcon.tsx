@@ -1,34 +1,39 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as LinkIcon } from './svg/widget_link.svg';
-import { ReactComponent as StickyNoteIcon } from './svg/widget_stickynote.svg';
-import { ReactComponent as VideoIcon } from './svg/widget_youtube.svg';
-import { ReactComponent as WhiteboardIcon } from './svg/widget_whiteboard.svg';
+import linkSrc from './png/link.png';
+import stickySrc from './png/sticky.png';
+import videoSrc from './png/youtube.png';
+import whiteboardSrc from './png/whiteboard.png';
+import embedSrc from './png/embed.png';
 import { ReactComponent as FileIcon } from './svg/widget_upload.svg';
-import { ReactComponent as EmbedIcon } from './svg/widget_embed.svg';
 import { ReactComponent as EmojiIcon } from './svg/emoji.svg';
 import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
 import { WidgetType } from '../../roomState/types/widgets';
 
 const icons = {
-  [WidgetType.Link]: LinkIcon,
-  [WidgetType.StickyNote]: StickyNoteIcon,
-  [WidgetType.Whiteboard]: WhiteboardIcon,
-  [WidgetType.YouTube]: VideoIcon,
+  [WidgetType.Link]: linkSrc,
+  [WidgetType.StickyNote]: stickySrc,
+  [WidgetType.Whiteboard]: whiteboardSrc,
+  [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
   file: FileIcon,
-  embed: EmbedIcon,
+  embed: embedSrc,
   status: EmojiIcon,
 };
 
 export type AccessoryIconType = keyof typeof icons;
 
-export type AccessoryIconProps = SvgIconProps & {
+export type AccessoryIconProps = Omit<SvgIconProps, 'ref'> & {
   type: AccessoryIconType;
 };
 
 export function AccessoryIcon({ type, ...props }: AccessoryIconProps) {
   const Glyph = icons[type];
+
+  if (typeof Glyph === 'string') {
+    return <img alt={`${type} icon`} style={{ width: 32, height: 32 }} src={Glyph} />;
+  }
+
   return (
     <SvgIcon {...props} viewBox="0 0 32 32">
       {Glyph && <Glyph />}

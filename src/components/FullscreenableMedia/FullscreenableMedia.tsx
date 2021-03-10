@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import Publication from '../Publication/Publication';
 import { Lightbox } from '../Lightbox/Lightbox';
-import { Box } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { Speaker } from '@material-ui/icons';
 
 export interface IFullscreenableMediaProps {
@@ -22,6 +22,18 @@ export interface IFullscreenableMediaProps {
   objectId?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  lightbox: {
+    // unfortunately MUI manages z-index in style directly :(
+    zIndex: `${theme.zIndex.modal - 2} !important` as any,
+  },
+  content: {
+    // make room for the bottom bar
+    maxWidth: '95vw',
+    maxHeight: 'calc(95vh - 128px)',
+  },
+}));
+
 export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   className,
   id,
@@ -32,6 +44,8 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   videoPublication,
   audioPublication,
 }) => {
+  const classes = useStyles();
+
   const media = (
     <>
       {videoPublication ? (
@@ -66,7 +80,15 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
 
   if (isFullscreen) {
     return (
-      <Lightbox open onClose={onFullscreenExit} onClick={onFullscreenExit} disableAutoFocus disableEnforceFocus>
+      <Lightbox
+        open
+        onClose={onFullscreenExit}
+        onClick={onFullscreenExit}
+        disableAutoFocus
+        disableEnforceFocus
+        contentClassName={classes.content}
+        className={classes.lightbox}
+      >
         {media}
       </Lightbox>
     );

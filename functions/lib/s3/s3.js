@@ -22,8 +22,29 @@ class S3 {
   }
 
   getDownloadUrl(fileName, bucketName, filePath) {
-    const finalPath = filePath ? `${filePath}/${fileName}` : fileName
+    const finalPath = this.getFilePath(fileName, filePath)
     return `https://s3.${process.env.WITH_S3_REGION}.amazonaws.com/${bucketName}/${finalPath}`
+  }
+
+  /**
+   * @param {string} fileURL - the full file URL. Must be an S3 URL (s3.region.amazonaws.com/...)
+   */
+  deleteFile(fileUrl) {
+    const parsed = new URL(fileUrl)
+    const pathTokens = parsed.pathname.split("/").map(decodeURIComponent)
+    // first item is always "" (because of the leading slash)
+    pathTokens.shift()
+    const bucketName = pathTokens.shift()
+    const filePath = pathTokens.join("/")
+    const objectParams = {
+      Bucket: bucketName,
+      Key: filePath
+    }
+    return this.s3.deleteObject(objectParams).promise()
+  }
+
+  getFilePath(fileName, filePath) {
+    return filePath ? `${filePath}/${fileName}` : fileName
   }
 }
 

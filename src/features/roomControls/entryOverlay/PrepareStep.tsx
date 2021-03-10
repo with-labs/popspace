@@ -3,9 +3,9 @@ import * as React from 'react';
 import { Logo } from '../../../components/Logo/Logo';
 import shallow from 'zustand/shallow';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import { AvatarSelectorBubble } from './AvatarSelectorBubble';
+import { AvatarSelectorBubble } from '../avatar/AvatarSelectorBubble';
 import patternBg from '../../../images/illustrations/pattern_bg_1.svg';
-import { Row } from '../../../components/Row/Row';
+import { Spacing } from '../../../components/Spacing/Spacing';
 import { CameraToggle } from '../media/CameraToggle';
 import { MicToggle } from '../media/MicToggle';
 import { useTranslation } from 'react-i18next';
@@ -50,12 +50,6 @@ export const PrepareStep: React.FC<IPrepareStepProps> = ({ onComplete }) => {
     shallow
   );
 
-  const onAvatarChange = (name: string) => {
-    updateSelf({
-      avatarName: name,
-    });
-  };
-
   const [name, setName] = React.useState(user?.participantState?.displayName ?? '');
 
   const handleComplete = () => {
@@ -74,11 +68,7 @@ export const PrepareStep: React.FC<IPrepareStepProps> = ({ onComplete }) => {
         <Box flex={1} display="flex" flexDirection="column">
           <Box position="relative" marginBottom={0.5}>
             <div className={classes.background} />
-            <AvatarSelectorBubble
-              value={user?.participantState?.avatarName ?? null}
-              onChange={onAvatarChange}
-              className={classes.avatarButton}
-            />
+            <AvatarSelectorBubble className={classes.avatarButton} showVideo />
           </Box>
           <TextField
             placeholder={t('modals.devicePermissionsModal.namePlaceholder')}
@@ -87,10 +77,14 @@ export const PrepareStep: React.FC<IPrepareStepProps> = ({ onComplete }) => {
             onChange={(ev) => setName(ev.target.value)}
             className={classes.nameField}
           />
-          <Row style={{ alignSelf: 'center', marginTop: 8 }}>
-            <CameraToggle isLocal />
-            <MicToggle isLocal />
-          </Row>
+          <Spacing style={{ alignSelf: 'center', marginTop: 8 }} alignItems="center">
+            <Box display="flex" alignItems="center">
+              <CameraToggle isLocal />
+            </Box>
+            <Box display="flex" alignItems="center">
+              <MicToggle isLocal />
+            </Box>
+          </Spacing>
         </Box>
       </Box>
       <Typography variant="h2" gutterBottom>

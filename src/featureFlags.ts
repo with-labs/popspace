@@ -13,6 +13,9 @@ const flagDefinitions = {
   signup: {
     description: 'Open the floodgates!',
   },
+  verticalTaskbar: {
+    description: 'Makes the large-sized taskbar vertical',
+  },
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

@@ -114,6 +114,12 @@ export const Header: React.FC<IHeaderProps> = (props) => {
             </ListItemIcon>
             <ListItemText primary={t('header.privacyPolicy')} />
           </LinkMenuItem>
+          <LinkMenuItem newTab to={RouteNames.LICENSES}>
+            <ListItemIcon>
+              <DocumentIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('header.licenses')} />
+          </LinkMenuItem>
           <Divider variant="middle" />
           <MenuItem onClick={onSignoutHandler}>
             <ListItemIcon>

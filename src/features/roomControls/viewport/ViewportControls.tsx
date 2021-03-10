@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { useRoomViewport } from '../../room/RoomViewport';
-import { Box, makeStyles, Fab } from '@material-ui/core';
+import { Box, makeStyles, IconButton, Paper, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import { PlusIcon } from '../../../components/icons/PlusIcon';
 import { MinusIcon } from '../../../components/icons/MinusIcon';
+import { useFeatureFlag } from 'flagg';
 
 const DEFAULT_ZOOM_INCREMENT = 0.2;
 
@@ -18,23 +19,38 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
     bottom: theme.spacing(2),
   },
+  offsetBottom: {
+    bottom: 72,
+  },
   controlCluster: {
     padding: theme.spacing(1),
 
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
 
     '& > * + *': {
       marginLeft: theme.spacing(2),
     },
   },
-  button: {},
 }));
 
 export const ViewportControls = React.memo<IViewportControlsProps>(
   ({ className, zoomIncrement = DEFAULT_ZOOM_INCREMENT }) => {
     const classes = useStyles();
     const controls = useRoomViewport();
+
+    const [zoomValue, setZoomValue] = React.useState(controls.getZoom());
+
+    React.useEffect(() => {
+      function updateZoom() {
+        setZoomValue(controls.getZoom());
+      }
+      controls.events.on('zoomEnd', updateZoom);
+      return () => {
+        controls.events.off('zoomEnd', updateZoom);
+      };
+    }, [controls]);
 
     const handleZoomIn = () => {
       controls.zoom(zoomIncrement);
@@ -43,15 +59,20 @@ export const ViewportControls = React.memo<IViewportControlsProps>(
       controls.zoom(-zoomIncrement);
     };
 
+    // forces an offset when feature flag for horizontal bar is active
+    const [isVerticalTaskbar] = useFeatureFlag('verticalTaskbar');
+
     return (
-      <Box className={clsx(classes.root, className)}>
+      <Box component={Paper} className={clsx(classes.root, !isVerticalTaskbar && classes.offsetBottom, className)}>
         <div className={clsx(classes.controlCluster)}>
-          <Fab onClick={handleZoomOut} aria-label="zoom out" size="small" className={classes.button}>
+          <IconButton onClick={handleZoomOut} aria-label="zoom out" size="small">
             <MinusIcon aria-hidden fontSize="default" />
-          </Fab>
-          <Fab onClick={handleZoomIn} aria-label="zoom in" size="small" className={classes.button}>
+          </IconButton>
+          {/* TODO: display percentage when this moves into room menu */}
+          {/* <Typography variant="button">{`${Math.floor(zoomValue * 100)}%`}</Typography> */}
+          <IconButton onClick={handleZoomIn} aria-label="zoom in" size="small">
             <PlusIcon aria-hidden fontSize="default" />
-          </Fab>
+          </IconButton>
         </div>
       </Box>
     );

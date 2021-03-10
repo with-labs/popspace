@@ -4,7 +4,7 @@ import useLocalAudioToggle from '../../../hooks/localMediaToggles/useLocalAudioT
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Tooltip, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
@@ -15,6 +15,7 @@ import { useRoomStore } from '../../../roomState/useRoomStore';
 import { logger } from '../../../utils/logger';
 import { useRemoteControl } from '../../../hooks/useRemoteControl/useRemoteControl';
 import { MIC_TRACK_NAME } from '../../../constants/User';
+import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -67,10 +68,10 @@ export const MicToggle = (props: IMicToggleProps) => {
 
   return (
     <>
-      <Tooltip
+      <ResponsiveTooltip
         title={
           <>
-            <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText> {t('features.mediaControls.micToggle')}
+            {t('features.mediaControls.micToggle')} <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText>
           </>
         }
       >
@@ -87,7 +88,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
           </ToggleButton>
         </div>
-      </Tooltip>
+      </ResponsiveTooltip>
       <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
       <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
     </>

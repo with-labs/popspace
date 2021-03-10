@@ -8,7 +8,6 @@ import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAn
 import { FlaggProvider } from 'flagg/dist/react';
 import { featureFlags } from './featureFlags';
 import { ReactQueryCacheProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query-devtools';
 import { queryCache } from './queryCache';
 import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
@@ -45,7 +44,6 @@ export const App: React.FC<IAppProps> = () => {
           </StylesProvider>
         </FlaggProvider>
       </ReactQueryCacheProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </>
   );
 };

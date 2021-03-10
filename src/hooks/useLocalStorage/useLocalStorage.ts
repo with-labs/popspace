@@ -1,37 +1,41 @@
-// from https://usehooks.com/useLocalStorage/
-import { useState } from 'react';
+import { useEffect } from 'react';
+import create from 'zustand';
 import { logger } from '../../utils/logger';
 
-export function useLocalStorage(key: string, initialValue: any) {
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
+const useLocalStorageCache = create(() => ({} as Record<string, any>));
+
+export function useLocalStorage<T>(key: string, initialValue: T) {
+  const storedValue = useLocalStorageCache((cache) => cache[key] || initialValue) as T;
+
+  useEffect(() => {
     try {
-      // Get from local storage by key
-      const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue;
-    } catch (error) {
-      logger.error(`Error setting up useLocalStorage for ${key}: ${error}`);
-      return initialValue;
+      const stored = window.localStorage.getItem(key);
+      if (stored) {
+        useLocalStorageCache.setState({
+          [key]: JSON.parse(stored),
+        });
+      }
+    } catch (err) {
+      logger.error(`Error loading useLocalStorage value for ${key}: ${err}`);
+      window.localStorage.removeItem(key);
     }
-  });
+  }, [key]);
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value: any) => {
+  const setValue = (value: T) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
       // Save to local storage
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      // sync it to other instances of the hook via the global cache
+      useLocalStorageCache.setState({ [key]: valueToStore });
     } catch (error) {
       logger.error(`Error setting useLocalStorage value for ${key}: ${value}: ${error}`);
       throw new Error('Error setting local storage');
     }
   };
 
-  return [storedValue, setValue];
+  return [storedValue, setValue] as const;
 }

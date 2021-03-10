@@ -1,8 +1,10 @@
 import { TFunction } from 'i18next';
+import { isSmallScreen } from '../../../utils/environment';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function fileQuickActions(prompt: string, t: TFunction): QuickAction[] {
-  if (!prompt) {
+  // empty default actions are only on mobile right now
+  if (!prompt && isSmallScreen()) {
     // for empty quick action bar, show an option to add a file
     return [
       {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconButtonProps, makeStyles, IconButton } from '@material-ui/core';
 import clsx from 'clsx';
-import { DropdownFilledIcon } from '../../../components/icons/DropdownFilledIcon';
+import { MoreVert } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,10 +10,17 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     left: -8,
     border: `2px solid ${theme.palette.background.paper}`,
-    padding: 0,
+    padding: 2,
+    width: 24,
+    height: 24,
+    color: theme.palette.grey[900],
+    boxShadow: theme.focusRings.create('transparent', true),
+    '&:focus': {
+      boxShadow: theme.focusRings.create(theme.palette.brandColors.oregano.ink, true),
+    },
   },
   icon: {
-    fontSize: 24,
+    fontSize: 20,
     position: 'relative',
   },
 }));
@@ -23,7 +30,7 @@ export const SmallMenuButton: React.FC<IconButtonProps> = (props) => {
 
   return (
     <IconButton size="small" {...props} className={clsx(classes.root, props.className)}>
-      <DropdownFilledIcon className={classes.icon} />
+      <MoreVert className={classes.icon} fontSize="small" color="inherit" />
     </IconButton>
   );
 };

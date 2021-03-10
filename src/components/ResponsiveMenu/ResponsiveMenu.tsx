@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { MenuList } from '@material-ui/core';
+import { MenuList, PopoverOrigin, PopoverPosition } from '@material-ui/core';
 import { ResponsivePopover } from '../ResponsivePopover/ResponsivePopover';
 
 export interface IResponsiveMenuProps {
@@ -13,6 +13,10 @@ export interface IResponsiveMenuProps {
    */
   onClick?: (ev: React.MouseEvent) => void;
   id?: string;
+  transformOrigin?: PopoverOrigin;
+  anchorOrigin?: PopoverOrigin;
+  anchorPosition?: PopoverPosition;
+  marginThreshold?: number;
 }
 
 /**

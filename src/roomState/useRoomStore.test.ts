@@ -6,6 +6,7 @@ import { IncomingAuthResponseMessage } from './types/socketProtocol';
 
 jest.mock('./SocketConnection');
 jest.mock('../utils/logger');
+jest.mock('mixpanel-browser');
 
 describe('the central room state store (useRoomStore)', () => {
   it('can connect and disconnect from sockets', () => {

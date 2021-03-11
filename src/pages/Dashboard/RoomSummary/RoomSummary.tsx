@@ -20,7 +20,6 @@ import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMen
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useTranslation } from 'react-i18next';
 import { isChrome, isIOS } from 'react-device-detect';
-
 interface IRoomSummaryProps {
   roomInfo: RoomInfo;
   onInvite: (roomInfo: RoomInfo) => void;

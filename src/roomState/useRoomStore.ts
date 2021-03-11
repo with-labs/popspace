@@ -15,6 +15,9 @@ import { ParticipantShape, ParticipantState } from './types/participants';
 import { RoomPositionState } from './types/common';
 import { devtools } from 'zustand/middleware';
 
+import { Analytics } from '../analytics/Analytics';
+import { EventNames, Origin, StatusUpdate } from '../analytics/constants';
+
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
 
@@ -355,6 +358,11 @@ function createRoomStore() {
           return userId;
         }
 
+        function getRoomId() {
+          const { id } = get();
+          return id;
+        }
+
         /**
          * The external API is called by our client. It handles socket
          * interaction and delegates to the internal API for optimistic
@@ -389,17 +397,26 @@ function createRoomStore() {
            * final widget state with ID once it has been returned
            * from the server.
            */
-          async addWidget<Type extends WidgetType>(payload: {
-            type: Type;
-            widgetState: WidgetStateByType[Type];
-            transform: RoomPositionState;
-          }) {
+          async addWidget<Type extends WidgetType>(
+            payload: {
+              type: Type;
+              widgetState: WidgetStateByType[Type];
+              transform: RoomPositionState;
+            },
+            origin?: Origin
+          ) {
             // we don't know the Widget ID until the server rebroadcasts
             // this event to everyone with the ID provided - so there is no
             // optimistic change, just sending the event.
             const response = await sendMessageWithResponse<IncomingWidgetCreatedMessage>({
               kind: 'createWidget',
               payload,
+            });
+            // track the widget creation event
+            Analytics.trackEvent(EventNames.CREATE_WIDGET, {
+              type: response.payload.type,
+              roomId: getRoomId(),
+              creationLocation: origin || Origin.NOT_SET,
             });
             // the incoming created message will be handled by the main incoming message
             return response.payload;
@@ -448,6 +465,8 @@ function createRoomStore() {
               kind: 'updateWidget',
               payload,
             });
+
+            Analytics.trackWidgetUpdateEvent(getRoomId(), payload.widgetState);
           },
           deleteWidget(payload: { widgetId: string }) {
             internalApi.deleteWidget(payload);
@@ -470,6 +489,13 @@ function createRoomStore() {
               kind: 'updateRoomState',
               payload: defaulted,
             });
+            // track the wallpaper change event
+            if (payload.wallpaperUrl) {
+              Analytics.trackEvent(EventNames.CHANGED_WALLPAPER, {
+                roomId: getRoomId(),
+                isCustomWallpaper: payload.isCustomWallpaper,
+              });
+            }
           },
           updateSelf(payload: Partial<ParticipantState>) {
             internalApi.updateUser({ participantState: payload, id: getOwnUserId() });
@@ -479,6 +505,9 @@ function createRoomStore() {
                 participantState: payload,
               },
             });
+
+            // track user events analytics
+            Analytics.trackUserEvent(getRoomId(), payload);
           },
           leave() {
             get().socket?.close();

@@ -16,3 +16,5 @@ export const CAMERA_TRACK_NAME = 'camera';
 export const MIC_TRACK_NAME = 'microphone';
 
 export const STATUS_HISTORY = '__statusHistory';
+
+export const LOCAL_ANALYTICS_DATA = '__LocalAnalyticsData';

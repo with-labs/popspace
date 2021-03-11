@@ -4,6 +4,7 @@ import { QuickAction, QuickActionKind } from '../../../quickActions/types';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { useAddFile } from '../../../room/files/useAddFile';
 import { browseForFile } from '../../../../utils/browseForFile';
+import { Origin } from '../../../../analytics/constants';
 
 /**
  * Processes a QuickAction object, applying the action
@@ -26,10 +27,13 @@ export function useQuickAction() {
       // to reduce complexity of this handler
       switch (value.kind) {
         case QuickActionKind.AddAccessory:
-          addAccessory({
-            type: value.accessoryType,
-            initialData: value.accessoryData,
-          });
+          addAccessory(
+            {
+              type: value.accessoryType,
+              initialData: value.accessoryData,
+            },
+            Origin.OMNIBAR
+          );
           break;
         case QuickActionKind.SetStatus:
           updateSelf({

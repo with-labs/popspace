@@ -6,6 +6,7 @@ import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { Origin } from '../../../../analytics/constants';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
@@ -22,15 +23,18 @@ export function useAddAccessory() {
   const addWidget = useRoomStore((room) => room.api.addWidget);
 
   return useCallback(
-    async <Type extends WidgetType>({
-      type,
-      initialData,
-      screenCoordinate = { x: window.innerWidth / 2, y: window.innerHeight / 2 },
-    }: {
-      type: Type;
-      initialData: WidgetStateByType[Type];
-      screenCoordinate?: Vector2;
-    }) => {
+    async <Type extends WidgetType>(
+      {
+        type,
+        initialData,
+        screenCoordinate = { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+      }: {
+        type: Type;
+        initialData: WidgetStateByType[Type];
+        screenCoordinate?: Vector2;
+      },
+      origin?: Origin
+    ) => {
       const centerOfScreen = viewport.toWorldCoordinate(screenCoordinate);
 
       // add some fuzz so things don't stack perfectly
@@ -53,13 +57,16 @@ export function useAddAccessory() {
         data = (await getLinkData(initialData as LinkWidgetState)) as any;
       }
 
-      return addWidget({
-        type,
-        transform: {
-          position,
+      return addWidget(
+        {
+          type,
+          transform: {
+            position,
+          },
+          widgetState: data,
         },
-        widgetState: data,
-      });
+        origin
+      );
     },
     [addWidget, userId, viewport, getLinkData]
   );

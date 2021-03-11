@@ -8,6 +8,7 @@ import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
 import { useWidgetContext } from '../useWidgetContext';
+import { Origin } from '../../../../analytics/constants';
 
 export interface IAddNoteMenuItemProps {}
 
@@ -36,15 +37,18 @@ export const AddNoteMenuItem = React.forwardRef<HTMLLIElement, IAddNoteMenuItemP
         });
 
     if (userId) {
-      addWidget({
-        widgetState: {
-          text: '',
+      addWidget(
+        {
+          widgetState: {
+            text: '',
+          },
+          transform: {
+            position,
+          },
+          type: WidgetType.StickyNote,
         },
-        transform: {
-          position,
-        },
-        type: WidgetType.StickyNote,
-      });
+        Origin.WIDGET_MENU
+      );
     }
   }, [currentPosition, toWorldCoordinate, userId, addWidget]);
 

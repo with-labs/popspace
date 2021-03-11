@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 import { App } from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-
+import { Analytics } from './analytics/Analytics';
 import './i18n';
 import './with.css';
 import { useUpdateStore } from './features/updates/useUpdatesStore';
@@ -25,6 +25,9 @@ if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') 
     environment: process.env.NODE_ENV,
   });
 }
+
+// init mixpanel
+Analytics.init();
 
 // injectFirst on the styles provider tells material ui to inject our styles before the
 // base classes so we can avoid having to put !important flags on all of our positional css

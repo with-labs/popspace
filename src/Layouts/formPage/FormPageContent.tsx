@@ -12,11 +12,12 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(7.5),
     overflow: 'auto',
     gridArea: 'content',
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(3),
-      overflow: 'hidden',
+      overflow: 'visible',
       maxWidth: 680,
       justifySelf: 'center',
+      paddingBottom: '100px',
     },
   },
 }));

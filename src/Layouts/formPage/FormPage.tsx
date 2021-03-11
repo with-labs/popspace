@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    width: '100vw',
+    width: '100%',
     minHeight: '100vh',
     overflow: 'hidden',
 
@@ -28,15 +28,10 @@ const useStyles = makeStyles((theme) => ({
     gridGap: theme.spacing(4),
     overflow: 'hidden',
 
-    [theme.breakpoints.down('md')]: {
-      overflow: 'auto',
+    [theme.breakpoints.down('sm')]: {
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
-      gridTemplateRows: 'minmax(auto, 260px) 1fr',
-    },
-
-    [theme.breakpoints.down('sm')]: {
-      paddingBottom: '100px',
+      gridTemplateRows: '260px 1fr',
     },
   },
 }));

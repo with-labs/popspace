@@ -270,9 +270,12 @@ function createRoomStore() {
         const onSocketMessage = (message: IncomingSocketMessage) => {
           switch (message.kind) {
             case 'auth.response':
+              const oldRoomId = get().id;
               internalApi.initialize(message);
-              // reset away state whenever we join a room.
-              externalApi.updateSelf({ isAway: false });
+              if (get().id !== oldRoomId) {
+                // reset away state whenever we join a new room.
+                externalApi.updateSelf({ isAway: false });
+              }
               break;
             case 'widgetCreated':
               return internalApi.addWidget(message.payload);
@@ -343,7 +346,7 @@ function createRoomStore() {
         function getOwnUserId() {
           const { sessionId, sessionLookup } = get();
           if (sessionId === null) {
-            throw new Error('Tried to move without a valid session');
+            throw new Error('Tried to update self without a valid session');
           }
           const userId = sessionLookup[sessionId];
           if (!userId) {

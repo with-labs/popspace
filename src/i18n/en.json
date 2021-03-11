@@ -248,7 +248,7 @@
       },
       "stickyNote": {
         "name": "Sticky Note",
-        "textPlaceholder": "Note text",
+        "textPlaceholder": "Type something...",
         "addBtn": "Add note",
         "saveBtn": "Save note",
         "edit": "Edit",

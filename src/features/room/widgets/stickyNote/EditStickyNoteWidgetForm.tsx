@@ -68,9 +68,14 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
     throttledSave(ev.target.value);
   };
 
+  const closeIfNotEmpty = () => {
+    if (text) onClose();
+  };
+
   const checkForClose = (ev: React.KeyboardEvent) => {
+    if (!text) return;
     if ((ev.key === 'Enter' && ev.shiftKey) || ev.key === 'Escape') {
-      onClose();
+      closeIfNotEmpty();
     }
   };
 
@@ -90,7 +95,7 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
           className={classes.textarea}
           autoFocus
           onFocus={moveCursorToEnd}
-          onBlur={onClose}
+          onBlur={closeIfNotEmpty}
           onKeyDown={checkForClose}
         />
       </WidgetScrollPane>

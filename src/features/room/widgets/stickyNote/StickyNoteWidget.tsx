@@ -133,9 +133,11 @@ const StickyNoteContent: React.FC<{
         <Typography paragraph variant="body1" component="div" className={classes.text}>
           {state.widgetState.text ? (
             <Markdown>{state.widgetState.text}</Markdown>
+          ) : isOwnedByLocalUser ? (
+            <span className={classes.typingPlaceholder}>{t('widgets.stickyNote.doubleClickEdit')}</span>
           ) : (
             <span className={classes.typingPlaceholder}>
-              <WidgetAuthor />
+              <WidgetAuthor disableYou />
               {t('widgets.stickyNote.userIsTyping')}
             </span>
           )}

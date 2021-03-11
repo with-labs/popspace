@@ -4,12 +4,15 @@ import { WidgetType } from '../../../roomState/types/widgets';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 
-export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {}
+export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {
+  /** Disables showing "You" for the local user, shows their name instead */
+  disableYou?: boolean;
+}
 
 /**
  * Renders the name of a widget's author
  */
-export const WidgetAuthor: React.FC<IWidgetAuthorProps> = (props) => {
+export const WidgetAuthor: React.FC<IWidgetAuthorProps> = ({ disableYou, ...props }) => {
   const { t } = useTranslation();
 
   const {
@@ -17,6 +20,7 @@ export const WidgetAuthor: React.FC<IWidgetAuthorProps> = (props) => {
   } = useWidgetContext<WidgetType.StickyNote>();
 
   const userId = useRoomStore((room) => room.sessionLookup[room.sessionId ?? '']);
+  const showYou = !disableYou && ownerId === userId;
 
-  return <span {...props}>{ownerId === userId ? t('common.you') : authorName ?? t('common.anonymous')}</span>;
+  return <span {...props}>{showYou ? t('common.you') : authorName ?? t('common.anonymous')}</span>;
 };

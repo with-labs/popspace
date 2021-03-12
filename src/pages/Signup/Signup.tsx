@@ -56,6 +56,13 @@ export const Signup: React.FC<ISignupProps> = () => {
   // get the query params, if any
   const query = useQueryParams();
   const isJoinFlow = query.get('joinFlow');
+  /*
+    accept a variety of ways to communicate the origin of the signup.
+    Many website add a ?ref=xyz param, but ?utm_source=xyz is also popular.
+    Internally we'll use ref, e.g. from the landing page,
+    but this list can expand to accommodate more sources.
+  */
+  const ref = query.get('ref') || query.get('utm_source') || null;
 
   // if there's an email cached in history state from signin page, apply it to
   // initial props
@@ -69,6 +76,7 @@ export const Signup: React.FC<ISignupProps> = () => {
     async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
       try {
         const result = await Api.signup({
+          ref: ref,
           email: email.trim(),
           firstName: firstName.trim(),
           lastName: lastName.trim(),

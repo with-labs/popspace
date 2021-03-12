@@ -2,7 +2,7 @@ const lib = require("lib");
 lib.util.env.init(require("./env.json"))
 
 
-const tryToSetUpNewAccount = async (params) => {
+const tryToSetUpNewAccount = async (params, invite) => {
   let existingAccountCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
   if(existingAccountCreateRequest) {
     const resolve = await shared.db.accounts.tryToResolveAccountCreateRequest(existingAccountCreateRequest, existingAccountCreateRequest.otp)
@@ -10,7 +10,7 @@ const tryToSetUpNewAccount = async (params) => {
       return resolve
     }
   }
-  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params)
+  const createRequest = await shared.db.accounts.tryToCreateAccountRequest(params, 'invite_email', invite.id)
   return await shared.db.accounts.tryToResolveAccountCreateRequest(createRequest, createRequest.otp)
 }
 
@@ -54,7 +54,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     user = existingUser
   } else {
     // Make sure to create the user before resolving the invitation
-    const accountCreate = await tryToSetUpNewAccount(params)
+    const accountCreate = await tryToSetUpNewAccount(params, invite)
     if(accountCreate.error != null)  {
       return await util.http.authFail(accountCreate.error, callback)
     }

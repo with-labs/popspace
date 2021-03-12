@@ -16,10 +16,10 @@
     pg-protocol "^1.2.0"
     pg-types "^2.2.0"
 
-"@withso/with-shared@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.3.tgz#6efd4e1571b261ae73cbe3335875ad00f926ff25"
-  integrity sha512-/XrKBFrg6G5tjL4FEzoseKXYk9B172ORkaWFKlm5xBZK/z7mNNQ+06cCgmPiVVmzSD2L8UbCG+4d+fnmAZEJSQ==
+"@withso/with-shared@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.8.tgz#7b219e73f19c97a6d0e64d243858d6526bf76c12"
+  integrity sha512-2z3F54lv4yxcZdW1Y6ZJODQkH/MIOi6113mUX36qdoiM/hw9PNWpx7QjP83E8GkrE+7rDJgmq3kyZOjhDb7cHw==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
@@ -29,6 +29,7 @@
     moment "^2.29.1"
     pg "^8.5.1"
     pg-monitor "^1.4.1"
+    redis "^3.0.2"
 
 ansi-regex@^2.1.1:
   version "2.1.1"

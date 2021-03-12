@@ -69,6 +69,7 @@ class Api {
     receiveMarketing?: boolean;
     inviteOtp?: string;
     inviteId?: string;
+    ref?: string | null;
   }) {
     return await this.post<BaseResponse>('/request_create_account', data);
   }

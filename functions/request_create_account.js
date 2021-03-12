@@ -31,9 +31,15 @@ module.exports.handler = util.netlify.postEndpoint(
       params.email
     )
 
+    const source = params.ref || (params.inviteId ? 'invite_public' : 'signup')
+    /*
+      Note: signups don't have any entity_id for the source, so we can default to null
+      when there is no inviteId
+    */
+    const sourceId = parseInt(params.inviteId) || null
     const createRequest =
       existingCreateRequest ||
-      (await shared.db.accounts.tryToCreateAccountRequest(params))
+      (await shared.db.accounts.tryToCreateAccountRequest(params, source, sourceId))
     let signupUrl = shared.db.accounts.getSignupUrl(
       lib.util.env.appUrl(event, context),
       createRequest

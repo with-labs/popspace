@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import Api, { ApiError } from '../../utils/api';
@@ -25,6 +25,8 @@ import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { Spacing } from '../../components/Spacing/Spacing';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
+import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
 
 interface ISignupProps {}
 
@@ -52,6 +54,7 @@ type SignupFormValues = {
 export const Signup: React.FC<ISignupProps> = () => {
   const { t } = useTranslation();
   const { setError } = useAppState();
+  const { user, isLoading } = useCurrentUserProfile();
 
   // get the query params, if any
   const query = useQueryParams();
@@ -71,6 +74,14 @@ export const Signup: React.FC<ISignupProps> = () => {
 
   const inviteCode = history.location.state?.inviteCode || '';
   const inviteId = history.location.state?.inviteId || '';
+
+  useEffect(() => {
+    // if the user is already logged in
+    // then we redirect to the dash if the user tries to hit sign up
+    if (user) {
+      history.push(RouteNames.ROOT);
+    }
+  }, [history, user]);
 
   const handleSubmit = useCallback(
     async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
@@ -99,8 +110,12 @@ export const Signup: React.FC<ISignupProps> = () => {
         setError(err);
       }
     },
-    [history, t, setError]
+    [history, t, setError, ref]
   );
+
+  if (isLoading) {
+    return <FullscreenLoading />;
+  }
 
   return (
     <Formik<SignupFormValues>
@@ -181,6 +196,10 @@ export const Signup: React.FC<ISignupProps> = () => {
                     {`Already have an account? `}
                     <Link to={RouteNames.SIGN_IN}>{t('pages.signup.signIn')}</Link>.
                   </Trans>
+                </Typography>
+
+                <Typography component="p" variant="caption" style={{ marginTop: 16 }}>
+                  {t('pages.signup.earlyAccessAccept')}
                 </Typography>
               </Form>
             </FormPageContent>

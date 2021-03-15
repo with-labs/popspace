@@ -238,7 +238,7 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
           <Box>
             <Divider />
             <Typography variant="caption" className={classes.cancelMembershipDisabledTooltip}>
-              Only the room owner can remove members.
+              {t('modals.inviteUserModal.roomOwnerOnlyMsg')}
             </Typography>
           </Box>
         </Box>

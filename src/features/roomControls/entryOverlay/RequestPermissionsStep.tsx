@@ -39,11 +39,18 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
       }, 4000);
     } catch (err) {
       setIsRequesting(false);
-      if (err.message === 'Permission denied') {
+      if (err.name === 'NotAllowedError') {
         // user denied our request - for now we still let them in.
         logger.warn(`User (id: ${userId}) denied permission to media device`);
         // let them though, we will prompt them to fix their permissions if they attempt to
         // user the mic / camera after the fact
+        onComplete();
+      } else if (err.name === 'NotFoundError') {
+        // user doesnt have any devices
+        logger.warn(`User (id: ${userId}) no media devices found`);
+
+        // let them though, we will tell the user we cannot detect the
+        // user the mic / camera when they try to use them.
         onComplete();
       } else {
         /* handle the error */

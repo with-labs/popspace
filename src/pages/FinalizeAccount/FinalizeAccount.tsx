@@ -6,7 +6,7 @@ import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import signinImg from '../../images/illustrations/sign_in.jpg';
 import signinMobileImg from '../../images/illustrations/sign_in_responsive.jpg';
-import { makeStyles, Link } from '@material-ui/core';
+import { makeStyles, Link, Typography } from '@material-ui/core';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { useTranslation, Trans } from 'react-i18next';
 import { logger } from '../../utils/logger';
@@ -69,6 +69,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
   const inviteId = query.get('iid') || null;
 
   useEffect(() => {
+    // TODO: remove claim Id paths as its part of the pre-public invite system
     const apiMethod = claimId
       ? Api.resolveRoomClaim(otp, claimId)
       : inviteId
@@ -226,6 +227,7 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
                   margin="normal"
                   required
                   validate={validateEmail}
+                  disabled={email !== ''}
                 />
                 <FormikCheckboxField
                   label={
@@ -254,6 +256,9 @@ export const FinalizeAccount: React.FC<IFinalizeAccountProps> = () => {
               <FormikSubmitButton className={classes.button}>
                 {t('pages.finalizeAccount.submitBtnText')}
               </FormikSubmitButton>
+              <Typography component="p" variant="caption" style={{ marginTop: 16 }}>
+                {t('pages.finalizeAccount.earlyAccessAccept')}
+              </Typography>
             </Form>
           </FormPageContent>
 

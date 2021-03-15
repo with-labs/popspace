@@ -24,6 +24,7 @@ import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
+import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
 
 export type SignInFormData = {
   email: string;
@@ -51,7 +52,7 @@ export const Signin: React.FC<ISigninProps> = () => {
 
   const [email, setEmail] = useState(preloadedEmail);
 
-  const { user } = useCurrentUserProfile();
+  const { user, isLoading } = useCurrentUserProfile();
 
   // get the query params, if any
   const query = useQueryParams();
@@ -99,6 +100,10 @@ export const Signin: React.FC<ISigninProps> = () => {
   };
 
   const [hasSignup] = useFeatureFlag('signup');
+
+  if (isLoading) {
+    return <FullscreenLoading />;
+  }
 
   return (
     <Formik

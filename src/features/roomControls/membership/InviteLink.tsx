@@ -227,7 +227,7 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
 
   return (
     <Box className={classes.root}>
-      <Box display="flex" flexDirection="row" mb={1} alignItems="center">
+      <Box display="flex" flexDirection="row" alignItems="center">
         <Box display="flex" flexDirection="row" alignItems="center" flexGrow="1">
           <LinkIcon fontSize="default" className={classes.iconWrapper} />
           <Typography variant="button">{t('features.roomControls.linkInviteTitle')}</Typography>
@@ -244,6 +244,11 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
           />
         )}
       </Box>
+      {!isRoomOwner && !!state.shareUrl && (
+        <Box mb={1}>
+          <Typography variant="caption">{t('features.roomControls.roomOwnerOnlyExplanation')}</Typography>
+        </Box>
+      )}
       <Collapse in={state.shareUrl}>
         <TextField
           name={t('features.roomControls.linkInviteName')}
@@ -267,14 +272,16 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
             </Button>
           </ThemeProvider>
           <ThemeProvider theme={cherry}>
-            <Button
-              disabled={state.isBusy}
-              onClick={onResetLinkPressed}
-              fullWidth
-              aria-label={t('features.roomControls.resetLinkButtonAria')}
-            >
-              {state.isBusy ? <CircularProgress size={22} /> : t('features.roomControls.resetLinkButtonText')}
-            </Button>
+            {isRoomOwner && (
+              <Button
+                disabled={state.isBusy}
+                onClick={onResetLinkPressed}
+                fullWidth
+                aria-label={t('features.roomControls.resetLinkButtonAria')}
+              >
+                {state.isBusy ? <CircularProgress size={22} /> : t('features.roomControls.resetLinkButtonText')}
+              </Button>
+            )}
           </ThemeProvider>
         </Box>
       </Collapse>

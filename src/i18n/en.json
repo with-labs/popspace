@@ -95,7 +95,7 @@
         "title": "Sign Up",
         "email": {
           "placeholder": "dorothy@emerald.so",
-          "label": "Your email address",
+          "label": "Email Address",
           "invalid": "Please enter a valid email"
         },
         "firstName": {
@@ -124,7 +124,8 @@
         },
         "alreadyRegistered": "You've got a With account already — please sign in!",
         "joinFlow": "You'll need an account to join someone's room. After you've created one, try clicking that link again.",
-        "resentEmail": "We sent you another link!"
+        "resentEmail": "We sent you another link!",
+        "earlyAccessAccept": "By signing up to With Early Access, you agree to receive occasional emails asking for your feedback. As one of our first users, your input will help us make With even better."
       },
       "confirmationView": {
         "title": "Check your email",
@@ -149,23 +150,24 @@
         "createRoomButton": "Create room"
       },
       "finalizeAccount": {
-        "title": "Finalize your account",
+        "title": "Join the room",
         "firstNamePlaceholder": "Dorothy",
         "fistNameLabel": "First Name",
         "lastNamePlaceholder": "Gale",
         "lastNameLabel": "Last Name",
         "tosCheckboxName": "terms of service checkbox",
         "tosCheckboxText": "",
-        "martketingCheckboxName": "send me occasional emails checkbox",
-        "marketingCheckboxText": "It’s ok to send me occasional emails",
-        "submitBtnText": "Finalize my account",
+        "martketingCheckboxName": "Please send me how-to guides and updates",
+        "marketingCheckboxText": "Please send me how-to guides and updates",
+        "submitBtnText": "Join the room",
         "imgAltText": "sign in",
         "tosCheck": "I agree to the <1>Terms of Service</1>",
         "email": {
           "placeholder": "dorothy@emerald.so",
-          "label": "Your email address",
+          "label": "Email Address",
           "invalid": "Please enter a valid email"
-        }
+        },
+        "earlyAccessAccept": "By signing up to With Early Access, you agree to receive occasional emails asking for your feedback. As one of our first users, your input will help us make With even better."
       },
       "room": {
         "joinTitle": "Joining {{roomName}}",
@@ -190,8 +192,8 @@
         "lastNameLabel": "Last Name",
         "tosCheckboxName": "terms of service checkbox",
         "tosCheckboxText": "",
-        "martketingCheckboxName": "send me occasional emails checkbox",
-        "marketingCheckboxText": "It’s ok to send me occasional emails",
+        "martketingCheckboxName": "Please send me how-to guides and updates",
+        "marketingCheckboxText": "Please send me how-to guides and updates",
         "submitBtnText": "Finalize my account",
         "imgAltText": "sign in",
         "tosCheck": "I agree to the <1>Terms of Service</1>"
@@ -290,7 +292,7 @@
         },
         "INVITE_EXPIRED": {
           "title": "Oops, this link appears to be expired.",
-          "body": "Someone might have revoked this link. Please ask a room admin for a new code."
+          "body": "Someone might have revoked this link. Please ask a room admin for a new link."
         },
         "NOT_LOGGED_IN": {
           "title": "Please sign in.",
@@ -459,7 +461,8 @@
         "resetLinkButtonText": "Reset link",
         "resetLinkButtonAria": "Reset the secret link",
         "linkCopied": "Copied!",
-        "linkInviteName": "Secret link invite"
+        "linkInviteName": "Secret link invite",
+        "roomOwnerOnlyExplanation": "Only the room owner can toggle the secret link."
       },
       "statusControls": {
         "toolTip": "Set your status"
@@ -488,7 +491,8 @@
         "removeConfirmTitle": "Remove {{user}} from the room?",
         "removeConfirmDesc": "Are you sure you want to remove {{user}} from the room? The content this user has added in the room will remain in the room.",
         "removeConfirmButton": "Remove {{user}}",
-        "resendInviteSuccess": "Invite re-sent"
+        "resendInviteSuccess": "Invite re-sent",
+        "roomOwnerOnlyMsg": "Only the room owner can remove members."
       },
       "wallpaperModal": {
         "title": "Room wallpaper",

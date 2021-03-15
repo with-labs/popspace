@@ -22,11 +22,15 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateAreas: '"content image"',
     gridTemplateColumns: 'minmax(auto, 500px) 1fr',
     overflow: 'hidden',
+    minHeight: '100%',
     zIndex: theme.zIndex.modal - 1,
     [theme.breakpoints.down('md')]: {
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
-      gridTemplateRows: 'minmax(auto, 260px) 1fr',
+      // Note: leaving this in until we can debug this issue.
+      // on iphones this modal is unscrollable so a user cannnot get in
+      // quick fix on 3-15-21
+      // gridTemplateRows: '260px 1fr',
     },
   },
   content: {

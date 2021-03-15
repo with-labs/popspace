@@ -56,6 +56,10 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
         /* handle the error */
         logger.error(`Error getting user media for user (id: ${userId})`);
       }
+      // TODO: add in a case where we detect if we are running locally and on
+      // an iphone simulator to just let us though, since the sim wont allow us to get devices and
+      // throws and unconstranded error. should just pass though and log a message in the console about this
+      // problem in the iphone sim
     }
   };
 

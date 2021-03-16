@@ -51,13 +51,14 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
       displayName: '',
       avatarName: 'blobby',
     };
+    const avatarName = state?.avatarName ?? 'blobby';
 
     // avoid repeated sets of src as it loads the image from network
-    if (this.avatarImage.src !== avatarMetadata[state.avatarName].image) {
-      this.avatarImage.src = avatarMetadata[state.avatarName].image;
+    if (this.avatarImage.src !== avatarMetadata[avatarName].image) {
+      this.avatarImage.src = avatarMetadata[avatarName].image;
     }
-    this.color = avatarMetadata[state.avatarName].backgroundColor;
-    this.name = state.displayName;
+    this.color = avatarMetadata[avatarName].backgroundColor;
+    this.name = state.displayName ?? '';
   };
 
   /**

@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('md')]: {
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
-      // Note: leaving this in until we can debug this issue.
-      // on iphones this modal is unscrollable so a user cannnot get in
-      // quick fix on 3-15-21
-      // gridTemplateRows: '260px 1fr',
+      gridTemplateRows: '260px 1fr',
+    },
+    [theme.breakpoints.down('sm')]: {
+      overflow: 'auto',
     },
   },
   content: {

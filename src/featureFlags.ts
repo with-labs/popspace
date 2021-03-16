@@ -10,9 +10,6 @@ const flagDefinitions = {
   inviteLink: {
     description: 'Displays the invite link ui',
   },
-  signup: {
-    description: 'Open the floodgates!',
-  },
   verticalTaskbar: {
     description: 'Makes the large-sized taskbar vertical',
   },

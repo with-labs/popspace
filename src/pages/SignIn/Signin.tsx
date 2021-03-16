@@ -99,8 +99,6 @@ export const Signin: React.FC<ISigninProps> = () => {
     }
   };
 
-  const [hasSignup] = useFeatureFlag('signup');
-
   if (isLoading) {
     return <FullscreenLoading />;
   }
@@ -135,27 +133,25 @@ export const Signin: React.FC<ISigninProps> = () => {
                   />
                 </FormPageFields>
                 <FormikSubmitButton>{t('pages.signin.submitButtonText')}</FormikSubmitButton>
-                {hasSignup && (
-                  <Typography style={{ marginTop: 16 }}>
-                    <Trans as="span" i18nKey="pages.signin.signUpInstead">
-                      {`No account yet? `}
-                      <Link
-                        to="#"
-                        onClick={(ev) => {
-                          ev.preventDefault();
-                          history.push(RouteNames.SIGN_UP, {
-                            email: values.email,
-                            inviteId: values.inviteId,
-                            inviteCode: values.inviteCode,
-                          });
-                        }}
-                      >
-                        {t('pages.signin.signUp')}
-                      </Link>
-                      .
-                    </Trans>
-                  </Typography>
-                )}
+                <Typography style={{ marginTop: 16 }}>
+                  <Trans as="span" i18nKey="pages.signin.signUpInstead">
+                    {`No account yet? `}
+                    <Link
+                      to="#"
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                        history.push(RouteNames.SIGN_UP, {
+                          email: values.email,
+                          inviteId: values.inviteId,
+                          inviteCode: values.inviteCode,
+                        });
+                      }}
+                    >
+                      {t('pages.signin.signUp')}
+                    </Link>
+                    .
+                  </Trans>
+                </Typography>
               </Form>
             </FormPageContent>
             <FormPageImage src={signinImg} mobileSrc={signinMobileImg} />

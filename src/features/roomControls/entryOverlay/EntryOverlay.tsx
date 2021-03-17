@@ -1,8 +1,7 @@
-import { Box, makeStyles } from '@material-ui/core';
+import { Box, makeStyles, Modal } from '@material-ui/core';
 import * as React from 'react';
 import { FullscreenLoading } from '../../../components/FullscreenLoading/FullscreenLoading';
 import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
-import { Glass } from './Glass';
 import { PrepareStep } from './PrepareStep';
 import { RequestPermissionsStep } from './RequestPermissionsStep';
 import permissionsBg from '../../../images/illustrations/browser_permission.gif';
@@ -24,18 +23,21 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     minHeight: '100%',
     zIndex: theme.zIndex.modal - 1,
+    // at smaller sizes we stack the two sections vertically and scroll
+    // the entire stack together
     [theme.breakpoints.down('md')]: {
       gridTemplateAreas: '"image" "content"',
       gridTemplateColumns: '1fr',
       gridTemplateRows: '260px 1fr',
-    },
-    [theme.breakpoints.down('sm')]: {
       overflow: 'auto',
     },
   },
   content: {
     gridArea: 'content',
     overflow: 'auto',
+    [theme.breakpoints.down('md')]: {
+      overflow: 'hidden',
+    },
   },
   graphic: {
     gridArea: 'image',
@@ -43,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
   glass: {
     width: '100%',
     height: '100%',
+    backdropFilter: 'blur(4px)',
+    // unfortunately MUI Modal uses style to control color
+    backgroundColor: 'transparent !important',
   },
   image: {
     width: '100%',
@@ -109,19 +114,19 @@ export const EntryOverlay: React.FC<IEntryOverlayProps> = () => {
   }
 
   return (
-    <Box className={classes.root}>
-      <Box className={classes.content} p={6} bgcolor="white">
-        {hasGrantedPermission === undefined ? (
-          <FullscreenLoading />
-        ) : !hasGrantedPermission ? (
-          <RequestPermissionsStep onComplete={() => setHasGrantedPermission(true)} />
-        ) : (
-          <PrepareStep onComplete={onReady} />
-        )}
+    <Modal open BackdropProps={{ className: classes.glass }}>
+      <Box className={classes.root}>
+        <Box className={classes.content} p={6} bgcolor="white">
+          {hasGrantedPermission === undefined ? (
+            <FullscreenLoading />
+          ) : !hasGrantedPermission ? (
+            <RequestPermissionsStep onComplete={() => setHasGrantedPermission(true)} />
+          ) : (
+            <PrepareStep onComplete={onReady} />
+          )}
+        </Box>
+        <Box className={classes.graphic}>{!hasGrantedPermission && <div className={classes.image} />}</Box>
       </Box>
-      <Box className={classes.graphic}>
-        {hasGrantedPermission ? <Glass className={classes.glass} /> : <div className={classes.image} />}
-      </Box>
-    </Box>
+    </Modal>
   );
 };

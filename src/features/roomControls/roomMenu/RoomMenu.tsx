@@ -55,8 +55,6 @@ export const RoomMenu = React.forwardRef<HTMLDivElement, IRoomMenuProps>(({ clas
   const { t } = useTranslation();
   const displayName = useRoomStore((room) => room.state.displayName);
 
-  const [hasInviteLink] = useFeatureFlag('inviteLink');
-
   const openAndFocusInvite = React.useCallback(() => {
     setIsOpen(true);
   }, []);
@@ -86,8 +84,8 @@ export const RoomMenu = React.forwardRef<HTMLDivElement, IRoomMenuProps>(({ clas
         {truncate(displayName || t('modals.inviteMemberModal.defaultRoomName'), 20)}
       </ResponsiveIconButton>
       <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-        <MembershipManagement roomRoute={roomRoute} autoFocusInvite={!hasInviteLink} className={classes.largeMenu} />
-        {hasInviteLink && <InviteLink roomRoute={roomRoute} />}
+        <MembershipManagement roomRoute={roomRoute} autoFocusInvite={false} className={classes.largeMenu} />
+        <InviteLink roomRoute={roomRoute} />
       </ResponsivePopover>
     </Paper>
   );

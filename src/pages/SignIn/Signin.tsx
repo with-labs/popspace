@@ -18,7 +18,6 @@ import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitB
 import signinImg from '../../images/illustrations/sign_in.jpg';
 import signinMobileImg from '../../images/illustrations/sign_in_responsive.jpg';
 import { Link } from '../../components/Link/Link';
-import { useFeatureFlag } from 'flagg';
 import { FormPage } from '../../Layouts/formPage/FormPage';
 import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';

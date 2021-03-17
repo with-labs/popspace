@@ -8,6 +8,7 @@ export interface ILinkProps extends Omit<RouterLinkProps, 'color'> {
   color?: MuiLinkProps['color'];
   disableStyling?: boolean;
   newTab?: boolean;
+  state?: { [key: string]: any };
 }
 
 const useStyles = makeStyles({
@@ -36,54 +37,58 @@ const newTabProps = {
  * Wraps various Link functionality into one easy component - link to absolute or relative
  * URLs, open in new tab, remove link default styling, etc.
  */
-export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(({ disableStyling, newTab, to, ...props }, ref) => {
-  const classes = useStyles();
+export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(
+  ({ disableStyling, newTab, to, state, ...props }, ref) => {
+    const classes = useStyles();
 
-  const isAbsoluteURL = typeof to === 'string' && checkAbsoluteURL(to);
+    const isAbsoluteURL = typeof to === 'string' && checkAbsoluteURL(to);
 
-  // every absolute URL link opens in a new tab by default, but passing newTab={false} explicitly
-  // can turn that off
-  const extraProps = newTab || (isAbsoluteURL && newTab !== false) ? newTabProps : {};
+    // every absolute URL link opens in a new tab by default, but passing newTab={false} explicitly
+    // can turn that off
+    const extraProps = newTab || (isAbsoluteURL && newTab !== false) ? newTabProps : {};
 
-  const isInvalidConfig = (isAbsoluteURL || newTab) && typeof to !== 'string' && typeof to !== 'undefined';
-  React.useEffect(() => {
-    if (isInvalidConfig) {
-      logger.error(`You can't use a newTab Link with a complex to prop`);
-    }
-  }, [isInvalidConfig]);
+    const isInvalidConfig = (isAbsoluteURL || newTab) && typeof to !== 'string' && typeof to !== 'undefined';
+    React.useEffect(() => {
+      if (isInvalidConfig) {
+        logger.error(`You can't use a newTab Link with a complex to prop`);
+      }
+    }, [isInvalidConfig]);
 
-  // use an <a /> tag for absolute links or new tab links, and React Router for paths within the app
-  // separate code path because <a /> accepts a very different and smaller set of props than RR Link
-  if (isAbsoluteURL || newTab) {
-    const href = typeof to !== 'string' && typeof to !== 'undefined' ? '#' : to;
+    // use an <a /> tag for absolute links or new tab links, and React Router for paths within the app
+    // separate code path because <a /> accepts a very different and smaller set of props than RR Link
+    if (isAbsoluteURL || newTab) {
+      const href = typeof to !== 'string' && typeof to !== 'undefined' ? '#' : to;
 
-    if (disableStyling) {
+      if (disableStyling) {
+        return (
+          <a className={clsx(classes.disableStyling, props.className)} href={href} ref={ref} {...props} {...extraProps}>
+            {props.children}
+          </a>
+        );
+      }
+
       return (
-        <a className={clsx(classes.disableStyling, props.className)} href={href} ref={ref} {...props} {...extraProps}>
+        <MuiLink href={href} ref={ref} {...props} {...extraProps}>
           {props.children}
-        </a>
+        </MuiLink>
       );
     }
 
+    if (disableStyling) {
+      return <RouterLink className={classes.disableStyling} to={to} ref={ref} {...props} {...extraProps} />;
+    }
+
+    // RouterLink allows us to pass an object as the to prop, so we can
+    // do things like easly pass history state via our Link component.
     return (
-      <MuiLink href={href} ref={ref} {...props} {...extraProps}>
-        {props.children}
-      </MuiLink>
+      <MuiLink
+        component={RouterLink}
+        underline={disableStyling ? 'none' : undefined}
+        to={state ? { pathname: to, state } : to}
+        ref={ref}
+        {...props}
+        {...extraProps}
+      />
     );
   }
-
-  if (disableStyling) {
-    return <RouterLink className={classes.disableStyling} to={to} ref={ref} {...props} {...extraProps} />;
-  }
-
-  return (
-    <MuiLink
-      component={RouterLink}
-      underline={disableStyling ? 'none' : undefined}
-      to={to}
-      ref={ref}
-      {...props}
-      {...extraProps}
-    />
-  );
-});
+);

@@ -194,7 +194,10 @@ export const Signup: React.FC<ISignupProps> = () => {
                 <Typography style={{ marginTop: 16 }}>
                   <Trans as="span" i18nKey="pages.signup.signInInstead">
                     {`Already have an account? `}
-                    <Link to={RouteNames.SIGN_IN}>{t('pages.signup.signIn')}</Link>.
+                    <Link to={RouteNames.SIGN_IN} state={{ inviteCode, inviteId }}>
+                      {t('pages.signup.signIn')}
+                    </Link>
+                    .
                   </Trans>
                 </Typography>
 

@@ -14,7 +14,6 @@ export interface IInvitePeopleStepProps {
 
 export const InvitePeopleStep: React.FC<IInvitePeopleStepProps> = ({ onComplete, roomRoute }) => {
   const { t } = useTranslation();
-  const [hasInviteLink] = useFeatureFlag('inviteLink');
   const [dirty, setDirty] = React.useState(false);
 
   return (
@@ -22,7 +21,7 @@ export const InvitePeopleStep: React.FC<IInvitePeopleStepProps> = ({ onComplete,
       <FormPageTitle>{t('pages.createRoom.invitePeople.title')}</FormPageTitle>
       <FormPageFields flex={1}>
         <MembershipManagement roomRoute={roomRoute} onChange={() => setDirty(true)} />
-        {hasInviteLink && <InviteLink roomRoute={roomRoute} />}
+        <InviteLink roomRoute={roomRoute} />
       </FormPageFields>
       <Button fullWidth color={dirty ? 'primary' : 'default'} onClick={onComplete}>
         {t(dirty ? 'pages.createRoom.invitePeople.continue' : 'pages.createRoom.invitePeople.skip')}

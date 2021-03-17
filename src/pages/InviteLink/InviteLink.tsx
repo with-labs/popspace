@@ -35,7 +35,7 @@ export const InviteLink: React.FC<RouteComponentProps<MatchParams>> = (props) =>
         // user is not signed in, redirect to the sign in page with invalid link error
         // we will attach the invite infomation here if they are redireted to the sign in page
         // this will allow us to pass this info
-        history.push(`${RouteNames.SIGN_IN}?e=${errorCode}`, { inviteCode, inviteId: iid });
+        history.push(`${RouteNames.SIGN_UP}?e=${errorCode}`, { inviteCode, inviteId: iid });
       }
     };
 

@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'currentColor',
     padding: '2px 8px 2px 8px',
     borderRadius: 12,
+    whiteSpace: 'nowrap',
+    maxWidth: 200,
+    textOverflow: 'hidden',
+    overflow: 'hidden',
   },
 }));
 
@@ -63,6 +67,11 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
       setStyles({ visibility: active ? 'visible' : 'hidden' });
     }, selectActive);
   }, [selectPosition, selectActive, setStyles, viewport]);
+
+  // update spring when avatar color changes
+  React.useEffect(() => {
+    setStyles({ color });
+  }, [color, setStyles]);
 
   const contrastColor = React.useMemo(() => {
     const ratio = getContrastRatio(theme.palette.common.black, color);

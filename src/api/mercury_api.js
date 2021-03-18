@@ -16,7 +16,7 @@ class MercuryApi {
 
   initPostRoutes() {
     this.api.ownerOnlyRoomRouteEndpoint("/enable_public_invite_link", async (req, res) => {
-      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.room.id)
+      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.room.id, req.user.id)
       const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
       return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })

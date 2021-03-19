@@ -149,6 +149,7 @@ function createRoomStore() {
               draft.userPositions = {};
               draft.sessionLookup = {};
               draft.socket = null;
+              draft.cursors = {};
             });
           },
           initialize(init: IncomingAuthResponseMessage) {

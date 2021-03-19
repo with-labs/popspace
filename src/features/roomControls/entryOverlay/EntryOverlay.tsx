@@ -8,6 +8,10 @@ import permissionsBg from '../../../images/illustrations/browser_permission.gif'
 import permissionsMobileBg from '../../../images/illustrations/browser_permission_responsive.jpg';
 import textureEdge from '../../../images/illustrations/textured_side_transparent.png';
 
+import { useHistory } from 'react-router';
+import { Analytics } from '../../../analytics/Analytics';
+import { EventNames, Origin } from '../../../analytics/constants';
+
 export interface IEntryOverlayProps {}
 
 const useStyles = makeStyles((theme) => ({
@@ -109,6 +113,23 @@ export const EntryOverlay: React.FC<IEntryOverlayProps> = () => {
   const { isReady, onReady } = React.useContext(MediaReadinessContext);
   const [hasGrantedPermission, setHasGrantedPermission] = useHasGrantedPermission();
 
+  const history = useHistory<{ origin?: string; ref?: string }>();
+
+  // grab anaylitcs information
+  const queryRef = history.location.state?.ref || '';
+  const funnelOrigin = history.location.state?.origin || '';
+  // if we arent passed a funnel origin, we must be coming from the dashboard
+  const origin = funnelOrigin ?? Origin.DASHBOARD;
+
+  const onRequestPermissionCompleteHandler = (isPermissionsSet: boolean) => {
+    Analytics.trackEvent(EventNames.BROWSER_PERMISSION, {
+      origin,
+      ref: queryRef,
+      accepted_media_permisssions: isPermissionsSet,
+    });
+    setHasGrantedPermission(true);
+  };
+
   if (isReady) {
     return null;
   }
@@ -120,7 +141,7 @@ export const EntryOverlay: React.FC<IEntryOverlayProps> = () => {
           {hasGrantedPermission === undefined ? (
             <FullscreenLoading />
           ) : !hasGrantedPermission ? (
-            <RequestPermissionsStep onComplete={() => setHasGrantedPermission(true)} />
+            <RequestPermissionsStep onComplete={onRequestPermissionCompleteHandler} />
           ) : (
             <PrepareStep onComplete={onReady} />
           )}

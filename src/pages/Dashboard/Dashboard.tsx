@@ -22,6 +22,7 @@ import { Link } from '../../components/Link/Link';
 import { USER_SUPPORT_EMAIL } from '../../constants/User';
 import { MAX_FREE_ROOMS } from '../../constants/room';
 import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { Origin } from '../../analytics/constants';
 
 interface IDashboardProps {}
 
@@ -270,6 +271,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
                 disableStyling
                 to={RouteNames.CREATE_ROOM}
                 disabled={rooms.owned.length >= MAX_FREE_ROOMS}
+                state={{ origin: Origin.CREATE_ROOM_BUTTON }}
               >
                 {t('pages.dashboard.createRoomButton')}
               </Button>

@@ -7,10 +7,10 @@ import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurr
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
 import api, { ApiError, ApiNamedRoom } from '../../utils/api';
-
 export interface INameRoomStepProps {
   onComplete: (room: ApiNamedRoom) => void;
   onCancel?: () => void;
+  origin?: string;
 }
 
 export const NameRoomStep: React.FC<INameRoomStepProps> = ({ onComplete, onCancel }) => {

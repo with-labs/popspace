@@ -3,7 +3,6 @@ import { makeStyles, Paper } from '@material-ui/core';
 import { DropdownIcon } from '../../../components/icons/DropdownIcon';
 import { MembershipManagement } from '../membership/MembershipManagement';
 import { InviteLink } from '../membership/InviteLink';
-import { useFeatureFlag } from 'flagg';
 import { useTranslation } from 'react-i18next';
 import { ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
 import { useRoomStore } from '../../../roomState/useRoomStore';

@@ -9,6 +9,7 @@ export interface ILinkProps extends Omit<RouterLinkProps, 'color'> {
   disableStyling?: boolean;
   newTab?: boolean;
   state?: { [key: string]: any };
+  to: string;
 }
 
 const useStyles = makeStyles({
@@ -75,7 +76,15 @@ export const Link = React.forwardRef<HTMLAnchorElement, ILinkProps>(
     }
 
     if (disableStyling) {
-      return <RouterLink className={classes.disableStyling} to={to} ref={ref} {...props} {...extraProps} />;
+      return (
+        <RouterLink
+          className={classes.disableStyling}
+          to={state ? { pathname: to, state } : to}
+          ref={ref}
+          {...props}
+          {...extraProps}
+        />
+      );
     }
 
     // RouterLink allows us to pass an object as the to prop, so we can

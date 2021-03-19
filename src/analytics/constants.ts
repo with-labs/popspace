@@ -11,13 +11,26 @@ export enum EventNames {
   TOGGLED_STEPAWAY = 'toggled_stepAway',
   EXPAND_LINK_WIDGET = 'expand_link_widget',
   COLLAPSE_LINK_WIDGET = 'collapse_link_widget',
+  ONBOARDING_BEGIN_SIGNUP = 'onboarding_begin_signup',
+  ONBOARDING_RESEND_EMAIL = 'onboarding_resend_email',
+  ONBOARDING_NAME_ROOM = 'onboarding_name_room',
+  ONBOARDING_CONFIRM_EMAIL = 'onboarding_confirm_email',
+  INVITE_CONFIRM_EMAIL = 'invite_confirm_email',
+  ONBOARDING_INVITE_TEAM_MEMBERS = 'onboarding_invite_team_members',
+  INVITE_TEAM_MEMBERS = 'invite_team_members',
+  BROWSER_PERMISSION = 'browser_permission',
+  CREATE_ROOM = 'create_room',
 }
 
 export enum Origin {
+  NOT_SET = 'not_set',
   OMNIBAR = 'omnibar',
   WIDGET_MENU = 'widget_menu',
   PASTE = 'paste',
-  NOT_SET = 'not_set',
+  CREATE_ROOM_BUTTON = 'create_room_button',
+  ONBOARDING = 'onboarding',
+  DASHBOARD = 'dashboard',
+  INVITE = 'invite',
 }
 
 export enum StatusUpdate {

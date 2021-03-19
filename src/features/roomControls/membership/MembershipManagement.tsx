@@ -18,6 +18,10 @@ import { logger } from '../../../utils/logger';
 
 import InviteMembersImg from './images/invite_some_people.png';
 
+import { Origin } from '../../../analytics/constants';
+
+const ROOM_MEMBERS_QUERY = '/room_get_members';
+
 export type MembershipFormData = {
   inviteeEmail: string;
 };
@@ -36,6 +40,8 @@ interface IMembershipManagementModalProps {
   roomRoute: string;
   memberListClasses?: string;
   onChange?: () => void;
+  onMemberListUpdate?: (numberMember: number) => void;
+  eventOrigin?: Origin;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -83,10 +89,11 @@ function validateEmail(email: string, translate: TFunction) {
   }
 }
 
-const ROOM_MEMBERS_QUERY = '/room_get_members';
-
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  ({ autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className, onChange }, ref) => {
+  (
+    { autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className, onChange, onMemberListUpdate },
+    ref
+  ) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
@@ -126,6 +133,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
               })
             );
             onChange?.();
+            onMemberListUpdate?.(data?.result.length ?? 0);
           } else {
             // TODO: convert to try/catch when api module throws errors
             setDialogError(formatErrorMessage(new ApiError(response)));
@@ -144,6 +152,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
       cache.setQueryData<{ result: ApiRoomMember[] }>([ROOM_MEMBERS_QUERY, { roomName: inviteRoomRoute }], (cur) => ({
         result: cur?.result ? cur.result.filter((m) => m !== member) : [],
       }));
+      onMemberListUpdate?.(data?.result.length ?? 0);
     };
 
     return (

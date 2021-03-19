@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import Api, { ApiError } from '../../utils/api';
@@ -27,6 +27,8 @@ import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
+import { Analytics } from '../../analytics/Analytics';
+import { EventNames } from '../../analytics/constants';
 
 interface ISignupProps {}
 
@@ -56,6 +58,9 @@ export const Signup: React.FC<ISignupProps> = () => {
   const { setError } = useAppState();
   const { user, isLoading } = useCurrentUserProfile();
 
+  // get the start date
+  const [startSignUp] = useState(new Date());
+
   // get the query params, if any
   const query = useQueryParams();
   const isJoinFlow = query.get('joinFlow');
@@ -65,11 +70,11 @@ export const Signup: React.FC<ISignupProps> = () => {
     Internally we'll use ref, e.g. from the landing page,
     but this list can expand to accommodate more sources.
   */
-  const ref = query.get('ref') || query.get('utm_source') || null;
+  const queryRef = query.get('ref') || query.get('utm_source') || null;
 
   // if there's an email cached in history state from signin page, apply it to
   // initial props
-  const history = useHistory<{ email?: string; inviteId?: string; inviteCode?: string }>();
+  const history = useHistory<{ email?: string; inviteId?: string; inviteCode?: string; ref?: string | null }>();
   const email = history.location.state?.email || '';
 
   const inviteCode = history.location.state?.inviteCode || '';
@@ -79,15 +84,19 @@ export const Signup: React.FC<ISignupProps> = () => {
     // if the user is already logged in
     // then we redirect to the dash if the user tries to hit sign up
     if (user) {
-      history.push(RouteNames.ROOT);
+      history.push(RouteNames.ROOT, { ref: queryRef });
     }
-  }, [history, user]);
+  }, [history, user, queryRef]);
 
   const handleSubmit = useCallback(
-    async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues>) => {
+    async (
+      { email, firstName, lastName, ...rest }: SignupFormValues,
+      util: FormikHelpers<SignupFormValues> | null,
+      isResend: boolean = false
+    ) => {
       try {
         const result = await Api.signup({
-          ref: ref,
+          ref: queryRef,
           email: email.trim(),
           firstName: firstName.trim(),
           lastName: lastName.trim(),
@@ -100,17 +109,34 @@ export const Signup: React.FC<ISignupProps> = () => {
               email: email.trim(),
               inviteCode: rest.inviteCode,
               inviteId: rest.inviteId,
+              ref: queryRef,
             });
           } else {
             throw new ApiError(result);
           }
+        } else {
+          if (!isResend) {
+            // user has submitted their sign up form
+            // capture event
+            const endStartUp = new Date();
+            const total_time = (endStartUp.getTime() - startSignUp.getTime()) / 1000;
+            Analytics.trackEvent(EventNames.ONBOARDING_BEGIN_SIGNUP, {
+              ref: queryRef,
+              started_at: startSignUp,
+              completed_at: endStartUp,
+              total_time,
+            });
+          } else {
+            // capture resend email event
+            Analytics.trackEvent(EventNames.ONBOARDING_RESEND_EMAIL, { ref: queryRef });
+          }
         }
-        util.setStatus({ sent: true });
+        util?.setStatus({ sent: true });
       } catch (err) {
         setError(err);
       }
     },
-    [history, t, setError, ref]
+    [history, t, setError, queryRef, startSignUp]
   );
 
   if (isLoading) {
@@ -124,11 +150,11 @@ export const Signup: React.FC<ISignupProps> = () => {
       initialValues={{ email, firstName: '', lastName: '', receiveMarketing: false, inviteCode, inviteId }}
       validateOnBlur={false}
     >
-      {({ setStatus, status, values, submitForm }) =>
+      {({ status, values }) =>
         status?.sent ? (
           <SignupComplete
             resend={async () => {
-              submitForm();
+              handleSubmit(values, null, true);
               toast.success(t('pages.signup.resentEmail') as string);
             }}
             email={values.email}

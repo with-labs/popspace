@@ -12,6 +12,8 @@ import { InvitePeopleStep } from './InvitePeopleStep';
 import { useHistory } from 'react-router';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { RouteNames } from '../../constants/RouteNames';
+import { Analytics } from '../../analytics/Analytics';
+import { EventNames, Origin } from '../../analytics/constants';
 
 export function CreateRoomPage() {
   const query = useQueryParams();
@@ -19,9 +21,22 @@ export function CreateRoomPage() {
 
   const [room, setRoom] = React.useState<ApiNamedRoom | null>(null);
 
-  const history = useHistory();
-
+  const history = useHistory<{ origin?: string; ref?: string }>();
   const cancel = () => history.push(RouteNames.ROOT);
+
+  // grab anaylitcs information
+  const queryRef = history.location.state?.ref || '';
+  const funnelOrigin = history.location.state?.origin || '';
+  // if we are onboarding, then the origin for this component is set to onboarding
+  const origin = isOnboarding ? Origin.ONBOARDING : funnelOrigin;
+
+  const onCompleteHandler = (room: ApiNamedRoom) => {
+    setRoom(room);
+    Analytics.trackEvent(isOnboarding ? EventNames.ONBOARDING_NAME_ROOM : EventNames.CREATE_ROOM, {
+      origin,
+      ref: queryRef,
+    });
+  };
 
   return (
     <FormPage>
@@ -29,16 +44,29 @@ export function CreateRoomPage() {
         {!!room ? (
           <InvitePeopleStep
             roomRoute={room.route}
-            onComplete={() => {
+            onComplete={(numMembers) => {
+              let data = {};
+              if (numMembers) {
+                data = { did_skip: false, invited_count: numMembers };
+              } else {
+                // if numMembers is null, it means they skipped inviting people on flow
+                data = { did_skip: true, invited_count: 0 };
+              }
+
+              Analytics.trackEvent(
+                isOnboarding ? EventNames.ONBOARDING_INVITE_TEAM_MEMBERS : EventNames.INVITE_TEAM_MEMBERS,
+                { origin, ref: queryRef, ...data }
+              );
+
               // replace - because we don't want the back button to go back to this flow,
               // which is not idempotent (the user coming back here and doing it again
               // would create another room!)
-              history.replace(room.route);
+              history.replace(room.route, { origin, ref: queryRef });
             }}
           />
         ) : (
           // Cancel is only shown if we're not onboarding
-          <NameRoomStep onComplete={setRoom} onCancel={isOnboarding ? undefined : cancel} />
+          <NameRoomStep onComplete={onCompleteHandler} onCancel={isOnboarding ? undefined : cancel} />
         )}
       </FormPageContent>
       <FormPageImage

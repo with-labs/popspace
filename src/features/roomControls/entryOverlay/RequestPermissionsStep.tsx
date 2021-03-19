@@ -7,7 +7,7 @@ import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useC
 import { logger } from '../../../utils/logger';
 
 export interface IRequestPermissionsStepProps {
-  onComplete: () => void;
+  onComplete: (isPermissionsSet: boolean) => void;
 }
 
 export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({ onComplete }) => {
@@ -35,7 +35,7 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
       // until we re-work our track to accept mediastream tracks as an inital stream
       setTimeout(() => {
         setIsRequesting(false);
-        onComplete();
+        onComplete(true);
       }, 4000);
     } catch (err) {
       setIsRequesting(false);
@@ -44,17 +44,18 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
         logger.warn(`User (id: ${userId}) denied permission to media device`);
         // let them though, we will prompt them to fix their permissions if they attempt to
         // user the mic / camera after the fact
-        onComplete();
+        onComplete(false);
       } else if (err.name === 'NotFoundError') {
         // user doesnt have any devices
         logger.warn(`User (id: ${userId}) no media devices found`);
 
         // let them though, we will tell the user we cannot detect the
         // user the mic / camera when they try to use them.
-        onComplete();
+        onComplete(false);
       } else {
         /* handle the error */
         logger.error(`Error getting user media for user (id: ${userId})`);
+        //TODO: should not fail silently, should throw an error.
       }
       // TODO: add in a case where we detect if we are running locally and on
       // an iphone simulator to just let us though, since the sim wont allow us to get devices and

@@ -88,6 +88,7 @@ export class SocketConnection extends EventEmitter {
       maxEnqueuedMessages: 1000,
       maxReconnectionDelay: MAX_BACKOFF_DELAY,
       reconnectionDelayGrowFactor: BACKOFF_MULTIPLIER,
+      debug: localStorage.getItem('DEBUG_WS') === 'true',
     });
     this.ws.addEventListener('open', this.onOpen);
     this.ws.addEventListener('error', this.onError);

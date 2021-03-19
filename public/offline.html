@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>You're offline</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <style>
+      html {
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
+      strong,
+      b {
+        font-weight: 700;
+      }
+      body {
+        color: #333333;
+        margin: 0;
+        font-size: 16px;
+        font-family: Silka, Helvetica, sans;
+        font-weight: 400;
+        line-height: 1.2307692307692308;
+        background-color: #fff8f0;
+      }
+      @media print {
+        body {
+          background-color: #fff8f0;
+        }
+      }
+      body::backdrop {
+        background-color: #fff8f0;
+      }
+      @font-face {
+        font-family: Silka;
+        font-weight: normal;
+        src: url('/fonts/silka-regular-webfont.eot') format('eot'),
+          url('/fonts/silka-regular-webfont.ttf') format('ttf'), url('/fonts/silka-regular-webfont.woff') format('woff'),
+          url('/fonts/silka-regular-webfont.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: Silka;
+        font-weight: 600;
+        src: url('/fonts/silka-semibold-webfont.eot') format('eot'),
+          url('/fonts/silka-semibold-webfont.ttf') format('ttf'),
+          url('/fonts/silka-semibold-webfont.woff') format('woff'),
+          url('/fonts/silka-semibold-webfont.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: Silka;
+        font-weight: bold;
+        src: url('/fonts/silka-bold-webfont.eot') format('eot'), url('/fonts/silka-bold-webfont.ttf') format('ttf'),
+          url('/fonts/silka-bold-webfont.woff') format('woff'), url('/fonts/silka-bold-webfont.woff2') format('woff2');
+      }
+
+      .page {
+        display: flex;
+        flex-direction: row;
+        width: 100vw;
+        height: 100vh;
+        padding: 32px 64px;
+        overflow: hidden;
+      }
+      .section {
+        padding: 32px;
+        align-self: center;
+        flex: 1 0 auto;
+      }
+      .image {
+        width: 50vw;
+        max-width: 900px;
+        height: auto;
+      }
+      h1 {
+        font-size: 42px;
+      }
+
+      @media (max-width: 900px) {
+        .page {
+          flex-direction: column-reverse;
+          padding: 32px 24px;
+        }
+        .section {
+          padding: 16px;
+          max-width: 100%;
+        }
+        .image {
+          height: 50vh;
+          width: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="section">
+        <h1>You're offline</h1>
+        <p>
+          We can't connect to the internet.
+        </p>
+        <p>
+          Please check your connection and try again.
+        </p>
+      </section>
+      <section class="section">
+        <img class="image" src="/offline.png" alt="A disconnected plug with a prominent red X symbol" />
+      </section>
+    </main>
+  </body>
+</html>

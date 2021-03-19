@@ -13,8 +13,14 @@ import { UploadingWidget } from './UploadingWidget';
 
 export interface ILinkWidgetProps {}
 
+const MEDIA_TYPE_BLOCK_LIST = ['video/mov'];
+
 function isMedia(widget: LinkWidgetShape) {
-  return widget.widgetState.mediaContentType && /^(image|video|audio)/.test(widget.widgetState.mediaContentType);
+  return (
+    widget.widgetState.mediaContentType &&
+    /^(image|video|audio)/.test(widget.widgetState.mediaContentType) &&
+    !MEDIA_TYPE_BLOCK_LIST.includes(widget.widgetState.mediaContentType)
+  );
 }
 
 export const LinkWidget: React.FC<ILinkWidgetProps> = () => {

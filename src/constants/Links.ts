@@ -4,4 +4,5 @@ export enum Links {
   TOS = 'https://with.so/terms-of-service',
   PRIVACY_POLICY = 'https://with.so/privacy-policy',
   FEEDBACK = 'https://feedback.with.so',
+  HELP_PORTAL = 'https://learn.with.so',
 }

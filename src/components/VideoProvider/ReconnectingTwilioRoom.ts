@@ -5,21 +5,12 @@ import { logger } from '../../utils/logger';
 import i18n from '../../i18n';
 import api from '../../utils/api';
 import { ErrorCodes } from '../../constants/ErrorCodes';
+import { JoinError } from '../../errors/JoinError';
+import { FatalError } from '../../errors/FatalError';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
 // if we encounter two errors within this timeframe, we will stop retrying
 const LAST_ERROR_TOO_RECENT_MS = 5000;
-
-export class JoinError extends Error {
-  constructor(message: string, public errorCode: ErrorCodes) {
-    super(message);
-  }
-}
-export class FatalError extends Error {
-  constructor(message: string, public errorCode: ErrorCodes) {
-    super(message);
-  }
-}
 export interface ReconnectingTwilioRoomEvents {
   error: (error: Error) => void;
   connecting: () => void;

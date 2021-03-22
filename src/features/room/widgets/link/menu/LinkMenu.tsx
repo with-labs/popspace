@@ -9,7 +9,8 @@ import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 import { IframeOption } from './IframeOption';
 import { logger } from '../../../../../utils/logger';
-import api, { ApiError } from '../../../../../utils/api';
+import api from '../../../../../utils/api';
+import { ApiError } from '../../../../../errors/ApiError';
 
 export type LinkMenuProps = {
   className?: string;

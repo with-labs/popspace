@@ -2,6 +2,9 @@ import { ErrorCodes } from '../constants/ErrorCodes';
 import { getSessionToken } from './sessionToken';
 import { RoomInfo } from '../types/api';
 
+/** TODO: throw one of these on every failed request */
+// import { ApiError } from '../errors/ApiError';
+
 const MERCURY_SERVER = process.env.REACT_APP_API_HOST || 'https://test.with.so:8443';
 
 export type BaseResponse = {
@@ -236,17 +239,3 @@ class Api {
 }
 
 export default new Api();
-
-/** TODO: throw one of these on every failed request */
-export class ApiError extends Error {
-  private code: ErrorCodes;
-
-  get errorCode() {
-    return this.code;
-  }
-
-  constructor(response: BaseResponse) {
-    super(response.message || 'Unexpected error');
-    this.code = (response.errorCode?.toString() as ErrorCodes) || ErrorCodes.UNEXPECTED;
-  }
-}

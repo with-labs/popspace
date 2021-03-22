@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
-import Api, { ApiError } from '../../utils/api';
+import Api from '../../utils/api';
+import { ApiError } from '../../errors/ApiError';
+
 import img from '../../images/illustrations/welcome_to_with.jpg';
 import mobileImg from '../../images/illustrations/welcome_to_with_responsive.jpg';
 import { Form, Formik, FormikHelpers } from 'formik';

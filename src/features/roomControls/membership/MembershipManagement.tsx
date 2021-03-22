@@ -5,7 +5,9 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { makeStyles, Box, Typography, CircularProgress, InputAdornment, IconButton } from '@material-ui/core';
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
 import { isEmailValid } from '../../../utils/CheckEmail';
-import Api, { ApiRoomMember, ApiError } from '../../../utils/api';
+import Api, { ApiRoomMember } from '../../../utils/api';
+import { ApiError } from '../../../errors/ApiError';
+
 import { USER_SESSION_TOKEN } from '../../../constants/User';
 import { sessionTokenExists } from '../../../utils/sessionToken';
 import { DialogModal } from '../../../components/DialogModal/DialogModal';

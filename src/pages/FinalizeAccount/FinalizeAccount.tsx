@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import Api, { ApiError } from '../../utils/api';
+import Api from '../../utils/api';
+import { ApiError } from '../../errors/ApiError';
 import { RouteNames } from '../../constants/RouteNames';
 import { Links } from '../../constants/Links';
 import signinImg from '../../images/illustrations/sign_in.jpg';

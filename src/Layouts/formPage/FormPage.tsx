@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import { useAppState } from '../../state';
-import { ApiError } from '../../utils/api';
+import { ApiError } from '../../errors/ApiError';
 
 const useStyles = makeStyles((theme) => ({
   root: {

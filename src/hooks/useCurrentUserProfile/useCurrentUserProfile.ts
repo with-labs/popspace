@@ -1,5 +1,7 @@
 import { useQuery } from 'react-query';
-import { ApiUser, ApiError } from '../../utils/api';
+import { ApiUser } from '../../utils/api';
+import { ApiError } from '../../errors/ApiError';
+
 import { useMemo } from 'react';
 import { RoomInfo } from '../../types/api';
 import { useQueryCache } from 'react-query';

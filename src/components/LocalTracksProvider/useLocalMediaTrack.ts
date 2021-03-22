@@ -4,6 +4,7 @@ import { convertMediaError } from './convertMediaError';
 import { LocalAudioTrack, LocalVideoTrack, createLocalAudioTrack, createLocalVideoTrack } from 'twilio-video';
 import { MediaTrackEvent } from '../../constants/twilio';
 import { createTrackName } from '../../utils/trackNames';
+import { MEDIA_TYPES } from '../../errors/MediaError';
 
 function getTrackDeviceId(track: LocalAudioTrack | LocalVideoTrack) {
   const constraints = track.mediaStreamTrack.getConstraints();
@@ -67,7 +68,8 @@ export function useLocalMediaTrack(
         setTrack(newTrack);
       }
     } catch (err) {
-      onError?.(convertMediaError(err, permissionDeniedMessage, permissionDismissedMessage));
+      const mediaType = kind === 'audio' ? MEDIA_TYPES.AUDIO : MEDIA_TYPES.VIDEO;
+      onError?.(convertMediaError(err, mediaType, permissionDeniedMessage, permissionDismissedMessage));
     }
   }, [onError, kind, permissionDeniedMessage, permissionDismissedMessage, deviceId, track, name]);
 

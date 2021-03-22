@@ -3,6 +3,7 @@ import { convertMediaError } from './convertMediaError';
 import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
 import { MediaTrackEvent } from '../../constants/twilio';
 import { createTrackName } from '../../utils/trackNames';
+import { MEDIA_TYPES } from '../../errors/MediaError';
 
 export function useScreenShareTracks({
   onError,
@@ -76,7 +77,7 @@ export function useScreenShareTracks({
         screenShareAudioTrack: twilioAudioTrack,
       });
     } catch (err) {
-      onError?.(convertMediaError(err, permissionDeniedMessage, permissionDismissedMessage));
+      onError?.(convertMediaError(err, MEDIA_TYPES.SCREEN_SHARE, permissionDeniedMessage, permissionDismissedMessage));
     }
   }, [
     onError,

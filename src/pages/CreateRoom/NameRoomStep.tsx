@@ -6,7 +6,9 @@ import { ButtonLoader } from '../../components/ButtonLoader/ButtonLoader';
 import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
-import api, { ApiError, ApiNamedRoom } from '../../utils/api';
+import api, { ApiNamedRoom } from '../../utils/api';
+import { ApiError } from '../../errors/ApiError';
+
 export interface INameRoomStepProps {
   onComplete: (room: ApiNamedRoom) => void;
   onCancel?: () => void;

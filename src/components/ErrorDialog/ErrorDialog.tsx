@@ -1,36 +1,37 @@
 import React, { PropsWithChildren } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import enhanceMessage from './enhanceMessage';
+import { useTranslation } from 'react-i18next';
+import { ErrorTypes } from '../../constants/ErrorTypes';
+import { MediaError } from '../../errors/MediaError';
 
+import GenericErrorDialogContent from './GenericErrorDialogContent';
+import MediaErrorDialogContent from './MediaErrorDialogContent';
 interface ErrorDialogProps {
   dismissError: Function;
   error: Error | null;
 }
 
 function ErrorDialog({ dismissError, error }: PropsWithChildren<ErrorDialogProps>) {
-  const { message } = error || {};
-  const code = (error as any)?.code;
-  const enhancedMessage = enhanceMessage(message, code);
+  const { t } = useTranslation();
+
+  const renderErrorContent = (error: Error & { type?: string }) => {
+    switch (error.type) {
+      case ErrorTypes.MEDIA: {
+        return <MediaErrorDialogContent error={error as MediaError} />;
+      }
+      default:
+        return <GenericErrorDialogContent error={error} />;
+    }
+  };
 
   return (
     <Dialog open={error !== null} onClose={() => dismissError()} fullWidth={true} maxWidth="xs">
-      <DialogTitle>ERROR</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{enhancedMessage}</DialogContentText>
-        {code && (
-          <pre>
-            <code>Error Code: {code}</code>
-          </pre>
-        )}
-      </DialogContent>
+      {error && renderErrorContent(error)}
       <DialogActions>
         <Button onClick={() => dismissError()} color="primary" autoFocus>
-          OK
+          {t('common.confirm')}
         </Button>
       </DialogActions>
     </Dialog>

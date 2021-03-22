@@ -5,6 +5,8 @@ import { ButtonLoader } from '../../../components/ButtonLoader/ButtonLoader';
 import { Logo } from '../../../components/Logo/Logo';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { logger } from '../../../utils/logger';
+import { useAppState } from '../../../state';
+import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../../errors/MediaError';
 
 export interface IRequestPermissionsStepProps {
   onComplete: (isPermissionsSet: boolean) => void;
@@ -12,6 +14,7 @@ export interface IRequestPermissionsStepProps {
 
 export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({ onComplete }) => {
   const { t } = useTranslation();
+  const { setError } = useAppState();
 
   const [isRequesting, setIsRequesting] = React.useState(false);
 
@@ -55,7 +58,8 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
       } else {
         /* handle the error */
         logger.error(`Error getting user media for user (id: ${userId})`);
-        //TODO: should not fail silently, should throw an error.
+        //throw an error to the user
+        setError(new MediaError('', MEDIA_TYPES.UNEXPECTED_MEDIA, MEDIA_STATUS.DENIED));
       }
       // TODO: add in a case where we detect if we are running locally and on
       // an iphone simulator to just let us though, since the sim wont allow us to get devices and

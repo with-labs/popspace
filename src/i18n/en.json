@@ -21,7 +21,9 @@
       "confirm": "Got it",
       "link": "Link",
       "you": "You",
-      "anonymous": "Anonymous"
+      "anonymous": "Anonymous",
+      "errorCode": "Error Code: {{code}}",
+      "oops": "Oops!"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -372,12 +374,18 @@
         "INVALID_API_PARAMS": {}
       },
       "media": {
+        "title": "{{device}} access has been denied.",
+        "supportText": "Instructions for enabling your {{device}} access can be found in the <1>With help portal.</1>",
+        "video": "camera",
+        "audio": "microphone",
+        "screenShare": "screen share",
         "audioPermissionDismissed": "If you want to share your voice, we'll need microphone access. Press the button to enable your mic, then choose \"Allow\"",
         "audioPermissionDenied": "You've told your browser not to allow microphone access for With. Change that setting to start sharing your voice.",
         "videoPermissionDismissed": "If you want to share your video, we'll need camera access. Press the button to enable your camera, then choose \"Allow\"",
         "videoPermissionDenied": "You've told your browser not to allow camera access for With. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
-        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for With. Change that setting to start sharing your screen."
+        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for With. Change that setting to start sharing your screen.",
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@with.so</3>."
       },
       "roomMangement": {
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",

@@ -13,7 +13,6 @@ import { Spacing } from '../../../../components/Spacing/Spacing';
 import { Link } from '../../../../components/Link/Link';
 import { BugReport } from './BugReport';
 import { AvatarSelectorBubble } from '../../avatar/AvatarSelectorBubble';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -56,33 +55,8 @@ export const MainMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);
 
-  const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [isChangelogNew, setIsChangelogNew] = React.useState(false);
-
-  // register changelog state every time this component mounts
-  React.useEffect(() => {
-    if (process.env.REACT_APP_CANNY_APP_ID) {
-      Canny('initChangelog', {
-        appID: process.env.REACT_APP_CANNY_APP_ID,
-        position: 'top',
-        align: 'left',
-      });
-      setTimeout(() => {
-        // after a frame, check to see if the badge was added and set
-        // changelog new flag
-        if (!buttonRef.current) return;
-        for (const child of buttonRef.current.children) {
-          if (child.classList.contains('Canny_BadgeContainer')) {
-            setIsChangelogNew(true);
-          }
-        }
-      });
-    }
-  }, []);
-
   const onButtonClicked = (ev: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(ev.currentTarget);
-    Canny('closeChangelog');
   };
 
   return (
@@ -93,9 +67,6 @@ export const MainMenu = () => {
         className={classes.button}
         aria-haspopup="true"
         aria-controls={!!anchorEl ? 'roomMenu' : undefined}
-        // connects to the Canny initChangelog event
-        data-canny-changelog
-        ref={buttonRef}
       >
         <LogoIcon color="inherit" fontSize="default" />
       </SquareIconButton>
@@ -130,7 +101,7 @@ export const MainMenu = () => {
           <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
           <Divider />
           <Spacing alignItems="center">
-            <ChangelogButton className={clsx(isChangelogNew && classes.updatedChangelogButton)} />
+            <ChangelogButton />
             <BugReport />
             <Button
               size="small"

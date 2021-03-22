@@ -7,6 +7,7 @@ import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useC
 import { logger } from '../../../utils/logger';
 import { useAppState } from '../../../state';
 import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../../errors/MediaError';
+import { isIOS } from 'react-device-detect';
 
 export interface IRequestPermissionsStepProps {
   onComplete: (isPermissionsSet: boolean) => void;
@@ -55,16 +56,19 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
         // let them though, we will tell the user we cannot detect the
         // user the mic / camera when they try to use them.
         onComplete(false);
+      } else if (process.env.REACT_APP_SIM_PASS && isIOS) {
+        // if sim_pass is active and we detect we are on an IOS device
+        // assume we are in hitting this from a simulator from local dev,
+        // since the simulator doesnt have access to the the camera or mic,
+        // we will continue with a console message.
+        console.log('DEV NOTICE - Simulator pass through for media device request used');
+        onComplete(false);
       } else {
         /* handle the error */
         logger.error(`Error getting user media for user (id: ${userId})`);
         //throw an error to the user
         setError(new MediaError('', MEDIA_TYPES.UNEXPECTED_MEDIA, MEDIA_STATUS.DENIED));
       }
-      // TODO: add in a case where we detect if we are running locally and on
-      // an iphone simulator to just let us though, since the sim wont allow us to get devices and
-      // throws and unconstranded error. should just pass though and log a message in the console about this
-      // problem in the iphone sim
     }
   };
 

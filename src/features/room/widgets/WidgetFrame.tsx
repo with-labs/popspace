@@ -9,7 +9,7 @@ import { useWidgetContext } from './useWidgetContext';
 export interface IWidgetFrameProps {
   children: React.ReactNode;
   className?: string;
-  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow' | 'slate';
+  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow' | 'slate' | 'transparent';
 }
 
 function useZIndex(widgetId: string) {
@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     userSelect: 'none',
   },
+  rootTransparent: {
+    background: 'transparent',
+  },
 }));
 
 /**
@@ -56,7 +59,7 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, 
     bringToFrontAction({ widgetId });
   }, [bringToFrontAction, widgetId]);
 
-  const theme = themes[color || 'lavender'];
+  const theme = color === 'transparent' ? themes.snow : themes[color || 'lavender'];
 
   return (
     <ThemeProvider theme={theme}>
@@ -65,7 +68,7 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, 
         zIndex={zIndex}
         onDragStart={bringToFront}
         kind="widget"
-        className={clsx(classes.root, className)}
+        className={clsx(classes.root, color === 'transparent' && classes.rootTransparent, className)}
       >
         {children}
       </Draggable>

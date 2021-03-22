@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
  * edge-to-edge. It's resizeable.
  */
 export const FullSizeMediaWidget: React.FC = () => (
-  <WidgetFrame color="snow">
+  <WidgetFrame color="transparent">
     <DraggableHandle>
       <WidgetContent disablePadding>
         <WidgetResizeContainer

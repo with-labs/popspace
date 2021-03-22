@@ -1,5 +1,5 @@
 import { Vector2 } from '../../../types/spatials';
-import { useRef, useEffect, useCallback, KeyboardEvent } from 'react';
+import { useRef, useEffect, useCallback, KeyboardEvent as ReactKeyboardEvent } from 'react';
 
 const CONTROLLED_KEYS = ['=', '+', '-', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const PAN_SPEED = 1;
@@ -9,14 +9,33 @@ export function useKeyboardControls({ pan, zoom }: { zoom: (delta: number) => vo
   const elementRef = useRef<HTMLDivElement>(null);
   const activeKeysRef = useRef(new Set<string>());
 
-  const handleKeyDown = useCallback((ev: KeyboardEvent<HTMLElement>) => {
+  // global zoom default prevention - this is best-effort and not
+  // guaranteed to work.
+  useEffect(() => {
+    const onGlobalKeyDown = (ev: KeyboardEvent) => {
+      if ((ev.metaKey || ev.ctrlKey) && (ev.key === '=' || ev.key === '-')) {
+        ev.preventDefault();
+      }
+    };
+    window.addEventListener('keydown', onGlobalKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onGlobalKeyDown);
+    };
+  }, []);
+
+  const handleKeyDown = useCallback((ev: ReactKeyboardEvent<HTMLElement>) => {
     if (CONTROLLED_KEYS.includes(ev.key)) {
       ev.preventDefault();
-      activeKeysRef.current.add(ev.key);
+      // ignoring presses with metaKey because of behavior with MacOS -
+      // if meta key is down, keyup is never fired and the zoom never
+      // ends.
+      if (!ev.metaKey) {
+        activeKeysRef.current.add(ev.key);
+      }
     }
   }, []);
 
-  const handleKeyUp = useCallback((ev: KeyboardEvent<HTMLElement>) => {
+  const handleKeyUp = useCallback((ev: ReactKeyboardEvent<HTMLElement>) => {
     if (CONTROLLED_KEYS.includes(ev.key)) {
       ev.preventDefault();
       activeKeysRef.current.delete(ev.key);

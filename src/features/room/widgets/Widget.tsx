@@ -40,8 +40,27 @@ export const Widget = React.memo<IWidgetProps>(({ id }) => {
     [widget, handleRemove, handleSave]
   );
 
+  React.useEffect(() => {
+    if (!widget?.widgetId || !widget?.widgetState) {
+      logger.critical(
+        `Widget sanity check failed`,
+        `Widget ID:`,
+        widget?.widgetId,
+        `Widget state present:`,
+        !!widget?.widgetState
+      );
+    }
+  }, [widget?.widgetId, widget?.widgetState]);
+
   if (!widget) {
     // FIXME: why are widgets which arent in the store sometimes being rendered?
+    return null;
+  }
+
+  // sanity check - widgetState should always exist, but
+  // while this is theoretically guaranteed we have seen failures
+  // crop up where it is not present.
+  if (!widget.widgetId || !widget.widgetState) {
     return null;
   }
 

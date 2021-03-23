@@ -14,9 +14,9 @@ import { WidgetShape, WidgetType, WidgetStateByType, WidgetState } from './types
 import { ParticipantShape, ParticipantState } from './types/participants';
 import { RoomPositionState } from './types/common';
 import { devtools } from 'zustand/middleware';
-
 import { Analytics } from '../analytics/Analytics';
-import { EventNames, Origin, StatusUpdate } from '../analytics/constants';
+import { EventNames, Origin } from '../analytics/constants';
+import { sanityCheckWidget } from './sanityCheckWidget';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -162,6 +162,11 @@ function createRoomStore() {
               // reset widgets
               draft.widgets = {};
               for (const widget of room.widgets) {
+                if (!sanityCheckWidget(widget)) {
+                  logger.error(`Invalid widget data from server init`, `Widget ID: ${widget.widgetId}`);
+                  continue;
+                }
+
                 const { transform, ...widgetInfo } = widget;
                 draft.widgets[widget.widgetId] = widgetInfo;
                 draft.widgetPositions[widget.widgetId] = transform;
@@ -189,6 +194,11 @@ function createRoomStore() {
           },
           addWidget({ transform, ...widget }: WidgetShape & { transform: RoomPositionState; ownerId: string }) {
             set((draft) => {
+              if (!sanityCheckWidget(widget)) {
+                logger.error(`Invalid widget data from server addWidget`, `Widget ID: ${widget.widgetId}`);
+                return;
+              }
+
               draft.widgets[widget.widgetId] = widget;
               draft.widgetPositions[widget.widgetId] = transform;
               draft.state.zOrder.push(widget.widgetId);
@@ -206,6 +216,11 @@ function createRoomStore() {
           },
           updateWidget(payload: { widgetId: string; widgetState: Partial<WidgetState> }) {
             set((draft) => {
+              if (!payload.widgetId) {
+                logger.error(`Invalid widget data from server updateWidget: no widget ID`);
+                return;
+              }
+
               if (draft.widgets[payload.widgetId]) {
                 Object.assign(draft.widgets[payload.widgetId].widgetState, payload.widgetState);
               }
@@ -213,6 +228,10 @@ function createRoomStore() {
           },
           deleteWidget({ widgetId: id }: { widgetId: string }) {
             set((draft) => {
+              if (!id) {
+                logger.error(`Invalid widget data from server deleteWidget: no widget ID`);
+              }
+
               delete draft.widgets[id];
               delete draft.widgetPositions[id];
               const zIndex = draft.state.zOrder.indexOf(id);
@@ -406,6 +425,13 @@ function createRoomStore() {
             },
             origin?: Origin
           ) {
+            if (!payload.widgetState || !payload.type) {
+              throw new Error(
+                `Error creating widget: invalid data. Widget type: ${
+                  payload.type
+                } Widget state is provided: ${!!payload.widgetState}`
+              );
+            }
             // we don't know the Widget ID until the server rebroadcasts
             // this event to everyone with the ID provided - so there is no
             // optimistic change, just sending the event.

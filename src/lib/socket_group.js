@@ -15,7 +15,7 @@ class SocketGroup {
 
 
   getMaxParticipants() {
-    return 20
+    return Infinity
   }
 
   hasExceededMaxParticipantsLimit() {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Vector2 } from '../../types/spatials';
-import { clamp, clampVector } from '../../utils/math';
+import { clamp, clampVector, multiplyVector } from '../../utils/math';
 import useWindowSize from '../../hooks/useWindowSize/useWindowSize';
 import { animated, useSpring, to, SpringConfig } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
@@ -13,6 +13,7 @@ import { useRoomStore } from '../../roomState/useRoomStore';
 import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
 import { useTrackCursor } from './useTrackCursor';
 import { EventEmitter } from 'events';
+import { SPRINGS } from '../../constants/springs';
 
 export interface ViewportEventHandlers {
   zoomEnd: () => void;
@@ -41,6 +42,8 @@ export const RoomViewportContext = React.createContext<null | {
   onObjectDragEnd: () => void;
   pan: (delta: Vector2) => void;
   zoom: (delta: number) => void;
+  panAbsolute: (worldPosition: Vector2, spring?: SpringConfig) => void;
+  zoomAbsolute: (zoomValue: number, spring?: SpringConfig) => void;
   width: number;
   height: number;
   events: ViewportEvents;
@@ -89,11 +92,6 @@ const VIEWPORT_ZOOM_SPRING = {
   tension: 700,
   friction: 40,
   mass: 0.1,
-};
-const RELAXED_SPRING = {
-  tension: 65,
-  friction: 55,
-  mass: 10,
 };
 
 const useStyles = makeStyles<Theme, IRoomViewportProps>((theme) => ({
@@ -218,6 +216,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   );
 
   const clampPanPosition = React.useCallback(
+    /** panPosition is in world coordinates */
     (panPosition: Vector2) => {
       const scale = zoom?.goal ?? 1;
 
@@ -295,6 +294,22 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     [centerX, centerY, clampPanPosition, setPanSpring, zoom]
   );
 
+  const doAbsolutePan = React.useCallback(
+    async (worldPosition: Vector2, spring?: SpringConfig) => {
+      const clamped = clampPanPosition(multiplyVector(worldPosition, -1));
+      await setPanSpring({
+        centerX: clamped.x,
+        centerY: clamped.y,
+        isPanning: true,
+        config: spring ?? VIEWPORT_PAN_SPRING,
+      });
+      return setPanSpring({
+        isPanning: false,
+      });
+    },
+    [clampPanPosition, setPanSpring]
+  );
+
   const userId = useRoomStore((room) => (room.sessionId && room.sessionLookup[room.sessionId]) ?? null);
   const { isReady } = React.useContext(MediaReadinessContext);
 
@@ -321,8 +336,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       setPanSpring({ isPanning: true });
       setZoomSpring({ isZooming: true });
       // zoom in
-      const zoomResult = doAbsoluteZoomRef.current(INITIAL_ZOOM, RELAXED_SPRING);
-      const panResult = doPanRef.current(point, RELAXED_SPRING);
+      const zoomResult = doAbsoluteZoomRef.current(INITIAL_ZOOM, SPRINGS.RELAXED);
+      const panResult = doPanRef.current(point, SPRINGS.RELAXED);
       await Promise.all([zoomResult, panResult]);
       setPanSpring({ isPanning: false });
       setZoomSpring({ isZooming: false });
@@ -444,11 +459,28 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         await doZoom(delta, spring);
         events.emit('zoomEnd');
       },
+      panAbsolute: doAbsolutePan,
+      zoomAbsolute: async (value: number, spring?: any) => {
+        await doAbsoluteZoom(value, spring);
+        events.emit('zoomEnd');
+      },
       width: bounds.width,
       height: bounds.height,
       events,
     }),
-    [toWorldCoordinate, zoom, onObjectDragStart, onObjectDragEnd, doPan, doZoom, bounds.width, bounds.height, events]
+    [
+      toWorldCoordinate,
+      onObjectDragStart,
+      onObjectDragEnd,
+      doPan,
+      doAbsolutePan,
+      doAbsoluteZoom,
+      bounds.width,
+      bounds.height,
+      events,
+      zoom,
+      doZoom,
+    ]
   );
 
   const { props: keyControlProps } = useKeyboardControls({

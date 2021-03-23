@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LocalVideoTrack } from 'twilio-video';
-import { EditIcon } from '../../../components/icons/EditIcon';
+import { EditHint } from '../../../components/EditHint/EditHint';
 import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { Modal } from '../../../components/Modal/Modal';
 import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
@@ -25,20 +25,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     '&:focus': {
       outline: 'none',
-      '& $editIcon': {
-        boxShadow: theme.focusRings.primary,
-      },
     },
   },
   editIcon: {
-    position: 'absolute',
     top: 0,
     right: 0,
-    backgroundColor: theme.palette.background.paper,
-    borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
-    padding: 8,
   },
   video: {
     width: '100%',
@@ -70,9 +61,7 @@ export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({ className
         <PseudoUserBubble userId={userId} isMicOn isVideoOn={!!videoTrack && showVideo}>
           {videoTrack && showVideo && <VideoTrack classNames={classes.video} track={videoTrack as LocalVideoTrack} />}
         </PseudoUserBubble>
-        <div className={classes.editIcon}>
-          <EditIcon />
-        </div>
+        <EditHint className={classes.editIcon} />
       </button>
       <Modal isOpen={open} onClose={() => setOpen(false)}>
         <ModalTitleBar onClose={() => setOpen(false)} title={t('modals.userSettingsModal.avatarTitle')} />

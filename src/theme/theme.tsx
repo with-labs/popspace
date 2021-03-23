@@ -1027,6 +1027,15 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
               opacity: 1,
             },
           },
+          '&$disabled + $track': {
+            backgroundColor: palette.grey[50],
+            opacity: 1,
+            border: `1px solid ${palette.grey[50]}`,
+          },
+          '&$disabled': {
+            color: palette.grey[700],
+            opacity: 1,
+          },
         },
         switchBase: {
           padding: 1,

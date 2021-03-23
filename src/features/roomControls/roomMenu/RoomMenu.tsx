@@ -12,7 +12,6 @@ import { RoomIcon } from '../../../components/icons/RoomIcon';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import useMergedRef from '@react-hook/merged-ref';
 import clsx from 'clsx';
-
 export interface IRoomMenuProps {
   className?: string;
 }
@@ -40,6 +39,16 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 8,
     maxWidth: 240,
     whiteSpace: 'nowrap',
+  },
+  viewportControls: {
+    position: 'absolute',
+    bottom: theme.spacing(1),
+    left: theme.spacing(1),
+    right: 'auto',
+  },
+  wallpaperPicker: {
+    marginBottom: theme.spacing(1),
+    borderRadius: theme.shape.contentBorderRadius,
   },
 }));
 
@@ -83,7 +92,7 @@ export const RoomMenu = React.forwardRef<HTMLDivElement, IRoomMenuProps>(({ clas
         {truncate(displayName || t('modals.inviteMemberModal.defaultRoomName'), 20)}
       </ResponsiveIconButton>
       <ResponsivePopover anchorEl={anchorRef.current} open={isOpen} onClose={onClose}>
-        <MembershipManagement roomRoute={roomRoute} autoFocusInvite={false} className={classes.largeMenu} />
+        <MembershipManagement roomRoute={roomRoute} className={classes.largeMenu} />
         <InviteLink roomRoute={roomRoute} />
       </ResponsivePopover>
     </Paper>

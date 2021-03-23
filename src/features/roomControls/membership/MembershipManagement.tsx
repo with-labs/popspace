@@ -36,7 +36,6 @@ const EMPTY_VALUES: MembershipFormData = {
 // we are really looking for the url route, not roomName,
 // confusing
 interface IMembershipManagementModalProps {
-  autoFocusInvite?: boolean;
   className?: string;
   size?: 'small' | 'large';
   roomRoute: string;
@@ -92,10 +91,7 @@ function validateEmail(email: string, translate: TFunction) {
 }
 
 export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembershipManagementModalProps>(
-  (
-    { autoFocusInvite, roomRoute: inviteRoomRoute, memberListClasses, className, onChange, onMemberListUpdate },
-    ref
-  ) => {
+  ({ roomRoute: inviteRoomRoute, memberListClasses, className, onChange, onMemberListUpdate }, ref) => {
     const { t } = useTranslation();
     const classes = useStyles();
     const sessionToken = localStorage.getItem(USER_SESSION_TOKEN);
@@ -165,11 +161,10 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
               <Box display="flex" className={classes.formWrapper} alignItems="flex-start">
                 <FormikTextField
                   name="inviteeEmail"
-                  placeholder={t('common.emailInput.placeHolder')}
-                  aria-label={t('common.emailInput.label')}
+                  placeholder={t('features.roomControls.emailPlaceholder')}
+                  aria-label={t('features.roomControls.emailPlaceholder')}
                   margin="normal"
                   validate={(inviteeEmail) => validateEmail(inviteeEmail, t)}
-                  autoFocus={autoFocusInvite}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">

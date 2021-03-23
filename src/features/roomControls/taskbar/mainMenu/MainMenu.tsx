@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { makeStyles, Divider, Button, Box } from '@material-ui/core';
-import { RoomWallpaperMenuItem } from './RoomWallpaperMenuItem';
 import { ChangelogButton } from './ChangelogMenuItem';
 import { useTranslation } from 'react-i18next';
 import { Links } from '../../../../constants/Links';
@@ -96,7 +95,6 @@ export const MainMenu = () => {
         </Box>
         <Box px={1.5}>
           <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
-          <RoomWallpaperMenuItem onClick={onClose}>{t('features.roomMenu.roomWallpaper')}</RoomWallpaperMenuItem>
           <Divider />
           <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
           <Divider />

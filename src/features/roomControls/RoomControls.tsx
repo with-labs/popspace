@@ -6,15 +6,20 @@ import { AwayExplainer } from './away/AwayExplainer';
 import { useIsAway } from './away/useIsAway';
 import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
+import { ViewportControls } from './viewport/ViewportControls';
+import { Spacing } from '../../components/Spacing/Spacing';
 
 export interface IRoomControlsProps {}
 
 const useStyles = makeStyles((theme) => ({
-  taskbar: {},
-  members: {
+  roomAndViewportControls: {
     position: 'fixed',
     right: theme.spacing(2),
     top: theme.spacing(2),
+    pointerEvents: 'none',
+    '& > *': {
+      pointerEvents: 'initial',
+    },
   },
 }));
 
@@ -30,8 +35,11 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
           <AwayExplainer />
         </AwayScreen>
       )}
-      <RoomTaskbar className={classes.taskbar} />
-      <RoomMenu className={classes.members} />
+      <RoomTaskbar />
+      <Spacing flexDirection="row" className={classes.roomAndViewportControls}>
+        <RoomMenu />
+        <ViewportControls />
+      </Spacing>
       <ActionBar />
     </>
   );

@@ -9,6 +9,8 @@ const value = {
   onObjectDragEnd: () => {},
   pan: () => {},
   zoom: () => {},
+  panAbsolute: () => {},
+  zoomAbsolute: () => {},
   width: 1000,
   height: 1000,
   events: new ViewportEvents(),

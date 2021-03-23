@@ -4,14 +4,12 @@ import { WidgetsFallback } from './WidgetsFallback';
 import { RoomViewport } from './RoomViewport';
 import { Person } from './people/Person';
 import { Widget } from './widgets/Widget';
-import { ViewportControls } from '../roomControls/viewport/ViewportControls';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
 import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
 import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
-import { Hidden } from '@material-ui/core';
 import { PageTitle } from '../../components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
@@ -45,17 +43,7 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   useBindPaste();
 
   return (
-    <RoomViewport
-      uiControls={
-        <>
-          <RoomControls />
-          <Hidden smDown>
-            <ViewportControls />
-          </Hidden>
-        </>
-      }
-      data-test-room
-    >
+    <RoomViewport uiControls={<RoomControls />} data-test-room>
       <PageTitle title={roomName} />
       <ErrorBoundary fallback={() => <WidgetsFallback />}>
         {widgetIds.map((id) => (

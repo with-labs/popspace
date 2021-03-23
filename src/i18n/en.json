@@ -433,7 +433,7 @@
         "goToDashboard": "Go to Dashboard",
         "contactUs": "Contact Us",
         "voteOnFeatures": "Vote on Features",
-        "roomWallpaper": "Wallpapers",
+        "roomWallpaper": "Change wallpaper",
         "roomMembersTitle": "Room members",
         "addAndManage": "Invite people",
         "userSettings": "User Settings",
@@ -460,6 +460,7 @@
         "confirm": "Paste"
       },
       "roomControls": {
+        "emailPlaceholder": "Invite via email",
         "linkInviteAriaLabel": "Toggle invite link",
         "linkInviteTitle": "Secret link invite",
         "copySuccess": "Secret link copied!",
@@ -469,7 +470,7 @@
         "resetLinkButtonText": "Reset link",
         "resetLinkButtonAria": "Reset the secret link",
         "linkCopied": "Copied!",
-        "linkInviteName": "Secret link invite",
+        "linkInviteName": "Invite via link",
         "roomOwnerOnlyExplanation": "Only the room owner can toggle the secret link."
       },
       "statusControls": {

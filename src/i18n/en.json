@@ -562,6 +562,7 @@
         },
         "submitButton": "Update",
         "category": {
+          "brandedPatterns": "Patterns",
           "pets": "Pets",
           "animals": "Animals",
           "abstractAnimals": "Abstract Animals",

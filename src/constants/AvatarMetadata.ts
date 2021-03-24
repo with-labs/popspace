@@ -4,6 +4,28 @@ export type AvatarMetadataType = {
 };
 
 export const AvatarMetadata = {
+  brandedPatterns: [
+    { name: 'brand_pattern_01', color: '#FFF0DF' },
+    { name: 'brand_pattern_02', color: '#FFF0DF' },
+    { name: 'brand_pattern_03', color: '#FFF0DF' },
+    { name: 'brand_pattern_04', color: '#FFF0DF' },
+    { name: 'brand_pattern_05', color: '#FFF0DF' },
+    { name: 'brand_pattern_06', color: '#FFF0DF' },
+    { name: 'brand_pattern_07', color: '#FFF0DF' },
+    { name: 'brand_pattern_08', color: '#FFF0DF' },
+    { name: 'brand_pattern_09', color: '#FFF0DF' },
+    { name: 'brand_pattern_10', color: '#FFF0DF' },
+    { name: 'brand_pattern_11', color: '#FFF0DF' },
+    { name: 'brand_pattern_12', color: '#FFF0DF' },
+    { name: 'brand_pattern_13', color: '#FFF0DF' },
+    { name: 'brand_pattern_14', color: '#FFF0DF' },
+    { name: 'brand_pattern_15', color: '#FFF0DF' },
+    { name: 'brand_pattern_16', color: '#FFF0DF' },
+    { name: 'brand_pattern_17', color: '#FFF0DF' },
+    { name: 'brand_pattern_18', color: '#FFF0DF' },
+    { name: 'brand_pattern_19', color: '#FFF0DF' },
+    { name: 'brand_pattern_20', color: '#FFF0DF' },
+  ],
   pets: [
     { name: 'orangecat', color: '#FFE2A1' },
     { name: 'corgi', color: '#D7EBB7' },

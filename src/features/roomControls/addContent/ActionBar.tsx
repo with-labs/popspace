@@ -36,7 +36,12 @@ export const ActionBar: React.FC<IActionBarProps> = ({ className, ...rest }) => 
 
   const onClose = () => closeModal('actionBar');
 
-  useHotkeys(KeyShortcut.ActionBar, () => openModal('actionBar'));
+  useHotkeys(KeyShortcut.ActionBar, (ev) => {
+    // prevents a browser default action - like Firefox omnibar focus.
+    // we may revisit this if users complain.
+    ev.preventDefault();
+    openModal('actionBar');
+  });
 
   return (
     <Modal

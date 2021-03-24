@@ -47,6 +47,9 @@ module.exports.handler = util.netlify.postEndpoint(
     if(params.inviteId && params.inviteCode) {
       signupUrl = `${signupUrl}&iid=${params.inviteId}&invite_code=${params.inviteCode}`
     }
+    if(source) {
+      signupUrl = `${signupUrl}&ref=${source}`
+    }
     await lib.email.account.sendSignupOtpEmail(params.email, signupUrl)
 
     return await lib.util.http.succeed(callback, {})

@@ -11,6 +11,7 @@ import textureEdge from '../../../images/illustrations/textured_side_transparent
 import { useHistory } from 'react-router';
 import { Analytics } from '../../../analytics/Analytics';
 import { EventNames, Origin } from '../../../analytics/constants';
+import { isMobileOnly } from 'react-device-detect';
 
 export interface IEntryOverlayProps {}
 
@@ -36,22 +37,29 @@ const useStyles = makeStyles((theme) => ({
       overflow: 'auto',
     },
   },
+  mobileRoot: {
+    minHeight: '100%',
+    height: '100%',
+  },
   content: {
     gridArea: 'content',
     overflow: 'auto',
     [theme.breakpoints.down('md')]: {
       overflow: 'hidden',
+      height: '100%',
     },
   },
   graphic: {
     gridArea: 'image',
   },
   glass: {
-    width: '100%',
-    height: '100%',
-    backdropFilter: 'blur(4px)',
-    // unfortunately MUI Modal uses style to control color
-    backgroundColor: 'transparent !important',
+    [theme.breakpoints.up('md')]: {
+      width: '100%',
+      height: '100%',
+      backdropFilter: 'blur(4px)',
+      // unfortunately MUI Modal uses style to control color
+      backgroundColor: 'transparent !important',
+    },
   },
   image: {
     width: '100%',
@@ -136,8 +144,8 @@ export const EntryOverlay: React.FC<IEntryOverlayProps> = () => {
 
   return (
     <Modal open BackdropProps={{ className: classes.glass }}>
-      <Box className={classes.root}>
-        <Box className={classes.content} p={6} bgcolor="white">
+      <Box className={isMobileOnly ? classes.mobileRoot : classes.root}>
+        <Box className={classes.content} p={6} bgcolor="white" height="100%">
           {hasGrantedPermission === undefined ? (
             <FullscreenLoading />
           ) : !hasGrantedPermission ? (

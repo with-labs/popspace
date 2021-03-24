@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { useResizeContext } from '../../../../../components/ResizeContainer/ResizeContainer';
 import { WidgetType } from '../../../../../roomState/types/widgets';
+import { clampSizeMaintainingRatio } from '../../../../../utils/clampSizeMaintainingRatio';
 import { DraggableHandle } from '../../../DraggableHandle';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
@@ -10,6 +11,10 @@ import { WidgetResizeContainer } from '../../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
+
+// when a media widget is first added, it will shoot for native
+// size but stop at this limit. The user can still resize it larger afterward.
+const INITIAL_MAX_SIZE = 800;
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -47,14 +52,7 @@ export const FullSizeMediaWidget: React.FC = () => (
   <WidgetFrame color="transparent">
     <DraggableHandle>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer
-          mode="scale"
-          minWidth={100}
-          minHeight={54}
-          maxWidth={1440}
-          maxHeight={900}
-          disableInitialSizing
-        >
+        <WidgetResizeContainer mode="scale" minWidth={100} minHeight={54} disableInitialSizing>
           <FullSizeMediaWidgetContent />
         </WidgetResizeContainer>
       </WidgetContent>
@@ -81,17 +79,25 @@ const FullSizeMediaWidgetContent: React.FC = () => {
       // when metadata is loaded, we attempt to resize the ResizeContainer
       // to the natural size of the media
       function doRemeasure() {
-        if (el.tagName === 'IMG') {
-          remeasure({
-            width: (el as HTMLImageElement).naturalWidth,
-            height: (el as HTMLImageElement).naturalHeight,
-          });
-        } else {
-          remeasure({
-            width: (el as HTMLVideoElement).videoWidth,
-            height: (el as HTMLVideoElement).videoHeight,
-          });
-        }
+        const naturalSize =
+          el.tagName === 'IMG'
+            ? {
+                width: (el as HTMLImageElement).naturalWidth,
+                height: (el as HTMLImageElement).naturalHeight,
+              }
+            : {
+                width: (el as HTMLVideoElement).videoWidth,
+                height: (el as HTMLVideoElement).videoHeight,
+              };
+
+        remeasure(
+          clampSizeMaintainingRatio({
+            width: naturalSize.width,
+            height: naturalSize.height,
+            maxWidth: INITIAL_MAX_SIZE,
+            maxHeight: INITIAL_MAX_SIZE,
+          })
+        );
       }
       el.addEventListener('resize', doRemeasure);
       el.addEventListener('load', doRemeasure);

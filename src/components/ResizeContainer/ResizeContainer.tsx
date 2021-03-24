@@ -7,6 +7,7 @@ import { clamp } from '../../utils/math';
 import { useRoomViewport } from '../../features/room/RoomViewport';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import { clampSizeMaintainingRatio } from '../../utils/clampSizeMaintainingRatio';
 
 export type ResizeMode = 'free' | 'scale';
 
@@ -121,25 +122,22 @@ function clampAndEnforceMode({
   mode: ResizeMode;
   originalAspectRatio: number;
 }) {
-  let w = clamp(width, minWidth, maxWidth);
-  let h = clamp(height, minHeight, maxHeight);
-
   if (mode === 'scale') {
-    // for 'scale' mode, we need to ensure the aspect ratio of the clamped values
-    // is consistent with the original dimensions
-    if (width > height) {
-      h = clamp(w / originalAspectRatio, minHeight, maxHeight);
-      w = h * originalAspectRatio;
-    } else {
-      w = clamp(h * originalAspectRatio, minWidth, maxWidth);
-      h = w / originalAspectRatio;
-    }
+    return clampSizeMaintainingRatio({
+      width,
+      height,
+      minWidth,
+      minHeight,
+      maxWidth,
+      maxHeight,
+      aspectRatio: originalAspectRatio,
+    });
+  } else {
+    return {
+      width: Math.round(clamp(width, minWidth, maxWidth)),
+      height: Math.round(clamp(height, minHeight, maxHeight)),
+    };
   }
-
-  return {
-    width: Math.round(w),
-    height: Math.round(h),
-  };
 }
 
 export type ResizeContainerImperativeApi = {

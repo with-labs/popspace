@@ -1,4 +1,4 @@
-import { makeStyles, Box, TextareaAutosize } from '@material-ui/core';
+import { makeStyles, Box, TextareaAutosize, ClickAwayListener } from '@material-ui/core';
 import throttle from 'lodash.throttle';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -43,6 +43,19 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
   const classes = useStyles();
   const { t } = useTranslation();
 
+  // slighly annoying behavior - if the edit mode is entered
+  // by clicking a button outside of this component (as is often
+  // the case), the button click itself will immediately close the
+  // edit mode as an 'outside click' - to prevent this we use this
+  // flag to wait one frame before allowing an outside click
+  // to close the editor
+  const [allowClickAwayClose, setAllowClickAwayClose] = React.useState(false);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setAllowClickAwayClose(true);
+    });
+  }, []);
+
   const {
     save,
     widget: { widgetState },
@@ -68,14 +81,17 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
     throttledSave(ev.target.value);
   };
 
-  const closeIfNotEmpty = () => {
-    if (text) onClose();
+  const closeIfAllowed = () => {
+    // prevent closing if we are not yet ready or if
+    // the text is empty
+    if (!allowClickAwayClose || !text) return;
+    onClose();
   };
 
   const checkForClose = (ev: React.KeyboardEvent) => {
     if (!text) return;
     if ((ev.key === 'Enter' && ev.shiftKey) || ev.key === 'Escape') {
-      closeIfNotEmpty();
+      closeIfAllowed();
     }
   };
 
@@ -84,27 +100,28 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
   };
 
   return (
-    <Box display="flex" flexDirection="column" height="100%">
-      <WidgetScrollPane className={classes.scrollPane}>
-        <TextareaAutosize
-          required
-          name="text"
-          value={text}
-          onChange={onChange}
-          placeholder={t('widgets.stickyNote.textPlaceholder')}
-          className={classes.textarea}
-          autoFocus
-          onFocus={moveCursorToEnd}
-          onBlur={closeIfNotEmpty}
-          onKeyDown={checkForClose}
-        />
-      </WidgetScrollPane>
+    <ClickAwayListener onClickAway={closeIfAllowed}>
+      <Box display="flex" flexDirection="column" height="100%">
+        <WidgetScrollPane className={classes.scrollPane}>
+          <TextareaAutosize
+            required
+            name="text"
+            value={text}
+            onChange={onChange}
+            placeholder={t('widgets.stickyNote.textPlaceholder')}
+            className={classes.textarea}
+            autoFocus
+            onFocus={moveCursorToEnd}
+            onKeyDown={checkForClose}
+          />
+        </WidgetScrollPane>
 
-      <Box mt={1} textAlign="center" flex="0 0 auto">
-        <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
-          {t('widgets.stickyNote.markdownCheatSheet')}
-        </Link>
+        <Box mt={1} textAlign="center" flex="0 0 auto">
+          <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
+            {t('widgets.stickyNote.markdownCheatSheet')}
+          </Link>
+        </Box>
       </Box>
-    </Box>
+    </ClickAwayListener>
   );
 };

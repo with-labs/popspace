@@ -10,7 +10,7 @@ export default function ReconnectingNotification() {
   const roomState = useRoomState();
 
   return (
-    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} open={roomState === RoomState.Reconnecting}>
+    <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={roomState === RoomState.Reconnecting}>
       <Alert severity="info">
         <AlertTitle>{t('error.messages.mediaReconnectingTitle')}</AlertTitle>
         {t('error.messages.mediaReconnectingDetails')}

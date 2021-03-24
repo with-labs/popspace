@@ -137,7 +137,7 @@ const ReconnectingAlert = ({ visible }: { visible: boolean }) => {
   const { t } = useTranslation();
 
   return (
-    <Snackbar open={visible} anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}>
+    <Snackbar open={visible} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
       <Alert severity="info" data-testid="roomStateReconnecting">
         <AlertTitle>{t('error.messages.socketReconnectingTitle')}</AlertTitle>
         {t('error.messages.socketReconnectingDetails')}

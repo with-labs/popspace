@@ -10,6 +10,7 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
+import { useIsAway } from '../away/useIsAway';
 
 export interface ICameraToggleProps {
   isLocal?: boolean;
@@ -21,13 +22,17 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { t } = useTranslation();
   const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);
 
+  const [isAway] = useIsAway();
+
   useHotkeys(
     KeyShortcut.ToggleVideo,
     (ev) => {
+      if (isAway) return;
+
       ev.preventDefault();
       toggleVideoOn();
     },
-    [toggleVideoOn]
+    [toggleVideoOn, isAway]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);

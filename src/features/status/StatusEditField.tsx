@@ -10,6 +10,8 @@ import { useUserStatus } from './useUserStatus';
 export interface StatusEditFieldProps extends Omit<FilledInputProps, 'value' | 'onChange'> {
   onEnter?: () => void;
   buttonClass?: string;
+  disableAutoFocus?: boolean;
+  autoSaveOnRest?: boolean;
 }
 
 const handleFocusSelectAll = (ev: React.FocusEvent<HTMLInputElement>) => {
@@ -17,7 +19,7 @@ const handleFocusSelectAll = (ev: React.FocusEvent<HTMLInputElement>) => {
 };
 
 export const StatusEditField = React.forwardRef<HTMLDivElement, StatusEditFieldProps>(
-  ({ onEnter, buttonClass, ...props }, ref) => {
+  ({ onEnter, buttonClass, disableAutoFocus, autoSaveOnRest, ...props }, ref) => {
     const { t } = useTranslation();
 
     const { status, set } = useUserStatus();
@@ -46,13 +48,33 @@ export const StatusEditField = React.forwardRef<HTMLDivElement, StatusEditFieldP
       });
     };
 
+    // this effect performs a debounced save after changes if the autoSaveOnRest prop was set
+    React.useEffect(() => {
+      if (!autoSaveOnRest) return;
+
+      const timeout = setTimeout(() => {
+        set({
+          statusText: inputValue,
+          emoji: status.emoji,
+        });
+      }, 700);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }, [inputValue, status.emoji, set, autoSaveOnRest]);
+
+    const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(ev.target.value);
+    };
+
     return (
       <FilledInput
         ref={ref}
         value={inputValue}
         name="status"
         placeholder={t('features.room.statusMenu.statusPlaceHolder')}
-        autoFocus
+        autoFocus={!disableAutoFocus}
         onFocus={handleFocusSelectAll}
         fullWidth
         startAdornment={
@@ -97,9 +119,7 @@ export const StatusEditField = React.forwardRef<HTMLDivElement, StatusEditFieldP
             ev.preventDefault();
           }
         }}
-        onChange={(ev: React.ChangeEvent<HTMLInputElement>) => {
-          setInputValue(ev.target.value);
-        }}
+        onChange={handleChange}
         onBlur={commitChanges}
         {...props}
       />

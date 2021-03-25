@@ -16,6 +16,7 @@ import { logger } from '../../../utils/logger';
 import { useRemoteControl } from '../../../hooks/useRemoteControl/useRemoteControl';
 import { MIC_TRACK_NAME } from '../../../constants/User';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
+import { useIsAway } from '../away/useIsAway';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -51,13 +52,17 @@ export const MicToggle = (props: IMicToggleProps) => {
     doMicToggle();
   }, [doMicToggle, isMicOn, muteSession]);
 
+  const [isAway] = useIsAway();
+
   useHotkeys(
     KeyShortcut.ToggleMute,
     (ev) => {
+      if (isAway) return;
+
       ev.preventDefault();
       toggleMicOn();
     },
-    [toggleMicOn]
+    [toggleMicOn, isAway]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);

@@ -15,6 +15,7 @@ import 'emoji-mart/css/emoji-mart.css';
 import { CloseIcon } from '../../../components/icons/CloseIcon';
 import { useUserStatus } from '../../status/useUserStatus';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
+import { useIsAway } from '../away/useIsAway';
 
 export interface IStatusControlsProps {
   showMenu?: boolean;
@@ -76,9 +77,13 @@ export const StatusControls = (props: IStatusControlsProps) => {
     }
   };
 
+  const [isAway] = useIsAway();
+
   useHotkeys(
     KeyShortcut.ToggleStatus,
     (ev) => {
+      if (isAway) return;
+
       ev.preventDefault();
       setMenuAnchor(toggleButtonRef.current);
     },

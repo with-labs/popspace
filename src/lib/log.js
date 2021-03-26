@@ -1,7 +1,7 @@
 const log4js = require('log4js')
 const log4jsConfig = {
   appenders: {
-    all: {type: 'file', filename: 'logs/all.log'}
+    all: {type: 'file', filename: 'logs/all.log'},
     database: { type: 'file', filename: 'logs/database.log' },
     app: { type: 'file', filename: 'logs/app.log' },
     console: { type: 'console' },

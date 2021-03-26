@@ -20,6 +20,7 @@ export enum EventNames {
   INVITE_TEAM_MEMBERS = 'invite_team_members',
   BROWSER_PERMISSION = 'browser_permission',
   CREATE_ROOM = 'create_room',
+  CHANGE_WIDGET_COLOR = 'change_widget_color',
 }
 
 export enum Origin {

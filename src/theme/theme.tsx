@@ -1069,6 +1069,8 @@ export enum ThemeName {
   Oregano = 'oregano',
   Lavender = 'lavender',
   Snow = 'snow',
+  Blueberry = 'blueberry',
+  Slate = 'slate',
 }
 
 // kind of arbitrary color combos below...
@@ -1094,4 +1096,8 @@ export const snow = createPaletteTheme({
 
 export const slate = createPaletteTheme({
   primary: brandPalette.slate,
+});
+
+export const blueberry = createPaletteTheme({
+  primary: brandPalette.blueberry,
 });

@@ -15,6 +15,7 @@ import { ERASER_COLOR } from '../../../../components/Whiteboard/constants';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
+import { ThemeName } from '../../../../theme/theme';
 
 export interface IWhiteboardWidgetProps {}
 
@@ -57,7 +58,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = () => {
   const handleExport = useExport(exportToImageURL);
 
   return (
-    <WidgetFrame color="snow">
+    <WidgetFrame color={ThemeName.Snow}>
       <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />}>
         <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />

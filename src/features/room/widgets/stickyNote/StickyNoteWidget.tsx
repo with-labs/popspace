@@ -16,6 +16,12 @@ import { useWidgetContext } from '../useWidgetContext';
 import { ResizeContainerImperativeApi, useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { EditIcon } from '../../../../components/icons/EditIcon';
+import { DoneIcon } from '../../../../components/icons/DoneIcon';
+import { ThemeName } from '../../../../theme/theme';
+import { ColorPickerMenu } from './ColorPickerMenu';
+import { Analytics } from '../../../../analytics/Analytics';
+import { EventNames } from '../../../../analytics/constants';
+import { useRoomStore } from '../../../../roomState/useRoomStore';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -49,10 +55,11 @@ const useStyles = makeStyles((theme) => ({
 export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const roomId = useRoomStore((store) => store.id);
 
   const resizeContainerRef = React.useRef<ResizeContainerImperativeApi>(null);
 
-  const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
+  const { widget: state, save } = useWidgetContext<WidgetType.StickyNote>();
 
   const { user } = useCurrentUserProfile();
   const localUserId = user?.id;
@@ -65,23 +72,45 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     setEditing(true);
   };
 
+  const stopEditing = () => {
+    setEditing(false);
+  };
+
+  const onColorPicked = (color: ThemeName) => {
+    save({
+      color,
+    });
+    Analytics.trackEvent(EventNames.CHANGE_WIDGET_COLOR, {
+      color,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
   return (
-    <WidgetFrame color="mandarin">
+    <WidgetFrame color={state.widgetState.color ?? ThemeName.Mandarin}>
       <WidgetTitlebar title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}>
+        <ColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} />
         {isOwnedByLocalUser && !editing && (
           <WidgetTitlebarButton onClick={startEditing} aria-label={t('widgets.stickyNote.edit')}>
             <EditIcon />
+          </WidgetTitlebarButton>
+        )}
+        {isOwnedByLocalUser && editing && (
+          <WidgetTitlebarButton onClick={stopEditing} aria-label={t('widgets.stickyNote.save')}>
+            <DoneIcon />
           </WidgetTitlebarButton>
         )}
       </WidgetTitlebar>
       <WidgetResizeContainer
         ref={resizeContainerRef}
         mode="free"
-        minWidth={250}
-        minHeight={editing ? 250 : 80}
+        minWidth={270}
+        minHeight={editing ? 270 : 80}
         maxWidth={600}
         maxHeight={800}
-        defaultWidth={250}
+        defaultWidth={270}
         defaultHeight={250}
         className={classes.content}
         disableInitialSizing

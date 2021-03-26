@@ -1,4 +1,5 @@
 import { WhiteboardState } from '../../components/Whiteboard/types';
+import { ThemeName } from '../../theme/theme';
 
 // eslint-disable-next-line no-shadow
 export enum WidgetType {
@@ -31,6 +32,7 @@ export interface WidgetMediaState {
 
 export interface StickyNoteWidgetState {
   text: string;
+  color?: ThemeName;
 }
 
 export interface LinkWidgetState {

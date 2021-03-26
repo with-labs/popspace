@@ -14,6 +14,7 @@ import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import videos from './videos';
+import { ThemeName } from '../../../../theme/theme';
 
 const useStyles = makeStyles((theme) => ({
   draggable: {
@@ -107,7 +108,7 @@ export const MockUserWidget: React.FC = () => {
 
   if (!state.widgetState.displayName || !state.widgetState.video) {
     return (
-      <WidgetFrame color="cherry">
+      <WidgetFrame color={ThemeName.Cherry}>
         <WidgetTitlebar title="Create mock user" />
         <WidgetContent>
           <Formik onSubmit={onSave} initialValues={state.widgetState}>

@@ -5,11 +5,12 @@ import * as themes from '../../../theme/theme';
 import { Draggable } from '../Draggable';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
+import { ThemeName } from '../../../theme/theme';
 
 export interface IWidgetFrameProps {
   children: React.ReactNode;
   className?: string;
-  color?: 'mandarin' | 'cherry' | 'oregano' | 'lavender' | 'snow' | 'slate' | 'transparent';
+  color?: ThemeName | 'transparent';
 }
 
 function useZIndex(widgetId: string) {

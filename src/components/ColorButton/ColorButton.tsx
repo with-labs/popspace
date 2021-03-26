@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { Theme, makeStyles, ButtonBase, IconButton } from '@material-ui/core';
-import { ERASER_COLOR } from './constants';
 import { EraserIcon } from '../icons/EraserIcon';
 import clsx from 'clsx';
+
+import palette from '../../theme/palette';
+export const ERASER_COLOR = palette.slate.regular;
 
 export interface IColorButtonProps {
   color: string;
   active: boolean;
-  onClick: () => void;
+  onClick: (ev: any) => void;
 }
 
 const useStyles = makeStyles<Theme, IColorButtonProps>((theme) => ({

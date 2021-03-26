@@ -11,6 +11,7 @@ import { WidgetResizeContainer } from '../../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
+import { ThemeName } from '../../../../../theme/theme';
 
 // when a media widget is first added, it will shoot for native
 // size but stop at this limit. The user can still resize it larger afterward.
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
  * edge-to-edge. It's resizeable.
  */
 export const FullSizeMediaWidget: React.FC = () => (
-  <WidgetFrame color="transparent">
+  <WidgetFrame color={'transparent'}>
     <DraggableHandle>
       <WidgetContent disablePadding>
         <WidgetResizeContainer mode="scale" minWidth={100} minHeight={54} disableInitialSizing>

@@ -21,6 +21,7 @@ import { useLocalTracks } from '../../../../components/LocalTracksProvider/useLo
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../../constants/User';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
 import { useWidgetContext } from '../useWidgetContext';
+import { ThemeName } from '../../../../theme/theme';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.
@@ -112,7 +113,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
   if (!hasAnyMedia) return null;
 
   return (
-    <WidgetFrame color="slate">
+    <WidgetFrame color={ThemeName.Slate}>
       <WidgetTitlebar title={title} disableRemove>
         {/* Remote users can mute the stream for themselves */}
         {isSharingAudio && !isOwnStream && (

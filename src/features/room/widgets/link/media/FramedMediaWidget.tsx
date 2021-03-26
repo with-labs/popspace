@@ -6,6 +6,7 @@ import { WidgetFrame } from '../../WidgetFrame';
 import { WidgetTitlebar } from '../../WidgetTitlebar';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
+import { ThemeName } from '../../../../../theme/theme';
 
 export const FramedMediaWidget = () => {
   const {
@@ -13,7 +14,7 @@ export const FramedMediaWidget = () => {
   } = useWidgetContext<WidgetType.Link>();
 
   return (
-    <WidgetFrame color="snow">
+    <WidgetFrame color={ThemeName.Snow}>
       <WidgetTitlebar title={data.title} disableRemove>
         <LinkMenu />
       </WidgetTitlebar>

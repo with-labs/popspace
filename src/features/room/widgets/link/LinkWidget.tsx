@@ -10,6 +10,7 @@ import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/u
 import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
 import { UploadingWidget } from './UploadingWidget';
+import { ThemeName } from '../../../../theme/theme';
 
 export interface ILinkWidgetProps {}
 
@@ -33,7 +34,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   if (!state.widgetState.url) {
     if (state.ownerId === user?.id) {
       return (
-        <WidgetFrame color="lavender">
+        <WidgetFrame color={ThemeName.Lavender}>
           <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} />
           <WidgetContent>
             <EditLinkWidgetForm onSave={save} />

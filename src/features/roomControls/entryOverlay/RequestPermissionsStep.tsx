@@ -61,6 +61,7 @@ export const RequestPermissionsStep: React.FC<IRequestPermissionsStepProps> = ({
         // assume we are in hitting this from a simulator from local dev,
         // since the simulator doesnt have access to the the camera or mic,
         // we will continue with a console message.
+        // eslint-disable-next-line no-console
         console.log('DEV NOTICE - Simulator pass through for media device request used');
         onComplete(false);
       } else {

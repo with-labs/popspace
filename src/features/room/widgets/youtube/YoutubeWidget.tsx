@@ -14,6 +14,7 @@ import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/u
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useIsAway } from '../../../roomControls/away/useIsAway';
+import { ThemeName } from '../../../../theme/theme';
 
 export interface IYoutubeWidgetProps {}
 
@@ -83,7 +84,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   if (!state.widgetState.videoId) {
     if (state.ownerId === localUserId) {
       return (
-        <WidgetFrame color="cherry">
+        <WidgetFrame color={ThemeName.Cherry}>
           <WidgetTitlebar title={t('widgets.youtube.title')} />
           <WidgetContent>
             <EditYoutubeWidgetForm onSave={saveWidget} />
@@ -100,7 +101,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   const finalMuted = isMuted || isAway;
 
   return (
-    <WidgetFrame color="cherry">
+    <WidgetFrame color={ThemeName.Cherry}>
       <WidgetTitlebar title={t('widgets.youtube.title')}>
         <MuteButton isPlaying={isPlaying} isMuted={finalMuted} onClick={toggleMuted} />
       </WidgetTitlebar>

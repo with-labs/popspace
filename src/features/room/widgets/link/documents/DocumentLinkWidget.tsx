@@ -6,6 +6,7 @@ import { WidgetFrame } from '../../WidgetFrame';
 import { IFrameDocumentContent } from './IFrameDocumentContent';
 import { CollapsedDocumentContent } from './CollapsedDocumentContent';
 import { makeStyles } from '@material-ui/core';
+import { ThemeName } from '../../../../../theme/theme';
 
 const useStyles = makeStyles(() => ({
   resizeContainer: {
@@ -25,7 +26,7 @@ export function DocumentLinkWidget() {
   const isPDF = widgetState.mediaContentType === 'application/pdf';
 
   return (
-    <WidgetFrame color="snow">
+    <WidgetFrame color={ThemeName.Snow}>
       <WidgetResizeContainer
         mode="free"
         minWidth={340}

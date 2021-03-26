@@ -115,7 +115,6 @@ export const EditStickyNoteWidgetForm: React.FC<IEditStickyNoteWidgetFormProps> 
             onKeyDown={checkForClose}
           />
         </WidgetScrollPane>
-
         <Box mt={1} textAlign="center" flex="0 0 auto">
           <Link to="https://www.markdownguide.org/cheat-sheet" newTab className={classes.cheatSheet}>
             {t('widgets.stickyNote.markdownCheatSheet')}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, Box } from '@material-ui/core';
-import { ColorButton } from './ColorButton';
+import { ColorButton } from '../ColorButton/ColorButton';
 import { COLORS, ERASER_COLOR } from './constants';
 
 export interface IWhiteboardToolsProps {

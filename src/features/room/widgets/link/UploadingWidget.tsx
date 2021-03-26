@@ -5,6 +5,7 @@ import { DraggableHandle } from '../../DraggableHandle';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
+import { ThemeName } from '../../../../theme/theme';
 
 export function UploadingWidget() {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ export function UploadingWidget() {
   const { remove } = useWidgetContext();
 
   return (
-    <WidgetFrame color="snow">
+    <WidgetFrame color={ThemeName.Snow}>
       <DraggableHandle>
         <WidgetContent>
           <Box display="flex" flexDirection="row" alignItems="center" width={340}>

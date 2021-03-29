@@ -1,5 +1,3 @@
-global.tlib = require("../../../lib/_testlib")
-
 const requestStickyNoteCreate = async (client) => {
   const response = await client.sendEventWithPromise("createWidget", {
     type: "sticky_note",

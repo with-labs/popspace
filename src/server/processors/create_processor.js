@@ -61,7 +61,6 @@ class CreateProcessor {
       await shared.db.pg.massive.withTransaction(async (tx) => {
         await tx.widgets.destroy({id: widget.id})
         await tx.room_widgets.destroy({widget_id: widget.id, room_id: room.id})
-        return { widget, roomWidget }
       })
       if(e.code == 'ProvisionedThroughputExceededException') {
         log.error.error(`Dynamo throughput excededed (rid ${room.id}, wid ${widgetId})`)

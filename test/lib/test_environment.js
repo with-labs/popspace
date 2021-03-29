@@ -42,7 +42,7 @@ module.exports = class {
     // TODO: this should move out to RoomUserClient
     const { session, token } = await this.initiateLoggedInSession(user.id)
     const roomUserClient = new tlib.models.RoomUserClient(room, user, client, roomNameEntry)
-    roomUserClient.setLogInSession(session, token)
+    await roomUserClient.setLogInSession(session, token)
     this.loggedInUsers.push(roomUserClient)
     return roomUserClient
   }

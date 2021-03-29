@@ -17,6 +17,7 @@ import { devtools } from 'zustand/middleware';
 import { Analytics } from '../analytics/Analytics';
 import { EventNames, Origin } from '../analytics/constants';
 import { sanityCheckWidget } from './sanityCheckWidget';
+import { ROOM_SIZE } from '../constants/room';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -71,8 +72,8 @@ const emptyState: RoomStateShape = {
     wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
     isCustomWallpaper: false,
     bounds: {
-      width: 2400,
-      height: 2400,
+      width: ROOM_SIZE,
+      height: ROOM_SIZE,
     },
     displayName: '',
     zOrder: [],

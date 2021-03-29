@@ -11,3 +11,5 @@ export const MAX_FREE_ROOMS = 20;
 // To allow people to find quiet spaces, we probably want this to be
 // no larger than 3/4 the room size, maybe smaller
 export const MAX_AUDIO_RANGE = 1200;
+
+export const ROOM_SIZE = 2400;

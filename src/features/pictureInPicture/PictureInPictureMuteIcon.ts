@@ -11,7 +11,7 @@ const SCALE = 4;
 export class PictureInPictureMuteIcon extends PictureInPictureRenderable {
   render = (position: Vector2) => {
     this.ctx.fillStyle = snow.palette.brandColors.cherry.bold;
-    this.ctx.strokeStyle = snow.palette.brandColors.ink.regular;
+    this.ctx.strokeStyle = snow.palette.brandColors.snow.regular;
     this.ctx.lineWidth = 1;
     // offset drawing position
     this.ctx.setTransform(SCALE, 0, 0, SCALE, position.x, position.y);

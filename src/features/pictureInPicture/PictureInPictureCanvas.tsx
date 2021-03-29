@@ -173,11 +173,14 @@ export class PictureInPictureCanvas extends EventEmitter {
     this.stop();
 
     // @ts-ignore until this is officially typed
-    await document.exitPictureInPicture();
+    if (document.pictureInPictureElement) {
+      // @ts-ignore until this is officially typed
+      await document.exitPictureInPicture();
+    }
   };
 
   dispose = () => {
-    this.stop();
+    this.deactivate();
     this.unsubscribe();
     for (const user of Object.values(this.users)) {
       user.dispose();
@@ -203,9 +206,9 @@ export class PictureInPictureCanvas extends EventEmitter {
       // clear the screen
       this.ctx.clearRect(0, 0, VIEW_SIZE, VIEW_SIZE);
 
-      this.wallpaper.render();
-
       const ownPosition = selectOwnPosition(useRoomStore.getState());
+
+      this.wallpaper.render(ownPosition);
 
       if (!ownPosition) return;
 

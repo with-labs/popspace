@@ -54,8 +54,8 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     const avatarName = state?.avatarName ?? 'blobby';
 
     // avoid repeated sets of src as it loads the image from network
-    if (this.avatarImage.src !== avatarMetadata[avatarName].image) {
-      this.avatarImage.src = avatarMetadata[avatarName].image;
+    if (this.avatarImage.src !== this.getImgSrc(avatarMetadata[avatarName].image)) {
+      this.avatarImage.src = this.getImgSrc(avatarMetadata[avatarName].image);
     }
     this.color = avatarMetadata[avatarName].backgroundColor;
     this.name = state.displayName ?? '';
@@ -102,10 +102,12 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
 
   private drawAvatar = async (position: Vector2, scale: number) => {
     this.ctx.fillStyle = snow.palette.common.white;
+    this.enableShadow();
     this.ctx.beginPath();
     this.ctx.arc(this.halfWidth + position.x, this.halfHeight + position.y, SIZE * scale, 0, Math.PI * 2);
     this.ctx.fill();
     this.ctx.closePath();
+    this.disableShadow();
 
     this.ctx.fillStyle = this.color;
     this.ctx.beginPath();
@@ -138,10 +140,12 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
 
   private drawDot = async (position: Vector2, scale: number) => {
     this.ctx.fillStyle = this.color;
+    this.enableShadow();
     this.ctx.beginPath();
     this.ctx.arc(this.halfWidth + position.x, this.halfHeight + position.y, SIZE * scale, 0, Math.PI * 2);
     this.ctx.fill();
     this.ctx.closePath();
+    this.disableShadow();
   };
 
   // some selectors for fetching and subscribing to data

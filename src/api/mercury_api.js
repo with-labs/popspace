@@ -75,19 +75,14 @@ class MercuryApi {
     })
 
     this.api.loggedInPostEndpoint("/get_or_init_default_room", async (req, res) => {
-      let defaultRoom = await shared.db.pg.massive.default_rooms.findOne({
-        user_id: req.user.id,
-      })
+      async function initializeDefaultRoom() {
+        let initializedDefaultRoom
 
-      // if no default_room row exists, we fallback to a heuristic -
-      // choose an arbitrary owned room, if no owned rooms choose an arbitrary
-      // membership room.
-      if (!defaultRoom) {
         const firstOwnedRoom = await shared.db.pg.massive.rooms.findOne({
           owner_id: req.user.id,
         })
         if (firstOwnedRoom) {
-          defaultRoom = {
+          initializedDefaultRoom = {
             user_id: req.user.id,
             room_id: firstOwnedRoom.id,
           }
@@ -98,21 +93,39 @@ class MercuryApi {
           if (firstRoomMembership) {
             return http.fail(req, res, lib.ErrorCodes.NO_DEFAULT_ROOM)
           }
-          defaultRoom = {
+          initializedDefaultRoom = {
             user_id: req.user.id,
             room_id: firstRoomMembership.room_id,
           }
         }
         // write the chosen default so it remains stable for future requests
-        await shared.db.pg.massive.default_rooms.insert(defaultRoom)
+        await shared.db.pg.massive.default_rooms.insert(initializedDefaultRoom)
+        return initializedDefaultRoom
       }
 
-      const preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
+      let defaultRoom = await shared.db.pg.massive.default_rooms.findOne({
+        user_id: req.user.id,
+      })
+
+      // if no default_room row exists, we fallback to a heuristic -
+      // choose an arbitrary owned room, if no owned rooms choose an arbitrary
+      // membership room.
+      if (!defaultRoom) {
+        defaultRoom = initializeDefaultRoom()
+      }
+
+      let preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
       if (!preferredRoute) {
-        // TODO: log this, if a room doesn't have a route that represents a major problem in room setup
-        return http.fail(req, res, "Unexpected error getting room information", {
-          errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
-        })
+        // there's a good chance the room referenced by the existing default_rooms row
+        // was deleted. re-initialize with a new default
+        defaultRoom = initializeDefaultRoom()
+        preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
+
+        if (!preferredRoute) {
+          return http.fail(req, res, "Unexpected error getting default room", {
+            errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
+          })
+        }
       }
       const preferredRouteName = preferredRoute.name
       return http.succeed(req, res, { room_route: preferredRouteName })

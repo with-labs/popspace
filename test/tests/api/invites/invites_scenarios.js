@@ -1,5 +1,3 @@
-global.tlib = require("../../../lib/_testlib")
-
 const addUserAndJoin = async (testEnvironment, roomId, inviteId, inviteOtp) => {
     const joiningUser = await factory.create("user")
     const {session, token} = await testEnvironment.initiateLoggedInSession(joiningUser.id)

@@ -2,7 +2,6 @@ const url = require("url")
 
 const appInfo = {
   webUrl: (req) => {
-
     if(req) {
       /*
         Currently only the web app will make requests.
@@ -27,7 +26,6 @@ const appInfo = {
           return null
       }
     }
-
   },
 
   apiHost: (req) => {
@@ -48,6 +46,10 @@ const appInfo = {
           return null
       }
     }
+  },
+
+  wssUrl: (req) => {
+    return `wss://${appInfo.apiHost(req)}:${appInfo.apiPort()}`
   },
 
   apiUrl: (req) => {
@@ -73,6 +75,10 @@ const appInfo = {
   apiPort: () => {
     switch(process.env.NODE_ENV) {
       case 'production':
+        /*
+          I think it would be better to
+          have env-specific names, e.g. PRODUCTION_PORT
+        */
         return 8443
       case 'development':
         return process.env.EXPRESS_PORT

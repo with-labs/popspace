@@ -40,6 +40,9 @@ class Client extends EventEmitter {
   /* API: usually use these methods */
   /**********************************/
   async connect() {
+    if(this.socket) {
+      return
+    }
     return new Promise((resolve, reject) => {
       this.socket = new ws(this.serverUrl, {
         rejectUnauthorized: lib.appInfo.isProduction()

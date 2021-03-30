@@ -1,5 +1,3 @@
-global.tlib = require("../../../lib/_testlib")
-
 module.exports = {
   "restarts_correclty": async () => {
     for(let i = 0; i < 5; i++) {

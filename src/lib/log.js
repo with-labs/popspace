@@ -1,25 +1,28 @@
 const log4js = require('log4js')
 const log4jsConfig = {
   appenders: {
+    all: {type: 'file', filename: 'logs/all.log'},
     database: { type: 'file', filename: 'logs/database.log' },
     app: { type: 'file', filename: 'logs/app.log' },
     console: { type: 'console' },
     dev: {type: 'file', filename: 'logs/dev.log'},
     received: {type: 'file', filename: 'logs/received.log'},
     sent: {type: 'file', filename: 'logs/sent.log'},
-    error: {type: 'file', filename: 'logs/error.log'}
+    error: {type: 'file', filename: 'logs/error.log'},
+    system: {type: 'file', filename: 'logs/system.log'}
   },
   categories: {
-    default: { appenders: ['console'], level: 'info' },
-    app: { appenders: ['app', 'console'], level:  process.env.NODE_ENV == 'test' ? 'error' : 'info' },
-    database: { appenders: ['database'], level: 'info' },
+    default: { appenders: ['console', 'all'], level: 'info' },
+    app: { appenders: ['app', 'console', 'all'], level:  process.env.NODE_ENV == 'test' ? 'error' : 'info' },
+    system: { appenders: ['system', 'all'], level:  'trace' },
+    database: { appenders: ['database', 'all'], level: 'info' },
     dev: {
       appenders: ['console', 'dev'],
       level: ['developoment'].includes(process.env.NODE_ENV) ? 'trace' : 'off'
     },
-    received: { appenders: ['received'], level: 'trace' },
-    sent: { appenders: ['sent'], level: 'trace' },
-    error: { appenders: ['error'], level: 'trace'}
+    received: { appenders: ['received', 'all'], level: 'trace' },
+    sent: { appenders: ['sent', 'all'], level: 'trace' },
+    error: { appenders: ['error', 'all'], level: 'trace'}
   }
 }
 log4js.configure(log4jsConfig)
@@ -31,6 +34,7 @@ logging = {
   default: log4js.getLogger(),
   database: log4js.getLogger('database'),
   app: log4js.getLogger('app'),
+  system: log4js.getLogger('system'),
   dev: log4js.getLogger('dev'),
   received: log4js.getLogger('received'),
   sent: log4js.getLogger('sent'),

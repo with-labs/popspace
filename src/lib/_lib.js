@@ -3,8 +3,7 @@ const lib = {}
 lib.ws = require('ws')
 
 lib.log = require("./log")
-global.log = lib.log
-global.shared = require("@withso/with-shared")
+lib.shared = require("@withso/with-shared")
 lib.Client = require("../client/client")
 lib.ErrorCodes = require("./error_codes")
 lib.event = require("./event/_events")
@@ -34,7 +33,5 @@ lib.error = async (code, message, data={}) => {
     data: data
   })
 }
-
-global.lib = lib
 
 module.exports = lib

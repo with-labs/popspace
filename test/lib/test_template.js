@@ -2,11 +2,12 @@ module.exports = {
   describeWithLib: (name, handler) => {
     describe(name, () => {
       beforeAll(async () => {
+        await tlib.init()
         await lib.init()
         await shared.db.pg.silenceLogs()
       })
       afterAll(async () => {
-        return lib.cleanup()
+        return await lib.cleanup()
       })
       return handler()
     })

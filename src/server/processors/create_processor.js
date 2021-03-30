@@ -41,22 +41,35 @@ class CreateProcessor {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and transform in payload.`)
     }
 
-    // TODO: Perhaps-in-room and widgets should have their own classes,
-    // similar to participants: the database access logic (fetch/update)
-    // and serialization logic can live there.
-    // Arguably that may be more useful if we want to cache widget data later,
-    // and we don't need it yet.
-    const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
+    const { widget, roomWidget } = await shared.db.pg.massive.withTransaction(async (tx) => {
       const widget = await tx.widgets.insert({owner_id: widgetOwner.id, _type: payload.type})
       const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: room.id})
-      return widget
+      return { widget, roomWidget }
     })
-
-    const roomWidget = new shared.models.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetOwner.display_name)
-    await shared.db.room.widgets.addWidgetInRoom(roomWidget)
-
-    sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")
-    sender.broadcastPeerEvent("widgetCreated", roomWidget.serialize())
+    /**
+      TODO: ensure that if the server dies here, the data is not lost
+      https://with.height.app/mercury/T-765
+    */
+    try {
+      const roomWidget = new shared.models.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetOwner.display_name)
+      await shared.db.room.widgets.addWidgetInRoom(roomWidget)
+      sender.sendResponse(event, roomWidget.serialize(), "widgetCreated")
+      sender.broadcastPeerEvent("widgetCreated", roomWidget.serialize())
+    } catch (e) {
+      const widgetId = widget.id
+      log.error.error(`Could not write widget (rid ${room.id}, uid ${widgetOwner.id}, wid ${widget.id}, ${JSON.stringify(payload)})`)
+      await shared.db.pg.massive.withTransaction(async (tx) => {
+        await tx.widgets.destroy({id: widget.id})
+        await tx.room_widgets.destroy({widget_id: widget.id, room_id: room.id})
+      })
+      if(e.code == 'ProvisionedThroughputExceededException') {
+        log.error.error(`Dynamo throughput excededed (rid ${room.id}, wid ${widgetId})`)
+        return sender.sendError(event, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
+      } else {
+        log.error.error(`Unexpected error writing widget (rid ${room.id}, wid ${widgetId})`)
+        return sender.sendError(event, shared.error.code.UNEXPECTER_ERROR, `Could not write widget to database, please try again later.`)
+      }
+    }
   }
 }
 

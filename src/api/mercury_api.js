@@ -15,6 +15,11 @@ class MercuryApi {
   }
 
   initPostRoutes() {
+    this.api.loggedInPostEndpoint("/subscribe_to_newsletter", async (req, res) => {
+      await shared.db.accounts.subscribeToNewsletter(req.user.id)
+      return await http.succeed(req, res, { });
+    })
+
     this.api.ownerOnlyRoomRouteEndpoint("/enable_public_invite_link", async (req, res) => {
       const roomState = await shared.db.dynamo.room.getRoomState(req.room.id)
       const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.room.id, req.user.id, roomState.display_name)

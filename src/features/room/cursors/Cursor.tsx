@@ -48,7 +48,7 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
 
   const viewport = useRoomViewport();
 
-  const [styles, setStyles] = useSpring(() => ({
+  const [styles, spring] = useSpring(() => ({
     // populate initial state from store
     ...selectPosition(useRoomStore.getState()),
     visibility: selectActive(useRoomStore.getState()) ? ('visible' as const) : ('hidden' as const),
@@ -57,21 +57,21 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
 
   React.useEffect(() => {
     useRoomStore.subscribe<Vector2>((pos) => {
-      setStyles({
+      spring.start({
         x: pos.x + viewport.width / 2,
         y: pos.y + viewport.height / 2,
       });
     }, selectPosition);
 
     useRoomStore.subscribe<boolean>((active) => {
-      setStyles({ visibility: active ? 'visible' : 'hidden' });
+      spring.start({ visibility: active ? 'visible' : 'hidden' });
     }, selectActive);
-  }, [selectPosition, selectActive, setStyles, viewport]);
+  }, [selectPosition, selectActive, spring, viewport]);
 
   // update spring when avatar color changes
   React.useEffect(() => {
-    setStyles({ color });
-  }, [color, setStyles]);
+    spring.start({ color });
+  }, [color, spring]);
 
   const contrastColor = React.useMemo(() => {
     const ratio = getContrastRatio(theme.palette.common.black, color);

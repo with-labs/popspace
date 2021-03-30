@@ -44,13 +44,13 @@ function createTransform(scale: number) {
 export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPaused, className, variant = 'flat' }) => {
   const classes = useStyles();
 
-  const [bar1, setBar1] = useSpring(() => ({
+  const [bar1, bar1Ref] = useSpring(() => ({
     transform: createTransform(0.625),
   }));
-  const [bar2, setBar2] = useSpring(() => ({
+  const [bar2, bar2Ref] = useSpring(() => ({
     transform: createTransform(1),
   }));
-  const [bar3, setBar3] = useSpring(() => ({
+  const [bar3, bar3Ref] = useSpring(() => ({
     transform: createTransform(0.375),
   }));
 
@@ -58,9 +58,9 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
     if (isActive) {
       if (variant === 'sine') {
         if (isPaused) {
-          setBar1({ transform: createTransform(0.625) });
-          setBar2({ transform: createTransform(1) });
-          setBar3({ transform: createTransform(0.375) });
+          bar1Ref.start({ transform: createTransform(0.625) });
+          bar2Ref.start({ transform: createTransform(1) });
+          bar3Ref.start({ transform: createTransform(0.375) });
         } else {
           let frame: number = 0;
           let start: DOMHighResTimeStamp;
@@ -72,9 +72,9 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
             const val2 = convolutedSinMovement(elapsed, Math.PI / 2) * 8 + 5;
             const val3 = convolutedSinMovement(elapsed, Math.PI / 6) * 4 + 4;
 
-            setBar1({ transform: createTransform(val1 / 16) });
-            setBar2({ transform: createTransform(val2 / 16) });
-            setBar3({ transform: createTransform(val3 / 16) });
+            bar1Ref.start({ transform: createTransform(val1 / 16) });
+            bar2Ref.start({ transform: createTransform(val2 / 16) });
+            bar3Ref.start({ transform: createTransform(val3 / 16) });
 
             frame = requestAnimationFrame(loop);
           };
@@ -85,21 +85,21 @@ export const AudioIndicator: React.FC<IAudioIndicatorProps> = ({ isActive, isPau
         }
       } else {
         if (isPaused) {
-          setBar1({ transform: createTransform(0.5) });
-          setBar2({ transform: createTransform(0.75) });
-          setBar3({ transform: createTransform(0.5) });
+          bar1Ref.start({ transform: createTransform(0.5) });
+          bar2Ref.start({ transform: createTransform(0.75) });
+          bar3Ref.start({ transform: createTransform(0.5) });
         } else {
-          setBar1({ transform: createTransform(0.625) });
-          setBar2({ transform: createTransform(1) });
-          setBar3({ transform: createTransform(0.625) });
+          bar1Ref.start({ transform: createTransform(0.625) });
+          bar2Ref.start({ transform: createTransform(1) });
+          bar3Ref.start({ transform: createTransform(0.625) });
         }
       }
     } else {
-      setBar1({ transform: createTransform(0.125) });
-      setBar2({ transform: createTransform(0.125) });
-      setBar3({ transform: createTransform(0.125) });
+      bar1Ref.start({ transform: createTransform(0.125) });
+      bar2Ref.start({ transform: createTransform(0.125) });
+      bar3Ref.start({ transform: createTransform(0.125) });
     }
-  }, [isActive, isPaused, setBar1, setBar2, setBar3, variant]);
+  }, [isActive, isPaused, bar1Ref, bar2Ref, bar3Ref, variant]);
 
   return (
     <svg

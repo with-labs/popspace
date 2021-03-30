@@ -26,7 +26,7 @@ export const PersonBubbleFrame = React.forwardRef<HTMLDivElement, IPersonBubbleF
     const classes = useStyles();
 
     const rootStyles = useSpring({
-      borderRadius: isVideoOn ? 32 : '100%',
+      borderRadius: isVideoOn ? 32 : SMALL_SIZE,
       width: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
       height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
     });
@@ -36,7 +36,7 @@ export const PersonBubbleFrame = React.forwardRef<HTMLDivElement, IPersonBubbleF
         {...rest}
         ref={ref}
         className={clsx(classes.root, rest.className)}
-        style={rootStyles as any}
+        style={rootStyles}
       ></animated.div>
     );
   }

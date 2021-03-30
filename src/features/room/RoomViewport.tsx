@@ -157,13 +157,13 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   // the main spring which controls the Canvas transformation.
   // X/Y position is in World Space - i.e. the coordinate space
   // is not affected by the zoom
-  const [{ centerX, centerY }, setPanSpring] = useSpring(() => ({
+  const [{ centerX, centerY }, panSpring] = useSpring(() => ({
     centerX: 0,
     centerY: 0,
     isPanning: false,
     config: VIEWPORT_PAN_SPRING,
   }));
-  const [{ zoom, isZooming }, setZoomSpring] = useSpring(() => ({
+  const [{ zoom, isZooming }, zoomSpring] = useSpring(() => ({
     zoom: minZoom,
     isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
@@ -253,18 +253,18 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: centerY?.goal ?? 0,
       });
 
-      const panPromise = setPanSpring({
+      const panPromise = panSpring.start({
         centerX: clampedPan.x,
         centerY: clampedPan.y,
         config: spring ?? VIEWPORT_PAN_SPRING,
-      });
-      const zoomPromise = setZoomSpring({
+      })[0];
+      const zoomPromise = zoomSpring.start({
         zoom: clamped,
         config: spring ?? VIEWPORT_ZOOM_SPRING,
-      });
+      })[0];
       return Promise.all([panPromise, zoomPromise]);
     },
-    [centerX, centerY, clampPanPosition, maxZoom, minZoom, setZoomSpring, setPanSpring, setSavedZoom]
+    [centerX, centerY, clampPanPosition, maxZoom, minZoom, zoomSpring, panSpring, setSavedZoom]
   );
 
   const doZoom = React.useCallback(
@@ -288,30 +288,30 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
         y: (centerY?.goal ?? 0) - delta.y / (zoom?.goal ?? 1),
       });
 
-      return setPanSpring({
+      return panSpring.start({
         centerX: clamped.x,
         centerY: clamped.y,
         isPanning: true,
         config: spring ?? VIEWPORT_PAN_SPRING,
-      });
+      })[0]; // return is a list of promises, we only care about 1st
     },
-    [centerX, centerY, clampPanPosition, setPanSpring, zoom]
+    [centerX, centerY, clampPanPosition, panSpring, zoom]
   );
 
   const doAbsolutePan = React.useCallback(
     async (worldPosition: Vector2, spring?: SpringConfig) => {
       const clamped = clampPanPosition(multiplyVector(worldPosition, -1));
-      await setPanSpring({
+      await panSpring.start({
         centerX: clamped.x,
         centerY: clamped.y,
         isPanning: true,
         config: spring ?? VIEWPORT_PAN_SPRING,
-      });
-      return setPanSpring({
+      })[0]; // return is a list of promises, we only care about 1st
+      return panSpring.start({
         isPanning: false,
-      });
+      })[0];
     },
-    [clampPanPosition, setPanSpring]
+    [clampPanPosition, panSpring]
   );
 
   const userId = useRoomStore((room) => (room.sessionId && room.sessionLookup[room.sessionId]) ?? null);
@@ -338,18 +338,18 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       const point = userPosition.position;
 
       // set flags to control rasterization optimizations
-      setPanSpring({ isPanning: true });
-      setZoomSpring({ isZooming: true });
+      panSpring.set({ isPanning: true });
+      zoomSpring.set({ isZooming: true });
       // zoom in
       const zoomResult = doAbsoluteZoomRef.current(savedZoomRef.current ?? INITIAL_ZOOM, SPRINGS.RELAXED);
       const panResult = doAbsolutePanRef.current(point, SPRINGS.RELAXED);
       await Promise.all([zoomResult, panResult]);
-      setPanSpring({ isPanning: false });
-      setZoomSpring({ isZooming: false });
+      panSpring.set({ isPanning: false });
+      zoomSpring.set({ isZooming: false });
       events.emit('zoomEnd');
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [userId, isReady, setPanSpring, setZoomSpring, doAbsolutePanRef, doAbsoluteZoomRef, events]);
+  }, [userId, isReady, panSpring, zoomSpring, doAbsolutePanRef, doAbsoluteZoomRef, events]);
 
   // active is required to prevent default behavior, which
   // we want to do for zoom.
@@ -372,11 +372,11 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       },
       onPinchStart: ({ event }) => {
         event?.preventDefault();
-        setZoomSpring({ isZooming: true });
+        zoomSpring.set({ isZooming: true });
       },
       onPinchEnd: ({ event }) => {
         event?.preventDefault();
-        setZoomSpring({ isZooming: false });
+        zoomSpring.set({ isZooming: false });
         events.emit('zoomEnd');
       },
     },
@@ -405,23 +405,23 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       doPan({ x: -x, y: -y });
     },
     onDragStart: () => {
-      setPanSpring({ isPanning: true });
+      panSpring.set({ isPanning: true });
     },
     onDragEnd: () => {
-      setPanSpring({ isPanning: false });
+      panSpring.set({ isPanning: false });
     },
     onWheelStart: ({ event }) => {
       if (event?.ctrlKey) {
-        setZoomSpring({ isZooming: true });
+        zoomSpring.set({ isZooming: true });
       } else {
-        setPanSpring({ isPanning: true });
+        panSpring.set({ isPanning: true });
       }
     },
     onWheelEnd: () => {
       if (isZooming.goal) {
-        setZoomSpring({ isZooming: false });
+        zoomSpring.set({ isZooming: false });
       } else {
-        setPanSpring({ isPanning: false });
+        panSpring.set({ isPanning: false });
       }
       events.emit('zoomEnd');
     },

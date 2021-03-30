@@ -168,7 +168,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
   // after a change. That change might happen because the user dragged it,
   // or a new position has come in from the server.
   const { current: initialPosition } = React.useRef(selectPosition(useRoomStore.getState()));
-  const [{ x, y, grabbing }, set] = useSpring(() => ({
+  const [{ x, y, grabbing }, spring] = useSpring(() => ({
     // initial values
     x: initialPosition.x,
     y: initialPosition.y,
@@ -184,13 +184,13 @@ export const Draggable: React.FC<IDraggableProps> = ({
       useRoomStore.subscribe<Vector2 | null>((pos) => {
         // only update position from Redux if we are not dragging right now
         if (pos && !grabbing.get()) {
-          set({
+          spring.start({
             x: pos.x,
             y: pos.y,
           });
         }
       }, selectPosition),
-    [set, grabbing, selectPosition]
+    [spring, grabbing, selectPosition]
   );
 
   const grabDisplacementRef = React.useRef<Vector2 | null>(null);
@@ -210,20 +210,20 @@ export const Draggable: React.FC<IDraggableProps> = ({
       // report the movement after converting to world coordinates
       const finalPosition = roundVector(addVectors(worldPosition, grabDisplacementRef.current || { x: 0, y: 0 }));
       onMove(finalPosition);
-      set(finalPosition);
+      spring.start(finalPosition);
     };
     autoPan.on('pan', handleAutoPan);
     return () => {
       autoPan.off('pan', handleAutoPan);
     };
-  }, [autoPan, toWorldCoordinate, onMove, set]);
+  }, [autoPan, toWorldCoordinate, onMove, spring]);
 
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture(
     {
       onDrag: (state) => {
         if (state.distance > 10) {
-          set({ grabbing: true });
+          spring.set({ grabbing: true });
         }
 
         if (state.event?.target) {
@@ -263,10 +263,9 @@ export const Draggable: React.FC<IDraggableProps> = ({
         // send to Redux and peers
         onMove(finalPosition);
         // update our local position immediately
-        set({
+        spring.set({
           x: finalPosition.x,
           y: finalPosition.y,
-          immediate: true,
         });
 
         autoPan.update({ x: state.xy[0], y: state.xy[1] });
@@ -279,7 +278,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
       onDragEnd: (state) => {
         state.event?.stopPropagation();
         viewport.onObjectDragEnd();
-        set({ grabbing: false });
+        spring.set({ grabbing: false });
         autoPan.stop();
         onDragEnd?.();
       },

@@ -21,7 +21,7 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
   ({ isVideoOn, className, ...rest }, ref) => {
     const classes = useStyles();
 
-    const [speakingIndicatorStyles, setSpeakingIndicatorStyles] = useSpring(() => ({
+    const [speakingIndicatorStyles, spring] = useSpring(() => ({
       right: isVideoOn ? '8%' : '50%',
       bottom: isVideoOn ? -10 : -8,
       opacity: 1,
@@ -34,22 +34,23 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
     React.useEffect(() => {
       (async function () {
         if (isVideoOn) {
-          await setSpeakingIndicatorStyles({ opacity: 0 });
-          await setSpeakingIndicatorStyles({
+          // returns of .start are a list of promises, we only care about 1st
+          await spring.start({ opacity: 0 })[0];
+          await spring.start({
             right: '8%',
             bottom: -20,
-          });
-          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -10 });
+          })[0];
+          await spring.start({ opacity: 1, bottom: -10 })[0];
         } else {
-          await setSpeakingIndicatorStyles({ opacity: 0 });
-          await setSpeakingIndicatorStyles({
+          await spring.start({ opacity: 0 })[0];
+          await spring.start({
             right: '50%',
             bottom: -18,
-          });
-          await setSpeakingIndicatorStyles({ opacity: 1, bottom: -8 });
+          })[0];
+          await spring.start({ opacity: 1, bottom: -8 })[0];
         }
       })();
-    }, [isVideoOn, setSpeakingIndicatorStyles]);
+    }, [isVideoOn, spring]);
 
     return (
       <animated.div

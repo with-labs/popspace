@@ -96,7 +96,7 @@ export const SidecarStreamPreview = React.memo(
       });
     });
 
-    const [rootStyles, setRootStyles] = useSpring(() => ({
+    const [rootStyles, rootSpring] = useSpring(() => ({
       x: 0,
       y: 0,
       display: hasWidgetInRoom ? 'none' : 'flex',
@@ -104,7 +104,7 @@ export const SidecarStreamPreview = React.memo(
       config: SPRINGS.RESPONSIVE,
     }));
 
-    const [videoStyles, setVideoStyles] = useSpring(() => ({
+    const [videoStyles, videoSpring] = useSpring(() => ({
       scale: 1,
       boxShadow: 'none',
       borderRadius: theme.shape.innerBorderRadius,
@@ -112,28 +112,28 @@ export const SidecarStreamPreview = React.memo(
 
     // when the the pop-out accessory is created or destroyed, show/hide the preview
     React.useEffect(() => {
-      setRootStyles({
+      rootSpring.start({
         display: hasWidgetInRoom ? 'none' : 'flex',
       });
-      setVideoStyles({
+      videoSpring.start({
         // reset scale
         scale: 1,
       });
-    }, [hasWidgetInRoom, setRootStyles, setVideoStyles]);
+    }, [hasWidgetInRoom, rootSpring, videoSpring]);
 
     const bind = useGesture(
       {
         onDrag: (ev) => {
           ev.event?.stopPropagation();
           if (isLocal) {
-            setRootStyles({
+            rootSpring.start({
               // dividing by viewport zoom corrects the offset according to
               // the zoom value
               x: ev.movement[0] / viewport.getZoom(),
               y: ev.movement[1] / viewport.getZoom(),
               cursor: 'grabbing',
             });
-            setVideoStyles({
+            videoSpring.start({
               // a visual indicator for the user of the tear-off action intention
               scale: ev.distance > TEAR_THRESHOLD ? 3 : 1,
               boxShadow: theme.mainShadows.surface,
@@ -148,11 +148,11 @@ export const SidecarStreamPreview = React.memo(
         onDragEnd: (ev) => {
           function returnToNeutral() {
             // return to neutral position
-            setRootStyles({
+            rootSpring.start({
               x: 0,
               y: 0,
             });
-            setVideoStyles({
+            videoSpring.start({
               scale: 1,
               boxShadow: 'none',
               borderRadius: theme.shape.innerBorderRadius,

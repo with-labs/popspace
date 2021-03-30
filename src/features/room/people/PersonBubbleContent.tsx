@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
+import { SMALL_SIZE } from './constants';
 
 export interface IPersonBubbleContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
@@ -24,7 +25,7 @@ export const PersonBubbleContent = React.forwardRef<HTMLDivElement, IPersonBubbl
     const classes = useStyles();
     const mainContentStyles = useSpring({
       // reduce border radius to align based on border width
-      borderRadius: isVideoOn ? 28 : '100%',
+      borderRadius: isVideoOn ? 28 : SMALL_SIZE,
     });
 
     return <animated.div className={clsx(classes.root, className)} style={mainContentStyles as any} {...rest} />;

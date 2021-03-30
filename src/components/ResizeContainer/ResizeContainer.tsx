@@ -211,7 +211,7 @@ export const ResizeContainer = React.memo(
         }
       }, [size, defaultWidth, defaultHeight, onResize]);
 
-      const [{ width, height, resizing }, set] = useSpring(() => ({
+      const [{ width, height, resizing }, spring] = useSpring(() => ({
         width: providedWidth,
         height: providedHeight,
         resizing: false,
@@ -262,11 +262,11 @@ export const ResizeContainer = React.memo(
 
       // this effect updates the spring dimensions when the size changes
       React.useEffect(() => {
-        set({
+        spring.start({
           width: providedWidth,
           height: providedHeight,
         });
-      }, [providedWidth, providedHeight, set]);
+      }, [providedWidth, providedHeight, spring]);
 
       const bindResizeHandle = useGesture(
         {
@@ -288,8 +288,8 @@ export const ResizeContainer = React.memo(
             const newWidth = providedWidth + deltaX * getResizeScaleFactor();
             const newHeight = providedHeight + deltaY * getResizeScaleFactor();
 
-            set({
-              ...clampAndEnforceMode({
+            spring.set(
+              clampAndEnforceMode({
                 width: newWidth,
                 height: newHeight,
                 minHeight,
@@ -298,9 +298,8 @@ export const ResizeContainer = React.memo(
                 maxWidth,
                 originalAspectRatio,
                 mode,
-              }),
-              immediate: true,
-            });
+              })
+            );
 
             // memoize initialPosition for future events to reference
             return initialPosition;
@@ -308,12 +307,12 @@ export const ResizeContainer = React.memo(
           onDragStart: (state) => {
             state.event?.stopPropagation();
             viewport.onObjectDragStart();
-            set({ resizing: true });
+            spring.set({ resizing: true });
           },
           onDragEnd: (state) => {
             state.event?.stopPropagation();
             viewport.onObjectDragEnd();
-            set({ resizing: false });
+            spring.set({ resizing: false });
             // report change to parent
             onResize({
               width: width.goal,

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "debug": "node --experimental-repl-await inspect index.js",
     "console": "node --experimental-repl-await ./scripts/console.js",
     "test:all": "NODE_ENV=test jest --runInBand",
     "test:api": "NODE_ENV=test jest --runInBand ./tests/api",

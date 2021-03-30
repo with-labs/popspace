@@ -41,11 +41,9 @@ class Mercury {
     return new Promise((resolve, reject) => {
       this.server = https.createServer(loadSsl(), this.express)
       this.server.on('upgrade', (request, socket, head) => {
-        log.app.info(`Upgrade (uid ${request.user ? request.user.id : null})`)
         // Standard http upgrade procedure
         // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
         this.ws.handleUpgrade(request, socket, head, (socket) => {
-          log.app.info(`WS connecton (uid ${request.user ? request.user.id : null})`)
           this.ws.emit('connection', socket, request)
         })
       })

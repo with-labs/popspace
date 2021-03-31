@@ -58,7 +58,6 @@ class UpdateProcessor {
     sender.broadcastPeerEvent(kind, event.payload())
     sender.sendResponse(event, event.payload(), kind)
   }
-
 }
 
 module.exports = UpdateProcessor

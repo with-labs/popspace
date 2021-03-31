@@ -1,7 +1,6 @@
 class Routes {
-
   publicInviteRoute(inviteEntry) {
-    return `/invite/${inviteEntry.otp}?iid=${inviteEntry.id}`
+    return `/join/${inviteEntry.otp}?iid=${inviteEntry.id}`
   }
 }
 

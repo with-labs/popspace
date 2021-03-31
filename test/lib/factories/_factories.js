@@ -35,12 +35,14 @@ class MassiveJsAdapter {
   }
 }
 
-factory.setAdapter(new MassiveJsAdapter());
+const init = () => {
+  factory.setAdapter(new MassiveJsAdapter());
 
-require("./factory_user")
-require("./factory_session")
-require("./factory_room")
-require("./factory_room_name")
-require("./factory_room_membership")
+  require("./factory_user")
+  require("./factory_session")
+  require("./factory_room")
+  require("./factory_room_name")
+  require("./factory_room_membership")
+}
 
-module.exports = factory;
+module.exports = init;

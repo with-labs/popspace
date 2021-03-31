@@ -16,7 +16,34 @@ class MercuryApi {
 
   initPostRoutes() {
     this.api.loggedInPostEndpoint("/subscribe_to_newsletter", async (req, res) => {
-      await shared.db.accounts.subscribeToNewsletter(req.user.id)
+      await shared.db.accounts.newsletterSubscribe(req.user.id)
+      return await http.succeed(req, res, { });
+    })
+
+    this.api.loggedInPostEndpoint("/unsubscribe_from_newsletter", async (req, res) => {
+      await shared.db.accounts.newsletterUnsubscribe(req.user.id)
+      return await http.succeed(req, res, { });
+    })
+
+    this.api.loggedOutPostEndpoint("/magic_link_subscribe", async (req, res) => {
+      const magicLinkId = req.body.magic_link_id
+      const otp = req.body.otp
+      const request = await shared.db.magic.magicLinkById(magicLinkId)
+      const result = await shared.db.magic.tryToSubscribe(request, otp)
+      if(result.error) {
+        return await http.authFail(req, res, result.error)
+      }
+      return await http.succeed(req, res, { });
+    })
+
+    this.api.loggedOutPostEndpoint("/magic_link_unsubscribe", async (req, res) => {
+      const magicLinkId = req.body.magic_link_id
+      const otp = req.body.otp
+      const request = await shared.db.magic.magicLinkById(magicLinkId)
+      const result = await shared.db.magic.tryToUnsubscribe(request, otp)
+      if(result.error) {
+        return await http.authFail(req, res, result.error)
+      }
       return await http.succeed(req, res, { });
     })
 

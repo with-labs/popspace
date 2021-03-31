@@ -330,7 +330,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const doAbsolutePanRef = React.useRef(doAbsolutePan);
   const doAbsoluteZoomRef = React.useRef(doAbsoluteZoom);
   const savedZoomRef = React.useRef(savedZoom);
-  React.useLayoutEffect(() => void (doAbsolutePanRef.current = doPan), [doPan]);
+  React.useLayoutEffect(() => void (doAbsolutePanRef.current = doAbsolutePan), [doAbsolutePan]);
   React.useLayoutEffect(() => void (doAbsoluteZoomRef.current = doAbsoluteZoom), [doAbsoluteZoom]);
   // on first mount, the view is zoomed out at the center of the room
   // wait a moment, then zoom in to the user's avatar
@@ -350,7 +350,10 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       panSpring.set({ isPanning: true });
       zoomSpring.set({ isZooming: true });
       // zoom in
-      const zoomResult = doAbsoluteZoomRef.current(savedZoomRef.current ?? INITIAL_ZOOM, SPRINGS.RELAXED);
+      const zoomResult = zoomSpring.start({
+        zoom: clamp(savedZoomRef.current ?? INITIAL_ZOOM, minZoom, maxZoom),
+        config: SPRINGS.RELAXED,
+      });
       const panResult = doAbsolutePanRef.current(point, SPRINGS.RELAXED);
       await Promise.all([zoomResult, panResult]);
       panSpring.set({ isPanning: false });
@@ -358,7 +361,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       events.emit('zoomEnd');
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [userId, isReady, panSpring, zoomSpring, doAbsolutePanRef, doAbsoluteZoomRef, events]);
+  }, [userId, isReady, panSpring, zoomSpring, doAbsolutePanRef, doAbsoluteZoomRef, events, minZoom, maxZoom]);
 
   // active is required to prevent default behavior, which
   // we want to do for zoom.

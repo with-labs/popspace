@@ -31,7 +31,4 @@ const lib = {
   },
 }
 
-global.log = lib.log
-global.shared = require("@withso/with-shared")
-
 module.exports = lib

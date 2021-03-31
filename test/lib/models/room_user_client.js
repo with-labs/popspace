@@ -6,6 +6,10 @@ class RoomUserClient {
     this.roomNameEntry = roomNameEntry
   }
 
+  get userId() {
+    return this.user.id
+  }
+
   async setLogInSession(session, token=null) {
     this.session = session
     if(!token) {
@@ -35,15 +39,18 @@ class RoomUserClient {
   }
 }
 
+
+RoomUserClient.anyOrCreate = async () => {
+  let user = await shared.db.pg.massive.users.findOne({})
+  if(!user) {
+     user = await factory.create("user")
+  }
+  return RoomUserClient.forUser(user)
+}
+
 RoomUserClient.forAnyUser = async () => {
   const user = await shared.db.pg.massive.users.findOne({})
-  const room = await shared.db.pg.massive.rooms.findOne({owner_id: user.id})
-  const roomNameEntry = await shared.db.rooms.latestMostPreferredRouteEntry(room.id)
-  const client = new lib.Client(lib.appInfo.wssUrl())
-
-  const result = new RoomUserClient(room, user, client, roomNameEntry)
-  await result.initiateLoggedInSession()
-  return result
+  return RoomUserClient.forUser(user)
 }
 
 RoomUserClient.forUserId = async (userId, roomId=null) => {
@@ -51,7 +58,12 @@ RoomUserClient.forUserId = async (userId, roomId=null) => {
   let room
   if(roomId) {
     room = await shared.db.pg.massive.rooms.findOne({id: roomId})
-  } else {
+  }
+  return RoomUserClient.forUser(user, room)
+}
+
+RoomUserClient.forUser = async (user, room=null) => {
+  if(!room) {
     room = await shared.db.pg.massive.rooms.findOne({owner_id: user.id})
   }
   const roomNameEntry = await shared.db.rooms.latestMostPreferredRouteEntry(room.id)

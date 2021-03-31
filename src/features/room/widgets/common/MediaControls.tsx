@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const stopPropagation = (ev: React.PointerEvent) => {
+const stopPropagation = (ev: any) => {
   ev.stopPropagation();
 };
 
@@ -60,7 +60,7 @@ export const MediaControls: React.FC<IMediaControlsProps> = ({
 }) => {
   const classes = useStyles();
 
-  const togglePlayState = () => {
+  const togglePlayState = (ev: any) => {
     if (playState === PlayState.Paused) {
       // if we start playing and the duration is already at the max,
       // reset duration
@@ -107,6 +107,7 @@ export const MediaControls: React.FC<IMediaControlsProps> = ({
       onPointerMove={stopPropagation}
       onPointerDown={stopPropagation}
       onPointerUp={stopPropagation}
+      onClick={stopPropagation}
     >
       <IconButton onClick={togglePlayState} size="small" color="inherit">
         {playState === PlayState.Playing ? <PauseIcon /> : <PlayIcon />}

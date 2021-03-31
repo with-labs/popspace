@@ -11,6 +11,7 @@ import { AutoPan } from './AutoPan';
 import { SPRINGS } from '../../constants/springs';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import clsx from 'clsx';
+import { isRightClick } from '../../utils/isRightClick';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -83,6 +84,10 @@ const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.Keybo
   ev.stopPropagation();
   ev.nativeEvent.stopImmediatePropagation();
   ev.nativeEvent.stopPropagation();
+};
+
+const preventDefault = (ev: any) => {
+  ev.preventDefault();
 };
 
 /**
@@ -219,101 +224,81 @@ export const Draggable: React.FC<IDraggableProps> = ({
   }, [autoPan, toWorldCoordinate, onMove, spring]);
 
   // binds drag controls to the underlying element
-  const bindDragHandle = useGesture(
-    {
-      onDrag: (state) => {
-        if (state.distance > 10) {
-          spring.set({ grabbing: true });
+  const bindDragHandle = useGesture({
+    onDrag: (state) => {
+      if (state.distance > 10) {
+        spring.set({ grabbing: true });
+      }
+
+      if (state.event?.target) {
+        // BUGFIX: a patch which is intended to prevent a bug where opening a menu
+        // or other popover from within a draggable allows dragging by clicking anywhere
+        // on the screen, since the whole screen is covered by a click-blocker element
+        // ignore drag events which target an aria-hidden element
+        if ((state.event.target as HTMLElement).getAttribute('aria-hidden')) {
+          state.cancel();
+          return;
         }
+      }
 
-        if (state.event?.target) {
-          // BUGFIX: a patch which is intended to prevent a bug where opening a menu
-          // or other popover from within a draggable allows dragging by clicking anywhere
-          // on the screen, since the whole screen is covered by a click-blocker element
-          // ignore drag events which target an aria-hidden element
-          if ((state.event.target as HTMLElement).getAttribute('aria-hidden')) {
-            return;
-          }
-        }
+      // convert to world position, clamping to room bounds
+      const worldPosition = viewport.toWorldCoordinate(
+        {
+          x: state.xy[0],
+          y: state.xy[1],
+        },
+        true
+      );
 
-        // convert to world position, clamping to room bounds
-        const worldPosition = viewport.toWorldCoordinate(
-          {
-            x: state.xy[0],
-            y: state.xy[1],
-          },
-          true
-        );
+      let displacement: Vector2;
+      // if this is the first frame of a new drag
+      if (state.first) {
+        // capture the initial displacement between the cursor and the
+        // object's center to add to each subsequent position
+        const currentPosition = selectPosition(useRoomStore.getState());
+        grabDisplacementRef.current = subtractVectors(currentPosition, worldPosition);
+        displacement = grabDisplacementRef.current;
+      } else {
+        // if it's not the first frame, use the memoized value from the previous frame
+        displacement = grabDisplacementRef.current || { x: 0, y: 0 };
+      }
 
-        let displacement: Vector2;
-        // if this is the first frame of a new drag
-        if (state.first) {
-          // capture the initial displacement between the cursor and the
-          // object's center to add to each subsequent position
-          const currentPosition = selectPosition(useRoomStore.getState());
-          grabDisplacementRef.current = subtractVectors(currentPosition, worldPosition);
-          displacement = grabDisplacementRef.current;
-        } else {
-          // if it's not the first frame, use the memoized value from the previous frame
-          displacement = grabDisplacementRef.current || { x: 0, y: 0 };
-        }
+      // report the movement after converting to world coordinates
+      const finalPosition = roundVector(addVectors(worldPosition, displacement));
+      // send to Redux and peers
+      onMove(finalPosition);
+      // update our local position immediately
+      spring.set({
+        x: finalPosition.x,
+        y: finalPosition.y,
+      });
 
-        // report the movement after converting to world coordinates
-        const finalPosition = roundVector(addVectors(worldPosition, displacement));
-        // send to Redux and peers
-        onMove(finalPosition);
-        // update our local position immediately
-        spring.set({
-          x: finalPosition.x,
-          y: finalPosition.y,
-        });
+      autoPan.update({ x: state.xy[0], y: state.xy[1] });
+    },
+    onDragStart: (state) => {
+      if (isRightClick(state.event)) {
+        state.cancel();
+        return;
+      }
 
-        autoPan.update({ x: state.xy[0], y: state.xy[1] });
-      },
-      onDragStart: (state) => {
-        viewport.onObjectDragStart();
-        autoPan.start({ x: state.xy[0], y: state.xy[1] });
-        onDragStart?.();
-      },
-      onDragEnd: (state) => {
-        state.event?.stopPropagation();
-        viewport.onObjectDragEnd();
+      viewport.onObjectDragStart();
+      autoPan.start({ x: state.xy[0], y: state.xy[1] });
+      onDragStart?.();
+    },
+    onDragEnd: (state) => {
+      viewport.onObjectDragEnd();
+      // we leave this flag on for a few ms - the "drag" gesture
+      // basically has a fade-out effect where it continues to
+      // block gestures internal to the drag handle for a bit even
+      // after releasing
+      setTimeout(() => {
         spring.set({ grabbing: false });
-        autoPan.stop();
-        onDragEnd?.();
-      },
+      }, 100);
+      autoPan.stop();
+      onDragEnd?.();
+      grabDisplacementRef.current = { x: 0, y: 0 };
     },
-    {
-      eventOptions: {
-        capture: false,
-      },
-    }
-  );
-
-  // empty drag hack - if the user initiates a drag gesture
-  // within the widget, don't let it bubble up to the viewport
-  const bindRoot = useGesture(
-    {
-      onDragStart: (state) => {
-        state.event?.stopPropagation();
-        viewport.onObjectDragStart();
-      },
-      onDragEnd: (state) => {
-        state.event?.stopPropagation();
-        viewport.onObjectDragEnd();
-      },
-    },
-    {
-      eventOptions: {
-        // we specifically don't want to capture here - that would
-        // possibly override internal gestures within the draggable object.
-        // this is just a layer to prevent any unbound gestures which initiate
-        // within a draggable object (like whiteboard) from bubbling
-        // up to the viewport and being used for pan/zoom
-        capture: false,
-      },
-    }
-  );
+  });
 
   return (
     <DraggableContext.Provider
@@ -338,8 +323,13 @@ export const Draggable: React.FC<IDraggableProps> = ({
         className={clsx(styles.root, className)}
         onKeyDown={stopPropagation}
         onKeyUp={stopPropagation}
+        onPointerDown={stopPropagation}
+        onPointerUp={stopPropagation}
+        onPointerMove={stopPropagation}
+        onDragStart={preventDefault}
+        onDrag={preventDefault}
+        onDragEnd={preventDefault}
         id={`${kind}-${id}`}
-        {...bindRoot()}
       >
         {children}
       </animated.div>

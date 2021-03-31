@@ -307,12 +307,12 @@ export const ResizeContainer = React.memo(
           onDragStart: (state) => {
             state.event?.stopPropagation();
             viewport.onObjectDragStart();
-            spring.set({ resizing: true });
+            spring.start({ resizing: true });
           },
           onDragEnd: (state) => {
             state.event?.stopPropagation();
             viewport.onObjectDragEnd();
-            spring.set({ resizing: false });
+            spring.start({ resizing: false });
             // report change to parent
             onResize({
               width: width.goal,
@@ -350,7 +350,7 @@ export const ResizeContainer = React.memo(
             style={{
               width,
               height,
-              pointerEvents: resizing.to((v) => (v ? 'none' : undefined)) as any,
+              pointerEvents: resizing.to((v) => (v ? 'none' : 'initial')) as any,
             }}
           >
             <div

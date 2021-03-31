@@ -15,9 +15,15 @@ import { useTrackCursor } from './useTrackCursor';
 import { EventEmitter } from 'events';
 import { SPRINGS } from '../../constants/springs';
 import { useLocalStorage } from '../../hooks/useLocalStorage/useLocalStorage';
+import { isRightClick } from '../../utils/isRightClick';
 
 export interface ViewportEventHandlers {
+  zoomStart: () => void;
   zoomEnd: () => void;
+  dragStart: () => void;
+  dragEnd: () => void;
+  panStart: () => void;
+  panEnd: () => void;
 }
 export declare interface ViewportEvents {
   on<U extends keyof ViewportEventHandlers>(event: U, listener: ViewportEventHandlers[U]): this;
@@ -168,6 +174,8 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
     isZooming: false,
     config: VIEWPORT_ZOOM_SPRING,
   }));
+
+  const isDraggingItemRef = React.useRef(false);
 
   const toWorldCoordinate = React.useCallback(
     (screenPoint: Vector2, clampToBounds: boolean = false) => {
@@ -337,6 +345,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
       const userPosition = room.userPositions[userId];
       const point = userPosition.position;
 
+      events.emit('zoomStart');
       // set flags to control rasterization optimizations
       panSpring.set({ isPanning: true });
       zoomSpring.set({ isZooming: true });
@@ -401,29 +410,44 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const onCursorMove = useTrackCursor();
 
   const bindPassiveGestures = useGesture({
-    onDrag: ({ delta: [x, y] }) => {
+    onDrag: ({ delta: [x, y], canceled, active, cancel }) => {
+      if (canceled || !active) return;
+      if (isDraggingItemRef.current) {
+        cancel();
+        return;
+      }
       doPan({ x: -x, y: -y });
     },
-    onDragStart: () => {
+    onDragStart: (state) => {
+      if (isDraggingItemRef.current || isRightClick(state.event)) {
+        state.cancel();
+        return;
+      }
       panSpring.set({ isPanning: true });
+      events.emit('panStart');
     },
-    onDragEnd: () => {
+    onDragEnd: (state) => {
+      if (isDraggingItemRef.current || state.canceled) return;
       panSpring.set({ isPanning: false });
+      events.emit('panEnd');
     },
     onWheelStart: ({ event }) => {
       if (event?.ctrlKey) {
         zoomSpring.set({ isZooming: true });
+        events.emit('zoomStart');
       } else {
         panSpring.set({ isPanning: true });
+        events.emit('panStart');
       }
     },
     onWheelEnd: () => {
       if (isZooming.goal) {
         zoomSpring.set({ isZooming: false });
+        events.emit('zoomEnd');
       } else {
         panSpring.set({ isPanning: false });
+        events.emit('panEnd');
       }
-      events.emit('zoomEnd');
     },
     onMove: ({ xy }) => {
       onCursorMove(toWorldCoordinate({ x: xy[0], y: xy[1] }));
@@ -433,12 +457,16 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
   const onObjectDragStart = React.useCallback(() => {
     if (!domTarget.current) return;
     domTarget.current.style.cursor = 'grabbing';
-  }, []);
+    isDraggingItemRef.current = true;
+    events.emit('dragStart');
+  }, [events]);
 
   const onObjectDragEnd = React.useCallback(() => {
     if (!domTarget.current) return;
     domTarget.current.style.cursor = 'move';
-  }, []);
+    isDraggingItemRef.current = false;
+    events.emit('dragEnd');
+  }, [events]);
 
   // WARNING: it is vital that this be memoized so that performance doesn't
   // decrease as much as we add more widgets. The reason is that a change in

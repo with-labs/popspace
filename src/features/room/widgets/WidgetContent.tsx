@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
-import { animated, to } from '@react-spring/web';
 import clsx from 'clsx';
-import { DraggableContext } from '../Draggable';
+import { useRoomViewport } from '../RoomViewport';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;
@@ -25,31 +24,49 @@ const useStyles = makeStyles<Theme, IWidgetContentProps>((theme) => ({
   },
 }));
 
-function preventDefault(ev: React.DragEvent) {
-  ev.preventDefault();
-}
-
 export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
   const classes = useStyles(props);
-  // use the drag context to see if we are dragging or resizing this widget -
+  // use the drag context to see if we are dragging or resizing a widget -
   // if we are, we want to disable pointer events inside the frame so that
   // iframes and other interactive content don't get triggered as the mouse
   // moves over them
-  const { isDraggingAnimatedValue } = React.useContext(DraggableContext);
+  const { events } = useRoomViewport();
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // these handlers coordinate disabling pointer events while
+    // the user is dragging the canvas or dragging an item
+    function disablePointer() {
+      if (ref.current) {
+        ref.current.style.pointerEvents = 'none';
+      }
+    }
+    function enablePointer() {
+      if (ref.current) {
+        ref.current.style.pointerEvents = '';
+      }
+    }
+
+    events.on('panStart', disablePointer);
+    events.on('dragStart', disablePointer);
+    events.on('panEnd', enablePointer);
+    events.on('dragEnd', enablePointer);
+
+    return () => {
+      events.off('panStart', disablePointer);
+      events.off('dragStart', disablePointer);
+      events.off('panEnd', enablePointer);
+      events.off('dragEnd', enablePointer);
+    };
+  }, [events]);
 
   return (
-    <animated.div
+    <div
       className={clsx(classes.root, props.className, props.enableTextSelection && classes.enableTextSelection)}
-      style={{
-        pointerEvents: to([isDraggingAnimatedValue], (dr) => (dr ? 'none' : undefined)) as any,
-      }}
-      // prevents bubbled drag events from working - i.e. if a drag
-      // event is not explicitly handled and propagation stopped (like resize handle),
-      // it will be prevented. This avoids unwanted behavior like drag-and-drop with
-      // embedded images
-      onDragStart={preventDefault}
+      ref={ref}
     >
       {props.children}
-    </animated.div>
+    </div>
   );
 };

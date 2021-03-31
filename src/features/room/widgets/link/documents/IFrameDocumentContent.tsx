@@ -18,6 +18,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * This handler attempts to stop a ctrl/cmd + wheel event
+ * over the iframe from reaching the iframe and causing page
+ * zoom. It's passed to the capture-phase wheel event handler
+ * so it has a chance to run before the event reaches the iframe
+ * from the top of the document.
+ */
+const stopIframeZoomEvent = (ev: React.WheelEvent) => {
+  if (ev.ctrlKey || ev.metaKey) {
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+};
+
 export function IFrameDocumentContent({ disableSandbox }: { disableSandbox?: boolean }) {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -32,7 +46,7 @@ export function IFrameDocumentContent({ disableSandbox }: { disableSandbox?: boo
         <LinkMenu />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <div className={classes.iframeContainer}>
+        <div className={classes.iframeContainer} onWheelCapture={stopIframeZoomEvent}>
           <iframe
             src={widgetState.iframeUrl ?? widgetState.url}
             title={widgetState.title}

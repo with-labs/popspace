@@ -26,10 +26,10 @@ class MercuryApi {
     })
 
     this.api.loggedOutPostEndpoint("/magic_link_subscribe", async (req, res) => {
-      const magicLinkId = req.body.magicLinkId
+      const magicLinkId = req.body.magic_link_id
       const otp = req.body.otp
-      const request = await lib.db.magic.magicLinkById(magicLinkId)
-      const result = await lib.db.magic.tryToSubscribe(request, otp)
+      const request = await shared.db.magic.magicLinkById(magicLinkId)
+      const result = await shared.db.magic.tryToSubscribe(request, otp)
       if(result.error) {
         return await http.authFail(req, res, result.error)
       }
@@ -37,10 +37,10 @@ class MercuryApi {
     })
 
     this.api.loggedOutPostEndpoint("/magic_link_unsubscribe", async (req, res) => {
-      const magicLinkId = req.body.magicLinkId
+      const magicLinkId = req.body.magic_link_id
       const otp = req.body.otp
-      const request = await lib.db.magic.magicLinkById(magicLinkId)
-      const result = await lib.db.magic.tryToUnsubscribe(request, otp)
+      const request = await shared.db.magic.magicLinkById(magicLinkId)
+      const result = await shared.db.magic.tryToUnsubscribe(request, otp)
       if(result.error) {
         return await http.authFail(req, res, result.error)
       }

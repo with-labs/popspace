@@ -64,7 +64,11 @@ RoomUserClient.forUserId = async (userId, roomId=null) => {
 
 RoomUserClient.forUser = async (user, room=null) => {
   if(!room) {
-    room = await shared.db.pg.massive.rooms.findOne({owner_id: user.id})
+    room = await shared.db.pg.massive.rooms.findOne({owner_id: user.id, deleted_at: null})
+    if(!room) {
+      const isEmptyRoom = true
+      room = await shared.db.rooms.createRoomFromDisplayName(chance.company(), user.id, isEmptyRoom)
+    }
   }
   const roomNameEntry = await shared.db.rooms.latestMostPreferredRouteEntry(room.id)
   const client = new lib.Client(lib.appInfo.wssUrl())

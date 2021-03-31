@@ -17,11 +17,17 @@ tlib.TestTemplate.describeWithLib('invites', () => {
   })
 
   test("Subscribe magic links work", async () => {
-  	expect(true)
+    const result = await scenarios["magic_link_subscribe"]()
+    expect(result.response.success).toEqual(true)
+    expect(result.userBeforeSubscribe.newsletter_opt_in).toEqual(false)
+    expect(result.userAfterSubscribe.newsletter_opt_in).toEqual(true)
   })
 
   test("Unsubscribe magic links work", async () => {
-    expect(true)
+    const result = await scenarios["magic_link_unsubscribe"]()
+    expect(result.response.success).toEqual(true)
+    expect(result.userBeforeUnsubscribe.newsletter_opt_in).toEqual(true)
+    expect(result.userAfterUnsubscribe.newsletter_opt_in).toEqual(false)
   })
 
 })

@@ -2,7 +2,6 @@ import React, { forwardRef, useEffect, useReducer } from 'react';
 import {
   makeStyles,
   Box,
-  Switch,
   Typography,
   Button,
   CircularProgress,
@@ -10,16 +9,19 @@ import {
   TextField,
   Collapse,
 } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 import { ErrorCodes } from '../../../constants/ErrorCodes';
 import Api, { ApiInviteDetails } from '../../../utils/api';
 import { getErrorDialogText } from '../../../utils/ErrorMessage';
 import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
+import { ConfirmModal } from '../../../components/ConfirmModal/ConfirmModal';
 import { logger } from '../../../utils/logger';
 import { LinkIcon } from '../../../components/icons/LinkIcon';
 import { cherry, oregano, mandarin } from '../../../theme/theme';
 import { useExpiringToggle } from '../../../hooks/useExpiringToggle/useExpiringToggle';
+import { ThemeName } from '../../../theme/theme';
+import { formatPublicInviteLink } from '../../../utils/linkFormater';
 
 export interface IInviteLinkProps {
   roomRoute: string;
@@ -55,6 +57,7 @@ type InviteLinkState = {
   shareUrl: string | null;
   error: DialogMessage | null;
   isBusy: boolean;
+  displayConfirmModal: boolean;
 };
 
 enum ACTIONS {
@@ -62,16 +65,13 @@ enum ACTIONS {
   SET_SHARE_URL = 'SET_SHARE_URL',
   SET_ERROR = 'SET_ERROR',
   SET_IS_BUSY = 'SET_IS_BUSY',
+  DISPLAY_CONFIRM_MODAL = 'DISPLAY_CONFIRM_MODAL',
+  RESET_LINK_COMPLETE = 'RESET_LINK_COMPLETE',
 }
 
 type InviteAction = {
   type: string;
   payload: any;
-};
-
-type InviteDetails = {
-  otp: string;
-  inviteId: string;
 };
 
 function InviteLinkReducer(state: InviteLinkState, action: InviteAction) {
@@ -100,17 +100,23 @@ function InviteLinkReducer(state: InviteLinkState, action: InviteAction) {
         isBusy: action.payload,
       };
     }
+    case ACTIONS.DISPLAY_CONFIRM_MODAL: {
+      return {
+        ...state,
+        displayConfirmModal: action.payload,
+      };
+    }
+    case ACTIONS.RESET_LINK_COMPLETE: {
+      return {
+        ...state,
+        displayConfirmModal: false,
+        isBusy: false,
+      };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
   }
-}
-
-function formatPublicInviteLink(inviteDetails: InviteDetails) {
-  return (
-    window.location.origin +
-    `/invite/${encodeURIComponent(inviteDetails.otp)}?iid=${encodeURIComponent(inviteDetails.inviteId)}`
-  );
 }
 
 export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, ref) => {
@@ -126,6 +132,7 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
     shareUrl: null,
     error: null,
     isBusy: false,
+    displayConfirmModal: false,
   });
 
   useEffect(() => {
@@ -153,40 +160,6 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
     }
   }, [currentRoomRoute, t]);
 
-  const toggleSwitch = async () => {
-    try {
-      if (currentRoomRoute) {
-        if (state.shareUrl) {
-          const result = await Api.disablePublicInviteLink(currentRoomRoute);
-          if (result.success) {
-            dispatch({ type: ACTIONS.SET_SHARE_URL, payload: null });
-          } else {
-            // this will return a no such room or permissions denied from the back end
-            // which shouldnt happen if only the room owner is doing this action, so we will throw
-            // an error to be caught and reported
-            throw new Error('Unexecpected error in invite link disablePublicInviteLink ');
-          }
-        } else {
-          const result = await Api.enablePublicInviteLink(currentRoomRoute);
-          if (result.success) {
-            dispatch({
-              type: ACTIONS.SET_SHARE_URL,
-              payload: formatPublicInviteLink({ otp: result.otp, inviteId: result.inviteId }),
-            });
-          } else {
-            throw new Error('Unexecpected error in invite link enablePublicInviteLink');
-          }
-        }
-      }
-    } catch (err) {
-      logger.error(`Error InviteLink toggle`, err);
-      dispatch({
-        type: ACTIONS.SET_ERROR,
-        payload: getErrorDialogText(ErrorCodes.UNEXPECTED, t, t('common.error')),
-      });
-    }
-  };
-
   const onCopyPressed = async () => {
     try {
       if (state.shareUrl) {
@@ -203,6 +176,10 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
   };
 
   const onResetLinkPressed = async () => {
+    dispatch({ type: ACTIONS.DISPLAY_CONFIRM_MODAL, payload: true });
+  };
+
+  const resetLink = async () => {
     try {
       if (currentRoomRoute) {
         dispatch({ type: ACTIONS.SET_IS_BUSY, payload: true });
@@ -222,27 +199,18 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
         type: ACTIONS.SET_ERROR,
         payload: getErrorDialogText(ErrorCodes.UNEXPECTED, t, t('common.error')),
       });
+    } finally {
+      dispatch({ type: ACTIONS.RESET_LINK_COMPLETE, payload: null });
     }
   };
 
   return (
     <Box className={classes.root}>
       <Box display="flex" flexDirection="row" alignItems="center">
-        <Box display="flex" flexDirection="row" alignItems="center" flexGrow="1">
+        <Box display="flex" flexDirection="row" alignItems="center" flexGrow="1" pb={2}>
           <LinkIcon fontSize="default" className={classes.iconWrapper} />
           <Typography variant="button">{t('features.roomControls.linkInviteTitle')}</Typography>
         </Box>
-        {state.isLoading ? (
-          <CircularProgress size={24} />
-        ) : (
-          <Switch
-            disabled={!state.shareUrl && !isRoomOwner}
-            checked={!!state.shareUrl}
-            onChange={toggleSwitch}
-            name="toggle-invite-link"
-            inputProps={{ 'aria-label': t('features.roomControls.linkInviteAriaLabel') }}
-          />
-        )}
       </Box>
       {!isRoomOwner && !!state.shareUrl && (
         <Box mb={1}>
@@ -286,6 +254,18 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
         </Box>
       </Collapse>
       <DialogModal message={state.error} onClose={() => dispatch({ type: ACTIONS.SET_ERROR, payload: null })} />
+      <ConfirmModal
+        isOpen={state.displayConfirmModal}
+        onClose={() => dispatch({ type: ACTIONS.DISPLAY_CONFIRM_MODAL, payload: false })}
+        onConfirm={resetLink}
+        buttonColor={ThemeName.Cherry}
+        title={t('modals.inviteLinkResetModal.title')}
+        primaryButtonText={t('modals.inviteLinkResetModal.confirmButton')}
+      >
+        <Typography variant="body1">
+          <Trans i18nKey="modals.inviteLinkResetModal.body" />
+        </Typography>
+      </ConfirmModal>
     </Box>
   );
 });

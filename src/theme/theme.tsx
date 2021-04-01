@@ -1101,3 +1101,22 @@ export const slate = createPaletteTheme({
 export const blueberry = createPaletteTheme({
   primary: brandPalette.blueberry,
 });
+
+export const getThemeFromName = (themeName: ThemeName | undefined) => {
+  switch (themeName) {
+    case ThemeName.Mandarin:
+      return mandarin;
+    case ThemeName.Cherry:
+      return cherry;
+    case ThemeName.Oregano:
+      return oregano;
+    case ThemeName.Lavender:
+      return lavender;
+    case ThemeName.Snow:
+      return snow;
+    case ThemeName.Blueberry:
+      return blueberry;
+    default:
+      return mandarin;
+  }
+};

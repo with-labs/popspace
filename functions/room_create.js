@@ -64,6 +64,8 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   // 2 rooms are created
   const result = await shared.db.rooms.createRoomFromDisplayName(params.displayName, user.id)
   const namedRoom = new shared.models.NamedRoom(result.room, result.roomNameEntry, result.roomData.state)
+  // we want to turn the room link on when we create a room
+  await shared.db.room.invites.enablePublicInviteUrl(result.room.id, user.id, result.room.displayName)
 
   return await lib.util.http.succeed(callback, { newRoom: namedRoom.serialize() })
 })

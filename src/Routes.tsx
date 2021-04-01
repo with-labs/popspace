@@ -73,7 +73,13 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <FinalizeAccount />
       </Route>
 
+      {/* 
+        3/30/2021
+        we are currently starting the transition from /invite -> /join
+        so we will keep /invite availible for backward support.
+      */}
       <Route path={RouteNames.INVITE} component={InviteLink} />
+      <Route path={RouteNames.JOIN} component={InviteLink} />
 
       <AuthenticatedRoute path={RouteNames.CREATE_ROOM} component={CreateRoomPage} />
 

@@ -13,4 +13,5 @@ export enum RouteNames {
   LICENSES = '/licenses',
   INVITE = '/invite/:inviteCode',
   CREATE_ROOM = '/create_room',
+  JOIN = '/join/:inviteCode',
 }

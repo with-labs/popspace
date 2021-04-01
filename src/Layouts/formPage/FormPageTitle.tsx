@@ -6,7 +6,7 @@ export function FormPageTitle(props: TypographyProps) {
   return (
     <>
       <Logo link style={{ marginBottom: 16 }} />
-      <Typography variant="h1" style={{ marginBottom: 72 }} {...props} />
+      <Typography variant="h1" style={{ marginBottom: 64 }} {...props} />
     </>
   );
 }

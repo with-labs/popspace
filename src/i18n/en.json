@@ -210,6 +210,23 @@
           "continue": "Continue",
           "title": "Invite your team",
           "skip": "Skip"
+        },
+        "inviteMembers": {
+          "continue": "Continue",
+          "title": "Invite your team",
+          "skip": "Skip for now",
+          "copyToClipboard": "Copy to clipboard",
+          "inviteEmail": "Invite via email",
+          "inviteLink": "Invite via link",
+          "linkExplain": "First, share this link with your team to quickly get them on board:",
+          "linkEmailInvite": "Starts adopting your new office by scheduling a meeting that includes your room link:",
+          "googleCalButton": "Google Calendar",
+          "officeCalButton": "Office 365",
+          "emailExplain": "With is a lot more useful when your whole team is there!",
+          "event": {
+            "title": "Team sync-up",
+            "body": "Join the room {{roomName}} at {{joinUrl}}"
+          }
         }
       }
     },
@@ -463,16 +480,16 @@
       "roomControls": {
         "emailPlaceholder": "Invite via email",
         "linkInviteAriaLabel": "Toggle invite link",
-        "linkInviteTitle": "Secret link invite",
-        "copySuccess": "Secret link copied!",
-        "inviteLinkReset": "Secret link reset.",
+        "linkInviteTitle": "Room Link",
+        "copySuccess": "Room Link copied!",
+        "inviteLinkReset": "Room Link reset.",
         "CopyLinkButtonText": "Copy link",
-        "copyLinkButtonAria": "Copy the secret link to the clipboard",
+        "copyLinkButtonAria": "Copy the room link to the clipboard",
         "resetLinkButtonText": "Reset link",
-        "resetLinkButtonAria": "Reset the secret link",
+        "resetLinkButtonAria": "Reset the room link",
         "linkCopied": "Copied!",
         "linkInviteName": "Invite via link",
-        "roomOwnerOnlyExplanation": "Only the room owner can toggle the secret link."
+        "roomOwnerOnlyExplanation": "Only the room owner can toggle the room link."
       },
       "statusControls": {
         "toolTip": "Set your status"
@@ -622,6 +639,11 @@
       "inviteMemberModal": {
         "title": "Invite members",
         "defaultRoomName": "Room"
+      },
+      "inviteLinkResetModal": {
+        "title": "Reset Room Link",
+        "body": "Are you sure you want to reset the Room Link?<br/><br/>By creating a new Room Link, the previous links will stop working.<br/><br/> If you posted the link in a chat or a meeting invite, those links will no longer work.",
+        "confirmButton": "Reset Room Link"
       }
     }
   }

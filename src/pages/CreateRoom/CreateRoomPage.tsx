@@ -8,7 +8,8 @@ import inviteGraphic from '../../images/illustrations/invite_your_team.jpg';
 import inviteMobileGraphic from '../../images/illustrations/invite_your_team_responsive.jpg';
 import { NameRoomStep } from './NameRoomStep';
 import { ApiNamedRoom } from '../../utils/api';
-import { InvitePeopleStep } from './InvitePeopleStep';
+import { InviteRoomMemberStep } from './InviteRoomMemberStep';
+
 import { useHistory } from 'react-router';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 import { RouteNames } from '../../constants/RouteNames';
@@ -42,20 +43,14 @@ export function CreateRoomPage() {
     <FormPage>
       <FormPageContent>
         {!!room ? (
-          <InvitePeopleStep
-            roomRoute={room.route}
-            onComplete={(numMembers) => {
-              let data = {};
-              if (numMembers) {
-                data = { did_skip: false, invited_count: numMembers };
-              } else {
-                // if numMembers is null, it means they skipped inviting people on flow
-                data = { did_skip: true, invited_count: 0 };
-              }
-
+          <InviteRoomMemberStep
+            origin={origin}
+            queryRef={queryRef}
+            roomData={room}
+            onComplete={(numMembers, isSkipped) => {
               Analytics.trackEvent(
                 isOnboarding ? EventNames.ONBOARDING_INVITE_TEAM_MEMBERS : EventNames.INVITE_TEAM_MEMBERS,
-                { origin, ref: queryRef, ...data }
+                { origin, ref: queryRef, did_skip: isSkipped, invited_count: numMembers ?? 0 }
               );
 
               // replace - because we don't want the back button to go back to this flow,

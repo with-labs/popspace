@@ -127,6 +127,7 @@ export const Signup: React.FC<ISignupProps> = () => {
               started_at: startSignUp,
               completed_at: endStartUp,
               total_time,
+              is_invite: inviteCode !== '' && inviteId !== '',
             });
           } else {
             // capture resend email event
@@ -138,7 +139,7 @@ export const Signup: React.FC<ISignupProps> = () => {
         setError(err);
       }
     },
-    [history, t, setError, queryRef, startSignUp]
+    [history, t, setError, queryRef, startSignUp, inviteCode, inviteId]
   );
 
   if (isLoading) {

@@ -4,6 +4,7 @@ const Analytics = require("./analytics")
 const lib = {
   ws: require("ws"),
   log: require("./log"),
+  shared: require("@withso/with-shared"),
   Client: require("../client/client"),
   ErrorCodes: require("./error_codes"),
   event: require("./event/_events"),
@@ -29,10 +30,5 @@ const lib = {
     })
   },
 }
-
-global.log = lib.log
-global.shared = require("@withso/with-shared")
-
-global.lib = lib
 
 module.exports = lib

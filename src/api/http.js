@@ -10,24 +10,27 @@ const http = {
     res.send(Object.assign(lib.util.snakeToCamelCase(data), {success: true}))
   },
 
-  authFail: async (errorCode, callback) => {
+  authFail: async (req, res, errorCode) => {
     const errorDetails = { errorCode: errorCode }
     switch(errorCode) {
       case shared.error.code.REVOKED_OTP:
-        return await http.fail(callback, "This code has been revoked.", errorDetails);
+        return await http.fail(req, res, "This code has been revoked.", errorDetails);
       case shared.error.code.INVALID_OTP:
-        return await http.fail(callback, "Invalid one-time passcode.", errorDetails);
+        return await http.fail(req, res, "Invalid one-time passcode.", errorDetails);
       case shared.error.code.EXPIRED_OTP:
-        return await http.fail(callback, "Sorry, this link has expired.", errorDetails);
+        return await http.fail(req, res, "Sorry, this link has expired.", errorDetails);
       case shared.error.code.RESOLVED_OTP:
         // We could be more elaborate and try to figure out if it's the current user
         // and whether they already have access to the OTP-protected resource
-        return await http.fail(callback, "This code is no longer valid.", errorDetails);
+        return await http.fail(req, res, "This code is no longer valid.", errorDetails);
+      case shared.error.code.MAGIC_LINK_INVALID_ACTION:
+        return await http.fail(req, res, "Invalid magic link action.", errorDetails);
       case shared.error.code.UNEXPECTER_ERROR:
-        // TODO: ERROR_LOGGING
-        return await http.fail(callback, "An unexpected error happened. Please try again.", errorDetails);
+        log.error.error(`authFail with unexpected error (user: ${req.user ? req.user.id : 'no user'}, url: ${req.url}, body: ${req.body})`)
+        return await http.fail(req, res, "An unexpected error happened. Please try again.", errorDetails);
       default:
-        return await http.fail(callback, "An unexpected error happened. Please try again.", errorDetails);
+        log.error.error(`authFail critical error (user: ${req.user ? req.user.id : 'no user'}, url: ${req.url}, body: ${req.body})`)
+        return await http.fail(req, res, "An unexpected error happened. Please try again.", errorDetails);
     }
   },
 

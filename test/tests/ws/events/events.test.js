@@ -1,3 +1,4 @@
+global.tlib = require("../../../lib/_testlib")
 const scenarios = require('./events_scenarios')
 
 tlib.TestTemplate.describeWithLib('mercury_events', () => {

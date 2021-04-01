@@ -17,7 +17,7 @@ import { EventNames } from '../../analytics/constants';
 import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
 import { USER_SUPPORT_EMAIL } from '../../constants/User';
 import { Link } from '../../components/Link/Link';
-import { formatPublicInviteLink } from '../../utils/linkFormater';
+import { formatPublicInviteLink } from '../../utils/linkFormatter';
 import { ApiNamedRoom } from '../../utils/api';
 
 export interface IInviteRoomMemberStepProps {

@@ -21,7 +21,7 @@ import { LinkIcon } from '../../../components/icons/LinkIcon';
 import { cherry, oregano, mandarin } from '../../../theme/theme';
 import { useExpiringToggle } from '../../../hooks/useExpiringToggle/useExpiringToggle';
 import { ThemeName } from '../../../theme/theme';
-import { formatPublicInviteLink } from '../../../utils/linkFormater';
+import { formatPublicInviteLink } from '../../../utils/linkFormatter';
 
 export interface IInviteLinkProps {
   roomRoute: string;

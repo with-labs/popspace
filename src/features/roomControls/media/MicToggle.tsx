@@ -33,6 +33,7 @@ export const MicToggle = (props: IMicToggleProps) => {
   const { t } = useTranslation();
   const [isMicOn, doMicToggle, busy] = useLocalAudioToggle(isLocal);
   const { muteSession } = useRemoteControl();
+  const socket = useRoomStore((room) => room.socket);
 
   const toggleMicOn = React.useCallback(() => {
     if (!isMicOn) {
@@ -49,8 +50,17 @@ export const MicToggle = (props: IMicToggleProps) => {
         allSessionIds.forEach((id) => muteSession(id, MIC_TRACK_NAME));
       }
     }
+
+    socket?.send({
+      kind: 'updateMicState',
+      payload: {
+        isOn: isMicOn,
+        timestamp: new Date().getTime(),
+      },
+    });
+
     doMicToggle();
-  }, [doMicToggle, isMicOn, muteSession]);
+  }, [doMicToggle, isMicOn, muteSession, socket]);
 
   const [isAway] = useIsAway();
 

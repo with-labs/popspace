@@ -63,9 +63,16 @@ const useStyles = makeStyles((theme) => ({
       width: 632,
     },
   },
+  createRoomButtonWrapper: {
+    flexDirection: 'column',
+    marginBottom: theme.spacing(3),
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
   createRoomButton: {
     width: '100%',
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       width: '164px',
     },
@@ -264,7 +271,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
         <Box display="flex" flexDirection="column" flexBasis="auto" className={classes.wrapper}>
           <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
           <div className={classes.bgContainer}>
-            <Box display="flex" flexDirection="row">
+            <Box display="flex" className={classes.createRoomButtonWrapper}>
               <Button
                 className={classes.createRoomButton}
                 component={Link}

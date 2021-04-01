@@ -212,11 +212,6 @@ export const InviteLink = forwardRef<HTMLDivElement, IInviteLinkProps>((props, r
           <Typography variant="button">{t('features.roomControls.linkInviteTitle')}</Typography>
         </Box>
       </Box>
-      {!isRoomOwner && !!state.shareUrl && (
-        <Box mb={1}>
-          <Typography variant="caption">{t('features.roomControls.roomOwnerOnlyExplanation')}</Typography>
-        </Box>
-      )}
       <Collapse in={state.shareUrl}>
         <TextField
           name={t('features.roomControls.linkInviteName')}

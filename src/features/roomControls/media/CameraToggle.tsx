@@ -11,7 +11,7 @@ import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useIsAway } from '../away/useIsAway';
-
+import { useRoomStore } from '../../../roomState/useRoomStore';
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -21,6 +21,19 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { className, isLocal, ...otherProps } = props;
   const { t } = useTranslation();
   const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);
+  const socket = useRoomStore((room) => room.socket);
+
+  const handleVideoToggle = React.useCallback(() => {
+    socket?.send({
+      kind: 'updateVideoState',
+      payload: {
+        isOn: isVideoOn,
+        timestamp: new Date().getTime(),
+      },
+    });
+
+    toggleVideoOn();
+  }, [toggleVideoOn, isVideoOn, socket]);
 
   const [isAway] = useIsAway();
 
@@ -30,9 +43,9 @@ export const CameraToggle = (props: ICameraToggleProps) => {
       if (isAway) return;
 
       ev.preventDefault();
-      toggleVideoOn();
+      handleVideoToggle();
     },
-    [toggleVideoOn, isAway]
+    [toggleVideoOn, isAway, handleVideoToggle]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);
@@ -54,7 +67,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
           <ToggleButton
             value="video"
             selected={isVideoOn}
-            onChange={toggleVideoOn}
+            onChange={handleVideoToggle}
             disabled={busy}
             className={className}
             {...otherProps}

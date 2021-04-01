@@ -488,8 +488,7 @@
         "resetLinkButtonText": "Reset link",
         "resetLinkButtonAria": "Reset the room link",
         "linkCopied": "Copied!",
-        "linkInviteName": "Invite via link",
-        "roomOwnerOnlyExplanation": "Only the room owner can toggle the room link."
+        "linkInviteName": "Invite via link"
       },
       "statusControls": {
         "toolTip": "Set your status"

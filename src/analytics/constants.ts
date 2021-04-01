@@ -6,8 +6,6 @@ export enum EventNames {
   CHANGED_AVATAR = 'changed_avatar',
   CHANGED_DISPLAYNAME = 'changed_displayName',
   CHANGED_STATUS = 'changed_status',
-  TOGGLED_CAMERA_ON = 'toggled_camera_on',
-  TOGGLED_MICROPHONE_ON = 'toggled_microphone_on',
   TOGGLED_STEPAWAY = 'toggled_stepAway',
   EXPAND_LINK_WIDGET = 'expand_link_widget',
   COLLAPSE_LINK_WIDGET = 'collapse_link_widget',

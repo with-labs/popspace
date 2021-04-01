@@ -90,6 +90,22 @@ export interface OutgoingUpdateRoomStateMessage extends BaseOutgoingSocketMessag
   };
 }
 
+export interface OutgoingUpdateMicState extends BaseOutgoingSocketMessage {
+  kind: 'updateMicState';
+  payload: {
+    isOn: boolean;
+    timestamp: number;
+  };
+}
+
+export interface OutgoingUpdateVideoState extends BaseOutgoingSocketMessage {
+  kind: 'updateVideoState';
+  payload: {
+    isOn: boolean;
+    timestamp: number;
+  };
+}
+
 export interface OutgoingPassthroughMessage<T extends PassthroughPayload = PassthroughPayload>
   extends BaseOutgoingSocketMessage {
   kind: 'passthrough';
@@ -107,4 +123,6 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateParticipantMessage
   | OutgoingLeaveMessage
   | OutgoingUpdateRoomStateMessage
-  | OutgoingPassthroughMessage;
+  | OutgoingPassthroughMessage
+  | OutgoingUpdateMicState
+  | OutgoingUpdateVideoState;

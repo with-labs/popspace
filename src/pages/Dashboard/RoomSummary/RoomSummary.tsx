@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     borderRadius: theme.shape.contentBorderRadius,
+    alignSelf: 'center',
   },
   deleteColor: {
     color: theme.palette.brandColors.cherry.bold,

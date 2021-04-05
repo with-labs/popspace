@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import useLocalAudioToggle from '../../../hooks/localMediaToggles/useLocalAudioToggle';
+import useLocalAudioToggle from '../../../providers/media/hooks/useLocalAudioToggle';
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -17,6 +17,8 @@ import { useRemoteControl } from '../../../hooks/useRemoteControl/useRemoteContr
 import { MIC_TRACK_NAME } from '../../../constants/User';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useIsAway } from '../away/useIsAway';
+import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
+import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -81,6 +83,8 @@ export const MicToggle = (props: IMicToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
+  const roomStatus = useRoomStatus();
+
   return (
     <>
       <ResponsiveTooltip
@@ -96,7 +100,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             selected={isMicOn}
             onChange={toggleMicOn}
             onContextMenu={handleContextMenu}
-            disabled={busy}
+            disabled={busy || roomStatus !== TwilioStatus.Connected}
             {...otherProps}
             className={clsx(classes.root, className)}
           >

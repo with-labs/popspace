@@ -10,18 +10,18 @@ import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { Fullscreen } from '@material-ui/icons';
 import { MinimizeIcon } from '../../../../components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
-import { useNamedPublication } from '../../../../hooks/useNamedPublication/useNamedPublication';
+import { useNamedPublication } from '../../../../providers/twilio/hooks/useNamedPublication';
 import { SidecarStreamWidgetState, WidgetType } from '../../../../roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
-import { useParticipantByIdentity } from '../../../../hooks/useParticipantByIdentity/useParticipantByIdentity';
 import { FullscreenableMedia } from '../../../../components/FullscreenableMedia/FullscreenableMedia';
 import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
-import { useLocalParticipant } from '../../../../hooks/useLocalParticipant/useLocalParticipant';
-import { useLocalTracks } from '../../../../components/LocalTracksProvider/useLocalTracks';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../../constants/User';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
+import { useLocalTracks } from '../../../../providers/media/hooks/useLocalTracks';
+import { useLocalParticipant } from '../../../../providers/twilio/hooks/useLocalParticipant';
+import { useParticipantByIdentity } from '../../../../providers/twilio/hooks/useParticipantByIdentity';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.

@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { RemoteParticipant } from 'twilio-video';
+import { RemoteDataTrack, RemoteParticipant } from 'twilio-video';
 import { RoomEvent } from '../../constants/twilio';
 import { CAMERA_TRACK_NAME, MIC_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../constants/User';
 import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
+import { useTwilio } from '../../providers/twilio/TwilioProvider';
 import { useRoomStore } from '../../roomState/useRoomStore';
-import { useLocalTracks } from '../LocalTracksProvider/useLocalTracks';
 
 type MutableTrackName = typeof CAMERA_TRACK_NAME | typeof MIC_TRACK_NAME | typeof SCREEN_SHARE_TRACK_NAME;
 
@@ -21,18 +21,18 @@ export const RemoteControlProvider: React.FC = ({ children }) => {
   const localSessionId = useRoomStore((room) => room.sessionId);
   const userId = useCurrentUserProfile().user?.id;
 
-  const { room } = useVideoContext();
+  const { room } = useTwilio();
 
   const { dataTrack, stopAudio, stopVideo, stopScreenShare } = useLocalTracks();
 
   React.useEffect(() => {
     if (!room) return;
-    function onMessage(rawMessage: string, track: any, participant: RemoteParticipant) {
+    function onMessage(rawMessage: string | ArrayBuffer, track: RemoteDataTrack, participant: RemoteParticipant) {
       // for now we authenticate the message as being from another participant
       // with our same user ID
       if (!participant.identity.startsWith(`${userId}#`)) return;
       try {
-        const parsed = JSON.parse(rawMessage);
+        const parsed = JSON.parse(rawMessage.toString());
         // if this is a mute operation aimed at our session
         if (parsed.op === 'mute' && parsed.sessionId === localSessionId) {
           // mute the track we were asked to

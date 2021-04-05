@@ -118,7 +118,7 @@
     "ts-jest": "^26.2.0",
     "turndown": "^7.0.0",
     "twilio": "^3.53.0",
-    "twilio-video": "^2.9.0",
+    "twilio-video": "^2.13.1",
     "typescript": "^4.1.3",
     "uuid": "^7.0.2",
     "volume-meter": "^2.0.1",

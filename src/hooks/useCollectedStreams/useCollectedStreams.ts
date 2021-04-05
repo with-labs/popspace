@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { RemoteParticipant, LocalParticipant, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import useVideoContext from '../useVideoContext/useVideoContext';
 import { RoomEvent } from '../../constants/twilio';
 import { Stream } from '../../types/streams';
 import {
@@ -10,6 +9,7 @@ import {
   SCREEN_SHARE_AUDIO_TRACK_NAME,
 } from '../../constants/User';
 import { findTrackByName } from '../../utils/trackNames';
+import { useTwilio } from '../../providers/twilio/TwilioProvider';
 
 type Participant = RemoteParticipant | LocalParticipant;
 type Publication = RemoteTrackPublication | LocalTrackPublication;
@@ -50,7 +50,7 @@ function getParticipantStreams(participant: Participant): { av: Stream | null; s
  * TODO: add support for filtering to only enabled tracks?
  */
 export function useCollectedStreams(participants: Participant[]) {
-  const { room } = useVideoContext();
+  const { room } = useTwilio();
 
   const [allStreams, setAllStreams] = useState(() =>
     participants.reduce((streams, p) => {

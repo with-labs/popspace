@@ -1,14 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import LocalVideoPreview from './LocalVideoPreview';
-import { useNamedPublication } from '../../hooks/useNamedPublication/useNamedPublication';
-import useTrack from '../../hooks/useTrack/useTrack';
+import { useNamedPublication } from '../../providers/twilio/hooks/useNamedPublication';
+import useTrack from '../../providers/twilio/hooks/useTrack';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import { CAMERA_TRACK_NAME } from '../../constants/User';
 
-jest.mock('../../hooks/useNamedPublication/useNamedPublication');
-jest.mock('../../hooks/useTrack/useTrack');
-jest.mock('../../hooks/useLocalParticipant/useLocalParticipant');
+jest.mock('../../providers/twilio/hooks/useNamedPublication');
+jest.mock('../../providers/twilio/hooks/useTrack');
+jest.mock('../../providers/twilio/hooks/useLocalParticipant');
 jest.mock('../../hooks/useSpatialAudioVolume/useSpatialAudioVolume');
 
 const mockUseNamedTrack = useNamedPublication as jest.Mock<LocalTrackPublication | RemoteTrackPublication | null>;

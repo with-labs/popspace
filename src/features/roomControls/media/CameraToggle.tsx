@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
 import { CameraOnIcon } from '../../../components/icons/CameraOnIcon';
 import { CameraOffIcon } from '../../../components/icons/CameraOffIcon';
-import useLocalVideoToggle from '../../../hooks/localMediaToggles/useLocalVideoToggle';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
@@ -12,6 +11,10 @@ import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useIsAway } from '../away/useIsAway';
 import { useRoomStore } from '../../../roomState/useRoomStore';
+import useLocalVideoToggle from '../../../providers/media/hooks/useLocalVideoToggle';
+import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
+import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
+
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -54,6 +57,8 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
+  const roomStatus = useRoomStatus();
+
   return (
     <>
       <ResponsiveTooltip
@@ -68,7 +73,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
             value="video"
             selected={isVideoOn}
             onChange={handleVideoToggle}
-            disabled={busy}
+            disabled={busy || roomStatus !== TwilioStatus.Connected}
             className={className}
             {...otherProps}
           >

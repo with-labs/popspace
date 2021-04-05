@@ -19,7 +19,7 @@ const useStyles = makeStyles<Theme, SpacingProps>((theme) => ({
   }),
 }));
 
-export const Spacing: React.FC<SpacingProps> = (props) => {
+export const Spacing = React.forwardRef<HTMLDivElement, SpacingProps>((props, ref) => {
   const classes = useStyles(props);
   const { gap: _, className, ...rest } = props;
   const vertical = rest.flexDirection === 'column' || rest.flexDirection === 'column-reverse';
@@ -27,6 +27,7 @@ export const Spacing: React.FC<SpacingProps> = (props) => {
     <Box
       flexDirection="row"
       display="flex"
+      {...({ ref } as any)}
       {...rest}
       className={clsx(
         {
@@ -37,4 +38,4 @@ export const Spacing: React.FC<SpacingProps> = (props) => {
       )}
     />
   );
-};
+});

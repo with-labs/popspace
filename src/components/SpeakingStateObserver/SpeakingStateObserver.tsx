@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useSpeakingStates } from '../../hooks/useSpeakingStates/useSpeakingStates';
-import { useLocalTracks } from '../LocalTracksProvider/useLocalTracks';
 import { SoundMeter } from '../../utils/SoundMeter';
 import throttle from 'lodash.throttle';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
 import { logger } from '../../utils/logger';
 import { RoomEvent } from '../../constants/twilio';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
-import { useLocalParticipant } from '../../hooks/useLocalParticipant/useLocalParticipant';
+import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
+import { useTwilio } from '../../providers/twilio/TwilioProvider';
+import { useLocalParticipant } from '../../providers/twilio/hooks/useLocalParticipant';
 
 const UPDATE_INTERVAL = 300;
 // arbitrary, based on experimentation...
@@ -92,13 +92,13 @@ export const SpeakingStateObserver: React.FC = () => {
 
   // this effect monitors peer data tracks for speaking events and
   // updates our local state
-  const { room } = useVideoContext();
+  const { room } = useTwilio();
   React.useEffect(() => {
     const { set, remove } = useSpeakingStates.getState().api;
 
-    const handleTrackMessage = (rawMessage: string, track: any, participant: RemoteParticipant) => {
+    const handleTrackMessage = (rawMessage: string | ArrayBuffer, track: any, participant: RemoteParticipant) => {
       try {
-        const parsed = JSON.parse(rawMessage);
+        const parsed = JSON.parse(rawMessage.toString());
         if (parsed.op === 'setIsSpeaking') {
           set(participant.identity, parsed.value);
         }

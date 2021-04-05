@@ -6,9 +6,9 @@ import { AwayIcon } from '../../../components/icons/AwayIcon';
 import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
-import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { useIsAway } from './useIsAway';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
+import { useLocalTracks } from '../../../providers/media/hooks/useLocalTracks';
 
 export interface IAwayToggleProps {
   className?: string;

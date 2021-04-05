@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
-import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
+import { useTwilio } from '../../../../providers/twilio/TwilioProvider';
 
 export function useExport(exportToImageURL: () => string) {
-  const { room } = useVideoContext();
+  const { room } = useTwilio();
   const roomName = room?.name;
   const { t } = useTranslation();
 

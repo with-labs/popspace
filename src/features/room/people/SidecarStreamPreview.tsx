@@ -4,7 +4,6 @@ import { useGesture } from 'react-use-gesture';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { useRoomViewport } from '../RoomViewport';
 import { FullscreenableMedia } from '../../../components/FullscreenableMedia/FullscreenableMedia';
-import { useLocalParticipant } from '../../../hooks/useLocalParticipant/useLocalParticipant';
 import { SPRINGS } from '../../../constants/springs';
 import { makeStyles, Box, useTheme } from '@material-ui/core';
 import clsx from 'clsx';
@@ -14,6 +13,7 @@ import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '../../../utils/trackNames';
+import { useLocalParticipant } from '../../../providers/twilio/hooks/useLocalParticipant';
 
 /**
  * number of screen-space pixels you need to drag it away

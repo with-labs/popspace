@@ -8,6 +8,7 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 import { ResponsivePopoverProvider } from '../../../components/ResponsivePopover/ResponsivePopover';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { Spacing } from '../../../components/Spacing/Spacing';
+import { MediaFailedWrapper } from '../../../roomState/MediaFailedWrapper';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { isPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
 import { ACTION_BAR_ID } from '../addContent/ActionBar';
@@ -101,16 +102,18 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <QuickFileButton />
             </Hidden>
           </Spacing>
-          <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
-            <CameraToggle />
-            <MicToggle />
-            <StatusControls />
-            <Hidden xsDown>
-              <ScreenShareToggle />
-              {isPIPAvailable && hasPip && <PictureInPictureToggle />}
-            </Hidden>
-            <AwayToggle />
-          </Spacing>
+          <MediaFailedWrapper>
+            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
+              <CameraToggle />
+              <MicToggle />
+              <StatusControls />
+              <Hidden xsDown>
+                <ScreenShareToggle />
+                {isPIPAvailable && hasPip && <PictureInPictureToggle />}
+              </Hidden>
+              <AwayToggle />
+            </Spacing>
+          </MediaFailedWrapper>
         </Paper>
       </ResponsivePopoverProvider>
       <Hidden mdUp>

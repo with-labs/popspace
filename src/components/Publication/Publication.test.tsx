@@ -1,12 +1,12 @@
 import React from 'react';
 import Publication from './Publication';
 import { render } from '@testing-library/react';
-import useTrack from '../../hooks/useTrack/useTrack';
+import useTrack from '../../providers/twilio/hooks/useTrack';
 import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 import { CAMERA_TRACK_NAME } from '../../constants/User';
 
-jest.mock('../../hooks/useTrack/useTrack');
+jest.mock('../../providers/twilio/hooks/useTrack');
 const mockUseTrack = useTrack as jest.Mock<any>;
 
 jest.mock('../../hooks/useSpatialAudioVolume/useSpatialAudioVolume');

@@ -23,7 +23,8 @@
       "you": "You",
       "anonymous": "Anonymous",
       "errorCode": "Error Code: {{code}}",
-      "oops": "Oops!"
+      "oops": "Oops!",
+      "refresh": "Refresh"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -333,7 +334,7 @@
         "noRoomPassword": "You need a password to join this room",
         "incorrectRoomPassword": "The password you entered is incorrect",
         "noRoomAccess": "You don't have access to this room. You'll need the password to get in.",
-        "unknownRoom": "",
+        "unknownRoom": "Sorry, that room doesn't exist.",
         "joinRoomInvalidScreenName": "Please provide a valid screen name.",
         "joinRoomUnknownFailure": "Failed to join room - check your network connection.",
         "supportedFileTypes": "{{fileTypes}} are supported",
@@ -349,10 +350,10 @@
         "mediaReconnectingTitle": "Media reconnecting",
         "mediaReconnectingDetails": "Audio and video are temporarily unavailable",
         "socketUnavailable": "We couldn't connect to our servers. Check your internet status and contact us if this persists.",
-        "mediaUnavailable": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status and contact us if this persists.",
         "emptyRoomName": "Room name cannot be blank.",
         "maxRoomNameCharacters": "Room name cannot be more then {{maxChar}} characters.",
-        "checkboxRequired": "Please check this box to proceed"
+        "checkboxRequired": "Please check this box to proceed",
+        "roomAccess": "You aren't a member of this room. Ask the room owner for an invite."
       },
       "widgetsFallback": {
         "title": "Accessories error",
@@ -410,6 +411,12 @@
         "renameRoomErrorTitle": "Oops! There was an error while renaming the room.",
         "deleteRoomErrorTitle": "Oops! There was an error while deleting the room.",
         "message": "Please retry. If that keeps happening, please <1>contact us</1> and we will sort it out."
+      },
+      "twilioFailure": {
+        "tooltip": "Media disconnected!",
+        "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing, and <1>contact us</1> if this persists.",
+        "continue": "Continue without media",
+        "refresh": "Refresh"
       }
     },
     "features": {

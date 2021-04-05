@@ -3,14 +3,14 @@ import { ListItemIcon, ListItemText, ListItem } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '../../../../constants/RouteNames';
 import { LeaveIcon } from '../../../../components/icons/LeaveIcon';
-import useVideoContext from '../../../../hooks/useVideoContext/useVideoContext';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { useTwilio } from '../../../../providers/twilio/TwilioProvider';
 
 export interface ILeaveRoomMenuItemProps {}
 
 export const LeaveRoomMenuItem = React.forwardRef<HTMLDivElement, ILeaveRoomMenuItemProps>(
   ({ children, ...rest }, ref) => {
-    const { room } = useVideoContext();
+    const { room } = useTwilio();
     const history = useHistory();
     const leave = useRoomStore((r) => r.api.leave);
     const leaveRoom = React.useCallback(() => {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useAVSources } from '../../../hooks/useAVSources/useAVSources';
-import { useLocalTracks } from '../../../components/LocalTracksProvider/useLocalTracks';
 import { MenuItem } from '@material-ui/core';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
+import { useLocalTracks } from '../../../providers/media/hooks/useLocalTracks';
 
 export interface IMicDeviceMenuProps {
   open: boolean;

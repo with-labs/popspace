@@ -8,7 +8,7 @@ import React from 'react';
 import AudioTrack from '../AudioTrack/AudioTrack';
 import VideoTrack from '../VideoTrack/VideoTrack';
 
-import useTrack from '../../hooks/useTrack/useTrack';
+import useTrack from '../../providers/twilio/hooks/useTrack';
 
 import { IVideoTrack } from '../../types/twilio';
 import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Draggable } from '../Draggable';
 import { PersonBubble } from './PersonBubble';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 import { Stream } from '../../../types/streams';
 import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
 import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
 import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
+import { useTwilio } from '../../../providers/twilio/TwilioProvider';
 
 const MAX_Z_INDEX = 2147483647;
 const CENTER_ORIGIN = { horizontal: 0.5, vertical: 0.5 };
@@ -18,11 +18,7 @@ export interface IPersonProps {
 export const Person = React.memo<IPersonProps>(({ personId }) => {
   const person = useRoomStore(React.useCallback((room) => room.users[personId], [personId]));
 
-  // FIXME: this is essentially random right now!
-  // it may not even be consistent across different peers!
-  // We're selecting a Twilio participant, of all the participants which may
-  // be associated with the User, to show as the "primary" one
-  const { allParticipants } = useVideoContext();
+  const { allParticipants } = useTwilio();
   const allAssociatedParticipants = React.useMemo(
     // sorting to at least make it stable
     () =>

@@ -2,12 +2,8 @@ import React from 'react';
 import ErrorDialog from '../components/ErrorDialog/ErrorDialog';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ReconnectingNotification from '../components/ReconnectingNotification/ReconnectingNotification';
 import { Room } from '../features/room/Room';
 import { ErrorBoundary } from '../components/ErrorBoundary/ErrorBoundary';
-import { VideoProvider } from '../components/VideoProvider';
-import { ConnectOptions } from 'twilio-video';
-import { LocalTracksProvider } from '../components/LocalTracksProvider/LocalTracksProvider';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '../components/Modal/Modal';
 import { ModalTitleBar } from '../components/Modal/ModalTitleBar';
@@ -15,28 +11,8 @@ import { ModalContentWrapper } from '../components/Modal/ModalContentWrapper';
 import { RoomStateProvider } from '../roomState/RoomStateProvider';
 import { useAppState } from '../state';
 import { RemoteControlProvider } from '../components/RemoteControlProvider/RemoteControlProvider';
-
-// See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
-// for available connection options.
-const connectionOptions: ConnectOptions = {
-  bandwidthProfile: {
-    video: {
-      mode: 'collaboration',
-      renderDimensions: {
-        high: { height: 1024, width: 1920 },
-        standard: { height: 96, width: 160 },
-        low: { height: 96, width: 160 },
-      },
-    },
-  },
-  dominantSpeaker: false,
-  maxAudioBitrate: 48000,
-  // disabled since we don't use it - we could re-enable this to
-  // display network quality level to users, but without using it it just
-  // wastes CPU cycles
-  // networkQuality: { local: 1, remote: 1 },
-  preferredVideoCodecs: [{ codec: 'VP8', simulcast: true }],
-};
+import { TwilioProvider } from '../providers/twilio/TwilioProvider';
+import { LocalTracksProvider } from '../providers/media/LocalTracksProvider';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -81,16 +57,15 @@ export default function RoomPage(props: IRoomPageProps) {
       <ErrorDialog dismissError={() => setError(null)} error={error} />
       <RoomStateProvider roomName={props.name}>
         <LocalTracksProvider>
-          <VideoProvider options={connectionOptions} onError={setError} roomName={props.name}>
+          <TwilioProvider roomName={props.name}>
             <RemoteControlProvider>
               <div className={classes.roomWrapper}>
                 <ErrorBoundary fallback={() => <RoomFallback />}>
                   <Room />
-                  <ReconnectingNotification />
                 </ErrorBoundary>
               </div>
             </RemoteControlProvider>
-          </VideoProvider>
+          </TwilioProvider>
         </LocalTracksProvider>
       </RoomStateProvider>
     </>

@@ -12,7 +12,6 @@ import { queryCache } from './queryCache';
 import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
-import { UpdateNotification } from './features/updates/UpdateNotification';
 import { Toaster } from './components/Toaster/Toaster';
 
 export interface IAppProps {}
@@ -35,7 +34,6 @@ export const App: React.FC<IAppProps> = () => {
                   <MediaReadinessProvider>
                     <SoundEffectProvider>
                       <Routes />
-                      <UpdateNotification />
                     </SoundEffectProvider>
                   </MediaReadinessProvider>
                 </AppStateProvider>

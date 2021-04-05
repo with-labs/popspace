@@ -12,6 +12,10 @@ import { Spacing } from '../../../../components/Spacing/Spacing';
 import { Link } from '../../../../components/Link/Link';
 import { BugReport } from './BugReport';
 import { AvatarSelectorBubble } from '../../avatar/AvatarSelectorBubble';
+import { useUpdateStore } from '../../../updates/useUpdatesStore';
+import shallow from 'zustand/shallow';
+import { Refresh } from '@material-ui/icons';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -45,6 +49,20 @@ const useStyles = makeStyles((theme) => ({
   updatedChangelogButton: {
     color: theme.palette.brandColors.cherry.bold,
   },
+  buttonUpdate: {
+    position: 'relative',
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      zIndex: 1,
+      top: 4,
+      right: 2,
+      width: 8,
+      height: 8,
+      borderRadius: '100%',
+      backgroundColor: theme.palette.brandColors.cherry.light,
+    },
+  },
 }));
 
 export const MainMenu = () => {
@@ -53,6 +71,8 @@ export const MainMenu = () => {
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);
+
+  const [hasUpdate, acceptUpdate] = useUpdateStore((s) => [s.hasUpdate, s.api.onUpdate], shallow);
 
   const onButtonClicked = (ev: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(ev.currentTarget);
@@ -63,7 +83,7 @@ export const MainMenu = () => {
       <SquareIconButton
         aria-label={t('features.roomMenu.title')}
         onClick={onButtonClicked}
-        className={classes.button}
+        className={clsx(classes.button, hasUpdate && classes.buttonUpdate)}
         aria-haspopup="true"
         aria-controls={!!anchorEl ? 'roomMenu' : undefined}
       >
@@ -114,6 +134,13 @@ export const MainMenu = () => {
               {t('features.room.sendFeedbackBtn')}
             </Button>
           </Spacing>
+          {hasUpdate && (
+            <Box pt={2} pb={1}>
+              <Button endIcon={<Refresh />} onClick={acceptUpdate}>
+                {t('features.updates.title')}
+              </Button>
+            </Box>
+          )}
         </Box>
       </ResponsivePopover>
     </>

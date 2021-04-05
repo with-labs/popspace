@@ -9,7 +9,7 @@ import { combine } from 'zustand/middleware';
 export const useUpdateStore = create(
   combine(
     {
-      hasUpdate: false,
+      hasUpdate: true,
       updateAccepted: false,
     },
     (set) => ({

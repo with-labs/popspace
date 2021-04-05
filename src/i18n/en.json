@@ -473,7 +473,7 @@
       "updates": {
         "title": "Update available!",
         "description": "Reload for the latest features",
-        "reload": "Reload"
+        "reload": "Reload now"
       },
       "pictureInPicture": {
         "toggle": "Toggle picture-in-picture",

@@ -507,6 +507,9 @@
         "explainerTitle": "You're away",
         "explainerText": "While away, your camera is off, your mic is muted, and the room is silent.",
         "explainerImgAlt": "An illustration with a grayed-out avatar bubble"
+      },
+      "chat": {
+        "buttonText": "Chat with us"
       }
     },
     "modals": {

@@ -23,7 +23,7 @@ import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
 import { StatusControls } from '../media/StatusControls';
 import { MainMenu } from './mainMenu/MainMenu';
-
+import { ChatButton } from './ChatButton/ChatButton';
 export interface IRoomTaskbarProps {
   className?: string;
 }
@@ -112,6 +112,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
                 {isPIPAvailable && hasPip && <PictureInPictureToggle />}
               </Hidden>
               <AwayToggle />
+              <ChatButton />
             </Spacing>
           </MediaFailedWrapper>
         </Paper>

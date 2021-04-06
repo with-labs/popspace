@@ -58,3 +58,8 @@ declare module '*.webm' {
   const path: string;
   export default path;
 }
+
+declare interface Window {
+  $crisp: any;
+  CRISP_WEBSITE_ID: string;
+}

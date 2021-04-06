@@ -13,6 +13,7 @@ import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
+import { useCrisp } from './hooks/useCrisp/useCrisp';
 
 export interface IAppProps {}
 
@@ -20,6 +21,9 @@ export const App: React.FC<IAppProps> = () => {
   // on load, if the user is logged in, identify them to various
   // tooling
   useAnalyticsUserIdentity();
+
+  // setup crisp inegration
+  useCrisp();
 
   return (
     <>

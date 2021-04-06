@@ -136,7 +136,7 @@ class MercuryApi {
           }
         }
         // write the chosen default so it remains stable for future requests
-        await shared.db.pg.massive.default_rooms.insert(initializedDefaultRoom)
+        await shared.db.pg.massive.default_rooms.save(initializedDefaultRoom)
         return initializedDefaultRoom
       }
 
@@ -148,6 +148,12 @@ class MercuryApi {
       // choose an arbitrary owned room, if no owned rooms choose an arbitrary
       // membership room.
       if (!defaultRoom) {
+        defaultRoom = await initializeDefaultRoom()
+      }
+
+      // if the user no longer has access to their default room,
+      // re-initialize it
+      if (!(await shared.db.room.memberships.hasAccess(req.user.id, defaultRoom.room_id))) {
         defaultRoom = await initializeDefaultRoom()
       }
 

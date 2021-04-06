@@ -21,10 +21,8 @@ module.exports = {
     const response1 = await remoteUserInfo.client.sendHttpPost("/set_default_room", {
       room_route: localUserInfo.roomNameEntry.name,
     })
-    console.log("set room default to", localUserInfo.roomNameEntry.name)
     // revoke remote user's membership to their default room
     await shared.db.room.memberships.revokeMembership(localUserInfo.room.id, remoteUserInfo.user.id)
-    console.log("revoked access to ", localUserInfo.room.id)
     const response2 = await remoteUserInfo.client.sendHttpPost("/get_or_init_default_room", {})
     return { response1, response2, userInfo: remoteUserInfo }
   }),

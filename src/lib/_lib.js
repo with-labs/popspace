@@ -1,37 +1,34 @@
-const lib = {}
-
-lib.ws = require('ws')
-
-lib.log = require("./log")
-lib.shared = require("@withso/with-shared")
-lib.Client = require("../client/client")
-lib.ErrorCodes = require("./error_codes")
-lib.event = require("./event/_events")
-lib.util = require("./util")
-lib.appInfo = require("./app_info")
-lib.SocketGroup = require("./socket_group")
-
 const RoomData = require("./room_data")
 const Analytics = require("./analytics")
 
-lib.init = async () => {
-  lib.roomData = new RoomData()
-  lib.analytics = new Analytics()
-  await lib.roomData.init()
-  await shared.db.pg.init()
-  await shared.db.dynamo.init()
-}
-lib.cleanup = async() => {
-  await shared.db.pg.tearDown()
-}
-
-lib.error = async (code, message, data={}) => {
-  return Object.assign({
-    success: false,
-    code: code,
-    message: message,
-    data: data
-  })
+const lib = {
+  ws: require("ws"),
+  log: require("./log"),
+  shared: require("@withso/with-shared"),
+  Client: require("../client/client"),
+  ErrorCodes: require("./error_codes"),
+  event: require("./event/_events"),
+  util: require("./util"),
+  appInfo: require("./app_info"),
+  SocketGroup: require("./socket_group"),
+  analytics: new Analytics(),
+  roomData: new RoomData(),
+  init: async () => {
+    await lib.roomData.init()
+    await shared.db.pg.init()
+    await shared.db.dynamo.init()
+  },
+  cleanup: async () => {
+    await shared.db.pg.tearDown()
+  },
+  error: async (code, message, data = {}) => {
+    return Object.assign({
+      success: false,
+      code: code,
+      message: message,
+      data: data,
+    })
+  },
 }
 
 module.exports = lib

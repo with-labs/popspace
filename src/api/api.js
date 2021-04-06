@@ -47,6 +47,15 @@ class Api {
     })
   }
 
+  loggedInGetEndpoint(endpoint, handler, additionalMiddleware=[]) {
+    const middlewareList = [
+      this.middleware.getUser(),
+      this.middleware.requireUser(),
+      ...additionalMiddleware
+    ]
+    this.express.get(endpoint, this.middleware, handler)
+  }
+
   loggedOutPostEndpoint(endpoint, handler,) {
     this.express.post(endpoint, (req, res) => {
       handler(req, res)

@@ -3,6 +3,3 @@ node_modules
 .DS_Store
 logs
 .ssl
-
-# might add this back if useful
-jsconfig.json

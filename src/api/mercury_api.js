@@ -17,12 +17,12 @@ class MercuryApi {
   initPostRoutes() {
     this.api.loggedInPostEndpoint("/subscribe_to_newsletter", async (req, res) => {
       await shared.db.accounts.newsletterSubscribe(req.user.id)
-      return await http.succeed(req, res, { });
+      return await http.succeed(req, res, {})
     })
 
     this.api.loggedInPostEndpoint("/unsubscribe_from_newsletter", async (req, res) => {
       await shared.db.accounts.newsletterUnsubscribe(req.user.id)
-      return await http.succeed(req, res, { });
+      return await http.succeed(req, res, {})
     })
 
     this.api.loggedOutPostEndpoint("/magic_link_subscribe", async (req, res) => {
@@ -30,10 +30,10 @@ class MercuryApi {
       const otp = req.body.otp
       const request = await shared.db.magic.magicLinkById(magicLinkId)
       const result = await shared.db.magic.tryToSubscribe(request, otp)
-      if(result.error) {
+      if (result.error) {
         return await http.authFail(req, res, result.error)
       }
-      return await http.succeed(req, res, { });
+      return await http.succeed(req, res, {})
     })
 
     this.api.loggedOutPostEndpoint("/magic_link_unsubscribe", async (req, res) => {
@@ -41,15 +41,19 @@ class MercuryApi {
       const otp = req.body.otp
       const request = await shared.db.magic.magicLinkById(magicLinkId)
       const result = await shared.db.magic.tryToUnsubscribe(request, otp)
-      if(result.error) {
+      if (result.error) {
         return await http.authFail(req, res, result.error)
       }
-      return await http.succeed(req, res, { });
+      return await http.succeed(req, res, {})
     })
 
     this.api.ownerOnlyRoomRouteEndpoint("/enable_public_invite_link", async (req, res) => {
       const roomState = await shared.db.dynamo.room.getRoomState(req.room.id)
-      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.room.id, req.user.id, roomState.display_name)
+      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(
+        req.room.id,
+        req.user.id,
+        roomState.display_name
+      )
       const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
       return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })
@@ -144,14 +148,14 @@ class MercuryApi {
       // choose an arbitrary owned room, if no owned rooms choose an arbitrary
       // membership room.
       if (!defaultRoom) {
-        defaultRoom = initializeDefaultRoom()
+        defaultRoom = await initializeDefaultRoom()
       }
 
       let preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
       if (!preferredRoute) {
         // there's a good chance the room referenced by the existing default_rooms row
         // was deleted. re-initialize with a new default
-        defaultRoom = initializeDefaultRoom()
+        defaultRoom = await initializeDefaultRoom()
         preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
 
         if (!preferredRoute) {

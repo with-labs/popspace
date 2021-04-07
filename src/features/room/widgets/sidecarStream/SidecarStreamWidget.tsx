@@ -14,7 +14,7 @@ import { useNamedPublication } from '../../../../providers/twilio/hooks/useNamed
 import { SidecarStreamWidgetState, WidgetType } from '../../../../roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { FullscreenableMedia } from '../../../../components/FullscreenableMedia/FullscreenableMedia';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../../../constants/User';
 import { DeleteIcon } from '../../../../components/icons/DeleteIcon';
 import { useWidgetContext } from '../useWidgetContext';

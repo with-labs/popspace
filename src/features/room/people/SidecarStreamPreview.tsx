@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { GrabbyIcon } from '../../../components/icons/GrabbyIcon';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '../../../utils/trackNames';
 import { useLocalParticipant } from '../../../providers/twilio/hooks/useLocalParticipant';

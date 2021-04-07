@@ -13,7 +13,7 @@ import { AvatarSelector } from '../avatar/AvatarSelector';
 import { TFunction } from 'i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { AutoPIPToggle } from './AutoPIPToggle';
 import { isAutoPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';

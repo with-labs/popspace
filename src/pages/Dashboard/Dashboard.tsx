@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import Api from '../../utils/api';
 import { Box, makeStyles, Typography, Button } from '@material-ui/core';
@@ -21,8 +21,9 @@ import { getErrorMessageFromResponse } from '../../utils/ErrorMessage';
 import { Link } from '../../components/Link/Link';
 import { USER_SUPPORT_EMAIL } from '../../constants/User';
 import { MAX_FREE_ROOMS } from '../../constants/room';
-import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile, UserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { Origin } from '../../analytics/constants';
+import { useDefaultRoom } from '../../hooks/api/useDefaultRoom';
 
 interface IDashboardProps {}
 
@@ -132,11 +133,34 @@ function DashboadReducer(state: DashboardState, action: DashboardAction) {
   }
 }
 
+function useOrderedRooms(profile?: UserProfile) {
+  const { rooms: { owned, member } = { owned: [], member: [] } } = profile || {};
+  const { data: defaultRoomRoute, error } = useDefaultRoom();
+  useEffect(() => {
+    if (error) {
+      logger.error(`Failed to get default room for user ${profile?.user.id}`, error);
+    }
+    // disable deps check; for debug error reporting only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
+  return useMemo(() => {
+    const allRooms = [...owned, ...member];
+    if (defaultRoomRoute) {
+      const defaultIndex = allRooms.findIndex((room) => room.route === defaultRoomRoute);
+      if (defaultIndex !== -1) {
+        const [defaultRoom] = allRooms.splice(defaultIndex, 1);
+        allRooms.unshift(defaultRoom);
+      }
+    }
+    return allRooms;
+  }, [owned, member, defaultRoomRoute]);
+}
+
 export const Dashboard: React.FC<IDashboardProps> = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const { user, profile, error, update, isLoading } = useCurrentUserProfile();
-  const rooms = profile?.rooms || { owned: [], member: [] };
+  const rooms = useOrderedRooms(profile);
 
   // boot to signin if there's an error fetching profile data
   useEffect(() => {
@@ -146,12 +170,14 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
   }, [error, history]);
 
   // boot to create room if there are no rooms
-  const hasNoRooms = !isLoading && !error && rooms.owned.length === 0 && rooms.member.length === 0;
+  const hasNoRooms = !isLoading && !error && rooms.length === 0;
   useEffect(() => {
     if (hasNoRooms) {
       history.push(`${RouteNames.CREATE_ROOM}?onboarding=true`);
     }
   }, [hasNoRooms, history]);
+
+  const ownedRoomCount = profile?.rooms.owned.length ?? 0;
 
   const { t } = useTranslation();
   const query = useQueryParams();
@@ -185,13 +211,17 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
         // update the query cache to remove the room
         update((data) => {
           if (!data || !data.profile) return {};
-          const ownedIndex = data.profile.rooms.owned.indexOf(roomInfo);
+          const ownedIndex = data.profile.rooms.owned.findIndex((r) => r.route === roomInfo.route);
           if (ownedIndex !== -1) {
             data.profile.rooms.owned.splice(ownedIndex, 1);
+            // copy array to ensure hooks update
+            data.profile.rooms.owned = [...data.profile.rooms.owned];
           } else {
-            const memberIndex = data.profile.rooms.member.indexOf(roomInfo);
+            const memberIndex = data.profile.rooms.member.findIndex((r) => r.route === roomInfo.route);
             if (memberIndex !== -1) {
               data.profile.rooms.member.splice(memberIndex, 1);
+              // copy array to ensure hooks update
+              data.profile.rooms.member = [...data.profile.rooms.member];
             }
           }
           return data;
@@ -277,12 +307,12 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
                 component={Link}
                 disableStyling
                 to={RouteNames.CREATE_ROOM}
-                disabled={rooms.owned.length >= MAX_FREE_ROOMS}
+                disabled={ownedRoomCount >= MAX_FREE_ROOMS}
                 state={{ origin: Origin.CREATE_ROOM_BUTTON }}
               >
                 {t('pages.dashboard.createRoomButton')}
               </Button>
-              {rooms.owned.length >= MAX_FREE_ROOMS && (
+              {ownedRoomCount >= MAX_FREE_ROOMS && (
                 <Box pl={2} pt={0.5} flex={1}>
                   <Trans i18nKey="modals.createRoomModal.limitBody" values={{ maxRooms: MAX_FREE_ROOMS }}>
                     We currently have a limit of 20 rooms per user. If you need more rooms, please
@@ -293,7 +323,7 @@ export const Dashboard: React.FC<IDashboardProps> = (props) => {
             </Box>
             <div className={classes.roomWrapper}>
               <div className={classes.roomGrid}>
-                {[...rooms.owned, ...rooms.member].map((memberRoom) => {
+                {rooms.map((memberRoom) => {
                   return (
                     <RoomSummary
                       key={memberRoom.room_id}

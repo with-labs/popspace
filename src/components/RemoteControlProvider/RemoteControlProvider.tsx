@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RemoteDataTrack, RemoteParticipant } from 'twilio-video';
 import { RoomEvent } from '../../constants/twilio';
 import { CAMERA_TRACK_NAME, MIC_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '../../constants/User';
-import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
 import { useTwilio } from '../../providers/twilio/TwilioProvider';
 import { useRoomStore } from '../../roomState/useRoomStore';

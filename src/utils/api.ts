@@ -104,22 +104,22 @@ class Api {
   }
 
   async roomCreate(displayName: string) {
-    return await this.post<BaseResponse & { newRoom: ApiNamedRoom }>('/room_create', { displayName });
+    return await this.post<{ newRoom: ApiNamedRoom }>('/room_create', { displayName });
   }
 
   async roomRename(roomId: string, newDisplayName: string) {
-    return await this.post<BaseResponse & { route: string; url_id: string; display_name: string }>('/room_rename', {
+    return await this.post<{ route: string; url_id: string; display_name: string }>('/room_rename', {
       roomId,
       newDisplayName,
     });
   }
 
   async roomDelete(roomId: string) {
-    return await this.post<BaseResponse & { deletedRoomId: number }>('/room_delete', { roomId });
+    return await this.post<{ deletedRoomId: number }>('/room_delete', { roomId });
   }
 
   async sendRoomInvite(roomName: string, email: string) {
-    return await this.post<BaseResponse & { newMember: ApiRoomMember }>('/send_room_invite', { roomName, email });
+    return await this.post<{ newMember: ApiRoomMember }>('/send_room_invite', { roomName, email });
   }
 
   async cancelRoomInvite(roomName: string, email: string) {
@@ -131,7 +131,7 @@ class Api {
   }
 
   async getRoomMembers(roomName: string) {
-    return await this.post<BaseResponse & { result: ApiRoomMember[] }>('/room_get_members', { roomName });
+    return await this.post<{ result: ApiRoomMember[] }>('/room_get_members', { roomName });
   }
 
   async resolveRoomInvite(otp: string, inviteId: string | null) {
@@ -151,11 +151,11 @@ class Api {
   }
 
   async loggedInEnterRoom(roomName: string) {
-    return await this.post<BaseResponse & { token?: string }>('/logged_in_join_room', { roomName });
+    return await this.post<{ token?: string }>('/logged_in_join_room', { roomName });
   }
 
   async getToken(identity: string, password: string, roomName: string) {
-    return await this.post<BaseResponse & { token?: string }>(`/token`, {
+    return await this.post<{ token?: string }>(`/token`, {
       user_identity: identity,
       room_name: roomName,
       passcode: password,
@@ -175,18 +175,18 @@ class Api {
   }
 
   async getRoomFileUploadUrl(fileName: string, contentType: string) {
-    return await this.post<BaseResponse & { uploadUrl: string; downloadUrl: string }>('/get_room_file_upload_url', {
+    return await this.post<{ uploadUrl: string; downloadUrl: string }>('/get_room_file_upload_url', {
       fileName,
       contentType,
     });
   }
 
   async deleteFile(fileUrl: string) {
-    return await this.post<BaseResponse>('/delete_file', { fileUrl });
+    return await this.post('/delete_file', { fileUrl });
   }
 
   async getOpenGraph(url: string) {
-    return await this.post<BaseResponse & { result: ApiOpenGraphResult }>('/opengraph', {
+    return await this.post<{ result: ApiOpenGraphResult }>('/opengraph', {
       url,
     });
   }
@@ -211,30 +211,63 @@ class Api {
     return await this.post('/reset_public_invite_link', { roomRoute }, SERVICE.MERCURY);
   }
 
-  async post<Response extends BaseResponse>(endpoint: string, data: any, service?: SERVICE): Promise<Response> {
-    const xhr = new XMLHttpRequest();
+  async setDefaultRoom(roomRoute: string) {
+    return await this.post<BaseResponse>('/set_default_room', { roomRoute }, SERVICE.MERCURY);
+  }
 
-    const serviceUrl = service === SERVICE.MERCURY ? MERCURY_SERVER : '/.netlify/functions';
+  async getDefaultRoom() {
+    return this.post<BaseResponse & { room_route: string }>('/get_or_init_default_room', SERVICE.MERCURY);
+  }
 
-    xhr.open('POST', `${serviceUrl}${endpoint}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    const token = getSessionToken();
-    if (token) {
-      xhr.setRequestHeader('Authorization', `Bearer ${btoa(token)}`);
-    }
-    return new Promise<Response>((resolve, reject) => {
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-          try {
-            const jsonResponse = JSON.parse(xhr.response);
-            resolve(jsonResponse);
-          } catch {
-            resolve({ success: false, message: 'Unexpected error' } as any);
-          }
-        }
-      };
-      xhr.send(JSON.stringify(data));
+  async post<Response = {}>(endpoint: string, data?: any, service: SERVICE = SERVICE.NETLIFY) {
+    return this.request<Response>({
+      method: 'POST',
+      endpoint,
+      data: data ?? {},
+      service,
     });
+  }
+
+  async get<Response = {}>(endpoint: string, service?: SERVICE) {
+    return this.request<Response>({
+      method: 'GET',
+      endpoint,
+      service,
+    });
+  }
+
+  private async request<Response>(opts: { method: string; endpoint: string; data?: any; service?: SERVICE }) {
+    const { service = SERVICE.NETLIFY, method, endpoint, data } = opts;
+
+    const serviceUrl = this.getServiceUrl(service);
+
+    const response = await fetch(`${serviceUrl}${endpoint}`, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders(),
+      },
+      body: data ? JSON.stringify(data) : undefined,
+    });
+
+    if (!response.ok) {
+      return { success: false, message: 'Unexpected error', code: ErrorCodes.UNEXPECTED } as BaseResponse;
+    }
+
+    return response.json() as Promise<BaseResponse & Response>;
+  }
+
+  private getServiceUrl(service: SERVICE) {
+    return service === SERVICE.MERCURY ? MERCURY_SERVER : '/.netlify/functions';
+  }
+
+  private getAuthHeaders(): { Authorization: string } | {} {
+    const token = getSessionToken();
+    return token
+      ? {
+          Authorization: `Bearer ${btoa(token)}`,
+        }
+      : {};
   }
 }
 

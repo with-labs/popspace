@@ -5,7 +5,7 @@ import { AddIcon } from '../../../../components/icons/AddIcon';
 import { useTranslation } from 'react-i18next';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { ListItemIcon, ListItemText, MenuItem } from '@material-ui/core';
 import { useWidgetContext } from '../useWidgetContext';
 import { Origin } from '../../../../analytics/constants';

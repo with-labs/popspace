@@ -10,7 +10,7 @@ import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikS
 import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
 import { Box, Typography } from '@material-ui/core';
 import * as Sentry from '@sentry/react';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import clsx from 'clsx';
 import { Trans } from 'react-i18next';
 import { DialogModal, DialogMessage } from '../../../../components/DialogModal/DialogModal';

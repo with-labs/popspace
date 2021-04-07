@@ -7,7 +7,8 @@ import { RoomInfo } from '../../types/api';
 import { useQueryCache } from 'react-query';
 import { Updater } from 'react-query/types/core/utils';
 
-type ProfileData = { profile?: { user: ApiUser; rooms: { member: RoomInfo[]; owned: RoomInfo[] } } };
+export type UserProfile = { user: ApiUser; rooms: { member: RoomInfo[]; owned: RoomInfo[] } };
+export type ProfileData = { profile?: UserProfile };
 
 export function useCurrentUserProfile() {
   const result = useQuery<ProfileData, ApiError>('/user_profile');

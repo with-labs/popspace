@@ -27,7 +27,7 @@ import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
 import { Spacing } from '../../components/Spacing/Spacing';
 import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
 import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
 import { Analytics } from '../../analytics/Analytics';
 import { EventNames } from '../../analytics/constants';

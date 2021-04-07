@@ -1,5 +1,5 @@
 import { useRoomRoute } from '../useRoomRoute/useRoomRoute';
-import { useCurrentUserProfile } from '../useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../api/useCurrentUserProfile';
 import { useMemo } from 'react';
 import { RoomInfo } from '../../types/api';
 

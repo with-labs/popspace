@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useIsAway } from '../../../roomControls/away/useIsAway';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, Button, Hidden, IconButton, ThemeProvider } from '@material-ui/core';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { ChatIcon } from '../../../../components/icons/ChatIcon';
 import { useTranslation } from 'react-i18next';
 import { slate } from '../../../../theme/theme';

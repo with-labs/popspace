@@ -4,7 +4,7 @@ import { useRoomViewport } from '../../../room/RoomViewport';
 import { Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { Origin } from '../../../../analytics/constants';
 

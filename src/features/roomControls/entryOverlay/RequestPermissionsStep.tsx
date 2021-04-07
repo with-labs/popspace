@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { ButtonLoader } from '../../../components/ButtonLoader/ButtonLoader';
 import { Logo } from '../../../components/Logo/Logo';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { logger } from '../../../utils/logger';
 import { useAppState } from '../../../state';
 import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../../errors/MediaError';

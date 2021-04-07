@@ -3,7 +3,7 @@ import { Draggable } from '../Draggable';
 import { PersonBubble } from './PersonBubble';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { Stream } from '../../../types/streams';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
 import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
 import { useTwilio } from '../../../providers/twilio/TwilioProvider';

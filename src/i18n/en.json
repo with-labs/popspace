@@ -148,7 +148,9 @@
           "guest": "Guest",
           "inviteMembers": "Invite members",
           "renameRoom": "Rename room",
-          "deleteRoom": "Delete room"
+          "deleteRoom": "Delete room",
+          "makeDefault": "Make default",
+          "defaultRoom": "Default room"
         },
         "createRoomButton": "Create room"
       },
@@ -353,7 +355,8 @@
         "emptyRoomName": "Room name cannot be blank.",
         "maxRoomNameCharacters": "Room name cannot be more then {{maxChar}} characters.",
         "checkboxRequired": "Please check this box to proceed",
-        "roomAccess": "You aren't a member of this room. Ask the room owner for an invite."
+        "roomAccess": "You aren't a member of this room. Ask the room owner for an invite.",
+        "defaultRoomSetFailed": "We couldn't set your default room. Try again in a moment."
       },
       "widgetsFallback": {
         "title": "Accessories error",

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteProps, Route, useHistory } from 'react-router-dom';
-import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { RouteNames } from '../../constants/RouteNames';
 import { FullscreenLoading } from '../FullscreenLoading/FullscreenLoading';
 

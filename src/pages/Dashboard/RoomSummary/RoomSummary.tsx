@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Tooltip,
 } from '@material-ui/core';
 import { RoomInfo } from '../../../types/api';
 import { OptionsIcon } from '../../../components/icons/OptionsIcon';
@@ -17,9 +18,12 @@ import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { EditIcon } from '../../../components/icons/EditIcon';
 
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { useTranslation } from 'react-i18next';
 import { isChrome, isIOS } from 'react-device-detect';
+import { Star } from '@material-ui/icons';
+import { useDefaultRoom } from '../../../hooks/api/useDefaultRoom';
+
 interface IRoomSummaryProps {
   roomInfo: RoomInfo;
   onInvite: (roomInfo: RoomInfo) => void;
@@ -49,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
     textOverflow: 'ellipsis',
     maxWidth: '80%',
     overflow: 'hidden',
@@ -108,12 +111,23 @@ export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
     setIsOpen(true);
   };
 
+  const { data: defaultRoomRoute, update: setDefaultRoom } = useDefaultRoom();
+
+  const isDefault = roomInfo.route === defaultRoomRoute;
+
   return (
     <Box display="flex" flexDirection="column" className={classes.root} onClick={onRoomClickHandler} tabIndex={0}>
       <Box className={classes.titleWrapper} display="flex" flexDirection="row" alignItems="center">
-        <Typography className={classes.title} variant="h2">
-          {roomInfo.display_name}
-        </Typography>
+        <Box flex="1" display="flex" flexDirection="row" alignItems="center">
+          <Typography className={classes.title} variant="h2">
+            {roomInfo.display_name}
+          </Typography>
+          {isDefault && (
+            <Tooltip title={t('pages.dashboard.roomSummary.defaultRoom') as string}>
+              <Star style={{ marginLeft: 8 }} fontSize="default" color="primary" />
+            </Tooltip>
+          )}
+        </Box>
         <IconButton ref={anchorRef} onClick={onMenuClicked}>
           <OptionsIcon />
         </IconButton>
@@ -143,6 +157,14 @@ export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
           </ListItemIcon>
           <ListItemText primary={t('pages.dashboard.roomSummary.inviteMembers')} />
         </MenuItem>
+        {!isDefault && (
+          <MenuItem onClick={() => setDefaultRoom(roomInfo.route)}>
+            <ListItemIcon>
+              <Star />
+            </ListItemIcon>
+            <ListItemText primary={t('pages.dashboard.roomSummary.makeDefault')} />
+          </MenuItem>
+        )}
         {isOwner && [
           <MenuItem key={'rename-room-menuItem'} onClick={() => onRename(roomInfo)}>
             <ListItemIcon>

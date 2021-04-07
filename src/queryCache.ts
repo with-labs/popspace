@@ -1,9 +1,9 @@
 import { QueryCache } from 'react-query';
-import api from './utils/api';
+import api, { SERVICE } from './utils/api';
 import { ApiError } from './errors/ApiError';
 
-const defaultQueryFn = async (key: string, data?: any) => {
-  const { success, message, errorCode, ...result } = await api.post(key, data || {});
+const defaultQueryFn = async (key: string, data?: any, service?: SERVICE) => {
+  const { success, message, errorCode, ...result } = await api.post(key, data, service);
   if (!success) {
     throw new ApiError({ success, message, errorCode });
   }

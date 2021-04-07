@@ -4,7 +4,7 @@ import { RouteNames } from '../../../constants/RouteNames';
 import { useHistory } from 'react-router-dom';
 import { useTranslation, Trans } from 'react-i18next';
 import NoAccessImg from '../images/No_Access.png';
-import { useCurrentUserProfile } from '../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { Button, makeStyles } from '@material-ui/core';
 import { removeSessionToken } from '../../../utils/sessionToken';
 

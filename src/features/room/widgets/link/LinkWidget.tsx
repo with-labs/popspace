@@ -6,7 +6,7 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { MediaLinkWidget } from './media/MediaLinkWidget';
 import { LinkWidgetShape, WidgetType } from '../../../../roomState/types/widgets';
-import { useCurrentUserProfile } from '../../../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
 import { UploadingWidget } from './UploadingWidget';

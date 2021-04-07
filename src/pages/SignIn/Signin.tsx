@@ -10,7 +10,7 @@ import { RouteNames } from '../../constants/RouteNames';
 import { ErrorCodes } from '../../constants/ErrorCodes';
 import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
 import { getErrorDialogText } from '../../utils/ErrorMessage';
-import { useCurrentUserProfile } from '../../hooks/useCurrentUserProfile/useCurrentUserProfile';
+import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '../../components/fieldBindings/FormikTextField';

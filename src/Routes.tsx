@@ -6,6 +6,7 @@ import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
+import { Subscribe } from './pages/Subscribe/Subscribe';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Route, Switch, useHistory } from 'react-router-dom';
@@ -90,6 +91,10 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         path={RouteNames.FEATURE_FLAGS}
         render={({ history }) => <FlaggAdmin onDone={() => history.push('/')} />}
       />
+
+      <Route path={RouteNames.SUBSCRIBE}>
+        <Subscribe />
+      </Route>
 
       <Route path={RouteNames.UNSUBSCRIBE}>
         <Unsubscribe />

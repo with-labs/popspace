@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as typeformEmbed from '@typeform/embed';
 import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
 import { Column } from '../../Layouts/TwoColLayout/Column/Column';
@@ -11,19 +10,18 @@ import { ErrorCodes } from '../../constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
 import { Page } from '../../Layouts/Page/Page';
 import { getSessionToken } from '../../utils/sessionToken';
-
+import Subscribed from './images/subscribed.png';
 import { RouteNames } from '../../constants/RouteNames';
-import SadBlobby from './images/sadblobby.png';
 import { logger } from '../../utils/logger';
 
-interface IUnsubscribeProps {}
+interface ISubscribeProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.brandColors.sand.regular,
   },
   container: {
-    maxWidth: '440px',
+    maxWidth: '300px',
   },
   body: {
     marginTop: theme.spacing(2),
@@ -40,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(4),
-    width: '148px',
+    width: '190px',
   },
 }));
 
-export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
+export const Subscribe: React.FC<ISubscribeProps> = (props) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const history = useHistory();
@@ -58,13 +56,12 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   const mlid = query.get('mlid') || '';
 
   useEffect(() => {
-    Api.unsubscribeFromEmail(otp, mlid)
+    Api.magicLinkSubscribe(otp, mlid)
       .then((result: any) => {
         if (!result.success) {
           if (result.errorCode === ErrorCodes.INVALID_OTP) {
             // the link is invalid, expired, or already resolved
             if (getSessionToken()) {
-              // if the user is logged in, go to the dash
               history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
             } else {
               // the user is not logged in, something is wrong with the link
@@ -73,7 +70,11 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
             }
           } else {
             // something unexpected happened with the link
-            logger.warn(`Warning unsubcribing email for ${mlid}`, result.message, result.errorCode);
+            logger.warn(
+              `Warning subcribing to newsletter for magic link ${mlid} with otp ${otp}`,
+              result.message,
+              result.errorCode
+            );
             setError({
               errorCode: ErrorCodes.UNEXPECTED,
             });
@@ -81,8 +82,7 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
         }
       })
       .catch((e: any) => {
-        setIsLoading(false);
-        logger.error(`Error unsubcribing email for ${mlid}`, e);
+        logger.error(`Error subcribing to newsletter for magic link ${mlid} with otp ${otp}`, e);
         setError({
           errorCode: ErrorCodes.UNEXPECTED,
           error: e,
@@ -91,20 +91,10 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [history, otp, mlid, t]);
+  }, [otp, mlid, history]);
 
   const onClickHandler = () => {
-    // create typeform pop up that will auto close the popup 3 seconds after the user
-    // submits their response and then redirect to root
-    const typeFormPopUp = typeformEmbed.makePopup('https://form.typeform.com/to/QPqxaB2n', {
-      mode: 'popup',
-      autoClose: 3,
-      onClose: () => {
-        history.push(RouteNames.ROOT);
-      },
-    });
-
-    typeFormPopUp.open();
+    history.push(RouteNames.ROOT);
   };
 
   return (
@@ -112,19 +102,18 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
       <TwoColLayout>
         <Column centerContent={true} useColMargin={true}>
           <div className={classes.container}>
-            <div>{t('pages.unsubscribe.quoteText')}</div>
-            <Typography variant="h1">{t('pages.unsubscribe.title')}</Typography>
+            <Typography variant="h1">{t('pages.subscribe.title')}</Typography>
             <Typography variant="body1" className={classes.body}>
-              {t('pages.unsubscribe.body')}
+              {t('pages.subscribe.body')}
             </Typography>
             <Button className={classes.button} onClick={onClickHandler}>
-              {t('pages.unsubscribe.button')}
+              {t('pages.subscribe.button')}
             </Button>
           </div>
         </Column>
         <Column centerContent={true} hide="sm">
           <div className={classes.imageContainer}>
-            <img className={classes.image} src={SadBlobby} alt={t('pages.unsubscribe.imgAltText')} />
+            {<img className={classes.image} src={Subscribed} alt={t('pages.subscribe.imgAltText')} />}
           </div>
         </Column>
       </TwoColLayout>

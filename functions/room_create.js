@@ -26,13 +26,13 @@ const handleRoomCreateError = (errorCode, callback) => {
         callback,
         "You have exceeded your tier limits for # of rooms.",
         {errorCode: errorCode}
-      );
+      )
     default:
       return util.http.fail(
         callback,
         "An unexpected error happened. Please try again.",
         { errorCode: shared.error.code.UNEXPECTED }
-      );
+      )
   }
 }
 
@@ -65,7 +65,16 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const result = await shared.db.rooms.createRoomFromDisplayName(params.displayName, user.id)
   const namedRoom = new shared.models.NamedRoom(result.room, result.roomNameEntry, result.roomData.state)
   // we want to turn the room link on when we create a room
-  await shared.db.room.invites.enablePublicInviteUrl(result.room.id, user.id, result.room.displayName)
+  await shared.db.room.invites.enablePublicInviteUrl(result.room.id, user.id, params.displayName)
+
+  /*
+    Make sure to count deleted rooms here
+  */
+  const roomsEverCreated = await shared.db.pg.massive.rooms.count({owner_id: user.id})
+  if(roomsEverCreated == 1) {
+    const appUrl = lib.util.env.appUrl(event, context)
+    await lib.email.account.sendWelcomeFollowupEmail(user, appUrl, namedRoom)
+  }
 
   return await lib.util.http.succeed(callback, { newRoom: namedRoom.serialize() })
 })

@@ -37,6 +37,7 @@ const sendMarketingBlast = async (emailName, args, production) => {
   const criteriaObject = {
     deleted_at: null,
     newsletter_opt_in: true,
+    "comp is distinct from": true,
     "email ILIKE": "%@with.so"
   }
   if(production) {

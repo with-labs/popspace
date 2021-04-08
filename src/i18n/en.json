@@ -181,6 +181,13 @@
         "roomPasswordLabel": "Room password",
         "noVideo": "No video"
       },
+      "subscribe": {
+        "quoteText": "",
+        "title": "You are now subscribed!",
+        "body": "You will now receive tips on how to use With and news about updates.",
+        "button": "Take me Home",
+        "imgAltText": "Subscribed"
+      },
       "unsubscribe": {
         "quoteText": "",
         "title": "You’ve been unsubscribed",

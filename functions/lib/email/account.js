@@ -46,7 +46,7 @@ const getCalendarUrls = (namedRoom, inviteLink) => {
 
 
 const getInviteLink = (appUrl, inviteEntry) => {
-   return `${appUrl}/join/?otp=${rfc3986EncodeURIComponent(inviteEntry.otp)}&iid=${rfc3986EncodeURIComponent(inviteEntry.id)}`
+   return `${appUrl}/join/${rfc3986EncodeURIComponent(inviteEntry.otp)}?iid=${rfc3986EncodeURIComponent(inviteEntry.id)}`
 }
 
 const subscribeUrl = (appUrl, subscribeMagic) => {

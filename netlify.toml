@@ -18,25 +18,25 @@
   # and intelligent message routing system (a'la RabbitMQ).
   # Then the API service could simply push to the queue,
   # and we wouldn't need to host the API on mercury to have access to participants.
-  MERCURY_API_HOST="https://mercury.with.so:8443"
+  REACT_APP_MERCURY_API_HOST="https://mercury.with.so:8443"
   # This will eventually be something like https://api.with.so
-  WITH_API_HOST="https://mercury.with.so:8443"
+  REACT_APP_WITH_API_HOST="https://mercury.with.so:8443"
   REACT_APP_ANALYTICS_ID="c5dca48b9e8589e669570e0d795eb51a"
 
 [context.deploy-preview.environment]
   REACT_APP_ANALYTICS_ENV = "staging"
   TWILIO_API_KEYS_ENV = "staging"
   NODE_ENV="staging"
-  MERCURY_API_HOST="https://test.with.so:8443"
-  WITH_API_HOST="https://test.with.so:8443"
+  REACT_APP_MERCURY_API_HOST="https://test.with.so:8443"
+  REACT_APP_WITH_API_HOST="https://test.with.so:8443"
   REACT_APP_ANALYTICS_ID="d44d2fa32ab1fad61038134cdbea9620"
 
 [context.branch-deploy.environment]
   REACT_APP_ANALYTICS_ENV = "staging"
   TWILIO_API_KEYS_ENV = "staging"
   NODE_ENV="staging"
-  MERCURY_API_HOST="https://test.with.so:8443"
-  WITH_API_HOST="https://test.with.so:8443"
+  REACT_APP_MERCURY_API_HOST="https://test.with.so:8443"
+  REACT_APP_WITH_API_HOST="https://test.with.so:8443"
   REACT_APP_ANALYTICS_ID="d44d2fa32ab1fad61038134cdbea9620"
 
 # We are obliged under US law not to serve countries

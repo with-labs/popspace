@@ -1,6 +1,20 @@
 const MercuryMiddleware = require("./mercury_middleware")
 const http = require("./http")
 
+
+const safeHandleRequest = (req, res, handler) => {
+  return async (req, res) => {
+    try {
+      return handler(req, res)
+    } catch (e) {
+      return http.fail(req, res, "Unexpected error", {
+        errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
+        params: req.body
+      })
+    }
+  }
+}
+
 class Api {
   constructor(express) {
     this.express = express
@@ -42,9 +56,7 @@ class Api {
       this.middleware.requireUser(),
       ...additionalMiddleware
     ]
-    this.express.post(endpoint, middlewareList, async (req, res) => {
-      handler(req, res)
-    })
+    this.express.post(endpoint, middlewareList, safeHandleRequest(req, res, handler))
   }
 
   loggedInGetEndpoint(endpoint, handler, additionalMiddleware=[]) {
@@ -53,17 +65,15 @@ class Api {
       this.middleware.requireUser(),
       ...additionalMiddleware
     ]
-    this.express.get(endpoint, this.middleware, handler)
+    this.express.get(endpoint, this.middleware, safeHandleRequest(req, res, handler))
   }
 
   loggedOutPostEndpoint(endpoint, handler,) {
-    this.express.post(endpoint, (req, res) => {
-      handler(req, res)
-    })
+    this.express.post(endpoint, safeHandleRequest(req, res, handler))
   }
 
   loggedOutGetEndpoint(endpoint, handler) {
-    this.express.get(endpoint, handler)
+    this.express.get(endpoint, safeHandleRequest(req, res, handler))
   }
 }
 

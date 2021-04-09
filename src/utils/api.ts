@@ -290,10 +290,6 @@ class Api {
       body: data ? JSON.stringify(data) : undefined,
     });
 
-    if (!response.ok) {
-      return { success: false, message: 'Unexpected error', code: ErrorCodes.UNEXPECTED } as BaseResponse;
-    }
-
     return response.json() as Promise<BaseResponse & Response>;
   }
 

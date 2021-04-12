@@ -58,7 +58,7 @@ export type ApiNamedRoom = {
 };
 
 export type Service = {
-  url: string;
+  url: string | null;
 };
 
 export const SERVICES = {
@@ -66,11 +66,11 @@ export const SERVICES = {
     url: '/.netlify/functions',
   },
   mercury: {
-    url: process.env.REACT_APP_MERCURY_API_HOST || 'https://test.with.so:8443',
+    url: process.env.REACT_APP_MERCURY_API_HOST || null,
   },
   api: {
     // this will eventually live on a separate URL
-    url: process.env.REACT_APP_WITH_API_HOST || 'https://test.with.so:8443',
+    url: process.env.REACT_APP_WITH_API_HOST || null,
   },
 };
 

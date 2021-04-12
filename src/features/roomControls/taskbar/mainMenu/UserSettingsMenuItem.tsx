@@ -2,6 +2,8 @@ import * as React from 'react';
 import { ListItemIcon, ListItemText, ListItem } from '@material-ui/core';
 import { useRoomModalStore } from '../../useRoomModalStore';
 import { UserIcon } from '../../../../components/icons/UserIcon';
+import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { EventNames } from '../../../../analytics/constants';
 
 export interface IUserSettingsMenuItemProps {
   onClick?: () => void;
@@ -11,11 +13,13 @@ export interface IUserSettingsMenuItemProps {
 export const UserSettingsMenuItem = React.forwardRef<HTMLDivElement, IUserSettingsMenuItemProps>(
   ({ children, onClick, ...rest }, ref) => {
     const openModal = useRoomModalStore((room) => room.api.openModal);
+    const { trackEvent } = useAnalytics([includeData.roomId]);
 
     return (
       <ListItem
         ref={ref}
         onClick={() => {
+          trackEvent(EventNames.BUTTON_CLICKED, { name: 'user_settings' });
           openModal('userSettings');
           onClick?.();
         }}

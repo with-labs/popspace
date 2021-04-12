@@ -23,6 +23,10 @@ export enum EventNames {
   BROWSER_PERMISSION = 'browser_permission',
   CREATE_ROOM = 'create_room',
   CHANGE_WIDGET_COLOR = 'change_widget_color',
+  MAIN_MENU_CLICKED = 'main_menu_clicked',
+  CREATE_WIDGET_BUTTON_PRESSED = 'create_widget_button_pressed',
+  QUICK_ACTION_BUTTON_PRESSED = 'quick_action_button_pressed',
+  BUTTON_CLICKED = 'button_clicked',
 }
 
 export enum Origin {

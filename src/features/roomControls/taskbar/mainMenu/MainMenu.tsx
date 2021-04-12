@@ -16,6 +16,8 @@ import { useUpdateStore } from '../../../updates/useUpdatesStore';
 import shallow from 'zustand/shallow';
 import { Refresh } from '@material-ui/icons';
 import clsx from 'clsx';
+import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { EventNames } from '../../../../analytics/constants';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -68,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
 export const MainMenu = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);
@@ -75,6 +78,7 @@ export const MainMenu = () => {
   const [hasUpdate, acceptUpdate] = useUpdateStore((s) => [s.hasUpdate, s.api.onUpdate], shallow);
 
   const onButtonClicked = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    trackEvent(EventNames.MAIN_MENU_CLICKED);
     setAnchorEl(ev.currentTarget);
   };
 

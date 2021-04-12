@@ -3,6 +3,8 @@ import * as React from 'react';
 import { ActionIcon } from '../../../components/icons/ActionIcon';
 import { SquareIconButton } from '../../../components/SquareIconButton/SquareIconButton';
 import { useRoomModalStore } from '../useRoomModalStore';
+import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
+import { EventNames } from '../../../analytics/constants';
 
 export type ActionBarButtonProps = {
   className?: string;
@@ -10,8 +12,13 @@ export type ActionBarButtonProps = {
 
 export const ActionBarButton = React.forwardRef<HTMLButtonElement, ActionBarButtonProps>(
   ({ className, ...rest }, ref) => {
+    const { trackEvent } = useAnalytics([includeData.roomId]);
+
     const openModal = useRoomModalStore((store) => store.api.openModal);
-    const onClick = () => openModal('actionBar');
+    const onClick = () => {
+      trackEvent(EventNames.QUICK_ACTION_BUTTON_PRESSED);
+      openModal('actionBar');
+    };
 
     return (
       <SquareIconButton {...rest} onClick={onClick} ref={ref}>

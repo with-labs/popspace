@@ -12,6 +12,9 @@ import { RoomIcon } from '../../../components/icons/RoomIcon';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import useMergedRef from '@react-hook/merged-ref';
 import clsx from 'clsx';
+import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
+import { EventNames } from '../../../analytics/constants';
+
 export interface IRoomMenuProps {
   className?: string;
 }
@@ -62,10 +65,13 @@ export const RoomMenu = React.forwardRef<HTMLDivElement, IRoomMenuProps>(({ clas
   const classes = useStyles();
   const { t } = useTranslation();
   const displayName = useRoomStore((room) => room.state.displayName);
+  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const openAndFocusInvite = React.useCallback(() => {
+    trackEvent(EventNames.BUTTON_CLICKED, { name: 'room_menu' });
     setIsOpen(true);
-  }, []);
+  }, [trackEvent]);
+
   const onClose = React.useCallback(() => {
     setIsOpen(false);
   }, []);

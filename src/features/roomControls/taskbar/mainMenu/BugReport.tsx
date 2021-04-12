@@ -17,6 +17,8 @@ import { DialogModal, DialogMessage } from '../../../../components/DialogModal/D
 import { logger } from '../../../../utils/logger';
 import { v4 } from 'uuid';
 import bugReportImg from '../../../../images/illustrations/bug_report.png';
+import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { EventNames } from '../../../../analytics/constants';
 
 type BugReportFormData = {
   description: string;
@@ -77,8 +79,10 @@ export const BugReport: React.FC<IBugReportProps> = (props) => {
   const classes = useStyles();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const { user } = useCurrentUserProfile();
+  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const onOpenHandler = () => {
+    trackEvent(EventNames.BUTTON_CLICKED, { name: 'bug_report' });
     setShowConfirmation(false);
     setIsOpen(true);
   };

@@ -1,4 +1,4 @@
-import { ROOM_SIZE } from '../../constants/room';
+import { DEFAULT_ROOM_SIZE } from '../../constants/room';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
@@ -7,7 +7,7 @@ const selectWallpaperUrl = (room: RoomStateShape) => room.state.wallpaperUrl;
 
 // kind of arbitrary, figured out through trial and error.
 const WALLPAPER_SCALE = 0.78;
-const WALLPAPER_SIZE = WALLPAPER_SCALE * ROOM_SIZE;
+const WALLPAPER_SIZE = WALLPAPER_SCALE * DEFAULT_ROOM_SIZE;
 
 export class PictureInPictureWallpaper extends PictureInPictureRenderable {
   private image: HTMLImageElement;

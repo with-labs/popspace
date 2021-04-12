@@ -8,6 +8,7 @@ import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
 import { ViewportControls } from './viewport/ViewportControls';
 import { Spacing } from '../../components/Spacing/Spacing';
+import { ExperimentsModal } from './experiments/ExperimentsModal';
 
 export interface IRoomControlsProps {}
 
@@ -41,6 +42,7 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
         <ViewportControls />
       </Spacing>
       <ActionBar />
+      <ExperimentsModal />
     </>
   );
 });

@@ -39,6 +39,8 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
         displayName: string;
         isCustomWallpaper: boolean;
         zOrder?: string[];
+        width: number;
+        height: number;
       };
     };
   };
@@ -95,6 +97,8 @@ export interface IncomingRoomStateUpdatedMessage extends BaseIncomingSocketMessa
   payload: {
     wallpaperUrl: string;
     displayName: string;
+    width: number;
+    height: number;
   };
 }
 

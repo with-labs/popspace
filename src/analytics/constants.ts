@@ -23,6 +23,8 @@ export enum EventNames {
   BROWSER_PERMISSION = 'browser_permission',
   CREATE_ROOM = 'create_room',
   CHANGE_WIDGET_COLOR = 'change_widget_color',
+  ENABLE_INFINITE_ROOM = 'enable_infinite_room',
+  DISABLE_INFINITE_ROOM = 'disable_infinite_room',
   MAIN_MENU_CLICKED = 'main_menu_clicked',
   CREATE_WIDGET_BUTTON_PRESSED = 'create_widget_button_pressed',
   QUICK_ACTION_BUTTON_PRESSED = 'quick_action_button_pressed',

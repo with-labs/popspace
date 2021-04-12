@@ -16,6 +16,7 @@ import { useUpdateStore } from '../../../updates/useUpdatesStore';
 import shallow from 'zustand/shallow';
 import { Refresh } from '@material-ui/icons';
 import clsx from 'clsx';
+import { ExperimentsMenuItem } from './ExperimentsMenuItem';
 import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../../analytics/constants';
 
@@ -119,8 +120,8 @@ export const MainMenu = () => {
         </Box>
         <Box px={1.5}>
           <UserSettingsMenuItem onClick={onClose}>{t('features.roomMenu.userSettings')}</UserSettingsMenuItem>
-          <Divider />
           <LeaveRoomMenuItem>{t('features.roomMenu.goToDashboard')}</LeaveRoomMenuItem>
+          <ExperimentsMenuItem>{t('features.roomMenu.experiments')}</ExperimentsMenuItem>
           <Divider />
           <Spacing alignItems="center">
             <ChangelogButton />

@@ -124,8 +124,8 @@ const useStyles = makeStyles<Theme, IRoomViewportProps>((theme) => ({
     position: 'absolute',
     transformOrigin: 'center center',
     borderRadius: theme.shape.borderRadius,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    backgroundRepeat: 'repeat',
+    backgroundSize: '2400px 2400px',
   },
 }));
 
@@ -138,7 +138,7 @@ export const RoomViewport: React.FC<IRoomViewportProps> = (props) => {
 
   const [savedZoom, setSavedZoom] = useLocalStorage('with_savedZoom', INITIAL_ZOOM);
 
-  const bounds = useRoomStore((room) => room.state.bounds);
+  const bounds = useRoomStore((room) => ({ width: room.state.width, height: room.state.height }));
   const backgroundUrl = useRoomStore((room) => room.state.wallpaperUrl);
 
   const domTarget = React.useRef<HTMLDivElement>(null);

@@ -105,7 +105,8 @@ describe('the central room state store (useRoomStore)', () => {
               id: 'room-id',
               state: {
                 // TODO: not included yet
-                // bounds: { width: 2400, height: 2400 },
+                width: 2400,
+                height: 2400,
                 wallpaperUrl: 'https://with.so/wallpapers/board.png',
                 isCustomWallpaper: true,
                 displayName: 'room',
@@ -164,7 +165,6 @@ describe('the central room state store (useRoomStore)', () => {
             },
           },
           state: {
-            bounds: { width: 2400, height: 2400 },
             ...init.payload.room.state,
           },
           widgetPositions: {
@@ -702,6 +702,8 @@ describe('the central room state store (useRoomStore)', () => {
           payload: {
             displayName: 'foo',
             wallpaperUrl: 'some url',
+            width: 2400,
+            height: 2400,
           },
         });
 

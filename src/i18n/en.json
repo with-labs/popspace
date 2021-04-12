@@ -472,7 +472,8 @@
         "roomMembersTitle": "Room members",
         "addAndManage": "Invite people",
         "userSettings": "User Settings",
-        "changelog": "What's new?"
+        "changelog": "What's new?",
+        "experiments": "Experiments"
       },
       "mediaControls": {
         "micToggle": "Toggle voice",
@@ -493,6 +494,11 @@
         "modalTitle": "Paste content",
         "modalDetails": "Are you sure you want to add this to the room?",
         "confirm": "Paste"
+      },
+      "experiments": {
+        "title": "Experiments",
+        "massiveRoom": "\"Infinite\" room",
+        "massiveRoomExplainer": "Warning: very experimental! Removes the boundaries on your room, letting you move and place accessories anywhere you like. You can turn this back off, but your accessories will be re-arranged if you do."
       },
       "roomControls": {
         "emailPlaceholder": "Invite via email",

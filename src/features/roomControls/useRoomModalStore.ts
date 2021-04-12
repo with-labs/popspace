@@ -7,6 +7,7 @@ type RoomModalsState = {
   changelog: boolean;
   onboarding: boolean;
   actionBar: boolean;
+  experiments: boolean;
 };
 
 export const useRoomModalStore = create(
@@ -17,6 +18,7 @@ export const useRoomModalStore = create(
       changelog: false,
       onboarding: false,
       actionBar: false,
+      experiments: false,
     } as RoomModalsState,
     (set, get) => ({
       api: {

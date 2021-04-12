@@ -12,4 +12,5 @@ export const MAX_FREE_ROOMS = 20;
 // no larger than 3/4 the room size, maybe smaller
 export const MAX_AUDIO_RANGE = 1200;
 
-export const ROOM_SIZE = 2400;
+// "infinite"
+export const DEFAULT_ROOM_SIZE = 2400;

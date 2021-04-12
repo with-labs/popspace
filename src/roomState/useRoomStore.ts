@@ -17,7 +17,8 @@ import { devtools } from 'zustand/middleware';
 import { Analytics } from '../analytics/Analytics';
 import { EventNames, Origin } from '../analytics/constants';
 import { sanityCheckWidget } from './sanityCheckWidget';
-import { ROOM_SIZE } from '../constants/room';
+import { DEFAULT_ROOM_SIZE } from '../constants/room';
+import { clampVector } from '../utils/math';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -25,7 +26,8 @@ const defaultWallpaper = 0;
 export type RoomDetailsStateShape = {
   wallpaperUrl: string;
   isCustomWallpaper: boolean;
-  bounds: Bounds;
+  width: number;
+  height: number;
   displayName: string;
   zOrder: string[];
 };
@@ -71,10 +73,8 @@ const emptyState: RoomStateShape = {
   state: {
     wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
     isCustomWallpaper: false,
-    bounds: {
-      width: ROOM_SIZE,
-      height: ROOM_SIZE,
-    },
+    width: DEFAULT_ROOM_SIZE,
+    height: DEFAULT_ROOM_SIZE,
     displayName: '',
     zOrder: [],
   },
@@ -249,6 +249,26 @@ function createRoomStore() {
           updateRoomState(state: Partial<RoomDetailsStateShape>) {
             set((draft) => {
               Object.assign(draft.state, state);
+              // constrain user's position within room bounds, if room bounds changed
+              if (draft.sessionId && state.width !== undefined && state.height !== undefined) {
+                const currentUserId = draft.sessionLookup[draft.sessionId];
+                const currentUserPosition = draft.userPositions[currentUserId];
+                if (currentUserPosition) {
+                  const buffer = 32;
+                  const constrainedPosition = clampVector(
+                    currentUserPosition.position,
+                    {
+                      x: -state.width / 2 + buffer,
+                      y: -state.height / 2 + buffer,
+                    },
+                    {
+                      x: state.width / 2 - buffer,
+                      y: state.height / 2 - buffer,
+                    }
+                  );
+                  draft.userPositions[currentUserId].position = constrainedPosition;
+                }
+              }
             });
           },
           addSession(payload: ParticipantShape & { transform: RoomPositionState }) {

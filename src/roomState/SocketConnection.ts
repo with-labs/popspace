@@ -102,7 +102,7 @@ export class SocketConnection extends EventEmitter {
   };
 
   private onClose = (ev: CloseEvent) => {
-    logger.info(`Socket connection closed`, ev.code, ev.reason);
+    logger.debug(`Socket connection closed`, ev.code, 'reason?:', ev.reason);
     logger.debug(new Date());
     this.stopHeartbeatLoop();
     this.generation++;
@@ -113,7 +113,7 @@ export class SocketConnection extends EventEmitter {
     // start or resume heartbeat loop
     this.startHeartbeatLoop();
 
-    logger.info('Connected to socket');
+    logger.debug('Connected to socket');
     logger.debug(new Date());
     this.emit('connected');
   };

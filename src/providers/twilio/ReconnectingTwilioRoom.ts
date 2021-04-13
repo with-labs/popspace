@@ -41,6 +41,12 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     window.addEventListener('offline', this.handleOffline);
   }
 
+  // WARNING: diving into Twilio client internals so we can react to low-level signaling changes
+  private get peerConnection() {
+    // @ts-ignore
+    return this._room?._signaling?._peerConnectionManager?._peerConnections.values()?.next()?.value?._peerConnection;
+  }
+
   connect = async () => {
     if (!this.roomName) {
       logger.critical(`ReconnectingTwilioRoom: tried to connect with no room name supplied`);
@@ -68,6 +74,9 @@ export class ReconnectingTwilioRoom extends EventEmitter {
       this.emit('roomChanged', this._room);
       this._room.setMaxListeners(40);
       this._room.on(RoomEvent.Disconnected, this.handleDisconnect);
+      // hacky fix for undock / sleep Chrome bug - see https://github.com/twilio/twilio-video.js/issues/1447
+      this.peerConnection?.addEventListener('signalingstatechange', this.handleSignalingStateChange);
+
       // @ts-ignore
       window.twilioRoom = this.room;
       this.attachDebugHandlers();
@@ -79,7 +88,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     }
   };
 
-  handleDisconnect = async (room: Room, error: TwilioError) => {
+  private handleDisconnect = async (room: Room, error: TwilioError) => {
     logger.breadcrumb({
       category: LOG_BREADCRUMB_CATEGORY,
       message: 'Room disconnected',
@@ -116,9 +125,16 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     }
   };
 
-  handleUnload = () => {
+  private handleUnload = () => {
     if (this.room) {
       this.room.disconnect();
+    }
+  };
+
+  private handleSignalingStateChange = () => {
+    if (this.peerConnection?.signalingState === 'closed') {
+      logger.debug(`Detected signaling state: closed. Rebooting media.`);
+      this.reconnect();
     }
   };
 
@@ -141,9 +157,8 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     window.removeEventListener('online', this.handleOnline);
     window.removeEventListener('offline', this.handleOffline);
     window.removeEventListener('beforeunload', this.handleUnload);
-    if (this._room) {
-      this._room.disconnect();
-    }
+    this._room?.disconnect();
+    this.peerConnection?.removeEventListener('signalingstatechange', this.handleSignalingStateChange);
   };
 
   private handleOnline = () => {

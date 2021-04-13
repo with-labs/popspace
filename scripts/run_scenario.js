@@ -1,4 +1,5 @@
 require("dotenv").config()
+const util = require("util")
 global.tlib = require("../test/lib/_testlib")
 
 const commander = require("commander")
@@ -18,8 +19,7 @@ const runScenario = async () => {
   await lib.init()
   console.log("Running", commander.test, commander.scenario)
   const result = await testSuite[commander.scenario]()
-  console.log("Test result", result)
-  // console.log("Test result: ", JSON.stringify(result))
+  console.log("Test result", util.inspect(result, {depth: 20, colors: true}))
   await lib.cleanup()
   process.exit(0)
 }

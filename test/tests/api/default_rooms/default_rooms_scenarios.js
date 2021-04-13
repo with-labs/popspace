@@ -9,6 +9,31 @@ module.exports = {
     })
     return { response }
   }),
+  change_default_room: tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
+    const userInfo = testEnvironment.loggedInUsers[0]
+    const isEmptyRoom = true
+    let roomInfo = await shared.db.rooms.generateRoom(userInfo.userId, isEmptyRoom)
+    const roomRoute1 = userInfo.roomNameEntry.name
+    const roomRoute2 = roomInfo.roomNameEntry.name
+
+    const set1 = await userInfo.client.sendHttpPost("/set_default_room", {
+      room_route: roomRoute1,
+    })
+    const get1 = await userInfo.client.sendHttpPost("/get_or_init_default_room", {})
+    const set2 = await userInfo.client.sendHttpPost("/set_default_room", {
+      room_route: roomRoute2,
+    })
+    const get2 = await userInfo.client.sendHttpPost("/get_or_init_default_room", {})
+    const set3 = await userInfo.client.sendHttpPost("/set_default_room", {
+      room_route: roomRoute1,
+    })
+    const get3 = await userInfo.client.sendHttpPost("/get_or_init_default_room", {})
+    return { sequence: [
+      {route: roomRoute1, response: set1, defaultRoomAfter: get1},
+      {route: roomRoute2, response: set2, defaultRoomAfter: get2},
+      {route: roomRoute1, response: set3, defaultRoomAfter: get3}
+    ] }
+  }),
   get_default_room: tlib.TestTemplate.nAuthenticatedUsers(1, async (testEnvironment) => {
     const userInfo = testEnvironment.loggedInUsers[0]
     const response = await userInfo.client.sendHttpPost("/get_or_init_default_room", {})

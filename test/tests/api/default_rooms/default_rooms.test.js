@@ -14,6 +14,13 @@ tlib.TestTemplate.describeWithLib("default_rooms", () => {
     expect(result.response.success).toEqual(true)
   })
 
+  test("Changing the default room works", async () => {
+    const result = await scenarios.change_default_room()
+    for(const changeInfo of result.sequence) {
+      expect(changeInfo.defaultRoomAfter.roomRoute).toEqual(changeInfo.route)
+    }
+  })
+
   test("It's possible to initialize a default room during a get", async () => {
     const result = await scenarios.get_default_room()
     expect(result.response.success).toEqual(true)

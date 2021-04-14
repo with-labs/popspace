@@ -2,6 +2,25 @@ const Api = require("./api")
 const http = require("./http")
 const routes = require("./routes")
 
+const saveDefaultRoom = async (userId, roomId)  => {
+  /*
+    Sadly, massivejs doesn't really have an upsert
+    https://massivejs.org/docs/persistence#save
+    Perhaps we can make our own more generic,
+    and not do this type of statement each time.
+  */
+  const existingDefault = await shared.db.pg.massive.default_rooms.findOne({user_id: userId})
+  if(existingDefault) {
+    return await shared.db.pg.massive.default_rooms.update({
+      user_id: userId
+    }, {
+      room_id: roomId
+    })
+  } else {
+    return await shared.db.pg.massive.default_rooms.insert({user_id: userId, room_id: roomId})
+  }
+}
+
 class MercuryApi {
   constructor(mercury) {
     this.mercury = mercury
@@ -104,10 +123,7 @@ class MercuryApi {
     })
 
     this.api.memberOrOwnerRoomRouteEndpoint("/set_default_room", async (req, res) => {
-      await shared.db.pg.massive.default_rooms.save({
-        user_id: req.user.id,
-        room_id: req.room.id,
-      })
+      await saveDefaultRoom(req.user.id, req.room.id)
       return http.succeed(req, res)
     })
 
@@ -136,7 +152,7 @@ class MercuryApi {
           }
         }
         // write the chosen default so it remains stable for future requests
-        await shared.db.pg.massive.default_rooms.save(initializedDefaultRoom)
+        await saveDefaultRoom(initializedDefaultRoom.user_id, initializedDefaultRoom.room_id)
         return initializedDefaultRoom
       }
 

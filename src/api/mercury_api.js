@@ -1,4 +1,3 @@
-const { shared } = require("../lib/_lib")
 const Api = require("./api")
 const http = require("./http")
 const routes = require("./routes")

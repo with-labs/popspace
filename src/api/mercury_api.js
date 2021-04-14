@@ -1,3 +1,4 @@
+const { shared } = require("../lib/_lib")
 const Api = require("./api")
 const http = require("./http")
 const routes = require("./routes")
@@ -189,6 +190,23 @@ class MercuryApi {
       const preferredRouteName = preferredRoute.name
       return http.succeed(req, res, { room_route: preferredRouteName })
     })
+
+    this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
+      try{
+        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participantState)
+        return http.succeed(req, res, { participantState: req.body.participantState })
+      } catch(e) {
+        if(e.code == 'ProvisionedThroughputExceededException') {
+          log.error.error(`Dynamo throughput excededed: update participant state (user_id${req.user.id})`)
+          return http.fail(req, res, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
+        } else {
+          log.error.error(`Unexpected error update participant state (user_id${req.user.id})`)
+          return http.failt(eq, res, shared.error.code.UNEXPECTER_ERROR, `Could not write widget to database, please try again later.`)
+        }
+      }
+
+    })
+
   }
 }
 

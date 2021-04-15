@@ -20,7 +20,7 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
 
   const params = context.params
   params.email = shared.lib.args.consolidateEmailString(params.email)
-  const room = await shared.db.rooms.roomByName(params.roomName)
+  const room = await shared.db.rooms.roomByRoute(params.roomRoute)
   if(!room) {
     return await lib.util.http.fail(
       callback,
@@ -82,9 +82,10 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
     )
   }
 
-  const invitation = await shared.db.room.invites.createInvitation(room.id, params.email, user.id)
+  const roomState = await shared.db.dynamo.room.getRoomState(room.id)
+  const invitation = await shared.db.room.invites.createInvitation(room.id, params.email, user.id, roomState.display_name)
   const inviteUrl = await lib.db.rooms.getInviteUrl(lib.util.env.appUrl(event, context), invitation)
-  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user, room)
+  await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user, room, roomState.display_name)
 
   const newMember = {
     display_name: "",

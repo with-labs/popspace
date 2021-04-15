@@ -6,8 +6,7 @@ const getDisplayName = async (roomId) => {
 }
 
 module.exports = {
-  sendRoomInviteEmail: async (toEmail, roomRoute, inviteUrl, inviterUser, room) => {
-    const roomDisplayName = await getDisplayName(room.id)
+  sendRoomInviteEmail: async (toEmail, roomRoute, inviteUrl, inviterUser, room, roomDisplayName) => {
     return await lib.email.named.sendRoomStatusEmail(
       'room_invite',
       toEmail,

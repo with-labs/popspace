@@ -16,10 +16,10 @@
     pg-protocol "^1.2.0"
     pg-types "^2.2.0"
 
-"@withso/with-shared@1.4.18":
-  version "1.4.18"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.18.tgz#22fd568e0fead6aaf1e5006cfe50280ee8d5bd3a"
-  integrity sha512-9NphyY8QpsE6iXNgqMW94pUwPprpkoMMgxCMnXCDYL+adCKUtwSay/94lfjiHTcMS4mbLHMh1v+12dEC0NcxYg==
+"@withso/with-shared@1.4.22":
+  version "1.4.22"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.22.tgz#2cc0f44ec1fb2ce0145be1b443843d77ebf1a354"
+  integrity sha512-jR7pQaWXUkCWh2gbZsJBYmBOssz70wXjQzVbe82ehkjKv2UIh0/pXxokhjZeWKzxQjoYQ6RZosDDnt/Kb29V3Q==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"

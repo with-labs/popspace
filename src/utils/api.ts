@@ -134,8 +134,8 @@ class Api {
     return await this.post<{ deletedRoomId: number }>('/room_delete', { roomId }, SERVICES.netlify);
   }
 
-  async sendRoomInvite(roomName: string, email: string) {
-    return await this.post<{ newMember: ApiRoomMember }>('/send_room_invite', { roomName, email }, SERVICES.netlify);
+  async sendRoomInvite(roomRoute: string, email: string) {
+    return await this.post<{ newMember: ApiRoomMember }>('/send_room_invite', { roomRoute, email }, SERVICES.netlify);
   }
 
   async cancelRoomInvite(roomName: string, email: string) {

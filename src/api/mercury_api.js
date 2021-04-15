@@ -196,11 +196,11 @@ class MercuryApi {
         return http.succeed(req, res, { participantState: req.body.participantState })
       } catch(e) {
         if(e.code == 'ProvisionedThroughputExceededException') {
-          log.error.error(`Dynamo throughput excededed: update participant state (user_id ${req.user.id} ${e})`)
+          log.error.error(`Dynamo throughput excededed: update participant state (user_id ${req.user.id}, body ${req.body}) ${e})`)
           return http.fail(req, res, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
         } else {
-          log.error.error(`Unexpected error update participant state (user_id ${req.user.id}) ${e}`)
-          return http.fail(eq, res, shared.error.code.UNEXPECTER_ERROR, `Could not write widget to database, please try again later.`)
+          log.error.error(`Unexpected error update participant state (user_id ${req.user.id}, body ${req.body}) ${e}`)
+          return http.fail(req, res, shared.error.code.UNEXPECTER_ERROR, `Could not write widget to database, please try again later.`)
         }
       }
 

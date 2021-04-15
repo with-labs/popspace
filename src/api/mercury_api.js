@@ -21,6 +21,20 @@ const saveDefaultRoom = async (userId, roomId)  => {
   }
 }
 
+const carefulDynamoCall = async (endpoint, req, res, f) => {
+  try {
+    f()
+  } catch(e) {
+    if(e.code == 'ProvisionedThroughputExceededException') {
+      log.error.error(`Dynamo throughput excededed (${endpoint}): (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e})`)
+      return http.fail(req, res, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
+    } else {
+      log.error.error(`Unexpected error (${endpoint}) (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e}`)
+      return http.fail(req, res, shared.error.code.UNEXPECTER_ERROR, `Could not complete request.`)
+    }
+  }
+}
+
 class MercuryApi {
   constructor(mercury) {
     this.mercury = mercury
@@ -190,22 +204,19 @@ class MercuryApi {
       return http.succeed(req, res, { room_route: preferredRouteName })
     })
 
-    this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
-      try{
-        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
-        return http.succeed(req, res, { participantState: req.body.participant_state })
-      } catch(e) {
-        if(e.code == 'ProvisionedThroughputExceededException') {
-          log.error.error(`Dynamo throughput excededed: update participant state (user_id ${req.user.id}, body ${JSON.stringify(req.body)}) ${e})`)
-          return http.fail(req, res, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
-        } else {
-          log.error.error(`Unexpected error update participant state (user_id ${req.user.id}, body ${JSON.stringify(req.body)}) ${e}`)
-          return http.fail(req, res, shared.error.code.UNEXPECTER_ERROR, `Could not write widget to database, please try again later.`)
-        }
-      }
-
+    this.api.loggedInPostEndpoint("/profile", async (req, res) => {
+      carefulDynamoCall("/update_participant_state", req, res, () => {
+        const profile = new shared.models.Profile(req.user.id)
+        return http.succeed(req, res, {profile: (await profile.serialize())} )
+      })
     })
 
+    this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
+      carefulDynamoCall("/update_participant_state", req, res, () => {
+        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
+        return http.succeed(req, res, { participantState: req.body.participant_state })
+      })
+    })
   }
 }
 

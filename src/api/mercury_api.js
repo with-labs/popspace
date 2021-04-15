@@ -192,7 +192,7 @@ class MercuryApi {
 
     this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
       try{
-        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participantState)
+        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
         return http.succeed(req, res, { participantState: req.body.participantState })
       } catch(e) {
         if(e.code == 'ProvisionedThroughputExceededException') {

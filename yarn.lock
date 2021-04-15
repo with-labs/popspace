@@ -571,10 +571,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/with-shared@1.4.20":
-  version "1.4.20"
-  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.20.tgz#fbdd2a1b9e9d391b6bc74c1976959d3741d8ada7"
-  integrity sha512-qEkI/tEmZ8uWANUVameQ/bHbgkCNJ/yL0TzgrpSQ15wzmRe7j/AptB05VMHcKSoWd6Q1Y4Y1m8tQ6DQPEvh4aA==
+"@withso/with-shared@1.4.21":
+  version "1.4.21"
+  resolved "https://registry.yarnpkg.com/@withso/with-shared/-/with-shared-1.4.21.tgz#42cca4ca2ccfcd810716fec5f72d6c39e3c75ebc"
+  integrity sha512-liPTRGKhgebimtuwsqavtDvA6+s7wBM3oQ5kBkZEYAegEJJp69aOlmcUB/+ikadNhrL5VjxetCU1uuNGhimOyg==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"

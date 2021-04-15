@@ -205,7 +205,7 @@ class MercuryApi {
     })
 
     this.api.loggedInPostEndpoint("/profile", async (req, res) => {
-      carefulDynamoCall("/update_participant_state", req, res, async () => {
+      await carefulDynamoCall("/update_participant_state", req, res, async () => {
         const profile = new shared.models.Profile(req.user.id)
         const serialized = await profile.serialize()
         return http.succeed(req, res, { profile: serialized } )
@@ -213,7 +213,7 @@ class MercuryApi {
     })
 
     this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
-      carefulDynamoCall("/update_participant_state", req, res, async () => {
+      await carefulDynamoCall("/update_participant_state", req, res, async () => {
         await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
         return http.succeed(req, res, { participantState: req.body.participant_state })
       })

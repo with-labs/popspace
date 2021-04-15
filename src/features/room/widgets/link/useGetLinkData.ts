@@ -26,9 +26,10 @@ export function useGetLinkData() {
           ...baseData,
           title: result.title ?? baseData.title ?? (t('common.link') as string),
           iframeUrl: result.iframeUrl,
+          iconUrl: result.iconUrl,
         };
       } catch (err) {
-        logger.error(`Failed to get OpenGraph data for ${url}`, err);
+        logger.debug(`Failed to get OpenGraph data for ${url}`, err);
         return baseData;
       }
     },

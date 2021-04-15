@@ -33,6 +33,7 @@ export type ApiUser = {
 export type ApiOpenGraphResult = {
   title: string | null;
   iframeUrl: string | null;
+  iconUrl: string | null;
 };
 
 export type ApiRoomMember = {

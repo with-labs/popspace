@@ -59,6 +59,10 @@ function getIconType({ mediaContentType }: LinkWidgetState): FileIconType {
 }
 
 export const FileIcon = ({ state, ...rest }: { state: LinkWidgetState; className?: string }) => {
+  if (state.iconUrl) {
+    return <img src={state.iconUrl} alt="" style={{ width: 48, height: 48 }} />;
+  }
+
   const Component = fileIcons[getIconType(state)];
 
   return <Component {...rest} />;

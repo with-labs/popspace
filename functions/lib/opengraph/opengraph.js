@@ -1,5 +1,6 @@
 const axios = require("axios").default
 const cheerio = require("cheerio")
+const getFavicons = require("node-get-favicons")
 
 /**
  * Provides metadata for webpage URLs. Right now this provides
@@ -34,10 +35,12 @@ class OpenGraph {
      */
     const { title } = this.extractMetadata(html)
     const isProvidedUrlIframeCompatible = this.isIframeCompatible(res)
+    const icon = await this.getDefaultFavicon(html, url)
 
     return {
       title: title || url,
-      iframeUrl: isProvidedUrlIframeCompatible ? url : null
+      iframeUrl: isProvidedUrlIframeCompatible ? url : null,
+      iconUrl: icon
     }
   }
 
@@ -76,6 +79,12 @@ class OpenGraph {
     return {
       title: (titleEl && titleEl.attr("content")) || null
     }
+  }
+
+  async getDefaultFavicon(html, url) {
+    const icons = await getFavicons.byHtml(html, url)
+    if (icons && icons[0]) return icons[0].href
+    return null
   }
 }
 

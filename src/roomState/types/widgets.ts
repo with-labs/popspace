@@ -38,6 +38,7 @@ export interface StickyNoteWidgetState {
 export interface LinkWidgetState {
   url: string;
   title?: string;
+  iconUrl?: string | null;
   mediaUrl?: string;
   mediaContentType?: string;
   /**

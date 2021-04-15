@@ -21,6 +21,20 @@ const saveDefaultRoom = async (userId, roomId)  => {
   }
 }
 
+const carefulDynamoCall = async (endpoint, req, res, f) => {
+  try {
+    f()
+  } catch(e) {
+    if(e.code == 'ProvisionedThroughputExceededException') {
+      log.error.error(`Dynamo throughput excededed (${endpoint}): (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e})`)
+      return http.fail(req, res, shared.error.code.RATE_LIMIT_EXCEEDED, `Widget database write capacity temporarily exceeded, please retry`)
+    } else {
+      log.error.error(`Unexpected error (${endpoint}) (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e}`)
+      return http.fail(req, res, shared.error.code.UNEXPECTER_ERROR, `Could not complete request.`)
+    }
+  }
+}
+
 class MercuryApi {
   constructor(mercury) {
     this.mercury = mercury
@@ -188,6 +202,21 @@ class MercuryApi {
       }
       const preferredRouteName = preferredRoute.name
       return http.succeed(req, res, { room_route: preferredRouteName })
+    })
+
+    this.api.loggedInPostEndpoint("/profile", async (req, res) => {
+      await carefulDynamoCall("/update_participant_state", req, res, async () => {
+        const profile = new shared.models.Profile(req.user.id)
+        const serialized = await profile.serialize()
+        return http.succeed(req, res, { profile: serialized } )
+      })
+    })
+
+    this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
+      await carefulDynamoCall("/update_participant_state", req, res, async () => {
+        await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
+        return http.succeed(req, res, { participantState: req.body.participant_state })
+      })
     })
   }
 }

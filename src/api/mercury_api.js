@@ -193,7 +193,7 @@ class MercuryApi {
     this.api.loggedInPostEndpoint("/update_participant_state", async (req, res) => {
       try{
         await shared.db.dynamo.room.setParticipantState(req.user.id, req.body.participant_state)
-        return http.succeed(req, res, { participantState: req.body.participantState })
+        return http.succeed(req, res, { participantState: req.body.participant_state })
       } catch(e) {
         if(e.code == 'ProvisionedThroughputExceededException') {
           log.error.error(`Dynamo throughput excededed: update participant state (user_id ${req.user.id}, body ${JSON.stringify(req.body)}) ${e})`)

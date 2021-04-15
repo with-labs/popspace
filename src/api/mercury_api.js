@@ -207,7 +207,8 @@ class MercuryApi {
     this.api.loggedInPostEndpoint("/profile", async (req, res) => {
       carefulDynamoCall("/update_participant_state", req, res, () => {
         const profile = new shared.models.Profile(req.user.id)
-        return http.succeed(req, res, {profile: (await profile.serialize())} )
+        const serialized = await profile.serialize()
+        return http.succeed(req, res, { profile: serialized } )
       })
     })
 

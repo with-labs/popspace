@@ -66,6 +66,8 @@ export const Signup: React.FC<ISignupProps> = () => {
   // get the query params, if any
   const query = useQueryParams();
   const isJoinFlow = query.get('joinFlow');
+  const queryEmail = query.get('email');
+
   /*
     accept a variety of ways to communicate the origin of the signup.
     Many website add a ?ref=xyz param, but ?utm_source=xyz is also popular.
@@ -77,7 +79,7 @@ export const Signup: React.FC<ISignupProps> = () => {
   // if there's an email cached in history state from signin page, apply it to
   // initial props
   const history = useHistory<{ email?: string; inviteId?: string; inviteCode?: string; ref?: string | null }>();
-  const email = history.location.state?.email || '';
+  const email = history.location.state?.email || queryEmail || '';
 
   const inviteCode = history.location.state?.inviteCode || '';
   const inviteId = history.location.state?.inviteId || '';

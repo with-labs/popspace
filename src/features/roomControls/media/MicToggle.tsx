@@ -19,6 +19,8 @@ import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/Respons
 import { useIsAway } from '../away/useIsAway';
 import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
+import { EventNames } from '../../../analytics/constants';
+import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -36,6 +38,7 @@ export const MicToggle = (props: IMicToggleProps) => {
   const [isMicOn, doMicToggle, busy] = useLocalAudioToggle(isLocal);
   const { muteSession } = useRemoteControl();
   const socket = useRoomStore((room) => room.socket);
+  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const toggleMicOn = React.useCallback(() => {
     if (!isMicOn) {
@@ -53,6 +56,11 @@ export const MicToggle = (props: IMicToggleProps) => {
       }
     }
 
+    trackEvent(EventNames.TOGGLE_MIC, {
+      isOn: isMicOn,
+      timestamp: new Date().getTime(),
+    });
+
     socket?.send({
       kind: 'updateMicState',
       payload: {
@@ -62,7 +70,7 @@ export const MicToggle = (props: IMicToggleProps) => {
     });
 
     doMicToggle();
-  }, [doMicToggle, isMicOn, muteSession, socket]);
+  }, [doMicToggle, isMicOn, muteSession, socket, trackEvent]);
 
   const [isAway] = useIsAway();
 

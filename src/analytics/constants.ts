@@ -29,6 +29,8 @@ export enum EventNames {
   CREATE_WIDGET_BUTTON_PRESSED = 'create_widget_button_pressed',
   QUICK_ACTION_BUTTON_PRESSED = 'quick_action_button_pressed',
   BUTTON_CLICKED = 'button_clicked',
+  TOGGLE_MIC = 'toggle_mic',
+  TOGGLE_VIDEO = 'toggle_video',
 }
 
 export enum Origin {

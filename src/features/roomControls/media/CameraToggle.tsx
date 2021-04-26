@@ -14,6 +14,8 @@ import { useRoomStore } from '../../../roomState/useRoomStore';
 import useLocalVideoToggle from '../../../providers/media/hooks/useLocalVideoToggle';
 import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
+import { EventNames } from '../../../analytics/constants';
+import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
 
 export interface ICameraToggleProps {
   isLocal?: boolean;
@@ -25,8 +27,14 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { t } = useTranslation();
   const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);
   const socket = useRoomStore((room) => room.socket);
+  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const handleVideoToggle = React.useCallback(() => {
+    trackEvent(EventNames.TOGGLE_VIDEO, {
+      isOn: isVideoOn,
+      timestamp: new Date().getTime(),
+    });
+
     socket?.send({
       kind: 'updateVideoState',
       payload: {
@@ -36,7 +44,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     });
 
     toggleVideoOn();
-  }, [toggleVideoOn, isVideoOn, socket]);
+  }, [toggleVideoOn, isVideoOn, socket, trackEvent]);
 
   const [isAway] = useIsAway();
 

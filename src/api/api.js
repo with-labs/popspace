@@ -7,6 +7,7 @@ const safeHandleRequest = (handler) => {
     try {
       return handler(req, res)
     } catch (e) {
+      log.error.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`)
       return http.fail(req, res, "Unexpected error", {
         errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
         params: req.body

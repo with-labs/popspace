@@ -143,13 +143,12 @@ class MercuryApi {
 
     this.api.loggedInPostEndpoint("/get_or_init_default_room", async (req, res) => {
       async function initializeDefaultRoom() {
-        let initializedDefaultRoom
-
+        let result
         const firstOwnedRoom = await shared.db.pg.massive.rooms.findOne({
           owner_id: req.user.id,
         })
         if (firstOwnedRoom) {
-          initializedDefaultRoom = {
+          result = {
             user_id: req.user.id,
             room_id: firstOwnedRoom.id,
           }
@@ -157,17 +156,17 @@ class MercuryApi {
           const firstRoomMembership = await shared.db.pg.massive.room_memberships.findOne({
             user_id: req.user.id,
           })
-          if (firstRoomMembership) {
-            return http.fail(req, res, lib.ErrorCodes.NO_DEFAULT_ROOM)
+          if (!firstRoomMembership) {
+            return null
           }
-          initializedDefaultRoom = {
+          result = {
             user_id: req.user.id,
             room_id: firstRoomMembership.room_id,
           }
         }
         // write the chosen default so it remains stable for future requests
-        await saveDefaultRoom(initializedDefaultRoom.user_id, initializedDefaultRoom.room_id)
-        return initializedDefaultRoom
+        await saveDefaultRoom(result.user_id, result.room_id)
+        return result
       }
 
       let defaultRoom = await shared.db.pg.massive.default_rooms.findOne({
@@ -181,19 +180,29 @@ class MercuryApi {
         defaultRoom = await initializeDefaultRoom()
       }
 
+      if(!defaultRoom) {
+        return await http.fail(req, res, "No owned or member rooms", lib.ErrorCodes.NO_DEFAULT_ROOM)
+      }
+
       // if the user no longer has access to their default room,
       // re-initialize it
       if (!(await shared.db.room.memberships.hasAccess(req.user.id, defaultRoom.room_id))) {
         defaultRoom = await initializeDefaultRoom()
       }
 
+      if(!defaultRoom) {
+        return await http.fail(req, res, "No owned or member rooms", lib.ErrorCodes.NO_DEFAULT_ROOM)
+      }
+
       let preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
       if (!preferredRoute) {
-        // there's a good chance the room referenced by the existing default_rooms row
+        // there's a chance the room referenced by the existing default_rooms row
         // was deleted. re-initialize with a new default
         defaultRoom = await initializeDefaultRoom()
+        if(!defaultRoom) {
+          return await http.fail(req, res, "No owned or member rooms", lib.ErrorCodes.NO_DEFAULT_ROOM)
+        }
         preferredRoute = await shared.db.rooms.latestMostPreferredRouteEntry(defaultRoom.room_id)
-
         if (!preferredRoute) {
           return http.fail(req, res, "Unexpected error getting default room", {
             errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
@@ -205,7 +214,10 @@ class MercuryApi {
     })
 
     this.api.loggedInPostEndpoint("/profile", async (req, res) => {
-      await carefulDynamoCall("/update_participant_state", req, res, async () => {
+      /*
+        This seems much better than having to try/catch each time
+      */
+      await carefulDynamoCall("/profile", req, res, async () => {
         const profile = new shared.models.Profile(req.user.id)
         const serialized = await profile.serialize()
         return http.succeed(req, res, { profile: serialized } )

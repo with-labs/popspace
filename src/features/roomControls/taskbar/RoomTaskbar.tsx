@@ -32,9 +32,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     padding: theme.spacing(1),
-    position: 'fixed',
-    left: 0,
-    bottom: 0,
+    position: 'relative',
     zIndex: theme.zIndex.modal - 1,
   },
   vertical: {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import { useRoomViewport } from '../RoomViewport';
+import { useRoomCanvas } from '../RoomCanvasRenderer';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;
@@ -30,7 +30,7 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
   // if we are, we want to disable pointer events inside the frame so that
   // iframes and other interactive content don't get triggered as the mouse
   // moves over them
-  const { events } = useRoomViewport();
+  const { events } = useRoomCanvas();
 
   const ref = React.useRef<HTMLDivElement>(null);
 

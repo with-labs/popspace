@@ -8,6 +8,11 @@ export const SPRINGS = {
     tension: 700,
     friction: 20,
   },
+  QUICK: {
+    mass: 1,
+    tension: 200,
+    friction: 35,
+  },
   RELAXED: {
     mass: 10,
     tension: 95,

@@ -2,6 +2,7 @@ import { Vector2 } from '../../types/spatials';
 import raf, { cancel } from 'raf';
 import { vectorLength, multiplyVector } from '../../utils/math';
 import { EventEmitter } from 'events';
+import { Viewport } from '../../providers/viewport/Viewport';
 
 /**
  * A class which encapsulates a looping behavior for auto-panning the
@@ -20,7 +21,7 @@ export class AutoPan extends EventEmitter {
   private panSpeedMultiplier = 0.25;
   private rafHandle: number | undefined;
 
-  constructor(private pan: (delta: Vector2) => void) {
+  constructor(private viewport: Viewport) {
     super();
   }
 
@@ -78,7 +79,9 @@ export class AutoPan extends EventEmitter {
     const autoPan = this.getAutoPan();
 
     if (vectorLength(autoPan)) {
-      this.pan(autoPan);
+      this.viewport.doRelativePan(autoPan, {
+        origin: 'direct',
+      });
       // emit an event to others
       this.emit('pan', { autoPan, cursorPosition: this.cursorPosition });
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
-import { RoomViewport } from './RoomViewport';
+import { RoomCanvasRenderer } from './RoomCanvasRenderer';
 import { Person } from './people/Person';
 import { Widget } from './widgets/Widget';
 import { RoomControls } from '../roomControls/RoomControls';
@@ -16,24 +16,15 @@ import { CursorLayer } from './cursors/CursorLayer';
 import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
 import { EntryOverlay } from '../roomControls/entryOverlay/EntryOverlay';
+import { RoomViewportProvider } from './RoomViewportProvider';
+import { Box } from '@material-ui/core';
 
 interface IRoomProps {}
-
-export const Room: React.FC<IRoomProps> = () => (
-  <>
-    <RoomViewportWrapper />
-    <RoomSettingsModal />
-    <SpeakingStateObserver />
-    <UserSettingsModal />
-    <ChangelogModal />
-    <EntryOverlay />
-  </>
-);
 
 const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgets);
 const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.users);
 
-const RoomViewportWrapper = React.memo<IRoomProps>(() => {
+export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
@@ -43,18 +34,28 @@ const RoomViewportWrapper = React.memo<IRoomProps>(() => {
   useBindPaste();
 
   return (
-    <RoomViewport uiControls={<RoomControls />} data-test-room>
-      <PageTitle title={roomName} />
-      <ErrorBoundary fallback={() => <WidgetsFallback />}>
-        {widgetIds.map((id) => (
-          <Widget id={id} key={id} />
-        ))}
-      </ErrorBoundary>
-      {peopleIds.map((id) => (
-        <Person key={id} personId={id} />
-      ))}
-      <CursorLayer />
-      <PasteConfirmModal />
-    </RoomViewport>
+    <RoomViewportProvider>
+      <Box display="flex" flexDirection="column" width="100%" height="100%">
+        <RoomCanvasRenderer data-test-room>
+          <PageTitle title={roomName} />
+          <ErrorBoundary fallback={() => <WidgetsFallback />}>
+            {widgetIds.map((id) => (
+              <Widget id={id} key={id} />
+            ))}
+          </ErrorBoundary>
+          {peopleIds.map((id) => (
+            <Person key={id} personId={id} />
+          ))}
+          <CursorLayer />
+          <PasteConfirmModal />
+        </RoomCanvasRenderer>
+        <RoomControls />
+      </Box>
+      <RoomSettingsModal />
+      <SpeakingStateObserver />
+      <UserSettingsModal />
+      <ChangelogModal />
+      <EntryOverlay />
+    </RoomViewportProvider>
   );
 });

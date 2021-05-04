@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { addVectors } from '../../../../utils/math';
-import { useRoomViewport } from '../../../room/RoomViewport';
 import { Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { Origin } from '../../../../analytics/constants';
+import { useViewport } from '../../../../providers/viewport/useViewport';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
@@ -16,7 +16,7 @@ export function useAddAccessory() {
   const { user } = useCurrentUserProfile();
   const userId = user?.id;
 
-  const viewport = useRoomViewport();
+  const viewport = useViewport();
 
   const getLinkData = useGetLinkData();
 
@@ -35,7 +35,7 @@ export function useAddAccessory() {
       },
       origin?: Origin
     ) => {
-      const centerOfScreen = viewport.toWorldCoordinate(screenCoordinate);
+      const centerOfScreen = viewport.viewportToWorld(screenCoordinate);
 
       // add some fuzz so things don't stack perfectly
       const position = addVectors(centerOfScreen, {

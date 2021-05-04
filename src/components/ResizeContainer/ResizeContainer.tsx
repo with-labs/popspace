@@ -4,7 +4,7 @@ import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { SpringValue, useSpring, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { clamp } from '../../utils/math';
-import { useRoomViewport } from '../../features/room/RoomViewport';
+import { useRoomCanvas } from '../../features/room/RoomCanvasRenderer';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { clampSizeMaintainingRatio } from '../../utils/clampSizeMaintainingRatio';
@@ -182,7 +182,7 @@ export const ResizeContainer = React.memo(
     ) => {
       const classes = useStyles();
 
-      const viewport = useRoomViewport();
+      const viewport = useRoomCanvas();
 
       // we track the need to remeasure internally, and don't inform external
       // components about a remeasure until the measure has taken place and

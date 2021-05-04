@@ -1,11 +1,11 @@
-import { Vector2 } from '../../../types/spatials';
 import { useRef, useEffect, useCallback, KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { Viewport } from '../../../providers/viewport/Viewport';
 
 const CONTROLLED_KEYS = ['=', '+', '-', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const PAN_SPEED = 1;
 const ZOOM_SPEED = 0.001;
 
-export function useKeyboardControls({ pan, zoom }: { zoom: (delta: number) => void; pan: (delta: Vector2) => void }) {
+export function useKeyboardControls(viewport: Viewport) {
   const elementRef = useRef<HTMLDivElement>(null);
   const activeKeysRef = useRef(new Set<string>());
 
@@ -57,9 +57,13 @@ export function useKeyboardControls({ pan, zoom }: { zoom: (delta: number) => vo
       lastFrameTime = now;
 
       if (activeKeys.has('=') || activeKeys.has('+')) {
-        zoom(delta * ZOOM_SPEED);
+        viewport.doRelativeZoom(delta * ZOOM_SPEED, {
+          origin: 'direct',
+        });
       } else if (activeKeys.has('-')) {
-        zoom(delta * -ZOOM_SPEED);
+        viewport.doRelativeZoom(delta * -ZOOM_SPEED, {
+          origin: 'direct',
+        });
       }
       const xInput = activeKeys.has('ArrowLeft') ? -1 : activeKeys.has('ArrowRight') ? 1 : 0;
       const yInput = activeKeys.has('ArrowUp') ? -1 : activeKeys.has('ArrowDown') ? 1 : 0;
@@ -68,7 +72,9 @@ export function useKeyboardControls({ pan, zoom }: { zoom: (delta: number) => vo
         y: delta * yInput * PAN_SPEED,
       };
       if (velocity.x !== 0 || velocity.y !== 0) {
-        pan(velocity);
+        viewport.doRelativePan(velocity, {
+          origin: 'direct',
+        });
       }
 
       animationFrame = requestAnimationFrame(loop);
@@ -79,7 +85,7 @@ export function useKeyboardControls({ pan, zoom }: { zoom: (delta: number) => vo
     return () => {
       animationFrame && cancelAnimationFrame(animationFrame);
     };
-  }, [zoom, pan]);
+  }, [viewport]);
 
   return {
     props: {

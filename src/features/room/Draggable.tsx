@@ -3,7 +3,7 @@ import { animated, SpringValue, useSpring, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { makeStyles } from '@material-ui/core';
-import { useRoomViewport } from './RoomViewport';
+import { useRoomCanvas } from './RoomCanvasRenderer';
 import { Vector2 } from '../../types/spatials';
 import { addVectors, roundVector, subtractVectors } from '../../utils/math';
 import { throttle } from 'lodash';
@@ -12,6 +12,7 @@ import { SPRINGS } from '../../constants/springs';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import clsx from 'clsx';
 import { isRightClick } from '../../utils/isRightClick';
+import { useViewport } from '../../providers/viewport/useViewport';
 
 // the time slicing for throttling movement events being sent over the
 // network. Setting this too high will make movement look laggy for peers,
@@ -125,7 +126,8 @@ export const Draggable: React.FC<IDraggableProps> = ({
     [api, id, kind]
   );
 
-  const viewport = useRoomViewport();
+  const canvas = useRoomCanvas();
+  const viewport = useViewport();
 
   React.useEffect(() => {
     /**
@@ -157,11 +159,11 @@ export const Draggable: React.FC<IDraggableProps> = ({
         });
       });
     };
-    viewport.events.on('zoomEnd', rerasterize);
+    canvas.events.on('zoomEnd', rerasterize);
     return () => {
-      viewport.events.off('zoomEnd', rerasterize);
+      canvas.events.off('zoomEnd', rerasterize);
     };
-  }, [viewport.events]);
+  }, [canvas.events]);
 
   const selectPosition = React.useCallback(
     (room: RoomStateShape) =>
@@ -202,16 +204,15 @@ export const Draggable: React.FC<IDraggableProps> = ({
 
   // create a private instance of AutoPan to control the automatic panning behavior
   // that occurs as the user drags an item near the edge of the screen.
-  const autoPan = React.useMemo(() => new AutoPan(viewport.pan), [viewport.pan]);
+  const autoPan = React.useMemo(() => new AutoPan(viewport), [viewport]);
   // we subscribe to auto-pan events so we can update the position
   // of the object as the viewport moves
-  const { toWorldCoordinate } = viewport;
   React.useEffect(() => {
     const handleAutoPan = ({ cursorPosition }: { cursorPosition: Vector2 }) => {
       // all we have to do to move the object as the screen auto-pans is re-trigger a
       // move event with the same cursor position - since the view itself has moved 'below' us,
       // the same cursor position produces the new world position.
-      const worldPosition = toWorldCoordinate(cursorPosition, true);
+      const worldPosition = viewport.viewportToWorld(cursorPosition, true);
       // report the movement after converting to world coordinates
       const finalPosition = roundVector(addVectors(worldPosition, grabDisplacementRef.current || { x: 0, y: 0 }));
       onMove(finalPosition);
@@ -221,7 +222,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
     return () => {
       autoPan.off('pan', handleAutoPan);
     };
-  }, [autoPan, toWorldCoordinate, onMove, spring]);
+  }, [autoPan, viewport, onMove, spring]);
 
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture({
@@ -242,7 +243,7 @@ export const Draggable: React.FC<IDraggableProps> = ({
       }
 
       // convert to world position, clamping to room bounds
-      const worldPosition = viewport.toWorldCoordinate(
+      const worldPosition = viewport.viewportToWorld(
         {
           x: state.xy[0],
           y: state.xy[1],
@@ -281,12 +282,12 @@ export const Draggable: React.FC<IDraggableProps> = ({
         return;
       }
 
-      viewport.onObjectDragStart();
+      canvas.onObjectDragStart();
       autoPan.start({ x: state.xy[0], y: state.xy[1] });
       onDragStart?.();
     },
     onDragEnd: (state) => {
-      viewport.onObjectDragEnd();
+      canvas.onObjectDragEnd();
       // we leave this flag on for a few ms - the "drag" gesture
       // basically has a fade-out effect where it continues to
       // block gestures internal to the drag handle for a bit even
@@ -313,9 +314,9 @@ export const Draggable: React.FC<IDraggableProps> = ({
           transform: to(
             [x, y],
             (xv, yv) =>
-              `translate(${Math.round(xv + viewport.width / 2)}px, ${Math.round(
-                yv + viewport.height / 2
-              )}px) translate(${-origin.horizontal * 100}%, ${-origin.vertical * 100}%)`
+              `translate(${Math.round(xv + canvas.width / 2)}px, ${Math.round(yv + canvas.height / 2)}px) translate(${
+                -origin.horizontal * 100
+              }%, ${-origin.vertical * 100}%)`
           ),
           zIndex: zIndex as any,
           cursor: grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),

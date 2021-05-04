@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
-import { useRoomViewport } from '../RoomViewport';
+import { useRoomCanvas } from '../RoomCanvasRenderer';
 import { FullscreenableMedia } from '../../../components/FullscreenableMedia/FullscreenableMedia';
 import { SPRINGS } from '../../../constants/springs';
 import { makeStyles, Box, useTheme } from '@material-ui/core';
@@ -14,6 +14,7 @@ import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile'
 import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '../../../utils/trackNames';
 import { useLocalParticipant } from '../../../providers/twilio/hooks/useLocalParticipant';
+import { useViewport } from '../../../providers/viewport/useViewport';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -78,7 +79,8 @@ export const SidecarStreamPreview = React.memo(
     const isLocal = userId === useCurrentUserProfile().user?.id;
 
     const addWidget = useAddAccessory();
-    const viewport = useRoomViewport();
+    const viewport = useViewport();
+    const canvas = useRoomCanvas();
 
     const [isFullscreen, setIsFullscreen] = React.useState(false);
     const onFullscreenExit = () => setIsFullscreen(false);
@@ -129,8 +131,8 @@ export const SidecarStreamPreview = React.memo(
             rootSpring.start({
               // dividing by viewport zoom corrects the offset according to
               // the zoom value
-              x: ev.movement[0] / viewport.getZoom(),
-              y: ev.movement[1] / viewport.getZoom(),
+              x: ev.movement[0] / viewport.zoom,
+              y: ev.movement[1] / viewport.zoom,
               cursor: 'grabbing',
             });
             videoSpring.start({
@@ -143,7 +145,7 @@ export const SidecarStreamPreview = React.memo(
         },
         onDragStart: (ev) => {
           ev.event?.stopPropagation();
-          viewport.onObjectDragStart();
+          canvas.onObjectDragStart();
         },
         onDragEnd: (ev) => {
           function returnToNeutral() {
@@ -160,7 +162,7 @@ export const SidecarStreamPreview = React.memo(
           }
 
           ev.event?.stopPropagation();
-          viewport.onObjectDragEnd();
+          canvas.onObjectDragEnd();
           if (isLocal && ev.distance > TEAR_THRESHOLD && localParticipant) {
             addWidget({
               type: WidgetType.SidecarStream,

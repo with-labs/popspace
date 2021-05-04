@@ -6,7 +6,7 @@ import { RoomStateShape, useRoomStore } from '../../../roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
-import { useRoomViewport } from '../RoomViewport';
+import { useRoomCanvas } from '../RoomCanvasRenderer';
 
 export interface ICursorProps {
   userId: string;
@@ -46,7 +46,7 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
 
-  const viewport = useRoomViewport();
+  const viewport = useRoomCanvas();
 
   const [styles, spring] = useSpring(() => ({
     // populate initial state from store

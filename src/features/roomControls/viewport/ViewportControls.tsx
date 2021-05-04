@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useRoomViewport } from '../../room/RoomViewport';
 import { Box, Hidden, IconButton, Paper, Typography } from '@material-ui/core';
 import { PlusIcon } from '../../../components/icons/PlusIcon';
 import { MinusIcon } from '../../../components/icons/MinusIcon';
 import { CenterButton } from './CenterButton';
 import { WallpaperPicker } from './WallpaperPicker';
 import { Spacing } from '../../../components/Spacing/Spacing';
+import { useViewport } from '../../../providers/viewport/useViewport';
+import throttle from 'lodash.throttle';
 
 const DEFAULT_ZOOM_INCREMENT = 0.2;
 
@@ -21,27 +22,32 @@ function roundTenths(percentage: number) {
 
 export const ViewportControls = React.memo<IViewportControlsProps>(
   ({ className, zoomIncrement = DEFAULT_ZOOM_INCREMENT, showZoomValue }) => {
-    const controls = useRoomViewport();
+    const viewport = useViewport();
 
-    const [zoomValue, setZoomValue] = React.useState(controls.getZoom());
+    const [zoomValue, setZoomValue] = React.useState(viewport.zoom);
 
     React.useEffect(() => {
       function updateZoom() {
-        setZoomValue(controls.getZoom());
+        setZoomValue(viewport.zoom);
       }
+      const throttledUpdateZoom = throttle(updateZoom, 300, { trailing: true });
       if (!showZoomValue) return;
 
-      controls.events.on('zoomEnd', updateZoom);
+      viewport.on('zoomChanged', throttledUpdateZoom);
       return () => {
-        controls.events.off('zoomEnd', updateZoom);
+        viewport.off('zoomChanged', throttledUpdateZoom);
       };
-    }, [controls, showZoomValue]);
+    }, [showZoomValue, viewport]);
 
     const handleZoomIn = () => {
-      controls.zoomAbsolute(roundTenths(controls.getZoom() + zoomIncrement));
+      viewport.doZoom(roundTenths(viewport.zoom + zoomIncrement), {
+        origin: 'control',
+      });
     };
     const handleZoomOut = () => {
-      controls.zoomAbsolute(roundTenths(controls.getZoom() - zoomIncrement));
+      viewport.doZoom(roundTenths(viewport.zoom - zoomIncrement), {
+        origin: 'control',
+      });
     };
 
     return (

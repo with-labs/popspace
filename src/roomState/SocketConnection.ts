@@ -27,9 +27,6 @@ export const HEARTBEAT_INTERVAL = 15 * 1000;
 // we consider the connection lost
 export const HEARTBEAT_TIMEOUT = 5000;
 
-// a list of message kinds we shouldn't log (generally because there are too many)
-const LOG_IGNORE_KINDS: (IncomingSocketMessage['kind'] | OutgoingSocketMessage['kind'])[] = ['pong', 'passthrough'];
-
 // full typing for the event emitter
 export interface SocketConnectionEvents {
   error: (error: Error) => void;
@@ -97,13 +94,17 @@ export class SocketConnection extends EventEmitter {
   }
 
   private onError = (ev: ErrorEvent) => {
-    logger.error(ev.error ?? 'Socket error emitted, but no error present');
+    if (ev.error) {
+      logger.error(ev.error);
+    }
     this.emit('error', new Error('The socket encountered an error'));
   };
 
   private onClose = (ev: CloseEvent) => {
-    logger.debug(`Socket connection closed`, ev.code, 'reason?:', ev.reason);
-    logger.debug(new Date());
+    // don't log 1000, which is a normal close event.
+    if (ev.code !== 1000) {
+      logger.debug(`Socket connection closed`, ev.code, 'reason?:', ev.reason);
+    }
     this.stopHeartbeatLoop();
     this.generation++;
     this.emit('closed');
@@ -113,16 +114,11 @@ export class SocketConnection extends EventEmitter {
     // start or resume heartbeat loop
     this.startHeartbeatLoop();
 
-    logger.debug('Connected to socket');
-    logger.debug(new Date());
     this.emit('connected');
   };
 
   private onMessage = (ev: MessageEvent) => {
     const parsed = camelcase(JSON.parse(ev.data), { deep: true }) as IncomingSocketMessage;
-    if (!LOG_IGNORE_KINDS.includes(parsed.kind)) {
-      logger.breadcrumb({ category: 'mercury', message: `Socket message: ${ev.data}` });
-    }
     this.emit('message', parsed);
   };
 
@@ -133,7 +129,6 @@ export class SocketConnection extends EventEmitter {
   };
 
   private manuallyReconnect = () => {
-    logger.debug(`Triggering manual reconnection`);
     this.ws.reconnect();
   };
 
@@ -149,7 +144,6 @@ export class SocketConnection extends EventEmitter {
     // unless we compare generations and recognize the reconnect already happened.
     const currentGeneration = this.generation;
     try {
-      logger.debug(`Sending heartbeat`);
       await this.sendAndWaitForResponse({ kind: 'ping' }, HEARTBEAT_TIMEOUT);
       // queue another heartbeat
       this.heartbeatTimeout = setTimeout(this.heartbeat, HEARTBEAT_INTERVAL);

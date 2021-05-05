@@ -17,7 +17,7 @@ import shallow from 'zustand/shallow';
 import { Refresh } from '@material-ui/icons';
 import clsx from 'clsx';
 import { ExperimentsMenuItem } from './ExperimentsMenuItem';
-import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../../analytics/constants';
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
 export const MainMenu = () => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { trackEvent } = useAnalytics([includeData.roomId]);
+  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);

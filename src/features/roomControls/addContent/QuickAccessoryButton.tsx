@@ -6,7 +6,7 @@ import i18n from '../../../i18n';
 import { WidgetState, WidgetType } from '../../../roomState/types/widgets';
 import { useAddAccessory } from './quickActions/useAddAccessory';
 
-import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
+import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../analytics/constants';
 
 type SupportedTypes = WidgetType.Link | WidgetType.StickyNote | WidgetType.YouTube | WidgetType.Whiteboard;
@@ -40,7 +40,7 @@ const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
 };
 
 export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }) {
-  const { trackEvent } = useAnalytics([includeData.roomId], { type });
+  const { trackEvent } = useAnalytics([IncludeData.roomId], { type });
 
   const add = useAddAccessory();
 

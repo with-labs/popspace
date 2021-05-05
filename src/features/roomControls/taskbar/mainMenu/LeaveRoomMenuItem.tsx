@@ -5,14 +5,14 @@ import { RouteNames } from '../../../../constants/RouteNames';
 import { LeaveIcon } from '../../../../components/icons/LeaveIcon';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import { useTwilio } from '../../../../providers/twilio/TwilioProvider';
-import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../../analytics/constants';
 
 export interface ILeaveRoomMenuItemProps {}
 
 export const LeaveRoomMenuItem = React.forwardRef<HTMLDivElement, ILeaveRoomMenuItemProps>(
   ({ children, ...rest }, ref) => {
-    const { trackEvent } = useAnalytics([includeData.roomId]);
+    const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
     const { room } = useTwilio();
     const history = useHistory();

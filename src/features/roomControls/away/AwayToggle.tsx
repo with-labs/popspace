@@ -9,9 +9,6 @@ import { KeyShortcut } from '../../../constants/keyShortcuts';
 import { useIsAway } from './useIsAway';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useLocalTracks } from '../../../providers/media/hooks/useLocalTracks';
-import { EventNames } from '../../../analytics/constants';
-import { useAnalytics, includeData } from '../../../hooks/useAnalytics/useAnalytics';
-
 export interface IAwayToggleProps {
   className?: string;
 }
@@ -29,24 +26,18 @@ const useStyles = makeStyles((theme) => ({
 export const AwayToggle: React.FC<IAwayToggleProps> = ({ className }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { trackEvent } = useAnalytics([includeData.roomId]);
 
   const [isAway, setAway] = useIsAway();
 
   // synchronizes audio/video with away state
   const { stopAudio, stopVideo, stopScreenShare } = useLocalTracks();
   React.useEffect(() => {
-    trackEvent(EventNames.TOGGLED_STEPAWAY, {
-      isAway: isAway,
-      timestamp: new Date().getTime(),
-    });
-
     if (isAway) {
       stopAudio();
       stopVideo();
       stopScreenShare();
     }
-  }, [isAway, stopAudio, stopVideo, stopScreenShare, trackEvent]);
+  }, [isAway, stopAudio, stopVideo, stopScreenShare]);
 
   useHotkeys(
     KeyShortcut.ToggleAway,

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconButton } from '@material-ui/core';
 import { WhatsNewIcon } from '../../../../components/icons/WhatsNewIcon';
-import { useAnalytics, includeData } from '../../../../hooks/useAnalytics/useAnalytics';
+import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../../analytics/constants';
 export interface IChangelogMenuItemProps {
   onClick?: () => void;
@@ -11,7 +11,7 @@ export interface IChangelogMenuItemProps {
 
 export const ChangelogButton = React.forwardRef<HTMLButtonElement, IChangelogMenuItemProps>(
   ({ onClick, ...rest }, ref) => {
-    const { trackEvent } = useAnalytics([includeData.roomId]);
+    const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
     // register changelog state every time this component mounts
     React.useEffect(() => {

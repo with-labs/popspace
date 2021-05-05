@@ -2,18 +2,18 @@ import { Analytics } from '../../analytics/Analytics';
 import { EventNames } from '../../analytics/constants';
 import { useRoomStore } from '../../roomState/useRoomStore';
 
-export enum includeData {
+export enum IncludeData {
   roomId,
 }
 
-export function useAnalytics(include?: includeData[], defaultData?: { [key: string]: any }) {
+export function useAnalytics(include?: IncludeData[], defaultData?: { [key: string]: any }) {
   const roomId = useRoomStore((store) => store.id);
 
   const includeData: { [key: string]: any } = {};
 
   include?.forEach((dataName) => {
     switch (dataName) {
-      case includeData.roomId:
+      case IncludeData.roomId:
         includeData.roomId = roomId;
         break;
       default:

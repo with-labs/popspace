@@ -56,9 +56,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       width: '100%',
       height: '100%',
-      backdropFilter: 'blur(4px)',
       // unfortunately MUI Modal uses style to control color
-      backgroundColor: 'transparent !important',
+      backgroundColor: `${theme.palette.brandColors.dim.regular} !important`,
     },
   },
   image: {

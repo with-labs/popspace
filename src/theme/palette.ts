@@ -57,6 +57,10 @@ const palette = {
   ink: {
     regular: '#333333',
   },
+  dim: {
+    // slate bold
+    regular: 'rgba(190,195,215,0.7)',
+  },
 };
 
 export default palette;

@@ -7,7 +7,7 @@ export interface IAwayScreenProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backdropFilter: 'blur(20px)',
+    backgroundColor: theme.palette.brandColors.dim.regular,
     zIndex: theme.zIndex.modal,
     display: 'flex',
     flexDirection: 'column',

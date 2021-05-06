@@ -48,6 +48,7 @@ export const EditLinkWidgetForm: React.FC<IEditLinkWidgetFormProps> = ({ initial
   const getLinkData = useGetLinkData();
   const handleSave = React.useCallback(
     async (values: { url: string }) => {
+      onSave({ url: values.url, title: values.url });
       const data = await getLinkData(values);
       onSave(data);
     },

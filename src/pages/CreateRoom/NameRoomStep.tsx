@@ -17,7 +17,7 @@ export interface INameRoomStepProps {
 
 export const NameRoomStep: React.FC<INameRoomStepProps> = ({ onComplete, onCancel }) => {
   const { t } = useTranslation();
-  const { user } = useCurrentUserProfile();
+  const { user, update } = useCurrentUserProfile();
   const [name, setName] = React.useState(user?.display_name ? `${user?.display_name}'s room` : 'My room');
   const [loading, setLoading] = React.useState(false);
 
@@ -27,6 +27,12 @@ export const NameRoomStep: React.FC<INameRoomStepProps> = ({ onComplete, onCance
       const response = await api.roomCreate(name);
       if (!response.success) {
         throw new ApiError(response);
+      } else {
+        update((data) => {
+          if (!data || !data.profile) return {};
+          data.profile.rooms.owned.push(response.newRoom);
+          return data;
+        });
       }
       onComplete(response.newRoom);
     } catch (err) {

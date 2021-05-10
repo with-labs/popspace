@@ -1,9 +1,11 @@
+import seedRandom from 'seed-random';
+
 export type AvatarMetadataType = {
   name: string;
   color: string;
 };
 
-export const AvatarMetadata = {
+export const AvatarMetadata: { [name: string]: AvatarMetadataType[] } = {
   brandedPatterns: [
     { name: 'brand_pattern_01', color: '#FFF0DF' },
     { name: 'brand_pattern_02', color: '#FFF0DF' },
@@ -155,4 +157,21 @@ export const AvatarMetadata = {
   //   { name: 'shaggydog', color: '#f7eae8' },
   //   { name: 'puppy', color: '#fef3e1' },
   // ]
+};
+
+export const randomSectionAvatar = (sectionName: string, seed?: string) => {
+  const sectionAvatars = AvatarMetadata[sectionName];
+  let pos = 0;
+  // calling seedRandom with undefined seed will return the
+  // same thing every time, so we need to check
+  // if we have a seed passed in so if we dont we can
+  // have the default random behavior take over.
+  if (seed) {
+    pos = seedRandom(seed)();
+  } else {
+    pos = seedRandom()();
+  }
+  const randomAvatar = sectionAvatars[Math.floor(pos * sectionAvatars.length)];
+
+  return randomAvatar.name;
 };

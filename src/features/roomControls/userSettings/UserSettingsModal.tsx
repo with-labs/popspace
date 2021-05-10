@@ -88,10 +88,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
   const { user } = useCurrentUserProfile();
   const userId = user?.id ?? '';
   const person = useRoomStore((room) => room.users[userId ?? '']);
-  const { avatarName } = person?.participantState ?? {};
-
-  // visible screen name
-  const displayIdentity = person?.participantState.displayName;
+  const { avatarName, displayName } = person?.participantState ?? {};
 
   const onCloseHandler = () => {
     setIsAvatarSelectionOpen(false);
@@ -137,7 +134,12 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
               <Box display="flex" className={classes.userInputWrapper} alignItems="center" justifyContent="center">
                 <ModalPane className={classes.avatarPanel}>
                   <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
-                    <PseudoUserBubble userId={userId} isVideoOn={false} isMicOn={true} className={classes.bubble} />
+                    <PseudoUserBubble
+                      userData={{ userId, displayName, avatarName }}
+                      isVideoOn={false}
+                      isMicOn={true}
+                      className={classes.bubble}
+                    />
                     <Button onClick={() => setIsAvatarSelectionOpen(true)} color="primary" fullWidth={false}>
                       {t('modals.userSettingsModal.editAvatarButton')}
                     </Button>
@@ -145,7 +147,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                 </ModalPane>
                 <ModalPane>
                   <Formik
-                    initialValues={{ displayName: displayIdentity ? displayIdentity : '' }}
+                    initialValues={{ displayName: displayName ? displayName : '' }}
                     onSubmit={onSubmitHandler}
                     validateOnMount
                     enableReinitialize

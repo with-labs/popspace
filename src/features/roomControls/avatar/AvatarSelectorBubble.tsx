@@ -9,13 +9,14 @@ import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapp
 import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
 import VideoTrack from '../../../components/VideoTrack/VideoTrack';
 import { useLocalTracks } from '../../../providers/media/hooks/useLocalTracks';
-import { useRoomStore } from '../../../roomState/useRoomStore';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { AvatarSelector } from './AvatarSelector';
 
 export interface IAvatarSelectorProps {
   className?: string;
   showVideo?: boolean;
+  userData: { userId: string; avatarName: string; displayName: string };
+  updateSelf: (payload: { [key: string]: any }) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -39,18 +40,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({ className, showVideo }) => {
+export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({
+  className,
+  showVideo,
+  userData,
+  updateSelf,
+}) => {
   const { t } = useTranslation();
   const classes = useStyles();
-
   const [open, setOpen] = React.useState(false);
 
-  const userId = useRoomStore((room) => room.sessionLookup[room.sessionId || '']);
-  const avatarName = useRoomStore((room) => room.users[userId]?.participantState.avatarName);
-  const updateSelf = useRoomStore((room) => room.api.updateSelf);
-
   const onChange = (newAvatarName: string) => {
-    updateSelf({ avatarName: newAvatarName });
+    updateSelf({ avatar_name: newAvatarName });
   };
 
   const { videoTrack } = useLocalTracks();
@@ -58,7 +59,7 @@ export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({ className
   return (
     <>
       <button className={clsx(classes.root, className)} onClick={() => setOpen(true)}>
-        <PseudoUserBubble userId={userId} isMicOn isVideoOn={!!videoTrack && showVideo}>
+        <PseudoUserBubble userData={userData} isMicOn isVideoOn={!!videoTrack && showVideo}>
           {videoTrack && showVideo && <VideoTrack classNames={classes.video} track={videoTrack as LocalVideoTrack} />}
         </PseudoUserBubble>
         <EditHint className={classes.editIcon} />
@@ -67,7 +68,7 @@ export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({ className
         <ModalTitleBar onClose={() => setOpen(false)} title={t('modals.userSettingsModal.avatarTitle')} />
         <ModalContentWrapper>
           <AvatarSelector
-            value={avatarName}
+            value={userData.avatarName}
             onChange={(name) => {
               onChange(name);
               setOpen(false);

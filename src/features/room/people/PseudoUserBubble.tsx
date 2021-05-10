@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, makeStyles, Typography, useTheme } from '@material-ui/core';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-import { useRoomStore } from '../../../roomState/useRoomStore';
 import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
 import { PersonBubbleFrame } from './PersonBubbleFrame';
 import { PersonBubbleContent } from './PersonBubbleContent';
@@ -12,11 +11,11 @@ import { PersonBubbleAvatar } from './PersonBubbleAvatar';
 import { AwayIcon } from '../../../components/icons/AwayIcon';
 
 interface IPseudoUserBubbleProps {
-  userId: string;
   isVideoOn?: boolean;
   isMicOn?: boolean;
   className?: string;
   isAway?: boolean;
+  userData: { userId: string; avatarName: string; displayName: string };
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -85,21 +84,18 @@ const useStyles = makeStyles((theme) => ({
  * interactivity.
  */
 export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
-  userId,
   isVideoOn = false,
   className,
   children,
   isMicOn = false,
   isAway,
+  userData,
   ...rest
 }) => {
   const theme = useTheme();
   const classes = useStyles();
 
-  const person = useRoomStore((room) => room.users[userId ?? '']);
-  const { avatarName } = person?.participantState;
-  const displayIdentity = person?.participantState.displayName;
-
+  const { avatarName, displayName, userId } = userData;
   const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
 
   return (
@@ -108,9 +104,16 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
         <PersonBubbleBackground isVideoOn={isVideoOn} grayscale={isAway} backgroundColor={backgroundColor}>
           {isVideoOn && <Box className={classes.video}>{children}</Box>}
         </PersonBubbleBackground>
-        {!isVideoOn && <PersonBubbleAvatar grayscale={isAway} userId={userId} freeze={isAway ? 'eyesClosed' : false} />}
+        {!isVideoOn && (
+          <PersonBubbleAvatar
+            grayscale={isAway}
+            userId={userId}
+            avatarName={avatarName}
+            freeze={isAway ? 'eyesClosed' : false}
+          />
+        )}
         <PersonBubbleLabel isVideoOn={isVideoOn}>
-          <Typography className={classes.name}>{displayIdentity}</Typography>
+          <Typography className={classes.name}>{displayName}</Typography>
         </PersonBubbleLabel>
         <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
           {isAway ? (

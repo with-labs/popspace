@@ -14,7 +14,7 @@ describe('the AudioTrack component', () => {
     const mockTrack = { attach: jest.fn(), detach: jest.fn() } as any;
     render(<AudioTrack track={mockTrack} objectId="a" objectKind="widget" />, {
       wrapper: ({ children }) => (
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
           {children}
         </MediaReadinessContext.Provider>
       ),
@@ -27,7 +27,7 @@ describe('the AudioTrack component', () => {
     const mockTrack = { attach: jest.fn(), detach: jest.fn() } as any;
     const { unmount } = render(<AudioTrack track={mockTrack} objectId="a" objectKind="widget" />, {
       wrapper: ({ children }) => (
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
           {children}
         </MediaReadinessContext.Provider>
       ),

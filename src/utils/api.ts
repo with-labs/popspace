@@ -62,6 +62,14 @@ export type Service = {
   url: string | null;
 };
 
+export type ApiParticipantState = {
+  avatar_name: string;
+  display_name: string;
+  emoji: string | null;
+  is_away: boolean;
+  status_text: string;
+};
+
 export const SERVICES = {
   netlify: {
     url: '/.netlify/functions',
@@ -258,6 +266,14 @@ class Api {
 
   async getDefaultRoom() {
     return this.post<BaseResponse & { room_route: string }>('/get_or_init_default_room', SERVICES.mercury);
+  }
+
+  async setParticipantState(participantState: ApiParticipantState) {
+    return this.post<BaseResponse & { participantState: ApiParticipantState }>(
+      '/update_participant_state',
+      { participantState },
+      SERVICES.api
+    );
   }
 
   /* TODO: service should be mandatory/explicit; update all uses and remove the default value */

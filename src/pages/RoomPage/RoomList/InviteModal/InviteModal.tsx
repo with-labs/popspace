@@ -1,9 +1,9 @@
 import React from 'react';
 import { makeStyles, Dialog, DialogContent } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { MembershipManagement } from '../../../features/roomControls/membership/MembershipManagement';
-import { RoomInfo } from '../../../types/api';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { MembershipManagement } from '../../../../features/roomControls/membership/MembershipManagement';
+import { RoomInfo } from '../../../../types/api';
+import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
 
 interface IInviteModalProps {
   isOpen: boolean;

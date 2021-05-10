@@ -11,21 +11,20 @@ import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useIsAway } from '../away/useIsAway';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import useLocalVideoToggle from '../../../providers/media/hooks/useLocalVideoToggle';
-import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
 import { EventNames } from '../../../analytics/constants';
 import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
 
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
+  isVideoOn: boolean;
+  toggleVideoOn: () => Promise<void>;
+  busy: boolean;
 }
 
 export const CameraToggle = (props: ICameraToggleProps) => {
-  const { className, isLocal, ...otherProps } = props;
+  const { className, isLocal, isVideoOn, toggleVideoOn, busy, ...otherProps } = props;
   const { t } = useTranslation();
-  const [isVideoOn, toggleVideoOn, busy] = useLocalVideoToggle(isLocal);
   const socket = useRoomStore((room) => room.socket);
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
@@ -65,8 +64,6 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
-  const roomStatus = useRoomStatus();
-
   return (
     <>
       <ResponsiveTooltip
@@ -81,7 +78,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
             value="video"
             selected={isVideoOn}
             onChange={handleVideoToggle}
-            disabled={busy || roomStatus !== TwilioStatus.Connected}
+            disabled={busy}
             className={className}
             {...otherProps}
           >

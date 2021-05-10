@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flex: '0 0 auto',
     display: 'flex',
     alignItems: 'center',
+    marginBottom: 16,
   },
   header: {
     padding: `${theme.spacing(2)}px ${theme.spacing(4)}px`,
@@ -145,7 +146,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
         [classes.headerFull]: isFullLength,
       })}
     >
-      <Logo />
+      <Logo link />
       <Typography variant="body1" className={classes.text}>
         {text}
       </Typography>

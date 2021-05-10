@@ -19,6 +19,7 @@ import clsx from 'clsx';
 import { ExperimentsMenuItem } from './ExperimentsMenuItem';
 import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../../analytics/constants';
+import { useRoomStore } from '../../../../roomState/useRoomStore';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -72,6 +73,10 @@ export const MainMenu = () => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
+  const userId = useRoomStore((room) => room.sessionLookup[room.sessionId || '']);
+  const avatarName = useRoomStore((room) => room.users[userId]?.participantState.avatarName);
+  const updateSelf = useRoomStore((room) => room.api.updateSelf);
+  const person = useRoomStore((room) => room.users[userId ?? '']);
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchorEl(null);
@@ -115,7 +120,11 @@ export const MainMenu = () => {
             mb={1}
             className={classes.avatarBox}
           >
-            <AvatarSelectorBubble className={classes.avatar} />
+            <AvatarSelectorBubble
+              className={classes.avatar}
+              userData={{ userId, avatarName, displayName: person?.participantState.displayName || '' }}
+              updateSelf={updateSelf}
+            />
           </Box>
         </Box>
         <Box px={1.5}>

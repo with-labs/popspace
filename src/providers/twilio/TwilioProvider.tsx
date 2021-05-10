@@ -45,12 +45,14 @@ export const TwilioProvider: React.FC<{ roomName: string }> = ({ roomName, child
   // synchronize the twilio Room object, which is managed by the
   // connection above.
   const [room, setRoom] = useState<Room | null>(connection.room);
+
   useEffect(() => {
     connection.on('roomChanged', setRoom);
     return () => {
       connection.off('roomChanged', setRoom);
     };
   }, [connection]);
+
   useEffect(() => {
     connection.setRoom(roomName).catch((err) => {
       logger.critical(`Failed to connect to Twilio room ${roomName}`, err);
@@ -59,6 +61,7 @@ export const TwilioProvider: React.FC<{ roomName: string }> = ({ roomName, child
 
   // keep track of room connection state for context
   const [status, setStatus] = useState<TwilioStatus>((room?.state as TwilioStatus) ?? TwilioStatus.Initial);
+
   useEffect(() => {
     function updateConnectionStatus() {
       setStatus((connection.room?.state as TwilioStatus) ?? TwilioStatus.Disconnected);

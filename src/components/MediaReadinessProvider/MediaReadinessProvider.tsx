@@ -4,6 +4,7 @@ import { isMobileOnly } from 'react-device-detect';
 export const MediaReadinessContext = React.createContext({
   isReady: false,
   onReady: () => {},
+  resetReady: () => {},
 });
 
 /**
@@ -15,12 +16,14 @@ export const MediaReadinessContext = React.createContext({
 export const MediaReadinessProvider: React.FC = ({ children }) => {
   const [isReady, setIsReady] = React.useState(false);
   const onReady = React.useCallback(() => setIsReady(true), []);
+  const resetReady = React.useCallback(() => setIsReady(false), []);
   const value = React.useMemo(
     () => ({
       isReady,
       onReady,
+      resetReady,
     }),
-    [isReady, onReady]
+    [isReady, onReady, resetReady]
   );
 
   React.useEffect(() => {

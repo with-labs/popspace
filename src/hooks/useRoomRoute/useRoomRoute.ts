@@ -5,5 +5,5 @@ export function useRoomRoute() {
   const query = useQueryParams();
   const params = useParams<{ roomRoute: string }>();
 
-  return params['roomRoute'] || query.get('r');
+  return params['roomRoute'] || query.get('r') || undefined;
 }

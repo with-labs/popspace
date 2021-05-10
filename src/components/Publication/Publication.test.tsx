@@ -76,7 +76,7 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
           <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
         </MediaReadinessContext.Provider>
       );
@@ -93,7 +93,7 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
           <Publication
             isLocal
             publication={{ trackName: 'trackName' } as any}
@@ -110,7 +110,7 @@ describe('the Publication component', () => {
   it('should render null when there is no track', () => {
     mockUseTrack.mockImplementation(() => null);
     const wrapper = render(
-      <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn() }}>
+      <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
         <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
       </MediaReadinessContext.Provider>
     );

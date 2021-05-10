@@ -28,6 +28,8 @@ export const AwayExplainer: React.FC<IAwayExplainerProps> = (props) => {
   const classes = useStyles();
   const [, set] = useIsAway();
   const userId = useRoomStore((room) => room.sessionLookup[room.sessionId || '']);
+  const person = useRoomStore((room) => room.users[userId ?? '']);
+  const { avatarName, displayName } = person?.participantState ?? {};
 
   return (
     <Box component={Paper} maxWidth={360} overflow="hidden" {...props}>
@@ -37,7 +39,7 @@ export const AwayExplainer: React.FC<IAwayExplainerProps> = (props) => {
           alt={t('features.away.explainerImgAlt')}
           src={awayHeaderImg}
         />
-        <PseudoUserBubble userId={userId} className={classes.userBubble} isAway />
+        <PseudoUserBubble userData={{ userId, avatarName, displayName }} className={classes.userBubble} isAway />
       </Box>
       <Box p={4} pt={0}>
         <StatusEditField disableAutoFocus autoSaveOnRest className={classes.statusField} />

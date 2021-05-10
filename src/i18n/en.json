@@ -24,7 +24,8 @@
       "anonymous": "Anonymous",
       "errorCode": "Error Code: {{code}}",
       "oops": "Oops!",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "back": "Back"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -83,6 +84,23 @@
       }
     },
     "pages": {
+      "preroom": {
+        "roomTitle": "Rooms",
+        "enterRoomButton": "Enter {{roomName}}",
+        "createRoomButton": "Create room",
+        "setupExplanation": "You can take a moment to set up your camera and microphone.",
+        "namePlaceholder": "Your name",
+        "roomSummary": {
+          "joinRoomBtn": "Join Room",
+          "owner": "Owner",
+          "guest": "Guest",
+          "inviteMembers": "Invite members",
+          "renameRoom": "Rename room",
+          "deleteRoom": "Delete room",
+          "makeDefault": "Make default",
+          "defaultRoom": "Default room"
+        }
+      },
       "signin": {
         "title": "Sign In",
         "email": {
@@ -137,22 +155,6 @@
         "imgAltText": "Check email image",
         "snackSuccessMsg": "We just sent you new magic link.",
         "snackFailMsg": "An error has occurred."
-      },
-      "dashboard": {
-        "feedbackItemBodyText": "You will soon have the ability to create new rooms, rename rooms, and delete rooms.",
-        "feedbackItemLink": "Give us feedback",
-        "roomsTitle": "Your rooms",
-        "roomSummary": {
-          "joinRoomBtn": "Join Room",
-          "owner": "Owner",
-          "guest": "Guest",
-          "inviteMembers": "Invite members",
-          "renameRoom": "Rename room",
-          "deleteRoom": "Delete room",
-          "makeDefault": "Make default",
-          "defaultRoom": "Default room"
-        },
-        "createRoomButton": "Create room"
       },
       "finalizeAccount": {
         "title": "Join the room",
@@ -331,6 +333,10 @@
         "TOO_MANY_ROOM_MEMBERS": {
           "title": "TOO_MANY_ROOM_MEMBERS title",
           "body": "TOO_MANY_ROOM_MEMBERS body"
+        },
+        "UNAUTHORIZED_ROOM_ACCESS": {
+          "title": "Oops, you don't have access to this room anymore.",
+          "body": "Please ask the room owner for access again."
         }
       },
       "messages": {

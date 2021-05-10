@@ -10,11 +10,11 @@ import {
   Box,
 } from '@material-ui/core';
 import { useTranslation, Trans } from 'react-i18next';
-import { cherry } from '../../../theme/theme';
-import { RoomInfo } from '../../../types/api';
+import { cherry } from '../../../../theme/theme';
+import { RoomInfo } from '../../../../types/api';
 import { Form, Formik } from 'formik';
-import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
 import { TFunction } from 'i18next';
 
 interface IDeleteRoomModalProps {

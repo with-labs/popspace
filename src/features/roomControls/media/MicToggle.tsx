@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import useLocalAudioToggle from '../../../providers/media/hooks/useLocalAudioToggle';
 import { MicOnIcon } from '../../../components/icons/MicOnIcon';
 import { MicOffIcon } from '../../../components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -12,13 +11,8 @@ import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import clsx from 'clsx';
 import { useRoomStore } from '../../../roomState/useRoomStore';
-import { logger } from '../../../utils/logger';
-import { useRemoteControl } from '../../../hooks/useRemoteControl/useRemoteControl';
-import { MIC_TRACK_NAME } from '../../../constants/User';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
 import { useIsAway } from '../away/useIsAway';
-import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
 import { EventNames } from '../../../analytics/constants';
 import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
 
@@ -29,31 +23,22 @@ const useStyles = makeStyles((theme) => ({
 export interface IMicToggleProps {
   isLocal?: boolean;
   className?: string;
+  isMicOn: boolean;
+  doMicToggle: () => Promise<void>;
+  busy: boolean;
+  handleMicOn?: () => void;
 }
 
 export const MicToggle = (props: IMicToggleProps) => {
-  const { isLocal, className, ...otherProps } = props;
+  const { isLocal, className, isMicOn, doMicToggle, handleMicOn, busy, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const [isMicOn, doMicToggle, busy] = useLocalAudioToggle(isLocal);
-  const { muteSession } = useRemoteControl();
   const socket = useRoomStore((room) => room.socket);
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const toggleMicOn = React.useCallback(() => {
-    if (!isMicOn) {
-      // the action of turning the microphone on makes this the primary
-      // session - mute all other sessions.
-      const roomState = useRoomStore.getState();
-      const currentSessionId = roomState.sessionId;
-      if (!currentSessionId) {
-        // this shouldn't really happen
-        logger.error(`Mic was turned on, but there's no active session`);
-      } else {
-        const currentUserId = roomState.sessionLookup[currentSessionId];
-        const allSessionIds = roomState.users[currentUserId].sessionIds;
-        allSessionIds.forEach((id) => muteSession(id, MIC_TRACK_NAME));
-      }
+    if (handleMicOn && !isMicOn) {
+      handleMicOn();
     }
 
     trackEvent(EventNames.TOGGLE_MIC, {
@@ -70,7 +55,7 @@ export const MicToggle = (props: IMicToggleProps) => {
     });
 
     doMicToggle();
-  }, [doMicToggle, isMicOn, muteSession, socket, trackEvent]);
+  }, [doMicToggle, handleMicOn, isMicOn, socket, trackEvent]);
 
   const [isAway] = useIsAway();
 
@@ -91,8 +76,6 @@ export const MicToggle = (props: IMicToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
-  const roomStatus = useRoomStatus();
-
   return (
     <>
       <ResponsiveTooltip
@@ -108,7 +91,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             selected={isMicOn}
             onChange={toggleMicOn}
             onContextMenu={handleContextMenu}
-            disabled={busy || roomStatus !== TwilioStatus.Connected}
+            disabled={busy}
             {...otherProps}
             className={clsx(classes.root, className)}
           >

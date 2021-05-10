@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar } from '../../../components/Avatar/Avatar';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { makeStyles, useTheme } from '@material-ui/core';
+import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
 
 import { ReactComponent as BgFillGlyph } from './images/background_fill.svg';
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export const MemberListAvatar: React.FC<IMemberListAvatarProps> = ({ avatarName, hasAccepted }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const displayAvatar = hasAccepted ? avatarName ?? 'blobby' : INVITED_AVATAR_URL;
+  const displayAvatar = hasAccepted ? avatarName ?? randomSectionAvatar('brandedPatterns') : INVITED_AVATAR_URL;
   const { backgroundColor } = useAvatar(displayAvatar) ?? { backgroundColor: theme.palette.grey[50] };
 
   return (

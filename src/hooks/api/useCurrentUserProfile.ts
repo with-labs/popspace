@@ -1,13 +1,16 @@
-import { useQuery } from 'react-query';
-import { ApiUser } from '../../utils/api';
+import { useQuery, useQueryCache } from 'react-query';
+import { ApiUser, ApiParticipantState } from '../../utils/api';
 import { ApiError } from '../../errors/ApiError';
 
 import { useMemo } from 'react';
 import { RoomInfo } from '../../types/api';
-import { useQueryCache } from 'react-query';
 import { Updater } from 'react-query/types/core/utils';
 
-export type UserProfile = { user: ApiUser; rooms: { member: RoomInfo[]; owned: RoomInfo[] } };
+export type UserProfile = {
+  user: ApiUser;
+  participantState: ApiParticipantState;
+  rooms: { member: RoomInfo[]; owned: RoomInfo[] };
+};
 export type ProfileData = { profile?: UserProfile };
 
 export function useCurrentUserProfile() {

@@ -15,9 +15,10 @@ import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
 import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
-import { EntryOverlay } from '../roomControls/entryOverlay/EntryOverlay';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
+
+import { useExitToPreRoom } from '../../hooks/useExitToPreRoom/useExitToPreRoom';
 
 interface IRoomProps {}
 
@@ -30,7 +31,7 @@ export const Room = React.memo<IRoomProps>(() => {
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
 
   const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
-
+  useExitToPreRoom();
   useBindPaste();
 
   return (
@@ -55,7 +56,6 @@ export const Room = React.memo<IRoomProps>(() => {
       <SpeakingStateObserver />
       <UserSettingsModal />
       <ChangelogModal />
-      <EntryOverlay />
     </RoomViewportProvider>
   );
 });

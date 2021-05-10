@@ -3,44 +3,71 @@ import { RouteNames } from './constants/RouteNames';
 import { Admin } from './pages/Admin/Admin';
 import { Signin } from './pages/SignIn/Signin';
 import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
-import { Dashboard } from './pages/Dashboard/Dashboard';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Subscribe } from './pages/Subscribe/Subscribe';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
-import useQueryParams from './hooks/useQueryParams/useQueryParams';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
-import RoomPage from './pages/room';
+import RoomPage from './pages/RoomPage/RoomPage';
 import { InviteLink } from './pages/InviteLink/InviteLink';
 import { Signup } from './pages/Signup/Signup';
 import { CreateRoomPage } from './pages/CreateRoom/CreateRoomPage';
+import { FullscreenLoading } from './components/FullscreenLoading/FullscreenLoading';
+import { useCurrentUserProfile } from './hooks/api/useCurrentUserProfile';
+import { useOrderedRooms } from './hooks/useOrderedRooms/useOrderedRooms';
+import useQueryParams from './hooks/useQueryParams/useQueryParams';
+import { MediaReadinessContext } from './components/MediaReadinessProvider/MediaReadinessProvider';
+
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
 
 const RootView = () => {
-  const query = useQueryParams();
-  const room: string | null = query.get('r');
   const history = useHistory();
+  const { profile, error, isLoading: isProfileLoading } = useCurrentUserProfile();
+  const { rooms, isLoading: isRoomsLoading } = useOrderedRooms(profile);
+  const { resetReady } = React.useContext(MediaReadinessContext);
+
+  const query = useQueryParams();
+  const queryError = query.get('e');
 
   React.useEffect(() => {
-    if (room) {
-      history.replace(`/${room}`);
+    if (error) {
+      // todo: add error to query string here?
+      history.push(RouteNames.SIGN_IN);
     }
-  }, [room, history]);
+  }, [error, history]);
 
-  // we still support the use o the r query param, so we check if youre
-  // trying to get in to a room, if we have it send you to the room
-  if (room) {
-    return null;
-  } else {
-    // send them to the dash
-    return <Dashboard />;
-  }
+  React.useEffect(() => {
+    if (queryError) {
+      // if we have an error on the query string,
+      // reset the ready is ready so we dont enter a room
+      // so the user can see the error
+      resetReady();
+    }
+
+    if (!isProfileLoading && !isRoomsLoading) {
+      // if the user has no rooms then we redirect to the onboarding
+      if (!error && rooms.length === 0) {
+        history.push(`${RouteNames.CREATE_ROOM}?onboarding=true`);
+      } else {
+        // hitting the route will redirect us to the first room in
+        // returned by useOrderedRooms.
+        // either their default room or the first room they have
+        // TOOD: expand this to use last entered room as the first choice?
+        history.replace({
+          pathname: `/${rooms[0].route}`,
+          search: `${history.location.search}`,
+        });
+      }
+    }
+  }, [history, rooms, isRoomsLoading, isProfileLoading, error, queryError, resetReady]);
+
+  return <FullscreenLoading />;
 };
 
 export const Routes: React.FC<IRoutesProps> = (props) => {

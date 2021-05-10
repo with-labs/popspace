@@ -94,8 +94,12 @@ const useSocketConnection = (roomName: string) => {
         logger.error(err);
 
         if (err instanceof SocketMessageRejectionError && err.code === 'AUTH_FAILED') {
-          // user is not logged in
-          history.push(RouteNames.SIGN_IN, { returnTo: history.location.pathname });
+          // user is not authorized to connect to the room socket
+          // we will redirect to root with error
+          history.replace({
+            pathname: RouteNames.ROOT,
+            search: `e=${ErrorCodes.UNAUTHORIZED_ROOM_ACCESS}`,
+          });
         } else if (isMountedRef.current) {
           setError(err);
         }

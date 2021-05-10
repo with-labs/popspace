@@ -45,6 +45,7 @@
     "@types/turndown": "^5.0.0",
     "@types/twilio-video": "^2.7.0",
     "@types/typeform__embed": "^0.22.2",
+    "@types/use-double-click": "^1.0.0",
     "@types/uuid": "^8.3.0",
     "@types/youtube": "0.0.39",
     "babel-loader": "^8.1.0",

@@ -7,6 +7,7 @@ export interface IPersonBubbleAvatarProps extends Omit<IPersonAvatarProps, 'pers
   children?: React.ReactNode;
   userId: string;
   grayscale?: boolean;
+  avatarName?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,13 +28,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const PersonBubbleAvatar: React.FC<IPersonBubbleAvatarProps> = ({ userId, grayscale, className, ...rest }) => {
+export const PersonBubbleAvatar: React.FC<IPersonBubbleAvatarProps> = ({
+  userId,
+  grayscale,
+  className,
+  avatarName,
+  ...rest
+}) => {
   const classes = useStyles();
 
   return (
     <PersonAvatar
       className={clsx(classes.root, grayscale && classes.grayscale, className)}
       personId={userId}
+      avatarName={avatarName}
       {...rest}
     />
   );

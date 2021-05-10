@@ -7,6 +7,7 @@ import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
 import { useRoomCanvas } from '../RoomCanvasRenderer';
+import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
 
 export interface ICursorProps {
   userId: string;
@@ -42,7 +43,9 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const selectActive = React.useCallback((room: RoomStateShape) => room.cursors[userId]?.active ?? false, [userId]);
 
   const name = useRoomStore((room) => room.users[userId]?.participantState.displayName ?? '???');
-  const avatarName = useRoomStore((room) => room.users[userId]?.participantState.avatarName ?? 'blobby');
+  const avatarName = useRoomStore(
+    (room) => room.users[userId]?.participantState.avatarName ?? randomSectionAvatar('brandedPatterns')
+  );
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
 

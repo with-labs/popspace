@@ -202,7 +202,7 @@ export const MembershipManagement = React.forwardRef<HTMLDivElement, IMembership
               <CircularProgress />
             ) : (
               <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-                <img src={InviteMembersImg} className={classes.inviteImg} />
+                <img src={InviteMembersImg} className={classes.inviteImg} alt="" />
                 <Typography variant="body1" className={classes.inviteText}>
                   {t('modals.inviteUserModal.getStarted')}
                 </Typography>

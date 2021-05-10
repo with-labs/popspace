@@ -11,7 +11,6 @@ import { WidgetResizeContainer } from '../../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
-import { ThemeName } from '../../../../../theme/theme';
 
 // when a media widget is first added, it will shoot for native
 // size but stop at this limit. The user can still resize it larger afterward.

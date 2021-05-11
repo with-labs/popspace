@@ -27,14 +27,11 @@ export function useAVSources() {
     updateDevices();
 
     if (navigator && navigator.mediaDevices) {
-      navigator.mediaDevices.ondevicechange = updateDevices;
+      navigator.mediaDevices.addEventListener('devicechange', updateDevices);
+      return () => {
+        navigator.mediaDevices.removeEventListener('devicechange', updateDevices);
+      };
     }
-
-    return () => {
-      if (navigator && navigator.mediaDevices && navigator.mediaDevices.ondevicechange === updateDevices) {
-        navigator.mediaDevices.ondevicechange = () => null;
-      }
-    };
   }, [updateDevices]);
 
   // Effect to update device listings when the local tracks change. This is intended to cover the case where the user

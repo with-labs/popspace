@@ -640,13 +640,28 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '& + &': {
             marginTop: spacing(0.5),
           },
-          '&$selected, &:hover, &$selected:hover, &:focus': {
-            backgroundColor: palette.grey[50],
+          '&$selected, &$selected:hover': {
+            fontWeight: typography.fontWeightBold,
+            color: palette.secondary.contrastText,
+            backgroundColor: 'transparent',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            '&::after': {
+              content: '""',
+              width: 18,
+              height: 8,
+              padding: 2,
+              borderBottom: `2px solid ${palette.secondary.contrastText}`,
+              borderLeft: `2px solid ${palette.secondary.contrastText}`,
+              transform: 'rotate(-48deg) translateY(-4px)',
+              marginLeft: 12,
+            },
           },
           '&:hover': {
             boxShadow: focusRings.idle,
           },
-          '&:focus': {
+          '&:focusVisible': {
             boxShadow: focusRings.create(palette.grey[900]),
           },
           '&:active': {

@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: '100%',
     height: '100%',
+    minWidth: 200,
     display: 'flex',
     flexDirection: 'column',
   },

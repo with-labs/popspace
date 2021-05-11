@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { Bounds } from '../../../types/spatials';
 import {
   IResizeContainerProps,
   ResizeContainer,
   ResizeContainerImperativeApi,
-} from '../../../components/ResizeContainer/ResizeContainer';
+} from '../../../providers/canvas/ResizeContainer';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { useWidgetContext } from './useWidgetContext';
-import { useViewport } from '../../../providers/viewport/useViewport';
 
-export interface IWidgetResizeContainerProps extends Omit<IResizeContainerProps, 'onResize' | 'size'> {
+export interface IWidgetResizeContainerProps
+  extends Omit<IResizeContainerProps, 'onResizeEnd' | 'onResizeStart' | 'onResize' | 'size'> {
   className?: string;
 }
 
@@ -32,34 +29,8 @@ export const WidgetResizeContainer = React.forwardRef<ResizeContainerImperativeA
   ({ mode, children, className, ...restProps }, ref) => {
     const classes = useStyles();
 
-    const {
-      widget: { widgetId },
-    } = useWidgetContext();
-    const viewport = useViewport();
-    const getScaleFactor = React.useCallback(() => 1 / viewport.zoom, [viewport]);
-
-    const size = useRoomStore(React.useCallback((room) => room.widgetPositions[widgetId]?.size ?? null, [widgetId]));
-    const resizeWidget = useRoomStore((room) => room.api.resizeWidget);
-
-    const onResize = React.useCallback(
-      (newSize: Bounds) => {
-        resizeWidget({
-          widgetId,
-          size: newSize,
-        });
-      },
-      [resizeWidget, widgetId]
-    );
-
     return (
-      <ResizeContainer
-        size={size}
-        onResize={onResize}
-        mode={mode}
-        ref={ref}
-        getResizeScaleFactor={getScaleFactor}
-        {...restProps}
-      >
+      <ResizeContainer mode={mode} ref={ref} {...restProps}>
         <div className={clsx(classes.content, className)}>{children}</div>
       </ResizeContainer>
     );

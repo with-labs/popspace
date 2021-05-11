@@ -2,7 +2,7 @@ import * as React from 'react';
 import YouTube from 'react-youtube';
 import { MediaControls } from '../common/MediaControls';
 import { useSyncYoutube } from './useSyncYoutube';
-import { useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
+import { useResizeContext } from '../../../../providers/canvas/ResizeContainer';
 import { makeStyles } from '@material-ui/core';
 import { YoutubeWidgetShape, YoutubeWidgetState } from '../../../../roomState/types/widgets';
 

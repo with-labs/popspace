@@ -2,10 +2,10 @@ import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
-import { Draggable } from '../Draggable';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 import { ThemeName } from '../../../theme/theme';
+import { CanvasObject } from '../../../providers/canvas/CanvasObject';
 
 export interface IWidgetFrameProps {
   children: React.ReactNode;
@@ -64,15 +64,15 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, 
 
   return (
     <ThemeProvider theme={theme}>
-      <Draggable
-        id={widgetId}
+      <CanvasObject
+        objectId={widgetId}
         zIndex={zIndex}
         onDragStart={bringToFront}
-        kind="widget"
+        objectKind="widget"
         className={clsx(classes.root, color === 'transparent' && classes.rootTransparent, className)}
       >
         {children}
-      </Draggable>
+      </CanvasObject>
     </ThemeProvider>
   );
 };

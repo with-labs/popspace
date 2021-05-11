@@ -7,14 +7,14 @@ import { FormikTextField } from '../../../../components/fieldBindings/FormikText
 import { MuteIconSmall } from '../../../../components/icons/MuteIconSmall';
 import { SpatialVideo } from '../../../../components/SpatialVideo/SpatialVideo';
 import { WidgetType } from '../../../../roomState/types/widgets';
-import { Draggable } from '../../Draggable';
-import { DraggableHandle } from '../../DraggableHandle';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import videos from './videos';
 import { ThemeName } from '../../../../theme/theme';
+import { CanvasObject } from '../../../../providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '../../../../providers/canvas/CanvasObjectDragHandle';
 
 const useStyles = makeStyles((theme) => ({
   draggable: {
@@ -133,9 +133,9 @@ export const MockUserWidget: React.FC = () => {
   const muted = src.includes('listening');
 
   return (
-    <Draggable id={state.widgetId} kind="widget" className={classes.draggable}>
+    <CanvasObject objectId={state.widgetId} objectKind="widget" className={classes.draggable}>
       <div className={classes.root}>
-        <DraggableHandle className={classes.handle}>
+        <CanvasObjectDragHandle className={classes.handle}>
           <div className={classes.videoContainer}>
             {src && (
               <SpatialVideo
@@ -159,8 +159,8 @@ export const MockUserWidget: React.FC = () => {
               <AudioIndicator className={classes.voiceWave} isActive variant="sine" />
             )}
           </div>
-        </DraggableHandle>
+        </CanvasObjectDragHandle>
       </div>
-    </Draggable>
+    </CanvasObject>
   );
 };

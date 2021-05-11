@@ -4,7 +4,6 @@ import Publication from '../../../components/Publication/Publication';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { PersonStatus } from './PersonStatus';
 import { SidecarStreamPreview } from './SidecarStreamPreview';
-import { DraggableHandle } from '../DraggableHandle';
 import { isMobileOnly } from 'react-device-detect';
 import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
 import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingStates';
@@ -136,47 +135,45 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     return (
       <PersonBubbleFrame {...rest} isVideoOn={isVideoOn} ref={ref} data-test-person={displayIdentity} {...handlers}>
-        <DraggableHandle disabled={!isLocal} className={classes.handle}>
-          <PersonBubbleContent isVideoOn={isVideoOn}>
-            {/* Still a typing issue with react-spring :( */}
-            <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor} grayscale={isAway}>
-              {mainStream?.videoPublication && (
-                <Publication
-                  classNames={classes.video}
-                  publication={mainStream.videoPublication}
-                  isLocal={isLocal}
-                  objectId={userId}
-                  objectKind="user"
-                />
-              )}
-            </PersonBubbleBackground>
-            {!mainStream?.videoPublication && (
-              <PersonBubbleAvatar userId={userId} grayscale={isAway} freeze={isAway ? 'eyesClosed' : false} />
-            )}
-            {mainStream?.audioPublication && (
+        <PersonBubbleContent isVideoOn={isVideoOn}>
+          {/* Still a typing issue with react-spring :( */}
+          <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor} grayscale={isAway}>
+            {mainStream?.videoPublication && (
               <Publication
-                classNames={classes.audio}
-                publication={mainStream?.audioPublication}
+                classNames={classes.video}
+                publication={mainStream.videoPublication}
                 isLocal={isLocal}
                 objectId={userId}
                 objectKind="user"
-                disableAudio={isLocal}
               />
             )}
-            <PersonBubbleLabel isVideoOn={isVideoOn}>
-              <Typography className={classes.name}>{displayIdentity}</Typography>
-            </PersonBubbleLabel>
-            <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
-              {isAway ? (
-                <AwayIcon className={classes.awayIcon} fontSize="inherit" />
-              ) : isMicOn ? (
-                <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
-              ) : (
-                <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
-              )}
-            </PersonBubbleVoiceIndicator>
-          </PersonBubbleContent>
-        </DraggableHandle>
+          </PersonBubbleBackground>
+          {!mainStream?.videoPublication && (
+            <PersonBubbleAvatar userId={userId} grayscale={isAway} freeze={isAway ? 'eyesClosed' : false} />
+          )}
+          {mainStream?.audioPublication && (
+            <Publication
+              classNames={classes.audio}
+              publication={mainStream?.audioPublication}
+              isLocal={isLocal}
+              objectId={userId}
+              objectKind="user"
+              disableAudio={isLocal}
+            />
+          )}
+          <PersonBubbleLabel isVideoOn={isVideoOn}>
+            <Typography className={classes.name}>{displayIdentity}</Typography>
+          </PersonBubbleLabel>
+          <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
+            {isAway ? (
+              <AwayIcon className={classes.awayIcon} fontSize="inherit" />
+            ) : isMicOn ? (
+              <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
+            ) : (
+              <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
+            )}
+          </PersonBubbleVoiceIndicator>
+        </PersonBubbleContent>
         <PersonBubbleStatus isVideoOn={isVideoOn}>
           <PersonStatus emoji={emoji} status={statusText} isParentHovered={isHovered} isLocal={isLocal} />
         </PersonBubbleStatus>

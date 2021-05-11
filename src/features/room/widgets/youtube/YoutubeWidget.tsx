@@ -62,6 +62,9 @@ const useStyles = makeStyles((theme) => ({
     // will-change: top fixes this behavior as a hack.
     willChange: 'top',
   },
+  formContent: {
+    width: 300,
+  },
 }));
 
 export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
@@ -86,7 +89,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
       return (
         <WidgetFrame color={ThemeName.Cherry}>
           <WidgetTitlebar title={t('widgets.youtube.title')} />
-          <WidgetContent>
+          <WidgetContent className={classes.formContent}>
             <EditYoutubeWidgetForm onSave={saveWidget} />
           </WidgetContent>
         </WidgetFrame>

@@ -3,11 +3,11 @@ import { Bounds } from '../../types/spatials';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { SpringValue, useSpring, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import { clamp } from '../../utils/math';
-import { useRoomCanvas } from '../../features/room/RoomCanvasRenderer';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { clampSizeMaintainingRatio } from '../../utils/clampSizeMaintainingRatio';
+import { CanvasObjectContext } from './CanvasObject';
+import { useViewport } from '../viewport/useViewport';
+import { useCanvas } from './CanvasProvider';
 
 export type ResizeMode = 'free' | 'scale';
 
@@ -19,31 +19,9 @@ export interface IResizeContainerProps {
    */
   mode?: ResizeMode;
   /**
-   * An advanced feature - scale the change in size by a multiplier.
-   * This is useful when you change the scale origin of the content itself,
-   * for example content with a center origin and a handle in the
-   * corner  should scale resize changes by 2 to account for the fact that the
-   * content will resize both toward the handle and away from it at the same rate.
-   */
-  getResizeScaleFactor?: () => number;
-  /**
    * Prevent user resizing, even if the handle is present.
    */
   disabled?: boolean;
-  /**
-   * ResizeContainer acts as a 'controlled' component - you must track
-   * the actual size in state yourself and pass it here. If you pass `null`,
-   * the container will automatically remeasure itself and report the result
-   * to `onResize` - you should store that value and pass it to `size` to
-   * stabilize the sizing.
-   */
-  size: Bounds | null;
-  /**
-   * When the content is resized or remeasured, the new size will be reported
-   * to this callback. Store this size in state somewhere and pass it back to
-   * the `size` prop.
-   */
-  onResize: (newSize: Bounds) => void;
 
   maxWidth?: number;
   minWidth?: number;
@@ -77,7 +55,6 @@ export const ResizeContainerContext = React.createContext<{
    * when content changes to reset the container to the size of the content.
    */
   remeasure: (requestedSize?: Bounds) => void;
-  size: Bounds | null;
 } | null>(null);
 
 export function useResizeContext() {
@@ -103,51 +80,9 @@ const useStyles = makeStyles({
   },
 });
 
-function clampAndEnforceMode({
-  width,
-  height,
-  maxWidth,
-  maxHeight,
-  minWidth,
-  minHeight,
-  mode,
-  originalAspectRatio,
-}: {
-  width: number;
-  height: number;
-  maxWidth?: number;
-  maxHeight?: number;
-  minWidth?: number;
-  minHeight?: number;
-  mode: ResizeMode;
-  originalAspectRatio: number;
-}) {
-  if (mode === 'scale') {
-    return clampSizeMaintainingRatio({
-      width,
-      height,
-      minWidth,
-      minHeight,
-      maxWidth,
-      maxHeight,
-      aspectRatio: originalAspectRatio,
-    });
-  } else {
-    return {
-      width: Math.round(clamp(width, minWidth, maxWidth)),
-      height: Math.round(clamp(height, minHeight, maxHeight)),
-    };
-  }
-}
-
 export type ResizeContainerImperativeApi = {
   remeasure(): void;
 };
-
-// static reference to maintain referential equality and avoid
-// unnecessary rerenders.
-// don't you love programming?
-const return1 = () => 1;
 
 /**
  * A content container which allows the user to resize it using a
@@ -166,9 +101,6 @@ export const ResizeContainer = React.memo(
       {
         mode = 'free',
         disabled,
-        size,
-        getResizeScaleFactor = return1,
-        onResize,
         maxWidth,
         maxHeight,
         minWidth,
@@ -182,34 +114,41 @@ export const ResizeContainer = React.memo(
     ) => {
       const classes = useStyles();
 
-      const viewport = useRoomCanvas();
+      const canvas = useCanvas();
+      const viewport = useViewport();
+      const { objectId, objectKind } = React.useContext(CanvasObjectContext);
+
+      const resizeInfo = React.useMemo(
+        () => ({
+          minWidth,
+          minHeight,
+          maxWidth,
+          maxHeight,
+          preserveAspect: mode === 'scale',
+        }),
+        [maxHeight, maxWidth, minHeight, minWidth, mode]
+      );
+
+      const initialSize = React.useMemo(() => canvas.getSize(objectId, objectKind), [canvas, objectId, objectKind]);
 
       // we track the need to remeasure internally, and don't inform external
       // components about a remeasure until the measure has taken place and
       // the new result is passed to onResize - this helps simplify usage
-      const [needsRemeasure, setNeedsRemeasure] = React.useState(!size && !disableInitialSizing);
+      const [needsRemeasure, setNeedsRemeasure] = React.useState(!initialSize && !disableInitialSizing);
       const requestedSizeRef = React.useRef<Bounds | null>(null);
-      const [originalAspectRatio, setOriginalAspectRatio] = React.useState(() => {
-        if (size) {
-          return size.width / (size.height || 1);
-        } else if (defaultWidth && defaultHeight) {
-          return defaultWidth / defaultHeight;
-        }
-        return 1;
-      });
 
       // dimensions are initialized to the provided size, or
       // the minimum size, or 0 - if there was no provided size we
       // will be remeasuring immediately, so starting at minimum
       // size reduces the magnitude of the 'pop-in' effect.
-      const providedWidth = size?.width || defaultWidth || minWidth || 0;
-      const providedHeight = size?.height || defaultHeight || minHeight || 0;
+      const providedWidth = initialSize?.width || defaultWidth || minWidth || 0;
+      const providedHeight = initialSize?.height || defaultHeight || minHeight || 0;
 
       React.useEffect(() => {
-        if (!size && defaultWidth && defaultHeight) {
-          onResize({ width: defaultWidth, height: defaultHeight });
+        if (!initialSize && defaultWidth && defaultHeight) {
+          canvas.onResizeEnd({ width: defaultWidth, height: defaultHeight }, objectId, objectKind, resizeInfo);
         }
-      }, [size, defaultWidth, defaultHeight, onResize]);
+      }, [initialSize, defaultWidth, defaultHeight, canvas, objectId, objectKind, resizeInfo]);
 
       const [{ width, height, resizing }, spring] = useSpring(() => ({
         width: providedWidth,
@@ -229,24 +168,23 @@ export const ResizeContainer = React.memo(
 
             // give preference to a requested size if the user provided one in their remeasure call,
             // then try element size, fall back to min size, and finally a simple 100x100
-            const naturalWidth = requestedSizeRef.current?.width ?? contentRef.current?.clientWidth ?? minWidth ?? 100;
+            const naturalWidth =
+              requestedSizeRef.current?.width ?? contentRef.current?.clientWidth ?? resizeInfo.minWidth ?? 100;
             const naturalHeight =
-              requestedSizeRef.current?.height ?? contentRef.current?.clientHeight ?? minHeight ?? 100;
+              requestedSizeRef.current?.height ?? contentRef.current?.clientHeight ?? resizeInfo.minHeight ?? 100;
 
-            const aspect = naturalWidth / naturalHeight;
-            setOriginalAspectRatio(aspect);
-
-            onResize(
-              clampAndEnforceMode({
+            canvas.onResizeEnd(
+              {
                 width: naturalWidth,
                 height: naturalHeight,
-                minHeight,
-                minWidth,
-                maxHeight,
-                maxWidth,
-                mode,
-                originalAspectRatio: aspect,
-              })
+              },
+              objectId,
+              objectKind,
+              {
+                ...resizeInfo,
+                // for remeasures, reset the aspect ratio to whatever the content dictates
+                preserveAspect: false,
+              }
             );
             setNeedsRemeasure(false);
           });
@@ -258,15 +196,22 @@ export const ResizeContainer = React.memo(
         } else {
           remeasure();
         }
-      }, [needsRemeasure, onResize, minHeight, minWidth, maxHeight, maxWidth, mode]);
+      }, [needsRemeasure, canvas, objectId, objectKind, resizeInfo]);
 
       // this effect updates the spring dimensions when the size changes
-      React.useEffect(() => {
-        spring.start({
-          width: providedWidth,
-          height: providedHeight,
-        });
-      }, [providedWidth, providedHeight, spring]);
+      React.useEffect(
+        () =>
+          canvas.observeSize(objectId, objectKind, (size) => {
+            if (!size) return;
+            spring.start({
+              width: size?.width,
+              height: size?.height,
+              // update dimensions immediately if the user is actively resizing
+              immediate: resizing.goal,
+            });
+          }),
+        [canvas, objectId, objectKind, spring, resizing]
+      );
 
       const bindResizeHandle = useGesture(
         {
@@ -275,49 +220,47 @@ export const ResizeContainer = React.memo(
             // when the user grabs the resize handle, we want to disable dragging
             state.event?.stopPropagation();
 
-            let initialPosition;
-            if (state.first) {
-              initialPosition = state.xy;
-            } else {
-              initialPosition = state.memo;
-            }
+            const deltaX = state.delta[0];
+            const deltaY = state.delta[1];
 
-            const deltaX = state.xy[0] - initialPosition[0];
-            const deltaY = state.xy[1] - initialPosition[1];
+            const newWidth = width.goal + deltaX / viewport.zoom;
+            const newHeight = height.goal + deltaY / viewport.zoom;
 
-            const newWidth = providedWidth + deltaX * getResizeScaleFactor();
-            const newHeight = providedHeight + deltaY * getResizeScaleFactor();
-
-            spring.set(
-              clampAndEnforceMode({
+            canvas.onResize(
+              {
                 width: newWidth,
                 height: newHeight,
-                minHeight,
-                minWidth,
-                maxHeight,
-                maxWidth,
-                originalAspectRatio,
-                mode,
-              })
+              },
+              objectId,
+              objectKind,
+              resizeInfo
             );
-
-            // memoize initialPosition for future events to reference
-            return initialPosition;
           },
           onDragStart: (state) => {
             state.event?.stopPropagation();
-            viewport.onObjectDragStart();
-            spring.start({ resizing: true });
+            spring.start({ resizing: true, immediate: true });
+            canvas.onResizeStart(
+              {
+                width: width.goal,
+                height: height.goal,
+              },
+              objectId,
+              objectKind
+            );
           },
           onDragEnd: (state) => {
             state.event?.stopPropagation();
-            viewport.onObjectDragEnd();
-            spring.start({ resizing: false });
+            spring.start({ resizing: false, immediate: true });
             // report change to parent
-            onResize({
-              width: width.goal,
-              height: height.goal,
-            });
+            canvas.onResizeEnd(
+              {
+                width: width.goal,
+                height: height.goal,
+              },
+              objectId,
+              objectKind,
+              resizeInfo
+            );
           },
         },
         {
@@ -335,7 +278,6 @@ export const ResizeContainer = React.memo(
         isResizingSpringValue: resizing,
         disableResize: !!disabled,
         remeasure: forceRemeasure,
-        size,
       };
 
       React.useImperativeHandle(ref, () => ({
@@ -350,7 +292,7 @@ export const ResizeContainer = React.memo(
             style={{
               width,
               height,
-              pointerEvents: resizing.to((v) => (v ? 'none' : 'initial')) as any,
+              pointerEvents: resizing.to((v) => (v ? 'none' : '')) as any,
             }}
           >
             <div

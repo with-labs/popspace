@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { DraggableHandle } from '../DraggableHandle';
 import { DeleteIcon } from '../../../components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from './useWidgetContext';
+import { CanvasObjectDragHandle } from '../../../providers/canvas/CanvasObjectDragHandle';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;
@@ -61,7 +61,7 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
   const { remove } = useWidgetContext();
 
   return (
-    <DraggableHandle className={clsx(classes.root, className)}>
+    <CanvasObjectDragHandle className={clsx(classes.root, className)}>
       <div className={classes.title}>{title}</div>
       <div className={classes.controls}>{children}</div>
       {!disableRemove && (
@@ -71,6 +71,6 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
           </WidgetTitlebarButton>
         </div>
       )}
-    </DraggableHandle>
+    </CanvasObjectDragHandle>
   );
 };

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core';
 import { useResizeContext } from './ResizeContainer';
 import { animated } from '@react-spring/web';
-import { ResizeHandleIcon } from '../icons/ResizeHandleIcon';
+import { ResizeHandleIcon } from '../../components/icons/ResizeHandleIcon';
 import clsx from 'clsx';
 
 export interface IResizeHandleProps {
@@ -13,14 +13,14 @@ export interface IResizeHandleProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    color: theme.palette.grey[50],
+    color: theme.palette.grey[300],
     width: 16,
     height: 16,
     fontSize: '24px',
     cursor: 'se-resize',
     pointerEvents: 'initial',
     '&:hover': {
-      color: theme.palette.grey[200],
+      color: theme.palette.grey[700],
     },
   },
 }));

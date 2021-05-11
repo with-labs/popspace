@@ -1,11 +1,11 @@
 import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DraggableHandle } from '../../DraggableHandle';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { ThemeName } from '../../../../theme/theme';
+import { CanvasObjectDragHandle } from '../../../../providers/canvas/CanvasObjectDragHandle';
 
 export function UploadingWidget() {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ export function UploadingWidget() {
 
   return (
     <WidgetFrame color={ThemeName.Snow}>
-      <DraggableHandle>
+      <CanvasObjectDragHandle>
         <WidgetContent>
           <Box display="flex" flexDirection="row" alignItems="center" width={340}>
             <CircularProgress style={{ flex: '0 0 auto' }} />
@@ -28,7 +28,7 @@ export function UploadingWidget() {
             </Button>
           </Box>
         </WidgetContent>
-      </DraggableHandle>
+      </CanvasObjectDragHandle>
     </WidgetFrame>
   );
 }

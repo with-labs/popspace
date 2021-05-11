@@ -1,8 +1,8 @@
 import { Box, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { Link } from '../../../../../components/Link/Link';
+import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
 import { WidgetType } from '../../../../../roomState/types/widgets';
-import { DraggableHandle } from '../../../DraggableHandle';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { FileIcon } from '../FileIcon';
@@ -38,7 +38,7 @@ export function CollapsedDocumentContent() {
   } = useWidgetContext<WidgetType.Link>();
 
   return (
-    <DraggableHandle>
+    <CanvasObjectDragHandle>
       <WidgetContent disablePadding>
         <div className={classes.linkWrapper}>
           <Tooltip title={widgetState.url} placement="bottom">
@@ -65,6 +65,6 @@ export function CollapsedDocumentContent() {
           <LinkMenu className={classes.menu} />
         </div>
       </WidgetContent>
-    </DraggableHandle>
+    </CanvasObjectDragHandle>
   );
 }

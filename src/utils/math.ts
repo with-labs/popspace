@@ -7,8 +7,12 @@ import seedRandom from 'seed-random';
  * @param min
  * @param max
  */
-export function clamp(value: number, min?: number, max?: number) {
-  return Math.max(min ?? -Infinity, Math.min(max ?? Infinity, value));
+export function clamp(value: number, min: number = -Infinity, max: number = Infinity) {
+  // if min and max overlap, return the average (center)
+  if (min > max) {
+    return (min + max) / 2;
+  }
+  return Math.max(min, Math.min(max, value));
 }
 
 export function addVectors(v1: Vector2, v2: Vector2) {
@@ -76,4 +80,20 @@ export function fuzzVector(vec: Vector2, maxDistance: number = 10, seed?: string
     y: Math.sin(randomAngle),
   };
   return addVectors(vec, multiplyVector(directionNormal, rand() * maxDistance));
+}
+
+/**
+ * Rounds a value to the closest multiple of an increment
+ */
+export function snap(value: number, increment: number) {
+  return Math.round(value / increment) * increment;
+}
+
+/**
+ * Rounds a value to the closest multiple of an increment,
+ * defaulting to 1 x increment if the value is smaller than 1
+ * increment instead of 0.
+ */
+export function snapWithoutZero(value: number, increment: number) {
+  return Math.max(increment, snap(value, increment));
 }

@@ -6,8 +6,8 @@ import { RoomStateShape, useRoomStore } from '../../../roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
-import { useRoomCanvas } from '../RoomCanvasRenderer';
 import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
+import { useRoomSize } from '../canvas/useRoomSize';
 
 export interface ICursorProps {
   userId: string;
@@ -49,7 +49,7 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
 
-  const viewport = useRoomCanvas();
+  const roomSize = useRoomSize();
 
   const [styles, spring] = useSpring(() => ({
     // populate initial state from store
@@ -61,15 +61,15 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   React.useEffect(() => {
     useRoomStore.subscribe<Vector2>((pos) => {
       spring.start({
-        x: pos.x + viewport.width / 2,
-        y: pos.y + viewport.height / 2,
+        x: pos.x + roomSize.width / 2,
+        y: pos.y + roomSize.height / 2,
       });
     }, selectPosition);
 
     useRoomStore.subscribe<boolean>((active) => {
       spring.start({ visibility: active ? 'visible' : 'hidden' });
     }, selectActive);
-  }, [selectPosition, selectActive, spring, viewport]);
+  }, [selectPosition, selectActive, spring, roomSize]);
 
   // update spring when avatar color changes
   React.useEffect(() => {

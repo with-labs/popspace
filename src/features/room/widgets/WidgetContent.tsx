@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import { useRoomCanvas } from '../RoomCanvasRenderer';
+import { useCanvas } from '../../../providers/canvas/CanvasProvider';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;
@@ -30,7 +30,7 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
   // if we are, we want to disable pointer events inside the frame so that
   // iframes and other interactive content don't get triggered as the mouse
   // moves over them
-  const { events } = useRoomCanvas();
+  const canvas = useCanvas();
 
   const ref = React.useRef<HTMLDivElement>(null);
 
@@ -48,18 +48,14 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
       }
     }
 
-    events.on('panStart', disablePointer);
-    events.on('dragStart', disablePointer);
-    events.on('panEnd', enablePointer);
-    events.on('dragEnd', enablePointer);
+    canvas.on('gestureStart', disablePointer);
+    canvas.on('gestureEnd', enablePointer);
 
     return () => {
-      events.off('panStart', disablePointer);
-      events.off('dragStart', disablePointer);
-      events.off('panEnd', enablePointer);
-      events.off('dragEnd', enablePointer);
+      canvas.off('gestureStart', disablePointer);
+      canvas.off('gestureEnd', enablePointer);
     };
-  }, [events]);
+  }, [canvas]);
 
   return (
     <div

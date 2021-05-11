@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Draggable } from '../Draggable';
 import { PersonBubble } from './PersonBubble';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { Stream } from '../../../types/streams';
@@ -7,6 +6,8 @@ import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile'
 import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
 import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
 import { useTwilio } from '../../../providers/twilio/TwilioProvider';
+import { CanvasObject } from '../../../providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '../../../providers/canvas/CanvasObjectDragHandle';
 
 const MAX_Z_INDEX = 2147483647;
 const CENTER_ORIGIN = { horizontal: 0.5, vertical: 0.5 };
@@ -63,8 +64,15 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
   }
 
   return (
-    <Draggable id={personId} zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1} kind="person" origin={CENTER_ORIGIN}>
-      <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />
-    </Draggable>
+    <CanvasObject
+      objectId={personId}
+      zIndex={isMe ? MAX_Z_INDEX : MAX_Z_INDEX - 1}
+      objectKind="person"
+      origin={CENTER_ORIGIN}
+    >
+      <CanvasObjectDragHandle disabled={!isMe}>
+        <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />
+      </CanvasObjectDragHandle>
+    </CanvasObject>
   );
 });

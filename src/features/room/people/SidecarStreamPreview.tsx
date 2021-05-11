@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useSpring, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
-import { useRoomCanvas } from '../RoomCanvasRenderer';
 import { FullscreenableMedia } from '../../../components/FullscreenableMedia/FullscreenableMedia';
 import { SPRINGS } from '../../../constants/springs';
 import { makeStyles, Box, useTheme } from '@material-ui/core';
@@ -15,6 +14,7 @@ import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '../../../utils/trackNames';
 import { useLocalParticipant } from '../../../providers/twilio/hooks/useLocalParticipant';
 import { useViewport } from '../../../providers/viewport/useViewport';
+import { useCanvas } from '../../../providers/canvas/CanvasProvider';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -80,7 +80,7 @@ export const SidecarStreamPreview = React.memo(
 
     const addWidget = useAddAccessory();
     const viewport = useViewport();
-    const canvas = useRoomCanvas();
+    const canvas = useCanvas();
 
     const [isFullscreen, setIsFullscreen] = React.useState(false);
     const onFullscreenExit = () => setIsFullscreen(false);
@@ -145,7 +145,8 @@ export const SidecarStreamPreview = React.memo(
         },
         onDragStart: (ev) => {
           ev.event?.stopPropagation();
-          canvas.onObjectDragStart();
+          // register with Room Canvas
+          canvas.onGestureStart();
         },
         onDragEnd: (ev) => {
           function returnToNeutral() {
@@ -162,7 +163,8 @@ export const SidecarStreamPreview = React.memo(
           }
 
           ev.event?.stopPropagation();
-          canvas.onObjectDragEnd();
+
+          canvas.onGestureEnd();
           if (isLocal && ev.distance > TEAR_THRESHOLD && localParticipant) {
             addWidget({
               type: WidgetType.SidecarStream,
@@ -172,8 +174,8 @@ export const SidecarStreamPreview = React.memo(
                 audioTrackName: getTrackName(audioPublication) ?? undefined,
               },
               screenCoordinate: {
-                x: ev.xy[0],
-                y: ev.xy[1],
+                x: ev.xy[0] - 100,
+                y: ev.xy[1] - 100,
               },
             });
             // after a delay, return to neutral position - give the

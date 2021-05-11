@@ -13,7 +13,7 @@ import { WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
-import { ResizeContainerImperativeApi, useResizeContext } from '../../../../components/ResizeContainer/ResizeContainer';
+import { ResizeContainerImperativeApi, useResizeContext } from '../../../../providers/canvas/ResizeContainer';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { EditIcon } from '../../../../components/icons/EditIcon';
 import { DoneIcon } from '../../../../components/icons/DoneIcon';

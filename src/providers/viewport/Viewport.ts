@@ -4,6 +4,11 @@ import { addVectors, clamp, clampVector, subtractVectors } from '../../utils/mat
 import { ResizeObserver } from 'resize-observer';
 import { ResizeObserverEntry } from 'resize-observer/lib/ResizeObserverEntry';
 
+// for some calculations we need to assume a real size for an infinite
+// canvas... we use this value for infinite extents. FIXME: can we
+// change the logic to not require this assumption?
+const INFINITE_LOGICAL_SIZE = 1_000_000;
+
 export interface ViewportConfig {
   /** Supply a starting zoom value. Default 1 */
   defaultZoom?: number;
@@ -82,15 +87,13 @@ export declare interface Viewport {
 export class Viewport extends EventEmitter {
   private _center: Vector2 = { x: 0, y: 0 };
   private _zoom = 1;
-  private _config: InternalViewportConfig;
+  _config: InternalViewportConfig;
   // these two are initialized in a helper method, bypassing
   // strict initialization checking...
   private _boundElement: HTMLElement = null as any;
-  private _boundElementSize: Bounds = null as any;
+  private _boundElementSize: Bounds = { width: 0, height: 0 };
   private handleBoundElementResize = ([entry]: ResizeObserverEntry[]) => {
-    this._boundElementSize.width = entry.contentRect.width;
-    this._boundElementSize.height = entry.contentRect.height;
-    this.emit('sizeChanged', this._boundElementSize);
+    this.setBoundElementSize(entry.contentRect);
   };
   private _boundElementResizeObserver = new ResizeObserver(this.handleBoundElementResize);
 
@@ -112,7 +115,16 @@ export class Viewport extends EventEmitter {
     };
 
     this.bindOrDefault(boundElement ?? null);
+
+    // @ts-ignore for debugging
+    window.viewport = this;
   }
+
+  private setBoundElementSize = (size: Bounds) => {
+    this._boundElementSize.width = size.width;
+    this._boundElementSize.height = size.height;
+    this.emit('sizeChanged', size);
+  };
 
   private bindOrDefault = (element: HTMLElement | null) => {
     if (this._boundElement && this._boundElement !== element) {
@@ -121,23 +133,23 @@ export class Viewport extends EventEmitter {
     if (typeof window === 'undefined') {
       // SSR context - simulate an element client rect and ignore
       // the element size monitoring. Size is arbitrary.
-      this._boundElementSize = {
+      this.setBoundElementSize({
         width: 2400,
         height: 2400,
-      };
+      });
     } else {
       this._boundElement = element ?? document.documentElement;
       this._boundElementResizeObserver.observe(this._boundElement);
       if (element) {
-        this._boundElementSize = {
+        this.setBoundElementSize({
           width: element.clientWidth,
           height: element.clientHeight,
-        };
+        });
       } else {
-        this._boundElementSize = {
+        this.setBoundElementSize({
           width: window.innerWidth,
           height: window.innerHeight,
-        };
+        });
       }
     }
   };
@@ -167,6 +179,26 @@ export class Viewport extends EventEmitter {
    */
   get size() {
     return this._boundElementSize as Readonly<Bounds>;
+  }
+
+  /**
+   * The rectangle bounds describing the total world canvas area.
+   * For infinite canvases this will be a large but finite space.
+   */
+  get canvasRect() {
+    const canvasMin = this.config.canvasLimits?.min ?? { x: -INFINITE_LOGICAL_SIZE / 2, y: -INFINITE_LOGICAL_SIZE / 2 };
+    const canvasMax = this.config.canvasLimits?.max ?? { x: INFINITE_LOGICAL_SIZE / 2, y: INFINITE_LOGICAL_SIZE / 2 };
+    return {
+      x: canvasMin.x,
+      y: canvasMin.y,
+      width: canvasMax.x - canvasMin.x,
+      height: canvasMax.y - canvasMin.y,
+    };
+  }
+
+  get worldCenter() {
+    const rect = this.canvasRect;
+    return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
   }
 
   /** Convenience getters for internal calculation */
@@ -264,33 +296,28 @@ export class Viewport extends EventEmitter {
       if (this.config.panLimitMode === 'viewport') {
         const worldViewportHalfWidth = this.halfViewportWidth / this.zoom;
         const worldViewportHalfHeight = this.halfViewportHeight / this.zoom;
-        const min = {
-          x: this.config.panLimits.min.x + worldViewportHalfWidth,
-          y: this.config.panLimits.min.y + worldViewportHalfHeight,
-        };
-        const max = {
-          x: this.config.panLimits.max.x - worldViewportHalfWidth,
-          y: this.config.panLimits.max.y - worldViewportHalfHeight,
-        };
-        // edge cases (literally) - if the total screen size is larger than
-        // the actual canvas boundaries, we still want to let the user pan around
-        // a little bit so it doesn't feel so constricted.
-        // To do this we flip the behavior when the min/max goes outside the expected
-        // range. The user can pan such that the edge of the canvas comes halfway from
-        // the center to the edge of the screen.
-        if (min.x > 0) {
-          min.x = (-worldViewportHalfWidth - this.config.panLimits.min.x) / 2;
+        const worldViewportWidth = this._boundElementSize.width / this.zoom;
+        const worldViewportHeight = this._boundElementSize.height / this.zoom;
+        const canvasRect = this.canvasRect;
+        const worldCenter = this.worldCenter;
+
+        // there are different rules depending on if the viewport is visually larger
+        // than the canvas, or vice versa. when the viewport is larger than the canvas
+        // we still let the user move around a little bit, until the edge of the
+        // canvas touches the far edge of the screen.
+        let minX = this.config.panLimits.min.x + worldViewportHalfWidth;
+        let maxX = this.config.panLimits.max.x - worldViewportHalfWidth;
+        if (worldViewportWidth > canvasRect.width) {
+          minX = worldCenter.x - (worldViewportWidth - canvasRect.width) / 2;
+          maxX = worldCenter.x + (worldViewportWidth - canvasRect.width) / 2;
         }
-        if (min.y > 0) {
-          min.y = (-worldViewportHalfHeight - this.config.panLimits.min.y) / 2;
+        let minY = this.config.panLimits.min.y + worldViewportHalfHeight;
+        let maxY = this.config.panLimits.max.y - worldViewportHalfHeight;
+        if (worldViewportHeight > canvasRect.height) {
+          minY = worldCenter.y - (worldViewportHeight - canvasRect.height) / 2;
+          maxY = worldCenter.y + (worldViewportHeight - canvasRect.height) / 2;
         }
-        if (max.x < 0) {
-          max.x = (worldViewportHalfWidth - this.config.panLimits.max.x) / 2;
-        }
-        if (max.y < 0) {
-          max.y = (worldViewportHalfHeight - this.config.panLimits.max.y) / 2;
-        }
-        return clampVector(panPosition, min, max);
+        return clampVector(panPosition, { x: minX, y: minY }, { x: maxX, y: maxY });
       }
       // simpler center-based clamping
       return clampVector(panPosition, this.config.panLimits.min, this.config.panLimits.max);

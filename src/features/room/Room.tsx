@@ -1,7 +1,7 @@
 import React from 'react';
 import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
-import { RoomCanvasRenderer } from './RoomCanvasRenderer';
+import { RoomCanvasRenderer } from './canvas/RoomCanvasRenderer';
 import { Person } from './people/Person';
 import { Widget } from './widgets/Widget';
 import { RoomControls } from '../roomControls/RoomControls';

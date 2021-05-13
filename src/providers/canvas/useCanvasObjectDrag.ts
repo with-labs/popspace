@@ -1,5 +1,5 @@
 import { useSpring } from '@react-spring/web';
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { SPRINGS } from '../../constants/springs';
 import { Vector2 } from '../../types/spatials';
@@ -26,6 +26,8 @@ export function useCanvasObjectDrag({
 }) {
   const canvas = useCanvas();
   const viewport = useViewport();
+
+  const [isGrabbing, setIsGrabbing] = useState(false);
 
   useEffect(() => {
     /**
@@ -68,11 +70,15 @@ export function useCanvasObjectDrag({
       // initial values
       x: initialPosition.x,
       y: initialPosition.y,
-      grabbing: false,
       config: SPRINGS.RESPONSIVE,
     };
   });
   const { x, y } = style;
+
+  const pickupSpring = useSpring({
+    value: isGrabbing ? 1 : 0,
+    config: SPRINGS.WOBBLY,
+  });
 
   // Update the spring when any of the monitored spatial values change,
   // without triggering a React re-render - we subscribe directly to the
@@ -124,7 +130,7 @@ export function useCanvasObjectDrag({
       }
 
       if (state.distance > 10) {
-        spring.set({ grabbing: true });
+        setIsGrabbing(true);
       }
 
       if (state.event?.target) {
@@ -182,7 +188,7 @@ export function useCanvasObjectDrag({
       // block gestures internal to the drag handle for a bit even
       // after releasing
       setTimeout(() => {
-        spring.set({ grabbing: false });
+        setIsGrabbing(false);
       }, 100);
       autoPan.stop();
       onDragEnd?.();
@@ -193,5 +199,7 @@ export function useCanvasObjectDrag({
   return {
     style,
     bindDragHandle,
+    pickupSpring,
+    isGrabbing,
   };
 }

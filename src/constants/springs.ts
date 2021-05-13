@@ -18,4 +18,8 @@ export const SPRINGS = {
     tension: 95,
     friction: 55,
   },
+  WOBBLY: {
+    tension: 180,
+    friction: 12,
+  },
 };

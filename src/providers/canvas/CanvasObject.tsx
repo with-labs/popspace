@@ -73,14 +73,14 @@ const useStyles = makeStyles({
 
 export const CanvasObjectContext = React.createContext<{
   dragHandleProps: ReactEventHandlers;
-  isDraggingAnimatedValue: SpringValue<boolean>;
+  isGrabbing: boolean;
   objectId: string;
   objectKind: CanvasObjectKind;
   getSize: () => Bounds | null;
   getPosition: () => Vector2;
 }>({
   dragHandleProps: {},
-  isDraggingAnimatedValue: null as any,
+  isGrabbing: false,
   objectId: '',
   objectKind: 'other',
   getSize: () => null,
@@ -119,7 +119,7 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
 
   const measureRef = useCanvasObjectMeasurement(objectId, objectKind);
 
-  const { style: dragStyle, bindDragHandle } = useCanvasObjectDrag({
+  const { style: dragStyle, bindDragHandle, pickupSpring, isGrabbing } = useCanvasObjectDrag({
     ref: dragRef,
     objectId,
     objectKind,
@@ -130,13 +130,13 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
   const ctx = React.useMemo(
     () => ({
       dragHandleProps: bindDragHandle(),
-      isDraggingAnimatedValue: dragStyle.grabbing,
+      isGrabbing,
       objectKind,
       objectId,
       getSize: () => canvas.getSize(objectId, objectKind),
       getPosition: () => canvas.getPosition(objectId, objectKind),
     }),
-    [bindDragHandle, dragStyle.grabbing, objectId, objectKind, canvas]
+    [bindDragHandle, isGrabbing, objectId, objectKind, canvas]
   );
 
   const ref = useMergedRef(dragRef, measureRef);
@@ -147,13 +147,20 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
         ref={ref}
         style={{
           ...style,
+          /**
+           * Translate to the correct position, offset by origin,
+           * and apply a subtle bouncing scale effect when picked
+           * up or dropped.
+           */
           transform: to(
-            [dragStyle.x, dragStyle.y],
-            (xv, yv) =>
-              `translate(${xv}px, ${yv}px) translate(${-origin.horizontal * 100}%, ${-origin.vertical * 100}%)`
+            [dragStyle.x, dragStyle.y, pickupSpring.value],
+            (xv, yv, grabEffect) =>
+              `translate(${xv}px, ${yv}px) translate(${-origin.horizontal * 100}%, ${-origin.vertical * 100}%) scale(${
+                1 + 0.05 * grabEffect
+              })`
           ),
           zIndex: zIndex as any,
-          cursor: dragStyle.grabbing.to((isGrabbing) => (isGrabbing ? 'grab' : 'inherit')),
+          cursor: isGrabbing ? 'grab' : 'inherit',
         }}
         className={clsx(styles.root, className)}
         onKeyDown={stopPropagation}

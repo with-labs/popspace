@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { CanvasObjectContext } from './CanvasObject';
-import { animated } from '@react-spring/web';
 
 export interface ICanvasObjectDragHandleProps extends React.HTMLAttributes<HTMLDivElement> {
   disabled?: boolean;
@@ -18,7 +17,7 @@ export const CanvasObjectDragHandle: React.FC<ICanvasObjectDragHandleProps> = ({
   style,
   ...rest
 }) => {
-  const { dragHandleProps, isDraggingAnimatedValue } = React.useContext(CanvasObjectContext);
+  const { dragHandleProps, isGrabbing } = React.useContext(CanvasObjectContext);
 
   /**
    * This handler prevents click events from firing within the draggable handle
@@ -27,23 +26,23 @@ export const CanvasObjectDragHandle: React.FC<ICanvasObjectDragHandleProps> = ({
    */
   const onClickCapture = React.useCallback(
     (ev: React.MouseEvent) => {
-      if (isDraggingAnimatedValue.goal) {
+      if (isGrabbing) {
         ev.preventDefault();
         ev.stopPropagation();
       }
     },
-    [isDraggingAnimatedValue]
+    [isGrabbing]
   );
 
   return (
-    <animated.div
+    <div
       {...(disabled ? {} : dragHandleProps)}
-      style={{ ...style, cursor: isDraggingAnimatedValue.to((v) => (disabled ? 'inherit' : v ? 'grabbing' : 'grab')) }}
+      style={{ ...style, cursor: disabled ? 'inherit' : isGrabbing ? 'grabbing' : 'grab' }}
       onClickCapture={onClickCapture}
       className={className}
       {...rest}
     >
       {children}
-    </animated.div>
+    </div>
   );
 };

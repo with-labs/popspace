@@ -41,8 +41,7 @@ export const extendExpress = (
   const deleteFile: Handler = async (req, res) => {
     const id = req.params.id;
     try {
-      const idInt = parseInt(id, 10);
-      await manager.deleteFile(idInt);
+      await manager.deleteFile(id);
       res.send({ success: true });
     } catch (err) {
       throw new HttpError('File ID must be an integer', 400);

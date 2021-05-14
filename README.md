@@ -173,6 +173,21 @@ interface MetadataStorage {
 
 Model IDs are treated as strings for flexibility. Using integer IDs requires conversion within the MetadataStorage implementation.
 
+## Passing context data
+
+Depending on how metadata is stored, you may want to add some context to operations when they're applied within your metadata storage. You can do that by passing additional parameters to any of the methods on `FileManager`. These additional parameters will be forwarded to every internal invocation of a `MetadataStorage` method.
+
+For TypeScript, you should provide a generic type to your `MetadataStorage` class definition specifying which kinds of additional params are required. The generic is an array, pass an array with a single type entry for a single parameter.
+
+```ts
+class MyMetadata implements MetadataStorage<[{ userId: string }]> {
+  createFile = (file: WithFile, { userId }: { userId: string }) => {
+    // use the context to change how you store file metadata or even
+    // authorize storage, etc.
+  };
+}
+```
+
 ## Running the test server
 
 To test the system as an independent Express server, run `yarn dev`. The following prerequisites must first be met:

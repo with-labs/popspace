@@ -4,6 +4,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { COLORS, ERASER_COLOR, ERASER_WIDTH, STROKE_WIDTH } from './constants';
 import { DrawingLine, WhiteboardState } from './types';
 import throttle from 'lodash.throttle';
+import { isMiddleClick, isRightClick } from '../../utils/mouseButtons';
 
 function getMousePosition(ev: Konva.KonvaEventObject<MouseEvent>) {
   return ev.target?.getStage()?.getPointerPosition() ?? { x: 0, y: 0 };
@@ -22,6 +23,8 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
 
   const handlePointerDown = React.useCallback(
     (ev: Konva.KonvaEventObject<MouseEvent>) => {
+      // ignore events from right and middle mouse, but not left or touch events
+      if (isMiddleClick(ev.evt) || isRightClick(ev.evt)) return;
       setActiveLine((current) => {
         // we are already drawing something, ignore this
         if (current) return current;
@@ -45,6 +48,8 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
   const handlePointerUp = React.useCallback(
     (ev: Konva.KonvaEventObject<MouseEvent>) => {
       if (!activeLine) return;
+      // ignore events from right and middle mouse, but not left or touch events
+      if (isMiddleClick(ev.evt) || isRightClick(ev.evt)) return;
       const { x, y } = getMousePosition(ev);
 
       // add that last bit
@@ -63,6 +68,8 @@ export function useWhiteboard(controlledValue?: WhiteboardState, controlledOnCha
     () =>
       throttle(
         (ev: Konva.KonvaEventObject<MouseEvent>) => {
+          // ignore events from right and middle mouse, but not left or touch events
+          if (isMiddleClick(ev.evt) || isRightClick(ev.evt)) return;
           const { x, y } = getMousePosition(ev);
 
           setActiveLine((cur) => {

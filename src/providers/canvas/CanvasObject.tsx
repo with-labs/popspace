@@ -1,10 +1,11 @@
 import { makeStyles } from '@material-ui/core';
 import useMergedRef from '@react-hook/merged-ref';
-import { animated, SpringValue, to } from '@react-spring/web';
+import { animated, to } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { Bounds, Vector2 } from '../../types/spatials';
+import { isMiddleClick, isNoClick } from '../../utils/mouseButtons';
 import { CanvasObjectKind } from './Canvas';
 import { useCanvas } from './CanvasProvider';
 import { useCanvasObjectDrag } from './useCanvasObjectDrag';
@@ -42,7 +43,17 @@ export interface ICanvasObjectProps {
   style?: React.CSSProperties;
 }
 
-const stopPropagation = (ev: React.MouseEvent | React.PointerEvent | React.KeyboardEvent) => {
+const stopPointerPropagation = (ev: React.MouseEvent | React.PointerEvent) => {
+  // allow middle click operations to reach viewport
+  if (isMiddleClick(ev)) return;
+  // allow non-click events to reach viewport
+  if (isNoClick(ev)) return;
+  ev.stopPropagation();
+  ev.nativeEvent.stopImmediatePropagation();
+  ev.nativeEvent.stopPropagation();
+};
+
+const stopKeyboardPropagation = (ev: React.KeyboardEvent) => {
   ev.stopPropagation();
   ev.nativeEvent.stopImmediatePropagation();
   ev.nativeEvent.stopPropagation();
@@ -163,11 +174,11 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
           cursor: isGrabbing ? 'grab' : 'inherit',
         }}
         className={clsx(styles.root, className)}
-        onKeyDown={stopPropagation}
-        onKeyUp={stopPropagation}
-        onPointerDown={stopPropagation}
-        onPointerUp={stopPropagation}
-        onPointerMove={stopPropagation}
+        onKeyDown={stopKeyboardPropagation}
+        onKeyUp={stopKeyboardPropagation}
+        onPointerDown={stopPointerPropagation}
+        onPointerUp={stopPointerPropagation}
+        onPointerMove={stopPointerPropagation}
         onDragStart={preventDefault}
         onDrag={preventDefault}
         onDragEnd={preventDefault}

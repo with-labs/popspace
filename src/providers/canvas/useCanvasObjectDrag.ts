@@ -3,7 +3,7 @@ import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { useGesture } from 'react-use-gesture';
 import { SPRINGS } from '../../constants/springs';
 import { Vector2 } from '../../types/spatials';
-import { isRightClick } from '../../utils/isRightClick';
+import { isLeftClick, isMiddleClick, isRightClick } from '../../utils/mouseButtons';
 import { addVectors, roundVector, subtractVectors } from '../../utils/math';
 import { useViewport } from '../viewport/useViewport';
 import { AutoPan } from './AutoPan';
@@ -124,13 +124,9 @@ export function useCanvasObjectDrag({
   // binds drag controls to the underlying element
   const bindDragHandle = useGesture({
     onDrag: (state) => {
-      if (isRightClick(state.event)) {
+      if (isRightClick(state.event) || isMiddleClick(state.event)) {
         state.cancel();
         return;
-      }
-
-      if (state.distance > 10) {
-        setIsGrabbing(true);
       }
 
       if (state.event?.target) {
@@ -144,6 +140,10 @@ export function useCanvasObjectDrag({
         }
       }
 
+      if (state.distance > 10) {
+        setIsGrabbing(true);
+      }
+
       const positionVector = displace({
         x: state.xy[0],
         y: state.xy[1],
@@ -155,7 +155,7 @@ export function useCanvasObjectDrag({
       autoPan.update({ x: state.xy[0], y: state.xy[1] });
     },
     onDragStart: (state) => {
-      if (isRightClick(state.event)) {
+      if (isRightClick(state.event) || isMiddleClick(state.event)) {
         state.cancel();
         return;
       }
@@ -176,7 +176,7 @@ export function useCanvasObjectDrag({
       onDragStart?.();
     },
     onDragEnd: (state) => {
-      if (isRightClick(state.event)) {
+      if (isRightClick(state.event) || isMiddleClick(state.event)) {
         state.cancel();
         return;
       }

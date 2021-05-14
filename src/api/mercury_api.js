@@ -175,6 +175,7 @@ class MercuryApi {
         return result
       }
 
+      console.log(`------- user : ${req.user.id}`)
       let defaultRoom = await shared.db.pg.massive.default_rooms.findOne({
         user_id: req.user.id,
       })

@@ -93,6 +93,8 @@ Provide the `id` value returned from creating a file to delete it, along with al
 
 ## Metadata Storage
 
+### Usage with `with-shared`
+
 The library has an out-of-the-box metadata storage layer implementation using `@withso/with-shared`.
 
 ```ts
@@ -121,6 +123,19 @@ file_image_data:
   thumbnail_url: string
   dominant_color: string
 ```
+
+#### Customizing table names
+
+You can pass a config parameter into `WithSharedMetadataStorage`'s constructor to change the table names for file and image metadata. By doing so, you could construct multiple different metadata storage classes (and multiple FileManagers) to handle different kinds of files and keep them separated in data persistence and S3.
+
+```ts
+const customStorage = new WithSharedMetadataStorage({
+  filesTable: 'wallpaper_files',
+  imageDataTable: 'wallpaper_image_data',
+});
+```
+
+### Usage with other persistence
 
 To use a different metadata storage solution, you should provide an interface implementation of `MetadataStorage` which reads and writes the appropriate data from a persistent storage.
 

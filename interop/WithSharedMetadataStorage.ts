@@ -7,8 +7,17 @@ export class WithSharedMetadataStorage implements MetadataStorage {
     return parseInt(idStr, 10);
   };
 
+  private filesTable = 'files';
+  private imageDataTable = 'file_image_data';
+
+  constructor(config?: { filesTable: string; imageDataTable: string }) {
+    if (config) {
+      Object.assign(this, config);
+    }
+  }
+
   createFile = async (file: WithFile) => {
-    const { id } = await shared.db.pg.massive.files.insert(file);
+    const { id } = await shared.db.pg.massive[this.filesTable].insert(file);
     return this.idToString(id);
   };
 
@@ -17,7 +26,7 @@ export class WithSharedMetadataStorage implements MetadataStorage {
     thumbnailUrl,
     dominantColor,
   }: WithImageData) => {
-    const { id } = await shared.db.pg.massive.file_image_data.insert({
+    const { id } = await shared.db.pg.massive[this.imageDataTable].insert({
       thumbnail_url: thumbnailUrl,
       dominant_color: dominantColor,
       file_id: this.stringToId(fileId),
@@ -27,7 +36,7 @@ export class WithSharedMetadataStorage implements MetadataStorage {
 
   getFile = async (fileId: string) => {
     const id = this.stringToId(fileId);
-    return await shared.db.pg.massive.files.findOne({
+    return await shared.db.pg.massive[this.filesTable].findOne({
       id,
     });
   };
@@ -39,7 +48,7 @@ export class WithSharedMetadataStorage implements MetadataStorage {
       file_id: fileId,
       thumbnail_url: thumbnailUrl,
       dominant_color: dominantColor,
-    } = await shared.db.pg.massive.file_image_data.findOne({
+    } = await shared.db.pg.massive[this.imageDataTable].findOne({
       file_id: fileIdInt,
     });
     return {
@@ -51,12 +60,14 @@ export class WithSharedMetadataStorage implements MetadataStorage {
   };
 
   deleteFile = async (fileId: string) => {
-    await shared.db.pg.massive.files.destroy(this.stringToId(fileId));
+    await shared.db.pg.massive[this.filesTable].destroy(
+      this.stringToId(fileId),
+    );
   };
 
   deleteImageData = async (fileId: string) => {
     const { id: idString } = await this.getImageData(fileId);
-    await shared.db.pg.massive.file_image_data.destroy(
+    await shared.db.pg.massive[this.imageDataTable].destroy(
       this.stringToId(idString),
     );
   };

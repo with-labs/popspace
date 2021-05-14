@@ -23,6 +23,25 @@ const manager = new FileManager({
 
 The two config options shown are required. For more information on metadata storage see [Metadata Storage](#metadata-storage).
 
+## Setting up the S3 bucket
+
+The `FileManager` can configure everything for you, just supply a bucket name and call `.configure()`. It returns a promise which resolves when the setup is complete.
+
+By default buckets are configured with CORS open to everyone, but uploaded objects do not have public access.
+
+To change CORS allowed origins, specify a comma-separated list of origins in the `S3_CORS_ORIGINS` environment var.
+
+To change the bucket object creation to be publicly accessible, you need to pass a custom `S3` class to `FileManager`'s constructor with the public option on:
+
+```ts
+const manager = new FileManager({
+  ...
+  s3: new S3('my-bucket', true),
+});
+```
+
+It's not recommended that we use a public bucket - we should create a CloudFront instance which points to the bucket instead, and point a custom subdomain to it.
+
 ## Using with Express
 
 The library includes a helper to extend an existing Express app with endpoints for file management. Call `extendExpress`, passing in an Express app and an instance of `FileManager`.

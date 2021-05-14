@@ -10,3 +10,4 @@ export {
   WithImageData,
 } from './FileManager';
 export { S3 } from './S3';
+export { WithSharedMetadataStorage } from './WithSharedMetadataStorage';

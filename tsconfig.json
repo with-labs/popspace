@@ -8,7 +8,10 @@
     "outDir": "./dist",
     "declaration": true,
     "strict": true,
-    "typeRoots": ["types", "node_modules/@types"]
+    "typeRoots": ["types", "node_modules/@types"],
+    "paths": {
+      "@withso/with-shared": ["./types/withso__with-shared/index.d.ts"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

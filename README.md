@@ -12,8 +12,26 @@ File upload, processing, and management subsystem for With.
 
 ## Metadata Storage
 
-To store information about the files uploaded to S3 so you can clean them up later, you should provide an interface
-implementation of `MetadataStorage` which reads and writes the appropriate data from a persistent storage.
+The library has an out-of-the-box metadata storage layer implementation using `@withso/with-shared`. Just import `WithSharedMetadataStorage`, construct one, and pass it to `metadataStorage` when creating your `FileManager`.
+
+To use `WithSharedMetadataStorage`, you must migrate your Postgres database to include the following tables:
+
+```
+files:
+  id: int, primary key
+  name: string
+  url: string
+  mimetype: string
+
+file_image_data:
+  id: int, primary key
+  file_id: int
+  thumbnail_url: string
+  dominant_color: string
+
+```
+
+To use a different metadata storage solution, you should provide an interface implementation of `MetadataStorage` which reads and writes the appropriate data from a persistent storage.
 
 The required operations are:
 

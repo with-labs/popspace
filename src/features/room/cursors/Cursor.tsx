@@ -61,8 +61,8 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   React.useEffect(() => {
     useRoomStore.subscribe<Vector2>((pos) => {
       spring.start({
-        x: pos.x + roomSize.width / 2,
-        y: pos.y + roomSize.height / 2,
+        x: pos.x,
+        y: pos.y,
       });
     }, selectPosition);
 

@@ -1,4 +1,4 @@
-import { MetadataStorage, WithFile, WithImageData } from './FileManager';
+import { MetadataStorage, WithFile, WithImageData } from '../src/FileManager';
 import shared from '@withso/with-shared';
 
 export class WithSharedMetadataStorage implements MetadataStorage {

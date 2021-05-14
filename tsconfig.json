@@ -13,6 +13,6 @@
       "@withso/with-shared": ["./types/withso__with-shared/index.d.ts"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "interop/WithSharedMetadataStorage.ts"],
   "exclude": ["node_modules"]
 }

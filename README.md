@@ -10,9 +10,82 @@ File upload, processing, and management subsystem for With.
 4. Extracts dominant color from images
 5. Synchronizes file metadata to external metadata storage (you provide that interface)
 
+## FileManager
+
+`FileManager` is the main functionality class. You need to create one to use the library features.
+
+```ts
+const manager = new FileManager({
+  s3BucketName: 'my-bucket',
+  metadataStorage: new MyMetadataStorage(),
+});
+```
+
+The two config options shown are required. For more information on metadata storage see [Metadata Storage](#metadata-storage).
+
+## Using with Express
+
+The library includes a helper to extend an existing Express app with endpoints for file management. Call `extendExpress`, passing in an Express app and an instance of `FileManager`.
+
+```ts
+extendExpress(app, manager, {
+  pathPrefix: 'userfiles',
+});
+```
+
+`pathPrefix` is optional and lets you specify a prefix for the HTTP method paths used for managing files. Don't include leading or trailing slashes.
+
+When the app has been extended, two endpoints are made available:
+
+### `POST /{prefix}/files`
+
+Provide a form-encoded payload with a `file` field that contains a File. If the file is an image, it will be processed and additional metadata is returned. Responses:
+
+**Non-image file**
+
+```js
+{
+  name: 'original-filename.ext',
+  mimetype: 'original/mimetype',
+  url: 'https://s3.url/of/file.ext'
+}
+```
+
+**Image file**
+
+```js
+{
+  id: 'some-id',
+  name: 'original-filename.png',
+  mimetype: 'image/whatever',
+  url: 'https://s3.url/of/file.png',
+  imageData: {
+    thumbnailUrl: 'https://s3.url/of/file.thumb.png',
+    dominantColor: 'rgb(100, 200, 0)'
+  }
+}
+```
+
+Image data includes a thumbnail image path (always adjacent to the original file) and an extracted dominant image color, expressed as a CSS `rgb()` string.
+
+### `DELETE /{prefix}/files/:id`
+
+Provide the `id` value returned from creating a file to delete it, along with all associated metadata. Image file thumbnails will also be deleted. No payload is required for this endpoint.
+
 ## Metadata Storage
 
-The library has an out-of-the-box metadata storage layer implementation using `@withso/with-shared`. Just import `WithSharedMetadataStorage`, construct one, and pass it to `metadataStorage` when creating your `FileManager`.
+The library has an out-of-the-box metadata storage layer implementation using `@withso/with-shared`.
+
+```ts
+import { WithSharedMetadataStorage } from '@withso/with-files/dist/interop/WithSharedMetadataStorage';
+
+const metadataStorage = new WithSharedMetadataStorage();
+
+const manager = new FileManager({
+  metadataStorage,
+  s3BucketName: 'user-files',
+});
+```
 
 To use `WithSharedMetadataStorage`, you must migrate your Postgres database to include the following tables:
 
@@ -28,7 +101,6 @@ file_image_data:
   file_id: int
   thumbnail_url: string
   dominant_color: string
-
 ```
 
 To use a different metadata storage solution, you should provide an interface implementation of `MetadataStorage` which reads and writes the appropriate data from a persistent storage.

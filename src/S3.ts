@@ -66,10 +66,13 @@ export class S3 {
 
   deleteFile = (fileUrl: string) => {
     const parsed = new URL(fileUrl);
+    // S3 keys don't have starting slash
+    const key = parsed.pathname.slice(1);
     const objectParams = {
       Bucket: this.bucketName,
-      Key: parsed.pathname,
+      Key: key,
     };
+    console.debug(`Deleting ${key}`);
     return this.s3.deleteObject(objectParams).promise();
   };
 }

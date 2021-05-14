@@ -1,25 +1,62 @@
 import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
-import { WithFile, WithImageData } from './types';
 import { S3 } from './S3';
 import { extractDominantColor, generateThumbnail } from './imageProcessing';
 import { HttpError } from './HttpError';
 
+/**
+ * Data for a file upload
+ */
+export interface WithFile {
+  name: string;
+  mimetype: string;
+  url: string;
+}
+
+/**
+ * Additional data processed for image file uploads
+ */
+export interface WithImageData {
+  fileId: string;
+  thumbnailUrl: string;
+  dominantColor: string;
+}
+
 export interface MetadataFile extends WithFile {
-  id: number;
+  id: string;
 }
 
 export interface MetadataImageData extends WithImageData {
-  id: number;
+  id: string;
 }
 
 export interface MetadataStorage {
-  createFile: (file: WithFile) => Promise<number>;
-  createImageData: (imageData: WithImageData) => Promise<number>;
-  deleteFile: (fileId: number) => Promise<void>;
-  deleteImageData: (fileId: number) => Promise<void>;
-  getFile: (fileId: number) => Promise<MetadataFile | null>;
-  getImageData: (fileId: number) => Promise<MetadataImageData | null>;
+  /**
+   * Writes file metadata to storage, returning an ID.
+   */
+  createFile: (file: WithFile) => Promise<string>;
+  /**
+   * Writes image metadata to storage, returning an ID.
+   */
+  createImageData: (imageData: WithImageData) => Promise<string>;
+  /**
+   * Deletes file metadata from storage by ID.
+   */
+  deleteFile: (fileId: string) => Promise<void>;
+  /**
+   * Deletes image metadata from storage by it's associated file ID.
+   */
+  deleteImageData: (fileId: string) => Promise<void>;
+  /**
+   * Retrieves file metadata from storage by ID, resolving `null` if the
+   * file is not in storage.
+   */
+  getFile: (fileId: string) => Promise<MetadataFile | null>;
+  /**
+   * Retrieves image data from storage by its associated file ID, resolving
+   * `null` if there is no image metadata associated with the file ID.
+   */
+  getImageData: (fileId: string) => Promise<MetadataImageData | null>;
 }
 
 export interface FileManagerOptions {
@@ -103,7 +140,7 @@ export class FileManager {
     return result;
   };
 
-  deleteFile = async (fileId: number) => {
+  deleteFile = async (fileId: string) => {
     const file = await this.storage.getFile(fileId);
     if (!file) {
       throw new HttpError('The file does not exist', 404);

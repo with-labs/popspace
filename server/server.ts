@@ -11,6 +11,7 @@ import {
 } from '../src';
 import dotenv from 'dotenv';
 import exitHook from 'async-exit-hook';
+import { v4 } from 'uuid';
 
 dotenv.config();
 
@@ -18,35 +19,36 @@ const app = express();
 
 // this server uses a dummy metadata storage system
 class DummyMetadata implements MetadataStorage {
-  files: (MetadataFile | null)[] = [];
-  imageData: (MetadataImageData | null)[] = [];
+  files: Record<string, MetadataFile> = {};
+  imageData: Record<string, MetadataImageData> = {};
 
   createFile = async (file: WithFile) => {
-    const id = this.files.length;
-    this.files.push({ ...file, id });
+    const id = v4();
+    this.files[id] = { ...file, id };
     return id;
   };
 
   createImageData = async (imageData: WithImageData) => {
-    const id = this.imageData.length;
-    this.imageData.push({ ...imageData, id });
+    // key on file id
+    const id = imageData.fileId;
+    this.imageData[id] = { ...imageData, id };
     return id;
   };
 
-  getFile = async (id: number) => {
+  getFile = async (id: string) => {
     return this.files[id];
   };
 
-  getImageData = async (id: number) => {
+  getImageData = async (id: string) => {
     return this.imageData[id];
   };
 
-  deleteFile = async (id: number) => {
-    this.files[id] = null;
+  deleteFile = async (id: string) => {
+    delete this.files[id];
   };
 
-  deleteImageData = async (id: number) => {
-    this.imageData[id] = null;
+  deleteImageData = async (id: string) => {
+    delete this.imageData[id];
   };
 }
 
@@ -71,11 +73,9 @@ app.listen(4000, () => {
 
 exitHook(async (cb) => {
   let cleaned = 0;
-  for (const file of metadata.files) {
-    if (file) {
-      await manager.deleteFile(file.id);
-      cleaned++;
-    }
+  for (const id of Object.keys(metadata.files)) {
+    await manager.deleteFile(id);
+    cleaned++;
   }
   console.info(`Cleaned ${cleaned} files`);
   cb();

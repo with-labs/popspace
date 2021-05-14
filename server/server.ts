@@ -29,10 +29,8 @@ class DummyMetadata implements MetadataStorage {
   };
 
   createImageData = async (imageData: WithImageData) => {
-    // key on file id
-    const id = imageData.fileId;
-    this.imageData[id] = { ...imageData, id };
-    return id;
+    this.imageData[imageData.fileId] = { ...imageData };
+    return imageData.fileId;
   };
 
   getFile = async (id: string) => {

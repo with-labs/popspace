@@ -26,12 +26,12 @@ export class WithSharedMetadataStorage implements MetadataStorage {
     thumbnailUrl,
     dominantColor,
   }: WithImageData) => {
-    const { id } = await shared.db.pg.massive[this.imageDataTable].insert({
+    const { file_id } = await shared.db.pg.massive[this.imageDataTable].insert({
       thumbnail_url: thumbnailUrl,
       dominant_color: dominantColor,
       file_id: this.stringToId(fileId),
     });
-    return this.idToString(id);
+    return this.idToString(file_id);
   };
 
   getFile = async (fileId: string) => {
@@ -44,7 +44,6 @@ export class WithSharedMetadataStorage implements MetadataStorage {
   getImageData = async (associatedFileId: string) => {
     const fileIdInt = this.stringToId(associatedFileId);
     const {
-      id,
       file_id: fileId,
       thumbnail_url: thumbnailUrl,
       dominant_color: dominantColor,
@@ -52,7 +51,6 @@ export class WithSharedMetadataStorage implements MetadataStorage {
       file_id: fileIdInt,
     });
     return {
-      id: this.idToString(id),
       fileId: this.idToString(fileId),
       thumbnailUrl,
       dominantColor,
@@ -66,9 +64,8 @@ export class WithSharedMetadataStorage implements MetadataStorage {
   };
 
   deleteImageData = async (fileId: string) => {
-    const { id: idString } = await this.getImageData(fileId);
     await shared.db.pg.massive[this.imageDataTable].destroy(
-      this.stringToId(idString),
+      this.stringToId(fileId),
     );
   };
 }

@@ -26,9 +26,8 @@ export interface MetadataFile extends WithFile {
   id: string;
 }
 
-export interface MetadataImageData extends WithImageData {
-  id: string;
-}
+// tslint:disable-next-line:no-empty-interface
+export interface MetadataImageData extends WithImageData {}
 
 export interface MetadataStorage {
   /**

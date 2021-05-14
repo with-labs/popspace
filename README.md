@@ -118,8 +118,7 @@ files:
   mimetype: string
 
 file_image_data:
-  id: int, primary key
-  file_id: int
+  file_id: int, primary key
   thumbnail_url: string
   dominant_color: string
 ```

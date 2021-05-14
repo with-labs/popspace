@@ -24,7 +24,6 @@ const mockMetadata = {
     name: 'file.png',
   }),
   getImageData: jest.fn().mockResolvedValue({
-    id: 'mock-image-data-id',
     fileId: 'mock-file-id',
     thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
     dominantColor: 'rgba(0, 0, 0)',

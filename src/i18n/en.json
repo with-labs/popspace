@@ -25,7 +25,8 @@
       "errorCode": "Error Code: {{code}}",
       "oops": "Oops!",
       "refresh": "Refresh",
-      "back": "Back"
+      "back": "Back",
+      "required": "Required"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -99,7 +100,8 @@
           "deleteRoom": "Delete room",
           "makeDefault": "Make default",
           "defaultRoom": "Default room"
-        }
+        },
+        "maxSize": "Display name must be less than {{maxNameLength}} characters"
       },
       "signin": {
         "title": "Sign In",
@@ -117,15 +119,18 @@
         "email": {
           "placeholder": "dorothy@emerald.so",
           "label": "Email Address",
-          "invalid": "Please enter a valid email"
+          "invalid": "Please enter a valid email",
+          "maxSize": "Email must be less than {{maxNameLength}} characters"
         },
         "firstName": {
           "placeholder": "Dorothy",
-          "label": "First name"
+          "label": "First name",
+          "maxSize": "First name must be less than {{maxNameLength}} characters"
         },
         "lastName": {
           "placeholder": "Gale",
-          "label": "Last name"
+          "label": "Last name",
+          "maxSize": "Last name must be less than {{maxNameLength}} characters"
         },
         "tos": {
           "label": "I agree to the <1>Terms of Service</1>",
@@ -607,7 +612,8 @@
           "placeholder": "Dorthy",
           "label": "Display Name",
           "blankError": "Display name cannot be blank",
-          "helperText": "Name that is displayed in the room"
+          "helperText": "Name that is displayed in the room",
+          "maxSize": "Display name must be less than {{maxNameLength}} characters"
         },
         "submitButton": "Update",
         "category": {

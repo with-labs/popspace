@@ -23,7 +23,6 @@ interface IRoomListProps {
   onClose: () => void;
   onError: (msg: DialogMessage) => void;
   onRoomSelected: (roomInfo: ApiNamedRoom) => void;
-  onComplete: () => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -137,14 +136,7 @@ function RoomListReducer(state: RoomListState, action: RoomListAction) {
   }
 }
 
-export const RoomList: React.FC<IRoomListProps> = ({
-  rooms,
-  isOpen = false,
-  onClose,
-  onError,
-  onRoomSelected,
-  onComplete,
-}) => {
+export const RoomList: React.FC<IRoomListProps> = ({ rooms, isOpen = false, onClose, onError, onRoomSelected }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const currentRoomRoute = useRoomRoute();

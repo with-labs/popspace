@@ -7,3 +7,7 @@ export const DEFAULT_VIDEO_CONSTRAINTS: MediaTrackConstraints = {
   height: 320,
   frameRate: 24,
 };
+
+export const MAX_DISPLAY_NAME_LENGTH = 50;
+export const MAX_NAME_LENGTH = 50;
+export const MAX_EMAIL_LENTH = 100;

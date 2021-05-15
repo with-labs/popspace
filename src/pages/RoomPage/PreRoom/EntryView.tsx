@@ -1,23 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import i18n from '../../../i18n';
 import { makeStyles, Box, Typography, TextField, Button, Hidden } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import patternBg from '../../../images/illustrations/pattern_bg_1.svg';
 import { Spacing } from '../../../components/Spacing/Spacing';
 import { AvatarSelectorBubble } from '../../../features/roomControls/avatar/AvatarSelectorBubble';
-
 import { CameraToggle } from '../../../features/roomControls/media/CameraToggle';
 import { MicToggle } from '../../../features/roomControls/media/MicToggle';
-
 import useLocalVideoToggle from '../../../providers/media/hooks/useLocalVideoToggle';
 import useLocalAudioToggle from '../../../providers/media/hooks/useLocalAudioToggle';
 import { RoomList } from '../RoomList/RoomList';
 import { ApiNamedRoom, ApiParticipantState } from '../../../utils/api';
-
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import Api from '../../../utils/api';
 import { useHistory } from 'react-router-dom';
-
 import useQueryParams from '../../../hooks/useQueryParams/useQueryParams';
 import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
 import { ErrorCodes } from '../../../constants/ErrorCodes';
@@ -26,11 +23,25 @@ import { getErrorMessageFromResponse, getErrorDialogText } from '../../../utils/
 import { logger } from '../../../utils/logger';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
-
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
+import { MAX_NAME_LENGTH } from '../../../constants';
+import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
 export interface IEntryViewProps {
   rooms: ApiNamedRoom[];
   onComplete: () => void;
 }
+
+export type EntryViewData = {
+  displayName: string;
+};
+
+const validationSchema = Yup.object().shape({
+  displayName: Yup.string()
+    .max(MAX_NAME_LENGTH, i18n.t('pages.preroom.maxSize', { maxNameLength: MAX_NAME_LENGTH }))
+    .required(i18n.t('common.required')),
+});
 
 const emptyRoomInfo = {
   room_id: '',
@@ -80,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(7.5),
     overflow: 'auto',
     gridArea: 'content',
+    height: '100%',
 
     [theme.breakpoints.down('sm')]: {
       padding: theme.spacing(3),
@@ -151,16 +163,13 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
   const [isMicOn, doMicToggle, isAudioBusy] = useLocalAudioToggle();
   const { profile, update, user } = useCurrentUserProfile();
   const [isRoomListOpen, setIsRoomListOpen] = useState(false);
-  const participantState = profile?.participantState;
 
+  const participantState = profile?.participantState;
   const defaultDisplayName = participantState?.display_name ?? profile?.user.display_name;
-  const [name, setName] = React.useState(defaultDisplayName ?? '');
 
   const currentRoomRoute = useRoomRoute();
   const isOwner = useIsRoomOwner(currentRoomRoute);
-
   const initalRoom = rooms.find((room) => room.route === currentRoomRoute);
-
   const [roomInfo, setRoomInfo] = useState<ApiNamedRoom>(initalRoom || emptyRoomInfo);
 
   const avatar = participantState?.avatar_name;
@@ -216,13 +225,20 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
     initalizeUserAvatar();
   }, [avatar, updateProfile]);
 
-  const handleComplete = () => {
-    if (name !== participantState?.display_name) {
+  const handleComplete = (values: EntryViewData) => {
+    if (values.displayName !== participantState?.display_name) {
       updateProfile({
-        display_name: name,
+        display_name: values.displayName,
       });
     }
     onComplete();
+  };
+
+  const handleKeyDown = (keyEvent: any) => {
+    // prevent the enter key from submitting the form
+    if ((keyEvent.charCode || keyEvent.keyCode) === 13) {
+      keyEvent.preventDefault();
+    }
   };
 
   const clearUrlError = () => {
@@ -245,66 +261,80 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
   return (
     <main className={classes.root}>
       <div className={classes.contentWrapper}>
-        <div className={classes.content}>
-          <Box minHeight="100%" display="flex" flexDirection="column" height="100%">
-            <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
-            <Box display="flex" flexDirection="column" flex={1}>
-              <Box position="relative" marginBottom={0.5}>
-                <div className={classes.background} />
-                <AvatarSelectorBubble
-                  className={classes.avatarButton}
-                  userData={{
-                    userId: profile.user.id,
-                    displayName: participantState?.display_name || '',
-                    avatarName: participantState?.avatar_name || '',
-                  }}
-                  updateSelf={updateProfile}
-                  showVideo
-                />
-              </Box>
-              <TextField
-                placeholder={t('pages.preroom.namePlaceholder')}
-                required
-                value={name}
-                onChange={(ev) => setName(ev.target.value)}
-                className={classes.nameField}
-              />
-              <Spacing style={{ alignSelf: 'center', marginTop: 8 }} alignItems="center">
-                <CameraToggle isVideoOn={isVideoOn} toggleVideoOn={toggleVideoOn} busy={isVideoBusy} />
-                <MicToggle isMicOn={isMicOn} doMicToggle={doMicToggle} busy={isAudioBusy} />
-              </Spacing>
-            </Box>
-            <Hidden mdUp>
-              <Box
-                component={Button}
-                onClick={() => setIsRoomListOpen(true)}
-                className={classes.openRoomListButton}
-                display="flex"
-                flexDirection="row"
-                width="100%"
-                alignItems="center"
-              >
-                <img className={classes.imgWrapper} src={roomInfo.preview_image_url} alt="" />
-                <Box display="flex" flexDirection="column" alignItems="start">
-                  <Typography variant="body1" className={classes.displayTitle}>
-                    {roomInfo.display_name}
-                  </Typography>
-                  <Box className={isOwner ? classes.owner : classes.guest}>
-                    <Typography variant="h4">
-                      {isOwner ? t('pages.preroom.roomSummary.owner') : t('pages.preroom.roomSummary.guest')}
-                    </Typography>
+        <Formik
+          initialValues={{ displayName: defaultDisplayName || '' }}
+          onSubmit={handleComplete}
+          validateOnMount
+          validationSchema={validationSchema}
+          validateOnBlur
+        >
+          {({ values }) => (
+            <Form onKeyDown={handleKeyDown}>
+              <div className={classes.content}>
+                <Box minHeight="100%" display="flex" flexDirection="column" height="100%">
+                  <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
+                  <Box display="flex" flexDirection="column" flex={1}>
+                    <Box position="relative" marginBottom={0.5}>
+                      <div className={classes.background} />
+                      <AvatarSelectorBubble
+                        className={classes.avatarButton}
+                        userData={{
+                          userId: profile.user.id,
+                          displayName: participantState?.display_name || '',
+                          avatarName: participantState?.avatar_name || '',
+                        }}
+                        updateSelf={updateProfile}
+                        showVideo
+                      />
+                    </Box>
+
+                    <Box display="flex" flexDirection="row" mb={2} alignItems="flex-start">
+                      <FormikTextField
+                        id="displayName"
+                        name="displayName"
+                        placeholder={t('pages.preroom.namePlaceholder')}
+                      />
+                    </Box>
+
+                    <Spacing style={{ alignSelf: 'center', marginTop: 8 }} alignItems="center">
+                      <CameraToggle isVideoOn={isVideoOn} toggleVideoOn={toggleVideoOn} busy={isVideoBusy} />
+                      <MicToggle isMicOn={isMicOn} doMicToggle={doMicToggle} busy={isAudioBusy} />
+                    </Spacing>
                   </Box>
+                  <Hidden mdUp>
+                    <Box
+                      component={Button}
+                      onClick={() => setIsRoomListOpen(true)}
+                      className={classes.openRoomListButton}
+                      display="flex"
+                      flexDirection="row"
+                      width="100%"
+                      alignItems="center"
+                    >
+                      <img className={classes.imgWrapper} src={roomInfo.preview_image_url} alt="" />
+                      <Box display="flex" flexDirection="column" alignItems="start">
+                        <Typography variant="body1" className={classes.displayTitle}>
+                          {roomInfo.display_name}
+                        </Typography>
+                        <Box className={isOwner ? classes.owner : classes.guest}>
+                          <Typography variant="h4">
+                            {isOwner ? t('pages.preroom.roomSummary.owner') : t('pages.preroom.roomSummary.guest')}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Hidden>
+                  <Hidden smDown>
+                    <Typography paragraph>{t('pages.preroom.setupExplanation')}</Typography>
+                  </Hidden>
+                  <FormikSubmitButton disabled={!values.displayName}>
+                    {t('pages.preroom.enterRoomButton', { roomName: roomInfo.display_name })}
+                  </FormikSubmitButton>
                 </Box>
-              </Box>
-            </Hidden>
-            <Hidden smDown>
-              <Typography paragraph>{t('pages.preroom.setupExplanation')}</Typography>
-            </Hidden>
-            <Button onClick={handleComplete} disabled={!name}>
-              {t('pages.preroom.enterRoomButton', { roomName: roomInfo.display_name })}
-            </Button>
-          </Box>
-        </div>
+              </div>
+            </Form>
+          )}
+        </Formik>
         <Box display="flex" justifyContent="center" className={classes.list}>
           <RoomList
             rooms={rooms}
@@ -312,7 +342,6 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
             onClose={() => setIsRoomListOpen(false)}
             onError={(msg: DialogMessage) => setErrorMsg(msg)}
             onRoomSelected={setRoomInfo}
-            onComplete={handleComplete}
           />
         </Box>
       </div>

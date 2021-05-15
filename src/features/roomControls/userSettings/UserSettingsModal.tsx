@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../../i18n';
 import { Form, Formik } from 'formik';
 import { Box, makeStyles, Button } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
@@ -10,7 +11,6 @@ import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapp
 import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
 import { AvatarSelector } from '../avatar/AvatarSelector';
-import { TFunction } from 'i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
@@ -18,17 +18,19 @@ import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { AutoPIPToggle } from './AutoPIPToggle';
 import { isAutoPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
 import { useFeatureFlag } from 'flagg';
+import { MAX_DISPLAY_NAME_LENGTH } from '../../../constants';
+import * as Yup from 'yup';
 
 export type UserSettingFormData = {
   displayName: string;
 };
 
-function validateDisplayName(newDisplayName: string, translate: TFunction) {
-  const trimmedDisplayName = newDisplayName.trim();
-  if (trimmedDisplayName.length === 0) {
-    return translate('modals.userSettingsModal.displayNameInput.blankError');
-  }
-}
+const validationSchema = Yup.object().shape({
+  displayName: Yup.string()
+    .trim()
+    .required(i18n.t('modals.userSettingsModal.displayNameInput.blankError'))
+    .max(MAX_DISPLAY_NAME_LENGTH, i18n.t('pages.signup.firstName.maxSize', { maxNameLength: MAX_DISPLAY_NAME_LENGTH })),
+});
 
 interface IUserSettingsModalProps {}
 
@@ -151,6 +153,7 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                     onSubmit={onSubmitHandler}
                     validateOnMount
                     enableReinitialize
+                    validationSchema={validationSchema}
                   >
                     <Form>
                       <Box display="flex" flexDirection="row" mb={2} alignItems="flex-start">
@@ -162,7 +165,6 @@ export const UserSettingsModal: React.FC<IUserSettingsModalProps> = (props) => {
                           label={t('modals.userSettingsModal.displayNameInput.label')}
                           margin="normal"
                           helperText={t('modals.userSettingsModal.displayNameInput.helperText')}
-                          validate={(newDisplayName) => validateDisplayName(newDisplayName, t)}
                         />
                         <FormikSubmitButton activeOnChange fullWidth={false} className={classes.submitButton}>
                           {t('modals.userSettingsModal.submitButton')}

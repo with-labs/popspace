@@ -3,13 +3,11 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import Api from '../../utils/api';
 import { ApiError } from '../../errors/ApiError';
-
 import img from '../../images/illustrations/welcome_to_with.jpg';
 import mobileImg from '../../images/illustrations/welcome_to_with_responsive.jpg';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '../../components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '../../components/fieldBindings/FormikSubmitButton';
-import { isEmailValid } from '../../utils/CheckEmail';
 import i18n from '../../i18n';
 import { useHistory } from 'react-router';
 import { FormikCheckboxField } from '../../components/fieldBindings/FormikCheckboxField';
@@ -31,20 +29,25 @@ import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
 import { FullscreenLoading } from '../../components/FullscreenLoading/FullscreenLoading';
 import { Analytics } from '../../analytics/Analytics';
 import { EventNames } from '../../analytics/constants';
+import { MAX_EMAIL_LENTH, MAX_NAME_LENGTH } from '../../constants';
+import * as Yup from 'yup';
 
 interface ISignupProps {}
 
-const validateEmail = (value: string) => {
-  if (!isEmailValid(value.trim())) {
-    return i18n.t('pages.signup.email.invalid');
-  }
-};
-
-const validateTos = (value: boolean) => {
-  if (!value) {
-    return i18n.t('pages.signup.tos.invalid');
-  }
-};
+const validationSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .max(MAX_NAME_LENGTH, i18n.t('pages.signup.firstName.maxSize', { maxNameLength: MAX_NAME_LENGTH }))
+    .required(i18n.t('common.required')),
+  lastName: Yup.string()
+    .max(MAX_NAME_LENGTH, i18n.t('pages.signup.lastName.maxSize', { maxNameLength: MAX_NAME_LENGTH }))
+    .required(i18n.t('common.required')),
+  email: Yup.string()
+    .trim()
+    .max(MAX_EMAIL_LENTH, i18n.t('pages.signup.email.maxSize', { maxNameLength: MAX_EMAIL_LENTH }))
+    .email(i18n.t('pages.signup.email.invalid'))
+    .required(i18n.t('common.required')),
+  tos: Yup.boolean().required(i18n.t('pages.signup.tos.invalid')),
+});
 
 type SignupFormValues = {
   email: string;
@@ -154,8 +157,9 @@ export const Signup: React.FC<ISignupProps> = () => {
       initialStatus={{ sent: false }}
       initialValues={{ email, firstName: '', lastName: '', receiveMarketing: false, inviteCode, inviteId }}
       validateOnBlur={false}
+      validationSchema={validationSchema}
     >
-      {({ status, values }) =>
+      {({ status, values, errors }) =>
         status?.sent ? (
           <SignupComplete
             resend={async () => {
@@ -181,6 +185,7 @@ export const Signup: React.FC<ISignupProps> = () => {
                       margin="normal"
                       autoComplete="given-name"
                       autoFocus
+                      maxLength={10}
                     />
                     <FormikTextField
                       id="lastName"
@@ -190,6 +195,7 @@ export const Signup: React.FC<ISignupProps> = () => {
                       required
                       margin="normal"
                       autoComplete="family-name"
+                      maxLength={50}
                     />
                   </Spacing>
                   <FormikTextField
@@ -197,7 +203,6 @@ export const Signup: React.FC<ISignupProps> = () => {
                     name="email"
                     placeholder={t('pages.signup.email.placeholder')}
                     label={t('pages.signup.email.label')}
-                    validate={validateEmail}
                     margin="normal"
                     autoComplete="email"
                     required
@@ -212,7 +217,6 @@ export const Signup: React.FC<ISignupProps> = () => {
                       </Trans>
                     }
                     required
-                    validate={validateTos}
                   />
                   <FormikCheckboxField
                     id="receiveMarketing"

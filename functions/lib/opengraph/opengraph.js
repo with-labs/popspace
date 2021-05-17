@@ -26,6 +26,22 @@ class OpenGraph {
    * @property {string} title - The title of the page
    */
   async getGraphData(url) {
+    const headRes = await axios.head(url)
+    /**
+     * Non-HTML responses aren't going to be useful to the rest of the parsing,
+     * so we do some basic work from the HEAD response headers and don't request
+     * the body (which could be a large file or endless stream)
+     */
+    if (
+      !headRes.headers["content-type"] ||
+      !headRes.headers["content-type"].includes("text/html")
+    ) {
+      return {
+        title: url,
+        iframeUrl: this.isIframeCompatible(headRes) ? url : null,
+        iconUrl: null
+      }
+    }
     const res = await axios.get(url)
     const html = res.data
 

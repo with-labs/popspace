@@ -55,9 +55,11 @@ export const Omnibar: React.FC<IOmnibarProps> = ({ autoFocus, onChange, ...rest 
       renderOption={(action) => <QuickAction value={action} />}
       autoHighlight
       forcePopupIcon={false}
+      // Only show initial dropdown if there are options for the empty case
+      openOnFocus={!!autocompleteProps.options.length}
       {...autocompleteProps}
       // When the input is empty we show a special popup with a message
-      PaperComponent={autocompleteProps.inputValue ? Paper : EmptyPaper}
+      // PaperComponent={autocompleteProps.inputValue ? Paper : EmptyPaper}
       PopperComponent={CustomPopper}
       classes={{
         inputRoot: classes.inputRoot,
@@ -67,13 +69,5 @@ export const Omnibar: React.FC<IOmnibarProps> = ({ autoFocus, onChange, ...rest 
     />
   );
 };
-
-const EmptyPaper = (props: any) => (
-  <Paper {...props}>
-    <Box p={2}>
-      <QuickActionEmpty />
-    </Box>
-  </Paper>
-);
 
 const CustomPopper = (props: any) => <Popper {...props} placement="bottom-start" />;

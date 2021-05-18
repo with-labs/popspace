@@ -19,7 +19,7 @@ export function stickyNoteQuickActions(prompt: string, t: TFunction): QuickActio
         confidence: 5,
       },
     ];
-  } else {
+  } else if (!!prompt) {
     // any text can be added to a sticky note.
     return [
       {
@@ -34,4 +34,6 @@ export function stickyNoteQuickActions(prompt: string, t: TFunction): QuickActio
       },
     ];
   }
+
+  return [];
 }

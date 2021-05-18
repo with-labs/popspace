@@ -16,7 +16,6 @@ import { FullscreenLoading } from '../components/FullscreenLoading/FullscreenLoa
 
 const WS_SERVER = process.env.REACT_APP_SOCKET_HOST || 'wss://test.with.so:8443';
 const AUTH_RESPONSE_TIMEOUT = 10 * 1000; // 10 seconds
-
 export interface IRoomStateProviderProps {
   roomName: string;
 }

@@ -9,6 +9,7 @@ import Api from '../../../utils/api';
 import { RenameRoomModal } from './RenameRoomModal/RenameRoomModal';
 import { DeleteRoomModal } from './DeleteRoomModal/DeleteRoomModal';
 import { InviteModal } from './InviteModal/InviteModal';
+import { LeaveRoomModal } from './LeaveRoomModal/LeaveRoomModal';
 import { RoomSummary } from './RoomSummary';
 import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
 import { logger } from '../../../utils/logger';
@@ -16,6 +17,7 @@ import { RoomListHeader } from './RoomListHeader/RoomListHeader';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
 import { Link } from '../../../components/Link/Link';
 import { USER_SUPPORT_EMAIL } from '../../../constants/User';
+import { useHistory } from 'react-router-dom';
 
 interface IRoomListProps {
   rooms: ApiNamedRoom[];
@@ -78,7 +80,6 @@ const useStyles = makeStyles((theme) => ({
   buttonWrapper: {
     paddingRight: 15,
     paddingLeft: 15,
-    // maxWidth: 500,
     width: `100%`,
   },
 }));
@@ -88,6 +89,7 @@ enum MODAL_OPTS {
   INVITE = 'INVITE',
   CREATE = 'CREATE',
   DELETE = 'DELETE',
+  LEAVE = 'LEAVE',
 }
 
 type RoomListState = {
@@ -141,6 +143,7 @@ export const RoomList: React.FC<IRoomListProps> = ({ rooms, isOpen = false, onCl
   const { t } = useTranslation();
   const currentRoomRoute = useRoomRoute();
   const { update } = useCurrentUserProfile();
+  const history = useHistory();
 
   const [state, dispatch] = useReducer(RoomListReducer, {
     modalOpen: null,
@@ -215,6 +218,43 @@ export const RoomList: React.FC<IRoomListProps> = ({ rooms, isOpen = false, onCl
     }
   };
 
+  const leaveRoom = async (roomInfo: RoomInfo) => {
+    try {
+      const response = await Api.removeSelfFromRoom(roomInfo.route);
+      if (response.success) {
+        // update room list
+        update((data) => {
+          if (!data || !data.profile) return {};
+          const memberRoomIndex = data.profile.rooms.member.findIndex((r) => r.route === roomInfo.route);
+          // only check member rooms since you cant leave a room you've created right now
+          if (memberRoomIndex !== -1) {
+            data.profile.rooms.member.splice(memberRoomIndex, 1);
+            // copy array to ensure hooks update
+            data.profile.rooms.member = [...data.profile.rooms.member];
+          }
+
+          if (currentRoomRoute === roomInfo.route) {
+            // if the currently selected room is the one we  are leaving,
+            // then we neeed to update the room to to be the first one in the list
+            const defaultRoom = rooms[0];
+            onRoomSelected(defaultRoom);
+            history.replace(`/${defaultRoom.route}?join`);
+          }
+          return data;
+        });
+      } else {
+        dispatch({ type: ACTIONS.SET_MANGEMENT_ERROR, payload: t('error.roomMangement.leaveRoomErrorTitle') });
+      }
+    } catch (err) {
+      onError({
+        title: t('common.error'),
+        body: getErrorMessageFromResponse(err, t) ?? '',
+      } as DialogMessage);
+      // unexpected error happened
+      logger.error('Unexpected Error renaming room', err);
+    }
+  };
+
   const renderModals = () => {
     if (state.selectedRoomInfo) {
       return (
@@ -236,6 +276,12 @@ export const RoomList: React.FC<IRoomListProps> = ({ rooms, isOpen = false, onCl
             onClose={() => dispatch({ type: ACTIONS.CLOSE_MODAL, payload: null })}
             roomInfo={state.selectedRoomInfo}
           />
+          <LeaveRoomModal
+            isOpen={state.modalOpen === MODAL_OPTS.LEAVE}
+            onClose={() => dispatch({ type: ACTIONS.CLOSE_MODAL, payload: null })}
+            roomInfo={state.selectedRoomInfo}
+            onLeave={leaveRoom}
+          />
         </Box>
       );
     }
@@ -255,6 +301,9 @@ export const RoomList: React.FC<IRoomListProps> = ({ rooms, isOpen = false, onCl
         }
         onDelete={(roomInfo: RoomInfo) =>
           dispatch({ type: ACTIONS.UPDATE_MODAL, payload: { modal: MODAL_OPTS.DELETE, roomInfo } })
+        }
+        onLeave={(roomInfo: RoomInfo) =>
+          dispatch({ type: ACTIONS.UPDATE_MODAL, payload: { modal: MODAL_OPTS.LEAVE, roomInfo } })
         }
         onErrorHandler={onRoomSummaryError}
         onRoomSelected={(roomInfo) => {

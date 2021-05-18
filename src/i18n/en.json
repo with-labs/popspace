@@ -99,7 +99,8 @@
           "renameRoom": "Rename room",
           "deleteRoom": "Delete room",
           "makeDefault": "Make default",
-          "defaultRoom": "Default room"
+          "defaultRoom": "Default room",
+          "leaveRoom": "Leave room"
         },
         "maxSize": "Display name must be less than {{maxNameLength}} characters"
       },
@@ -431,6 +432,7 @@
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",
         "renameRoomErrorTitle": "Oops! There was an error while renaming the room.",
         "deleteRoomErrorTitle": "Oops! There was an error while deleting the room.",
+        "leaveRoomErrorTitle": "Oops! There was an error while leaving the room.",
         "message": "Please retry. If that keeps happening, please <1>contact us</1> and we will sort it out."
       },
       "twilioFailure": {
@@ -665,6 +667,11 @@
         "placeholder": "Emerald City",
         "title": "Rename {{roomName}}",
         "buttonText": "Rename room"
+      },
+      "leaveRoomModal": {
+        "title": "Leave {{roomName}}?",
+        "explainationText": "Are you sure you want to leave {{roomName}}?",
+        "buttonText": "Leave room"
       },
       "deleteRoomModal": {
         "title": "Delete {{roomName}}",

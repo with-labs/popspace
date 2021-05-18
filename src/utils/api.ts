@@ -276,6 +276,10 @@ class Api {
     );
   }
 
+  async removeSelfFromRoom(roomRoute: string) {
+    return await this.post<BaseResponse>('/remove_self_from_room', { roomRoute }, SERVICES.api);
+  }
+
   /* TODO: service should be mandatory/explicit; update all uses and remove the default value */
   async post<Response = {}>(endpoint: string, data: any = {}, service: Service = SERVICES.netlify) {
     return this.request<Response>({

@@ -16,6 +16,7 @@ import { OptionsIcon } from '../../../components/icons/OptionsIcon';
 import { DeleteIcon } from '../../../components/icons/DeleteIcon';
 import { InviteIcon } from '../../../components/icons/InviteIcon';
 import { EditIcon } from '../../../components/icons/EditIcon';
+import { LeaveIcon } from '../../../components/icons/LeaveIcon';
 import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
 import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +31,7 @@ interface IRoomSummaryProps {
   onInvite: (roomInfo: RoomInfo) => void;
   onRename: (roomInfo: RoomInfo) => void;
   onDelete: (roomInfo: RoomInfo) => void;
+  onLeave: (roomInfo: RoomInfo) => void;
   onErrorHandler: (errorMsg: string) => void;
   isActive: boolean;
   onRoomSelected: (roomInfo: ApiNamedRoom) => void;
@@ -89,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
   const classes = useStyles();
-  const { roomInfo, onInvite, onRename, onDelete, onErrorHandler, isActive = false, onRoomSelected } = props;
+  const { roomInfo, onInvite, onRename, onDelete, onErrorHandler, isActive = false, onRoomSelected, onLeave } = props;
   const { t } = useTranslation();
   const anchorRef = useRef<any>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -200,6 +202,15 @@ export const RoomSummary: React.FC<IRoomSummaryProps> = (props) => {
               <DeleteIcon className={classes.deleteColor} />
             </ListItemIcon>
             <ListItemText primary={t('pages.preroom.roomSummary.deleteRoom')} className={classes.deleteColor} />
+          </MenuItem>,
+        ]}
+        {!isOwner && [
+          <Divider key={'divider-menuItem'} />,
+          <MenuItem key={'leave-room-menuItem'} onClick={() => onLeave(roomInfo)}>
+            <ListItemIcon>
+              <LeaveIcon className={classes.deleteColor} />
+            </ListItemIcon>
+            <ListItemText primary={t('pages.preroom.roomSummary.leaveRoom')} className={classes.deleteColor} />
           </MenuItem>,
         ]}
       </ResponsiveMenu>

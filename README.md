@@ -24,7 +24,9 @@ NODE_ENV=test npm run db:migrate
 
 (From: https://web.dev/how-to-use-local-https/)
 
-For MacOS:
+For Linux install homebrew first.
+
+For MacOS and Linux:
 
 ```bash
 # Only do this once for all mkcert projects

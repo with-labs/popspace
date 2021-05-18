@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
       overflow: 'visible',
       maxWidth: 680,
+      width: '100%',
       justifySelf: 'center',
       paddingBottom: '100px',
     },

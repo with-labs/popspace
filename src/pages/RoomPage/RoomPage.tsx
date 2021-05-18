@@ -22,14 +22,14 @@ import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     width: '100vw',
-    height: '100vh',
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
   roomWrapper: {
     width: '100vw',
-    height: '100vh',
+    flex: 1,
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',

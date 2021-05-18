@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    minHeight: '100vh',
+    minHeight: '100%',
+    flex: 1,
     overflow: 'hidden',
 
     [theme.breakpoints.up('md')]: {

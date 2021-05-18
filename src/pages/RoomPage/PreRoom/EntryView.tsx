@@ -269,69 +269,67 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
           validateOnBlur
         >
           {({ values }) => (
-            <Form onKeyDown={handleKeyDown}>
-              <div className={classes.content}>
-                <Box minHeight="100%" display="flex" flexDirection="column" height="100%">
-                  <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
-                  <Box display="flex" flexDirection="column" flex={1}>
-                    <Box position="relative" marginBottom={0.5}>
-                      <div className={classes.background} />
-                      <AvatarSelectorBubble
-                        className={classes.avatarButton}
-                        userData={{
-                          userId: profile.user.id,
-                          displayName: participantState?.display_name || '',
-                          avatarName: participantState?.avatar_name || '',
-                        }}
-                        updateSelf={updateProfile}
-                        showVideo
-                      />
-                    </Box>
-
-                    <Box display="flex" flexDirection="row" mb={2} alignItems="flex-start">
-                      <FormikTextField
-                        id="displayName"
-                        name="displayName"
-                        placeholder={t('pages.preroom.namePlaceholder')}
-                      />
-                    </Box>
-
-                    <Spacing style={{ alignSelf: 'center', marginTop: 8 }} alignItems="center">
-                      <CameraToggle isVideoOn={isVideoOn} toggleVideoOn={toggleVideoOn} busy={isVideoBusy} />
-                      <MicToggle isMicOn={isMicOn} doMicToggle={doMicToggle} busy={isAudioBusy} />
-                    </Spacing>
+            <Form onKeyDown={handleKeyDown} className={classes.content}>
+              <Box minHeight="100%" display="flex" flexDirection="column" height="100%">
+                <Header isFullLength={true} userName={user ? user['first_name'] : ''} />
+                <Box display="flex" flexDirection="column" flex={1}>
+                  <Box position="relative" marginBottom={0.5}>
+                    <div className={classes.background} />
+                    <AvatarSelectorBubble
+                      className={classes.avatarButton}
+                      userData={{
+                        userId: profile.user.id,
+                        displayName: participantState?.display_name || '',
+                        avatarName: participantState?.avatar_name || '',
+                      }}
+                      updateSelf={updateProfile}
+                      showVideo
+                    />
                   </Box>
-                  <Hidden mdUp>
-                    <Box
-                      component={Button}
-                      onClick={() => setIsRoomListOpen(true)}
-                      className={classes.openRoomListButton}
-                      display="flex"
-                      flexDirection="row"
-                      width="100%"
-                      alignItems="center"
-                    >
-                      <img className={classes.imgWrapper} src={roomInfo.preview_image_url} alt="" />
-                      <Box display="flex" flexDirection="column" alignItems="start">
-                        <Typography variant="body1" className={classes.displayTitle}>
-                          {roomInfo.display_name}
+
+                  <Box display="flex" flexDirection="row" mb={2} alignItems="flex-start">
+                    <FormikTextField
+                      id="displayName"
+                      name="displayName"
+                      placeholder={t('pages.preroom.namePlaceholder')}
+                    />
+                  </Box>
+
+                  <Spacing style={{ alignSelf: 'center', marginTop: 8 }} alignItems="center">
+                    <CameraToggle isVideoOn={isVideoOn} toggleVideoOn={toggleVideoOn} busy={isVideoBusy} />
+                    <MicToggle isMicOn={isMicOn} doMicToggle={doMicToggle} busy={isAudioBusy} />
+                  </Spacing>
+                </Box>
+                <Hidden mdUp>
+                  <Box
+                    component={Button}
+                    onClick={() => setIsRoomListOpen(true)}
+                    className={classes.openRoomListButton}
+                    display="flex"
+                    flexDirection="row"
+                    width="100%"
+                    alignItems="center"
+                  >
+                    <img className={classes.imgWrapper} src={roomInfo.preview_image_url} alt="" />
+                    <Box display="flex" flexDirection="column" alignItems="start">
+                      <Typography variant="body1" className={classes.displayTitle}>
+                        {roomInfo.display_name}
+                      </Typography>
+                      <Box className={isOwner ? classes.owner : classes.guest}>
+                        <Typography variant="h4">
+                          {isOwner ? t('pages.preroom.roomSummary.owner') : t('pages.preroom.roomSummary.guest')}
                         </Typography>
-                        <Box className={isOwner ? classes.owner : classes.guest}>
-                          <Typography variant="h4">
-                            {isOwner ? t('pages.preroom.roomSummary.owner') : t('pages.preroom.roomSummary.guest')}
-                          </Typography>
-                        </Box>
                       </Box>
                     </Box>
-                  </Hidden>
-                  <Hidden smDown>
-                    <Typography paragraph>{t('pages.preroom.setupExplanation')}</Typography>
-                  </Hidden>
-                  <FormikSubmitButton disabled={!values.displayName}>
-                    {t('pages.preroom.enterRoomButton', { roomName: roomInfo.display_name })}
-                  </FormikSubmitButton>
-                </Box>
-              </div>
+                  </Box>
+                </Hidden>
+                <Hidden smDown>
+                  <Typography paragraph>{t('pages.preroom.setupExplanation')}</Typography>
+                </Hidden>
+                <FormikSubmitButton disabled={!values.displayName}>
+                  {t('pages.preroom.enterRoomButton', { roomName: roomInfo.display_name })}
+                </FormikSubmitButton>
+              </Box>
             </Form>
           )}
         </Formik>

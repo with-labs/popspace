@@ -10,10 +10,22 @@ html {
   box-sizing: inherit;
 }
 
-html,
-body,
+html {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 #root {
-  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* scrollbar width */

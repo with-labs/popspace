@@ -64,6 +64,14 @@ const requireRoomMemberOrOwner = async (req, res, next) => {
   next()
 }
 
+const requireRoomMember = async (req, res, next) => {
+  const isRoomMember = await shared.db.room.permissions.isMember(req.user, req.room)
+  if(!isRoomMember) {
+    return next({ errorCode: shared.error.code.PERMISSION_DENIED, message:"Insufficient permission", httpCode: http.code.UNAUTHORIZED })
+  }
+  next()
+}
+
 /*
   This should be restructured.
 
@@ -110,6 +118,10 @@ class MercuryMiddleware {
 
   requireRoomOwner() {
     return requireRoomOwner
+  }
+
+  requireRoomMember() {
+    return requireRoomMember
   }
 
   requireRoomMemberOrOwner() {

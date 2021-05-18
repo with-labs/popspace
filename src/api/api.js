@@ -35,6 +35,13 @@ class Api {
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
 
+  memberRoomRouteEndpoint(endpoint, handler) {
+    const middlewareList = [
+      this.middleware.requireRoomMember()
+    ]
+    return this.roomRouteEndpoint(endpoint, handler, middlewareList)
+  }
+
   ownerOnlyRoomRouteEndpoint(endpoint, handler) {
     const middlewareList = [
       this.middleware.requireRoomOwner()

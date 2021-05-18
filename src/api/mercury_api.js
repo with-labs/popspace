@@ -1,3 +1,4 @@
+const { shared } = require("../lib/_lib")
 const Api = require("./api")
 const http = require("./http")
 const routes = require("./routes")
@@ -139,6 +140,11 @@ class MercuryApi {
     this.api.memberOrOwnerRoomRouteEndpoint("/set_default_room", async (req, res) => {
       await saveDefaultRoom(req.user.id, req.room.id)
       return http.succeed(req, res)
+    })
+
+    this.api.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
+      await shared.db.room.memberships.revokeMembership(req.room.id, req.user.id)
+      return http.succeed(req, res)      
     })
 
     this.api.loggedInPostEndpoint("/get_or_init_default_room", async (req, res) => {

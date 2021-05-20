@@ -126,8 +126,13 @@ class MercuryApi {
     })
 
     this.api.ownerOnlyRoomRouteEndpoint("/reset_public_invite_link", async (req, res) => {
+      const roomState = await shared.db.dynamo.room.getRoomState(req.room.id)
       await shared.db.room.invites.disablePublicInviteUrl(req.room.id)
-      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(req.room.id)
+      const inviteRouteEntry = await shared.db.room.invites.enablePublicInviteUrl(
+        req.room.id,
+        req.user.id,
+        roomState.display_name
+      )
       const inviteRoute = routes.publicInviteRoute(inviteRouteEntry)
       return http.succeed(req, res, { otp: inviteRouteEntry.otp, inviteId: inviteRouteEntry.id })
     })

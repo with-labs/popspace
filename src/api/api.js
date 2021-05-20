@@ -1,9 +1,9 @@
 const MercuryMiddleware = require("./mercury_middleware")
 const http = require("./http")
 
-
-const safeHandleRequest = (handler) => {
+const safeHandleRequest = (endpoint, handler) => {
   return async (req, res) => {
+    log.http.info(`${endpoint} - ${JSON.stringify(req.body)}`)
     try {
       return handler(req, res)
     } catch (e) {
@@ -64,7 +64,7 @@ class Api {
       this.middleware.requireUser(),
       ...additionalMiddleware
     ]
-    this.express.post(endpoint, middlewareList, safeHandleRequest(handler))
+    this.express.post(endpoint, middlewareList, safeHandleRequest(endpoint, handler))
   }
 
   loggedInGetEndpoint(endpoint, handler, additionalMiddleware=[]) {
@@ -73,15 +73,15 @@ class Api {
       this.middleware.requireUser(),
       ...additionalMiddleware
     ]
-    this.express.get(endpoint, this.middleware, safeHandleRequest(handler))
+    this.express.get(endpoint, this.middleware, safeHandleRequest(endpoint, handler))
   }
 
   loggedOutPostEndpoint(endpoint, handler,) {
-    this.express.post(endpoint, safeHandleRequest(handler))
+    this.express.post(endpoint, safeHandleRequest(endpoint, handler))
   }
 
   loggedOutGetEndpoint(endpoint, handler) {
-    this.express.get(endpoint, safeHandleRequest(handler))
+    this.express.get(endpoint, safeHandleRequest(endpoint, handler))
   }
 }
 

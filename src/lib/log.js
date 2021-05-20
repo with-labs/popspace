@@ -3,6 +3,7 @@ const log4jsConfig = {
   appenders: {
     all: { type: "file", filename: "logs/all.log" },
     database: { type: "file", filename: "logs/database.log" },
+    http: {type: "file", filename: "logs/http.log"},
     app: { type: "file", filename: "logs/app.log" },
     console: { type: "console" },
     dev: { type: "file", filename: "logs/dev.log" },
@@ -14,6 +15,7 @@ const log4jsConfig = {
   categories: {
     default: { appenders: ["console", "all"], level: "info" },
     app: { appenders: ["app", "console", "all"], level: process.env.NODE_ENV == "test" ? "error" : "info" },
+    http: { appenders: ["http", "console", "all"], level: "trace" },
     system: { appenders: ["system", "all"], level: "trace" },
     database: { appenders: ["database", "all"], level: "info" },
     dev: {
@@ -34,6 +36,7 @@ const logging = {
   default: log4js.getLogger(),
   database: log4js.getLogger("database"),
   app: log4js.getLogger("app"),
+  http: log4js.getLogger("http"),
   system: log4js.getLogger("system"),
   dev: log4js.getLogger("dev"),
   received: log4js.getLogger("received"),

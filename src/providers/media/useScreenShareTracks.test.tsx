@@ -96,7 +96,11 @@ describe('useScreenShareTracks hook', () => {
     expect(result.current[0].screenShareVideoTrack?.name.startsWith('video')).toBe(true);
     // @ts-ignore
     expect(global.navigator.mediaDevices.getDisplayMedia).toHaveBeenCalledWith({
-      video: true,
+      video: {
+        frameRate: 10,
+        height: 1080,
+        width: 1920,
+      },
       audio: {
         channelCount: 2,
         echoCancellation: false,

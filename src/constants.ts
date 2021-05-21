@@ -2,9 +2,9 @@ export const DEFAULT_VIDEO_CONSTRAINTS: MediaTrackConstraints = {
   // fix for Chromium bug #1084702: video size must be a
   // multiple of 16 to avoid corruption on Pixel 3(a)
   // https://bugs.chromium.org/p/chromium/issues/detail?id=1084702
-  width: 320,
+  width: 240,
   // our videos are square, so the capture dimensions are also square
-  height: 320,
+  height: 240,
   frameRate: 24,
 };
 

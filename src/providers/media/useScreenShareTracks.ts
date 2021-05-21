@@ -27,8 +27,12 @@ export function useScreenShareTracks({
   });
 
   const start = useCallback(async () => {
-    const constraints = {
-      video: true,
+    const constraints: MediaStreamConstraints = {
+      video: {
+        frameRate: 10,
+        height: 1080,
+        width: 1920,
+      },
       audio: {
         channelCount: 2,
         // echo cancellation doesn't make sense for desktop audio

@@ -1,3 +1,4 @@
+import { isIOS, isMacOs } from 'react-device-detect';
 import { ConnectOptions } from 'twilio-video';
 
 export enum RoomState {
@@ -48,12 +49,10 @@ export enum MediaTrackEvent {
 export const TWILIO_CONNECTION_OPTIONS: ConnectOptions = {
   bandwidthProfile: {
     video: {
-      mode: 'collaboration',
-      renderDimensions: {
-        high: { height: 1024, width: 1920 },
-        standard: { height: 96, width: 160 },
-        low: { height: 96, width: 160 },
-      },
+      // Using grid mode for equal bandwidth priority between all parties.
+      // For more detailed information on grid, see
+      // https://www.twilio.com/docs/video/tutorials/using-bandwidth-profile-api#grid-mode
+      mode: 'grid',
     },
   },
   dominantSpeaker: false,

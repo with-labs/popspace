@@ -95,6 +95,8 @@ class Participant {
       since we expect write time to be much less than the time between heartbeats
     */
     lib.analytics.updateSessionLength(this)
+    lib.analytics.updateVoiceDuration(this)
+    lib.analytics.updateVideoDuration(this)
   }
 
   dieUnlessAuthenticate() {

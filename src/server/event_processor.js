@@ -14,7 +14,9 @@ const ACTION_BY_EVENT_KIND = {
   "auth": "auth",
   "ping": "passthrough",
   "echo": "passthrough",
-  "passthrough": "passthrough"
+  "passthrough": "passthrough",
+  "updateMicState": "analytics",
+  "updateVideoState": "analytics"
 }
 
 const PUBLIC_EVENT_KINDS = {
@@ -29,7 +31,7 @@ const processors = {
   get: new _processors.GetProcessor(),
   passthrough: new _processors.PassthroughProcessor(),
   delete: new _processors.DeleteProcessor(),
-
+  analytics: new _processors.AnalyticsProcessor()
 }
 
 class EventProcessor {

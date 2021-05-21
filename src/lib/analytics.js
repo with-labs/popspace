@@ -1,6 +1,8 @@
 class Analytics {
   constructor() {
     this.roomUsageIdByParticipantId = {}
+    this.voiceUsageIdByParticipantId = {}
+    this.videoUsageIdByParticipantId = {}
   }
 
   async participantCountChanged(newCount) {
@@ -53,6 +55,58 @@ class Analytics {
       return
     }
     await shared.db.pg.massive.analytics_room_usage.update(
+      {id: entryId},
+      {last_heartbeat_at: shared.db.time.now()}
+    )
+  }
+
+  async toggleVoice(event) {
+    const toggleEntry = await shared.db.pg.massive.analytics_voice_usage.insert({
+      room_id: event.roomId(),
+      user_id: event.userId(),
+      participant_id: event.sessionId(),
+      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
+      is_toggled_on: event.payload().is_on,
+      toggled_at: shared.db.time.now(),
+      last_heartbeat_at: shared.db.time.now()
+    })
+
+    this.voiceUsageIdByParticipantId[event.sessionId()] = toggleEntry.id
+  }
+
+  async updateVoiceDuration(participant) {
+    const entryId = this.voiceUsageIdByParticipantId[participant.sessionId()]
+    if(!entryId){
+      return
+    }
+    
+    await shared.db.pg.massive.analytics_voice_usage.update(
+      {id: entryId},
+      {last_heartbeat_at: shared.db.time.now()}
+    )
+  }
+
+  async toggleVideo(event) {
+    const toggleEntry = await shared.db.pg.massive.analytics_video_usage.insert({
+      room_id: event.roomId(),
+      user_id: event.userId(),
+      participant_id: event.sessionId(),
+      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
+      is_toggled_on: event.payload().is_on,
+      toggled_at: shared.db.time.now(),
+      last_heartbeat_at: shared.db.time.now()
+    })
+
+    this.videoUsageIdByParticipantId[event.sessionId()] = toggleEntry.id
+  }
+
+  async updateVideoDuration(participant) {
+    const entryId = this.videoUsageIdByParticipantId[participant.sessionId()]
+    if(!entryId){
+      return
+    }
+    
+    await shared.db.pg.massive.analytics_video_usage.update(
       {id: entryId},
       {last_heartbeat_at: shared.db.time.now()}
     )

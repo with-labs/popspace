@@ -30,14 +30,14 @@ export const CameraToggle = (props: ICameraToggleProps) => {
 
   const handleVideoToggle = React.useCallback(() => {
     trackEvent(EventNames.TOGGLE_VIDEO, {
-      isOn: isVideoOn,
+      isOn: !isVideoOn,
       timestamp: new Date().getTime(),
     });
 
     socket?.send({
       kind: 'updateVideoState',
       payload: {
-        isOn: isVideoOn,
+        isOn: !isVideoOn,
         timestamp: new Date().getTime(),
       },
     });

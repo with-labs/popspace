@@ -42,14 +42,14 @@ export const MicToggle = (props: IMicToggleProps) => {
     }
 
     trackEvent(EventNames.TOGGLE_MIC, {
-      isOn: isMicOn,
+      isOn: !isMicOn,
       timestamp: new Date().getTime(),
     });
 
     socket?.send({
       kind: 'updateMicState',
       payload: {
-        isOn: isMicOn,
+        isOn: !isMicOn,
         timestamp: new Date().getTime(),
       },
     });

@@ -40,11 +40,11 @@ import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
 import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
 
 export type UserListMemberInfo = {
-  avatar_url: string | null;
-  display_name: string | null;
+  avatarName: string | null;
+  displayName: string | null;
   email: string;
-  has_accepted: boolean;
-  user_id: string | null;
+  hasAccepted: boolean;
+  userId: string | null;
 };
 
 interface IMemberListProps {
@@ -93,11 +93,11 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
 
   const [menuAchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedMember, setSelectedMember] = useState<UserListMemberInfo>({
-    avatar_url: null,
-    display_name: null,
+    avatarName: null,
+    displayName: null,
     email: '',
-    has_accepted: false,
-    user_id: null,
+    hasAccepted: false,
+    userId: null,
   });
   const { t } = useTranslation();
 
@@ -253,15 +253,19 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
           return (
             <ListItem key={member.email} className={classes.memberListItem}>
               <ListItemAvatar>
-                <MemberListAvatar avatarName={member.avatar_url} hasAccepted={member.has_accepted} />
+                <MemberListAvatar
+                  avatarName={member.avatarName}
+                  hasAccepted={member.hasAccepted}
+                  userId={member.userId}
+                />
               </ListItemAvatar>
               {/* we want the mulit-line text for this, so re-enable Typography*/}
               <ListItemText
-                primary={member.display_name || t('modals.inviteUserModal.invitedUser')}
+                primary={member.displayName || t('modals.inviteUserModal.invitedUser')}
                 secondary={member.email}
                 disableTypography={false}
                 classes={{
-                  primary: member.has_accepted ? classes.activeTextColor : classes.inactiveTextColor,
+                  primary: member.hasAccepted ? classes.activeTextColor : classes.inactiveTextColor,
                   secondary: classes.inactiveTextColor,
                 }}
               />
@@ -290,19 +294,19 @@ export const MemberList: React.FC<IMemberListProps> = ({ members, onMemberRemove
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {renderRemoveMemberMenuItem(selectedMember?.has_accepted)}
+        {renderRemoveMemberMenuItem(selectedMember?.hasAccepted)}
       </Menu>
       <Modal isOpen={confirmIsOpen} onClose={() => setConfirmIsOpen(false)} maxWidth="xs">
-        <ModalTitleBar title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.display_name })} />
+        <ModalTitleBar title={t('modals.inviteUserModal.removeConfirmTitle', { user: selectedMember?.displayName })} />
         <ModalContentWrapper>
           <Typography variant="body1">
-            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.display_name })}
+            {t('modals.inviteUserModal.removeConfirmDesc', { user: selectedMember?.displayName })}
           </Typography>
         </ModalContentWrapper>
         <ModalActions>
           <ThemeProvider theme={cherry}>
             <Button onClick={confirmRemoveUserHandler} color="primary">
-              {t('modals.inviteUserModal.removeConfirmButton', { user: selectedMember?.display_name })}
+              {t('modals.inviteUserModal.removeConfirmButton', { user: selectedMember?.displayName })}
             </Button>
           </ThemeProvider>
           <ThemeProvider theme={snow}>

@@ -175,3 +175,17 @@ export const randomSectionAvatar = (sectionName: string, seed?: string) => {
 
   return randomAvatar.name;
 };
+
+// Takes in the avatar section to select from
+// and the user id and returns an avatar
+export const getAvatarFromUserId = (sectionName: string, userId: string) => {
+  // user id should be a parsable string, but if not, just default to 0
+  let parsedSeed = parseInt(userId, 10);
+  if (isNaN(parsedSeed)) {
+    parsedSeed = 0;
+  }
+
+  const sectionAvatars = AvatarMetadata[sectionName];
+  const randomAvatar = sectionAvatars[parsedSeed % sectionAvatars.length];
+  return randomAvatar.name;
+};

@@ -37,11 +37,11 @@ export type ApiOpenGraphResult = {
 };
 
 export type ApiRoomMember = {
-  display_name: string;
+  displayName: string;
   email: string;
-  user_id: string;
-  avatar_url: string;
-  has_accepted: boolean;
+  userId: string;
+  avatarName: string;
+  hasAccepted: boolean;
 };
 
 export type ApiInviteDetails = {

@@ -597,6 +597,9 @@ function createRoomStore() {
               },
             });
           },
+          getActiveUserId() {
+            return getOwnUserId();
+          },
         };
 
         return {

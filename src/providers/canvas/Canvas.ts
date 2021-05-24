@@ -118,7 +118,12 @@ export class Canvas extends EventEmitter {
     size: Bounds | null
   ) => {
     if (objectKind === 'person') {
-      useRoomStore.getState().api.transformSelf({ position: position || undefined, size: size || undefined });
+      const { getActiveUserId, transformSelf } = useRoomStore.getState().api;
+      // local user can only move or resize themselves; ignore gestures for all
+      // other users
+      if (objectId !== getActiveUserId()) return;
+
+      transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {
       useRoomStore.getState().api.transformWidget({
         widgetId: objectId,

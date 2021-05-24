@@ -2,6 +2,7 @@ import { TFunction } from 'i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { isSmallScreen } from '../../../utils/environment';
 import { parseYoutubeLink } from '../../../utils/youtube';
+import { INITIAL_SIZE_PLAYER, SIZE_EDIT } from '../../room/widgets/youtube/constants';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function youtubeQuickActions(prompt: string, t: TFunction): QuickAction[] {
@@ -20,6 +21,7 @@ export function youtubeQuickActions(prompt: string, t: TFunction): QuickAction[]
             playStartedTimestampUTC: null,
           },
         },
+        size: SIZE_EDIT,
         confidence: 5,
       },
     ];
@@ -41,6 +43,7 @@ export function youtubeQuickActions(prompt: string, t: TFunction): QuickAction[]
               playStartedTimestampUTC: new Date().toUTCString(),
             },
           },
+          size: INITIAL_SIZE_PLAYER,
           confidence: 10,
         },
       ];

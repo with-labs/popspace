@@ -97,3 +97,27 @@ export function snap(value: number, increment: number) {
 export function snapWithoutZero(value: number, increment: number) {
   return Math.max(increment, snap(value, increment));
 }
+
+/**
+ * Measures if a number is between a min and max, inclusive on both
+ * ends. If either min or max is undefined, it passes that check.
+ */
+export function isInBounds(value: number, min?: number, max?: number) {
+  return (!max || value <= max) && (!min || value >= min);
+}
+
+/**
+ * Compares two numbers for equality, with a given tolerance
+ */
+export function compareEpsilon(value: number, target: number, epsilon = Number.EPSILON) {
+  return Math.abs(value - target) <= epsilon;
+}
+
+/**
+ * Compares two numbers for equality with a percentage-based tolerance. Default 1%.
+ */
+export function compareWithTolerance(value: number, target: number, tolerance = 0.01) {
+  const ratio = value / target;
+  const delta = Math.abs(ratio - 1);
+  return delta < tolerance;
+}

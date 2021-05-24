@@ -25,7 +25,8 @@ export const PersonBubbleLabel = React.forwardRef<HTMLDivElement, IPersonBubbleL
 
     const bottomSectionStyles = useSpring({
       lineHeight: '1',
-      height: isVideoOn ? 24 : 16,
+      height: isVideoOn ? 24 : 40,
+      justifyContent: isVideoOn ? 'center' : 'flex-start',
     });
 
     return (

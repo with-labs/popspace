@@ -9,6 +9,8 @@ import { PersonBubbleLabel } from './PersonBubbleLabel';
 import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
 import { PersonBubbleAvatar } from './PersonBubbleAvatar';
 import { AwayIcon } from '../../../components/icons/AwayIcon';
+import clsx from 'clsx';
+import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
 
 interface IPseudoUserBubbleProps {
   isVideoOn?: boolean;
@@ -19,6 +21,13 @@ interface IPseudoUserBubbleProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    ...SIZE_AVATAR,
+    transition: theme.transitions.create(['width', 'height']),
+  },
+  rootVideo: {
+    ...INITIAL_SIZE_VIDEO,
+  },
   mainContent: {
     overflow: 'hidden',
     width: '100%',
@@ -99,7 +108,11 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
   const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
 
   return (
-    <PersonBubbleFrame isVideoOn={isVideoOn} className={className} {...rest}>
+    <PersonBubbleFrame
+      isVideoOn={isVideoOn}
+      className={clsx(classes.root, isVideoOn && classes.rootVideo, className)}
+      {...rest}
+    >
       <PersonBubbleContent isVideoOn={isVideoOn}>
         <PersonBubbleBackground isVideoOn={isVideoOn} grayscale={isAway} backgroundColor={backgroundColor}>
           {isVideoOn && <Box className={classes.video}>{children}</Box>}

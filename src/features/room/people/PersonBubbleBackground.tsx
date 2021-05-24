@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
     overflow: 'hidden',
+    flex: 1,
   },
 }));
 
@@ -25,7 +26,6 @@ export const PersonBubbleBackground = React.forwardRef<HTMLDivElement, IPersonBu
     const classes = useStyles();
     const theme = useTheme();
     const graphicStyles = useSpring({
-      height: isVideoOn ? EXPANDED_SIZE - 32 : SMALL_SIZE - 49,
       backgroundColor: grayscale ? theme.palette.grey[500] : backgroundColor,
     });
 

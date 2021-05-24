@@ -11,6 +11,7 @@ import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
 import { UploadingWidget } from './UploadingWidget';
 import { ThemeName } from '../../../../theme/theme';
+import { MAX_SIZE_EDIT, MIN_SIZE_EDIT } from './constants';
 
 export interface ILinkWidgetProps {}
 
@@ -34,7 +35,13 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   if (!state.widgetState.url) {
     if (state.ownerId === user?.id) {
       return (
-        <WidgetFrame color={ThemeName.Lavender}>
+        <WidgetFrame
+          color={ThemeName.Lavender}
+          minWidth={MIN_SIZE_EDIT.width}
+          minHeight={MIN_SIZE_EDIT.height}
+          maxWidth={MAX_SIZE_EDIT.width}
+          maxHeight={MAX_SIZE_EDIT.height}
+        >
           <WidgetTitlebar title={t('widgets.link.addWidgetTitle')} />
           <WidgetContent>
             <EditLinkWidgetForm onSave={save} />

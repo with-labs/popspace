@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { isSmallScreen } from '../../../utils/environment';
+import { INITIAL_SIZE } from '../../room/widgets/stickyNote/constants';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function stickyNoteQuickActions(prompt: string, t: TFunction): QuickAction[] {
@@ -16,6 +17,7 @@ export function stickyNoteQuickActions(prompt: string, t: TFunction): QuickActio
         accessoryData: {
           text: '',
         },
+        size: INITIAL_SIZE,
         confidence: 5,
       },
     ];
@@ -30,6 +32,7 @@ export function stickyNoteQuickActions(prompt: string, t: TFunction): QuickActio
         accessoryData: {
           text: prompt,
         },
+        size: INITIAL_SIZE,
         confidence: 2,
       },
     ];

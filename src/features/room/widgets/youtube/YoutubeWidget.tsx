@@ -7,7 +7,6 @@ import { EditYoutubeWidgetForm } from './EditYoutubeWidgetForm';
 import { MuteButton } from '../MuteButton';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
@@ -15,6 +14,7 @@ import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useIsAway } from '../../../roomControls/away/useIsAway';
 import { ThemeName } from '../../../../theme/theme';
+import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
 
 export interface IYoutubeWidgetProps {}
 
@@ -63,7 +63,8 @@ const useStyles = makeStyles((theme) => ({
     willChange: 'top',
   },
   formContent: {
-    width: 300,
+    width: '100%',
+    height: '100%',
   },
 }));
 
@@ -87,7 +88,14 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   if (!state.widgetState.videoId) {
     if (state.ownerId === localUserId) {
       return (
-        <WidgetFrame color={ThemeName.Cherry}>
+        <WidgetFrame
+          color={ThemeName.Cherry}
+          minWidth={SIZE_EDIT.width}
+          minHeight={SIZE_EDIT.height}
+          maxWidth={SIZE_EDIT.width}
+          maxHeight={SIZE_EDIT.height}
+          resizeDisabled
+        >
           <WidgetTitlebar title={t('widgets.youtube.title')} />
           <WidgetContent className={classes.formContent}>
             <EditYoutubeWidgetForm onSave={saveWidget} />
@@ -104,22 +112,20 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   const finalMuted = isMuted || isAway;
 
   return (
-    <WidgetFrame color={ThemeName.Cherry}>
+    <WidgetFrame
+      color={ThemeName.Cherry}
+      minWidth={MIN_SIZE_PLAYER.width}
+      minHeight={MIN_SIZE_PLAYER.height}
+      maxWidth={MAX_SIZE_PLAYER.width}
+      maxHeight={MAX_SIZE_PLAYER.height}
+      preserveAspect
+    >
       <WidgetTitlebar title={t('widgets.youtube.title')}>
         <MuteButton isPlaying={isPlaying} isMuted={finalMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer
-          minWidth={480}
-          minHeight={270}
-          maxWidth={1440}
-          maxHeight={900}
-          className={classes.videoContainer}
-          mode="scale"
-        >
-          <YouTubePlayer state={state} onChange={saveWidget} isMuted={finalMuted} />
-          <WidgetResizeHandle className={classes.resizeHandle} />
-        </WidgetResizeContainer>
+        <YouTubePlayer state={state} onChange={saveWidget} isMuted={finalMuted} />
+        <WidgetResizeHandle className={classes.resizeHandle} />
       </WidgetContent>
     </WidgetFrame>
   );

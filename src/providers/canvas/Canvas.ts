@@ -5,19 +5,15 @@ import { Viewport } from '../viewport/Viewport';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { clampSizeMaintainingRatio } from '../../utils/clampSizeMaintainingRatio';
-import { clamp, snap, snapWithoutZero } from '../../utils/math';
+import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '../../utils/math';
+import { SMALL_SIZE } from '../../features/room/people/constants';
 
 const MOVE_THROTTLE_PERIOD = 100;
 
-type ActiveDragState = {
+type ActiveGestureState = {
   objectId: string | null;
-  objectType: CanvasObjectKind | null;
+  objectKind: CanvasObjectKind | null;
   position: Vector2 | null;
-};
-
-type ActiveResizeState = {
-  objectId: string | null;
-  objectType: CanvasObjectKind | null;
   size: Bounds | null;
   aspectRatio: number | null;
 };
@@ -46,6 +42,7 @@ export interface ResizeInfo {
   maxWidth?: number;
   maxHeight?: number;
   preserveAspect?: boolean;
+  origin?: 'top-left' | 'center';
 }
 
 /**
@@ -62,11 +59,11 @@ const objectPositionSelector = (objectId: string, objectType: CanvasObjectKind) 
 };
 const objectSizeSelector = (objectId: string, objectType: CanvasObjectKind) => (roomState: RoomStateShape) => {
   if (objectType === 'person') {
-    return roomState.userPositions[objectId]?.size ?? null;
+    return roomState.userPositions[objectId]?.size ?? { width: SMALL_SIZE, height: SMALL_SIZE };
   } else if (objectType === 'widget') {
-    return roomState.widgetPositions[objectId]?.size ?? null;
+    return roomState.widgetPositions[objectId]?.size ?? { width: 140, height: 80 };
   }
-  return null;
+  return { width: 140, height: 80 };
 };
 
 export declare interface Canvas {
@@ -82,23 +79,15 @@ export declare interface Canvas {
  * for both CanvasContext and SizingContext
  */
 export class Canvas extends EventEmitter {
-  private activeDragStore = create(
+  private activeGestureStore = create(
     () =>
       ({
         objectId: null,
-        objectType: null,
+        objectKind: null,
         position: null,
-      } as ActiveDragState)
-  );
-
-  private activeResizeStore = create(
-    () =>
-      ({
-        objectId: null,
-        objectType: null,
         size: null,
         aspectRatio: null,
-      } as ActiveResizeState)
+      } as ActiveGestureState)
   );
 
   private measurementsStore = create(() => ({} as Record<string, Bounds>));
@@ -106,8 +95,7 @@ export class Canvas extends EventEmitter {
   private positionObservers: Record<string, Set<(position: Vector2) => void>> = {};
   private sizeObservers: Record<string, Set<(size: Bounds) => void>> = {};
 
-  private unsubscribeActiveDrag: () => void;
-  private unsubscribeActiveResize: () => void;
+  private unsubscribeActiveGesture: () => void;
 
   private _positionSnapIncrement = 1;
   private _sizeSnapIncrement = 1;
@@ -116,38 +104,65 @@ export class Canvas extends EventEmitter {
 
   constructor(private viewport: Viewport, options?: CanvasOptions) {
     super();
-    this.unsubscribeActiveDrag = this.activeDragStore.subscribe(this.handleActivePositionChange);
-    this.unsubscribeActiveResize = this.activeResizeStore.subscribe(this.handleActiveSizeChange);
+    this.unsubscribeActiveGesture = this.activeGestureStore.subscribe(this.handleActiveGestureChange);
     // @ts-ignore for debugging...
     window.roomCanvas = this;
     this._positionSnapIncrement = options?.positionSnapIncrement ?? 1;
     this._sizeSnapIncrement = options?.sizeSnapIncrement ?? 1;
   }
 
-  private syncObjectPosition = (position: Vector2, objectId: string, objectType: CanvasObjectKind) => {
-    if (objectType === 'person') {
-      useRoomStore.getState().api.moveSelf({ position });
-    } else if (objectType === 'widget') {
-      useRoomStore.getState().api.moveWidget({ widgetId: objectId, position });
+  private commitGesture = (
+    objectId: string,
+    objectKind: CanvasObjectKind,
+    position: Vector2 | null,
+    size: Bounds | null
+  ) => {
+    if (objectKind === 'person') {
+      useRoomStore.getState().api.transformSelf({ position: position || undefined, size: size || undefined });
+    } else if (objectKind === 'widget') {
+      useRoomStore.getState().api.transformWidget({
+        widgetId: objectId,
+        transform: {
+          position: position || undefined,
+          size: size || undefined,
+        },
+      });
     }
   };
-  private throttledSyncObjectPosition = throttle(this.syncObjectPosition, MOVE_THROTTLE_PERIOD, { trailing: false });
+  /**
+   * Commits the gesture data from the active gesture store to
+   * the backend
+   */
+  private commitActiveGesture = () => {
+    const { objectId, objectKind, position, size } = this.activeGestureStore.getState();
+    if (!objectId || !objectKind) return;
+    this.commitGesture(objectId, objectKind, position, size);
+  };
+  private throttledCommitActiveGesture = throttle(this.commitActiveGesture, MOVE_THROTTLE_PERIOD, { trailing: false });
 
   // subscribe to changes in active object position and forward them to the
   // correct object
-  private handleActivePositionChange = (state: ActiveDragState) => {
-    if (state.objectId && state.position) {
-      const position = state.position;
-      this.positionObservers[state.objectId]?.forEach((cb) => cb(position));
+  private handleActiveGestureChange = (state: ActiveGestureState) => {
+    if (state.objectId) {
+      if (state.position) {
+        const position = state.position;
+        this.positionObservers[state.objectId]?.forEach((cb) => cb(position));
+      }
+      if (state.size) {
+        const size = state.size;
+        this.sizeObservers[state.objectId]?.forEach((cb) => cb(size));
+      }
     }
   };
-  // subscribe to changes in active object size and forward them to the
-  // correct object
-  private handleActiveSizeChange = (state: ActiveResizeState) => {
-    if (state.objectId && state.size) {
-      const size = state.size;
-      this.sizeObservers[state.objectId]?.forEach((cb) => cb(size));
-    }
+
+  private clearActiveGesture = () => {
+    this.activeGestureStore.setState({
+      objectId: null,
+      objectKind: null,
+      position: null,
+      size: null,
+      aspectRatio: null,
+    });
   };
 
   private snapPosition = (position: Vector2) => ({
@@ -157,9 +172,9 @@ export class Canvas extends EventEmitter {
 
   onObjectDragStart = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
     const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
-    this.activeDragStore.setState({
+    this.activeGestureStore.setState({
       objectId,
-      objectType,
+      objectKind: objectType,
       position: worldPosition,
     });
     this.emit('gestureStart');
@@ -167,24 +182,45 @@ export class Canvas extends EventEmitter {
 
   onObjectDrag = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
     const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
-    this.activeDragStore.setState({
+    this.activeGestureStore.setState({
       objectId,
-      objectType,
+      objectKind: objectType,
       position: worldPosition,
     });
-    // also update backend with throttling, but snapped to the grid
-    this.throttledSyncObjectPosition(this.snapPosition(worldPosition), objectId, objectType);
+    this.throttledCommitActiveGesture();
   };
 
   onObjectDragEnd = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
-    this.activeDragStore.setState({
-      objectId: null,
-      objectType: null,
-      position: null,
+    const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
+    this.activeGestureStore.setState({
+      objectId,
+      objectKind: objectType,
+      position: worldPosition,
     });
-    const worldPosition = this.snapPosition(this.viewport.viewportToWorld(screenPosition, true));
-    this.syncObjectPosition(worldPosition, objectId, objectType);
+    this.commitActiveGesture();
+    this.clearActiveGesture();
     this.emit('gestureEnd');
+  };
+
+  /**
+   * Directly sets the world position of an object, applying
+   * clamping and snapping behaviors.
+   */
+  setPosition = (worldPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
+    this.commitGesture(objectId, objectType, this.viewport.clampToWorld(this.snapPosition(worldPosition)), null);
+  };
+
+  /**
+   * Moves an object relatively from its current position in world coordinates, applying
+   * clamping and snapping behaviors.
+   */
+  movePositionRelative = (movement: Vector2, objectId: string, objectType: CanvasObjectKind) => {
+    this.commitGesture(
+      objectId,
+      objectType,
+      this.viewport.clampToWorld(this.snapPosition(addVectors(this.getPosition(objectId, objectType), movement))),
+      null
+    );
   };
 
   observePosition = (objectId: string, objectType: CanvasObjectKind, observer: (position: Vector2) => void) => {
@@ -195,7 +231,7 @@ export class Canvas extends EventEmitter {
     const unsubscribe = useRoomStore.subscribe((position) => {
       // only notify observer of Room State position changes if the object
       // is not actively being moved, which should override Room State position.
-      if (this.activeDragStore.getState().objectId !== objectId) {
+      if (this.activeGestureStore.getState().objectId !== objectId) {
         observer(position);
       }
     }, objectPositionSelector(objectId, objectType));
@@ -207,7 +243,7 @@ export class Canvas extends EventEmitter {
   };
 
   getPosition = (objectId: string, objectType: CanvasObjectKind) => {
-    const activeDragState = this.activeDragStore.getState();
+    const activeDragState = this.activeGestureStore.getState();
     if (activeDragState.objectId === objectId && activeDragState.position) {
       return activeDragState.position;
     }
@@ -261,26 +297,40 @@ export class Canvas extends EventEmitter {
   };
 
   onResizeStart = (initialSize: Bounds, objectId: string, objectKind: CanvasObjectKind) => {
-    this.activeResizeStore.setState({
+    this.activeGestureStore.setState({
       objectId,
-      objectType: objectKind,
+      objectKind,
       aspectRatio: initialSize.width / initialSize.height,
       size: initialSize,
+      position: this.getPosition(objectId, objectKind),
     });
+  };
+
+  private getCenterResizeOffset = (objectId: string, objectKind: CanvasObjectKind, newSize: Bounds) => {
+    const oldSize = this.getSize(objectId, objectKind);
+    const delta = { x: newSize.width - oldSize.width, y: newSize.height - oldSize.height };
+    return addVectors(this.getPosition(objectId, objectKind), multiplyVector(delta, -0.5));
   };
 
   onResize = (size: Bounds, objectId: string, objectKind: CanvasObjectKind, info: ResizeInfo) => {
     const clampedSize = this.clampAndEnforceMode({
       ...size,
       ...info,
-      aspectRatio: this.activeResizeStore.getState().aspectRatio || 1,
+      aspectRatio: this.activeGestureStore.getState().aspectRatio || 1,
       snap: false,
     });
 
-    this.activeResizeStore.setState({
+    // for center origin, offset the position at 1/2 the size delta
+    const position =
+      info.origin === 'center'
+        ? this.getCenterResizeOffset(objectId, objectKind, clampedSize)
+        : this.activeGestureStore.getState().position;
+
+    this.activeGestureStore.setState({
       size: clampedSize,
       objectId,
-      objectType: objectKind,
+      objectKind,
+      position,
     });
   };
 
@@ -288,25 +338,44 @@ export class Canvas extends EventEmitter {
     const clampedSize = this.clampAndEnforceMode({
       ...size,
       ...info,
-      aspectRatio: this.activeResizeStore.getState().aspectRatio || 1,
+      aspectRatio: this.activeGestureStore.getState().aspectRatio || 1,
       snap: true,
     });
-    this.activeResizeStore.setState({
-      objectId: null,
-      objectType: null,
-      size: null,
-      aspectRatio: null,
+    // for center origin, offset the position at 1/2 the size delta
+    const position =
+      info.origin === 'center'
+        ? this.getCenterResizeOffset(objectId, objectKind, clampedSize)
+        : this.activeGestureStore.getState().position;
+    this.activeGestureStore.setState({
+      objectId,
+      objectKind,
+      size: clampedSize,
+      position,
     });
-    // only widget resizes are supported
-    if (objectKind === 'widget') {
-      useRoomStore.getState().api.resizeWidget({
-        widgetId: objectId,
-        size: clampedSize,
-      });
-    }
+    this.commitActiveGesture();
+    this.clearActiveGesture();
   };
 
-  observeSize = (objectId: string, objectKind: CanvasObjectKind, observer: (size: Bounds | null) => void) => {
+  /**
+   * Directly set the size of an object, in world units, applying any resize
+   * constraints.
+   */
+  setSize = (size: Bounds, objectId: string, objectKind: CanvasObjectKind, info: ResizeInfo) => {
+    const currentSize = this.getSize(objectId, objectKind);
+    const currentAspectRatio = currentSize.width / currentSize.height;
+    const clampedSize = this.clampAndEnforceMode({
+      ...size,
+      ...info,
+      aspectRatio: currentAspectRatio,
+      snap: true,
+    });
+    // for center origin, offset the position at 1/2 the size delta
+    const position = info.origin === 'center' ? this.getCenterResizeOffset(objectId, objectKind, clampedSize) : null;
+
+    this.commitGesture(objectId, objectKind, position, clampedSize);
+  };
+
+  observeSize = (objectId: string, objectKind: CanvasObjectKind, observer: (size: Bounds) => void) => {
     // store the observer
     this.sizeObservers[objectId] = this.sizeObservers[objectId] ?? new Set();
     this.sizeObservers[objectId].add(observer);
@@ -314,7 +383,7 @@ export class Canvas extends EventEmitter {
     const unsubscribe = useRoomStore.subscribe((position) => {
       // only notify observer of Room State position changes if the object
       // is not actively being moved, which should override Room State position.
-      if (this.activeResizeStore.getState().objectId !== objectId) {
+      if (this.activeGestureStore.getState().objectId !== objectId) {
         observer(position);
       }
     }, objectSizeSelector(objectId, objectKind));
@@ -326,7 +395,7 @@ export class Canvas extends EventEmitter {
   };
 
   getSize = (objectId: string, objectKind: CanvasObjectKind) => {
-    const activeResizeState = this.activeResizeStore.getState();
+    const activeResizeState = this.activeGestureStore.getState();
     if (activeResizeState.objectId === objectId && activeResizeState.size) {
       return activeResizeState.size;
     }
@@ -358,7 +427,6 @@ export class Canvas extends EventEmitter {
   };
 
   dispose = () => {
-    this.unsubscribeActiveDrag();
-    this.unsubscribeActiveResize();
+    this.unsubscribeActiveGesture();
   };
 }

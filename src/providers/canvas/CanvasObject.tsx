@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core';
 import useMergedRef from '@react-hook/merged-ref';
-import { animated, to } from '@react-spring/web';
+import { animated, SpringValue, to } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
@@ -10,11 +10,7 @@ import { CanvasObjectKind } from './Canvas';
 import { useCanvas } from './CanvasProvider';
 import { useCanvasObjectDrag } from './useCanvasObjectDrag';
 import { useCanvasObjectMeasurement } from './useCanvasObjectMeasurement';
-
-const TOP_LEFT_ORIGIN = {
-  vertical: 0,
-  horizontal: 0,
-};
+import { useCanvasObjectResize } from './useCanvasObjectResize';
 
 export interface ICanvasObjectProps {
   objectId: string;
@@ -29,18 +25,16 @@ export interface ICanvasObjectProps {
    * parent of any children.
    */
   contentClassName?: string;
-  /**
-   * Optionally, you can customize how the object positions itself
-   * relative to its position coordinate value. Values are 0-1.0,
-   * representing percentages.
-   */
-  origin?: {
-    vertical: number;
-    horizontal: number;
-  };
+  origin?: 'center' | 'top-left';
   onDragStart?: () => void;
   onDragEnd?: () => void;
   style?: React.CSSProperties;
+  minWidth?: number;
+  minHeight?: number;
+  maxWidth?: number;
+  maxHeight?: number;
+  preserveAspect?: boolean;
+  resizeDisabled?: boolean;
 }
 
 const stopPointerPropagation = (ev: React.MouseEvent | React.PointerEvent) => {
@@ -87,15 +81,23 @@ export const CanvasObjectContext = React.createContext<{
   isGrabbing: boolean;
   objectId: string;
   objectKind: CanvasObjectKind;
-  getSize: () => Bounds | null;
+  getSize: () => Bounds;
   getPosition: () => Vector2;
+  resizeHandleProps: ReactEventHandlers;
+  isResizingAnimatedValue: SpringValue<boolean>;
+  resizeDisabled: boolean;
+  resize: (newSize: Bounds, resetAspectRatio?: boolean) => void;
 }>({
   dragHandleProps: {},
   isGrabbing: false,
   objectId: '',
   objectKind: 'other',
-  getSize: () => null,
+  getSize: () => ({ width: 100, height: 100 }),
   getPosition: () => ({ x: 0, y: 0 }),
+  resizeHandleProps: {},
+  isResizingAnimatedValue: null as any,
+  resizeDisabled: false,
+  resize: () => {},
 });
 
 export function useCanvasObject() {
@@ -119,8 +121,14 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
   className,
   zIndex,
   children,
-  origin = TOP_LEFT_ORIGIN,
+  origin = 'top-left',
   style,
+  minWidth = 100,
+  minHeight = 100,
+  maxWidth = 10000,
+  maxHeight = 10000,
+  preserveAspect = false,
+  resizeDisabled = false,
   ...rest
 }) => {
   const styles = useStyles();
@@ -138,6 +146,34 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
     onDragStart,
   });
 
+  const resizeInfo = React.useMemo(
+    () => ({
+      minWidth,
+      minHeight,
+      maxWidth,
+      maxHeight,
+      preserveAspect,
+      origin,
+    }),
+    [maxHeight, maxWidth, minHeight, minWidth, preserveAspect, origin]
+  );
+
+  const { style: resizeStyle, bindResizeHandle } = useCanvasObjectResize({
+    objectId,
+    objectKind,
+    resizeInfo,
+  });
+
+  const resize = React.useCallback(
+    (size: Bounds, resetAspectRatio = false) => {
+      canvas.setSize(size, objectId, objectKind, {
+        ...resizeInfo,
+        preserveAspect: resetAspectRatio ? false : resizeInfo.preserveAspect,
+      });
+    },
+    [canvas, objectId, objectKind, resizeInfo]
+  );
+
   const ctx = React.useMemo(
     () => ({
       dragHandleProps: bindDragHandle(),
@@ -146,8 +182,22 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
       objectId,
       getSize: () => canvas.getSize(objectId, objectKind),
       getPosition: () => canvas.getPosition(objectId, objectKind),
+      resizeHandleProps: bindResizeHandle(),
+      isResizingAnimatedValue: resizeStyle.resizing,
+      resizeDisabled,
+      resize,
     }),
-    [bindDragHandle, isGrabbing, objectId, objectKind, canvas]
+    [
+      bindDragHandle,
+      isGrabbing,
+      objectKind,
+      objectId,
+      bindResizeHandle,
+      resizeStyle.resizing,
+      resizeDisabled,
+      canvas,
+      resize,
+    ]
   );
 
   const ref = useMergedRef(dragRef, measureRef);
@@ -165,13 +215,13 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
            */
           transform: to(
             [dragStyle.x, dragStyle.y, pickupSpring.value],
-            (xv, yv, grabEffect) =>
-              `translate(${xv}px, ${yv}px) translate(${-origin.horizontal * 100}%, ${-origin.vertical * 100}%) scale(${
-                1 + 0.05 * grabEffect
-              })`
+            (xv, yv, grabEffect) => `translate(${xv}px, ${yv}px) scale(${1 + 0.05 * grabEffect})`
           ),
           zIndex: zIndex as any,
           cursor: isGrabbing ? 'grab' : 'inherit',
+          width: resizeStyle.width,
+          height: resizeStyle.height,
+          pointerEvents: resizeStyle.resizing.to((v) => (v ? 'none' : '')) as any,
         }}
         className={clsx(styles.root, className)}
         onKeyDown={stopKeyboardPropagation}

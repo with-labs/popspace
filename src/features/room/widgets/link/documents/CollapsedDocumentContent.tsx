@@ -1,10 +1,12 @@
 import { Box, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { Link } from '../../../../../components/Link/Link';
+import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
 import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
+import { SIZE_STUB } from '../constants';
 import { FileIcon } from '../FileIcon';
 import { LinkMenu } from '../menu/LinkMenu';
 
@@ -36,6 +38,14 @@ export function CollapsedDocumentContent() {
   const {
     widget: { widgetState },
   } = useWidgetContext<WidgetType.Link>();
+
+  // on mount, enforce the size of the container. enforcing on mount
+  // is ok because all document stubs should be the same size always,
+  // so it's fine if other clients trigger this resize at random times.
+  const { resize } = useCanvasObject();
+  React.useEffect(() => {
+    resize({ width: SIZE_STUB.width, height: SIZE_STUB.height });
+  }, [resize]);
 
   return (
     <CanvasObjectDragHandle>

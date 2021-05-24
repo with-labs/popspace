@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next';
 import { featureFlags } from '../../../featureFlags';
 import { WidgetType } from '../../../roomState/types/widgets';
+import { INITIAL_SIZE_VIDEO } from '../../room/people/constants';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function mockUserQuickActions(prompt: string, t: TFunction): QuickAction[] {
@@ -21,6 +22,7 @@ export function mockUserQuickActions(prompt: string, t: TFunction): QuickAction[
         accessoryType: WidgetType.MockUser,
         confidence: 10,
         displayName: 'Add mock user',
+        size: INITIAL_SIZE_VIDEO,
       },
     ];
   }

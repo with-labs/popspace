@@ -16,6 +16,7 @@ import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { WidgetType } from '../../../../roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
+import { SIZE } from './constants';
 
 export interface IWhiteboardWidgetProps {}
 
@@ -58,7 +59,7 @@ export const WhiteboardWidget: React.FC<IWhiteboardWidgetProps> = () => {
   const handleExport = useExport(exportToImageURL);
 
   return (
-    <WidgetFrame color={ThemeName.Snow}>
+    <WidgetFrame color={ThemeName.Snow} minWidth={SIZE.width} minHeight={SIZE.height} resizeDisabled>
       <WidgetTitlebar title={<WhiteboardTools {...toolsProps} />}>
         <WidgetTitlebarButton onClick={handleExport} aria-label={t('widgets.whiteboard.export')}>
           <SaveIcon fontSize="inherit" color="inherit" />

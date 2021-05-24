@@ -98,6 +98,7 @@ describe('the central room state store (useRoomStore)', () => {
                 },
                 transform: {
                   position: { x: 0, y: 0 },
+                  size: { width: 140, height: 140 },
                 },
               },
             ],
@@ -123,6 +124,7 @@ describe('the central room state store (useRoomStore)', () => {
                   },
                   transform: {
                     position: { x: 0, y: 0 },
+                    size: { width: 240, height: 240 },
                   },
                 },
               ],
@@ -170,11 +172,13 @@ describe('the central room state store (useRoomStore)', () => {
           widgetPositions: {
             'widget-1': {
               position: { x: 0, y: 0 },
+              size: { width: 240, height: 240 },
             },
           },
           userPositions: {
             'cat-id': {
               position: { x: 0, y: 0 },
+              size: { width: 140, height: 140 },
             },
           },
           sessionId: 'session-id',
@@ -221,9 +225,11 @@ describe('the central room state store (useRoomStore)', () => {
           userPositions: {
             user1: {
               position: { x: 0, y: 0 },
+              size: { width: 140, height: 140 },
             },
             user2: {
               position: { x: 10, y: -30 },
+              size: { width: 140, height: 140 },
             },
           },
         });
@@ -233,7 +239,7 @@ describe('the central room state store (useRoomStore)', () => {
         const payload = {
           position: { x: 50, y: 25 },
         };
-        api.moveSelf(payload);
+        api.transformSelf(payload);
 
         expect(useRoomStore.getState().userPositions.user1.position).toEqual({
           x: 50,
@@ -244,6 +250,7 @@ describe('the central room state store (useRoomStore)', () => {
           payload: {
             transform: {
               position: { x: 50, y: 25 },
+              size: { width: 140, height: 140 },
             },
           },
         });
@@ -291,6 +298,7 @@ describe('the central room state store (useRoomStore)', () => {
             sessionId: 'new-session',
             transform: {
               position: { x: 10, y: 0 },
+              size: { width: 140, height: 140 },
             },
             user: {
               id: 'new-user',
@@ -314,6 +322,7 @@ describe('the central room state store (useRoomStore)', () => {
         expect(useRoomStore.getState().sessionLookup['new-session']).toEqual('new-user');
         expect(useRoomStore.getState().userPositions['new-user']).toEqual({
           position: { x: 10, y: 0 },
+          size: { width: 140, height: 140 },
         });
       });
 
@@ -336,6 +345,7 @@ describe('the central room state store (useRoomStore)', () => {
             sessionId: 'new-session',
             transform: {
               position: { x: 10, y: 0 },
+              size: { width: 140, height: 140 },
             },
             user: {
               id: 'user1',
@@ -380,6 +390,7 @@ describe('the central room state store (useRoomStore)', () => {
             sessionId: 'new-session',
             transform: {
               position: { x: 10, y: 0 },
+              size: { width: 140, height: 140 },
             },
             user: {
               id: 'user1',
@@ -476,12 +487,14 @@ describe('the central room state store (useRoomStore)', () => {
           payload: {
             transform: {
               position: { x: -50, y: -50 },
+              size: { width: 140, height: 140 },
             },
           },
         });
 
         expect(useRoomStore.getState().userPositions.user1).toEqual({
           position: { x: -50, y: -50 },
+          size: { width: 140, height: 140 },
         });
       });
     });
@@ -503,6 +516,7 @@ describe('the central room state store (useRoomStore)', () => {
           widgetPositions: {
             widget1: {
               position: { x: 0, y: 0 },
+              size: { width: 140, height: 140 },
             },
           },
         });
@@ -519,6 +533,12 @@ describe('the central room state store (useRoomStore)', () => {
             text: 'something',
           },
         };
+        (socket.sendAndWaitForResponse as jest.Mock).mockResolvedValueOnce({
+          payload: {
+            ...payload,
+            widgetId: 'mock_widget_id',
+          },
+        });
         api.addWidget(payload);
 
         expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({

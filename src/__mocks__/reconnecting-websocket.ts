@@ -7,7 +7,7 @@ class MockEventSource extends EventEmitter {
   addEventListener = this.on;
   removeEventListener = this.off;
   dispatchEvent = (event: Event) => {
-    this.emit(event.type, event);
+    this.emit(event?.type, event);
   };
 }
 

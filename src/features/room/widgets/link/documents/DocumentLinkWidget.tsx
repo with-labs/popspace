@@ -1,23 +1,13 @@
 import * as React from 'react';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
-import { WidgetResizeContainer } from '../../WidgetResizeContainer';
 import { WidgetFrame } from '../../WidgetFrame';
 import { IFrameDocumentContent } from './IFrameDocumentContent';
 import { CollapsedDocumentContent } from './CollapsedDocumentContent';
-import { makeStyles } from '@material-ui/core';
 import { ThemeName } from '../../../../../theme/theme';
-
-const useStyles = makeStyles(() => ({
-  resizeContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}));
+import { MAX_SIZE_FRAME, SIZE_STUB } from '../constants';
 
 export function DocumentLinkWidget() {
-  const classes = useStyles();
-
   const {
     widget: { widgetState },
   } = useWidgetContext<WidgetType.Link>();
@@ -26,17 +16,15 @@ export function DocumentLinkWidget() {
   const isPDF = widgetState.mediaContentType === 'application/pdf';
 
   return (
-    <WidgetFrame color={ThemeName.Snow}>
-      <WidgetResizeContainer
-        mode="free"
-        minWidth={340}
-        minHeight={80}
-        maxWidth={1440}
-        maxHeight={900}
-        className={classes.resizeContainer}
-      >
-        {widgetState.showIframe ? <IFrameDocumentContent disableSandbox={isPDF} /> : <CollapsedDocumentContent />}
-      </WidgetResizeContainer>
+    <WidgetFrame
+      color={ThemeName.Snow}
+      minWidth={SIZE_STUB.width}
+      minHeight={SIZE_STUB.height}
+      maxWidth={MAX_SIZE_FRAME.width}
+      maxHeight={MAX_SIZE_FRAME.height}
+      resizeDisabled={!widgetState.showIframe}
+    >
+      {widgetState.showIframe ? <IFrameDocumentContent disableSandbox={isPDF} /> : <CollapsedDocumentContent />}
     </WidgetFrame>
   );
 }

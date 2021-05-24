@@ -18,6 +18,9 @@ import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
 import { PersonBubbleStatus } from './PersonBubbleStatus';
 import { PersonBubbleAvatar } from './PersonBubbleAvatar';
 import { AwayIcon } from '../../../components/icons/AwayIcon';
+import { useCanvasObject } from '../../../providers/canvas/CanvasObject';
+import { WidgetResizeHandle } from '../widgets/WidgetResizeHandle';
+import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   isMe: boolean;
   person: RoomUserStateShape;
@@ -133,6 +136,16 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
           onPointerLeave: onUnHover,
         };
 
+    // enforce widget sizing based on video status
+    const { resize } = useCanvasObject();
+    React.useEffect(() => {
+      if (isVideoOn) {
+        resize(INITIAL_SIZE_VIDEO, true);
+      } else {
+        resize(SIZE_AVATAR, true);
+      }
+    }, [resize, isVideoOn]);
+
     return (
       <PersonBubbleFrame {...rest} isVideoOn={isVideoOn} ref={ref} data-test-person={displayIdentity} {...handlers}>
         <PersonBubbleContent isVideoOn={isVideoOn}>
@@ -189,6 +202,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             ))}
           </div>
         )}
+        {isLocal && isVideoOn && <WidgetResizeHandle />}
       </PersonBubbleFrame>
     );
   }

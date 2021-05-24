@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
-import { EXPANDED_SIZE, SMALL_SIZE } from './constants';
+import { SIZE_AVATAR } from './constants';
 
 export interface IPersonBubbleFrameProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
@@ -18,6 +18,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     boxShadow: theme.mainShadows.surface,
+    width: '100%',
+    height: '100%',
   },
 }));
 
@@ -26,9 +28,7 @@ export const PersonBubbleFrame = React.forwardRef<HTMLDivElement, IPersonBubbleF
     const classes = useStyles();
 
     const rootStyles = useSpring({
-      borderRadius: isVideoOn ? 32 : SMALL_SIZE,
-      width: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
-      height: isVideoOn ? EXPANDED_SIZE : SMALL_SIZE,
+      borderRadius: isVideoOn ? 32 : SIZE_AVATAR.width,
     });
 
     return (

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core';
-import { useResizeContext } from './ResizeContainer';
 import { animated } from '@react-spring/web';
 import { ResizeHandleIcon } from '../../components/icons/ResizeHandleIcon';
 import clsx from 'clsx';
+import { useCanvasObject } from './CanvasObject';
 
 export interface IResizeHandleProps {
   disabled?: boolean;
@@ -31,18 +31,18 @@ const useStyles = makeStyles((theme) => ({
  */
 export const ResizeHandle: React.FC<IResizeHandleProps> = ({ disabled, className, style, children }) => {
   const classes = useStyles();
-  const { handleProps, isResizingSpringValue, disableResize } = useResizeContext();
+  const { resizeHandleProps, isResizingAnimatedValue, resizeDisabled } = useCanvasObject();
   const theme = useTheme();
 
-  if (disableResize || disabled) {
+  if (resizeDisabled || disabled) {
     return null;
   }
 
   return (
     <animated.div
-      {...handleProps}
+      {...resizeHandleProps}
       style={{
-        color: isResizingSpringValue.to((v) => (v ? theme.palette.grey[500] : undefined)) as any,
+        color: isResizingAnimatedValue.to((v) => (v ? theme.palette.grey[500] : undefined)) as any,
         ...(style as any),
       }}
       className={clsx(classes.root, className)}

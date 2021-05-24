@@ -42,8 +42,15 @@ const useStyles = makeStyles((theme) => ({
       pointerEvents: 'initial',
     },
   },
+  audioWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%',
+  },
   audioControls: {
-    width: 300,
+    width: '100%',
+    margin: 'auto',
   },
   video: {
     width: '100%',
@@ -104,7 +111,7 @@ export const MediaLinkMedia = React.forwardRef<
     );
   } else if (mediaContentType?.startsWith('audio')) {
     return (
-      <div className={className}>
+      <div className={clsx(classes.audioWrapper, className)}>
         <SpatialAudio
           objectKind="widget"
           objectId={widgetId}

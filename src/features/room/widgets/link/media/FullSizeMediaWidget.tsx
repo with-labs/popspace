@@ -1,21 +1,17 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import { useResizeContext } from '../../../../../providers/canvas/ResizeContainer';
 import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { clampSizeMaintainingRatio } from '../../../../../utils/clampSizeMaintainingRatio';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { WidgetFrame } from '../../WidgetFrame';
-import { WidgetResizeContainer } from '../../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
 import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
-
-// when a media widget is first added, it will shoot for native
-// size but stop at this limit. The user can still resize it larger afterward.
-const INITIAL_MAX_SIZE = 800;
+import { MAX_INITIAL_SIZE_MEDIA, MAX_SIZE_MEDIA, MIN_SIZE_MEDIA } from '../constants';
+import { compareWithTolerance } from '../../../../../utils/math';
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -50,12 +46,17 @@ const useStyles = makeStyles((theme) => ({
  * edge-to-edge. It's resizeable.
  */
 export const FullSizeMediaWidget: React.FC = () => (
-  <WidgetFrame color={'transparent'}>
+  <WidgetFrame
+    color={'transparent'}
+    minWidth={MIN_SIZE_MEDIA.width}
+    minHeight={MIN_SIZE_MEDIA.height}
+    maxWidth={MAX_SIZE_MEDIA.width}
+    maxHeight={MAX_SIZE_MEDIA.height}
+    preserveAspect
+  >
     <CanvasObjectDragHandle>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer mode="scale" minWidth={100} minHeight={54} disableInitialSizing>
-          <FullSizeMediaWidgetContent />
-        </WidgetResizeContainer>
+        <FullSizeMediaWidgetContent />
       </WidgetContent>
     </CanvasObjectDragHandle>
   </WidgetFrame>
@@ -67,19 +68,18 @@ const FullSizeMediaWidgetContent: React.FC = () => {
     widget: { widgetId },
   } = useWidgetContext<WidgetType.Link>();
 
-  const { remeasure } = useResizeContext();
-  const { getSize } = useCanvasObject();
+  const { getSize, resize } = useCanvasObject();
 
   const ref = React.useRef<HTMLVideoElement | HTMLImageElement>(null);
 
-  // if a size hasn't been measured yet, wait for the content to load and
-  // measure it
+  // if the media loads and the aspect ratio doesn't match the current size,
+  // refit the size to match the native media aspect ratio.
   React.useEffect(() => {
-    if (ref.current && !getSize()) {
+    if (ref.current) {
       const el = ref.current;
 
-      // when metadata is loaded, we attempt to resize the ResizeContainer
-      // to the natural size of the media
+      // when metadata is loaded, we attempt to resize the widget
+      // to the natural aspect ratio of the media
       function doRemeasure() {
         const naturalSize =
           el.tagName === 'IMG'
@@ -92,14 +92,26 @@ const FullSizeMediaWidgetContent: React.FC = () => {
                 height: (el as HTMLVideoElement).videoHeight,
               };
 
-        remeasure(
-          clampSizeMaintainingRatio({
-            width: naturalSize.width,
-            height: naturalSize.height,
-            maxWidth: INITIAL_MAX_SIZE,
-            maxHeight: INITIAL_MAX_SIZE,
-          })
-        );
+        // sanity check
+        if (naturalSize.width === 0 || naturalSize.height === 0) return;
+
+        const widgetSize = getSize();
+        const widgetAspectRatio = widgetSize.width / widgetSize.height;
+        const naturalAspectRatio = naturalSize.width / naturalSize.height;
+
+        // if aspect ratio doesn't match with 5% tolerance
+        if (!compareWithTolerance(widgetAspectRatio, naturalAspectRatio, 0.05)) {
+          resize(
+            clampSizeMaintainingRatio({
+              width: naturalSize.width,
+              height: naturalSize.height,
+              maxWidth: MAX_INITIAL_SIZE_MEDIA.width,
+              maxHeight: MAX_INITIAL_SIZE_MEDIA.height,
+              aspectRatio: naturalAspectRatio,
+            }),
+            true
+          );
+        }
       }
       el.addEventListener('resize', doRemeasure);
       el.addEventListener('load', doRemeasure);
@@ -108,7 +120,7 @@ const FullSizeMediaWidgetContent: React.FC = () => {
         el.removeEventListener('load', doRemeasure);
       };
     }
-  }, [remeasure, getSize]);
+  }, [resize, getSize]);
 
   return (
     <>

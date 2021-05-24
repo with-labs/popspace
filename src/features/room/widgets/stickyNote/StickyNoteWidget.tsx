@@ -5,7 +5,6 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
@@ -13,7 +12,6 @@ import { WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
-import { ResizeContainerImperativeApi, useResizeContext } from '../../../../providers/canvas/ResizeContainer';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { EditIcon } from '../../../../components/icons/EditIcon';
 import { DoneIcon } from '../../../../components/icons/DoneIcon';
@@ -22,6 +20,7 @@ import { ColorPickerMenu } from './ColorPickerMenu';
 import { Analytics } from '../../../../analytics/Analytics';
 import { EventNames } from '../../../../analytics/constants';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { MIN_SIZE, MAX_SIZE, INITIAL_SIZE } from './constants';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -53,11 +52,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
-  const classes = useStyles();
   const { t } = useTranslation();
   const roomId = useRoomStore((store) => store.id);
-
-  const resizeContainerRef = React.useRef<ResizeContainerImperativeApi>(null);
 
   const { widget: state, save } = useWidgetContext<WidgetType.StickyNote>();
 
@@ -89,7 +85,13 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
   };
 
   return (
-    <WidgetFrame color={state.widgetState.color ?? ThemeName.Mandarin}>
+    <WidgetFrame
+      color={state.widgetState.color ?? ThemeName.Mandarin}
+      minWidth={MIN_SIZE.width}
+      minHeight={editing ? INITIAL_SIZE.height : MIN_SIZE.height}
+      maxWidth={MAX_SIZE.width}
+      maxHeight={MAX_SIZE.height}
+    >
       <WidgetTitlebar title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}>
         <ColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} />
         {isOwnedByLocalUser && !editing && (
@@ -103,21 +105,8 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
           </WidgetTitlebarButton>
         )}
       </WidgetTitlebar>
-      <WidgetResizeContainer
-        ref={resizeContainerRef}
-        mode="free"
-        minWidth={270}
-        minHeight={editing ? 270 : 80}
-        maxWidth={600}
-        maxHeight={800}
-        defaultWidth={270}
-        defaultHeight={250}
-        className={classes.content}
-        disableInitialSizing
-      >
-        <StickyNoteContent editing={editing} setEditing={setEditing} isOwnedByLocalUser={isOwnedByLocalUser} />
-        <WidgetResizeHandle />
-      </WidgetResizeContainer>
+      <StickyNoteContent editing={editing} setEditing={setEditing} isOwnedByLocalUser={isOwnedByLocalUser} />
+      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };
@@ -132,10 +121,8 @@ const StickyNoteContent: React.FC<{
 
   const { widget: state } = useWidgetContext<WidgetType.StickyNote>();
 
-  const { remeasure } = useResizeContext();
   const onCloseEditing = () => {
     setEditing(false);
-    remeasure();
   };
 
   const onDoubleClick = () => {

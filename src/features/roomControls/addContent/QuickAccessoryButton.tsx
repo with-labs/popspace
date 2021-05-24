@@ -8,6 +8,11 @@ import { useAddAccessory } from './quickActions/useAddAccessory';
 
 import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
 import { EventNames } from '../../../analytics/constants';
+import { Bounds } from '../../../types/spatials';
+import { INITIAL_SIZE_EDIT as LINK_SIZE } from '../../room/widgets/link/constants';
+import { INITIAL_SIZE as STICKY_NOTE_SIZE } from '../../room/widgets/stickyNote/constants';
+import { SIZE as WHITEBOARD_SIZE } from '../../room/widgets/whiteboard/constants';
+import { SIZE_EDIT as YOUTUBE_SIZE } from '../../room/widgets/youtube/constants';
 
 type SupportedTypes = WidgetType.Link | WidgetType.StickyNote | WidgetType.YouTube | WidgetType.Whiteboard;
 
@@ -30,6 +35,13 @@ const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
       playStartedTimestampUtc: null,
     },
   },
+};
+
+const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
+  [WidgetType.Link]: LINK_SIZE,
+  [WidgetType.StickyNote]: STICKY_NOTE_SIZE,
+  [WidgetType.Whiteboard]: WHITEBOARD_SIZE,
+  [WidgetType.YouTube]: YOUTUBE_SIZE,
 };
 
 const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
@@ -56,6 +68,7 @@ export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }
           add({
             type,
             initialData: DEFAULT_DATA[type] as any,
+            size: DEFAULT_SIZE[type],
           });
         }}
         {...rest}

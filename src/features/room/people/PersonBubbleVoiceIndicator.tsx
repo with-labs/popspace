@@ -22,7 +22,7 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
     const classes = useStyles();
 
     const [speakingIndicatorStyles, spring] = useSpring(() => ({
-      right: isVideoOn ? '8%' : '50%',
+      right: isVideoOn ? '32px' : '50%',
       bottom: isVideoOn ? -10 : -8,
       opacity: 1,
       config: SPRINGS.RESPONSIVE,
@@ -37,7 +37,7 @@ export const PersonBubbleVoiceIndicator = React.forwardRef<HTMLDivElement, IPers
           // returns of .start are a list of promises, we only care about 1st
           await spring.start({ opacity: 0 })[0];
           await spring.start({
-            right: '8%',
+            right: '32px',
             bottom: -20,
           })[0];
           await spring.start({ opacity: 1, bottom: -10 })[0];

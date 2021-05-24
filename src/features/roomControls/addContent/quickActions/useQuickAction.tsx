@@ -31,6 +31,7 @@ export function useQuickAction() {
             {
               type: value.accessoryType,
               initialData: value.accessoryData,
+              size: value.size,
             },
             Origin.OMNIBAR
           );

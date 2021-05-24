@@ -13,7 +13,7 @@ export function UploadingWidget() {
   const { remove } = useWidgetContext();
 
   return (
-    <WidgetFrame color={ThemeName.Snow}>
+    <WidgetFrame color={ThemeName.Snow} minHeight={80} minWidth={340}>
       <CanvasObjectDragHandle>
         <WidgetContent>
           <Box display="flex" flexDirection="row" alignItems="center" width={340}>

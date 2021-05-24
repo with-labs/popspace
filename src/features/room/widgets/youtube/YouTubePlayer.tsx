@@ -2,7 +2,6 @@ import * as React from 'react';
 import YouTube from 'react-youtube';
 import { MediaControls } from '../common/MediaControls';
 import { useSyncYoutube } from './useSyncYoutube';
-import { useResizeContext } from '../../../../providers/canvas/ResizeContainer';
 import { makeStyles } from '@material-ui/core';
 import { YoutubeWidgetShape, YoutubeWidgetState } from '../../../../roomState/types/widgets';
 
@@ -24,14 +23,18 @@ const DEFAULT_OPTS = {
 
 const useStyles = makeStyles((theme) => ({
   videoContainer: {
+    width: '100%',
+    height: '100%',
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
     background: 'black',
     // this is the best way I can find to target the YouTube player container itself
     '& > div:first-child': {
       width: '100%',
       height: '100%',
-      minWidth: 480,
-      minHeight: 270,
     },
     '&:hover, &:focus': {
       '& > $videoControls': {
@@ -80,14 +83,9 @@ const MemoizedYouTube = React.memo(YouTube);
 export const YouTubePlayer: React.FC<IYouTubePlayerProps> = ({ state, onChange, isMuted }) => {
   const classes = useStyles();
 
-  const { remeasure } = useResizeContext();
-  const handleLoad = React.useCallback(() => {
-    setTimeout(remeasure);
-  }, [remeasure]);
   const { youtubeBindings, videoControlBindings } = useSyncYoutube({
     state,
     onChange,
-    onLoad: handleLoad,
     isMuted,
   });
 

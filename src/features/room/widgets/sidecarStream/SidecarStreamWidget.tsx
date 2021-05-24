@@ -4,7 +4,6 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { useTranslation } from 'react-i18next';
 import { WidgetContent } from '../WidgetContent';
 import { makeStyles } from '@material-ui/core';
-import { WidgetResizeContainer } from '../WidgetResizeContainer';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { Fullscreen } from '@material-ui/icons';
@@ -22,6 +21,7 @@ import { ThemeName } from '../../../../theme/theme';
 import { useLocalTracks } from '../../../../providers/media/hooks/useLocalTracks';
 import { useLocalParticipant } from '../../../../providers/twilio/hooks/useLocalParticipant';
 import { useParticipantByIdentity } from '../../../../providers/twilio/hooks/useParticipantByIdentity';
+import { MAX_SIZE, MIN_SIZE } from './constants';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.
@@ -113,7 +113,13 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
   if (!hasAnyMedia) return null;
 
   return (
-    <WidgetFrame color={ThemeName.Slate}>
+    <WidgetFrame
+      color={ThemeName.Slate}
+      minWidth={MIN_SIZE.width}
+      minHeight={MIN_SIZE.height}
+      maxWidth={MAX_SIZE.width}
+      maxHeight={MAX_SIZE.height}
+    >
       <WidgetTitlebar title={title} disableRemove>
         {/* Remote users can mute the stream for themselves */}
         {isSharingAudio && !isOwnStream && (
@@ -136,29 +142,16 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
         )}
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <WidgetResizeContainer
-          mode="free"
-          minWidth={400}
-          minHeight={200}
-          maxWidth={2000}
-          maxHeight={2000}
-          /*
-            Initial sizing is disabled for everyone but the broadcasting device - otherwise
-            when new users join the room they will mount the widget and it will be remeasured and resized.
-          */
-          disableInitialSizing={!isLocalDeviceStream}
-        >
-          <FullscreenableMedia
-            className={classes.screenShare}
-            isFullscreen={isFullscreen}
-            onFullscreenExit={onExitFullscreen}
-            objectId={state.widgetId}
-            muted={isLocalMuted}
-            videoPublication={videoPublication}
-            audioPublication={audioPublication}
-          />
-          <WidgetResizeHandle />
-        </WidgetResizeContainer>
+        <FullscreenableMedia
+          className={classes.screenShare}
+          isFullscreen={isFullscreen}
+          onFullscreenExit={onExitFullscreen}
+          objectId={state.widgetId}
+          muted={isLocalMuted}
+          videoPublication={videoPublication}
+          audioPublication={audioPublication}
+        />
+        <WidgetResizeHandle />
       </WidgetContent>
     </WidgetFrame>
   );

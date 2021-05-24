@@ -2,9 +2,10 @@ import { ListItemIcon, ListItemText, MenuItem, MenuItemProps } from '@material-u
 import { Fullscreen, FullscreenExit } from '@material-ui/icons';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useResizeContext } from '../../../../../providers/canvas/ResizeContainer';
+import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
 import { WidgetType } from '../../../../../roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
+import { INITIAL_SIZE_FRAME } from '../constants';
 
 export interface IIframeOptionProps extends Omit<MenuItemProps, 'button'> {}
 
@@ -18,16 +19,20 @@ export const IframeOption = React.forwardRef<HTMLLIElement, IIframeOptionProps>(
     },
   } = useWidgetContext<WidgetType.Link>();
 
-  const { remeasure } = useResizeContext();
+  const { resize } = useCanvasObject();
 
   const toggleIframe = React.useCallback(() => {
+    const showIframeNow = !showIframe; // simple toggle
     save({
-      showIframe: !showIframe,
+      showIframe: showIframeNow,
     });
-    setTimeout(() => {
-      remeasure();
-    }, 10);
-  }, [showIframe, save, remeasure]);
+    // resize the frame to be larger after toggling
+    if (showIframeNow) {
+      setTimeout(() => {
+        resize(INITIAL_SIZE_FRAME, true);
+      }, 10);
+    }
+  }, [showIframe, save, resize]);
 
   return (
     <MenuItem button onClick={toggleIframe} ref={ref} {...props}>

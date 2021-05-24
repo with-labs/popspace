@@ -1,5 +1,6 @@
 import { AccessoryIconType } from '../../components/icons/AccessoryIcon';
 import { WidgetType, WidgetStateByType } from '../../roomState/types/widgets';
+import { Bounds } from '../../types/spatials';
 
 export enum QuickActionKind {
   AddAccessory,
@@ -31,6 +32,7 @@ export type AddAccessoryQuickAction<Type extends WidgetType> = BaseQuickAction &
   kind: QuickActionKind.AddAccessory;
   accessoryType: Type;
   accessoryData: WidgetStateByType[Type];
+  size: Bounds;
 };
 
 export type SetStatusQuickAction = BaseQuickAction & {

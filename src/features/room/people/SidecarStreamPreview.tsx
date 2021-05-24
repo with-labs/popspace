@@ -15,6 +15,7 @@ import { getTrackName, hasTrackName } from '../../../utils/trackNames';
 import { useLocalParticipant } from '../../../providers/twilio/hooks/useLocalParticipant';
 import { useViewport } from '../../../providers/viewport/useViewport';
 import { useCanvas } from '../../../providers/canvas/CanvasProvider';
+import { INITIAL_SIZE } from '../widgets/sidecarStream/constants';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -177,6 +178,7 @@ export const SidecarStreamPreview = React.memo(
                 x: ev.xy[0] - 100,
                 y: ev.xy[1] - 100,
               },
+              size: INITIAL_SIZE,
             });
             // after a delay, return to neutral position - give the
             // server time to create the widget

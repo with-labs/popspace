@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { addVectors } from '../../../../utils/math';
-import { Vector2 } from '../../../../types/spatials';
+import { Bounds, Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
@@ -28,10 +28,12 @@ export function useAddAccessory() {
         type,
         initialData,
         screenCoordinate = { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+        size,
       }: {
         type: Type;
         initialData: WidgetStateByType[Type];
         screenCoordinate?: Vector2;
+        size: Bounds;
       },
       origin?: Origin
     ) => {
@@ -62,6 +64,7 @@ export function useAddAccessory() {
           type,
           transform: {
             position,
+            size,
           },
           widgetState: data,
         },

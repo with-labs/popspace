@@ -248,10 +248,18 @@ export class Viewport extends EventEmitter {
     };
 
     if (clamp && !!this.config.canvasLimits) {
-      return clampVector(transformedPoint, this.config.canvasLimits.min, this.config.canvasLimits.max);
+      return this.clampToWorld(transformedPoint);
     }
 
     return transformedPoint;
+  };
+
+  /**
+   * Restricts a position to one inside the world canvas
+   */
+  clampToWorld = (worldPosition: Vector2) => {
+    if (!this.config.canvasLimits) return worldPosition;
+    return clampVector(worldPosition, this.config.canvasLimits.min, this.config.canvasLimits.max);
   };
 
   /**

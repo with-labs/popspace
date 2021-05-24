@@ -5,9 +5,10 @@ import * as themes from '../../../theme/theme';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 import { ThemeName } from '../../../theme/theme';
-import { CanvasObject } from '../../../providers/canvas/CanvasObject';
+import { CanvasObject, ICanvasObjectProps } from '../../../providers/canvas/CanvasObject';
+import { WidgetResizeHandle } from './WidgetResizeHandle';
 
-export interface IWidgetFrameProps {
+export interface IWidgetFrameProps extends Omit<ICanvasObjectProps, 'objectId' | 'objectKind'> {
   children: React.ReactNode;
   className?: string;
   color?: ThemeName | 'transparent';
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     userSelect: 'none',
+    position: 'relative',
   },
   rootTransparent: {
     background: 'transparent',
@@ -70,8 +72,10 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, 
         onDragStart={bringToFront}
         objectKind="widget"
         className={clsx(classes.root, color === 'transparent' && classes.rootTransparent, className)}
+        {...rest}
       >
         {children}
+        {!rest.resizeDisabled && <WidgetResizeHandle />}
       </CanvasObject>
     </ThemeProvider>
   );

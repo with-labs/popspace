@@ -1,6 +1,7 @@
 import { TFunction } from 'i18next';
 import { WidgetType } from '../../../roomState/types/widgets';
 import { isSmallScreen } from '../../../utils/environment';
+import { INITIAL_SIZE_EDIT, INITIAL_SIZE_FRAME, SIZE_STUB } from '../../room/widgets/link/constants';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function linkQuickActions(prompt: string, t: TFunction): QuickAction[] {
@@ -17,6 +18,7 @@ export function linkQuickActions(prompt: string, t: TFunction): QuickAction[] {
           url: '',
           title: 'Link',
         },
+        size: INITIAL_SIZE_EDIT,
         confidence: 5,
       },
     ];
@@ -36,6 +38,7 @@ export function linkQuickActions(prompt: string, t: TFunction): QuickAction[] {
             url: prompt,
             title: prompt,
           },
+          size: SIZE_STUB,
           confidence: 8,
         },
       ];
@@ -61,6 +64,7 @@ export function linkQuickActions(prompt: string, t: TFunction): QuickAction[] {
             iframeUrl: src,
             showIframe: true,
           },
+          size: INITIAL_SIZE_FRAME,
           confidence: 8,
         },
       ];

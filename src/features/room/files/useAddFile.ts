@@ -6,6 +6,7 @@ import { useRoomStore } from '../../../roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import api from '../../../utils/api';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
+import { SIZE_STUB } from '../widgets/link/constants';
 
 const MAX_MEGABYTES = 30;
 const ONE_MEGABYTE_IN_BYTES = 1024 * 1024;
@@ -46,6 +47,7 @@ export function useAddFile() {
             isFileUpload: true,
           },
           screenCoordinate: position,
+          size: SIZE_STUB,
         });
 
         const abort = async () => {

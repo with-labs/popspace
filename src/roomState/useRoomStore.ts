@@ -19,6 +19,7 @@ import { EventNames, Origin } from '../analytics/constants';
 import { sanityCheckWidget } from './sanityCheckWidget';
 import { DEFAULT_ROOM_SIZE } from '../constants/room';
 import { clampVector } from '../utils/math';
+import { SIZE_AVATAR } from '../features/room/people/constants';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -119,12 +120,16 @@ function mergePositionToState(
   if (!id) throw new Error(`Tried to merge position of object without an ID`);
 
   if (!positions[id]) {
-    positions[id] = { position: { x: 0, y: 0 }, ...transform };
+    positions[id] = {
+      ...transform,
+      position: transform.position || { x: 0, y: 0 },
+      size: transform.size || { width: 140, height: 80 },
+    };
   } else {
     if (transform.position) {
       positions[id].position = transform.position;
     }
-    if (transform.size !== undefined) {
+    if (transform.size) {
       positions[id].size = transform.size;
     }
   }
@@ -178,6 +183,7 @@ function createRoomStore() {
               participants.forEach((session) => {
                 addUserToState(draft, session);
                 draft.userPositions[session.user.id] = {
+                  size: session.transform.size || SIZE_AVATAR,
                   position: session.transform.position,
                 };
               });
@@ -449,8 +455,8 @@ function createRoomStore() {
             if (!payload.widgetState || !payload.type) {
               throw new Error(
                 `Error creating widget: invalid data. Widget type: ${
-                  payload.type
-                } Widget state is provided: ${!!payload.widgetState}`
+                  payload?.type
+                } Widget state is provided: ${!!payload?.widgetState}`
               );
             }
             // we don't know the Widget ID until the server rebroadcasts
@@ -469,20 +475,24 @@ function createRoomStore() {
             // the incoming created message will be handled by the main incoming message
             return response.payload;
           },
-          moveSelf(payload: { position: Vector2 }) {
+          transformSelf(payload: Partial<RoomPositionState>) {
             const userId = getOwnUserId();
+            const currentTransform = get().userPositions[userId];
+            const updatedTransform = {
+              ...currentTransform,
+              ...payload,
+            };
             // optimistic update
-            internalApi.moveUser({ userId, transform: { position: payload.position } });
+            internalApi.moveUser({ userId, transform: updatedTransform });
             // send to peers
             sendMessage({
               kind: 'transformSelf',
               payload: {
-                transform: {
-                  position: payload.position,
-                },
+                transform: updatedTransform,
               },
             });
           },
+          /** @deprecated use transformWidget */
           moveWidget(payload: { widgetId: string; position: Vector2 }) {
             internalApi.moveWidget({ widgetId: payload.widgetId, transform: { position: payload.position } });
             sendMessage({
@@ -495,6 +505,7 @@ function createRoomStore() {
               },
             });
           },
+          /** @deprecated use transformWidget */
           resizeWidget(payload: { widgetId: string; size: Bounds }) {
             internalApi.moveWidget({ widgetId: payload.widgetId, transform: { size: payload.size } });
             sendMessage({
@@ -504,6 +515,21 @@ function createRoomStore() {
                 transform: {
                   size: payload.size,
                 },
+              },
+            });
+          },
+          transformWidget(payload: { widgetId: string; transform: Partial<RoomPositionState> }) {
+            const currentTransform = get().widgetPositions[payload.widgetId];
+            const updatedTransform = {
+              ...currentTransform,
+              ...payload.transform,
+            };
+            internalApi.moveWidget({ widgetId: payload.widgetId, transform: updatedTransform });
+            sendMessage({
+              kind: 'transformWidget',
+              payload: {
+                widgetId: payload.widgetId,
+                transform: updatedTransform,
               },
             });
           },

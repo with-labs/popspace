@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { parseYoutubeLink } from '../../../../utils/youtube';
 import { YoutubeWidgetState } from '../../../../roomState/types/widgets';
+import { useCanvasObject } from '../../../../providers/canvas/CanvasObject';
+import { INITIAL_SIZE_PLAYER } from './constants';
 
 /**
  * Unlike other simpler widgets, the data in the form
@@ -37,6 +39,8 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const { resize } = useCanvasObject();
+
   const onSubmit = React.useCallback(
     (values: EditYoutubeFormData) => {
       const parsed = parseYoutubeLink(values.url);
@@ -45,7 +49,7 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
         throw new Error(t('error.messages.provideValidYoutubeUrl'));
       }
 
-      return onSave({
+      onSave({
         videoId: parsed.videoId,
         mediaState: {
           timestamp: parsed.timestamp || parsed.start || 0,
@@ -53,13 +57,15 @@ export const EditYoutubeWidgetForm: React.FC<IEditYoutubeWidgetFormProps> = ({
           playStartedTimestampUtc: new Date().toUTCString(),
         },
       });
+
+      resize(INITIAL_SIZE_PLAYER, true);
     },
-    [onSave, t]
+    [onSave, resize, t]
   );
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validateOnMount>
-      <Form>
+      <Form style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
         <FormikTextField
           name="url"
           label={t('widgets.youtube.urlLabel')}

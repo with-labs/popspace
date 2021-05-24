@@ -6,7 +6,7 @@ import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 import { snow } from '../../theme/theme';
 import { MAX_AUDIO_RANGE } from '../../constants/room';
 import { ParticipantState } from '../../roomState/types/participants';
-import { randomSectionAvatar } from '../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '../../constants/AvatarMetadata';
 
 const SIZE = 60;
 const PROXIMITY_RANGE = 400;
@@ -50,9 +50,9 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
   private setData = (state: Pick<ParticipantState, 'displayName' | 'avatarName'> | null) => {
     state = state || {
       displayName: '',
-      avatarName: randomSectionAvatar('brandedPatterns'),
+      avatarName: getAvatarFromUserId('brandedPatterns', this.id),
     };
-    const avatarName = state?.avatarName ?? randomSectionAvatar('brandedPatterns');
+    const avatarName = state?.avatarName;
 
     // avoid repeated sets of src as it loads the image from network
     if (this.avatarImage.src !== this.getImgSrc(avatarMetadata[avatarName].image)) {

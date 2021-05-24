@@ -88,11 +88,11 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   await lib.email.room.sendRoomInviteEmail(params.email, params.roomName, inviteUrl, user, room, roomState.display_name)
 
   const newMember = {
-    display_name: "",
+    displayName: "",
     email: params.email,
-    user_id: null,
-    avatar_url: null,
-    has_accepted: false
+    userId: null,
+    avatarName: null,
+    hasAccepted: false
   }
 
   return await lib.util.http.succeed(callback, { newMember })

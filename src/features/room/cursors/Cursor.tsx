@@ -6,7 +6,7 @@ import { RoomStateShape, useRoomStore } from '../../../roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
-import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
 import { useRoomSize } from '../canvas/useRoomSize';
 
 export interface ICursorProps {
@@ -44,7 +44,7 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
 
   const name = useRoomStore((room) => room.users[userId]?.participantState.displayName ?? '???');
   const avatarName = useRoomStore(
-    (room) => room.users[userId]?.participantState.avatarName ?? randomSectionAvatar('brandedPatterns')
+    (room) => room.users[userId]?.participantState.avatarName ?? getAvatarFromUserId('brandedPatterns', userId)
   );
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;

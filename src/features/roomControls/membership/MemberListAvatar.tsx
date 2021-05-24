@@ -2,12 +2,13 @@ import React from 'react';
 import { Avatar } from '../../../components/Avatar/Avatar';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
 import { makeStyles, useTheme } from '@material-ui/core';
-import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
 
 import { ReactComponent as BgFillGlyph } from './images/background_fill.svg';
 
 const INVITED_AVATAR_URL = 'https://s3.us-east-2.amazonaws.com/with.static/invited.png';
 interface IMemberListAvatarProps {
+  userId: string;
   avatarName: string;
   hasAccepted: boolean;
 }
@@ -31,10 +32,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const MemberListAvatar: React.FC<IMemberListAvatarProps> = ({ avatarName, hasAccepted }) => {
+export const MemberListAvatar: React.FC<IMemberListAvatarProps> = ({ avatarName, hasAccepted, userId }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const displayAvatar = hasAccepted ? avatarName ?? randomSectionAvatar('brandedPatterns') : INVITED_AVATAR_URL;
+  const displayAvatar = hasAccepted ? avatarName ?? getAvatarFromUserId('brandedPatterns', userId) : INVITED_AVATAR_URL;
   const { backgroundColor } = useAvatar(displayAvatar) ?? { backgroundColor: theme.palette.grey[50] };
 
   return (

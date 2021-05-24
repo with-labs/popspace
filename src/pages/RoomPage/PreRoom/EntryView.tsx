@@ -22,7 +22,7 @@ import { Header } from '../../../components/Header/Header';
 import { getErrorMessageFromResponse, getErrorDialogText } from '../../../utils/ErrorMessage';
 import { logger } from '../../../utils/logger';
 import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
-import { randomSectionAvatar } from '../../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { MAX_NAME_LENGTH } from '../../../constants';
@@ -217,13 +217,13 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
     // we will pick a random brand avatar and then save it off
     async function initalizeUserAvatar() {
       if (!avatar) {
-        const newAvatar = randomSectionAvatar('brandedPatterns');
+        const newAvatar = getAvatarFromUserId('brandedPatterns', user ? user.id : '');
         await updateProfile({ avatar_name: newAvatar });
       }
     }
 
     initalizeUserAvatar();
-  }, [avatar, updateProfile]);
+  }, [avatar, updateProfile, user]);
 
   const handleComplete = (values: EntryViewData) => {
     if (values.displayName !== participantState?.display_name) {

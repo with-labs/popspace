@@ -32,11 +32,11 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   members.forEach((member) => {
     if(!assembledEmails.has(member.email)) {
       result.push({
-        display_name: member.display_name,
+        displayName: member.display_name,
         email: member.email,
-        user_id: member.id,
-        avatar_url: member.avatar_url,
-        has_accepted: true
+        userId: member.id,
+        avatarName: member.participantState ? member.participantState.avatar_name : null,
+        hasAccepted: true
       })
       assembledEmails.add(member.email)
     }
@@ -47,25 +47,28 @@ module.exports.handler = util.netlify.postEndpoint(async (event, context, callba
   const userByEmail = {}
   invitedUsers.map((iu) => (userByEmail[iu.email] = iu))
 
-  invites.map((invite) => {
+  invites.map(async (invite) => {
     if(!assembledEmails.has(invite.email)) {
       assembledEmails.add(invite.email)
       const user = userByEmail[invite.email]
       if(user) {
+        // grab participantState for invited users as a stop gap until we
+        // move off of netlify
+        const participantState = await shared.db.dynamo.room.getParticipantState(user.id)
         result.push({
-          display_name: user.display_name,
+          displayName: user.display_name,
           email: user.email,
-          user_id: user.id,
-          avatar_url: user.avatar_url,
-          has_accepted: false
+          userId: user.id,
+          avatarName: participantState ? participantState.avatar_name : null,
+          hasAccepted: false
         })
       } else {
         result.push({
           email: invite.email,
-          has_accepted: false,
-          display_name: null,
-          user_id: null,
-          avatar_url: null
+          hasAccepted: false,
+          displayName: null,
+          userId: null,
+          avatarName: null
         })
       }
 

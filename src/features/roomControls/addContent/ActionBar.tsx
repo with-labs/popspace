@@ -5,7 +5,6 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import shallow from 'zustand/shallow';
 import { Fade } from '../../../components/Fade/Fade';
 import { KeyShortcut } from '../../../constants/keyShortcuts';
-import { useIsAway } from '../away/useIsAway';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { Omnibar } from './Omnibar';
 
@@ -35,20 +34,17 @@ export const ActionBar: React.FC<IActionBarProps> = ({ className, ...rest }) => 
     shallow
   );
 
-  const [isAway] = useIsAway();
-
   const onClose = () => closeModal('actionBar');
 
   useHotkeys(
     KeyShortcut.ActionBar,
     (ev) => {
-      if (isAway) return;
       // prevents a browser default action - like Firefox omnibar focus.
       // we may revisit this if users complain.
       ev.preventDefault();
       openModal('actionBar');
     },
-    [isAway, openModal]
+    [openModal]
   );
 
   return (

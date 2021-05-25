@@ -2,9 +2,7 @@ import * as React from 'react';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import Publication from '../../../components/Publication/Publication';
 import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-import { PersonStatus } from './PersonStatus';
 import { SidecarStreamPreview } from './SidecarStreamPreview';
-import { isMobileOnly } from 'react-device-detect';
 import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
 import { useSpeakingStates } from '../../../hooks/useSpeakingStates/useSpeakingStates';
 import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
@@ -15,9 +13,7 @@ import { PersonBubbleContent } from './PersonBubbleContent';
 import { PersonBubbleBackground } from './PersonBubbleBackground';
 import { PersonBubbleLabel } from './PersonBubbleLabel';
 import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
-import { PersonBubbleStatus } from './PersonBubbleStatus';
 import { PersonBubbleAvatar } from './PersonBubbleAvatar';
-import { AwayIcon } from '../../../components/icons/AwayIcon';
 import { useCanvasObject } from '../../../providers/canvas/CanvasObject';
 import { WidgetResizeHandle } from '../widgets/WidgetResizeHandle';
 import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
@@ -98,11 +94,6 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const classes = useStyles();
     const theme = useTheme();
 
-    // tracking hover state to show status editing
-    const [isHovered, setIsHovered] = React.useState(false);
-    const onHover = React.useCallback(() => setIsHovered(true), []);
-    const onUnHover = React.useCallback(() => setIsHovered(false), []);
-
     // some basic checks for how we should render media
     const isVideoOn = !!mainStream?.videoPublication;
     const isMicOn = !!mainStream?.audioPublication;
@@ -119,22 +110,11 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     // extract data from our With backend user
     const userId = person?.id;
-    const emoji = person?.participantState.emoji;
-    const statusText = person?.participantState.statusText;
     const displayIdentity = person?.participantState.displayName;
     const avatarName = person?.participantState.avatarName;
-    const isAway = !!person?.participantState.isAway;
 
     // determine background color based on avatar
     const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
-
-    // we only activate hover effects if the user isn't on mobile
-    const handlers = isMobileOnly
-      ? {}
-      : {
-          onPointerEnter: onHover,
-          onPointerLeave: onUnHover,
-        };
 
     // enforce widget sizing based on video status
     const { resize } = useCanvasObject();
@@ -147,10 +127,10 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     }, [resize, isVideoOn]);
 
     return (
-      <PersonBubbleFrame {...rest} isVideoOn={isVideoOn} ref={ref} data-test-person={displayIdentity} {...handlers}>
+      <PersonBubbleFrame {...rest} isVideoOn={isVideoOn} ref={ref} data-test-person={displayIdentity}>
         <PersonBubbleContent isVideoOn={isVideoOn}>
           {/* Still a typing issue with react-spring :( */}
-          <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor} grayscale={isAway}>
+          <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor}>
             {mainStream?.videoPublication && (
               <Publication
                 classNames={classes.video}
@@ -161,9 +141,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               />
             )}
           </PersonBubbleBackground>
-          {!mainStream?.videoPublication && (
-            <PersonBubbleAvatar userId={userId} grayscale={isAway} freeze={isAway ? 'eyesClosed' : false} />
-          )}
+          {!mainStream?.videoPublication && <PersonBubbleAvatar userId={userId} />}
           {mainStream?.audioPublication && (
             <Publication
               classNames={classes.audio}
@@ -178,18 +156,13 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
             <Typography className={classes.name}>{displayIdentity}</Typography>
           </PersonBubbleLabel>
           <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
-            {isAway ? (
-              <AwayIcon className={classes.awayIcon} fontSize="inherit" />
-            ) : isMicOn ? (
+            {isMicOn ? (
               <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
             ) : (
               <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
             )}
           </PersonBubbleVoiceIndicator>
         </PersonBubbleContent>
-        <PersonBubbleStatus isVideoOn={isVideoOn}>
-          <PersonStatus emoji={emoji} status={statusText} isParentHovered={isHovered} isLocal={isLocal} />
-        </PersonBubbleStatus>
         {hasSidecars && (
           <div className={classes.screenSharePreviewContainer}>
             {sidecarStreams.map((stream) => (

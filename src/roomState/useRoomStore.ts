@@ -320,13 +320,7 @@ function createRoomStore() {
         const onSocketMessage = (message: IncomingSocketMessage) => {
           switch (message.kind) {
             case 'auth.response':
-              const oldRoomId = get().id;
-              internalApi.initialize(message);
-              if (get().id !== oldRoomId) {
-                // reset away state whenever we join a new room.
-                externalApi.updateSelf({ isAway: false });
-              }
-              break;
+              return internalApi.initialize(message);
             case 'widgetCreated':
               return internalApi.addWidget(message.payload);
             case 'widgetUpdated':

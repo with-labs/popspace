@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import i18n from '../../../i18n';
-import { makeStyles, Box, Typography, TextField, Button, Hidden } from '@material-ui/core';
+import { makeStyles, Box, Typography, Button, Hidden } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import patternBg from '../../../images/illustrations/pattern_bg_1.svg';
 import { Spacing } from '../../../components/Spacing/Spacing';

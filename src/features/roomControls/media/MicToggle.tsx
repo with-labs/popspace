@@ -12,7 +12,6 @@ import { SmallMenuButton } from './SmallMenuButton';
 import clsx from 'clsx';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { useIsAway } from '../away/useIsAway';
 import { EventNames } from '../../../analytics/constants';
 import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
 
@@ -57,17 +56,13 @@ export const MicToggle = (props: IMicToggleProps) => {
     doMicToggle();
   }, [doMicToggle, handleMicOn, isMicOn, socket, trackEvent]);
 
-  const [isAway] = useIsAway();
-
   useHotkeys(
     KeyShortcut.ToggleMute,
     (ev) => {
-      if (isAway) return;
-
       ev.preventDefault();
       toggleMicOn();
     },
-    [toggleMicOn, isAway]
+    [toggleMicOn]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);

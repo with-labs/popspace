@@ -65,9 +65,6 @@ export type Service = {
 export type ApiParticipantState = {
   avatar_name: string;
   display_name: string;
-  emoji: string | null;
-  is_away: boolean;
-  status_text: string;
 };
 
 export const SERVICES = {

@@ -51,7 +51,6 @@ export enum StatusUpdate {
 }
 
 export enum UserEventData {
-  IS_AWAY_START = 'isAwayStart',
   MIC_START = 'micStart',
   VIDEO_START = 'videoStart',
 }

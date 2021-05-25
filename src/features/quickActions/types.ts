@@ -35,17 +35,12 @@ export type AddAccessoryQuickAction<Type extends WidgetType> = BaseQuickAction &
   size: Bounds;
 };
 
-export type SetStatusQuickAction = BaseQuickAction & {
-  kind: QuickActionKind.SetStatus;
-  status: string;
-};
-
 export type AddFileQuickAction = BaseQuickAction & {
   kind: QuickActionKind.AddFile;
 };
 
 // TODO: union other types of actions into this discriminated union type
-export type QuickAction = AddAccessoryQuickAction<any> | SetStatusQuickAction | AddFileQuickAction;
+export type QuickAction = AddAccessoryQuickAction<any> | AddFileQuickAction;
 
 /**
  * A quick action provider is a function that generates valid quick

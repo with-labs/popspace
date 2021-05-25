@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { RoomMenu } from './roomMenu/RoomMenu';
-import { AwayScreen } from './away/AwayScreen';
-import { AwayExplainer } from './away/AwayExplainer';
-import { useIsAway } from './away/useIsAway';
 import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
 import { ViewportControls } from './viewport/ViewportControls';
@@ -27,15 +24,8 @@ const useStyles = makeStyles((theme) => ({
 export const RoomControls = React.memo<IRoomControlsProps>(() => {
   const classes = useStyles();
 
-  const [isAway] = useIsAway();
-
   return (
     <>
-      {isAway && (
-        <AwayScreen>
-          <AwayExplainer />
-        </AwayScreen>
-      )}
       <RoomTaskbar />
       <Spacing flexDirection="row" className={classes.roomAndViewportControls}>
         <RoomMenu />

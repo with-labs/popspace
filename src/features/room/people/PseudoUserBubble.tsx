@@ -8,7 +8,6 @@ import { PersonBubbleBackground } from './PersonBubbleBackground';
 import { PersonBubbleLabel } from './PersonBubbleLabel';
 import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
 import { PersonBubbleAvatar } from './PersonBubbleAvatar';
-import { AwayIcon } from '../../../components/icons/AwayIcon';
 import clsx from 'clsx';
 import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
 
@@ -16,7 +15,6 @@ interface IPseudoUserBubbleProps {
   isVideoOn?: boolean;
   isMicOn?: boolean;
   className?: string;
-  isAway?: boolean;
   userData: { userId: string; avatarName: string; displayName: string };
 }
 
@@ -97,7 +95,6 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
   className,
   children,
   isMicOn = false,
-  isAway,
   userData,
   ...rest
 }) => {
@@ -114,26 +111,15 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
       {...rest}
     >
       <PersonBubbleContent isVideoOn={isVideoOn}>
-        <PersonBubbleBackground isVideoOn={isVideoOn} grayscale={isAway} backgroundColor={backgroundColor}>
+        <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor}>
           {isVideoOn && <Box className={classes.video}>{children}</Box>}
         </PersonBubbleBackground>
-        {!isVideoOn && (
-          <PersonBubbleAvatar
-            grayscale={isAway}
-            userId={userId}
-            avatarName={avatarName}
-            freeze={isAway ? 'eyesClosed' : false}
-          />
-        )}
+        {!isVideoOn && <PersonBubbleAvatar userId={userId} avatarName={avatarName} />}
         <PersonBubbleLabel isVideoOn={isVideoOn}>
           <Typography className={classes.name}>{displayName}</Typography>
         </PersonBubbleLabel>
         <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
-          {isAway ? (
-            <AwayIcon className={classes.awayIcon} fontSize="inherit" />
-          ) : !isMicOn ? (
-            <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />
-          ) : null}
+          {!isMicOn ? <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" /> : null}
         </PersonBubbleVoiceIndicator>
       </PersonBubbleContent>
     </PersonBubbleFrame>

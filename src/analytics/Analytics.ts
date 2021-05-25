@@ -51,14 +51,17 @@ const removeLocalAnalyticsData = (eventName: string) => {
 // init mixpanel
 const initAnalytics = () => {
   // default to the staging instance if there nothing set
-  const envId = process.env.REACT_APP_ANALYTICS_ID || 'd44d2fa32ab1fad61038134cdbea9620';
-  mixpanel.init(envId);
+
+  // !!!!!!!!!! Disabling anayltics, re-enable when we get a noodle project setup on mixpannel
+  console.log('Analytics disabled');
+  //const envId = process.env.REACT_APP_ANALYTICS_ID || 'd44d2fa32ab1fad61038134cdbea9620';
+  //mixpanel.init(envId);
 };
 
 // trackEvent
 // wrapper around the main track event
 const trackEvent = (eventName: EventNames, eventProperties?: { [key: string]: any }) => {
-  mixpanel.track(eventName, eventProperties);
+  //mixpanel.track(eventName, eventProperties);
 };
 
 const trackUserEvent = (roomId: string | null, eventPayload: Partial<ParticipantState>) => {
@@ -72,20 +75,6 @@ const trackUserEvent = (roomId: string | null, eventPayload: Partial<Participant
     // track the display name changed event
     Analytics.trackEvent(EventNames.CHANGED_DISPLAYNAME, {
       roomId: roomId,
-    });
-  } else if (eventPayload.hasOwnProperty('emoji') || eventPayload.hasOwnProperty('statusText')) {
-    // track status change
-    let updateType = null;
-
-    if (eventPayload.hasOwnProperty('emoji') && eventPayload.hasOwnProperty('statusText')) {
-      updateType = StatusUpdate.BOTH_UPDATED;
-    } else {
-      updateType = eventPayload.hasOwnProperty('emoji') ? StatusUpdate.EMOJI : StatusUpdate.TEXT;
-    }
-
-    trackEvent(EventNames.CHANGED_STATUS, {
-      roomId: roomId,
-      type: updateType,
     });
   }
 };

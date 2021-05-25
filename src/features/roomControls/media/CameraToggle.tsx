@@ -9,7 +9,6 @@ import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcut
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { useIsAway } from '../away/useIsAway';
 import { useRoomStore } from '../../../roomState/useRoomStore';
 import { EventNames } from '../../../analytics/constants';
 import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
@@ -45,17 +44,13 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     toggleVideoOn();
   }, [toggleVideoOn, isVideoOn, socket, trackEvent]);
 
-  const [isAway] = useIsAway();
-
   useHotkeys(
     KeyShortcut.ToggleVideo,
     (ev) => {
-      if (isAway) return;
-
       ev.preventDefault();
       handleVideoToggle();
     },
-    [toggleVideoOn, isAway, handleVideoToggle]
+    [toggleVideoOn, handleVideoToggle]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);

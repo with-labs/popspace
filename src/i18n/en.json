@@ -450,18 +450,7 @@
         "export": "Save room to file",
         "import": "Load room from file",
         "submitButtonText": "Apply",
-        "sendFeedbackBtn": "Feedback",
-        "statusMenu": {
-          "statusPlaceHolder": "Whats your status?",
-          "historyTitle": "History",
-          "suggestionsTitle": "Suggestions",
-          "emojiTitle": "Pick an emoji",
-          "suggestions": {
-            "suggestion1": "Be right back. Meeting.",
-            "suggestion2": "Away from keyboard",
-            "suggestion3": "Walking the dog"
-          }
-        }
+        "sendFeedbackBtn": "Feedback"
       },
       "status": {
         "placeholder": "What's your status?",
@@ -526,17 +515,6 @@
         "linkCopied": "Copied!",
         "linkInviteName": "Invite via link"
       },
-      "statusControls": {
-        "toolTip": "Set your status"
-      },
-      "away": {
-        "leave": "Toggle away mode",
-        "return": "I'm back",
-        "tooltip": "Toggle away mode",
-        "explainerTitle": "You're away",
-        "explainerText": "While away, your camera is off, your mic is muted, and the room is silent.",
-        "explainerImgAlt": "An illustration with a grayed-out avatar bubble"
-      },
       "chat": {
         "buttonText": "Chat with us"
       }
@@ -579,32 +557,6 @@
       },
       "avModal": {
         "title": "Audio & Video"
-      },
-      "onboardingModal": {
-        "nextBtnText": "Next",
-        "PreviousText": "Previous",
-        "finishText": "Start using With",
-        "finishInvite": "Start inviting people",
-        "step1": {
-          "title": "Welcome",
-          "text": "Thanks for being an Alpha user.\n\nThere are still many things we need to build, and many things we need to learn.\n\nLet us show you around!",
-          "altText": "Welcome img"
-        },
-        "step2": {
-          "title": "A spatial place",
-          "text": "In With, audio is based on proximity. You can drag your avatar and get closer to others to hear them clearly.\n\nYou can pan and zoom in the room using your mouse, keyboard, or trackpad.",
-          "altText": "Spacial audio img"
-        },
-        "step3": {
-          "title": "Be present on your terms",
-          "text": "You can turn on your camera to engage heads-up, or choose a fun character to take the pressure off.\n\nSet a status to let others know what you’re up to, or hide in a corner to focus!",
-          "altText": "AV img"
-        },
-        "step4": {
-          "title": "Accessorize",
-          "text": "Type or paste anything into the Omnibar and it will suggest the best accessories to add to the room.\n\nSticky notes, web links, whiteboards, and YouTube videos are currently available.",
-          "altText": "Accessory img"
-        }
       },
       "userSettingsModal": {
         "title": "User settings",

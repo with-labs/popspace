@@ -11,8 +11,6 @@ import { CanvasObjectDragHandle } from '../../../providers/canvas/CanvasObjectDr
 import { makeStyles } from '@material-ui/core';
 
 const MAX_Z_INDEX = 2147483647;
-const CENTER_ORIGIN = { horizontal: 0.5, vertical: 0.5 };
-
 export interface IPersonProps {
   personId: string;
 }

@@ -16,12 +16,10 @@ import { ActionBarButton } from '../addContent/ActionBarButton';
 import { FloatingActionBarButton } from '../addContent/FloatingActionBarButton';
 import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
 import { QuickFileButton } from '../addContent/QuickFileButton';
-import { AwayToggle } from '../away/AwayToggle';
 import { PublishedCameraToggle } from '../media/PublishedCameraToggle';
 import { PublishedMicToggle } from '../media/PublishedMicToggle';
 import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
-import { StatusControls } from '../media/StatusControls';
 import { MainMenu } from './mainMenu/MainMenu';
 import { ChatButton } from './ChatButton/ChatButton';
 export interface IRoomTaskbarProps {
@@ -102,12 +100,10 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
             <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
               <PublishedCameraToggle />
               <PublishedMicToggle />
-              <StatusControls />
               <Hidden xsDown>
                 <ScreenShareToggle />
                 {isPIPAvailable && hasPip && <PictureInPictureToggle />}
               </Hidden>
-              <AwayToggle />
               <ChatButton />
             </Spacing>
           </MediaFailedWrapper>

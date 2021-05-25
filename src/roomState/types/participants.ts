@@ -1,13 +1,9 @@
 export interface UserShape {
   id: string;
 }
-
 export interface ParticipantState {
   avatarName: string;
   displayName: string;
-  statusText: string | null;
-  emoji: string | null;
-  isAway: boolean;
 }
 
 export interface ParticipantShape {

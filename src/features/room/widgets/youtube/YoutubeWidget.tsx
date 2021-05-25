@@ -12,7 +12,6 @@ import { YouTubePlayer } from './YouTubePlayer';
 import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '../../../../roomState/types/widgets';
-import { useIsAway } from '../../../roomControls/away/useIsAway';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
 
@@ -81,7 +80,6 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
 
   const [isMuted, setIsMuted] = React.useState(false);
   const toggleMuted = () => setIsMuted((v) => !v);
-  const [isAway] = useIsAway();
 
   const isPlaying = !!state.widgetState.mediaState?.isPlaying;
 
@@ -109,8 +107,6 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
     }
   }
 
-  const finalMuted = isMuted || isAway;
-
   return (
     <WidgetFrame
       color={ThemeName.Cherry}
@@ -121,10 +117,10 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
       preserveAspect
     >
       <WidgetTitlebar title={t('widgets.youtube.title')}>
-        <MuteButton isPlaying={isPlaying} isMuted={finalMuted} onClick={toggleMuted} />
+        <MuteButton isPlaying={isPlaying} isMuted={isMuted} onClick={toggleMuted} />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <YouTubePlayer state={state} onChange={saveWidget} isMuted={finalMuted} />
+        <YouTubePlayer state={state} onChange={saveWidget} isMuted={isMuted} />
         <WidgetResizeHandle className={classes.resizeHandle} />
       </WidgetContent>
     </WidgetFrame>

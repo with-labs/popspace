@@ -58,8 +58,6 @@ export interface OutgoingUpdateParticipantMessage extends BaseOutgoingSocketMess
     participantState: {
       displayName?: string;
       avatarName?: string;
-      statusText?: string | null;
-      emoji?: string | null;
     };
   };
 }

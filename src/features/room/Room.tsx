@@ -37,6 +37,7 @@ export const Room = React.memo<IRoomProps>(() => {
   return (
     <RoomViewportProvider>
       <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>
+        <RoomControls />
         <RoomCanvasRenderer data-test-room>
           <PageTitle title={roomName} />
           <ErrorBoundary fallback={() => <WidgetsFallback />}>
@@ -50,7 +51,6 @@ export const Room = React.memo<IRoomProps>(() => {
           <CursorLayer />
           <PasteConfirmModal />
         </RoomCanvasRenderer>
-        <RoomControls />
       </Box>
       <RoomSettingsModal />
       <SpeakingStateObserver />

@@ -6,6 +6,7 @@ import { ActionBar } from './addContent/ActionBar';
 import { ViewportControls } from './viewport/ViewportControls';
 import { Spacing } from '@components/Spacing/Spacing';
 import { ExperimentsModal } from './experiments/ExperimentsModal';
+import { WidgetMenu } from './widgetMenu/WidgetMenu';
 
 export interface IRoomControlsProps {}
 
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   roomAndViewportControls: {
     position: 'fixed',
     right: theme.spacing(2),
-    top: theme.spacing(2),
+    bottom: theme.spacing(2),
     pointerEvents: 'none',
     '& > *': {
       pointerEvents: 'initial',
@@ -27,12 +28,14 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
   return (
     <>
       <RoomTaskbar />
-      <Spacing flexDirection="row" className={classes.roomAndViewportControls}>
+      {/* designs dont show these in them, but might want to revive these? everthing wip */}
+      {/* <Spacing flexDirection="row" className={classes.roomAndViewportControls}>
         <RoomMenu />
         <ViewportControls />
-      </Spacing>
+      </Spacing> */}
       <ActionBar />
       <ExperimentsModal />
+      <WidgetMenu />
     </>
   );
 });

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Form, Formik } from 'formik';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { makeStyles, Box } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { FormikBorderlessTextarea } from '../../../../components/fieldBindings/FormikBorderlessTextarea';
+import { FormikBorderlessTextarea } from '@components/fieldBindings/FormikBorderlessTextarea';
 import { useGetLinkData } from './useGetLinkData';
-import { LinkWidgetState } from '../../../../roomState/types/widgets';
+import { LinkWidgetState } from '@roomState/types/widgets';
 
 export interface IEditLinkWidgetFormProps {
   onSave: (data: LinkWidgetState) => any;

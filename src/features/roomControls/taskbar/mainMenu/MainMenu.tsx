@@ -2,14 +2,14 @@ import * as React from 'react';
 import { makeStyles, Divider, Button, Box } from '@material-ui/core';
 import { ChangelogButton } from './ChangelogMenuItem';
 import { useTranslation } from 'react-i18next';
-import { Links } from '../../../../constants/Links';
+import { Links } from '@constants/Links';
 import { LeaveRoomMenuItem } from './LeaveRoomMenuItem';
 import { UserSettingsMenuItem } from './UserSettingsMenuItem';
-import { LogoIcon } from '../../../../components/icons/LogoIcon';
-import { SquareIconButton } from '../../../../components/SquareIconButton/SquareIconButton';
-import { ResponsivePopover } from '../../../../components/ResponsivePopover/ResponsivePopover';
-import { Spacing } from '../../../../components/Spacing/Spacing';
-import { Link } from '../../../../components/Link/Link';
+import { LogoIcon } from '@components/icons/LogoIcon';
+import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
+import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
+import { Spacing } from '@components/Spacing/Spacing';
+import { Link } from '@components/Link/Link';
 import { BugReport } from './BugReport';
 import { AvatarSelectorBubble } from '../../avatar/AvatarSelectorBubble';
 import { useUpdateStore } from '../../../updates/useUpdatesStore';
@@ -17,9 +17,9 @@ import shallow from 'zustand/shallow';
 import { Refresh } from '@material-ui/icons';
 import clsx from 'clsx';
 import { ExperimentsMenuItem } from './ExperimentsMenuItem';
-import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../../analytics/constants';
-import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 const useStyles = makeStyles((theme) => ({
   button: {

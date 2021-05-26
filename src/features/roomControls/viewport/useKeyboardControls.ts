@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback, KeyboardEvent as ReactKeyboardEvent } from 'react';
-import { Viewport } from '../../../providers/viewport/Viewport';
+import { Viewport } from '@providers/viewport/Viewport';
 
 const CONTROLLED_KEYS = ['=', '+', '-', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const PAN_SPEED = 1;

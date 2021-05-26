@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorCodes } from '../../constants/ErrorCodes';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { InvalidRoomPermission } from './ErrorPages/InvalidRoomPermission';
 import { LinkExpired } from './ErrorPages/LinkExpired';
 import { InvalidLink } from './ErrorPages/InvalidLink';

@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { FullscreenLoading } from '../../../components/FullscreenLoading/FullscreenLoading';
+import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 import { RequestPermissions } from './RequestPermissions';
-import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { EntryView } from './EntryView';
-import { Analytics } from '../../../analytics/Analytics';
-import { EventNames, Origin } from '../../../analytics/constants';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames, Origin } from '@analytics/constants';
 import { useHistory } from 'react-router';
-import { RouteNames } from '../../../constants/RouteNames';
-import { useOrderedRooms } from '../../../hooks/useOrderedRooms/useOrderedRooms';
+import { RouteNames } from '@constants/RouteNames';
+import { useOrderedRooms } from '@hooks/useOrderedRooms/useOrderedRooms';
 export interface IPreRoomProps {
   onReady: () => void;
 }

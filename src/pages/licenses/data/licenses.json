@@ -7274,6 +7274,18 @@
     "licenseText": "The MIT License (MIT)\n\nCopyright (c) 2015 David Clark\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "licenseFile": "node_modules/cosmiconfig/LICENSE"
   },
+  "craco-alias@3.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/risenforces/craco-alias",
+    "publisher": "Evgeny Zakharov",
+    "email": "to@risen.dev",
+    "name": "craco-alias",
+    "version": "3.0.1",
+    "description": "A craco plugin for automatic aliases generation",
+    "copyright": "Copyright (c) 2019 Evgeny Zakharov",
+    "licenseText": "MIT License\r\n\r\nCopyright (c) 2019 Evgeny Zakharov\r\n\r\nPermission is hereby granted, free of charge, to any person obtaining a copy\r\nof this software and associated documentation files (the \"Software\"), to deal\r\nin the Software without restriction, including without limitation the rights\r\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\r\ncopies of the Software, and to permit persons to whom the Software is\r\nfurnished to do so, subject to the following conditions:\r\n\r\nThe above copyright notice and this permission notice shall be included in all\r\ncopies or substantial portions of the Software.\r\n\r\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\r\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\r\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\r\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\r\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\r\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\r\nSOFTWARE.",
+    "licenseFile": "node_modules/craco-alias/LICENSE"
+  },
   "create-ecdh@4.0.4": {
     "licenses": "MIT",
     "repository": "https://github.com/crypto-browserify/createECDH",
@@ -12672,7 +12684,10 @@
     "licenseFile": "node_modules/json-schema-traverse/LICENSE"
   },
   "json-schema@0.2.3": {
-    "licenses": ["AFLv2.1", "BSD"],
+    "licenses": [
+      "AFLv2.1",
+      "BSD"
+    ],
     "repository": "https://github.com/kriszyp/json-schema",
     "publisher": "Kris Zyp",
     "name": "json-schema",
@@ -15424,7 +15439,10 @@
     "licenseFile": "node_modules/path-type/license"
   },
   "pause-stream@0.0.11": {
-    "licenses": ["MIT", "Apache2"],
+    "licenses": [
+      "MIT",
+      "Apache2"
+    ],
     "repository": "https://github.com/dominictarr/pause-stream",
     "publisher": "Dominic Tarr",
     "email": "dominic.tarr@gmail.com",

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { makeStyles, Box, Typography, Button } from '@material-ui/core';
-import { ButtonLoader } from '../../../components/ButtonLoader/ButtonLoader';
-import { logger } from '../../../utils/logger';
+import { ButtonLoader } from '@components/ButtonLoader/ButtonLoader';
+import { logger } from '@utils/logger';
 import { useAppState } from '../../../state';
-import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../../errors/MediaError';
 import { isIOS } from 'react-device-detect';
 import permissionsBg from '../../../images/illustrations/browser_permission.gif';
 import permissionsMobileBg from '../../../images/illustrations/browser_permission_responsive.jpg';
 import textureEdge from '../../../images/illustrations/textured_side_transparent.png';
 import { isMobileOnly } from 'react-device-detect';
-import { Logo } from '../../../components/Logo/Logo';
+import { Logo } from '@components/Logo/Logo';
 
 export interface IRequestPermissionsProps {
   onComplete: (isPermissionsSet: boolean) => void;

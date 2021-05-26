@@ -1,12 +1,12 @@
 import { makeStyles, useTheme } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import * as React from 'react';
-import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-import { RoomStateShape, useRoomStore } from '../../../roomState/useRoomStore';
+import { useAvatar } from '@hooks/useAvatar/useAvatar';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
-import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { useRoomSize } from '../canvas/useRoomSize';
 
 export interface ICursorProps {

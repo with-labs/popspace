@@ -3,10 +3,10 @@ import { makeStyles, Dialog, DialogContent, DialogTitle, Button, Box } from '@ma
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
 import { TFunction } from 'i18next';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { RoomInfo } from '../../../../types/api';
-import { MAX_ROOM_NAME_LENGTH } from '../../../../constants/room';
+import { MAX_ROOM_NAME_LENGTH } from '@constants/room';
 
 interface IRenameRoomModalProps {
   isOpen: boolean;

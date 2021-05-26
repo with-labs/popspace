@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import { CameraOnIcon } from '../../../components/icons/CameraOnIcon';
-import { CameraOffIcon } from '../../../components/icons/CameraOffIcon';
+import { CameraOnIcon } from '@components/icons/CameraOnIcon';
+import { CameraOffIcon } from '@components/icons/CameraOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
-import { KeyShortcut } from '../../../constants/keyShortcuts';
-import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
+import { KeyShortcut } from '@constants/keyShortcuts';
+import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { EventNames } from '../../../analytics/constants';
-import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { EventNames } from '@analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 
 export interface ICameraToggleProps {
   isLocal?: boolean;

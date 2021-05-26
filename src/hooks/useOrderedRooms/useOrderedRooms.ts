@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 import { UserProfile } from '../api/useCurrentUserProfile';
 import { useDefaultRoom } from '../api/useDefaultRoom';
 

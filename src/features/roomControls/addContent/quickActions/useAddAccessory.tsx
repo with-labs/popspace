@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
-import { addVectors } from '../../../../utils/math';
+import { addVectors } from '@utils/math';
 import { Bounds, Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
-import { LinkWidgetState, WidgetStateByType, WidgetType } from '../../../../roomState/types/widgets';
-import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
-import { useRoomStore } from '../../../../roomState/useRoomStore';
-import { Origin } from '../../../../analytics/constants';
-import { useViewport } from '../../../../providers/viewport/useViewport';
+import { LinkWidgetState, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { Origin } from '@analytics/constants';
+import { useViewport } from '@providers/viewport/useViewport';
 
 /**
  * Creates a new accessory near the center of the user's viewport,

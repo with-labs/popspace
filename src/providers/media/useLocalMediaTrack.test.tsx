@@ -2,7 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { useLocalMediaTrack } from './useLocalMediaTrack';
 import { EventEmitter } from 'events';
 import { createLocalVideoTrack, createLocalAudioTrack } from 'twilio-video';
-import { MediaTrackEvent } from '../../constants/twilio';
+import { MediaTrackEvent } from '@constants/twilio';
 
 jest.mock('twilio-video', () => ({
   createLocalAudioTrack: jest.fn(),

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PlayState } from '../common/MediaControls';
-import { useSpatialAudioVolume } from '../../../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { YoutubeWidgetState, YoutubeWidgetShape } from '../../../../roomState/types/widgets';
+import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { YoutubeWidgetState, YoutubeWidgetShape } from '@roomState/types/widgets';
 
 function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: string | null) {
   if (lastPlayedUTC) {

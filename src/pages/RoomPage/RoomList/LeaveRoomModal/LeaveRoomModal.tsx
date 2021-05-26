@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { RoomInfo } from '../../../../types/api';
 import { cherry } from '../../../../theme/theme';
 

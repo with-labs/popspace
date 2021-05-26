@@ -3,13 +3,13 @@ import checkEmailImg from '../../images/illustrations/check_your_email.jpg';
 import checkEmailMobileImg from '../../images/illustrations/check_your_email_responsive.jpg';
 import { toast } from 'react-hot-toast';
 import { Button, makeStyles, Typography } from '@material-ui/core';
-import Api from '../../utils/api';
-import { isEmailValid } from '../../utils/CheckEmail';
+import Api from '@utils/api';
+import { isEmailValid } from '@utils/CheckEmail';
 import { useTranslation, Trans } from 'react-i18next';
-import { FormPage } from '../../Layouts/formPage/FormPage';
-import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
-import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
-import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { FormPage } from '@layouts/formPage/FormPage';
+import { FormPageContent } from '@layouts/formPage/FormPageContent';
+import { FormPageImage } from '@layouts/formPage/FormPageImage';
+import { FormPageTitle } from '@layouts/formPage/FormPageTitle';
 
 interface IConfirmationViewProps {
   email: string;

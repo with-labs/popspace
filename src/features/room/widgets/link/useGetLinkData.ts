@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import api from '../../../../utils/api';
-import { logger } from '../../../../utils/logger';
+import api from '@utils/api';
+import { logger } from '@utils/logger';
 import { useTranslation } from 'react-i18next';
-import { LinkWidgetState } from '../../../../roomState/types/widgets';
+import { LinkWidgetState } from '@roomState/types/widgets';
 
 /** Returns a function to call to retrieve opengraph data for a URL */
 export function useGetLinkData() {

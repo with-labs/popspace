@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import shallow from 'zustand/shallow';
-import { Fade } from '../../../components/Fade/Fade';
-import { KeyShortcut } from '../../../constants/keyShortcuts';
+import { Fade } from '@components/Fade/Fade';
+import { KeyShortcut } from '@constants/keyShortcuts';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { Omnibar } from './Omnibar';
 

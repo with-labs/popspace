@@ -3,24 +3,24 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { makeStyles, Box, Typography, CircularProgress, InputAdornment, IconButton } from '@material-ui/core';
-import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { isEmailValid } from '../../../utils/CheckEmail';
-import Api, { ApiRoomMember } from '../../../utils/api';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { isEmailValid } from '@utils/CheckEmail';
+import Api, { ApiRoomMember } from '@utils/api';
 import { ApiError } from '../../../errors/ApiError';
 
-import { USER_SESSION_TOKEN } from '../../../constants/User';
-import { sessionTokenExists } from '../../../utils/sessionToken';
-import { DialogModal } from '../../../components/DialogModal/DialogModal';
-import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
-import { SendIcon } from '../../../components/icons/SendIcon';
+import { USER_SESSION_TOKEN } from '@constants/User';
+import { sessionTokenExists } from '@utils/sessionToken';
+import { DialogModal } from '@components/DialogModal/DialogModal';
+import { getErrorMessageFromResponse } from '@utils/ErrorMessage';
+import { SendIcon } from '@components/icons/SendIcon';
 
 import { MemberList } from './MemberList';
 import { useQuery, useQueryCache } from 'react-query';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 import InviteMembersImg from './images/invite_some_people.png';
 
-import { Origin } from '../../../analytics/constants';
+import { Origin } from '@analytics/constants';
 
 const ROOM_MEMBERS_QUERY = '/room_get_members';
 

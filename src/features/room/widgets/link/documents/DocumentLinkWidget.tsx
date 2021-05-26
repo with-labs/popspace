@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetFrame } from '../../WidgetFrame';
 import { IFrameDocumentContent } from './IFrameDocumentContent';

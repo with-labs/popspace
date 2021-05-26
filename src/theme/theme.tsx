@@ -9,7 +9,7 @@ import { generateShadows } from './shadows';
 // adds theme values for lab components
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type _aug from '@material-ui/lab/themeAugmentation';
-import { DropdownIcon } from '../components/icons/DropdownIcon';
+import { DropdownIcon } from '@components/icons/DropdownIcon';
 
 const SEMIBOLD_WEIGHT = 600;
 

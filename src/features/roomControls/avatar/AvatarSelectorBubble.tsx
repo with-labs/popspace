@@ -3,12 +3,12 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LocalVideoTrack } from 'twilio-video';
-import { EditHint } from '../../../components/EditHint/EditHint';
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
-import VideoTrack from '../../../components/VideoTrack/VideoTrack';
-import { useLocalTracks } from '../../../providers/media/hooks/useLocalTracks';
+import { EditHint } from '@components/EditHint/EditHint';
+import { Modal } from '@components/Modal/Modal';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import VideoTrack from '@components/VideoTrack/VideoTrack';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { AvatarSelector } from './AvatarSelector';
 

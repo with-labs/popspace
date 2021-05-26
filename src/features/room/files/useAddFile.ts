@@ -1,10 +1,10 @@
 import { toast } from 'react-hot-toast';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '../../../roomState/types/widgets';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { WidgetType } from '@roomState/types/widgets';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
-import api from '../../../utils/api';
+import api from '@utils/api';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { SIZE_STUB } from '../widgets/link/constants';
 

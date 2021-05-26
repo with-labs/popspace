@@ -1,17 +1,17 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
-import { WidgetType } from '../../../../../roomState/types/widgets';
-import { clampSizeMaintainingRatio } from '../../../../../utils/clampSizeMaintainingRatio';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import { WidgetType } from '@roomState/types/widgets';
+import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { WidgetFrame } from '../../WidgetFrame';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';
 import { LinkMenu } from '../menu/LinkMenu';
 import { MediaLinkMedia } from './MediaWidgetMedia';
-import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
 import { MAX_INITIAL_SIZE_MEDIA, MAX_SIZE_MEDIA, MIN_SIZE_MEDIA } from '../constants';
-import { compareWithTolerance } from '../../../../../utils/math';
+import { compareWithTolerance } from '@utils/math';
 
 const useStyles = makeStyles((theme) => ({
   media: {

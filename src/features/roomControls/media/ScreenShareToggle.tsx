@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import { SharingOnIcon } from '../../../components/icons/SharingOnIcon';
-import { SharingOffIcon } from '../../../components/icons/SharingOffIcon';
-import useScreenShareToggle from '../../../providers/media/hooks/useScreenShareToggle';
+import { SharingOnIcon } from '@components/icons/SharingOnIcon';
+import { SharingOffIcon } from '@components/icons/SharingOffIcon';
+import useScreenShareToggle from '@providers/media/hooks/useScreenShareToggle';
 import { useTranslation } from 'react-i18next';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStatus } from '../../../providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '../../../providers/twilio/TwilioProvider';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
+import { TwilioStatus } from '@providers/twilio/TwilioProvider';
 
 export const ScreenShareToggle = (props: { className?: string }) => {
   const { t } = useTranslation();

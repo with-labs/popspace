@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { TwoColLayout } from '../../Layouts/TwoColLayout/TwoColLayout';
-import { Column } from '../../Layouts/TwoColLayout/Column/Column';
+import { TwoColLayout } from '@layouts/TwoColLayout/TwoColLayout';
+import { Column } from '@layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography } from '@material-ui/core';
-import Api from '../../utils/api';
-import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { ErrorCodes } from '../../constants/ErrorCodes';
+import Api from '@utils/api';
+import useQueryParams from '@hooks/useQueryParams/useQueryParams';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
-import { Page } from '../../Layouts/Page/Page';
-import { getSessionToken } from '../../utils/sessionToken';
+import { Page } from '@layouts/Page/Page';
+import { getSessionToken } from '@utils/sessionToken';
 import Subscribed from './images/subscribed.png';
-import { RouteNames } from '../../constants/RouteNames';
-import { logger } from '../../utils/logger';
+import { RouteNames } from '@constants/RouteNames';
+import { logger } from '@utils/logger';
 
 interface ISubscribeProps {}
 

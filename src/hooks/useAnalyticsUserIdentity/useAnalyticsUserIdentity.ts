@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import * as Sentry from '@sentry/react';
 import { useCurrentUserProfile } from '../api/useCurrentUserProfile';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 
 export function useAnalyticsUserIdentity() {
   const { user } = useCurrentUserProfile();

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Avatar, IAvatarProps } from '../../../components/Avatar/Avatar';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
+import { Avatar, IAvatarProps } from '@components/Avatar/Avatar';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 
 export interface IPersonAvatarProps extends Omit<IAvatarProps, 'name' | 'useFallback'> {
   personId: string;

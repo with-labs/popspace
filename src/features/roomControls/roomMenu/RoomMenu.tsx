@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
-import { DropdownIcon } from '../../../components/icons/DropdownIcon';
+import { DropdownIcon } from '@components/icons/DropdownIcon';
 import { MembershipManagement } from '../membership/MembershipManagement';
 import { InviteLink } from '../membership/InviteLink';
 import { useTranslation } from 'react-i18next';
-import { ResponsivePopover } from '../../../components/ResponsivePopover/ResponsivePopover';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { ResponsiveIconButton } from '../../../components/ResponsiveIconButton/ResponsiveIconButton';
-import { truncate } from '../../../utils/truncate';
-import { RoomIcon } from '../../../components/icons/RoomIcon';
-import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
+import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { ResponsiveIconButton } from '@components/ResponsiveIconButton/ResponsiveIconButton';
+import { truncate } from '@utils/truncate';
+import { RoomIcon } from '@components/icons/RoomIcon';
+import { useRoomRoute } from '@hooks/useRoomRoute/useRoomRoute';
 import useMergedRef from '@react-hook/merged-ref';
 import clsx from 'clsx';
-import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
 
 export interface IRoomMenuProps {
   className?: string;

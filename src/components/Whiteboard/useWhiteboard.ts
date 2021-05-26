@@ -4,7 +4,7 @@ import { nanoid } from '@reduxjs/toolkit';
 import { COLORS, ERASER_COLOR, ERASER_WIDTH, STROKE_WIDTH } from './constants';
 import { DrawingLine, WhiteboardState } from './types';
 import throttle from 'lodash.throttle';
-import { isMiddleClick, isRightClick } from '../../utils/mouseButtons';
+import { isMiddleClick, isRightClick } from '@utils/mouseButtons';
 
 function getMousePosition(ev: Konva.KonvaEventObject<MouseEvent>) {
   return ev.target?.getStage()?.getPointerPosition() ?? { x: 0, y: 0 };

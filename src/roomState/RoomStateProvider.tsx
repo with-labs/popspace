@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { ConnectionFailedError, SocketConnection, SocketMessageRejectionError } from './SocketConnection';
 import { Snackbar } from '@material-ui/core';
-import { useIsMountedRef } from '../hooks/useIsMountedRef/useIsMountedRef';
-import { logger } from '../utils/logger';
+import { useIsMountedRef } from '@hooks/useIsMountedRef/useIsMountedRef';
+import { logger } from '@utils/logger';
 import { ErrorPage } from '../pages/ErrorPage/ErrorPage';
-import { ErrorCodes } from '../constants/ErrorCodes';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { IncomingAuthResponseMessage } from './types/socketProtocol';
 import { useRoomStore } from './useRoomStore';
 import { useHistory } from 'react-router';
-import { RouteNames } from '../constants/RouteNames';
-import { getSessionToken } from '../utils/sessionToken';
+import { RouteNames } from '@constants/RouteNames';
+import { getSessionToken } from '@utils/sessionToken';
 import { useTranslation } from 'react-i18next';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { FullscreenLoading } from '../components/FullscreenLoading/FullscreenLoading';
+import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 
 const WS_SERVER = process.env.REACT_APP_SOCKET_HOST || 'wss://test.with.so:8443';
 const AUTH_RESPONSE_TIMEOUT = 10 * 1000; // 10 seconds

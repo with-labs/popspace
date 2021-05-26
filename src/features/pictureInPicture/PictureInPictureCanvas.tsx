@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
-import { logger } from '../../utils/logger';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { logger } from '@utils/logger';
 import { PictureInPictureMuteIcon } from './PictureInPictureMuteIcon';
 import { PictureInPictureSettingsState, usePictureInPictureSettings } from './usePictureInPictureSettings';
 import { PictureInPictureUser } from './PictureInPictureUser';

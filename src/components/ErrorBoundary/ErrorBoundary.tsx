@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import * as Sentry from '@sentry/react';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 
 interface IErrorBoundaryProps {
   fallback: () => ReactNode;

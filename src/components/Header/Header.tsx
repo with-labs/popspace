@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Menu, MenuItem, Divider, ListItemIcon, ListItemText, Button, makeStyles, Typography } from '@material-ui/core';
-import { Links } from '../../constants/Links';
-import { USER_SUPPORT_EMAIL } from '../../constants/User';
+import { Links } from '@constants/Links';
+import { USER_SUPPORT_EMAIL } from '@constants/User';
 import { useTranslation } from 'react-i18next';
-import { removeSessionToken } from '../../utils/sessionToken';
+import { removeSessionToken } from '@utils/sessionToken';
 
 import { ReactComponent as DropdownIcon } from '../../images/icons/dropdown.svg';
 import { ReactComponent as SignOutIcon } from '../../images/icons/sign_out.svg';
@@ -12,7 +12,7 @@ import { ReactComponent as SupportIcon } from '../../images/icons/support.svg';
 import { ReactComponent as DocumentIcon } from '../../images/icons/document.svg';
 import { ReactComponent as FeatureIcon } from '../../images/icons/feature.svg';
 import { Link } from '../Link/Link';
-import { RouteNames } from '../../constants/RouteNames';
+import { RouteNames } from '@constants/RouteNames';
 import { LinkMenuItem } from '../LinkMenuItem/LinkMenuItem';
 import { Logo } from '../Logo/Logo';
 

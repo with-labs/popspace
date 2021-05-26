@@ -1,6 +1,6 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { Markdown } from '../../../components/Markdown/Markdown';
+import { Markdown } from '@components/Markdown/Markdown';
 
 export interface IPasteContentPreviewProps {
   text: string | null;

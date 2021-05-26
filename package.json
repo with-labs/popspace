@@ -55,6 +55,7 @@
     "clsx": "^1.1.1",
     "command-line-args": "^5.1.1",
     "concurrently": "^5.1.0",
+    "craco-alias": "^3.0.1",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",
     "csv-parser": "^2.3.3",

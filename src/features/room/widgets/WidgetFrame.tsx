@@ -2,10 +2,10 @@ import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 import { ThemeName } from '../../../theme/theme';
-import { CanvasObject, ICanvasObjectProps } from '../../../providers/canvas/CanvasObject';
+import { CanvasObject, ICanvasObjectProps } from '@providers/canvas/CanvasObject';
 import { WidgetResizeHandle } from './WidgetResizeHandle';
 
 export interface IWidgetFrameProps extends Omit<ICanvasObjectProps, 'objectId' | 'objectKind'> {

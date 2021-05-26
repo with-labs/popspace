@@ -1,6 +1,6 @@
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { useCallback } from 'react';
-import { WidgetState } from '../../../roomState/types/widgets';
+import { WidgetState } from '@roomState/types/widgets';
 
 /**
  * saves a widget, syncing its state to peers, and publishing it if

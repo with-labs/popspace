@@ -2,11 +2,11 @@ import { Box, Button, TextField, Typography } from '@material-ui/core';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { ButtonLoader } from '../../components/ButtonLoader/ButtonLoader';
-import { useCurrentUserProfile } from '../../hooks/api/useCurrentUserProfile';
-import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
-import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
-import api, { ApiNamedRoom } from '../../utils/api';
+import { ButtonLoader } from '@components/ButtonLoader/ButtonLoader';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
+import { FormPageFields } from '@layouts/formPage/FormPageFields';
+import { FormPageTitle } from '@layouts/formPage/FormPageTitle';
+import api, { ApiNamedRoom } from '@utils/api';
 import { ApiError } from '../../errors/ApiError';
 
 export interface INameRoomStepProps {

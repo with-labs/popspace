@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@features/*": [
+        "./src/features/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@providers/*": [
+        "./src/providers/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@roomState/*": [
+        "./src/roomState/*"
+      ],
+      "@constants/*": [
+        "./src/constants/*"
+      ],
+      "@analytics/*": [
+        "./src/analytics/*"
+      ],
+      "@layouts/*": [
+        "./src/Layouts/*"
+      ],
+      "@images/*": [
+        "./src/images/*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ]
+    }
+  }
+}

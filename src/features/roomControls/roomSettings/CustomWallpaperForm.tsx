@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Box, useTheme, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Form, Formik } from 'formik';
-import { FormikTextField } from '../../../components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '../../../components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { TFunction } from 'i18next';
 
 export interface ICustomWallpaperFormProps {

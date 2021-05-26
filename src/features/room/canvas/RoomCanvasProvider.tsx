@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Canvas } from '../../../providers/canvas/Canvas';
-import { CanvasProvider } from '../../../providers/canvas/CanvasProvider';
-import { useViewport } from '../../../providers/viewport/useViewport';
+import { Canvas } from '@providers/canvas/Canvas';
+import { CanvasProvider } from '@providers/canvas/CanvasProvider';
+import { useViewport } from '@providers/viewport/useViewport';
 
 export interface IRoomCanvasProviderProps {
   children?: React.ReactNode;

@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
 import { Bounds, Vector2 } from '../../types/spatials';
-import { isMiddleClick, isNoClick } from '../../utils/mouseButtons';
+import { isMiddleClick, isNoClick } from '@utils/mouseButtons';
 import { CanvasObjectKind } from './Canvas';
 import { useCanvas } from './CanvasProvider';
 import { useCanvasObjectDrag } from './useCanvasObjectDrag';

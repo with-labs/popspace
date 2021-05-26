@@ -3,7 +3,7 @@ import { IconButton, makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { AudioIndicator } from '../../../components/AudioIndicator/AudioIndicator';
+import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
 
 export interface IMuteButtonProps {
   isMuted: boolean;

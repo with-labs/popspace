@@ -2,12 +2,12 @@ import * as React from 'react';
 import { WallpaperCategory } from './WallpaperCategory';
 import { CustomWallpaperForm } from './CustomWallpaperForm';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { Modal } from '@components/Modal/Modal';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { makeStyles, Box } from '@material-ui/core';
 import { useRoomModalStore } from '../useRoomModalStore';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 const useStyles = makeStyles((theme) => ({
   button: {

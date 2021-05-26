@@ -9,9 +9,9 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
-import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useWidgetContext } from '../useWidgetContext';
-import { WidgetType } from '../../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
 

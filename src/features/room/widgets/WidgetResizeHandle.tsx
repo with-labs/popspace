@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { ResizeHandle } from '../../../providers/canvas/ResizeHandle';
+import { ResizeHandle } from '@providers/canvas/ResizeHandle';
 import clsx from 'clsx';
 
 export interface IWidgetResizeHandleProps {

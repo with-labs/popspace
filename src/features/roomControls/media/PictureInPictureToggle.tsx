@@ -3,9 +3,9 @@ import { ToggleButton } from '@material-ui/lab';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
-import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { KeyShortcut } from '../../../constants/keyShortcuts';
+import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { KeyShortcut } from '@constants/keyShortcuts';
 import { isAutoPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
 import { usePictureInPicture } from '../../pictureInPicture/usePictureInPicture';
 

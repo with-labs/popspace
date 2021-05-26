@@ -1,6 +1,6 @@
 import { Typography, TypographyProps } from '@material-ui/core';
 import * as React from 'react';
-import { Logo } from '../../components/Logo/Logo';
+import { Logo } from '@components/Logo/Logo';
 
 export function FormPageTitle(props: TypographyProps) {
   return (

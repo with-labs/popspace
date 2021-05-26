@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
 import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
-import { ErrorCodes } from '../../constants/ErrorCodes';
-import { RoomEvent, RoomState } from '../../constants/twilio';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { RoomEvent, RoomState } from '@constants/twilio';
 import { FatalError } from '../../errors/FatalError';
 import { JoinError } from '../../errors/JoinError';
 import i18n from '../../i18n';
-import api from '../../utils/api';
-import { logger } from '../../utils/logger';
+import api from '@utils/api';
+import { logger } from '@utils/logger';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
 // if we encounter two errors within this timeframe, we will stop retrying

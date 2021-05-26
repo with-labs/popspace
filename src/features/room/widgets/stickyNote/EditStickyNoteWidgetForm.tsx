@@ -2,8 +2,8 @@ import { makeStyles, Box, TextareaAutosize, ClickAwayListener } from '@material-
 import throttle from 'lodash.throttle';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from '../../../../components/Link/Link';
-import { WidgetType } from '../../../../roomState/types/widgets';
+import { Link } from '@components/Link/Link';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 

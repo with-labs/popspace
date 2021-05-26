@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Box, Hidden, IconButton, Paper, Typography } from '@material-ui/core';
-import { PlusIcon } from '../../../components/icons/PlusIcon';
-import { MinusIcon } from '../../../components/icons/MinusIcon';
+import { PlusIcon } from '@components/icons/PlusIcon';
+import { MinusIcon } from '@components/icons/MinusIcon';
 import { CenterButton } from './CenterButton';
 import { WallpaperPicker } from './WallpaperPicker';
-import { Spacing } from '../../../components/Spacing/Spacing';
-import { useViewport } from '../../../providers/viewport/useViewport';
+import { Spacing } from '@components/Spacing/Spacing';
+import { useViewport } from '@providers/viewport/useViewport';
 import throttle from 'lodash.throttle';
 
 const DEFAULT_ZOOM_INCREMENT = 0.2;

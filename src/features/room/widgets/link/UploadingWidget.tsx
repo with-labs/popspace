@@ -5,7 +5,7 @@ import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { ThemeName } from '../../../../theme/theme';
-import { CanvasObjectDragHandle } from '../../../../providers/canvas/CanvasObjectDragHandle';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 
 export function UploadingWidget() {
   const { t } = useTranslation();

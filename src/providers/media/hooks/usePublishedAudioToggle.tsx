@@ -1,5 +1,5 @@
 import { useNamedPublication } from '../../twilio/hooks/useNamedPublication';
-import { MIC_TRACK_NAME } from '../../../constants/User';
+import { MIC_TRACK_NAME } from '@constants/User';
 import { useLocalMediaToggle } from './useLocalMediaToggle';
 import { useLocalParticipant } from '../../twilio/hooks/useLocalParticipant';
 import { useLocalTracks } from './useLocalTracks';

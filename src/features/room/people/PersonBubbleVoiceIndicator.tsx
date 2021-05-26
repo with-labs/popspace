@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
-import { SPRINGS } from '../../../constants/springs';
+import { SPRINGS } from '@constants/springs';
 
 export interface IPersonBubbleVoiceIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;

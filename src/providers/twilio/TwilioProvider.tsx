@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Room } from 'twilio-video';
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
-import { TWILIO_CONNECTION_OPTIONS } from '../../constants/twilio';
+import { TWILIO_CONNECTION_OPTIONS } from '@constants/twilio';
 import { useAllParticipants } from './useAllParticipants';
 import { useLocalTrackPublications } from './useLocalTrackPublications';
 import { useMobileBackgroundDisconnect } from './useMobileBackgroundDisconnect';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 import ReconnectingNotification from './ReconnectingNotification';
 
 export enum TwilioStatus {

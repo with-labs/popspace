@@ -1,4 +1,4 @@
-import { ErrorCodes } from '../constants/ErrorCodes';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import i18next, { TFunction } from 'i18next';
 import { BaseResponse } from './api';
 

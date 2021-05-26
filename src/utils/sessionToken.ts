@@ -1,4 +1,4 @@
-import { USER_SESSION_TOKEN } from '../constants/User';
+import { USER_SESSION_TOKEN } from '@constants/User';
 
 export function sessionTokenExists(sessionToken: string | null) {
   return !!sessionToken && sessionToken !== 'undefined' && sessionToken !== 'null';

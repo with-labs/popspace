@@ -1,7 +1,7 @@
 import { Vector2 } from '../../../types/spatials';
 import { useCallback, DragEvent, useState, useRef, useMemo } from 'react';
 import { debounce } from '@material-ui/core';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 import { useAddFile } from './useAddFile';
 
 function getFileDropItems(ev: DragEvent) {

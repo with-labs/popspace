@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import { MicOnIcon } from '../../../components/icons/MicOnIcon';
-import { MicOffIcon } from '../../../components/icons/MicOffIcon';
+import { MicOnIcon } from '@components/icons/MicOnIcon';
+import { MicOffIcon } from '@components/icons/MicOffIcon';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { KeyShortcut } from '../../../constants/keyShortcuts';
-import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
+import { KeyShortcut } from '@constants/keyShortcuts';
+import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
 import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import clsx from 'clsx';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { EventNames } from '../../../analytics/constants';
-import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { EventNames } from '@analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 
 const useStyles = makeStyles((theme) => ({
   root: {},

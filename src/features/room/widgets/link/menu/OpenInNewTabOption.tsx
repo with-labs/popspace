@@ -1,9 +1,9 @@
 import { ListItemIcon, ListItemText } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { OpenIcon } from '../../../../../components/icons/OpenIcon';
-import { LinkMenuItem } from '../../../../../components/LinkMenuItem/LinkMenuItem';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { OpenIcon } from '@components/icons/OpenIcon';
+import { LinkMenuItem } from '@components/LinkMenuItem/LinkMenuItem';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 
 export const OpenInNewTabOption = React.forwardRef<HTMLLIElement, {}>((props, ref) => {

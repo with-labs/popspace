@@ -8,12 +8,12 @@ import React from 'react';
 import AudioTrack from '../AudioTrack/AudioTrack';
 import VideoTrack from '../VideoTrack/VideoTrack';
 
-import useTrack from '../../providers/twilio/hooks/useTrack';
+import useTrack from '@providers/twilio/hooks/useTrack';
 
 import { IVideoTrack } from '../../types/twilio';
 import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import { hasTrackName } from '../../utils/trackNames';
-import { CAMERA_TRACK_NAME } from '../../constants/User';
+import { hasTrackName } from '@utils/trackNames';
+import { CAMERA_TRACK_NAME } from '@constants/User';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;

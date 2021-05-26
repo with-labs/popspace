@@ -1,13 +1,13 @@
 import { Typography } from '@material-ui/core';
 import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from '../../components/Link/Link';
+import { Link } from '@components/Link/Link';
 import img from '../../images/illustrations/check_your_email.jpg';
 import mobileImg from '../../images/illustrations/check_your_email_responsive.jpg';
-import { FormPage } from '../../Layouts/formPage/FormPage';
-import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
-import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
-import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { FormPage } from '@layouts/formPage/FormPage';
+import { FormPageImage } from '@layouts/formPage/FormPageImage';
+import { FormPageContent } from '@layouts/formPage/FormPageContent';
+import { FormPageTitle } from '@layouts/formPage/FormPageTitle';
 
 export function SignupComplete({ resend, email }: { resend: () => any; email: string }) {
   const { t } = useTranslation();

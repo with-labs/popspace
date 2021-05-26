@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles, CircularProgress, Box } from '@material-ui/core';
-import { PageTitle } from '../../components/PageTitle/PageTitle';
+import { PageTitle } from '@components/PageTitle/PageTitle';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import { ErrorInfo } from '../../types/api';
 

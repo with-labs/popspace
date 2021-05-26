@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { isSmallScreen } from '../../../utils/environment';
+import { isSmallScreen } from '@utils/environment';
 import { QuickAction, QuickActionKind } from '../types';
 
 export function fileQuickActions(prompt: string, t: TFunction): QuickAction[] {

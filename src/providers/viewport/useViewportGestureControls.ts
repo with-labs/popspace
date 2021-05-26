@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 import { useGesture } from 'react-use-gesture';
-import { useTrackCursor } from '../../features/room/useTrackCursor';
+import { useTrackCursor } from '@features/room/useTrackCursor';
 import { Viewport } from './Viewport';
 
 const PINCH_GESTURE_DAMPING = 500;

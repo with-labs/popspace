@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react';
 import { convertMediaError } from './convertMediaError';
 import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
-import { MediaTrackEvent } from '../../constants/twilio';
-import { createTrackName } from '../../utils/trackNames';
+import { MediaTrackEvent } from '@constants/twilio';
+import { createTrackName } from '@utils/trackNames';
 import { MEDIA_TYPES } from '../../errors/MediaError';
 
 export function useScreenShareTracks({

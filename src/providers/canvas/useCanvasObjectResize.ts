@@ -2,7 +2,7 @@ import { useSpring } from '@react-spring/web';
 import { useEffect, useMemo } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { Bounds } from '../../types/spatials';
-import { isInBounds } from '../../utils/math';
+import { isInBounds } from '@utils/math';
 import { useViewport } from '../viewport/useViewport';
 import { CanvasObjectKind, ResizeInfo } from './Canvas';
 import { useCanvas } from './CanvasProvider';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
 import clsx from 'clsx';
-import { useCanvas } from '../../../providers/canvas/CanvasProvider';
+import { useCanvas } from '@providers/canvas/CanvasProvider';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;

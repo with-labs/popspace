@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import Cookie from 'js-cookie';
-import { CAMERA_DEVICE_COOKIE, MIC_DEVICE_COOKIE } from '../../constants/User';
+import { CAMERA_DEVICE_COOKIE, MIC_DEVICE_COOKIE } from '@constants/User';
 
 export function usePreferredDevices() {
   const [cameraDeviceId, setCameraDeviceIdInternal] = useState(() => {

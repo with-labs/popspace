@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import { Bounds, Vector2, RectLimits } from '../../types/spatials';
-import { addVectors, clamp, clampVector, subtractVectors } from '../../utils/math';
+import { addVectors, clamp, clampVector, subtractVectors } from '@utils/math';
 import { ResizeObserver } from 'resize-observer';
 import { ResizeObserverEntry } from 'resize-observer/lib/ResizeObserverEntry';
 

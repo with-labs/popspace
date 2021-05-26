@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AccessoryIcon } from '../../../components/icons/AccessoryIcon';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { SquareIconButton } from '../../../components/SquareIconButton/SquareIconButton';
-import { browseForFile } from '../../../utils/browseForFile';
+import { AccessoryIcon } from '@components/icons/AccessoryIcon';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
+import { browseForFile } from '@utils/browseForFile';
 import { useAddFile } from '../../room/files/useAddFile';
 
 export function QuickFileButton(props: {}) {

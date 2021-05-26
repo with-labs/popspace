@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
-import { ErrorCodes } from '../../constants/ErrorCodes';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import { useAppState } from '../../state';
 import { ApiError } from '../../errors/ApiError';

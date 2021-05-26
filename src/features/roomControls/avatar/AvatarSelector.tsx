@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, Typography, Box } from '@material-ui/core';
-import { options as avatarOptions } from '../../../utils/AvatarOptions';
+import { options as avatarOptions } from '@utils/AvatarOptions';
 import { AvatarGrid } from './AvatarGrid';
 import { useTranslation } from 'react-i18next';
 import { groupBy } from 'lodash';

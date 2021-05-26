@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { WidgetType } from '../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { WidgetContext, WidgetContextValue } from './Widget';
 
 export const useWidgetContext = <T extends WidgetType = any>() => {

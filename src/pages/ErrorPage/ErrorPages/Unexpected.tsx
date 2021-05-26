@@ -1,7 +1,7 @@
 import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
 import UnexpectedImg from '../images/Unexpected.png';
-import { Links } from '../../../constants/Links';
+import { Links } from '@constants/Links';
 import { useTranslation } from 'react-i18next';
 
 interface IUnexpectedProps {

@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { FormPage } from '../../Layouts/formPage/FormPage';
-import { FormPageContent } from '../../Layouts/formPage/FormPageContent';
-import { FormPageImage } from '../../Layouts/formPage/FormPageImage';
+import { FormPage } from '@layouts/formPage/FormPage';
+import { FormPageContent } from '@layouts/formPage/FormPageContent';
+import { FormPageImage } from '@layouts/formPage/FormPageImage';
 import nameRoomGraphic from '../../images/illustrations/name_your_room.jpg';
 import nameRoomMobileGraphic from '../../images/illustrations/name_your_room_responsive.jpg';
 import inviteGraphic from '../../images/illustrations/invite_your_team.jpg';
 import inviteMobileGraphic from '../../images/illustrations/invite_your_team_responsive.jpg';
 import { NameRoomStep } from './NameRoomStep';
-import { ApiNamedRoom } from '../../utils/api';
+import { ApiNamedRoom } from '@utils/api';
 import { InviteRoomMemberStep } from './InviteRoomMemberStep';
 
 import { useHistory } from 'react-router';
-import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { RouteNames } from '../../constants/RouteNames';
-import { Analytics } from '../../analytics/Analytics';
-import { EventNames, Origin } from '../../analytics/constants';
+import useQueryParams from '@hooks/useQueryParams/useQueryParams';
+import { RouteNames } from '@constants/RouteNames';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames, Origin } from '@analytics/constants';
 
 export function CreateRoomPage() {
   const query = useQueryParams();

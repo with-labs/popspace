@@ -1,8 +1,8 @@
 import { AudioTrack, AudioTrackPublication } from 'twilio-video';
 import volumeMeter from 'volume-meter';
 import { useState, useEffect } from 'react';
-import useTrack from '../../providers/twilio/hooks/useTrack';
-import useMediaStreamTrack from '../../providers/twilio/hooks/useMediaStreamTrack';
+import useTrack from '@providers/twilio/hooks/useTrack';
+import useMediaStreamTrack from '@providers/twilio/hooks/useMediaStreamTrack';
 import throttle from 'lodash.throttle';
 
 // Safari and old webkit compat

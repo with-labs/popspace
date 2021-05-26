@@ -1,4 +1,4 @@
-import { logger } from '../utils/logger';
+import { logger } from '@utils/logger';
 import { EventEmitter } from 'events';
 import { v4 } from 'uuid';
 import { IncomingSocketMessage, IncomingErrorMessage, OutgoingSocketMessage } from './types/socketProtocol';

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Room, RemoteParticipant } from 'twilio-video';
-import { RoomEvent } from '../../constants/twilio';
+import { RoomEvent } from '@constants/twilio';
 
 export function useAllParticipants(room: Room | null) {
   const [remoteParticipants, setRemoteParticipants] = useState(

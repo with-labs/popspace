@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, makeStyles, Button, Hidden, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { BackIcon } from '../../../../components/icons/BackIcon';
-import { Link } from '../../../../components/Link/Link';
-import { RouteNames } from '../../../../constants/RouteNames';
-import { Origin } from '../../../../analytics/constants';
+import { BackIcon } from '@components/icons/BackIcon';
+import { Link } from '@components/Link/Link';
+import { RouteNames } from '@constants/RouteNames';
+import { Origin } from '@analytics/constants';
 import clsx from 'clsx';
 
 interface IRoomListHeaderProps {

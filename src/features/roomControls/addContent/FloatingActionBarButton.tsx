@@ -1,6 +1,6 @@
 import { Fab } from '@material-ui/core';
 import * as React from 'react';
-import { ActionIcon } from '../../../components/icons/ActionIcon';
+import { ActionIcon } from '@components/icons/ActionIcon';
 import { useRoomModalStore } from '../useRoomModalStore';
 
 export type FloatingActionBarButtonProps = {

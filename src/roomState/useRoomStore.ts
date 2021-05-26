@@ -1,7 +1,7 @@
 import create from 'zustand';
 import { SocketConnection } from './SocketConnection';
 import { Vector2, Bounds } from '../types/spatials';
-import { logger } from '../utils/logger';
+import { logger } from '@utils/logger';
 import {
   IncomingAuthResponseMessage,
   IncomingSocketMessage,
@@ -9,17 +9,17 @@ import {
   OutgoingSocketMessage,
 } from './types/socketProtocol';
 import { combineAndImmer } from './combineAndImmer';
-import { wallPaperOptions } from '../features/roomControls/roomSettings/WallpaperOptions';
+import { wallPaperOptions } from '@features/roomControls/roomSettings/WallpaperOptions';
 import { WidgetShape, WidgetType, WidgetStateByType, WidgetState } from './types/widgets';
 import { ParticipantShape, ParticipantState } from './types/participants';
 import { RoomPositionState } from './types/common';
 import { devtools } from 'zustand/middleware';
-import { Analytics } from '../analytics/Analytics';
-import { EventNames, Origin } from '../analytics/constants';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames, Origin } from '@analytics/constants';
 import { sanityCheckWidget } from './sanityCheckWidget';
-import { DEFAULT_ROOM_SIZE } from '../constants/room';
-import { clampVector } from '../utils/math';
-import { SIZE_AVATAR } from '../features/room/people/constants';
+import { DEFAULT_ROOM_SIZE } from '@constants/room';
+import { clampVector } from '@utils/math';
+import { SIZE_AVATAR } from '@features/room/people/constants';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;

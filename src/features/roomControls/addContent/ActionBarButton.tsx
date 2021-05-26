@@ -1,10 +1,10 @@
 import { Box } from '@material-ui/core';
 import * as React from 'react';
-import { ActionIcon } from '../../../components/icons/ActionIcon';
-import { SquareIconButton } from '../../../components/SquareIconButton/SquareIconButton';
+import { ActionIcon } from '@components/icons/ActionIcon';
+import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
 import { useRoomModalStore } from '../useRoomModalStore';
-import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
 
 export type ActionBarButtonProps = {
   className?: string;

@@ -1,23 +1,23 @@
 import React from 'react';
-import ErrorDialog from '../../components/ErrorDialog/ErrorDialog';
+import ErrorDialog from '@components/ErrorDialog/ErrorDialog';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Room } from '../../features/room/Room';
-import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import { Room } from '@features/room/Room';
+import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../components/Modal/Modal';
-import { ModalTitleBar } from '../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../components/Modal/ModalContentWrapper';
-import { RoomStateProvider } from '../../roomState/RoomStateProvider';
+import { Modal } from '@components/Modal/Modal';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
+import { RoomStateProvider } from '@roomState/RoomStateProvider';
 import { useAppState } from '../../state';
-import { RemoteControlProvider } from '../../components/RemoteControlProvider/RemoteControlProvider';
-import { TwilioProvider } from '../../providers/twilio/TwilioProvider';
-import { LocalTracksProvider } from '../../providers/media/LocalTracksProvider';
+import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteControlProvider';
+import { TwilioProvider } from '@providers/twilio/TwilioProvider';
+import { LocalTracksProvider } from '@providers/media/LocalTracksProvider';
 import { PreRoom } from './PreRoom/PreRoom';
-import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useHistory } from 'react-router-dom';
 
-import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
+import useQueryParams from '@hooks/useQueryParams/useQueryParams';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {

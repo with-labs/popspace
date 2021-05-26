@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Page } from '../../Layouts/Page/Page';
-import { Header } from '../../components/Header/Header';
+import { Page } from '@layouts/Page/Page';
+import { Header } from '@components/Header/Header';
 import { Box, Typography, Divider } from '@material-ui/core';
 import generatedLicenses from './data/licenses.json';
 

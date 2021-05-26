@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMediaReady } from '../../components/MediaReadinessProvider/useMediaReady';
-import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
+import { useMediaReady } from '@components/MediaReadinessProvider/useMediaReady';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { PictureInPictureCanvas } from './PictureInPictureCanvas';
 
 /**

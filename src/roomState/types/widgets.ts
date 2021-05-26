@@ -1,4 +1,4 @@
-import { WhiteboardState } from '../../components/Whiteboard/types';
+import { WhiteboardState } from '@components/Whiteboard/types';
 import { ThemeName } from '../../theme/theme';
 
 // eslint-disable-next-line no-shadow

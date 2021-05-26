@@ -2,8 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import AudioTrack from './AudioTrack';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
-import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-jest.mock('../../hooks/useSpatialAudioVolume/useSpatialAudioVolume');
+import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
+jest.mock('@hooks/useSpatialAudioVolume/useSpatialAudioVolume');
 const mockUseSpatialAudioVolume = useSpatialAudioVolume as jest.Mock<any>;
 mockUseSpatialAudioVolume.mockImplementation(() => {
   return { current: 1 };

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { RemoteParticipant, LocalParticipant, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import { RoomEvent } from '../../constants/twilio';
+import { RoomEvent } from '@constants/twilio';
 import { Stream } from '../../types/streams';
 import {
   CAMERA_TRACK_NAME,
   MIC_TRACK_NAME,
   SCREEN_SHARE_TRACK_NAME,
   SCREEN_SHARE_AUDIO_TRACK_NAME,
-} from '../../constants/User';
-import { findTrackByName } from '../../utils/trackNames';
-import { useTwilio } from '../../providers/twilio/TwilioProvider';
+} from '@constants/User';
+import { findTrackByName } from '@utils/trackNames';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
 
 type Participant = RemoteParticipant | LocalParticipant;
 type Publication = RemoteTrackPublication | LocalTrackPublication;

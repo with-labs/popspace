@@ -2,11 +2,11 @@ import { EventEmitter } from 'events';
 import throttle from 'lodash.throttle';
 import create from 'zustand/vanilla';
 import { Viewport } from '../viewport/Viewport';
-import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
 import { Bounds, Vector2 } from '../../types/spatials';
-import { clampSizeMaintainingRatio } from '../../utils/clampSizeMaintainingRatio';
-import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '../../utils/math';
-import { SMALL_SIZE } from '../../features/room/people/constants';
+import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
+import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '@utils/math';
+import { SMALL_SIZE } from '@features/room/people/constants';
 
 const MOVE_THROTTLE_PERIOD = 100;
 

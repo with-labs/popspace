@@ -1,6 +1,6 @@
 import { LocalParticipant, RemoteParticipant, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import { useState, useEffect } from 'react';
-import { findTrackByName, hasTrackName } from '../../../utils/trackNames';
+import { findTrackByName, hasTrackName } from '@utils/trackNames';
 
 /**
  * Monitors track publications for any participant and returns a track by name, if it exists (or null).

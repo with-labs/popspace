@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { IconButton } from '@material-ui/core';
-import { WhatsNewIcon } from '../../../../components/icons/WhatsNewIcon';
-import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../../analytics/constants';
+import { WhatsNewIcon } from '@components/icons/WhatsNewIcon';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
 export interface IChangelogMenuItemProps {
   onClick?: () => void;
   onChangelogUpdated?: () => void;

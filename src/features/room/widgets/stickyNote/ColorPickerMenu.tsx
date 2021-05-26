@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { ColorButton } from '../../../../components/ColorButton/ColorButton';
+import { ColorButton } from '@components/ColorButton/ColorButton';
 import palette from '../../../../theme/palette';
 import { makeStyles, Box, Popover } from '@material-ui/core';
 import { ThemeName } from '../../../../theme/theme';
-import { DropIcon } from '../../../../components/icons/DropIcon';
+import { DropIcon } from '@components/icons/DropIcon';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 
 const COLORS = [

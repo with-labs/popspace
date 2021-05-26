@@ -1,7 +1,7 @@
 import throttle from 'lodash.throttle';
 import { useMemo } from 'react';
 import create from 'zustand';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 
 const useLocalStorageCache = create(() => ({} as Record<string, any>));
 

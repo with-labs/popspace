@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import { Link as MuiLink, LinkProps as MuiLinkProps, makeStyles } from '@material-ui/core';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 import clsx from 'clsx';
 
 export interface ILinkProps extends Omit<RouterLinkProps, 'color'> {

@@ -6,20 +6,20 @@ import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
-import { Markdown } from '../../../../components/Markdown/Markdown';
+import { Markdown } from '@components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetType } from '../../../../roomState/types/widgets';
-import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
+import { WidgetType } from '@roomState/types/widgets';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
-import { EditIcon } from '../../../../components/icons/EditIcon';
-import { DoneIcon } from '../../../../components/icons/DoneIcon';
+import { EditIcon } from '@components/icons/EditIcon';
+import { DoneIcon } from '@components/icons/DoneIcon';
 import { ThemeName } from '../../../../theme/theme';
 import { ColorPickerMenu } from './ColorPickerMenu';
-import { Analytics } from '../../../../analytics/Analytics';
-import { EventNames } from '../../../../analytics/constants';
-import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames } from '@analytics/constants';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { MIN_SIZE, MAX_SIZE, INITIAL_SIZE } from './constants';
 
 export interface IStickyNoteWidgetProps {}

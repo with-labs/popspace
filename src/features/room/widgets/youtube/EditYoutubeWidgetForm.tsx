@@ -1,12 +1,12 @@
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-import { parseYoutubeLink } from '../../../../utils/youtube';
-import { YoutubeWidgetState } from '../../../../roomState/types/widgets';
-import { useCanvasObject } from '../../../../providers/canvas/CanvasObject';
+import { parseYoutubeLink } from '@utils/youtube';
+import { YoutubeWidgetState } from '@roomState/types/widgets';
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
 import { INITIAL_SIZE_PLAYER } from './constants';
 
 /**

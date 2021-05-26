@@ -1,4 +1,4 @@
-import { WallpaperMetadata, WallpaperMetadataType } from '../../../constants/WallpaperMetadata';
+import { WallpaperMetadata, WallpaperMetadataType } from '@constants/WallpaperMetadata';
 export interface IWallpaper {
   name: string;
   url: string;

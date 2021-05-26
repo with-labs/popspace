@@ -1,4 +1,4 @@
-import { CAMERA_TRACK_NAME } from '../../../constants/User';
+import { CAMERA_TRACK_NAME } from '@constants/User';
 import { useLocalParticipant } from '../../twilio/hooks/useLocalParticipant';
 import { useNamedPublication } from '../../twilio/hooks/useNamedPublication';
 import { useLocalMediaToggle } from './useLocalMediaToggle';

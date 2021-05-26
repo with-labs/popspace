@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LinkWidgetState } from '../../../../roomState/types/widgets';
+import { LinkWidgetState } from '@roomState/types/widgets';
 import { fileIcons } from './fileIcons';
 
 type FileIconType = keyof typeof fileIcons;

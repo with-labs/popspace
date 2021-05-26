@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
 const updateRoomState = jest.fn();
-jest.mock('../../../roomState/useRoomStore', () => ({ useRoomStore: () => updateRoomState }));
+jest.mock('@roomState/useRoomStore', () => ({ useRoomStore: () => updateRoomState }));
 
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';

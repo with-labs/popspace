@@ -1,8 +1,8 @@
 import * as React from 'react';
 import shallow from 'zustand/shallow';
-import { Viewport } from '../../providers/viewport/Viewport';
-import { ViewportProvider } from '../../providers/viewport/ViewportProvider';
-import { useRoomStore } from '../../roomState/useRoomStore';
+import { Viewport } from '@providers/viewport/Viewport';
+import { ViewportProvider } from '@providers/viewport/ViewportProvider';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 export interface IRoomViewportProviderProps {
   children?: React.ReactNode;

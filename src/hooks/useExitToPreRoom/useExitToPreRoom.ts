@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react';
-import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 
 export function useExitToPreRoom() {
   const { isReady, resetReady } = useContext(MediaReadinessContext);

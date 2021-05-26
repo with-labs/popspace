@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Api from '../../utils/api';
+import Api from '@utils/api';
 import { useHistory, generatePath } from 'react-router-dom';
-import { RouteNames } from '../../constants/RouteNames';
-import useQueryParams from '../../hooks/useQueryParams/useQueryParams';
-import { ErrorCodes } from '../../constants/ErrorCodes';
+import { RouteNames } from '@constants/RouteNames';
+import useQueryParams from '@hooks/useQueryParams/useQueryParams';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { ErrorInfo } from '../../types/api';
-import { Page } from '../../Layouts/Page/Page';
-import { logger } from '../../utils/logger';
-import { getSessionToken, setSessionToken } from '../../utils/sessionToken';
+import { Page } from '@layouts/Page/Page';
+import { logger } from '@utils/logger';
+import { getSessionToken, setSessionToken } from '@utils/sessionToken';
 
 interface ILoginWithEmailProps {}
 

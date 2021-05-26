@@ -1,7 +1,7 @@
 import { Story } from '@storybook/react/types-6-0';
 import React, { useState } from 'react';
 import { Menu, Button, MenuItem, ListItemIcon, ListItemText, Divider, Box } from '@material-ui/core';
-import { PlaceholderIcon } from '../components/icons/PlaceholderIcon';
+import { PlaceholderIcon } from '@components/icons/PlaceholderIcon';
 
 export default {
   title: 'components/Menu',

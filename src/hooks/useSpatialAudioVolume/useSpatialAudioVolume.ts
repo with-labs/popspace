@@ -1,8 +1,8 @@
-import { addVectors, vectorDistance } from '../../utils/math';
+import { addVectors, vectorDistance } from '@utils/math';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
-import { logger } from '../../utils/logger';
-import { MAX_AUDIO_RANGE as MAX_RANGE } from '../../constants/room';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { logger } from '@utils/logger';
+import { MAX_AUDIO_RANGE as MAX_RANGE } from '@constants/room';
 
 function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);

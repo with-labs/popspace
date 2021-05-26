@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { RemoteControlContext } from '../../components/RemoteControlProvider/RemoteControlProvider';
+import { RemoteControlContext } from '@components/RemoteControlProvider/RemoteControlProvider';
 
 export function useRemoteControl() {
   const ctx = useContext(RemoteControlContext);

@@ -1,22 +1,22 @@
 import React, { useReducer } from 'react';
 import { Box, makeStyles, Hidden, Drawer, Typography } from '@material-ui/core';
-import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
+import { DialogModal, DialogMessage } from '@components/DialogModal/DialogModal';
 import { RoomInfo } from '../../../types/api';
-import { ApiNamedRoom } from '../../../utils/api';
+import { ApiNamedRoom } from '@utils/api';
 import { useTranslation, Trans } from 'react-i18next';
-import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
-import Api from '../../../utils/api';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
+import Api from '@utils/api';
 import { RenameRoomModal } from './RenameRoomModal/RenameRoomModal';
 import { DeleteRoomModal } from './DeleteRoomModal/DeleteRoomModal';
 import { InviteModal } from './InviteModal/InviteModal';
 import { LeaveRoomModal } from './LeaveRoomModal/LeaveRoomModal';
 import { RoomSummary } from './RoomSummary';
-import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
-import { logger } from '../../../utils/logger';
+import { getErrorMessageFromResponse } from '@utils/ErrorMessage';
+import { logger } from '@utils/logger';
 import { RoomListHeader } from './RoomListHeader/RoomListHeader';
-import { useRoomRoute } from '../../../hooks/useRoomRoute/useRoomRoute';
-import { Link } from '../../../components/Link/Link';
-import { USER_SUPPORT_EMAIL } from '../../../constants/User';
+import { useRoomRoute } from '@hooks/useRoomRoute/useRoomRoute';
+import { Link } from '@components/Link/Link';
+import { USER_SUPPORT_EMAIL } from '@constants/User';
 import { useHistory } from 'react-router-dom';
 
 interface IRoomListProps {

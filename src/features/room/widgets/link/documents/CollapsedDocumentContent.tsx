@@ -1,9 +1,9 @@
 import { Box, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { Link } from '../../../../../components/Link/Link';
-import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
-import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { Link } from '@components/Link/Link';
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { SIZE_STUB } from '../constants';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ApiUser } from '../../utils/api';
+import { ApiUser } from '@utils/api';
 import { useQuery } from 'react-query';
 import { RouteProps, Route, Redirect } from 'react-router-dom';
 import { FullscreenLoading } from '../FullscreenLoading/FullscreenLoading';

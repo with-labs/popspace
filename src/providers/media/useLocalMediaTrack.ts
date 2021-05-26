@@ -2,10 +2,10 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { convertMediaError } from './convertMediaError';
 import { LocalAudioTrack, LocalVideoTrack, createLocalAudioTrack, createLocalVideoTrack } from 'twilio-video';
-import { MediaTrackEvent } from '../../constants/twilio';
-import { createTrackName } from '../../utils/trackNames';
+import { MediaTrackEvent } from '@constants/twilio';
+import { createTrackName } from '@utils/trackNames';
 import { MEDIA_TYPES } from '../../errors/MediaError';
-import { logger } from '../../utils/logger';
+import { logger } from '@utils/logger';
 
 function getTrackDeviceId(track: LocalAudioTrack | LocalVideoTrack) {
   const constraints = track.mediaStreamTrack.getConstraints();

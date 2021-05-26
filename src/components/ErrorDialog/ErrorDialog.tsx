@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import { useTranslation } from 'react-i18next';
-import { ErrorTypes } from '../../constants/ErrorTypes';
+import { ErrorTypes } from '@constants/ErrorTypes';
 import { MediaError } from '../../errors/MediaError';
 
 import GenericErrorDialogContent from './GenericErrorDialogContent';

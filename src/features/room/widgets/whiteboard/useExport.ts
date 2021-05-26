@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useTwilio } from '../../../../providers/twilio/TwilioProvider';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
 
 export function useExport(exportToImageURL: () => string) {
   const { room } = useTwilio();

@@ -1,15 +1,15 @@
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { DeleteIcon } from '../../../../../components/icons/DeleteIcon';
-import { OptionsIcon } from '../../../../../components/icons/OptionsIcon';
-import { ResponsiveMenu } from '../../../../../components/ResponsiveMenu/ResponsiveMenu';
-import { LinkWidgetState, WidgetType } from '../../../../../roomState/types/widgets';
+import { DeleteIcon } from '@components/icons/DeleteIcon';
+import { OptionsIcon } from '@components/icons/OptionsIcon';
+import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
+import { LinkWidgetState, WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 import { IframeOption } from './IframeOption';
-import { logger } from '../../../../../utils/logger';
-import api from '../../../../../utils/api';
+import { logger } from '@utils/logger';
+import api from '@utils/api';
 import { ApiError } from '../../../../../errors/ApiError';
 
 export type LinkMenuProps = {

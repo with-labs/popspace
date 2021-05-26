@@ -1,24 +1,24 @@
 import React, { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, makeStyles } from '@material-ui/core';
-import { Modal } from '../../../../components/Modal/Modal';
-import { ModalTitleBar } from '../../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../../components/Modal/ModalContentWrapper';
-import { ModalPane } from '../../../../components/Modal/ModalPane';
+import { Modal } from '@components/Modal/Modal';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
+import { ModalPane } from '@components/Modal/ModalPane';
 import { Formik, Form } from 'formik';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { Box, Typography } from '@material-ui/core';
 import * as Sentry from '@sentry/react';
-import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import clsx from 'clsx';
 import { Trans } from 'react-i18next';
-import { DialogModal, DialogMessage } from '../../../../components/DialogModal/DialogModal';
-import { logger } from '../../../../utils/logger';
+import { DialogModal, DialogMessage } from '@components/DialogModal/DialogModal';
+import { logger } from '@utils/logger';
 import { v4 } from 'uuid';
 import bugReportImg from '../../../../images/illustrations/bug_report.png';
-import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../../analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
 
 type BugReportFormData = {
   description: string;

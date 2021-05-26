@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { WidgetResizeHandle } from '../../WidgetResizeHandle';

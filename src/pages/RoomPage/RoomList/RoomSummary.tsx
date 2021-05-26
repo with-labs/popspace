@@ -12,19 +12,19 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import { RoomInfo } from '../../../types/api';
-import { OptionsIcon } from '../../../components/icons/OptionsIcon';
-import { DeleteIcon } from '../../../components/icons/DeleteIcon';
-import { InviteIcon } from '../../../components/icons/InviteIcon';
-import { EditIcon } from '../../../components/icons/EditIcon';
-import { LeaveIcon } from '../../../components/icons/LeaveIcon';
-import { ResponsiveMenu } from '../../../components/ResponsiveMenu/ResponsiveMenu';
-import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
+import { OptionsIcon } from '@components/icons/OptionsIcon';
+import { DeleteIcon } from '@components/icons/DeleteIcon';
+import { InviteIcon } from '@components/icons/InviteIcon';
+import { EditIcon } from '@components/icons/EditIcon';
+import { LeaveIcon } from '@components/icons/LeaveIcon';
+import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useTranslation } from 'react-i18next';
 import { isChrome, isIOS } from 'react-device-detect';
 import { Star } from '@material-ui/icons';
-import { useDefaultRoom } from '../../../hooks/api/useDefaultRoom';
+import { useDefaultRoom } from '@hooks/api/useDefaultRoom';
 import clsx from 'clsx';
-import { ApiNamedRoom } from '../../../utils/api';
+import { ApiNamedRoom } from '@utils/api';
 
 interface IRoomSummaryProps {
   roomInfo: RoomInfo;

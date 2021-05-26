@@ -1,8 +1,8 @@
 import React from 'react';
-import { Avatar } from '../../../components/Avatar/Avatar';
-import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
+import { Avatar } from '@components/Avatar/Avatar';
+import { useAvatar } from '@hooks/useAvatar/useAvatar';
 import { makeStyles, useTheme } from '@material-ui/core';
-import { getAvatarFromUserId } from '../../../constants/AvatarMetadata';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 
 import { ReactComponent as BgFillGlyph } from './images/background_fill.svg';
 

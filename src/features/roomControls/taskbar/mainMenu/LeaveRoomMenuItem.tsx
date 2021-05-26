@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { ListItemIcon, ListItemText, ListItem } from '@material-ui/core';
-import { LeaveIcon } from '../../../../components/icons/LeaveIcon';
-import { useRoomStore } from '../../../../roomState/useRoomStore';
-import { useTwilio } from '../../../../providers/twilio/TwilioProvider';
-import { useAnalytics, IncludeData } from '../../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../../analytics/constants';
-import { MediaReadinessContext } from '../../../../components/MediaReadinessProvider/MediaReadinessProvider';
+import { LeaveIcon } from '@components/icons/LeaveIcon';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 
 export interface ILeaveRoomMenuItemProps {}
 

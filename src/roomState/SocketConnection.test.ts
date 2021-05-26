@@ -7,7 +7,7 @@ import { HEARTBEAT_INTERVAL, HEARTBEAT_TIMEOUT, SocketConnection } from './Socke
 import MockWebSocket from '../__mocks__/reconnecting-websocket';
 
 jest.mock('reconnecting-websocket');
-jest.mock('../utils/logger');
+jest.mock('@utils/logger');
 
 function createConnection() {
   return new SocketConnection('ws://mock.url');

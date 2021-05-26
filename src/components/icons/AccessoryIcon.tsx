@@ -8,7 +8,7 @@ import embedSrc from './png/embed.png';
 import { ReactComponent as FileIcon } from './svg/widget_upload.svg';
 import { ReactComponent as EmojiIcon } from './svg/emoji.svg';
 import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
-import { WidgetType } from '../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 
 const icons = {
   [WidgetType.Link]: linkSrc,

@@ -1,6 +1,6 @@
-import { Analytics } from '../../analytics/Analytics';
-import { EventNames } from '../../analytics/constants';
-import { useRoomStore } from '../../roomState/useRoomStore';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames } from '@analytics/constants';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 export enum IncludeData {
   roomId,

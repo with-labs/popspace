@@ -2,8 +2,8 @@ import { ListItemIcon, ListItemText, MenuItem, MenuItemProps } from '@material-u
 import { Fullscreen, FullscreenExit } from '@material-ui/icons';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { INITIAL_SIZE_FRAME } from '../constants';
 

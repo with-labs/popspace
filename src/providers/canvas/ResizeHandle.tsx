@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core';
 import { animated } from '@react-spring/web';
-import { ResizeHandleIcon } from '../../components/icons/ResizeHandleIcon';
+import { ResizeHandleIcon } from '@components/icons/ResizeHandleIcon';
 import clsx from 'clsx';
 import { useCanvasObject } from './CanvasObject';
 

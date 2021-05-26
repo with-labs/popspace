@@ -4,15 +4,15 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { useKeyboardControls } from '../../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { FileDropLayer } from '../files/FileDropLayer';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
-import { useLocalStorage } from '../../../hooks/useLocalStorage/useLocalStorage';
-import { useViewport } from '../../../providers/viewport/useViewport';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
+import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
+import { useViewport } from '@providers/viewport/useViewport';
 import { mandarin as theme } from '../../../theme/theme';
 import { RoomCanvasProvider } from './RoomCanvasProvider';
-import { CanvasRenderer } from '../../../providers/canvas/CanvasRenderer';
-import { CanvasWallpaper } from '../../../providers/canvas/CanvasWallpaper';
-import { useViewportGestureControls } from '../../../providers/viewport/useViewportGestureControls';
+import { CanvasRenderer } from '@providers/canvas/CanvasRenderer';
+import { CanvasWallpaper } from '@providers/canvas/CanvasWallpaper';
+import { useViewportGestureControls } from '@providers/viewport/useViewportGestureControls';
 export interface IRoomCanvasRendererProps {
   children: React.ReactNode;
 }

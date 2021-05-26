@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { useRoomStore } from './useRoomStore';
 
 jest.mock('./SocketConnection');
-jest.mock('../utils/sessionToken', () => ({
+jest.mock('@utils/sessionToken', () => ({
   getSessionToken: jest.fn(() => 'MOCK TOKEN'),
 }));
 

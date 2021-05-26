@@ -1,13 +1,13 @@
 import { Box, FormControlLabel, Switch, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Analytics } from '../../../analytics/Analytics';
-import { EventNames } from '../../../analytics/constants';
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { clampVector } from '../../../utils/math';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames } from '@analytics/constants';
+import { Modal } from '@components/Modal/Modal';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { clampVector } from '@utils/math';
 import { useRoomModalStore } from '../useRoomModalStore';
 
 export interface IExperimentsModalProps {}

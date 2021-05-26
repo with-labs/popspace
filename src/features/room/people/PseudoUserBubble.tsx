@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, makeStyles, Typography, useTheme } from '@material-ui/core';
-import { useAvatar } from '../../../hooks/useAvatar/useAvatar';
-import { MuteIconSmall } from '../../../components/icons/MuteIconSmall';
+import { useAvatar } from '@hooks/useAvatar/useAvatar';
+import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import { PersonBubbleFrame } from './PersonBubbleFrame';
 import { PersonBubbleContent } from './PersonBubbleContent';
 import { PersonBubbleBackground } from './PersonBubbleBackground';

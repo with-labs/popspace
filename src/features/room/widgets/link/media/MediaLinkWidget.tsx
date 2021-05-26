@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useWidgetContext } from '../../useWidgetContext';
-import { WidgetType } from '../../../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { FullSizeMediaWidget } from './FullSizeMediaWidget';
 import { FramedMediaWidget } from './FramedMediaWidget';
 

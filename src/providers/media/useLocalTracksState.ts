@@ -10,7 +10,7 @@ import {
   CAMERA_TRACK_NAME,
   SCREEN_SHARE_TRACK_NAME,
   SCREEN_SHARE_AUDIO_TRACK_NAME,
-} from '../../constants/User';
+} from '@constants/User';
 
 /**
  * Each user can have exactly one of each kind of track:

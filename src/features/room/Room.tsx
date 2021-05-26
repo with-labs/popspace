@@ -1,5 +1,5 @@
 import React from 'react';
-import { ErrorBoundary } from '../../components/ErrorBoundary/ErrorBoundary';
+import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import { WidgetsFallback } from './WidgetsFallback';
 import { RoomCanvasRenderer } from './canvas/RoomCanvasRenderer';
 import { Person } from './people/Person';
@@ -8,9 +8,9 @@ import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
-import { useRoomStore, RoomStateShape } from '../../roomState/useRoomStore';
-import { SpeakingStateObserver } from '../../components/SpeakingStateObserver/SpeakingStateObserver';
-import { PageTitle } from '../../components/PageTitle/PageTitle';
+import { useRoomStore, RoomStateShape } from '@roomState/useRoomStore';
+import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
+import { PageTitle } from '@components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
 import { CursorLayer } from './cursors/CursorLayer';
 import { PasteConfirmModal } from './pasting/PasteConfirmModal';
@@ -18,7 +18,7 @@ import { useBindPaste } from './pasting/useBindPaste';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
 
-import { useExitToPreRoom } from '../../hooks/useExitToPreRoom/useExitToPreRoom';
+import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 
 interface IRoomProps {}
 

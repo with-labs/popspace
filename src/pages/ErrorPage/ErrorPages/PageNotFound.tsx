@@ -1,6 +1,6 @@
 import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
-import { RouteNames } from '../../../constants/RouteNames';
+import { RouteNames } from '@constants/RouteNames';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PageNotFoundImg from '../images/404_page.png';

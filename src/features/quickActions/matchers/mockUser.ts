@@ -1,6 +1,6 @@
 import { TFunction } from 'i18next';
 import { featureFlags } from '../../../featureFlags';
-import { WidgetType } from '../../../roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { INITIAL_SIZE_VIDEO } from '../../room/people/constants';
 import { QuickAction, QuickActionKind } from '../types';
 

@@ -1,4 +1,4 @@
-import { AvatarMetadata } from '../constants/AvatarMetadata';
+import { AvatarMetadata } from '@constants/AvatarMetadata';
 import seedRandom from 'seed-random';
 
 export interface IAvatar {

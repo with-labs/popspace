@@ -5,9 +5,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { useTranslation, Trans } from 'react-i18next';
 import { MediaError, MEDIA_TYPES } from '../../errors/MediaError';
 import { makeStyles } from '@material-ui/core';
-import { Links } from '../../constants/Links';
-import { Link } from '../../components/Link/Link';
-import { USER_SUPPORT_EMAIL } from '../../constants/User';
+import { Links } from '@constants/Links';
+import { Link } from '@components/Link/Link';
+import { USER_SUPPORT_EMAIL } from '@constants/User';
 
 const useStyles = makeStyles((theme) => ({
   title: {

@@ -1,5 +1,5 @@
-import { DEFAULT_ROOM_SIZE } from '../../constants/room';
-import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
+import { DEFAULT_ROOM_SIZE } from '@constants/room';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 

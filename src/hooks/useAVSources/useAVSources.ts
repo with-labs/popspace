@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 
-import { getMediaDevices } from '../../utils/mediaSources';
+import { getMediaDevices } from '@utils/mediaSources';
 
 export function useAVSources() {
   const [devices, setDevices] = useState<{

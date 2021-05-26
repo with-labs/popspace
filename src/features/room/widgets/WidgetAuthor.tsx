@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '../../../roomState/types/widgets';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { WidgetType } from '@roomState/types/widgets';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 
 export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {

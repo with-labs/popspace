@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useAddAccessory } from './useAddAccessory';
 import { QuickAction, QuickActionKind } from '../../../quickActions/types';
 import { useAddFile } from '../../../room/files/useAddFile';
-import { browseForFile } from '../../../../utils/browseForFile';
-import { Origin } from '../../../../analytics/constants';
+import { browseForFile } from '@utils/browseForFile';
+import { Origin } from '@analytics/constants';
 
 /**
  * Processes a QuickAction object, applying the action

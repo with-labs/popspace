@@ -1,24 +1,24 @@
 import { Box, Button, TextField, makeStyles, Typography, ThemeProvider, CircularProgress } from '@material-ui/core';
 import React, { useEffect, useReducer } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import { MembershipManagement } from '../../features/roomControls/membership/MembershipManagement';
-import { FormPageFields } from '../../Layouts/formPage/FormPageFields';
-import { FormPageTitle } from '../../Layouts/formPage/FormPageTitle';
+import { MembershipManagement } from '@features/roomControls/membership/MembershipManagement';
+import { FormPageFields } from '@layouts/formPage/FormPageFields';
+import { FormPageTitle } from '@layouts/formPage/FormPageTitle';
 
-import Api, { ApiInviteDetails } from '../../utils/api';
-import { logger } from '../../utils/logger';
-import { getErrorDialogText } from '../../utils/ErrorMessage';
-import { ErrorCodes } from '../../constants/ErrorCodes';
-import { useExpiringToggle } from '../../hooks/useExpiringToggle/useExpiringToggle';
+import Api, { ApiInviteDetails } from '@utils/api';
+import { logger } from '@utils/logger';
+import { getErrorDialogText } from '@utils/ErrorMessage';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { cherry, slate, blueberry } from '../../theme/theme';
 
-import { Analytics } from '../../analytics/Analytics';
-import { EventNames } from '../../analytics/constants';
-import { DialogModal, DialogMessage } from '../../components/DialogModal/DialogModal';
-import { USER_SUPPORT_EMAIL } from '../../constants/User';
-import { Link } from '../../components/Link/Link';
-import { formatPublicInviteLink } from '../../utils/linkFormatter';
-import { ApiNamedRoom } from '../../utils/api';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames } from '@analytics/constants';
+import { DialogModal, DialogMessage } from '@components/DialogModal/DialogModal';
+import { USER_SUPPORT_EMAIL } from '@constants/User';
+import { Link } from '@components/Link/Link';
+import { formatPublicInviteLink } from '@utils/linkFormatter';
+import { ApiNamedRoom } from '@utils/api';
 
 export interface IInviteRoomMemberStepProps {
   onComplete: (numMembers: number | null, isSkipped: boolean) => void;

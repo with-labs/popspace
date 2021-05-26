@@ -1,7 +1,7 @@
 // WIP : add in complete error handling, keep expading features
 import React, { useState, useEffect } from 'react';
 import { Button, CircularProgress, Box, makeStyles } from '@material-ui/core';
-import Api from '../../utils/api';
+import Api from '@utils/api';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';

@@ -1,4 +1,4 @@
-import { ErrorTypes } from '../constants/ErrorTypes';
+import { ErrorTypes } from '@constants/ErrorTypes';
 
 export enum MEDIA_STATUS {
   DENIED = 'DENIED',

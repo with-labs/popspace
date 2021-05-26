@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { PersonBubble } from './PersonBubble';
-import { useRoomStore } from '../../../roomState/useRoomStore';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { Stream } from '../../../types/streams';
-import { useCurrentUserProfile } from '../../../hooks/api/useCurrentUserProfile';
-import { useCollectedStreams } from '../../../hooks/useCollectedStreams/useCollectedStreams';
-import { useSoundEffects } from '../../../components/SoundEffectProvider/useSoundEffects';
-import { useTwilio } from '../../../providers/twilio/TwilioProvider';
-import { CanvasObject } from '../../../providers/canvas/CanvasObject';
-import { CanvasObjectDragHandle } from '../../../providers/canvas/CanvasObjectDragHandle';
+import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
+import { useCollectedStreams } from '@hooks/useCollectedStreams/useCollectedStreams';
+import { useSoundEffects } from '@components/SoundEffectProvider/useSoundEffects';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
+import { CanvasObject } from '@providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import { makeStyles } from '@material-ui/core';
 
 const MAX_Z_INDEX = 2147483647;

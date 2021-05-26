@@ -1,5 +1,5 @@
 import { useQuery, useQueryCache } from 'react-query';
-import { ApiUser, ApiParticipantState } from '../../utils/api';
+import { ApiUser, ApiParticipantState } from '@utils/api';
 import { ApiError } from '../../errors/ApiError';
 
 import { useMemo } from 'react';

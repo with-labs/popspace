@@ -1,9 +1,9 @@
 import { LocalDataTrack, LocalAudioTrack, LocalVideoTrack, TwilioError } from 'twilio-video';
 import { useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MediaReadinessContext } from '../../components/MediaReadinessProvider/MediaReadinessProvider';
-import { logger } from '../../utils/logger';
-import { RoomState } from '../../constants/twilio';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
+import { logger } from '@utils/logger';
+import { RoomState } from '@constants/twilio';
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
 import { useLocalTracks } from '../media/hooks/useLocalTracks';
 

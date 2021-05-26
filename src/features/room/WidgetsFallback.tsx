@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../components/Modal/Modal';
-import { ModalTitleBar } from '../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../components/Modal/ModalContentWrapper';
+import { Modal } from '@components/Modal/Modal';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 
 export const WidgetsFallback = () => {
   const [isOpen, setIsOpen] = useState(true);

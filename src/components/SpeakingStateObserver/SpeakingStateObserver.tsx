@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { useSpeakingStates } from '../../hooks/useSpeakingStates/useSpeakingStates';
-import { SoundMeter } from '../../utils/SoundMeter';
+import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
+import { SoundMeter } from '@utils/SoundMeter';
 import throttle from 'lodash.throttle';
 import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
-import { logger } from '../../utils/logger';
-import { RoomEvent } from '../../constants/twilio';
+import { logger } from '@utils/logger';
+import { RoomEvent } from '@constants/twilio';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
-import { useLocalTracks } from '../../providers/media/hooks/useLocalTracks';
-import { useTwilio } from '../../providers/twilio/TwilioProvider';
-import { useLocalParticipant } from '../../providers/twilio/hooks/useLocalParticipant';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
+import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 
 const UPDATE_INTERVAL = 300;
 // arbitrary, based on experimentation...

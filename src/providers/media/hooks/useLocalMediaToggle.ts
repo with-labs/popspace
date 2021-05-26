@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 /**
  * Manages toggle state for a local media track publication, along with busy

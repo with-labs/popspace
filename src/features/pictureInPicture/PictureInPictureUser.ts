@@ -1,12 +1,12 @@
-import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
-import { options as avatarMetadata } from '../../utils/AvatarOptions';
-import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '../../utils/math';
+import { options as avatarMetadata } from '@utils/AvatarOptions';
+import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '@utils/math';
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 import { snow } from '../../theme/theme';
-import { MAX_AUDIO_RANGE } from '../../constants/room';
-import { ParticipantState } from '../../roomState/types/participants';
-import { getAvatarFromUserId } from '../../constants/AvatarMetadata';
+import { MAX_AUDIO_RANGE } from '@constants/room';
+import { ParticipantState } from '@roomState/types/participants';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 
 const SIZE = 60;
 const PROXIMITY_RANGE = 400;

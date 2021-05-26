@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import { animated, to, useSpring } from '@react-spring/web';
 import * as React from 'react';
-import { SPRINGS } from '../../constants/springs';
+import { SPRINGS } from '@constants/springs';
 import { Vector2 } from '../../types/spatials';
 import { rerasterizeSignal } from './rerasterizeSignal';
 import { useViewport } from '../viewport/useViewport';

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core';
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { Modal } from '@components/Modal/Modal';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { useRoomModalStore } from '../useRoomModalStore';
-import { MediaReadinessContext } from '../../../components/MediaReadinessProvider/MediaReadinessProvider';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 
 interface IChangelogModalProps {}
 

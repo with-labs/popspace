@@ -1,5 +1,5 @@
-import { ErrorCodes } from '../constants/ErrorCodes';
-import { ApiNamedRoom } from '../utils/api';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { ApiNamedRoom } from '@utils/api';
 
 // data types from the backend
 export type RoomInfo = ApiNamedRoom;

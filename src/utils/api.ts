@@ -1,4 +1,4 @@
-import { ErrorCodes } from '../constants/ErrorCodes';
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { getSessionToken } from './sessionToken';
 import { RoomInfo } from '../types/api';
 

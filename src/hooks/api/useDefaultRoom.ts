@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryCache } from 'react-query';
 import { ApiError } from '../../errors/ApiError';
-import api, { SERVICES } from '../../utils/api';
+import api, { SERVICES } from '@utils/api';
 
 export function useDefaultRoom() {
   const { t } = useTranslation();

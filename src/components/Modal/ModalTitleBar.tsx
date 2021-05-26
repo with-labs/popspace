@@ -1,7 +1,7 @@
 import React from 'react';
 import { DialogTitle, makeStyles, Typography, IconButton, Box } from '@material-ui/core';
-import { CloseIcon } from '../../components/icons/CloseIcon';
-import { BackIcon } from '../../components/icons/BackIcon';
+import { CloseIcon } from '@components/icons/CloseIcon';
+import { BackIcon } from '@components/icons/BackIcon';
 
 interface WidgetTitlebarProps {
   title: string;

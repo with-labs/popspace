@@ -18,26 +18,26 @@ import {
   Divider,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { DeleteIcon } from '../../../components/icons/DeleteIcon';
-import { OptionsIcon } from '../../../components/icons/OptionsIcon';
+import { DeleteIcon } from '@components/icons/DeleteIcon';
+import { OptionsIcon } from '@components/icons/OptionsIcon';
 import { MemberListAvatar } from './MemberListAvatar';
 
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalActions } from '../../../components/Modal/ModalActions';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
+import { Modal } from '@components/Modal/Modal';
+import { ModalActions } from '@components/Modal/ModalActions';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 
 import { cherry, snow } from '../../../theme/theme';
-import Api from '../../../utils/api';
+import Api from '@utils/api';
 import { toast } from 'react-hot-toast';
-import { BaseResponse } from '../../../utils/api';
-import { ErrorCodes } from '../../../constants/ErrorCodes';
-import { logger } from '../../../utils/logger';
+import { BaseResponse } from '@utils/api';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { logger } from '@utils/logger';
 
-import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
-import { getErrorMessageFromResponse } from '../../../utils/ErrorMessage';
+import { DialogModal, DialogMessage } from '@components/DialogModal/DialogModal';
+import { getErrorMessageFromResponse } from '@utils/ErrorMessage';
 
-import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
+import { useIsRoomOwner } from '@hooks/useIsRoomOwner/useIsRoomOwner';
 
 export type UserListMemberInfo = {
   avatarName: string | null;

@@ -10,18 +10,18 @@ import {
   Collapse,
 } from '@material-ui/core';
 import { useTranslation, Trans } from 'react-i18next';
-import { useIsRoomOwner } from '../../../hooks/useIsRoomOwner/useIsRoomOwner';
-import { ErrorCodes } from '../../../constants/ErrorCodes';
-import Api, { ApiInviteDetails } from '../../../utils/api';
-import { getErrorDialogText } from '../../../utils/ErrorMessage';
-import { DialogModal, DialogMessage } from '../../../components/DialogModal/DialogModal';
-import { ConfirmModal } from '../../../components/ConfirmModal/ConfirmModal';
-import { logger } from '../../../utils/logger';
-import { LinkIcon } from '../../../components/icons/LinkIcon';
+import { useIsRoomOwner } from '@hooks/useIsRoomOwner/useIsRoomOwner';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import Api, { ApiInviteDetails } from '@utils/api';
+import { getErrorDialogText } from '@utils/ErrorMessage';
+import { DialogModal, DialogMessage } from '@components/DialogModal/DialogModal';
+import { ConfirmModal } from '@components/ConfirmModal/ConfirmModal';
+import { logger } from '@utils/logger';
+import { LinkIcon } from '@components/icons/LinkIcon';
 import { cherry, oregano, mandarin } from '../../../theme/theme';
-import { useExpiringToggle } from '../../../hooks/useExpiringToggle/useExpiringToggle';
+import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { ThemeName } from '../../../theme/theme';
-import { formatPublicInviteLink } from '../../../utils/linkFormatter';
+import { formatPublicInviteLink } from '@utils/linkFormatter';
 
 export interface IInviteLinkProps {
   roomRoute: string;

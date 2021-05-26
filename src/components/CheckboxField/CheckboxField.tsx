@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import { Checkbox, makeStyles, FormControlLabel, Tooltip } from '@material-ui/core';
-import { Positions } from '../../constants/PositionEnum';
+import { Positions } from '@constants/PositionEnum';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { ErrorOutlined } from '@material-ui/icons';

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isMobile } from '../../utils/environment';
+import { isMobile } from '@utils/environment';
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
 
 /**

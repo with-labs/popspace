@@ -4,12 +4,12 @@ import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
 import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
-import { useRoomStore } from '../../../roomState/useRoomStore';
-import { WidgetShape, WidgetShapeForType, WidgetStateByType, WidgetType } from '../../../roomState/types/widgets';
+import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetShape, WidgetShapeForType, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
 import { MockUserWidget } from './mockUser/MockUserWidget';
 import { useDeleteWidget } from './useDeleteWidget';
 import { useSaveWidget } from './useSaveWidget';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 export type WidgetContextValue<T extends WidgetType> = {
   widget: WidgetShapeForType<T>;

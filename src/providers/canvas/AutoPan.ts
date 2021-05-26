@@ -1,6 +1,6 @@
 import { Vector2 } from '../../types/spatials';
 import raf, { cancel } from 'raf';
-import { vectorLength, multiplyVector } from '../../utils/math';
+import { vectorLength, multiplyVector } from '@utils/math';
 import { EventEmitter } from 'events';
 import { Viewport } from '../viewport/Viewport';
 

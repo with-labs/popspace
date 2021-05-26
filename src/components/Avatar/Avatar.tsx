@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
-import { useAvatar } from '../../hooks/useAvatar/useAvatar';
+import { useAvatar } from '@hooks/useAvatar/useAvatar';
 import { makeStyles } from '@material-ui/core';
 
 export interface IAvatarProps {

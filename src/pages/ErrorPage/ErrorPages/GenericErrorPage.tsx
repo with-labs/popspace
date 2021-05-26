@@ -1,9 +1,9 @@
 import React from 'react';
-import { TwoColLayout } from '../../../Layouts/TwoColLayout/TwoColLayout';
-import { Column } from '../../../Layouts/TwoColLayout/Column/Column';
+import { TwoColLayout } from '@layouts/TwoColLayout/TwoColLayout';
+import { Column } from '@layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography, Box, CircularProgress } from '@material-ui/core';
 import { Trans } from 'react-i18next';
-import { PageTitle } from '../../../components/PageTitle/PageTitle';
+import { PageTitle } from '@components/PageTitle/PageTitle';
 
 interface IGenericErrorPageProps {
   buttonText: string;

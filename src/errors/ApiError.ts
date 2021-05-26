@@ -1,7 +1,7 @@
-import { ErrorCodes } from '../constants/ErrorCodes';
-import { ErrorTypes } from '../constants/ErrorTypes';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { ErrorTypes } from '@constants/ErrorTypes';
 
-import { BaseResponse } from '../utils/api';
+import { BaseResponse } from '@utils/api';
 
 export class ApiError extends Error {
   private _code: ErrorCodes;

@@ -1,6 +1,6 @@
 import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
-import { useSpatialAudioVolume } from '../../hooks/useSpatialAudioVolume/useSpatialAudioVolume';
+import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 
 export interface SpatialVideoProps

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { makeStyles, ButtonBase } from '@material-ui/core';
-import { IAvatar } from '../../../utils/AvatarOptions';
+import { IAvatar } from '@utils/AvatarOptions';
 import clsx from 'clsx';
 export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;

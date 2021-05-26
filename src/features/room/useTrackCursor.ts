@@ -1,6 +1,6 @@
 import throttle from 'lodash.throttle';
 import { useRef, useMemo, useCallback, useEffect } from 'react';
-import { useRoomStore } from '../../roomState/useRoomStore';
+import { useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
 
 /**

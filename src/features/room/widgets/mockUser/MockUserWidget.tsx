@@ -1,20 +1,20 @@
 import { makeStyles, MenuItem, Typography } from '@material-ui/core';
 import { Form, Formik } from 'formik';
 import * as React from 'react';
-import { AudioIndicator } from '../../../../components/AudioIndicator/AudioIndicator';
-import { FormikSubmitButton } from '../../../../components/fieldBindings/FormikSubmitButton';
-import { FormikTextField } from '../../../../components/fieldBindings/FormikTextField';
-import { MuteIconSmall } from '../../../../components/icons/MuteIconSmall';
-import { SpatialVideo } from '../../../../components/SpatialVideo/SpatialVideo';
-import { WidgetType } from '../../../../roomState/types/widgets';
+import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { MuteIconSmall } from '@components/icons/MuteIconSmall';
+import { SpatialVideo } from '@components/SpatialVideo/SpatialVideo';
+import { WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import videos from './videos';
 import { ThemeName } from '../../../../theme/theme';
-import { CanvasObject } from '../../../../providers/canvas/CanvasObject';
-import { CanvasObjectDragHandle } from '../../../../providers/canvas/CanvasObjectDragHandle';
+import { CanvasObject } from '@providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 
 const useStyles = makeStyles((theme) => ({
   draggable: {

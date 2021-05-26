@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
-import { DeleteIcon } from '../../../components/icons/DeleteIcon';
+import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from './useWidgetContext';
-import { CanvasObjectDragHandle } from '../../../providers/canvas/CanvasObjectDragHandle';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;

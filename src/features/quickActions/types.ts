@@ -1,5 +1,5 @@
-import { AccessoryIconType } from '../../components/icons/AccessoryIcon';
-import { WidgetType, WidgetStateByType } from '../../roomState/types/widgets';
+import { AccessoryIconType } from '@components/icons/AccessoryIcon';
+import { WidgetType, WidgetStateByType } from '@roomState/types/widgets';
 import { Bounds } from '../../types/spatials';
 
 export enum QuickActionKind {

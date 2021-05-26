@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { AccessoryIcon } from '../../../components/icons/AccessoryIcon';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { SquareIconButton } from '../../../components/SquareIconButton/SquareIconButton';
+import { AccessoryIcon } from '@components/icons/AccessoryIcon';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
 import i18n from '../../../i18n';
-import { WidgetState, WidgetType } from '../../../roomState/types/widgets';
+import { WidgetState, WidgetType } from '@roomState/types/widgets';
 import { useAddAccessory } from './quickActions/useAddAccessory';
 
-import { useAnalytics, IncludeData } from '../../../hooks/useAnalytics/useAnalytics';
-import { EventNames } from '../../../analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { EventNames } from '@analytics/constants';
 import { Bounds } from '../../../types/spatials';
 import { INITIAL_SIZE_EDIT as LINK_SIZE } from '../../room/widgets/link/constants';
 import { INITIAL_SIZE as STICKY_NOTE_SIZE } from '../../room/widgets/stickyNote/constants';

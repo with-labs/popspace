@@ -4,7 +4,7 @@ import { RoomMenu } from './roomMenu/RoomMenu';
 import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
 import { ViewportControls } from './viewport/ViewportControls';
-import { Spacing } from '../../components/Spacing/Spacing';
+import { Spacing } from '@components/Spacing/Spacing';
 import { ExperimentsModal } from './experiments/ExperimentsModal';
 import { WidgetMenu } from './widgetMenu/WidgetMenu';
 

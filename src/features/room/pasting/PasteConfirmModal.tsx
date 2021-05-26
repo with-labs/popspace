@@ -2,16 +2,16 @@ import { Box, Button, DialogActions, Typography } from '@material-ui/core';
 import { TFunction } from 'i18next';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal } from '../../../components/Modal/Modal';
-import { ModalContentWrapper } from '../../../components/Modal/ModalContentWrapper';
-import { ModalTitleBar } from '../../../components/Modal/ModalTitleBar';
+import { Modal } from '@components/Modal/Modal';
+import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
+import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { useQuickAction } from '../../roomControls/addContent/quickActions/useQuickAction';
 import { useAddFile } from '../files/useAddFile';
 import { PasteContentPreview } from './PasteContentPreview';
 import { usePasteStore } from './usePasteStore';
 import * as matchers from '../../quickActions/matchers';
 import { matchQuickActions } from '../../quickActions/matchQuickActions';
-import { logger } from '../../../utils/logger';
+import { logger } from '@utils/logger';
 
 // only a subset of matchers are used for paste operations
 const pasteMatchers = [matchers.link, matchers.stickyNote, matchers.youtube];

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getSessionToken } from '../../utils/sessionToken';
+import { getSessionToken } from '@utils/sessionToken';
 
 export function useAuth() {
   const [sessionToken, setSessionToken] = useState(getSessionToken());

@@ -1,4 +1,4 @@
-import { Hidden, makeStyles, Paper, Theme, useMediaQuery } from '@material-ui/core';
+import { Hidden, makeStyles, Paper, Theme, useMediaQuery, Box } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
@@ -15,6 +15,9 @@ import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
 import { MainMenu } from './mainMenu/MainMenu';
 import { ChatButton } from './ChatButton/ChatButton';
+import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
+import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
+
 export interface IRoomTaskbarProps {
   className?: string;
 }
@@ -77,17 +80,23 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
             justifyContent="flex-start"
             flex={1}
           >
-            <MainMenu />
+            <Box width={150}>LOGO FPO</Box>
+            <MediaFailedWrapper>
+              <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
+                <PublishedCameraToggle />
+                <PublishedMicToggle />
+                <Hidden xsDown>
+                  <ScreenShareToggle />
+                  {isPIPAvailable && hasPip && <PictureInPictureToggle />}
+                </Hidden>
+              </Spacing>
+            </MediaFailedWrapper>
           </Spacing>
           <MediaFailedWrapper>
             <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
-              <PublishedCameraToggle />
-              <PublishedMicToggle />
-              <Hidden xsDown>
-                <ScreenShareToggle />
-                {isPIPAvailable && hasPip && <PictureInPictureToggle />}
-              </Hidden>
-              <ChatButton />
+              <CopyLinkButton />
+              <LeaveMeetingButton />
+              <MainMenu />
             </Spacing>
           </MediaFailedWrapper>
         </Paper>

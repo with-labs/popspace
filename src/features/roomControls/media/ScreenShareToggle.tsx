@@ -7,9 +7,18 @@ import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '@providers/twilio/TwilioProvider';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  text: {
+    color: theme.palette.brandColors.ink.regular,
+    paddingLeft: theme.spacing(1),
+  },
+}));
 
 export const ScreenShareToggle = (props: { className?: string }) => {
   const { t } = useTranslation();
+  const classes = useStyles();
   const [isSharingOn, toggleSharingOn] = useScreenShareToggle();
   const roomStatus = useRoomStatus();
 
@@ -23,6 +32,7 @@ export const ScreenShareToggle = (props: { className?: string }) => {
         {...props}
       >
         {isSharingOn ? <SharingOnIcon fontSize="default" /> : <SharingOffIcon fontSize="default" />}
+        <span className={classes.text}>{t('features.mediaControls.shareTitle')}</span>
       </ToggleButton>
     </ResponsiveTooltip>
   );

@@ -12,7 +12,7 @@ import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveToolt
 import { useRoomStore } from '@roomState/useRoomStore';
 import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
-
+import { makeStyles } from '@material-ui/core';
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -21,8 +21,16 @@ export interface ICameraToggleProps {
   busy: boolean;
 }
 
+const useStyles = makeStyles((theme) => ({
+  text: {
+    color: theme.palette.brandColors.ink.regular,
+    paddingLeft: theme.spacing(1),
+  },
+}));
+
 export const CameraToggle = (props: ICameraToggleProps) => {
   const { className, isLocal, isVideoOn, toggleVideoOn, busy, ...otherProps } = props;
+  const classes = useStyles();
   const { t } = useTranslation();
   const socket = useRoomStore((room) => room.socket);
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
@@ -78,6 +86,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
             {...otherProps}
           >
             {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
+            <span className={classes.text}>{t('features.mediaControls.videoTitle')}</span>
           </ToggleButton>
         </div>
       </ResponsiveTooltip>

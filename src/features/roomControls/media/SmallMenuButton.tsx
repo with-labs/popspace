@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconButtonProps, makeStyles, IconButton } from '@material-ui/core';
 import clsx from 'clsx';
-import { MoreVert } from '@material-ui/icons';
+import { DropdownIcon } from '@components/icons/DropdownIcon';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +30,7 @@ export const SmallMenuButton: React.FC<IconButtonProps> = (props) => {
 
   return (
     <IconButton size="small" {...props} className={clsx(classes.root, props.className)}>
-      <MoreVert className={classes.icon} fontSize="small" color="inherit" />
+      <DropdownIcon className={classes.icon} fontSize="small" color="inherit" />
     </IconButton>
   );
 };

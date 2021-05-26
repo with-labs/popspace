@@ -860,7 +860,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiToggleButton: {
         root: {
-          borderRadius: '100%',
           borderWidth: 0,
           color: palette.grey[900],
           backgroundColor: 'transparent',

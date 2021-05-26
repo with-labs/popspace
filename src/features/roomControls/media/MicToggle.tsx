@@ -16,7 +16,10 @@ import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  text: {
+    color: theme.palette.brandColors.ink.regular,
+    paddingLeft: theme.spacing(1),
+  },
 }));
 
 export interface IMicToggleProps {
@@ -88,9 +91,10 @@ export const MicToggle = (props: IMicToggleProps) => {
             onContextMenu={handleContextMenu}
             disabled={busy}
             {...otherProps}
-            className={clsx(classes.root, className)}
+            className={className}
           >
             {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
+            <span className={classes.text}>{t('features.mediaControls.audioTitle')}</span>
           </ToggleButton>
         </div>
       </ResponsiveTooltip>

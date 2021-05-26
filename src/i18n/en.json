@@ -482,7 +482,10 @@
         "micToggle": "Toggle voice",
         "videoToggle": "Toggle video",
         "screenShareToggle": "Toggle screen share",
-        "mediaSettings": "Media settings"
+        "mediaSettings": "Media settings",
+        "videoTitle": "Video",
+        "audioTitle": "Audio",
+        "shareTitle": "Share"
       },
       "updates": {
         "title": "Update available!",
@@ -514,7 +517,8 @@
         "resetLinkButtonText": "Reset link",
         "resetLinkButtonAria": "Reset the room link",
         "linkCopied": "Copied!",
-        "linkInviteName": "Invite via link"
+        "linkInviteName": "Invite via link",
+        "leaveMeetingButtonText": "Leave Meeting"
       },
       "chat": {
         "buttonText": "Chat with us"

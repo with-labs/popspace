@@ -75,6 +75,7 @@ export function useCanvasObjectDrag({
   });
   const { x, y } = style;
 
+  // a wobbly spring used for the pickup animation effect
   const pickupSpring = useSpring({
     value: isGrabbing ? 1 : 0,
     config: SPRINGS.WOBBLY,

@@ -29,11 +29,6 @@ export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 const useStyles = makeStyles((theme) => ({
-  handle: {
-    overflow: 'hidden',
-    width: '100%',
-    height: '100%',
-  },
   video: {
     width: '100%',
     height: '100%',
@@ -117,6 +112,8 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       )
     );
 
+    const { mediaGroup } = useCanvasObject();
+
     // extract data from our With backend user
     const userId = person?.id;
     const emoji = person?.participantState.emoji;
@@ -158,6 +155,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
                 isLocal={isLocal}
                 objectId={userId}
                 objectKind="user"
+                mediaGroup={mediaGroup}
               />
             )}
           </PersonBubbleBackground>
@@ -172,6 +170,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               objectId={userId}
               objectKind="user"
               disableAudio={isLocal}
+              mediaGroup={mediaGroup}
             />
           )}
           <PersonBubbleLabel isVideoOn={isVideoOn}>

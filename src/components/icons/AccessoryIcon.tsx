@@ -5,6 +5,7 @@ import stickySrc from './png/sticky.png';
 import videoSrc from './png/youtube.png';
 import whiteboardSrc from './png/whiteboard.png';
 import embedSrc from './png/embed.png';
+import huddleSrc from './png/huddle.png';
 import { ReactComponent as FileIcon } from './svg/widget_upload.svg';
 import { ReactComponent as EmojiIcon } from './svg/emoji.svg';
 import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
@@ -16,6 +17,7 @@ const icons = {
   [WidgetType.Whiteboard]: whiteboardSrc,
   [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
+  [WidgetType.Huddle]: huddleSrc,
   file: FileIcon,
   embed: embedSrc,
   status: EmojiIcon,

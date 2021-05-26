@@ -12,7 +12,7 @@ import { combineAndImmer } from './combineAndImmer';
 import { wallPaperOptions } from '../features/roomControls/roomSettings/WallpaperOptions';
 import { WidgetShape, WidgetType, WidgetStateByType, WidgetState } from './types/widgets';
 import { ParticipantShape, ParticipantState } from './types/participants';
-import { RoomPositionState } from './types/common';
+import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { devtools } from 'zustand/middleware';
 import { Analytics } from '../analytics/Analytics';
 import { EventNames, Origin } from '../analytics/constants';
@@ -23,15 +23,6 @@ import { SIZE_AVATAR } from '../features/room/people/constants';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
-
-export type RoomDetailsStateShape = {
-  wallpaperUrl: string;
-  isCustomWallpaper: boolean;
-  width: number;
-  height: number;
-  displayName: string;
-  zOrder: string[];
-};
 
 /**
  * Our client room state stores user information slightly differently than
@@ -112,7 +103,7 @@ function addUserToState(state: Pick<RoomStateShape, 'users' | 'sessionLookup'>, 
 }
 
 // extracted to a common function as this is used often
-function mergePositionToState(
+function mergeTransformToState(
   positions: Record<string, RoomPositionState>,
   id: string,
   transform: Partial<RoomPositionState>
@@ -211,14 +202,14 @@ function createRoomStore() {
               draft.state.zOrder.push(widget.widgetId);
             });
           },
-          moveWidget({ widgetId: id, transform }: { widgetId: string; transform: Partial<RoomPositionState> }) {
+          transformWidget({ widgetId: id, transform }: { widgetId: string; transform: Partial<RoomPositionState> }) {
             set((draft) => {
-              mergePositionToState(draft.widgetPositions, id, transform);
+              mergeTransformToState(draft.widgetPositions, id, transform);
             });
           },
-          moveUser({ userId: id, transform }: { userId: string; transform: Partial<RoomPositionState> }) {
+          transformUser({ userId: id, transform }: { userId: string; transform: Partial<RoomPositionState> }) {
             set((draft) => {
-              mergePositionToState(draft.userPositions, id, transform);
+              mergeTransformToState(draft.userPositions, id, transform);
             });
           },
           updateWidget(payload: { widgetId: string; widgetState: Partial<WidgetState> }) {
@@ -280,7 +271,7 @@ function createRoomStore() {
           addSession(payload: ParticipantShape & { transform: RoomPositionState }) {
             set((draft) => {
               addUserToState(draft, payload);
-              mergePositionToState(draft.userPositions, payload.user.id, payload.transform);
+              mergeTransformToState(draft.userPositions, payload.user.id, payload.transform);
             });
           },
           deleteSession(payload: { sessionId: string }) {
@@ -334,13 +325,13 @@ function createRoomStore() {
             case 'widgetDeleted':
               return internalApi.deleteWidget(message.payload);
             case 'widgetTransformed':
-              return internalApi.moveWidget(message.payload);
+              return internalApi.transformWidget(message.payload);
             case 'participantJoined':
               return internalApi.addSession(message.payload);
             case 'participantLeft':
               return internalApi.deleteSession(message.payload);
             case 'participantTransformed':
-              return internalApi.moveUser({
+              return internalApi.transformUser({
                 userId: message.sender.userId,
                 transform: message.payload.transform,
               });
@@ -466,6 +457,7 @@ function createRoomStore() {
               kind: 'createWidget',
               payload,
             });
+
             // track the widget creation event
             Analytics.trackEvent(EventNames.CREATE_WIDGET, {
               type: response.payload.type,
@@ -477,13 +469,10 @@ function createRoomStore() {
           },
           transformSelf(payload: Partial<RoomPositionState>) {
             const userId = getOwnUserId();
-            const currentTransform = get().userPositions[userId];
-            const updatedTransform = {
-              ...currentTransform,
-              ...payload,
-            };
+            const currentTransform = get().userPositions[userId] || {};
+            const updatedTransform = { ...currentTransform, ...payload };
             // optimistic update
-            internalApi.moveUser({ userId, transform: updatedTransform });
+            internalApi.transformUser({ userId, transform: updatedTransform });
             // send to peers
             sendMessage({
               kind: 'transformSelf',
@@ -494,7 +483,7 @@ function createRoomStore() {
           },
           /** @deprecated use transformWidget */
           moveWidget(payload: { widgetId: string; position: Vector2 }) {
-            internalApi.moveWidget({ widgetId: payload.widgetId, transform: { position: payload.position } });
+            internalApi.transformWidget({ widgetId: payload.widgetId, transform: { position: payload.position } });
             sendMessage({
               kind: 'transformWidget',
               payload: {
@@ -507,7 +496,7 @@ function createRoomStore() {
           },
           /** @deprecated use transformWidget */
           resizeWidget(payload: { widgetId: string; size: Bounds }) {
-            internalApi.moveWidget({ widgetId: payload.widgetId, transform: { size: payload.size } });
+            internalApi.transformWidget({ widgetId: payload.widgetId, transform: { size: payload.size } });
             sendMessage({
               kind: 'transformWidget',
               payload: {
@@ -524,7 +513,7 @@ function createRoomStore() {
               ...currentTransform,
               ...payload.transform,
             };
-            internalApi.moveWidget({ widgetId: payload.widgetId, transform: updatedTransform });
+            internalApi.transformWidget({ widgetId: payload.widgetId, transform: updatedTransform });
             sendMessage({
               kind: 'transformWidget',
               payload: {

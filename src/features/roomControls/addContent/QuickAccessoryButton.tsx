@@ -13,8 +13,14 @@ import { INITIAL_SIZE_EDIT as LINK_SIZE } from '../../room/widgets/link/constant
 import { INITIAL_SIZE as STICKY_NOTE_SIZE } from '../../room/widgets/stickyNote/constants';
 import { SIZE as WHITEBOARD_SIZE } from '../../room/widgets/whiteboard/constants';
 import { SIZE_EDIT as YOUTUBE_SIZE } from '../../room/widgets/youtube/constants';
+import { INITIAL_SIZE as HUDDLE_SIZE } from '../../room/widgets/huddle/constants';
 
-type SupportedTypes = WidgetType.Link | WidgetType.StickyNote | WidgetType.YouTube | WidgetType.Whiteboard;
+type SupportedTypes =
+  | WidgetType.Link
+  | WidgetType.StickyNote
+  | WidgetType.YouTube
+  | WidgetType.Whiteboard
+  | WidgetType.Huddle;
 
 const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
   [WidgetType.Link]: {
@@ -35,6 +41,11 @@ const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
       playStartedTimestampUtc: null,
     },
   },
+  [WidgetType.Huddle]: {
+    topic: '',
+    emoji: 'speech_bubble',
+    orderedContentIds: [],
+  },
 };
 
 const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
@@ -42,6 +53,7 @@ const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
   [WidgetType.StickyNote]: STICKY_NOTE_SIZE,
   [WidgetType.Whiteboard]: WHITEBOARD_SIZE,
   [WidgetType.YouTube]: YOUTUBE_SIZE,
+  [WidgetType.Huddle]: HUDDLE_SIZE,
 };
 
 const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
@@ -49,6 +61,7 @@ const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
   [WidgetType.StickyNote]: i18n.t('widgets.stickyNote.quickActionTitle'),
   [WidgetType.YouTube]: i18n.t('widgets.youtube.quickActionTitle'),
   [WidgetType.Whiteboard]: i18n.t('widgets.whiteboard.quickActionTitle'),
+  [WidgetType.Huddle]: i18n.t('widgets.huddle.quickActionTitle'),
 };
 
 export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }) {

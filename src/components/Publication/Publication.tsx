@@ -14,6 +14,7 @@ import { IVideoTrack } from '../../types/twilio';
 import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 import { hasTrackName } from '../../utils/trackNames';
 import { CAMERA_TRACK_NAME } from '../../constants/User';
+import { useLocalMediaGroup } from '../../providers/media/useLocalMediaGroup';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -32,6 +33,7 @@ interface PublicationProps {
   disableAudio?: boolean;
   classNames?: string;
   id?: string;
+  mediaGroup?: string | null;
 }
 
 export default function Publication({
@@ -43,10 +45,15 @@ export default function Publication({
   id,
   disableSpatialAudio,
   objectKind = 'widget',
+  mediaGroup = null,
 }: PublicationProps) {
   const track = useTrack(publication);
 
-  if (!track) return null;
+  // only publications which are from the same media group as the active user can be seen or heard
+  const localMediaGroup = useLocalMediaGroup((store) => store.localMediaGroup);
+  const isAllowedToPlay = localMediaGroup === mediaGroup;
+
+  if (!track || !isAllowedToPlay) return null;
 
   switch (track.kind) {
     case 'video':

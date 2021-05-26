@@ -11,6 +11,8 @@ import { useCanvas } from './CanvasProvider';
 import { useCanvasObjectDrag } from './useCanvasObjectDrag';
 import { useCanvasObjectMeasurement } from './useCanvasObjectMeasurement';
 import { useCanvasObjectResize } from './useCanvasObjectResize';
+import { useSyncLocalMediaGroup } from './useSyncLocalMediaGroup';
+import { useMediaGroup } from './useMediaGroup';
 
 export interface ICanvasObjectProps {
   objectId: string;
@@ -21,8 +23,7 @@ export interface ICanvasObjectProps {
   zIndex?: number;
   className?: string;
   /**
-   * Apply a CSS class to the inner content sizing element which is the direct
-   * parent of any children.
+   * Apply a CSS class when the user is dragging the object
    */
   contentClassName?: string;
   origin?: 'center' | 'top-left';
@@ -87,6 +88,7 @@ export const CanvasObjectContext = React.createContext<{
   isResizingAnimatedValue: SpringValue<boolean>;
   resizeDisabled: boolean;
   resize: (newSize: Bounds, resetAspectRatio?: boolean) => void;
+  mediaGroup: string | null;
 }>({
   dragHandleProps: {},
   isGrabbing: false,
@@ -98,6 +100,7 @@ export const CanvasObjectContext = React.createContext<{
   isResizingAnimatedValue: null as any,
   resizeDisabled: false,
   resize: () => {},
+  mediaGroup: null,
 });
 
 export function useCanvasObject() {
@@ -174,6 +177,9 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
     [canvas, objectId, objectKind, resizeInfo]
   );
 
+  const mediaGroup = useMediaGroup(objectId);
+  useSyncLocalMediaGroup(objectId, mediaGroup);
+
   const ctx = React.useMemo(
     () => ({
       dragHandleProps: bindDragHandle(),
@@ -186,6 +192,7 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
       isResizingAnimatedValue: resizeStyle.resizing,
       resizeDisabled,
       resize,
+      mediaGroup,
     }),
     [
       bindDragHandle,
@@ -195,8 +202,9 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
       bindResizeHandle,
       resizeStyle.resizing,
       resizeDisabled,
-      canvas,
       resize,
+      mediaGroup,
+      canvas,
     ]
   );
 

@@ -3,6 +3,8 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 import { RoomStateShape, useRoomStore } from '../../roomState/useRoomStore';
 import { logger } from '../../utils/logger';
 import { MAX_AUDIO_RANGE as MAX_RANGE } from '../../constants/room';
+import { useCanvasObject } from '../../providers/canvas/CanvasObject';
+import { useLocalMediaGroup } from '../../providers/media/useLocalMediaGroup';
 
 function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);
@@ -14,11 +16,14 @@ function computeVolumeFalloff(percentOfMaxRange: number) {
  *
  * @returns a ref to the last recorded volume value for out-of-band usage
  */
-export function useSpatialAudioVolume(
-  objectKind: 'widget' | 'user',
-  objectId: string | null,
-  callback: (volume: number) => any
-) {
+export function useSpatialAudioVolume(callback: (volume: number) => any) {
+  const { objectKind, objectId, mediaGroup } = useCanvasObject();
+  const localMediaGroup = useLocalMediaGroup((store) => store.localMediaGroup);
+  const isInLocalMediaGroup = mediaGroup === localMediaGroup;
+  // "null" is a valid media group, this just checks to see if the object is
+  // within a media group or in the 'global' space.
+  const isInAMediaGroup = !!mediaGroup;
+
   // storing in a ref to keep a stable reference
   const callbackRef = useRef(callback);
   useLayoutEffect(() => {
@@ -30,6 +35,14 @@ export function useSpatialAudioVolume(
   useEffect(() => {
     const selectVolume = (room: RoomStateShape) => {
       if (!room.sessionId) return 0;
+
+      // mute audio sources not in the local client's media group
+      if (!isInLocalMediaGroup) return 0;
+
+      // if the object is within a media group and it's the same as the local client (see previous
+      // condition), disable spatial audio and go full volume. We don't use spatial audio inside
+      // media groups (i.e. "huddles")
+      if (isInAMediaGroup) return 1;
 
       const objTransform =
         objectKind === 'widget' ? room.widgetPositions[objectId ?? ''] : room.userPositions[objectId ?? ''];
@@ -52,6 +65,7 @@ export function useSpatialAudioVolume(
     };
 
     lastValue.current = selectVolume(useRoomStore.getState());
+    callbackRef.current(lastValue.current);
 
     return useRoomStore.subscribe((volume: number) => {
       lastValue.current = volume;
@@ -62,7 +76,7 @@ export function useSpatialAudioVolume(
         logger.warn(`NaN volume for ${objectId}!`);
       }
     }, selectVolume);
-  }, [objectId, objectKind, callbackRef]);
+  }, [objectId, objectKind, callbackRef, isInLocalMediaGroup]);
 
   return lastValue;
 }

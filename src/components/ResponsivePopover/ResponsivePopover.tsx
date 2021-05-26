@@ -28,14 +28,14 @@ const noop = () => {};
 
 const anchorOrigins = {
   right: { horizontal: 54, vertical: 'top' },
-  top: { horizontal: 'left', vertical: -16 },
+  top: { horizontal: 'left', vertical: 'bottom' },
   bottom: { horizontal: 'left', vertical: 'bottom' },
   left: { horizontal: -54, vertical: 'top' },
 } as const;
 
 const transformOrigins = {
   right: { horizontal: 'left', vertical: 8 },
-  top: { horizontal: 8, vertical: 'bottom' },
+  top: { horizontal: 8, vertical: -8 },
   bottom: { horizontal: 8, vertical: -8 },
   left: { horizontal: 'right', vertical: 8 },
 } as const;

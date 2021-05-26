@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { RouteNames } from './constants/RouteNames';
-import { Admin } from './pages/Admin/Admin';
 import { Signin } from './pages/SignIn/Signin';
-import { FinalizeAccount } from './pages/FinalizeAccount/FinalizeAccount';
 import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
 import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Subscribe } from './pages/Subscribe/Subscribe';
@@ -13,7 +11,6 @@ import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
 import RoomPage from './pages/RoomPage/RoomPage';
-import { InviteLink } from './pages/InviteLink/InviteLink';
 import { Signup } from './pages/Signup/Signup';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
@@ -36,10 +33,6 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <Signup />
       </Route>
 
-      <Route path={RouteNames.CLAIM_ROOM}>
-        <FinalizeAccount />
-      </Route>
-
       <Route path={RouteNames.COMPLETE_SIGNUP}>
         <VerifyEmail />
       </Route>
@@ -48,21 +41,6 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <LoginWithEmail />
       </Route>
 
-      <Route path={RouteNames.JOIN_ROOM}>
-        <FinalizeAccount />
-      </Route>
-
-      {/*
-        3/30/2021
-        we are currently starting the transition from /invite -> /join
-        so we will keep /invite availible for backward support.
-      */}
-      <Route path={RouteNames.INVITE} component={InviteLink} />
-      <Route path={RouteNames.JOIN} component={InviteLink} />
-
-      <AdminRoute path={RouteNames.ADMIN}>
-        <Admin />
-      </AdminRoute>
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}
         render={({ history }) => <FlaggAdmin onDone={() => history.push('/')} />}

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import i18n from '../../../i18n';
-import { makeStyles, Box, Typography, Button, Hidden } from '@material-ui/core';
+import { makeStyles, Box, Typography, Hidden } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import patternBg from '../../../images/illustrations/pattern_bg_1.svg';
 import { Spacing } from '@components/Spacing/Spacing';
@@ -9,9 +9,7 @@ import { CameraToggle } from '@features/roomControls/media/CameraToggle';
 import { MicToggle } from '@features/roomControls/media/MicToggle';
 import useLocalVideoToggle from '@providers/media/hooks/useLocalVideoToggle';
 import useLocalAudioToggle from '@providers/media/hooks/useLocalAudioToggle';
-import { RoomList } from '../RoomList/RoomList';
 import { ApiNamedRoom, ApiParticipantState } from '@utils/api';
-import { useIsRoomOwner } from '@hooks/useIsRoomOwner/useIsRoomOwner';
 import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import Api from '@utils/api';
 import { useHistory } from 'react-router-dom';
@@ -29,7 +27,6 @@ import { MAX_NAME_LENGTH } from '../../../constants';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 export interface IEntryViewProps {
-  rooms: ApiNamedRoom[];
   onComplete: () => void;
 }
 
@@ -155,22 +152,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
+export const EntryView: React.FC<IEntryViewProps> = ({ onComplete }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const history = useHistory();
   const [isVideoOn, toggleVideoOn, isVideoBusy] = useLocalVideoToggle();
   const [isMicOn, doMicToggle, isAudioBusy] = useLocalAudioToggle();
   const { profile, update, user } = useCurrentUserProfile();
-  const [isRoomListOpen, setIsRoomListOpen] = useState(false);
-
   const participantState = profile?.participantState;
   const defaultDisplayName = participantState?.display_name ?? profile?.user.display_name;
-
-  const currentRoomRoute = useRoomRoute();
-  const isOwner = useIsRoomOwner(currentRoomRoute);
-  const initalRoom = rooms.find((room) => room.route === currentRoomRoute);
-  const [roomInfo, setRoomInfo] = useState<ApiNamedRoom>(initalRoom || emptyRoomInfo);
 
   const avatar = participantState?.avatar_name;
 
@@ -300,48 +290,15 @@ export const EntryView: React.FC<IEntryViewProps> = ({ rooms, onComplete }) => {
                     <MicToggle isMicOn={isMicOn} doMicToggle={doMicToggle} busy={isAudioBusy} />
                   </Spacing>
                 </Box>
-                <Hidden mdUp>
-                  <Box
-                    component={Button}
-                    onClick={() => setIsRoomListOpen(true)}
-                    className={classes.openRoomListButton}
-                    display="flex"
-                    flexDirection="row"
-                    width="100%"
-                    alignItems="center"
-                  >
-                    <img className={classes.imgWrapper} src={roomInfo.preview_image_url} alt="" />
-                    <Box display="flex" flexDirection="column" alignItems="start">
-                      <Typography variant="body1" className={classes.displayTitle}>
-                        {roomInfo.display_name}
-                      </Typography>
-                      <Box className={isOwner ? classes.owner : classes.guest}>
-                        <Typography variant="h4">
-                          {isOwner ? t('pages.preroom.roomSummary.owner') : t('pages.preroom.roomSummary.guest')}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </Box>
-                </Hidden>
                 <Hidden smDown>
                   <Typography paragraph>{t('pages.preroom.setupExplanation')}</Typography>
                 </Hidden>
-                <FormikSubmitButton disabled={!values.displayName}>
-                  {t('pages.preroom.enterRoomButton', { roomName: roomInfo.display_name })}
-                </FormikSubmitButton>
+                <FormikSubmitButton disabled={!values.displayName}>{t('pages.preroom.joinButton')}</FormikSubmitButton>
               </Box>
             </Form>
           )}
         </Formik>
-        <Box display="flex" justifyContent="center" className={classes.list}>
-          <RoomList
-            rooms={rooms}
-            isOpen={isRoomListOpen}
-            onClose={() => setIsRoomListOpen(false)}
-            onError={(msg: DialogMessage) => setErrorMsg(msg)}
-            onRoomSelected={setRoomInfo}
-          />
-        </Box>
+        <Box display="flex" justifyContent="center" className={classes.list}></Box>
       </div>
       <DialogModal message={errorMsg} onClose={clearUrlError}></DialogModal>
     </main>

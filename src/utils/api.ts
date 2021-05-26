@@ -1,6 +1,5 @@
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { getSessionToken } from './sessionToken';
-import { RoomInfo } from '../types/api';
 
 /** TODO: throw one of these on every failed request */
 // import { ApiError } from '../errors/ApiError';
@@ -34,19 +33,6 @@ export type ApiOpenGraphResult = {
   title: string | null;
   iframeUrl: string | null;
   iconUrl: string | null;
-};
-
-export type ApiRoomMember = {
-  displayName: string;
-  email: string;
-  userId: string;
-  avatarName: string;
-  hasAccepted: boolean;
-};
-
-export type ApiInviteDetails = {
-  success: boolean;
-  inviteDetails?: InviteDetails[];
 };
 
 export type ApiNamedRoom = {
@@ -111,10 +97,6 @@ class Api {
       BaseResponse & {
         profile?: {
           user: ApiUser;
-          rooms: {
-            owned: RoomInfo[];
-            member: RoomInfo[];
-          };
         };
       }
     >('/user_profile', {}, SERVICES.netlify);
@@ -139,38 +121,6 @@ class Api {
     return await this.post<{ deletedRoomId: number }>('/room_delete', { roomId }, SERVICES.netlify);
   }
 
-  async sendRoomInvite(roomRoute: string, email: string) {
-    return await this.post<{ newMember: ApiRoomMember }>('/send_room_invite', { roomRoute, email }, SERVICES.netlify);
-  }
-
-  async cancelRoomInvite(roomName: string, email: string) {
-    return await this.post('/revoke_room_invites_and_membership', { roomName, email }, SERVICES.netlify);
-  }
-
-  async removeRoomMember(roomName: string, email: string) {
-    return await this.post('/revoke_room_invites_and_membership', { roomName, email }, SERVICES.netlify);
-  }
-
-  async getRoomMembers(roomName: string) {
-    return await this.post<{ result: ApiRoomMember[] }>('/room_get_members', { roomName }, SERVICES.netlify);
-  }
-
-  async resolveRoomInvite(otp: string, inviteId: string | null) {
-    return await this.post('/resolve_room_invite', { otp, inviteId }, SERVICES.netlify);
-  }
-
-  async registerThroughInvite(data: any, otp: string, inviteId: string | null) {
-    return await this.post('/register_through_invite', { data, otp, inviteId }, SERVICES.netlify);
-  }
-
-  async registerThroughClaim(data: any, otp: string, claimId: string | null) {
-    return await this.post('/register_through_claim', { data, otp, claimId }, SERVICES.netlify);
-  }
-
-  async resolveRoomClaim(otp: string, claimId: string | null) {
-    return await this.post('/resolve_room_claim', { otp, claimId }, SERVICES.netlify);
-  }
-
   async loggedInEnterRoom(roomName: string) {
     return await this.post<{ token?: string }>('/logged_in_join_room', { roomName }, SERVICES.netlify);
   }
@@ -185,14 +135,6 @@ class Api {
       },
       SERVICES.netlify
     );
-  }
-
-  async adminCreateAndSendClaimEmail(email: string, roomName: string) {
-    return await this.post('/admin_create_and_send_claim_email', { email, roomName }, SERVICES.netlify);
-  }
-
-  async adminRoomClaimsData() {
-    return await this.post('/admin_room_claims_data', {}, SERVICES.netlify);
   }
 
   async getRoomFileUploadUrl(fileName: string, contentType: string) {
@@ -220,26 +162,6 @@ class Api {
     );
   }
 
-  async roomMembershipThroughPublicInviteLink(otp: string, inviteId: string) {
-    return await this.post('/room_membership_through_public_invite_link', { otp, inviteId }, SERVICES.mercury);
-  }
-
-  async enablePublicInviteLink(roomRoute: string) {
-    return await this.post('/enable_public_invite_link', { roomRoute }, SERVICES.mercury);
-  }
-
-  async disablePublicInviteLink(roomRoute: string) {
-    return await this.post('/disable_public_invite_link', { roomRoute }, SERVICES.mercury);
-  }
-
-  async getCurrentPublicInviteLink(roomRoute: string) {
-    return await this.post('/get_public_invite_details', { roomRoute }, SERVICES.mercury);
-  }
-
-  async resetPublicInviteLink(roomRoute: string) {
-    return await this.post('/reset_public_invite_link', { roomRoute }, SERVICES.mercury);
-  }
-
   async subscribeToNewsletter(userId: string) {
     return await this.post('/subscribe_to_newsletter', { userId }, SERVICES.api);
   }
@@ -257,24 +179,12 @@ class Api {
     return await this.post('/magic_link_subscribe', { otp, magicLinkId }, SERVICES.api);
   }
 
-  async setDefaultRoom(roomRoute: string) {
-    return await this.post<BaseResponse>('/set_default_room', { roomRoute }, SERVICES.mercury);
-  }
-
-  async getDefaultRoom() {
-    return this.post<BaseResponse & { room_route: string }>('/get_or_init_default_room', SERVICES.mercury);
-  }
-
   async setParticipantState(participantState: ApiParticipantState) {
     return this.post<BaseResponse & { participantState: ApiParticipantState }>(
       '/update_participant_state',
       { participantState },
       SERVICES.api
     );
-  }
-
-  async removeSelfFromRoom(roomRoute: string) {
-    return await this.post<BaseResponse>('/remove_self_from_room', { roomRoute }, SERVICES.api);
   }
 
   /* TODO: service should be mandatory/explicit; update all uses and remove the default value */

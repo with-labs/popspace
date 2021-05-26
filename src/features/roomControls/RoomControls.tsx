@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
-import { RoomMenu } from './roomMenu/RoomMenu';
 import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
 import { ViewportControls } from './viewport/ViewportControls';
@@ -30,7 +29,6 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
       <RoomTaskbar />
       {/* designs dont show these in them, but might want to revive these? everthing wip */}
       {/* <Spacing flexDirection="row" className={classes.roomAndViewportControls}>
-        <RoomMenu />
         <ViewportControls />
       </Spacing> */}
       <ActionBar />

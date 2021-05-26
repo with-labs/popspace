@@ -102,7 +102,8 @@
           "defaultRoom": "Default room",
           "leaveRoom": "Leave room"
         },
-        "maxSize": "Display name must be less than {{maxNameLength}} characters"
+        "maxSize": "Display name must be less than {{maxNameLength}} characters",
+        "joinButton": "Join meeting"
       },
       "signin": {
         "title": "Sign In",

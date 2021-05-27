@@ -13,9 +13,6 @@ const flagDefinitions = {
   verticalTaskbar: {
     description: 'Makes the large-sized taskbar vertical',
   },
-  huddles: {
-    description: 'Enables huddles! Duh!',
-  },
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

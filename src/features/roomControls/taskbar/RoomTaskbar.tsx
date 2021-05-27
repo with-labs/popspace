@@ -60,7 +60,6 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
   const [hasPip] = useFeatureFlag('pictureInPicture');
   const [verticalTaskbar] = useFeatureFlag('verticalTaskbar');
-  const [hasHuddles] = useFeatureFlag('huddles');
 
   const isHorizontal = !verticalTaskbar || isSmall;
 
@@ -96,7 +95,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <QuickAccessoryButton type={WidgetType.Link} />
               <QuickAccessoryButton type={WidgetType.Whiteboard} />
               <QuickAccessoryButton type={WidgetType.YouTube} />
-              {hasHuddles && <QuickAccessoryButton type={WidgetType.Huddle} />}
+              <QuickAccessoryButton type={WidgetType.Huddle} />
               <QuickFileButton />
             </Hidden>
           </Spacing>

@@ -19,6 +19,8 @@ import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
 
 import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
+import { SignUpModal } from '../roomModals/SignUpModal';
+import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 
 interface IRoomProps {}
 
@@ -56,6 +58,8 @@ export const Room = React.memo<IRoomProps>(() => {
       <SpeakingStateObserver />
       <UserSettingsModal />
       <ChangelogModal />
+      <SignUpModal />
+      <ConfirmCodeModal email={'test@test.com'} />
     </RoomViewportProvider>
   );
 });

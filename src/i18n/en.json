@@ -525,23 +525,6 @@
       }
     },
     "modals": {
-      "inviteUserModal": {
-        "title": "Invite people",
-        "inviteBtn": "Invite",
-        "noInvitesLeft": "No invites left",
-        "invitesLeft": "{{count}} invite left",
-        "invitesLeft_plural": "{{count}} invites left",
-        "getStarted": "Get started by inviting some people!",
-        "resendInvite": "Resend Invite",
-        "deleteInvite": "Cancel Invite",
-        "removeUser": "Remove User",
-        "invitedUser": "Invited user",
-        "removeConfirmTitle": "Remove {{user}} from the room?",
-        "removeConfirmDesc": "Are you sure you want to remove {{user}} from the room? The content this user has added in the room will remain in the room.",
-        "removeConfirmButton": "Remove {{user}}",
-        "resendInviteSuccess": "Invite re-sent",
-        "roomOwnerOnlyMsg": "Only the room owner can remove members."
-      },
       "wallpaperModal": {
         "title": "Room wallpaper",
         "customWallpaperTitle": "Link to an image ({{fileTypes}} are supported)",
@@ -612,39 +595,33 @@
         "prepareTitle": "Welcome!",
         "namePlaceholder": "Your name"
       },
-      "createRoomModal": {
-        "placeholder": "Emerald City",
-        "title": "Create new room",
-        "explainationText": "Give it a nice room name, so it’s easy for your guests to find it!",
-        "buttonText": "Create room",
-        "limitTitle": "Oops! You can’t create rooms anymore",
-        "limitBody": "We currently have a limit of {{maxRooms}} rooms per user. If you need more rooms, please <1>contact us</1>!"
+      "signUp": {
+        "title": "Create a free account",
+        "firstName": {
+          "placeholder": "First name",
+          "maxSize": ""
+        },
+        "lastName": {
+          "placeholder": "Last name",
+          "maxSize": ""
+        },
+        "email": {
+          "placeholder": "Your email address",
+          "invalid": ""
+        },
+        "newsletterOptIn": {
+          "label": "Please send me updates"
+        },
+        "tos": {
+          "label": "I agree to the <1>Terms of Service</1>",
+          "invalid": "You must agree to continue"
+        },
+        "submitButtonText": "Create a free account"
       },
-      "renameRoomModal": {
-        "placeholder": "Emerald City",
-        "title": "Rename {{roomName}}",
-        "buttonText": "Rename room"
-      },
-      "leaveRoomModal": {
-        "title": "Leave {{roomName}}?",
-        "explainationText": "Are you sure you want to leave {{roomName}}?",
-        "buttonText": "Leave room"
-      },
-      "deleteRoomModal": {
-        "title": "Delete {{roomName}}",
-        "explainationText": "Are you sure you want to delete {{roomName}} and all the files and accessories that it contains?<br/><br/>This action cannot be undone.<br/><br/>Please type in the name of the room to confirm deletion.",
-        "buttonText": "Delete room",
-        "placeHolderText": "{{roonName}}",
-        "validateMessage": "Room names must match"
-      },
-      "inviteMemberModal": {
-        "title": "Invite members",
-        "defaultRoomName": "Room"
-      },
-      "inviteLinkResetModal": {
-        "title": "Reset Room Link",
-        "body": "Are you sure you want to reset the Room Link?<br/><br/>By creating a new Room Link, the previous links will stop working.<br/><br/> If you posted the link in a chat or a meeting invite, those links will no longer work.",
-        "confirmButton": "Reset Room Link"
+      "confirmCode": {
+        "title": "Verify code",
+        "explainationText": "Please enter the 6 digit-code we just sent at {{email}} to finalize your account.",
+        "finalizeButtonText": "Finalize account"
       }
     }
   }

@@ -622,6 +622,13 @@
         "title": "Verify code",
         "explainationText": "Please enter the 6 digit-code we just sent at {{email}} to finalize your account.",
         "finalizeButtonText": "Finalize account"
+      },
+      "unsaved": {
+        "title": "Meeting room unsaved",
+        "infoText": "This meeting room and all the content you or other people have added will disappear after 48 hours.",
+        "explainationText": "You need a free Noodle account to persist the content of this meeting.",
+        "signUpButton": "Sign up to Noodle",
+        "signInButton": "Already have an account?"
       }
     }
   }

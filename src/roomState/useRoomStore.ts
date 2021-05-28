@@ -22,6 +22,7 @@ import { clampVector } from '@utils/math';
 import { SIZE_AVATAR } from '@features/room/people/constants';
 import { useOnboarding } from '@features/onboarding/useOnboarding';
 import { areTransformsEqual } from './utils';
+import { exportRoomTemplate } from './exportRoomTemplate';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -592,6 +593,9 @@ function createRoomStore() {
           },
           getActiveUserId() {
             return getOwnUserId();
+          },
+          exportTemplate() {
+            return exportRoomTemplate(get());
           },
         };
 

@@ -20,14 +20,14 @@ export interface IWidgetMenuProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'fixed',
-    left: 0,
-    top: `50%`,
-    transform: `translate(0, -50%)`,
+    bottom: 0,
+    left: `50%`,
+    transform: `translate(-50%, 0)`,
     zIndex: theme.zIndex.modal - 1,
-    width: 56,
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
+    height: 56,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    borderRadius: `${theme.shape.borderRadius}px  ${theme.shape.borderRadius}px 0 0`,
   },
 }));
 
@@ -46,9 +46,9 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
 
   return (
     <>
-      <ResponsivePopoverProvider value={'right'}>
+      <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
-          <Spacing gap={2} flexDirection={'column'} alignItems="center" justifyContent="flex-start" flex={1}>
+          <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
             <ResponsiveTooltip title={<QuickActionTooltip />} offset={4}>
               <ActionBarButton aria-label={t('features.omnibar.quickActionButton')} aria-controls={ACTION_BAR_ID} />
             </ResponsiveTooltip>

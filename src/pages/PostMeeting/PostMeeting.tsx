@@ -66,11 +66,6 @@ export function PostMeeting({ match }: PostMeetingProps) {
         result = await api.experienceRatings.submitExperienceRating({ rating, roomRoute: match.params.roomRoute });
       }
       setState({ ratingId: result.ratingId, rating: result.rating });
-      if (rating >= 3) {
-        // skip feedback, go to dashboard
-        history.push(RouteNames.ROOT);
-        toast.success('Thanks for using Noodle today!');
-      }
     } catch (err) {
       if (err instanceof ApiError) {
         toast.error(err.message);
@@ -97,7 +92,8 @@ export function PostMeeting({ match }: PostMeetingProps) {
     }
   };
 
-  const collectFeedback = state.ratingId && state.rating < 3;
+  const collectFeedback = !!state.ratingId;
+  const wasPositive = state.rating >= 3;
 
   return (
     <Box width="100%" height="100%" flex={1} display="flex" flexDirection="column" p={4}>
@@ -106,9 +102,15 @@ export function PostMeeting({ match }: PostMeetingProps) {
           <Formik onSubmit={(data) => submitFeedback(data.feedback)} initialValues={{ feedback: '' }}>
             <Box component={Form} display="flex" flexDirection="column">
               <Typography variant="h1" className={classes.title}>
-                We're sorry it didn't go great...
+                {wasPositive ? `We're glad you enjoyed it!` : `We're sorry it didn't go great...`}
               </Typography>
-              <FormikTextField multiline rows={3} name="feedback" margin="normal" placeholder="Please tell us why!" />
+              <FormikTextField
+                multiline
+                rows={3}
+                name="feedback"
+                margin="normal"
+                placeholder={wasPositive ? `Anything we could do to improve?` : `Please tell us why!`}
+              />
               <Box display="flex" flexDirection="row" justifyContent="space-between">
                 <SkipButton />
                 <FormikSubmitButton fullWidth={false}>Send feedback</FormikSubmitButton>

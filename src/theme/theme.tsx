@@ -1103,6 +1103,23 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           fontSize: typography.pxToRem(16),
         },
       },
+      MuiCard: {
+        root: {
+          overflow: 'visible',
+        },
+      },
+      MuiCardActionArea: {
+        root: {
+          overflow: 'hidden',
+          borderRadius: 'inherit',
+          '&$focusVisible': {
+            boxShadow: `0 0 0 4px ${palette.primary.main}`,
+          },
+        },
+        focusHighlight: {
+          display: 'none',
+        },
+      },
     },
   });
 };

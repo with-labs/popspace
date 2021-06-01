@@ -26,7 +26,7 @@ const MeetingTemplateCard: React.FC<{ templateName: MeetingTemplateName; onClick
 }) => {
   return (
     <Card elevation={0}>
-      <CardActionArea onClick={onClick}>
+      <CardActionArea onClick={onClick} disableRipple disableTouchRipple>
         <CardMedia>
           <img
             src={templateMetadata[templateName].image}

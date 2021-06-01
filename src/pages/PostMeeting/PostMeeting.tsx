@@ -1,24 +1,18 @@
-import { FormikStarRating } from '@components/fieldBindings/FormikStarRating';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { Link } from '@components/Link/Link';
-import { Spacing } from '@components/Spacing/Spacing';
 import { StarRating } from '@components/StarRating/StarRating';
 import { RouteNames } from '@constants/RouteNames';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import api from '@api/client';
 import { Form, Formik } from 'formik';
-import { useReducer, useState } from 'react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, useHistory } from 'react-router';
-import { object, number } from 'yup';
-import { ApiError } from '@src/errors/ApiError';
+import { logger } from '@utils/logger';
 
 export interface PostMeetingProps extends RouteComponentProps<{ roomRoute: string }> {}
-
-const validationSchema = object().shape({
-  rating: number().required().moreThan(-1).lessThan(5).integer(),
-});
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -34,61 +28,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface RatingState {
-  ratingId: number | undefined;
-  rating: number;
-  feedback: string;
-}
-type RatingAction = { type: 'rate'; rating: number; ratingId: number } | { type: 'feedback'; feedback: string };
-
-const ratingReducer = (state: RatingState, action: RatingAction) => {
-  switch (action.type) {
-    case 'feedback':
-      return { ...state, feedback: action.feedback };
-    case 'rate':
-      return { ...state, rating: action.rating, ratingId: action.ratingId };
-  }
-};
-
 export function PostMeeting({ match }: PostMeetingProps) {
+  const { t } = useTranslation();
+
   const classes = useStyles();
   const history = useHistory();
 
   const [state, setState] = useState<{ ratingId: number | null; rating: number }>({ ratingId: null, rating: -1 });
 
   const submitRating = async (rating: number) => {
-    let result: { success: boolean; message?: string; ratingId: number; rating: number };
     try {
+      let result: { success: boolean; message?: string; ratingId: number; rating: number };
       if (state.ratingId) {
         // updating existing rating
         result = await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, rating });
       } else {
         result = await api.experienceRatings.submitExperienceRating({ rating, roomRoute: match.params.roomRoute });
       }
+
       setState({ ratingId: result.ratingId, rating: result.rating });
     } catch (err) {
-      if (err instanceof ApiError) {
-        toast.error(err.message);
-      } else {
-        toast.error('Something went wrong, please try again');
-      }
+      logger.error(err);
+      toast.error(t('error.messages.genericUnexpected') as string);
     }
   };
 
   const submitFeedback = async (feedback: string) => {
-    if (!state.ratingId) {
-      throw new Error("Can't submit feedback, no rating provided");
-    }
     try {
-      await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
-      history.push(RouteNames.ROOT);
-      toast.success('Thanks for helping us make Noodle better!');
-    } catch (err) {
-      if (err instanceof ApiError) {
-        toast.error(err.message);
-      } else {
-        toast.error('Something went wrong, please try again');
+      if (!state.ratingId) {
+        throw new Error("Can't submit feedback, no rating provided");
       }
+      const result = await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
+
+      history.push(RouteNames.ROOT);
+      toast.success(t('pages.postMeeting.surveyThanks') as string);
+    } catch (err) {
+      logger.error(err);
+      toast.error(t('error.messages.genericUnexpected') as string);
     }
   };
 
@@ -102,31 +78,37 @@ export function PostMeeting({ match }: PostMeetingProps) {
           <Formik onSubmit={(data) => submitFeedback(data.feedback)} initialValues={{ feedback: '' }}>
             <Box component={Form} display="flex" flexDirection="column">
               <Typography variant="h1" className={classes.title}>
-                {wasPositive ? `We're glad you enjoyed it!` : `We're sorry it didn't go great...`}
+                {wasPositive
+                  ? t('pages.postMeeting.positiveFeedbackPrompt')
+                  : t('pages.postMeeting.negativeFeedbackPrompt')}
               </Typography>
               <FormikTextField
                 multiline
                 rows={3}
                 name="feedback"
                 margin="normal"
-                placeholder={wasPositive ? `Anything we could do to improve?` : `Please tell us why!`}
+                placeholder={
+                  wasPositive
+                    ? t('pages.postMeeting.positiveFeedbackPlaceholder')
+                    : t('pages.postMeeting.negativeFeedbackPlaceholder')
+                }
               />
               <Box display="flex" flexDirection="row" justifyContent="space-between">
                 <SkipButton />
-                <FormikSubmitButton fullWidth={false}>Send feedback</FormikSubmitButton>
+                <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>
               </Box>
             </Box>
           </Formik>
         ) : (
           <Box display="flex" flexDirection="column">
             <Typography variant="h1" className={classes.title}>
-              Thank you for using Noodle!
+              {t('pages.postMeeting.title')}
             </Typography>
 
             <StarRating value={state.rating} onChange={submitRating} className={classes.starRating} />
 
             <Typography variant="body1" className={classes.ratingText}>
-              To make sure we are providing your with the best possible app, please rate your experience
+              {t('pages.postMeeting.ratingCaption')}
             </Typography>
 
             <SkipButton />
@@ -138,10 +120,12 @@ export function PostMeeting({ match }: PostMeetingProps) {
 }
 
 function SkipButton() {
+  const { t } = useTranslation();
+
   return (
     <Link disableStyling to={RouteNames.ROOT}>
       <Button variant="text" color="inherit">
-        Skip survey
+        {t('pages.postMeeting.skipSurvey')}
       </Button>
     </Link>
   );

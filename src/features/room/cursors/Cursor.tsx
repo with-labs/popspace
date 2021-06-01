@@ -7,7 +7,6 @@ import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
-import { useRoomSize } from '../canvas/useRoomSize';
 
 export interface ICursorProps {
   userId: string;
@@ -49,8 +48,6 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
 
-  const roomSize = useRoomSize();
-
   const [styles, spring] = useSpring(() => ({
     // populate initial state from store
     ...selectPosition(useRoomStore.getState()),
@@ -69,7 +66,7 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
     useRoomStore.subscribe<boolean>((active) => {
       spring.start({ visibility: active ? 'visible' : 'hidden' });
     }, selectActive);
-  }, [selectPosition, selectActive, spring, roomSize]);
+  }, [selectPosition, selectActive, spring]);
 
   // update spring when avatar color changes
   React.useEffect(() => {

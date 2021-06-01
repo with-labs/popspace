@@ -17,8 +17,6 @@ import { devtools } from 'zustand/middleware';
 import { Analytics } from '@analytics/Analytics';
 import { EventNames, Origin } from '@analytics/constants';
 import { sanityCheckWidget } from './sanityCheckWidget';
-import { DEFAULT_ROOM_SIZE } from '@constants/room';
-import { clampVector } from '@utils/math';
 import { SIZE_AVATAR } from '@features/room/people/constants';
 import { useOnboarding } from '@features/onboarding/useOnboarding';
 import { areTransformsEqual } from './utils';
@@ -68,10 +66,10 @@ const emptyState: RoomStateShape = {
   state: {
     wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
     isCustomWallpaper: false,
-    width: DEFAULT_ROOM_SIZE,
-    height: DEFAULT_ROOM_SIZE,
     displayName: '',
     zOrder: [],
+    wallpaperRepeats: false,
+    backgroundColor: '#ffffff',
   },
   widgetPositions: {},
   userPositions: {},
@@ -249,26 +247,6 @@ function createRoomStore() {
           updateRoomState(state: Partial<RoomDetailsStateShape>) {
             set((draft) => {
               Object.assign(draft.state, state);
-              // constrain user's position within room bounds, if room bounds changed
-              if (draft.sessionId && state.width !== undefined && state.height !== undefined) {
-                const currentUserId = draft.sessionLookup[draft.sessionId];
-                const currentUserPosition = draft.userPositions[currentUserId];
-                if (currentUserPosition) {
-                  const buffer = 32;
-                  const constrainedPosition = clampVector(
-                    currentUserPosition.position,
-                    {
-                      x: -state.width / 2 + buffer,
-                      y: -state.height / 2 + buffer,
-                    },
-                    {
-                      x: state.width / 2 - buffer,
-                      y: state.height / 2 - buffer,
-                    }
-                  );
-                  draft.userPositions[currentUserId].position = constrainedPosition;
-                }
-              }
             });
           },
           addSession(payload: ParticipantShape & { transform: RoomPositionState }) {

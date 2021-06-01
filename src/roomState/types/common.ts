@@ -12,4 +12,5 @@ export interface RoomDetailsStateShape {
   height: number;
   displayName: string;
   zOrder: string[];
+  wallpaperRepeats: boolean;
 }

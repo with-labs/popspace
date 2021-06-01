@@ -2,9 +2,9 @@
   "state": {
     "wallpaperUrl": "https://s3-us-west-2.amazonaws.com/with.wallpapers/alexis_taylor_1612300330.jpg",
     "isCustomWallpaper": false,
-    "width": 1000000,
-    "height": 1000000,
-    "displayName": "Workshop"
+    "displayName": "Workshop",
+    "wallpaperRepeats": false,
+    "backgroundColor": "#ffffff"
   },
   "widgets": [
     [

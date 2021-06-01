@@ -13,6 +13,7 @@ import { RoomCanvasProvider } from './RoomCanvasProvider';
 import { CanvasRenderer } from '@providers/canvas/CanvasRenderer';
 import { CanvasWallpaper } from '@providers/canvas/CanvasWallpaper';
 import { useViewportGestureControls } from '@providers/viewport/useViewportGestureControls';
+import shallow from 'zustand/shallow';
 export interface IRoomCanvasRendererProps {
   children: React.ReactNode;
 }
@@ -64,7 +65,10 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
 
   const [savedZoom, setSavedZoom] = useLocalStorage('with_savedZoom', INITIAL_ZOOM);
 
-  const backgroundUrl = useRoomStore((room) => room.state.wallpaperUrl);
+  const [backgroundUrl, backgroundColor, wallpaperRepeats] = useRoomStore(
+    (room) => [room.state.wallpaperUrl, room.state.backgroundColor, room.state.wallpaperRepeats],
+    shallow
+  );
 
   const viewportElementRef = React.useRef<HTMLDivElement>(null);
 
@@ -115,7 +119,7 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
       <animated.div className={styles.viewport} {...keyControlProps} ref={viewportRef} {...viewportProps} {...rest}>
         <FileDropLayer className={styles.fileDropLayer}>
           <CanvasRenderer onZoomChange={setSavedZoom}>
-            <CanvasWallpaper imageUrl={backgroundUrl} />
+            <CanvasWallpaper imageUrl={backgroundUrl} color={backgroundColor} wallpaperRepeats={wallpaperRepeats} />
             {children}
           </CanvasRenderer>
         </FileDropLayer>

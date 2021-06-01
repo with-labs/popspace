@@ -19,7 +19,7 @@ export function CreateMeeting() {
     <Box flex={1} width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
       <Box width="100%" maxWidth="800px" display="flex" flexDirection="column" alignItems="center">
         <Typography variant="h1" style={{ maxWidth: 600, textAlign: 'center', marginBottom: 24 }}>
-          {t('pages.createRoom.meetingTemplate')}
+          {t('pages.createRoom.meetingTemplate.title')}
         </Typography>
         <MeetingTemplatePicker onSelect={onSelect} />
       </Box>

@@ -1,10 +1,10 @@
 {
   "state": {
     "displayName": "Team Standup",
-    "height": 2400,
-    "width": 2400,
     "isCustomWallpaper": true,
-    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/onboarding/onboarding_new_3500.png"
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/onboarding/onboarding_new_3500.png",
+    "wallpaperRepeats": false,
+    "backgroundColor": "#ffffff"
   },
   "widgets": []
 }

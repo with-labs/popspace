@@ -7,7 +7,6 @@ type RoomModalsState = {
   changelog: boolean;
   onboarding: boolean;
   actionBar: boolean;
-  experiments: boolean;
   signUp: boolean;
   confirmCode: boolean;
   unsavedMeeeting: boolean;
@@ -22,7 +21,6 @@ export const useRoomModalStore = create(
       changelog: false,
       onboarding: false,
       actionBar: false,
-      experiments: false,
       signUp: false,
       confirmCode: false,
       unsavedMeeeting: false,

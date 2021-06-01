@@ -8,6 +8,7 @@ import { PassthroughClient } from '@api/subClients/PassthroughClient';
 import { RoomStateClient } from '@api/subClients/RoomStateClient';
 import { TransformClient } from '@api/subClients/TransformClient';
 import { WidgetClient } from '@api/subClients/WidgetClient';
+import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
 
 type SubClientImplementation = {
   new (core: ApiCoreClient): ApiSubClient;
@@ -50,6 +51,7 @@ const client = createApiClient({
   files: FileClient,
   openGraph: OpenGraphClient,
   magicLinks: MagicLinkClient,
+  experienceRatings: ExperienceRatingClient,
 });
 
 export default client;

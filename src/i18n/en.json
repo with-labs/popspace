@@ -208,6 +208,46 @@
       },
       "meetingSelect": {
         "titleText": "What kind of meeting room do you need?"
+      },
+      "createRoom": {
+        "nameRoom": {
+          "title": "Name your room",
+          "explainer": "We gave your room a nice name, but feel free to rename it!",
+          "continue": "Continue"
+        },
+        "invitePeople": {
+          "continue": "Continue",
+          "title": "Invite your team",
+          "skip": "Skip"
+        },
+        "inviteMembers": {
+          "continue": "Continue",
+          "title": "Invite your team",
+          "skip": "Skip for now",
+          "copyToClipboard": "Copy to clipboard",
+          "inviteEmail": "Invite via email",
+          "inviteLink": "Invite via link",
+          "linkExplain": "First, share this link with your team to quickly get them on board:",
+          "linkEmailInvite": "Starts adopting your new office by scheduling a meeting that includes your room link:",
+          "googleCalButton": "Google Calendar",
+          "officeCalButton": "Office 365",
+          "emailExplain": "With is a lot more useful when your whole team is there!",
+          "event": {
+            "title": "Team sync-up",
+            "body": "Join the room {{roomName}} at {{joinUrl}}"
+          }
+        },
+        "meetingTemplate": {
+          "title": "What kind of meeting room do you need?",
+          "descriptions": {
+            "custom": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+            "standup": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+            "workshop": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+            "presentation": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+            "oneOnOne": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+            "retrospective": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+          }
+        }
       }
     },
     "widgets": {

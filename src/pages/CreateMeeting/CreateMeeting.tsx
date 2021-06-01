@@ -2,9 +2,11 @@ import { MeetingTemplateName } from '@features/meetingTemplates/constants';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
 import { Box, Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 
 export function CreateMeeting() {
+  const { t } = useTranslation();
   const create = useCreateMeeting();
   const history = useHistory();
 
@@ -17,7 +19,7 @@ export function CreateMeeting() {
     <Box flex={1} width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
       <Box width="100%" maxWidth="800px" display="flex" flexDirection="column" alignItems="center">
         <Typography variant="h1" style={{ maxWidth: 600, textAlign: 'center', marginBottom: 24 }}>
-          What kind of meeting room do you need?
+          {t('pages.createRoom.meetingTemplate')}
         </Typography>
         <MeetingTemplatePicker onSelect={onSelect} />
       </Box>

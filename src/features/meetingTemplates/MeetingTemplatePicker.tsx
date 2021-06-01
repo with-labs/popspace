@@ -1,6 +1,7 @@
 import { MeetingTemplateName } from '@features/meetingTemplates/constants';
 import { Card, CardActionArea, CardContent, CardMedia, Grid, Typography } from '@material-ui/core';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { templateMetadata } from './constants';
 
 export interface IMeetingTemplatePickerProps {
@@ -10,7 +11,7 @@ export interface IMeetingTemplatePickerProps {
 
 export const MeetingTemplatePicker: React.FC<IMeetingTemplatePickerProps> = ({ onSelect, className }) => {
   return (
-    <Grid container spacing={2} style={{ width: '100%' }}>
+    <Grid container spacing={2} style={{ width: '100%' }} className={className}>
       {Object.values(MeetingTemplateName).map((templateName) => (
         <Grid item key={templateName} xs={12} sm={6} md={6} lg={4}>
           <MeetingTemplateCard templateName={templateName} onClick={() => onSelect(templateName)} />
@@ -24,6 +25,8 @@ const MeetingTemplateCard: React.FC<{ templateName: MeetingTemplateName; onClick
   templateName,
   onClick,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Card elevation={0}>
       <CardActionArea onClick={onClick} disableRipple disableTouchRipple>
@@ -35,7 +38,7 @@ const MeetingTemplateCard: React.FC<{ templateName: MeetingTemplateName; onClick
           />
         </CardMedia>
         <CardContent>
-          <Typography variant="body2">{templateMetadata[templateName].description}</Typography>
+          <Typography variant="body2">{t(templateMetadata[templateName].descriptionI18nKey)}</Typography>
         </CardContent>
       </CardActionArea>
     </Card>

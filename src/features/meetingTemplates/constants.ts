@@ -32,34 +32,37 @@ export const meetingTemplates: Record<MeetingTemplateName, RoomTemplate> = {
   [MeetingTemplateName.StandUp]: standupData as RoomTemplate,
 };
 
-export const templateMetadata: Record<MeetingTemplateName, { description: string; image: string; imageAlt: string }> = {
+export const templateMetadata: Record<
+  MeetingTemplateName,
+  { descriptionI18nKey: string; image: string; imageAlt: string }
+> = {
   [MeetingTemplateName.Custom]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.custom',
     image: customImg,
     imageAlt: 'A speech bubble with a friendly exclamation',
   },
   [MeetingTemplateName.Workshop]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.workshop',
     image: workshopImg,
     imageAlt: 'A timer on a grid-like abstract background',
   },
   [MeetingTemplateName.StandUp]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.standup',
     image: standupImg,
     imageAlt: 'A streaming cup of morning beverage',
   },
   [MeetingTemplateName.Presentation]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.presentation',
     image: presentationImg,
     imageAlt: 'A projection screen with an upward-trending graph',
   },
   [MeetingTemplateName.OneOnOne]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.oneOnOne',
     image: oneOnOneImg,
     imageAlt: 'Two comfy chairs facing one another',
   },
   [MeetingTemplateName.Retrospective]: {
-    description: 'Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor',
+    descriptionI18nKey: 'pages.createRoom.meetingTemplate.descriptions.retrospective',
     image: retrospectiveImg,
     imageAlt: 'A document being inspected with a magnifying glass',
   },

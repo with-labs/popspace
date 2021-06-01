@@ -760,6 +760,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         rounded: {
           borderRadius: shape.borderRadius,
         },
+        elevation0: {
+          border: `1px solid ${palette.grey[500]}`,
+        },
         elevation1: {
           boxShadow: mainShadows.surface,
         },

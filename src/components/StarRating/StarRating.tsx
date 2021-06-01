@@ -1,5 +1,5 @@
 import { Spacing } from '@components/Spacing/Spacing';
-import { makeStyles, Tooltip } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { HTMLAttributes, KeyboardEvent, useState } from 'react';
 
@@ -24,15 +24,13 @@ export function StarRating({ value, onChange, className, id, onBlur: providedOnB
   const classes = useStyles();
 
   const [hovered, setHovered] = useState(-1);
-  const [focused, setFocused] = useState(false);
 
   const onFocus = () => {
-    setFocused(true);
     setHovered(value);
   };
 
   const onBlur = (ev: any) => {
-    setFocused(false);
+    onChange(hovered);
     setHovered(-1);
     providedOnBlur?.(ev);
   };
@@ -50,26 +48,26 @@ export function StarRating({ value, onChange, className, id, onBlur: providedOnB
   };
 
   return (
-    <Tooltip open={focused} title="Press Enter to submit">
-      <Spacing
-        onPointerLeave={() => setHovered(-1)}
-        tabIndex={0}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        onKeyDown={onKeyDown}
-        className={clsx(classes.root, className)}
-        {...rest}
-      >
-        {[0, 1, 2, 3, 4].map((starValue) => (
-          <StarRatingButton
-            pending={hovered >= starValue}
-            selected={hovered === -1 ? value >= starValue : hovered >= starValue}
-            onPointerEnter={() => setHovered(starValue)}
-            onClick={() => onChange(starValue)}
-          />
-        ))}
-      </Spacing>
-    </Tooltip>
+    <Spacing
+      onPointerLeave={() => setHovered(-1)}
+      tabIndex={0}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onKeyDown={onKeyDown}
+      className={clsx(classes.root, className)}
+      aria-activedescendant={`star-${hovered}`}
+      {...rest}
+    >
+      {[0, 1, 2, 3, 4].map((starValue) => (
+        <StarRatingButton
+          pending={hovered >= starValue}
+          selected={hovered === -1 ? value >= starValue : hovered >= starValue}
+          onPointerEnter={() => setHovered(starValue)}
+          onClick={() => onChange(starValue)}
+          id={`star-${starValue}`}
+        />
+      ))}
+    </Spacing>
   );
 }
 

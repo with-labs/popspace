@@ -1,4 +1,4 @@
-import { MeetingTemplateName, meetingTemplates } from '@constants/meetingTemplates';
+import { MeetingTemplateName, meetingTemplates } from '@features/meetingTemplates/constants';
 import { ApiError } from '@src/errors/ApiError';
 import api from '@utils/api';
 import { useCallback } from 'react';

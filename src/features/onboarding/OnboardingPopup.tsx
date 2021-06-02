@@ -40,7 +40,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence;
   const latestUndone = React.useMemo(() => {
     if (!hasMoved) return 'hasMoved';
-    if (!hasCreated && isSmall) return 'hasCreated';
+    if (!hasCreated && !isSmall) return 'hasCreated';
     return 'hasAcknowledgedPersistence';
   }, [hasMoved, hasCreated, isSmall]);
 

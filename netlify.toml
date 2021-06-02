@@ -67,3 +67,9 @@
   status = 403
   force = true
   conditions = {Country = ["CU","IR","KP","SD","SY"]}
+[[redirects]]
+  from = "/"
+  to = "https://noodle.so"
+  status = 200
+  force = true
+  

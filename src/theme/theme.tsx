@@ -1082,6 +1082,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           '&::before': {
             display: 'none',
           },
+          '&$expanded': {
+            backgroundColor: brandPalette.lavender.light,
+          },
         },
         rounded: {
           borderRadius: shape.borderRadius,
@@ -1089,7 +1092,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           margin: `${spacing(1)}px 0`,
         },
         expanded: {
-          backgroundColor: brandPalette.lavender.light,
           margin: `${spacing(1)}px 0`,
         },
       },

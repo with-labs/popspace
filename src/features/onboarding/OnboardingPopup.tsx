@@ -1,6 +1,5 @@
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { Modal } from '@components/Modal/Modal';
 import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
 import {
   Accordion,
@@ -106,11 +105,20 @@ Clicking on one of the icons at the bottom of the window."
 
 const useStepStyles = makeStyles((theme) => ({
   done: {
-    backgroundColor: theme.palette.brandColors.oregano.light,
+    // increase specificity over expanded styles
+    '&&': {
+      backgroundColor: theme.palette.brandColors.oregano.light,
+    },
   },
   details: {
     display: 'flex',
     flexDirection: 'column',
+  },
+  icon: {
+    color: theme.palette.brandColors.oregano.bold,
+    fontSize: theme.typography.pxToRem(24),
+    position: 'relative',
+    bottom: -6,
   },
 }));
 
@@ -138,7 +146,7 @@ const OnboardingStep: React.FC<{
     <Accordion expanded={expanded} onChange={onChange} className={clsx(done && classes.done)} ref={ref}>
       <AccordionSummary aria-controls={`${id}-details`} id={`${id}-summary`}>
         <Typography variant="h3">
-          {done && <DoneIcon />} {title}
+          {done && <DoneIcon className={classes.icon} />} {title}
         </Typography>
       </AccordionSummary>
       <AccordionDetails id={`${id}-details`} className={classes.details}>

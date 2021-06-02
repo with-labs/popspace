@@ -20,7 +20,6 @@ export enum EventNames {
   INVITE_CONFIRM_EMAIL = 'invite_confirm_email',
   ONBOARDING_INVITE_TEAM_MEMBERS = 'onboarding_invite_team_members',
   INVITE_TEAM_MEMBERS = 'invite_team_members',
-  BROWSER_PERMISSION = 'browser_permission',
   CREATE_ROOM = 'create_room',
   CHANGE_WIDGET_COLOR = 'change_widget_color',
   ENABLE_INFINITE_ROOM = 'enable_infinite_room',

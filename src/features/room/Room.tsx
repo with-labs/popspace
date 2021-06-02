@@ -17,7 +17,7 @@ import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
-
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 import { SignUpModal } from '../roomModals/SignUpModal';
 import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
@@ -33,10 +33,18 @@ export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
+  const { isReady, onReady } = React.useContext(MediaReadinessContext);
 
   const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
   useExitToPreRoom();
   useBindPaste();
+
+  React.useEffect(() => {
+    // on load, toggle on user sign in modal
+    // clicking submit will trigger the onReady.
+    // right now, just call onReady when we getinto the room
+    onReady();
+  }, [onReady]);
 
   return (
     <RoomViewportProvider>

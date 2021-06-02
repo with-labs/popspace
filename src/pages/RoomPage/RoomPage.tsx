@@ -13,11 +13,7 @@ import { useAppState } from '../../state';
 import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteControlProvider';
 import { TwilioProvider } from '@providers/twilio/TwilioProvider';
 import { LocalTracksProvider } from '@providers/media/LocalTracksProvider';
-import { PreRoom } from './PreRoom/PreRoom';
-import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
-import { useHistory } from 'react-router-dom';
-
-import useQueryParams from '@hooks/useQueryParams/useQueryParams';
+import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -56,39 +52,12 @@ interface IRoomPageProps {
 export default function RoomPage(props: IRoomPageProps) {
   const classes = useStyles();
   const { error, setError } = useAppState();
-  const { isReady, onReady } = React.useContext(MediaReadinessContext);
-  const query = useQueryParams();
-  const history = useHistory();
-
-  const isJoining = query.get('join') !== null;
-
-  React.useEffect(() => {
-    if (!isReady && !isJoining) {
-      if (history.location.search.length > 0) {
-        history.replace({
-          pathname: history.location.pathname,
-          search: `${history.location.search}&join`,
-        });
-      } else {
-        // it means we are hitting a room directly so we need to add the join param
-        history.replace({
-          pathname: history.location.pathname,
-          search: `join`,
-        });
-      }
-    }
-  }, [history, isReady, isJoining]);
-
-  const handleOnReady = () => {
-    onReady();
-    history.push(history.location.pathname);
-  };
 
   return (
     <>
       <ErrorDialog dismissError={() => setError(null)} error={error} />
       <LocalTracksProvider>
-        {props.name && isReady ? (
+        {props.name ? (
           <RoomStateProvider roomName={props.name}>
             <TwilioProvider roomName={props.name}>
               <RemoteControlProvider>
@@ -102,7 +71,7 @@ export default function RoomPage(props: IRoomPageProps) {
           </RoomStateProvider>
         ) : (
           <>
-            <PreRoom onReady={handleOnReady} />
+            <FullscreenLoading />
           </>
         )}
       </LocalTracksProvider>

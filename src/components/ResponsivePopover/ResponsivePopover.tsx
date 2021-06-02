@@ -1,7 +1,18 @@
 import * as React from 'react';
-import { useMediaQuery, Theme, SwipeableDrawer, Popover, Box, PopoverOrigin, PopoverPosition } from '@material-ui/core';
+import {
+  useMediaQuery,
+  Theme,
+  SwipeableDrawer,
+  Popover,
+  Box,
+  PopoverOrigin,
+  PopoverPosition,
+  ModalProps,
+  makeStyles,
+  PopoverProps,
+} from '@material-ui/core';
 
-export interface IResponsivePopoverProps {
+export interface IResponsivePopoverProps extends Omit<ModalProps, 'children'> {
   anchorEl?: HTMLElement | null;
   open: boolean;
   onClose: () => void;
@@ -16,6 +27,12 @@ export interface IResponsivePopoverProps {
   anchorOrigin?: PopoverOrigin;
   anchorPosition?: PopoverPosition;
   marginThreshold?: number;
+  /**
+   * Allows full interaction with the rest of the page
+   * while the popover is open
+   */
+  disableBlockBackground?: boolean;
+  action?: PopoverProps['action'];
 }
 
 const ResponsivePopoverContext = React.createContext<'top' | 'bottom' | 'left' | 'right'>('bottom');
@@ -40,6 +57,15 @@ const transformOrigins = {
   left: { horizontal: 'right', vertical: 8 },
 } as const;
 
+const useStyles = makeStyles(() => ({
+  disableBlockBackground: {
+    pointerEvents: 'none',
+    '& > *': {
+      pointerEvents: 'initial',
+    },
+  },
+}));
+
 /**
  * Renders a Popover on desktop and a Drawer on mobile
  */
@@ -53,10 +79,26 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
   anchorPosition,
   anchorOrigin,
   marginThreshold,
+  disableBlockBackground,
+  action,
   ...rest
 }) => {
+  const classes = useStyles();
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
   const placement = useResponsivePopoverPlacement();
+
+  const additionalProps = disableBlockBackground
+    ? {
+        className: classes.disableBlockBackground,
+        disableScrollLock: true,
+        disableRestoreFocus: true,
+        disableEnforceFocus: true,
+        disableAutoFocus: true,
+        disableBackdropClick: true,
+        disableEscapeKeyDown: true,
+        hideBackdrop: true,
+      }
+    : {};
 
   if (isSmall) {
     return (
@@ -67,6 +109,7 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
         open={open}
         onClose={onClose}
         PaperProps={{ className }}
+        {...additionalProps}
         {...rest}
       >
         {children}
@@ -79,11 +122,14 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
-      className={className}
+      // className={className}
       transformOrigin={transformOrigin || transformOrigins[placement]}
       anchorPosition={anchorPosition}
       anchorOrigin={anchorOrigin || anchorOrigins[placement]}
       marginThreshold={marginThreshold}
+      PaperProps={{ className }}
+      action={action}
+      {...additionalProps}
       {...rest}
     >
       <Box p={2}>{children}</Box>

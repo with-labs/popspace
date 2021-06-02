@@ -7,6 +7,7 @@ export enum WidgetType {
   StickyNote = 'STICKY_NOTE',
   Whiteboard = 'WHITEBOARD',
   YouTube = 'YOU_TUBE',
+  Notepad = 'NOTEPAD',
   SidecarStream = 'SIDECAR_STREAM',
   Huddle = 'HUDDLE',
   // not used by end-users - this is just for demos
@@ -63,6 +64,10 @@ export interface LinkWidgetState {
   isFileUpload?: boolean;
 }
 
+export interface NotepadState {
+  docId: string;
+}
+
 export interface WhiteboardWidgetState {
   whiteboardState: WhiteboardState;
 }
@@ -98,6 +103,7 @@ export type WidgetStateByType = {
   [WidgetType.StickyNote]: StickyNoteWidgetState;
   [WidgetType.Link]: LinkWidgetState;
   [WidgetType.Whiteboard]: WhiteboardWidgetState;
+  [WidgetType.Notepad]: NotepadState;
   [WidgetType.YouTube]: YoutubeWidgetState;
   [WidgetType.SidecarStream]: SidecarStreamWidgetState;
   [WidgetType.MockUser]: MockUserWidgetState;
@@ -112,6 +118,9 @@ export type WidgetShapeByType = {
   };
   [WidgetType.Whiteboard]: BaseWidgetShape & {
     widgetState: WhiteboardWidgetState;
+  };
+  [WidgetType.Notepad]: BaseWidgetShape & {
+    widgetState: NotepadState;
   };
   [WidgetType.YouTube]: BaseWidgetShape & {
     widgetState: YoutubeWidgetState;

@@ -13,6 +13,7 @@ import { INITIAL_SIZE_EDIT as LINK_SIZE } from '../../room/widgets/link/constant
 import { INITIAL_SIZE as STICKY_NOTE_SIZE } from '../../room/widgets/stickyNote/constants';
 import { SIZE as WHITEBOARD_SIZE } from '../../room/widgets/whiteboard/constants';
 import { SIZE_EDIT as YOUTUBE_SIZE } from '../../room/widgets/youtube/constants';
+import { INITIAL_SIZE as NOTEPAD_SIZE } from '../../room/widgets/notepad/constants';
 import { INITIAL_SIZE as HUDDLE_SIZE } from '../../room/widgets/huddle/constants';
 
 type SupportedTypes =
@@ -20,6 +21,7 @@ type SupportedTypes =
   | WidgetType.StickyNote
   | WidgetType.YouTube
   | WidgetType.Whiteboard
+  | WidgetType.Notepad
   | WidgetType.Huddle;
 
 const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
@@ -34,6 +36,13 @@ const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
     whiteboardState: {
       lines: [],
     },
+  },
+  [WidgetType.Notepad]: {
+    /*
+      Data stored in a special operational transform store.
+      The notepad store is keyed by widget ID,
+      so we don't separately store any kind of link to the data.
+    */
   },
   [WidgetType.YouTube]: {
     videoId: '',
@@ -53,6 +62,7 @@ const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
   [WidgetType.StickyNote]: STICKY_NOTE_SIZE,
   [WidgetType.Whiteboard]: WHITEBOARD_SIZE,
   [WidgetType.YouTube]: YOUTUBE_SIZE,
+  [WidgetType.Notepad]: NOTEPAD_SIZE,
   [WidgetType.Huddle]: HUDDLE_SIZE,
 };
 
@@ -60,6 +70,7 @@ const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
   [WidgetType.Link]: i18n.t('widgets.link.quickActionTitle'),
   [WidgetType.StickyNote]: i18n.t('widgets.stickyNote.quickActionTitle'),
   [WidgetType.YouTube]: i18n.t('widgets.youtube.quickActionTitle'),
+  [WidgetType.Notepad]: i18n.t('widgets.notepad.quickActionTitle'),
   [WidgetType.Whiteboard]: i18n.t('widgets.whiteboard.quickActionTitle'),
   [WidgetType.Huddle]: i18n.t('widgets.huddle.quickActionTitle'),
 };

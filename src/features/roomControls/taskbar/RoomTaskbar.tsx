@@ -94,6 +94,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <QuickAccessoryButton type={WidgetType.StickyNote} />
               <QuickAccessoryButton type={WidgetType.Link} />
               <QuickAccessoryButton type={WidgetType.Whiteboard} />
+              <QuickAccessoryButton type={WidgetType.Notepad} />
               <QuickAccessoryButton type={WidgetType.YouTube} />
               <QuickAccessoryButton type={WidgetType.Huddle} />
               <QuickFileButton />

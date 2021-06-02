@@ -2,6 +2,7 @@ import * as React from 'react';
 import { LinkWidget } from './link/LinkWidget';
 import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
 import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
+import { NotepadWidget } from './notepad/NotepadWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
 import { WidgetType } from '../../../roomState/types/widgets';
@@ -40,6 +41,8 @@ const WidgetContent = React.memo(() => {
       return <StickyNoteWidget />;
     case WidgetType.Whiteboard:
       return <WhiteboardWidget />;
+    case WidgetType.Notepad:
+      return <NotepadWidget />;
     case WidgetType.YouTube:
       return <YoutubeWidget />;
     case WidgetType.SidecarStream:

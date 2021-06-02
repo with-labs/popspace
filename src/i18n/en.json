@@ -278,6 +278,11 @@
         "quickActionPrompt": "/whiteboard",
         "exportFailed": "That didn't work - try again?"
       },
+      "notepad": {
+        "name": "Notepad",
+        "title": "Notepad",
+        "quickActionTitle": "Add a collaborative notepad"
+      },
       "youtube": {
         "name": "YouTube",
         "title": "YouTube",

@@ -13,8 +13,6 @@ import { PublishedCameraToggle } from '../media/PublishedCameraToggle';
 import { PublishedMicToggle } from '../media/PublishedMicToggle';
 import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
-import { MainMenu } from './mainMenu/MainMenu';
-import { ChatButton } from './ChatButton/ChatButton';
 import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
 import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
 
@@ -24,19 +22,11 @@ export interface IRoomTaskbarProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr 1fr',
     padding: theme.spacing(1),
     position: 'relative',
     zIndex: theme.zIndex.modal - 1,
-  },
-  vertical: {
-    top: 0,
-    flexDirection: 'column',
-  },
-  horizontal: {
-    flexDirection: 'row',
-    right: 0,
-    top: 'auto',
   },
   floatingActionButton: {
     position: 'fixed',
@@ -51,38 +41,18 @@ const useStyles = makeStyles((theme) => ({
 export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
   const [hasPip] = useFeatureFlag('pictureInPicture');
-  const [verticalTaskbar] = useFeatureFlag('verticalTaskbar');
-
-  const isHorizontal = !verticalTaskbar || isSmall;
 
   return (
     <>
-      <ResponsivePopoverProvider value={isHorizontal ? 'top' : 'right'}>
-        <Paper
-          square
-          elevation={5}
-          className={clsx(
-            classes.root,
-            {
-              [classes.vertical]: !isHorizontal,
-              [classes.horizontal]: isHorizontal,
-            },
-            className
-          )}
-          {...rest}
-        >
-          <Spacing
-            gap={2}
-            flexDirection={isHorizontal ? 'row' : 'column'}
-            alignItems="center"
-            justifyContent="flex-start"
-            flex={1}
-          >
-            <Box width={150}>LOGO FPO</Box>
+      <ResponsivePopoverProvider value={'top'}>
+        <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
+          <Box width={150} display="flex" alignItems="center">
+            LOGO FPO
+          </Box>
+          <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1}>
             <MediaFailedWrapper>
-              <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
+              <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={'row'}>
                 <PublishedCameraToggle />
                 <PublishedMicToggle />
                 <Hidden xsDown>
@@ -92,13 +62,10 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               </Spacing>
             </MediaFailedWrapper>
           </Spacing>
-          <MediaFailedWrapper>
-            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={isHorizontal ? 'row' : 'column'}>
-              <CopyLinkButton />
-              <LeaveMeetingButton />
-              <MainMenu />
-            </Spacing>
-          </MediaFailedWrapper>
+          <Spacing gap={0.5} alignItems="center" justifyContent="flex-end" color="grey.900" flexDirection={'row'}>
+            <CopyLinkButton />
+            <LeaveMeetingButton />
+          </Spacing>
         </Paper>
       </ResponsivePopoverProvider>
       <Hidden mdUp>

@@ -85,7 +85,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
             className={className}
             {...otherProps}
           >
-            {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" />}
+            {isVideoOn ? <CameraOnIcon fontSize="default" /> : <CameraOffIcon fontSize="default" color="error" />}
             <span className={classes.text}>{t('features.mediaControls.videoTitle')}</span>
           </ToggleButton>
         </div>

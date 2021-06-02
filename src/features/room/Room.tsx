@@ -22,6 +22,7 @@ import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 import { SignUpModal } from '../roomModals/SignUpModal';
 import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
+import { UserEntryModal } from '../roomModals/UserEntryModal';
 
 interface IRoomProps {}
 
@@ -61,6 +62,7 @@ export const Room = React.memo<IRoomProps>(() => {
       <ChangelogModal />
       <UnsavedModal />
       <SignUpModal />
+      <UserEntryModal />
       <ConfirmCodeModal email={'test@test.com'} />
     </RoomViewportProvider>
   );

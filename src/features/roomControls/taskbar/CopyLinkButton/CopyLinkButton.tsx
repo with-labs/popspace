@@ -28,7 +28,7 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
     <Button
       variant="text"
       className={classes.button}
-      startIcon={<CopyIcon htmlColor={theme.palette.brandColors.slate.bold} />}
+      startIcon={<CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />}
       onClick={onCopy}
       fullWidth={false}
     >

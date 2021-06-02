@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
     left: `50%`,
     transform: `translate(-50%, 0)`,
     zIndex: theme.zIndex.modal - 1,
-    height: 56,
+    height: 72,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
-    borderRadius: `${theme.shape.borderRadius}px  ${theme.shape.borderRadius}px 0 0`,
+    borderRadius: `${theme.shape.surfaceBorderRadius}px  ${theme.shape.surfaceBorderRadius}px 0 0`,
   },
 }));
 
@@ -48,7 +48,7 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
-          <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
+          <Spacing gap={1.5} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
             <QuickAccessoryButton type={WidgetType.Link} />
             <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Whiteboard} />

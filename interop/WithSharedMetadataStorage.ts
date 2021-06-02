@@ -1,7 +1,9 @@
 import { MetadataStorage, WithFile, WithImageData } from '../src/FileManager';
 import shared from '@withso/with-shared';
 
-export class WithSharedMetadataStorage implements MetadataStorage {
+export class WithSharedMetadataStorage
+  implements MetadataStorage<[{ userId: string }]>
+{
   private idToString = (id: number) => String(id);
   private stringToId = (idStr: string) => {
     return parseInt(idStr, 10);
@@ -16,8 +18,11 @@ export class WithSharedMetadataStorage implements MetadataStorage {
     }
   }
 
-  createFile = async (file: WithFile) => {
-    const { id } = await shared.db.pg.massive[this.filesTable].insert(file);
+  createFile = async (file: WithFile, { userId }: { userId: string }) => {
+    const { id } = await shared.db.pg.massive[this.filesTable].insert({
+      ...file,
+      owner_id: userId,
+    });
     return this.idToString(id);
   };
 
@@ -63,9 +68,8 @@ export class WithSharedMetadataStorage implements MetadataStorage {
     );
   };
 
-  deleteImageData = async (fileId: string) => {
-    await shared.db.pg.massive[this.imageDataTable].destroy(
-      this.stringToId(fileId),
-    );
+  deleteImageData = async () => {
+    // no-op: image data is destroyed along with the file it is associated
+    // with using database triggers.
   };
 }

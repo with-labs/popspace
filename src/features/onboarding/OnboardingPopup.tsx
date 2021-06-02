@@ -11,6 +11,8 @@ import {
   makeStyles,
   PopoverActions,
   Typography,
+  useMediaQuery,
+  Theme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
@@ -31,14 +33,16 @@ const useStyles = makeStyles((theme) => ({
 export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   const classes = useStyles();
 
+  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
+
   const { api, hasMoved, hasCreated, hasAcknowledgedPersistence } = useOnboarding();
 
-  const done = hasMoved && hasCreated && hasAcknowledgedPersistence;
+  const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence;
   const latestUndone = React.useMemo(() => {
     if (!hasMoved) return 'hasMoved';
-    if (!hasCreated) return 'hasCreated';
+    if (!hasCreated && isSmall) return 'hasCreated';
     return 'hasAcknowledgedPersistence';
-  }, [hasMoved, hasCreated]);
+  }, [hasMoved, hasCreated, isSmall]);
 
   const actionRef = React.useRef<PopoverActions>(null);
 
@@ -77,15 +81,17 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
           done={hasMoved}
           onChange={() => openSection('hasMoved')}
         />
-        <OnboardingStep
-          id="create"
-          title="Add Widgets"
-          details="You can add many kind of content to the room. Try it now!
+        {!isSmall && (
+          <OnboardingStep
+            id="create"
+            title="Add Widgets"
+            details="You can add many kind of content to the room. Try it now!
 Clicking on one of the icons at the bottom of the window."
-          expanded={expanded === 'hasCreated'}
-          done={hasCreated}
-          onChange={() => openSection('hasCreated')}
-        />
+            expanded={expanded === 'hasCreated'}
+            done={hasCreated}
+            onChange={() => openSection('hasCreated')}
+          />
+        )}
         <OnboardingStep
           id="persistence"
           title="Persistence"

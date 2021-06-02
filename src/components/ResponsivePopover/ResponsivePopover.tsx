@@ -109,7 +109,7 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
         open={open}
         onClose={onClose}
         PaperProps={{ className }}
-        {...additionalProps}
+        ModalProps={additionalProps}
         {...rest}
       >
         {children}

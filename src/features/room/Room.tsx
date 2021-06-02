@@ -6,7 +6,6 @@ import { Person } from './people/Person';
 import { Widget } from './widgets/Widget';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
-import { UserSettingsModal } from '../roomControls/userSettings/UserSettingsModal';
 import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
 import { useRoomStore, RoomStateShape } from '@roomState/useRoomStore';
 import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
@@ -17,12 +16,12 @@ import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
-import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 import { SignUpModal } from '../roomModals/SignUpModal';
 import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
+import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 
 interface IRoomProps {}
 
@@ -33,18 +32,15 @@ export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
-  const { isReady, onReady } = React.useContext(MediaReadinessContext);
+  const openModal = useRoomModalStore((store) => store.api.openModal);
 
   const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
   useExitToPreRoom();
   useBindPaste();
 
   React.useEffect(() => {
-    // on load, toggle on user sign in modal
-    // clicking submit will trigger the onReady.
-    // right now, just call onReady when we getinto the room
-    onReady();
-  }, [onReady]);
+    openModal('userEntry');
+  }, [openModal]);
 
   return (
     <RoomViewportProvider>
@@ -66,7 +62,6 @@ export const Room = React.memo<IRoomProps>(() => {
       </Box>
       <RoomSettingsModal />
       <SpeakingStateObserver />
-      <UserSettingsModal />
       <ChangelogModal />
       <UnsavedModal />
       <SignUpModal />

@@ -4,14 +4,20 @@ import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import { Form, Formik } from 'formik';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import i18n from '@src/i18n';
 import { AvatarSelectorBubble } from '@features/roomControls/avatar/AvatarSelectorBubble';
-import { makeStyles, Box, TextField, Button } from '@material-ui/core';
+import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
 
 interface IUserEntryModalProps {}
+
+export type UserEntryFormData = {
+  displayName: string;
+};
 
 const validationSchema = Yup.object().shape({
   displayName: Yup.string()
@@ -57,15 +63,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
   const onClose = () => closeModal('userEntry');
 
-  const formik = useFormik({
-    initialValues: {
-      displayName: '',
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      // TBD
-    },
-  });
+  const onSubmitHandler = () => {};
 
   // TODO:
   // when we figure out how we want to make psudeo-anon users
@@ -82,29 +80,26 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
               className={classes.avatarButton}
               userData={{
                 userId: '',
-                displayName: formik.values.displayName,
+                displayName: '',
                 avatarName: '',
               }}
               updateSelf={() => {}}
               showVideo
             />
           </Box>
-          <form onSubmit={formik.handleSubmit}>
-            <Box mb={2}>
-              <TextField
-                id="displayName"
-                name="displayName"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.displayName}
-                placeholder={t('modals.userEntry.placeholderText')}
-              />
-              <div className={classes.error}>{formik.errors.displayName}</div>
-            </Box>
-            <Button type="submit" disabled={!(formik.isValid && formik.dirty)}>
-              {t('modals.userEntry.submitButtonText')}
-            </Button>
-          </form>
+          <Formik initialValues={{ displayName: '' }} onSubmit={onSubmitHandler} validationSchema={validationSchema}>
+            <Form>
+              <Box mb={2}>
+                <FormikTextField
+                  id="displayName"
+                  name="displayName"
+                  placeholder={t('modals.userEntry.placeholderText')}
+                  margin="normal"
+                />
+                <FormikSubmitButton activeOnChange>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
+              </Box>
+            </Form>
+          </Formik>
         </Box>
       </ModalContentWrapper>
     </Modal>

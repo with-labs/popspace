@@ -23,9 +23,7 @@ export interface IRoomTaskbarProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'grid',
-    width: '100%',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridAutoRows: '1fr',
+    gridTemplateColumns: '1fr 1fr 1fr',
     padding: theme.spacing(1),
     position: 'relative',
     zIndex: theme.zIndex.modal - 1,

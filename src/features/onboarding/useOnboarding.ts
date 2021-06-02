@@ -35,6 +35,8 @@ export const useOnboarding = create(
   combine(loadState(), (set, get) => ({
     api: {
       markComplete: (step: keyof OnboardingStateShape) => {
+        // bail early if the flag is already set, avoid writing state
+        if (get()[step]) return;
         set({
           [step]: true,
         });

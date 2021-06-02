@@ -644,6 +644,11 @@
         "explainationText": "You need a free Noodle account to persist the content of this meeting.",
         "signUpButton": "Sign up to Noodle",
         "signInButton": "Already have an account?"
+      },
+      "userEntry": {
+        "placeholderText": "Your display name",
+        "submitButtonText": "Set display name",
+        "maxSize": "Display name must be less than {{maxNameLength}} characters"
       }
     }
   }

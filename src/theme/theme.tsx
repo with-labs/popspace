@@ -78,6 +78,7 @@ declare module '@material-ui/core/styles/shape' {
      */
     innerBorderRadius: number;
     borderWidth: number;
+    surfaceBorderRadius: number;
   }
 }
 
@@ -179,6 +180,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       contentBorderRadius: 4,
       innerBorderRadius: 2,
       borderWidth: 2,
+      surfaceBorderRadius: 14,
     },
     mainShadows: {
       surface: `0px 45px 89px rgba(0, 0, 0, 0.0185187), 0px 14.27px 26.8309px rgba(0, 0, 0, 0.0225848), 0px 6.11599px 11.1442px rgba(0, 0, 0, 0.0264039), 0px 2.11191px 4.03063px rgba(0, 0, 0, 0.04)`,
@@ -863,6 +865,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       },
       MuiToggleButton: {
         root: {
+          height: 48,
           borderWidth: 0,
           color: palette.grey[900],
           backgroundColor: 'transparent',

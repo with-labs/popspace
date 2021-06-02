@@ -9,9 +9,9 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     borderRadius: 6,
     overflow: 'hidden',
-    width: 32,
-    height: 32,
-    fontSize: 32,
+    width: 48,
+    height: 48,
+    fontSize: 48,
     boxShadow: theme.focusRings.create('transparent', true),
 
     '&:focus': {

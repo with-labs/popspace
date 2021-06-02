@@ -1,3 +1,4 @@
+//TODO: remove this once we have anon-users working,
 import React from 'react';
 import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 import { RequestPermissions } from './RequestPermissions';
@@ -55,7 +56,9 @@ export const PreRoom: React.FC<IPreRoomProps> = ({ onReady }) => {
 
   if (hasGrantedPermission === undefined) return <FullscreenLoading />;
 
-  if (!hasGrantedPermission) return <RequestPermissions onComplete={onRequestPermissionCompleteHandler} />;
+  // removing right now to have devices prompt when the user clicks on the buttons.
+  // keeping in code because this whole file will be deleted soon
+  // if (!hasGrantedPermission) return <RequestPermissions onComplete={onRequestPermissionCompleteHandler} />;
 
   return <EntryView onComplete={handleEntryComplete} />;
 };

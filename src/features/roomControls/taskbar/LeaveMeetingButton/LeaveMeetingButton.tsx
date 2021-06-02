@@ -9,7 +9,9 @@ export interface ILeaveMeetingButtonProps {}
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    minWidth: 190,
+    paddingRight: 0,
+    paddingLeft: 15,
+    minWidth: 170,
     color: theme.palette.brandColors.cherry.bold,
     '&:hover:not($active)': {
       backgroundColor: theme.palette.brandColors.cherry.light,
@@ -29,7 +31,7 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   }, [room, leave]);
 
   return (
-    <Button variant="text" className={classes.button} startIcon={<LeaveIcon />} onClick={leaveRoom}>
+    <Button variant="text" className={classes.button} startIcon={<LeaveIcon />} onClick={leaveRoom} fullWidth={false}>
       {t('features.roomControls.leaveMeetingButtonText')}
     </Button>
   );

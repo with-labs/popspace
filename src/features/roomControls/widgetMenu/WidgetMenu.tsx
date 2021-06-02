@@ -49,11 +49,8 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
           <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
-            <ResponsiveTooltip title={<QuickActionTooltip />} offset={4}>
-              <ActionBarButton aria-label={t('features.omnibar.quickActionButton')} aria-controls={ACTION_BAR_ID} />
-            </ResponsiveTooltip>
-            <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Link} />
+            <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Whiteboard} />
             <QuickAccessoryButton type={WidgetType.YouTube} />
             <QuickFileButton />

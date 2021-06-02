@@ -4,10 +4,9 @@ import linkSrc from './png/link.png';
 import stickySrc from './png/sticky.png';
 import videoSrc from './png/youtube.png';
 import whiteboardSrc from './png/whiteboard.png';
+import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
-import { ReactComponent as FileIcon } from './svg/widget_upload.svg';
-import { ReactComponent as EmojiIcon } from './svg/emoji.svg';
-import { ReactComponent as ScreenShareIcon } from './svg/sharing_ON.svg';
+import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
 import { WidgetType } from '@roomState/types/widgets';
 
 const icons = {
@@ -16,9 +15,8 @@ const icons = {
   [WidgetType.Whiteboard]: whiteboardSrc,
   [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
-  file: FileIcon,
+  file: fileUploadSrc,
   embed: embedSrc,
-  status: EmojiIcon,
 };
 
 export type AccessoryIconType = keyof typeof icons;
@@ -31,11 +29,11 @@ export function AccessoryIcon({ type, ...props }: AccessoryIconProps) {
   const Glyph = icons[type];
 
   if (typeof Glyph === 'string') {
-    return <img alt={`${type} icon`} style={{ width: 32, height: 32 }} src={Glyph} />;
+    return <img alt={`${type} icon`} style={{ width: 48, height: 48 }} src={Glyph} />;
   }
 
   return (
-    <SvgIcon {...props} viewBox="0 0 32 32">
+    <SvgIcon {...props} viewBox="0 0 48 48">
       {Glyph && <Glyph />}
     </SvgIcon>
   );

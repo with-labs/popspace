@@ -13,7 +13,7 @@ export function mockUserQuickActions(prompt: string, t: TFunction): QuickAction[
     return [
       {
         kind: QuickActionKind.AddAccessory,
-        icon: 'status',
+        icon: WidgetType.StickyNote,
         accessoryData: {
           displayName: '',
           video: '',

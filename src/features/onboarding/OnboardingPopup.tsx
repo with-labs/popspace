@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { OnboardingStateShape, useOnboarding } from './useOnboarding';
 
 export interface IOnboardingPopupProps {}
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
@@ -67,7 +69,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
       action={actionRef}
     >
       <Box display="flex" justifyContent="space-between" p={2}>
-        <Typography variant="h2">Getting started</Typography>
+        <Typography variant="h2">{t('features.onboarding.title')}</Typography>
         <IconButton onClick={api.markAll}>
           <CloseIcon />
         </IconButton>
@@ -75,8 +77,8 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
       <Box p={2} overflow="auto" height="300px">
         <OnboardingStep
           id="move"
-          title="Move"
-          details="To move in a Noodle room, drag and drop your avatar wherever you want to go!"
+          title={t('features.onboarding.move.title')}
+          details={t('features.onboarding.move.details')}
           expanded={expanded === 'hasMoved'}
           done={hasMoved}
           onChange={() => openSection('hasMoved')}
@@ -84,9 +86,8 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
         {!isSmall && (
           <OnboardingStep
             id="create"
-            title="Add Widgets"
-            details="You can add many kind of content to the room. Try it now!
-Clicking on one of the icons at the bottom of the window."
+            title={t('features.onboarding.addWidgets.title')}
+            details={t('features.onboarding.addWidgets.details')}
             expanded={expanded === 'hasCreated'}
             done={hasCreated}
             onChange={() => openSection('hasCreated')}
@@ -94,14 +95,14 @@ Clicking on one of the icons at the bottom of the window."
         )}
         <OnboardingStep
           id="persistence"
-          title="Persistence"
-          details="All the widgets you create and the files your upload are automatically saved in the room. Bookmark this page and come back at any time and eveything will still be there."
+          title={t('features.onboarding.persistence.title')}
+          details={t('features.onboarding.persistence.details')}
           expanded={expanded === 'hasAcknowledgedPersistence'}
           done={hasAcknowledgedPersistence}
           onChange={() => openSection('hasAcknowledgedPersistence')}
         >
           <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="default">
-            Got it
+            {t('common.confirm')}
           </Button>
         </OnboardingStep>
       </Box>

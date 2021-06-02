@@ -522,6 +522,21 @@
       },
       "chat": {
         "buttonText": "Chat with us"
+      },
+      "onboarding": {
+        "title": "Getting started",
+        "move": {
+          "details": "To move in a Noodle room, drag and drop your avatar wherever you want to go!",
+          "title": "Move"
+        },
+        "addWidgets": {
+          "title": "Add Widgets",
+          "details": "You can add many kind of content to the room. Try it now by clicking on one of the icons at the bottom of the window."
+        },
+        "persistence": {
+          "title": "Persistence",
+          "details": "All the widgets you create and the files your upload are automatically saved in the room. Bookmark this page and come back at any time and eveything will still be there."
+        }
       }
     },
     "modals": {

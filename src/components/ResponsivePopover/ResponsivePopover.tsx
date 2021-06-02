@@ -122,7 +122,6 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
-      // className={className}
       transformOrigin={transformOrigin || transformOrigins[placement]}
       anchorPosition={anchorPosition}
       anchorOrigin={anchorOrigin || anchorOrigins[placement]}

@@ -357,7 +357,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         elevation: 1,
       },
       MuiAccordion: {
-        // variant: 'outlined',
         elevation: 0,
       },
     },

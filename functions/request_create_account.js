@@ -28,7 +28,7 @@ module.exports.handler = util.netlify.postEndpoint(
     }
 
     let existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
-    if(shared.lib.otp.isExpired(existingCreateRequest)) {
+    if(existingCreateRequest && shared.lib.otp.isExpired(existingCreateRequest)) {
       existingCreateRequest = null
     }
 

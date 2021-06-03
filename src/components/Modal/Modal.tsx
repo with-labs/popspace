@@ -1,25 +1,14 @@
 import React, { ReactNode } from 'react';
-import { Dialog, useMediaQuery, Theme, SwipeableDrawer } from '@material-ui/core';
+import { Dialog, useMediaQuery, Theme, SwipeableDrawer, DialogProps } from '@material-ui/core';
 
-export interface IModalProps {
-  children?: ReactNode;
+export interface IModalProps extends Omit<DialogProps, 'open' | 'onClose'> {
   isOpen: boolean;
   onClose?: () => void;
-  maxWidth?: 'xs' | 'sm' | 'md' | 'lg';
-  fullWidth?: boolean;
-  disableBackdropClick?: boolean;
 }
 
 const noop = () => {};
 
-export const Modal: React.FC<IModalProps> = ({
-  children,
-  isOpen,
-  onClose = noop,
-  maxWidth = 'md',
-  fullWidth = true,
-  disableBackdropClick = false,
-}) => {
+export const Modal: React.FC<IModalProps> = ({ children, isOpen, onClose = noop, maxWidth = 'md', ...rest }) => {
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
 
   if (isSmall) {
@@ -31,13 +20,7 @@ export const Modal: React.FC<IModalProps> = ({
   }
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={onClose}
-      maxWidth={maxWidth}
-      fullWidth={fullWidth}
-      disableBackdropClick={disableBackdropClick}
-    >
+    <Dialog open={isOpen} onClose={onClose} maxWidth={maxWidth} {...rest}>
       {children}
     </Dialog>
   );

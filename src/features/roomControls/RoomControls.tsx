@@ -6,6 +6,7 @@ import { ViewportControls } from './viewport/ViewportControls';
 import { Spacing } from '@components/Spacing/Spacing';
 import { ExperimentsModal } from './experiments/ExperimentsModal';
 import { WidgetMenu } from './widgetMenu/WidgetMenu';
+import { OnboardingPopup } from '@features/onboarding/OnboardingPopup';
 
 export interface IRoomControlsProps {}
 
@@ -34,6 +35,7 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
       <ActionBar />
       <ExperimentsModal />
       <WidgetMenu />
+      <OnboardingPopup />
     </>
   );
 });

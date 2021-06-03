@@ -20,6 +20,8 @@ import { sanityCheckWidget } from './sanityCheckWidget';
 import { DEFAULT_ROOM_SIZE } from '@constants/room';
 import { clampVector } from '@utils/math';
 import { SIZE_AVATAR } from '@features/room/people/constants';
+import { useOnboarding } from '@features/onboarding/useOnboarding';
+import { areTransformsEqual } from './utils';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -466,6 +468,8 @@ function createRoomStore() {
               roomId: getRoomId(),
               creationLocation: origin || Origin.NOT_SET,
             });
+            // update onboarding
+            useOnboarding.getState().api.markComplete('hasCreated');
             // the incoming created message will be handled by the main incoming message
             return response.payload;
           },
@@ -476,6 +480,8 @@ function createRoomStore() {
               ...currentTransform,
               ...payload,
             };
+            // bail if transform has no effect
+            if (!!currentTransform && areTransformsEqual(currentTransform, updatedTransform)) return;
             // optimistic update
             internalApi.moveUser({ userId, transform: updatedTransform });
             // send to peers
@@ -485,6 +491,8 @@ function createRoomStore() {
                 transform: updatedTransform,
               },
             });
+            // update onboarding
+            useOnboarding.getState().api.markComplete('hasMoved');
           },
           /** @deprecated use transformWidget */
           moveWidget(payload: { widgetId: string; position: Vector2 }) {

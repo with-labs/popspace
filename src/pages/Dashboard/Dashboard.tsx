@@ -3,6 +3,7 @@ import { Box, Button } from '@material-ui/core';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useHistory } from 'react-router';
+import { RouteNames } from '@constants/RouteNames';
 
 export interface IDashboardProps {}
 
@@ -14,7 +15,9 @@ export const Dashboard: React.FC<IDashboardProps> = () => {
   const handleCreate = async () => {
     try {
       const meeting = await createMeeting();
-      history.push(`/${meeting.route}`);
+      history.push(RouteNames.MEETING_LINK, {
+        meetingInfo: meeting,
+      });
     } catch (err) {
       toast.error(err.message);
     }

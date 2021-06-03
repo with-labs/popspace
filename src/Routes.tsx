@@ -13,6 +13,7 @@ import { AuthenticatedRoute } from './components/AuthenticatedRoute/Authenticate
 import RoomPage from './pages/RoomPage/RoomPage';
 import { Signup } from './pages/Signup/Signup';
 import { Dashboard } from './pages/Dashboard/Dashboard';
+import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
@@ -23,6 +24,10 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
       {/* TODO: open this to anon users */}
       <AuthenticatedRoute exact path={RouteNames.ROOT}>
         <Dashboard />
+      </AuthenticatedRoute>
+
+      <AuthenticatedRoute exact path={RouteNames.MEETING_LINK}>
+        <MeetingLink />
       </AuthenticatedRoute>
 
       <Route exact path={RouteNames.SIGN_IN}>

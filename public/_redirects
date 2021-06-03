@@ -1,5 +1,5 @@
 # Homepage rewrites to the landing page
-/     https://noodle.so 200!
+/     https://deploy-preview-1--stoic-mestorf-230354.netlify.app 200!
 # This is necessary for react-router
 # https://medium.com/@sschannak/netlify-and-react-router-1537aebe6256
 /*    /index.html   200

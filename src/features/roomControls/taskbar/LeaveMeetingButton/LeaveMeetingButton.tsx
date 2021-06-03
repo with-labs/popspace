@@ -25,6 +25,8 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   const classes = useStyles();
   const { room } = useTwilio();
   const leave = useRoomStore((r) => r.api.leave);
+
+  // todo add analytics
   const leaveRoom = React.useCallback(() => {
     room?.disconnect();
     leave();

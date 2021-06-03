@@ -12,6 +12,7 @@ import { AvatarSelectorBubble } from '@features/roomControls/avatar/AvatarSelect
 import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
+import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 
 interface IUserEntryModalProps {}
 
@@ -58,12 +59,16 @@ const useStyles = makeStyles((theme) => ({
 export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const { onReady } = React.useContext(MediaReadinessContext);
 
   const isOpen = useRoomModalStore((modals) => modals.userEntry);
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
   const onClose = () => closeModal('userEntry');
 
-  const onSubmitHandler = () => {};
+  const onSubmitHandler = () => {
+    onClose();
+    onReady();
+  };
 
   // TODO:
   // when we figure out how we want to make psudeo-anon users
@@ -71,7 +76,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   // psudeo bubble with the updateSelf function and the need to passin
   // the userId (maybe write a work around to leave support open for signed in users)
   return (
-    <Modal isOpen={isOpen} onClose={onClose} maxWidth={'sm'}>
+    <Modal isOpen={isOpen} maxWidth={'sm'}>
       <ModalContentWrapper>
         <Box display="flex" flexDirection="column" flex={1}>
           <Box className={classes.avatarArea} position="relative" mb={2}>

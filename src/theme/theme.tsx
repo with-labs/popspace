@@ -358,6 +358,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiSnackbarContent: {
         elevation: 1,
       },
+      MuiAccordion: {
+        elevation: 0,
+      },
     },
     overrides: {
       MuiCssBaseline: {
@@ -1073,6 +1076,30 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           backgroundColor: palette.brandColors.snow.regular,
           opacity: 1,
           transition: transitions.create(['background-color', 'border']),
+        },
+      },
+      MuiAccordion: {
+        root: {
+          // disable line between collapsed accordion sections
+          '&::before': {
+            display: 'none',
+          },
+          '&$expanded': {
+            backgroundColor: brandPalette.lavender.light,
+          },
+        },
+        rounded: {
+          borderRadius: shape.borderRadius,
+          backgroundColor: palette.grey[100],
+          margin: `${spacing(1)}px 0`,
+        },
+        expanded: {
+          margin: `${spacing(1)}px 0`,
+        },
+      },
+      MuiAccordionDetails: {
+        root: {
+          fontSize: typography.pxToRem(16),
         },
       },
     },

@@ -14,7 +14,7 @@ export const Dashboard: React.FC<IDashboardProps> = () => {
   const handleCreate = async () => {
     try {
       const meeting = await createMeeting();
-      history.push(`/${meeting.route}?join`);
+      history.push(`/${meeting.route}`);
     } catch (err) {
       toast.error(err.message);
     }

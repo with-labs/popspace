@@ -38,7 +38,7 @@
         "bodySignedOut": "Please sign in and make sure the room owner has invited you to this room.",
         "quoteText": "",
         "altImgText": "No access",
-        "buttonText": "Go to Dashboard",
+        "buttonText": "Select a meeting",
         "subMessageNotSignedIn": "You are currently logged is as {{email}} <br/> You might need to <3>sign out</3> and then sign in with a different email"
       },
       "linkExpired": {
@@ -85,26 +85,6 @@
       }
     },
     "pages": {
-      "preroom": {
-        "roomTitle": "Rooms",
-        "enterRoomButton": "Enter {{roomName}}",
-        "createRoomButton": "Create room",
-        "setupExplanation": "You can take a moment to set up your camera and microphone.",
-        "namePlaceholder": "Your name",
-        "roomSummary": {
-          "joinRoomBtn": "Join Room",
-          "owner": "Owner",
-          "guest": "Guest",
-          "inviteMembers": "Invite members",
-          "renameRoom": "Rename room",
-          "deleteRoom": "Delete room",
-          "makeDefault": "Make default",
-          "defaultRoom": "Default room",
-          "leaveRoom": "Leave room"
-        },
-        "maxSize": "Display name must be less than {{maxNameLength}} characters",
-        "joinButton": "Join meeting"
-      },
       "signin": {
         "title": "Sign In",
         "email": {
@@ -219,34 +199,15 @@
         "imgAltText": "sign in",
         "tosCheck": "I agree to the <1>Terms of Service</1>"
       },
-      "createRoom": {
-        "nameRoom": {
-          "title": "Name your room",
-          "explainer": "We gave your room a nice name, but feel free to rename it!",
-          "continue": "Continue"
-        },
-        "invitePeople": {
-          "continue": "Continue",
-          "title": "Invite your team",
-          "skip": "Skip"
-        },
-        "inviteMembers": {
-          "continue": "Continue",
-          "title": "Invite your team",
-          "skip": "Skip for now",
-          "copyToClipboard": "Copy to clipboard",
-          "inviteEmail": "Invite via email",
-          "inviteLink": "Invite via link",
-          "linkExplain": "First, share this link with your team to quickly get them on board:",
-          "linkEmailInvite": "Starts adopting your new office by scheduling a meeting that includes your room link:",
-          "googleCalButton": "Google Calendar",
-          "officeCalButton": "Office 365",
-          "emailExplain": "With is a lot more useful when your whole team is there!",
-          "event": {
-            "title": "Team sync-up",
-            "body": "Join the room {{roomName}} at {{joinUrl}}"
-          }
-        }
+      "meetingLink": {
+        "titleText": "Your meeting room is ready",
+        "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Noodle.",
+        "copyLinkButton": "Copy link",
+        "copied": "Copied",
+        "joinRoomButton": "Join room now"
+      },
+      "meetingSelect": {
+        "titleText": "What kind of meeting room do you need?"
       }
     },
     "widgets": {
@@ -507,21 +468,8 @@
         "massiveRoomExplainer": "Warning: very experimental! Removes the boundaries on your room, letting you move and place accessories anywhere you like. You can turn this back off, but your accessories will be re-arranged if you do."
       },
       "roomControls": {
-        "emailPlaceholder": "Invite via email",
-        "linkInviteAriaLabel": "Toggle invite link",
-        "linkInviteTitle": "Room Link",
-        "copySuccess": "Room Link copied!",
-        "inviteLinkReset": "Room Link reset.",
         "CopyLinkButtonText": "Copy link",
-        "copyLinkButtonAria": "Copy the room link to the clipboard",
-        "resetLinkButtonText": "Reset link",
-        "resetLinkButtonAria": "Reset the room link",
-        "linkCopied": "Copied!",
-        "linkInviteName": "Invite via link",
         "leaveMeetingButtonText": "Leave Meeting"
-      },
-      "chat": {
-        "buttonText": "Chat with us"
       },
       "onboarding": {
         "title": "Getting started",

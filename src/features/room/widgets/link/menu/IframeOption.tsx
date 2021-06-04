@@ -26,12 +26,6 @@ export const IframeOption = React.forwardRef<HTMLLIElement, IIframeOptionProps>(
     save({
       showIframe: showIframeNow,
     });
-    // resize the frame to be larger after toggling
-    if (showIframeNow) {
-      setTimeout(() => {
-        resize(INITIAL_SIZE_FRAME, true);
-      }, 10);
-    }
   }, [showIframe, save, resize]);
 
   return (

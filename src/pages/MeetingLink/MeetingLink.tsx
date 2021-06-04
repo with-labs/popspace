@@ -10,6 +10,7 @@ import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 
+// TODO: change this to the shortened url
 const BASE_URL = 'https://www.noodle.so';
 
 export interface IMeetingLinkProps {}
@@ -52,7 +53,12 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
 
   const history = useHistory<{ meetingInfo: ApiNamedRoom }>();
   const meetingInfo = history.location.state?.meetingInfo;
-  const meetingUrl = meetingInfo ? `${BASE_URL}/${meetingInfo.route}` : '';
+
+  // if we are on prod, use the shortented base url for share links, otherwise just
+  // use the origin of whatever url we are using
+  const meetingUrl = meetingInfo
+    ? `${process.env.NODE_ENV !== 'production' ? window.location.origin : BASE_URL}/${meetingInfo.route}`
+    : '';
 
   React.useEffect(() => {
     // if meeting info is empty, redirect to the dashboard

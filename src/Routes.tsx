@@ -12,7 +12,7 @@ import { Page } from './Layouts/Page/Page';
 import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
 import RoomPage from './pages/RoomPage/RoomPage';
 import { Signup } from './pages/Signup/Signup';
-import { Dashboard } from './pages/Dashboard/Dashboard';
+import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
@@ -23,7 +23,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
     <Switch>
       {/* TODO: open this to anon users */}
       <AuthenticatedRoute exact path={RouteNames.ROOT}>
-        <Dashboard />
+        <MeetingSelect />
       </AuthenticatedRoute>
 
       <AuthenticatedRoute exact path={RouteNames.MEETING_LINK}>

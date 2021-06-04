@@ -38,7 +38,7 @@
         "bodySignedOut": "Please sign in and make sure the room owner has invited you to this room.",
         "quoteText": "",
         "altImgText": "No access",
-        "buttonText": "Go to Dashboard",
+        "buttonText": "Select a meeting",
         "subMessageNotSignedIn": "You are currently logged is as {{email}} <br/> You might need to <3>sign out</3> and then sign in with a different email"
       },
       "linkExpired": {
@@ -205,6 +205,9 @@
         "copyLinkButton": "Copy link",
         "copied": "Copied",
         "joinRoomButton": "Join room now"
+      },
+      "meetingSelect": {
+        "titleText": "What kind of meeting room do you need?"
       }
     },
     "widgets": {
@@ -465,21 +468,8 @@
         "massiveRoomExplainer": "Warning: very experimental! Removes the boundaries on your room, letting you move and place accessories anywhere you like. You can turn this back off, but your accessories will be re-arranged if you do."
       },
       "roomControls": {
-        "emailPlaceholder": "Invite via email",
-        "linkInviteAriaLabel": "Toggle invite link",
-        "linkInviteTitle": "Room Link",
-        "copySuccess": "Room Link copied!",
-        "inviteLinkReset": "Room Link reset.",
         "CopyLinkButtonText": "Copy link",
-        "copyLinkButtonAria": "Copy the room link to the clipboard",
-        "resetLinkButtonText": "Reset link",
-        "resetLinkButtonAria": "Reset the room link",
-        "linkCopied": "Copied!",
-        "linkInviteName": "Invite via link",
         "leaveMeetingButtonText": "Leave Meeting"
-      },
-      "chat": {
-        "buttonText": "Chat with us"
       },
       "onboarding": {
         "title": "Getting started",

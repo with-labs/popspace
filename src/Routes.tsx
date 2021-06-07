@@ -27,8 +27,14 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <MeetingSelect />
       </AuthenticatedRoute>
 
+      {/* TODO: open this to anon users */}
       <AuthenticatedRoute exact path={RouteNames.MEETING_LINK}>
         <MeetingLink />
+      </AuthenticatedRoute>
+
+      {/* TODO: open this to anon users */}
+      <AuthenticatedRoute exact path={RouteNames.CREATE_MEETING}>
+        <CreateMeeting />
       </AuthenticatedRoute>
 
       <Route exact path={RouteNames.SIGN_IN}>

@@ -644,6 +644,32 @@
         "submitButtonText": "Set display name",
         "maxSize": "Display name must be less than {{maxNameLength}} characters"
       }
+    },
+    "meetings": {
+      "custom": {
+        "title": "Custom",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      },
+      "stand_up": {
+        "title": "Stand Up",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      },
+      "workshop": {
+        "title": "Workshop",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      },
+      "presentation": {
+        "title": "Presentations",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      },
+      "one_on_one": {
+        "title": "One-on-one",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      },
+      "team_retrospective": {
+        "title": "Team retrospective",
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+      }
     }
   }
 }

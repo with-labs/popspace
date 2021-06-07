@@ -1,10 +1,10 @@
 export enum MeetingType {
-  CUSTOM = 'CUSTOM',
-  STAND_UP = 'STAND_UP',
-  WORKSHOP = 'WORKSHOP',
-  PRESENTATION = 'PRESENTATION',
-  ONE_ON_ONE = 'ONE_ON_ONE',
-  TEAM_RETROSPECTIVE = 'TEAM_RETROSPECTIVE',
+  CUSTOM = 'custom',
+  STAND_UP = 'stand_up',
+  WORKSHOP = 'workshop',
+  PRESENTATION = 'presentation',
+  ONE_ON_ONE = 'one_on_one',
+  TEAM_RETROSPECTIVE = 'team_retrospective',
 }
 
 export type MeetingTypeMetadataType = {

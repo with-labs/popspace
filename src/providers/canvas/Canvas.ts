@@ -111,21 +111,22 @@ export class Canvas extends EventEmitter {
     this._sizeSnapIncrement = options?.sizeSnapIncrement ?? 1;
   }
 
-  private commitGesture = (
+  private commitGesture = async (
     objectId: string,
     objectKind: CanvasObjectKind,
     position: Vector2 | null,
     size: Bounds | null
   ) => {
+    console.log(`cg`, position);
     if (objectKind === 'person') {
       const { getActiveUserId, transformSelf } = useRoomStore.getState().api;
       // local user can only move or resize themselves; ignore gestures for all
       // other users
       if (objectId !== getActiveUserId()) return;
 
-      transformSelf({ position: position || undefined, size: size || undefined });
+      await transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {
-      useRoomStore.getState().api.transformWidget({
+      await useRoomStore.getState().api.transformWidget({
         widgetId: objectId,
         transform: {
           position: position || undefined,
@@ -141,7 +142,7 @@ export class Canvas extends EventEmitter {
   private commitActiveGesture = () => {
     const { objectId, objectKind, position, size } = this.activeGestureStore.getState();
     if (!objectId || !objectKind) return;
-    this.commitGesture(objectId, objectKind, position, size);
+    return this.commitGesture(objectId, objectKind, position, size);
   };
   private throttledCommitActiveGesture = throttle(this.commitActiveGesture, MOVE_THROTTLE_PERIOD, { trailing: false });
 
@@ -150,6 +151,7 @@ export class Canvas extends EventEmitter {
   private handleActiveGestureChange = (state: ActiveGestureState) => {
     if (state.objectId) {
       if (state.position) {
+        console.log(`hagc`, state.position);
         const position = state.position;
         this.positionObservers[state.objectId]?.forEach((cb) => cb(position));
       }
@@ -195,14 +197,15 @@ export class Canvas extends EventEmitter {
     this.throttledCommitActiveGesture();
   };
 
-  onObjectDragEnd = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
+  onObjectDragEnd = async (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
     const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
     this.activeGestureStore.setState({
       objectId,
       objectKind: objectType,
       position: worldPosition,
     });
-    this.commitActiveGesture();
+    // wait for confirmation from server of gesture change before finishing the gesture
+    await this.commitActiveGesture();
     this.clearActiveGesture();
     this.emit('gestureEnd');
   };
@@ -237,6 +240,7 @@ export class Canvas extends EventEmitter {
       // only notify observer of Room State position changes if the object
       // is not actively being moved, which should override Room State position.
       if (this.activeGestureStore.getState().objectId !== objectId) {
+        console.log(`op`, position);
         observer(position);
       }
     }, objectPositionSelector(objectId, objectType));

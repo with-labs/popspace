@@ -2,9 +2,6 @@ import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
-import { ViewportControls } from './viewport/ViewportControls';
-import { Spacing } from '@components/Spacing/Spacing';
-import { ExperimentsModal } from './experiments/ExperimentsModal';
 import { WidgetMenu } from './widgetMenu/WidgetMenu';
 import { OnboardingPopup } from '@features/onboarding/OnboardingPopup';
 
@@ -33,7 +30,6 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
         <ViewportControls />
       </Spacing> */}
       <ActionBar />
-      <ExperimentsModal />
       <WidgetMenu />
       <OnboardingPopup />
     </>

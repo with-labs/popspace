@@ -7,6 +7,7 @@ import { ApiNamedRoom } from '@utils/api';
 import { useTranslation } from 'react-i18next';
 import { RouteNames } from '@constants/RouteNames';
 import toast from 'react-hot-toast';
+import { MeetingTemplateName } from '@features/meetingTemplates/constants';
 
 export interface IMeetingSelectProps {}
 
@@ -25,7 +26,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = () => {
 
   const onMeetingSelect = async () => {
     try {
-      const meeting = await createMeeting();
+      const meeting = await createMeeting(MeetingTemplateName.Custom);
       history.push(RouteNames.MEETING_LINK, {
         meetingInfo: meeting,
       });

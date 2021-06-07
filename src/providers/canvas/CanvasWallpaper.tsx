@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import * as React from 'react';
 import { useViewport } from '../viewport/useViewport';
 
@@ -6,15 +7,19 @@ export interface IViewportWallpaperProps {
   children?: React.ReactNode;
   imageUrl?: string;
   color?: string;
+  wallpaperRepeats?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     borderRadius: theme.shape.borderRadius,
-    backgroundRepeat: 'repeat',
-    backgroundSize: '2400px 2400px',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
     zIndex: 0,
+  },
+  wallpaperRepeat: {
+    backgroundRepeat: 'repeat',
   },
 }));
 
@@ -22,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
  * Renders a wallpaper inside a viewport which stretches to the bounds of the
  * enclosed canvas.
  */
-export const CanvasWallpaper: React.FC<IViewportWallpaperProps> = ({ children, imageUrl, color }) => {
+export const CanvasWallpaper: React.FC<IViewportWallpaperProps> = ({ children, imageUrl, wallpaperRepeats, color }) => {
   const classes = useStyles();
 
   const viewport = useViewport();
@@ -40,7 +45,7 @@ export const CanvasWallpaper: React.FC<IViewportWallpaperProps> = ({ children, i
   }, [imageUrl, color, viewport]);
 
   return (
-    <div style={style} className={classes.root}>
+    <div style={style} className={clsx(classes.root, wallpaperRepeats && classes.wallpaperRepeat)}>
       {children}
     </div>
   );

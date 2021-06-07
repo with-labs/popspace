@@ -14,6 +14,7 @@ import RoomPage from './pages/RoomPage/RoomPage';
 import { Signup } from './pages/Signup/Signup';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
+import { CreateMeeting } from './pages/CreateMeeting/CreateMeeting';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
@@ -45,6 +46,11 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
       <Route path={RouteNames.LOGIN_IN_WITH_EMAIL}>
         <LoginWithEmail />
       </Route>
+
+      {/* TODO: open this to anon users */}
+      <AuthenticatedRoute path={RouteNames.CREATE_MEETING}>
+        <CreateMeeting />
+      </AuthenticatedRoute>
 
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}

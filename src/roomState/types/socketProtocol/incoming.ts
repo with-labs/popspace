@@ -1,6 +1,6 @@
 import { WidgetShape, WidgetState } from '../widgets';
 import { ParticipantShape, ParticipantState } from '../participants';
-import { RoomPositionState } from '../common';
+import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
 
 /**
@@ -34,14 +34,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
     room: {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
       id: string | number; // TODO: clarify
-      state: {
-        wallpaperUrl: string;
-        displayName: string;
-        isCustomWallpaper: boolean;
-        zOrder?: string[];
-        width: number;
-        height: number;
-      };
+      state: RoomDetailsStateShape;
     };
   };
 }

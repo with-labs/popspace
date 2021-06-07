@@ -30,6 +30,7 @@ export enum EventNames {
   BUTTON_CLICKED = 'button_clicked',
   TOGGLE_MIC = 'toggle_mic',
   TOGGLE_VIDEO = 'toggle_video',
+  CREATE_MEETING_FROM_TEMPLATE = 'create_meeting_from_template',
 }
 
 export enum Origin {

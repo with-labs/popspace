@@ -760,6 +760,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         rounded: {
           borderRadius: shape.borderRadius,
         },
+        elevation0: {
+          border: `1px solid ${palette.grey[500]}`,
+        },
         elevation1: {
           boxShadow: mainShadows.surface,
         },
@@ -1098,6 +1101,23 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiAccordionDetails: {
         root: {
           fontSize: typography.pxToRem(16),
+        },
+      },
+      MuiCard: {
+        root: {
+          overflow: 'visible',
+        },
+      },
+      MuiCardActionArea: {
+        root: {
+          overflow: 'hidden',
+          borderRadius: 'inherit',
+          '&$focusVisible': {
+            boxShadow: `0 0 0 4px ${palette.primary.main}`,
+          },
+        },
+        focusHighlight: {
+          display: 'none',
         },
       },
     },

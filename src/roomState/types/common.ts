@@ -8,8 +8,8 @@ export interface RoomPositionState {
 export interface RoomDetailsStateShape {
   wallpaperUrl: string;
   isCustomWallpaper: boolean;
-  width: number;
-  height: number;
   displayName: string;
   zOrder: string[];
+  wallpaperRepeats: boolean;
+  backgroundColor: string;
 }

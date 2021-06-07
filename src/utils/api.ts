@@ -1,4 +1,5 @@
 import { ErrorCodes } from '@constants/ErrorCodes';
+import { RoomTemplate } from '@roomState/exportRoomTemplate';
 import { getSessionToken } from './sessionToken';
 
 /** TODO: throw one of these on every failed request */
@@ -102,8 +103,8 @@ class Api {
     >('/user_profile', {}, SERVICES.netlify);
   }
 
-  async roomCreate(displayName: string) {
-    return await this.post<{ newRoom: ApiNamedRoom }>('/room_create', { displayName }, SERVICES.netlify);
+  async createMeeting(template: RoomTemplate) {
+    return await this.post<{ newMeeting: ApiNamedRoom }>('/create_meeting', { template }, SERVICES.api);
   }
 
   async roomRename(roomId: string, newDisplayName: string) {

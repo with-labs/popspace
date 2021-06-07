@@ -99,9 +99,8 @@ describe('the central room state store (useRoomStore)', () => {
             room: {
               id: 'room-id',
               state: {
-                // TODO: not included yet
-                width: 2400,
-                height: 2400,
+                backgroundColor: '#ffffff',
+                wallpaperRepeats: false,
                 wallpaperUrl: 'https://with.so/wallpapers/board.png',
                 isCustomWallpaper: true,
                 displayName: 'room',

@@ -208,46 +208,6 @@
       },
       "meetingSelect": {
         "titleText": "What kind of meeting room do you need?"
-      },
-      "createRoom": {
-        "nameRoom": {
-          "title": "Name your room",
-          "explainer": "We gave your room a nice name, but feel free to rename it!",
-          "continue": "Continue"
-        },
-        "invitePeople": {
-          "continue": "Continue",
-          "title": "Invite your team",
-          "skip": "Skip"
-        },
-        "inviteMembers": {
-          "continue": "Continue",
-          "title": "Invite your team",
-          "skip": "Skip for now",
-          "copyToClipboard": "Copy to clipboard",
-          "inviteEmail": "Invite via email",
-          "inviteLink": "Invite via link",
-          "linkExplain": "First, share this link with your team to quickly get them on board:",
-          "linkEmailInvite": "Starts adopting your new office by scheduling a meeting that includes your room link:",
-          "googleCalButton": "Google Calendar",
-          "officeCalButton": "Office 365",
-          "emailExplain": "With is a lot more useful when your whole team is there!",
-          "event": {
-            "title": "Team sync-up",
-            "body": "Join the room {{roomName}} at {{joinUrl}}"
-          }
-        },
-        "meetingTemplate": {
-          "title": "What kind of meeting room do you need?",
-          "descriptions": {
-            "custom": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-            "standup": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-            "workshop": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-            "presentation": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-            "oneOnOne": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-            "retrospective": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
-          }
-        }
       }
     },
     "widgets": {
@@ -645,30 +605,36 @@
         "maxSize": "Display name must be less than {{maxNameLength}} characters"
       }
     },
-    "meetings": {
+    "meetingTemplates": {
       "custom": {
         "title": "Custom",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "A speech bubble with a friendly exclamation"
       },
-      "stand_up": {
+      "standup": {
         "title": "Stand Up",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "A streaming cup of morning beverage"
       },
       "workshop": {
         "title": "Workshop",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "A timer on a grid-like abstract background"
       },
       "presentation": {
         "title": "Presentations",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "A projection screen with an upward-trending graph"
       },
-      "one_on_one": {
+      "oneOnOne": {
         "title": "One-on-one",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "Two comfy chairs facing one another"
       },
-      "team_retrospective": {
+      "retrospective": {
         "title": "Team retrospective",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor"
+        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "imgAlt": "A document being inspected with a magnifying glass"
       }
     }
   }

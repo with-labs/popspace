@@ -53,11 +53,6 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         <LoginWithEmail />
       </Route>
 
-      {/* TODO: open this to anon users */}
-      <AuthenticatedRoute path={RouteNames.CREATE_MEETING}>
-        <CreateMeeting />
-      </AuthenticatedRoute>
-
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}
         render={({ history }) => <FlaggAdmin onDone={() => history.push('/')} />}

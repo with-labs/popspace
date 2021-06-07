@@ -1,47 +1,10 @@
-<<<<<<< HEAD
-import { EventNames } from '@analytics/constants';
-import { MeetingTemplateName } from '@features/meetingTemplates/constants';
-import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
-import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
-import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { Box, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
-
-export function CreateMeeting() {
-  const { t } = useTranslation();
-  const create = useCreateMeeting();
-  const history = useHistory();
-
-  const analytics = useAnalytics();
-
-  const onSelect = async (templateName: MeetingTemplateName) => {
-    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, {
-      templateName,
-    });
-    const meeting = await create(templateName);
-    history.push(`/${meeting.route}?join`);
-  };
-
-  return (
-    <Box flex={1} width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
-      <Box width="100%" maxWidth="800px" display="flex" flexDirection="column" alignItems="center">
-        <Typography variant="h1" style={{ maxWidth: 600, textAlign: 'center', marginBottom: 24 }}>
-          {t('pages.createRoom.meetingTemplate.title')}
-        </Typography>
-        <MeetingTemplatePicker onSelect={onSelect} />
-      </Box>
-    </Box>
-  );
-}
-=======
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Page } from '@layouts/Page/Page';
 import { useHistory } from 'react-router-dom';
 import { RouteNames } from '@constants/RouteNames';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { MeetingType } from '@constants/MeetingTypeMetadata';
+import { MeetingTemplateName } from '@src/constants/MeetingTypeMetadata';
 
 interface ICreateMeetingProps {}
 
@@ -58,9 +21,9 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    async function createNewMeeting(meetingType: string) {
+    async function createNewMeeting(meetingType: MeetingTemplateName) {
       try {
-        const meeting = await createMeeting();
+        const meeting = await createMeeting(meetingType);
         history.push(RouteNames.MEETING_LINK, {
           meetingInfo: meeting,
         });
@@ -72,13 +35,13 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
     // if we have a meeting
     if (meetingType) {
       // check if meeting type provided is supported
-      if (!Object.values(MeetingType).includes(meetingType as MeetingType)) {
+      if (!Object.values(MeetingTemplateName).includes(meetingType as MeetingTemplateName)) {
         // redirect to root with error
         // TODO: figure out how we want to handle error messing here
         history.push(RouteNames.ROOT);
       }
       // create a new meeting based on the type
-      createNewMeeting(meetingType);
+      createNewMeeting(meetingType as MeetingTemplateName);
     } else {
       // redirect to meeting select, since we dont have a valid
       // TODO: figure out how we want to handle error messing here
@@ -88,4 +51,3 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
 
   return <Page isLoading={isLoading} error={error} />;
 };
->>>>>>> c175535 (Adding in create meeting from link)

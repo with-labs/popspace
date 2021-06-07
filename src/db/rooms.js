@@ -199,7 +199,11 @@ class Rooms {
     const urlName = shared.db.room.namesAndRoutes.generateRoute(displayName, urlId)
     const result = await shared.db.pg.massive.withTransaction(async (tx) => {
       const room = await tx.rooms.insert({
-        owner_id: ownerId
+        owner_id: ownerId,
+        /*
+          TODO: For now, all rooms default to public
+        */
+        is_public: true
       })
       /*
         For now, we can keep track of a room's ID by just writing

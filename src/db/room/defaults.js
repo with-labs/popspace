@@ -87,7 +87,9 @@ const defaults = {
       id: roomId
     }
     return roomData
-  }
+  },
+
+  getMockOwnerId
 }
 
 

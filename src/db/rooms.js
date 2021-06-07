@@ -1,3 +1,5 @@
+const templates = require("./room/templates");
+
 class Rooms {
   constructor() {
   }
@@ -190,6 +192,9 @@ class Rooms {
     return this.createRoomFromDisplayName("", userId, empty)
   }
 
+  /**
+   * @deprecated use createRoomFromTemplate
+   */
   async createRoomFromDisplayName(displayName, ownerId, empty) {
     /*
       When a user creates a room, they enter a display name.
@@ -249,6 +254,73 @@ class Rooms {
     } else {
       result.roomData = await shared.db.room.defaults.setUpDefaultRoomData(result.room.id, displayName)
     }
+
+    return result
+  }
+
+  /**
+   * Create a room using provided template data.
+   * @param {TemplateData} template
+   * @param {number} ownerId - may be deprecated as we move to anon users
+   */
+  async createRoomFromTemplate(template, ownerId) {
+  /*
+    When a user creates a room, they enter a display name.
+    We transform that display name into a route.
+  */
+  const urlId = await shared.db.room.namesAndRoutes.generateUniqueRoomUrlId()
+  const urlName = shared.db.room.namesAndRoutes.generateRoute(
+    template.state.display_name,
+    urlId
+  )
+  const result = await shared.db.pg.massive.withTransaction(async (tx) => {
+    const room = await tx.rooms.insert({
+      owner_id: ownerId,
+    })
+    /*
+      For now, we can keep track of a room's ID by just writing
+      it to the room_names table with a special priority (-1).
+      For example, after that free generated IDs can be priority 1000+,
+      and vanity rooms 1000000+.
+      If we want to migrate to something more efficient eventually,
+      the url IDs should probably not be in postgres at all -
+      we'd move them out to e.g. a persistent redis for O(1) access.
+      For now I don't want to worry about that, and we don't have
+      access to redis from netlify, and performance is not a concern.
+      If we want to drop the multi-room paradigm - that would be very easy too.
+      We could simply remove all room_names but the one with the latest
+      created_at, stop writing room_names each time the room is changed,
+      and instead update or replace the record. Assuming the rest of
+      our route resolution already relies on just the room's URL ID by then
+      (which is arguably the point of that type of migration),
+      we won't even lose access to the old routes, because
+      we're already respecting that URL schema.
+    */
+      const roomUrlIdEntry = await tx.room_names.insert({
+        room_id: room.id,
+        name: urlId,
+        priority_level:
+          shared.db.room.namesAndRoutes.URL_ID_AS_ROUTE_PRIORITY_LEVEL,
+        is_vanity: false,
+      })
+      const roomNameEntry = await tx.room_names.insert({
+        room_id: room.id,
+        name: urlName,
+        priority_level:
+          shared.db.room.namesAndRoutes.STANDARD_ROOM_ROUTE_PRIORITY_LEVEL,
+        is_vanity: false,
+      })
+      return {
+        room: room,
+        roomNameEntry: roomNameEntry,
+        urlIdEntry: roomUrlIdEntry,
+      }
+    })
+
+    result.roomData = await templates.setUpRoomFromTemplate(
+      result.room.id,
+      template
+    )
 
     return result
   }

@@ -1,6 +1,6 @@
-import { RoomPositionState } from './types/common';
+import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { WidgetState, WidgetType } from './types/widgets';
-import { RoomDetailsStateShape, RoomStateShape } from './useRoomStore';
+import { RoomStateShape } from './useRoomStore';
 
 // we need to generate new widget IDs or owners when we create a new room,
 // hence the change in format - we don't store ID data or key on it, and

@@ -110,7 +110,6 @@ const LinkSummary = ({ name, url, description, thumbUrl, content, classes }: lin
           <img src={thumbUrl} width={LINK_SUMMARY_WIDTH} />
         </Box>
       )}
-      ;
     </Box>
   </Tooltip>
 );
@@ -122,15 +121,15 @@ export function IFrameDocumentContent({
 }: {
   disableSandbox?: boolean;
   data: {
-    provider_name: string;
+    providerName: string;
     title: string;
     html: string;
     url: string;
     description: string;
-    provider_url: string;
-    thumbnail_url: string;
-    thumbnail_width: number;
-    thumbnail_height: number;
+    providerUrl: string;
+    thumbnailUrl: string;
+    thumbnailWidth: number;
+    thumbnailHeight: number;
     type: string;
   };
   goodResponse?: boolean;
@@ -146,7 +145,7 @@ export function IFrameDocumentContent({
   const [loadIFrame, setLoadIFrame] = React.useState(false);
   const content = React.useRef() as React.MutableRefObject<HTMLInputElement>;
   const { resize } = useCanvasObject();
-  const iFrameUrl = data.html === '' ? widgetState.iframeUrl : '';
+  const iFrameUrl = !data.html ? widgetState.iframeUrl : '';
 
   //handling widget resize after rendering the iframe or custom embed
   React.useEffect(() => {
@@ -154,12 +153,12 @@ export function IFrameDocumentContent({
       if (!goodResponse) {
         resize({ width: SIZE_STUB.width, height: SIZE_STUB.height });
       } else if (!data.html && !iFrameUrl) {
-        const ratio = data.thumbnail_height / data.thumbnail_width;
+        const ratio = data.thumbnailHeight / data.thumbnailWidth;
         const contentHeight =
           content.current.getElementsByTagName('div').length !== 0
             ? content.current.getElementsByTagName('div')[0].offsetHeight
             : 0;
-        const imageHeight = LINK_SUMMARY_WIDTH * ratio;
+        const imageHeight = !!ratio ? LINK_SUMMARY_WIDTH * ratio : 0;
         const height = contentHeight + imageHeight + WIDGET_TITLE_HEIGHT;
         resize({ width: LINK_SUMMARY_WIDTH, height: height }, true);
       } else {
@@ -215,10 +214,10 @@ export function IFrameDocumentContent({
   } else if (!data.html && !iFrameUrl) {
     embed = (
       <LinkSummary
-        name={data.provider_name}
-        url={data.provider_url}
+        name={data.providerName}
+        url={data.providerUrl}
         description={data.description}
-        thumbUrl={data.thumbnail_url}
+        thumbUrl={data.thumbnailUrl}
         content={content}
         classes={classes}
       />
@@ -226,7 +225,7 @@ export function IFrameDocumentContent({
   } else {
     embed = (
       <div className={classes.iframeContainer} onWheelCapture={stopIframeZoomEvent} ref={content}>
-        {data.html !== '' ? (
+        {!!data.html ? (
           <div
             dangerouslySetInnerHTML={{ __html: data.html }}
             onLoad={() => {

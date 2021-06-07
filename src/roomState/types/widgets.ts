@@ -62,6 +62,21 @@ export interface LinkWidgetState {
    * This just keeps things straight.
    */
   isFileUpload?: boolean;
+  /**
+   * Embedly Data
+   */
+  embedly?: {
+    providerName: string;
+    title: string;
+    html: string;
+    url: string;
+    description: string;
+    providerUrl: string;
+    thumbnailUrl: string;
+    thumbnailWidth: number;
+    thumbnailHeight: number;
+    type: string;
+  };
 }
 
 export interface NotepadState {

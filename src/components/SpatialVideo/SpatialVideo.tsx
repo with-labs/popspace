@@ -30,7 +30,7 @@ export const SpatialVideo = React.forwardRef<HTMLVideoElement, SpatialVideoProps
   ({ objectId, objectKind, disableSpatialVideo, ...rest }, ref) => {
     const internalRef = React.useRef<HTMLVideoElement>();
 
-    const lastVolumeRef = useSpatialAudioVolume(objectKind, objectId, (vol) => {
+    const lastVolumeRef = useSpatialAudioVolume((vol) => {
       if (internalRef.current) internalRef.current.volume = vol;
     });
 

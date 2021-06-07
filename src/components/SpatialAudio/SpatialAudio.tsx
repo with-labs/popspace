@@ -31,7 +31,7 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
   ({ objectId, objectKind, disableSpatialAudio, ...rest }, ref) => {
     const internalRef = React.useRef<HTMLAudioElement>();
 
-    const lastVolumeRef = useSpatialAudioVolume(objectKind, objectId, (vol) => {
+    const lastVolumeRef = useSpatialAudioVolume((vol) => {
       if (internalRef.current && !disableSpatialAudio) internalRef.current.volume = vol;
     });
 

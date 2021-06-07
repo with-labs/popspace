@@ -25,8 +25,8 @@ import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 
 interface IRoomProps {}
 
-const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgets);
-const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.users);
+const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgetPositions);
+const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.userPositions);
 
 export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change

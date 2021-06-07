@@ -220,17 +220,17 @@ describe('the central room state store (useRoomStore)', () => {
         });
       });
 
-      it('moves self, sending to server', () => {
+      it('moves self, sending to server', async () => {
         const payload = {
           position: { x: 50, y: 25 },
         };
-        api.transformSelf(payload);
+        await api.transformSelf(payload);
 
         expect(useRoomStore.getState().userPositions.user1.position).toEqual({
           x: 50,
           y: 25,
         });
-        expect(socket.send).toHaveBeenCalledWith({
+        expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
           kind: 'transformSelf',
           payload: {
             transform: {
@@ -509,18 +509,18 @@ describe('the central room state store (useRoomStore)', () => {
         );
       });
 
-      it('moves a widget, sending to server', () => {
+      it('moves a widget, sending to server', async () => {
         const payload = {
           widgetId: 'widget1',
           position: { x: 50, y: 25 },
         };
-        api.moveWidget(payload);
+        await api.moveWidget(payload);
 
         expect(useRoomStore.getState().widgetPositions.widget1.position).toEqual({
           x: 50,
           y: 25,
         });
-        expect(socket.send).toHaveBeenCalledWith({
+        expect(socket.sendAndWaitForResponse).toHaveBeenCalledWith({
           kind: 'transformWidget',
           payload: {
             widgetId: 'widget1',

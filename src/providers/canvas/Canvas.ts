@@ -7,6 +7,8 @@ import { Bounds, Vector2 } from '../../types/spatials';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
 import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '@utils/math';
 import { SMALL_SIZE } from '@features/room/people/constants';
+import { CanvasObjectIntersections, IntersectionData } from './CanvasObjectIntersections';
+import shallow from 'zustand/shallow';
 
 const MOVE_THROTTLE_PERIOD = 100;
 
@@ -65,6 +67,16 @@ const objectSizeSelector = (objectId: string, objectType: CanvasObjectKind) => (
   }
   return { width: 140, height: 80 };
 };
+const selectAllPositions = (room: RoomStateShape) => {
+  const positions: Record<string, Vector2> = {};
+  Object.entries(room.widgetPositions).forEach(([id, transform]) => {
+    positions[id] = transform.position;
+  });
+  Object.entries(room.userPositions).forEach(([id, transform]) => {
+    positions[id] = transform.position;
+  });
+  return positions;
+};
 
 export declare interface Canvas {
   on<Event extends keyof CanvasEvents>(ev: Event, cb: CanvasEvents[Event]): this;
@@ -92,10 +104,15 @@ export class Canvas extends EventEmitter {
 
   private measurementsStore = create(() => ({} as Record<string, Bounds>));
 
+  private intersections: CanvasObjectIntersections;
+
   private positionObservers: Record<string, Set<(position: Vector2) => void>> = {};
   private sizeObservers: Record<string, Set<(size: Bounds) => void>> = {};
+  private intersectionObservers: Record<string, Set<(intersections: IntersectionData) => void>> = {};
 
   private unsubscribeActiveGesture: () => void;
+  private unsubscribePositionChanges: () => void;
+  private unsubscribeMeasurementChanges: () => void;
 
   private _positionSnapIncrement = 1;
   private _sizeSnapIncrement = 1;
@@ -109,9 +126,21 @@ export class Canvas extends EventEmitter {
     window.roomCanvas = this;
     this._positionSnapIncrement = options?.positionSnapIncrement ?? 1;
     this._sizeSnapIncrement = options?.sizeSnapIncrement ?? 1;
+    this.intersections = new CanvasObjectIntersections(viewport.canvasRect);
+    this.intersections.on('intersectionsChanged', this.handleIntersectionsChanged);
+    this.unsubscribePositionChanges = useRoomStore.subscribe(
+      (positions) => {
+        this.intersections.rebuild(positions, this.measurementsStore.getState());
+      },
+      selectAllPositions,
+      shallow
+    );
+    this.unsubscribeMeasurementChanges = this.measurementsStore.subscribe((measurements) => {
+      this.intersections.rebuild(selectAllPositions(useRoomStore.getState()), measurements);
+    });
   }
 
-  private commitGesture = (
+  private commitGesture = async (
     objectId: string,
     objectKind: CanvasObjectKind,
     position: Vector2 | null,
@@ -123,9 +152,9 @@ export class Canvas extends EventEmitter {
       // other users
       if (objectId !== getActiveUserId()) return;
 
-      transformSelf({ position: position || undefined, size: size || undefined });
+      await transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {
-      useRoomStore.getState().api.transformWidget({
+      await useRoomStore.getState().api.transformWidget({
         widgetId: objectId,
         transform: {
           position: position || undefined,
@@ -141,7 +170,7 @@ export class Canvas extends EventEmitter {
   private commitActiveGesture = () => {
     const { objectId, objectKind, position, size } = this.activeGestureStore.getState();
     if (!objectId || !objectKind) return;
-    this.commitGesture(objectId, objectKind, position, size);
+    return this.commitGesture(objectId, objectKind, position, size);
   };
   private throttledCommitActiveGesture = throttle(this.commitActiveGesture, MOVE_THROTTLE_PERIOD, { trailing: false });
 
@@ -170,6 +199,10 @@ export class Canvas extends EventEmitter {
     });
   };
 
+  private handleIntersectionsChanged = (data: IntersectionData) => {
+    this.intersectionObservers[data.id]?.forEach((callback) => callback(data));
+  };
+
   private snapPosition = (position: Vector2) => ({
     x: snap(position.x, this._positionSnapIncrement),
     y: snap(position.y, this._positionSnapIncrement),
@@ -195,14 +228,15 @@ export class Canvas extends EventEmitter {
     this.throttledCommitActiveGesture();
   };
 
-  onObjectDragEnd = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
+  onObjectDragEnd = async (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
     const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
     this.activeGestureStore.setState({
       objectId,
       objectKind: objectType,
       position: worldPosition,
     });
-    this.commitActiveGesture();
+    // wait for confirmation from server of gesture change before finishing the gesture
+    await this.commitActiveGesture();
     this.clearActiveGesture();
     this.emit('gestureEnd');
   };
@@ -423,6 +457,16 @@ export class Canvas extends EventEmitter {
 
   getMeasurements = (objectId: string) => this.measurementsStore.getState()[objectId] ?? { width: 0, height: 0 };
 
+  observeIntersections = (objectId: string, observer: (intersections: IntersectionData) => void) => {
+    if (!this.intersectionObservers[objectId]) {
+      this.intersectionObservers[objectId] = new Set();
+    }
+    this.intersectionObservers[objectId].add(observer);
+    return () => {
+      this.intersectionObservers[objectId].delete(observer);
+    };
+  };
+
   onGestureStart = () => {
     this.emit('gestureStart');
   };
@@ -433,5 +477,7 @@ export class Canvas extends EventEmitter {
 
   dispose = () => {
     this.unsubscribeActiveGesture();
+    this.unsubscribeMeasurementChanges();
+    this.unsubscribePositionChanges();
   };
 }

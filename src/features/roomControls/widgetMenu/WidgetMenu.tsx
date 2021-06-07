@@ -2,13 +2,7 @@ import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
 import { QuickFileButton } from '../addContent/QuickFileButton';
-import { ResponsiveTooltip } from '../../../components/ResponsiveTooltip/ResponsiveTooltip';
-import { ActionBarButton } from '../addContent/ActionBarButton';
 import { WidgetType } from '../../../roomState/types/widgets';
-import { useTranslation } from 'react-i18next';
-import { KeyShortcutText } from '../../../components/KeyShortcutText/KeyShortcutText';
-import { isMacOs } from 'react-device-detect';
-import { ACTION_BAR_ID } from '../addContent/ActionBar';
 import { ResponsivePopoverProvider } from '../../../components/ResponsivePopover/ResponsivePopover';
 import clsx from 'clsx';
 import { Spacing } from '../../../components/Spacing/Spacing';
@@ -31,17 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QuickActionTooltip = () => {
-  const { t } = useTranslation();
-  return (
-    <span>
-      {t('features.omnibar.quickActionButton')} <KeyShortcutText>{`${isMacOs ? '⌘' : 'Ctrl'} + K`}</KeyShortcutText>
-    </span>
-  );
-};
-
 export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
@@ -54,6 +38,7 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
             <QuickAccessoryButton type={WidgetType.Whiteboard} />
             <QuickAccessoryButton type={WidgetType.YouTube} />
             <QuickFileButton />
+            <QuickAccessoryButton type={WidgetType.Huddle} />
           </Spacing>
         </Paper>
       </ResponsivePopoverProvider>

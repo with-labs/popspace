@@ -134,7 +134,7 @@ export function useSyncYoutube({
   );
 
   // get the current spacial volume state of the player
-  const lastSpatialVolumeRef = useSpatialAudioVolume('widget', state.widgetId, handleSpatialVolumeChange);
+  const lastSpatialVolumeRef = useSpatialAudioVolume(handleSpatialVolumeChange);
 
   // handle muting
   React.useEffect(() => {

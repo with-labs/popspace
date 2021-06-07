@@ -274,6 +274,12 @@
       "common": {
         "close": "Remove accessory",
         "mutedForYou": "Muted for you"
+      },
+      "huddle": {
+        "quickActionTitle": "Start a huddle",
+        "name": "Huddle",
+        "explainer": "Move inside to have a private conversation",
+        "welcome": "Welcome to the huddle!"
       }
     },
     "error": {

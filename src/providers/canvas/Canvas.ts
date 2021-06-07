@@ -111,7 +111,7 @@ export class Canvas extends EventEmitter {
     this._sizeSnapIncrement = options?.sizeSnapIncrement ?? 1;
   }
 
-  private commitGesture = (
+  private commitGesture = async (
     objectId: string,
     objectKind: CanvasObjectKind,
     position: Vector2 | null,
@@ -123,9 +123,9 @@ export class Canvas extends EventEmitter {
       // other users
       if (objectId !== getActiveUserId()) return;
 
-      transformSelf({ position: position || undefined, size: size || undefined });
+      await transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {
-      useRoomStore.getState().api.transformWidget({
+      await useRoomStore.getState().api.transformWidget({
         widgetId: objectId,
         transform: {
           position: position || undefined,
@@ -141,7 +141,7 @@ export class Canvas extends EventEmitter {
   private commitActiveGesture = () => {
     const { objectId, objectKind, position, size } = this.activeGestureStore.getState();
     if (!objectId || !objectKind) return;
-    this.commitGesture(objectId, objectKind, position, size);
+    return this.commitGesture(objectId, objectKind, position, size);
   };
   private throttledCommitActiveGesture = throttle(this.commitActiveGesture, MOVE_THROTTLE_PERIOD, { trailing: false });
 
@@ -195,14 +195,15 @@ export class Canvas extends EventEmitter {
     this.throttledCommitActiveGesture();
   };
 
-  onObjectDragEnd = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
+  onObjectDragEnd = async (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
     const worldPosition = this.viewport.viewportToWorld(screenPosition, true);
     this.activeGestureStore.setState({
       objectId,
       objectKind: objectType,
       position: worldPosition,
     });
-    this.commitActiveGesture();
+    // wait for confirmation from server of gesture change before finishing the gesture
+    await this.commitActiveGesture();
     this.clearActiveGesture();
     this.emit('gestureEnd');
   };

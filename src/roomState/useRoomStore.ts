@@ -128,7 +128,6 @@ function mergePositionToState(
       size: transform.size || { width: 140, height: 80 },
     };
   } else {
-    console.log(`mps`, transform.position, positions[id].position);
     if (transform.position) {
       positions[id].position = transform.position;
     }
@@ -337,7 +336,6 @@ function createRoomStore() {
             case 'participantLeft':
               return internalApi.deleteSession(message.payload);
             case 'participantTransformed':
-              console.log('->pt', message.payload.transform.position);
               return internalApi.moveUser({
                 userId: message.sender.userId,
                 transform: message.payload.transform,

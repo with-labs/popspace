@@ -87,7 +87,6 @@ export function useCanvasObjectDrag({
   useEffect(
     () =>
       canvas.observePosition(objectId, objectKind, (pos) => {
-        console.log(`spring`, pos);
         spring.start({
           x: pos.x,
           y: pos.y,

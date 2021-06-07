@@ -117,7 +117,6 @@ export class Canvas extends EventEmitter {
     position: Vector2 | null,
     size: Bounds | null
   ) => {
-    console.log(`cg`, position);
     if (objectKind === 'person') {
       const { getActiveUserId, transformSelf } = useRoomStore.getState().api;
       // local user can only move or resize themselves; ignore gestures for all
@@ -151,7 +150,6 @@ export class Canvas extends EventEmitter {
   private handleActiveGestureChange = (state: ActiveGestureState) => {
     if (state.objectId) {
       if (state.position) {
-        console.log(`hagc`, state.position);
         const position = state.position;
         this.positionObservers[state.objectId]?.forEach((cb) => cb(position));
       }
@@ -240,7 +238,6 @@ export class Canvas extends EventEmitter {
       // only notify observer of Room State position changes if the object
       // is not actively being moved, which should override Room State position.
       if (this.activeGestureStore.getState().objectId !== objectId) {
-        console.log(`op`, position);
         observer(position);
       }
     }, objectPositionSelector(objectId, objectType));

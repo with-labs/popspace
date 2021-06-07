@@ -13,7 +13,7 @@ class Magic {
   }
 
   async createUnsubscribe(userId) {
-    const existingLink = await shared.db.pg.massive.magic_links.findOne({
+    const existingLink = await shared.db.pg.massive.magic_codes.findOne({
       user_id: userId,
       expires_at: null,
       resolved_at: null,
@@ -37,11 +37,11 @@ class Magic {
       expires_at: null,
       action: Magic.actions.UNSUBSCRIBE
     }
-    return await shared.db.pg.massive.magic_links.insert(request)
+    return await shared.db.pg.massive.magic_codes.insert(request)
   }
 
   async createSubscribe(userId) {
-    const existingLink = await shared.db.pg.massive.magic_links.findOne({
+    const existingLink = await shared.db.pg.massive.magic_codes.findOne({
       user_id: userId,
       expires_at: null,
       resolved_at: null,
@@ -60,11 +60,11 @@ class Magic {
       expires_at: null,
       action: Magic.actions.SUBSCRIBE
     }
-    return await shared.db.pg.massive.magic_links.insert(request)
+    return await shared.db.pg.massive.magic_codes.insert(request)
   }
 
   async magicLinkById(magicLinkId) {
-    return await shared.db.pg.massive.magic_links.find(magicLinkId)
+    return await shared.db.pg.massive.magic_codes.find(magicLinkId)
   }
 
   async tryToResolveMagicLink(request, otp, expectedAction) {

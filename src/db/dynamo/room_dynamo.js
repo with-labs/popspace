@@ -1,3 +1,9 @@
+const ROOM_STATES_TABLE = 'noodle_room_states'
+const WIDGET_STATES_TABLE = 'noodle_widget_states'
+const PARTICIPANT_STATES_TABLE = 'noodle_participant_states'
+const ROOM_WIDGET_STATES_TABLE = 'noodle_widget_states'
+const ROOM_PARTICIPANT_STATES_TABLE = 'noodle_room_participant_states'
+
 class RoomDynamo {
   constructor(dynamo, documentClient) {
     this.dynamo = dynamo
@@ -39,21 +45,21 @@ class RoomDynamo {
   }
 
   async getRoomState(roomId) {
-    const entry = await this.getByHash('room_states', 'room_id', parseInt(roomId))
+    const entry = await this.getByHash(ROOM_STATES_TABLE, 'room_id', parseInt(roomId))
     if(entry.length > 0) {
       return JSON.parse(entry[0].state)
     }
   }
 
   async getWidgetState(widgetId) {
-    const entry = await this.getByHash('widget_data', 'widget_id', parseInt(widgetId))
+    const entry = await this.getByHash(WIDGET_STATES_TABLE, 'widget_id', parseInt(widgetId))
     if(entry.length > 0) {
       return JSON.parse(entry[0].state)
     }
   }
 
   async getParticipantState(userId) {
-    const entry = await this.getByHash('participant_states', 'user_id', parseInt(userId))
+    const entry = await this.getByHash(PARTICIPANT_STATES_TABLE, 'user_id', parseInt(userId))
     if(entry.length > 0) {
       return JSON.parse(entry[0].state)
     }
@@ -61,7 +67,7 @@ class RoomDynamo {
 
   async getRoomParticipantState(roomId, userId) {
     const entry = await this.getByHashAndRange(
-      'room_participant_states',
+      ROOM_PARTICIPANT_STATES_TABLE,
       'room_id',
       parseInt(roomId),
       'user_id',
@@ -95,7 +101,7 @@ class RoomDynamo {
       state: { S: JSON.stringify(data) },
     }
     return new Promise((resolve, reject) => {
-      this.dynamo.putItem({Item: dataItem, TableName: this.tableName('widget_data')}, (err, data) => {
+      this.dynamo.putItem({Item: dataItem, TableName: this.tableName(WIDGET_STATES_TABLE)}, (err, data) => {
         if(err) {
           return reject(err)
         } else {
@@ -112,7 +118,7 @@ class RoomDynamo {
       state: {S: JSON.stringify(state)}
     }
     return new Promise((resolve, reject) => {
-      this.dynamo.putItem({Item: stateItem, TableName: this.tableName('room_widget_states')}, (err, data) => {
+      this.dynamo.putItem({Item: stateItem, TableName: this.tableName(ROOM_STATES_TABLE)}, (err, data) => {
         if(err) {
           return reject(err)
         } else {
@@ -128,7 +134,7 @@ class RoomDynamo {
       state: { S: JSON.stringify(state) },
     }
     return new Promise((resolve, reject) => {
-      this.dynamo.putItem({Item: dataItem, TableName: this.tableName('participant_states')}, (err, data) => {
+      this.dynamo.putItem({Item: dataItem, TableName: this.tableName(PARTICIPANT_STATES_TABLE)}, (err, data) => {
         if(err) {
           return reject(err)
         } else {
@@ -145,7 +151,7 @@ class RoomDynamo {
       state: {S: JSON.stringify(state)}
     }
     return new Promise((resolve, reject) => {
-      this.dynamo.putItem({Item: stateItem, TableName: this.tableName('room_participant_states')}, (err, data) => {
+      this.dynamo.putItem({Item: stateItem, TableName: this.tableName(ROOM_PARTICIPANT_STATES_TABLE)}, (err, data) => {
         if(err) {
           return reject(err)
         } else {
@@ -161,7 +167,7 @@ class RoomDynamo {
       state: {S: JSON.stringify(state)}
     }
     return new Promise((resolve, reject) => {
-      this.dynamo.putItem({Item: stateItem, TableName: this.tableName('room_states')}, (err, data) => {
+      this.dynamo.putItem({Item: stateItem, TableName: this.tableName(ROOM_STATES_TABLE)}, (err, data) => {
         if(err) {
           return reject(err)
         } else {
@@ -180,7 +186,7 @@ class RoomDynamo {
   // private
   async createRoomStatesTable() {
     return this.createTable({
-      TableName: this.tableName("room_states"),
+      TableName: this.tableName(ROOM_STATES_TABLE),
       KeySchema: [
         { AttributeName: "room_id", KeyType: "HASH"},
       ],
@@ -196,7 +202,7 @@ class RoomDynamo {
 
   async createWidgetStatesTable() {
     return this.createTable({
-      TableName: this.tableName("widget_data"),
+      TableName: this.tableName(WIDGET_STATES_TABLE),
       KeySchema: [
         { AttributeName: "widget_id", KeyType: "HASH"},
       ],
@@ -212,7 +218,7 @@ class RoomDynamo {
 
   async createWidgetRoomStatesTable() {
     return this.createTable({
-      TableName: this.tableName("room_widget_states"),
+      TableName: this.tableName(ROOM_WIDGET_STATES_TABLE),
       KeySchema: [
         { AttributeName: "room_id", KeyType: "HASH"},
         { AttributeName: "widget_id", KeyType: "RANGE"},
@@ -230,7 +236,7 @@ class RoomDynamo {
 
   async createRoomParticipantStatesTable() {
     return this.createTable({
-      TableName: this.tableName("room_participant_states"),
+      TableName: this.tableName(ROOM_PARTICIPANT_STATES_TABLE),
       KeySchema: [
         { AttributeName: "room_id", KeyType: "HASH"},
         { AttributeName: "user_id", KeyType: "RANGE"},
@@ -248,7 +254,7 @@ class RoomDynamo {
 
   async createParticipantStatesTable() {
     return this.createTable({
-      TableName: this.tableName("participant_states"),
+      TableName: this.tableName(ROOM_PARTICIPANT_STATES_TABLE),
       KeySchema: [
         { AttributeName: "user_id", KeyType: "HASH"}
       ],
@@ -305,7 +311,7 @@ class RoomDynamo {
 
   async deleteRoomState(roomId) {
     await this.deleteEntry({
-      TableName: this.tableName('room_states'),
+      TableName: this.tableName(ROOM_STATES_TABLE),
       Key: {
         room_id: roomId
       }
@@ -315,7 +321,7 @@ class RoomDynamo {
   async deleteWidget(roomIds, widgetId) {
     const promises = roomIds.map((rid) => {
       return this.deleteEntry({
-        TableName: this.tableName('room_widget_states'),
+        TableName: this.tableName(ROOM_WIDGET_STATES_TABLE),
         Key: {
           room_id: roomId,
           widget_id: widgetId
@@ -324,7 +330,7 @@ class RoomDynamo {
     })
 
     promises.push(this.deleteEntry({
-      TableName: this.tableName('widget_data'),
+      TableName: this.tableName(WIDGET_STATES_TABLE),
       Key: {
         widget_id: widgetId
       }
@@ -335,7 +341,7 @@ class RoomDynamo {
 
   async deleteParticipant(roomId, userId) {
     return this.deleteEntry({
-      TableName: this.tableName('room_participant_states'),
+      TableName: this.tableName(ROOM_PARTICIPANT_STATES_TABLE),
       Key: {
         room_id: roomId,
         user_id: userId

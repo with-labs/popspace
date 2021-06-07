@@ -35,10 +35,16 @@ class Memberships {
     })
   }
 
+  /*
+    DEPRECATED, use permissions.canEnter instead
+  */
   async hasAccess(userId, roomId) {
     const room = await shared.db.rooms.roomById(roomId)
     if(!room) {
       return false
+    }
+    if(room.is_public) {
+      return true
     }
     if(room.owner_id == userId) {
       return true
@@ -73,9 +79,33 @@ class Memberships {
     )
   }
 
-  async forceMembership(roomId, user) {
-    const invitation = await shared.db.room.invites.createInvitation(roomId, user.email)
-    return await shared.db.room.invites.resolveInvitation(invitation, user, invitation.otp)
+  async forceMembership(room, user) {
+    if(room.owner_id == user.id) {
+      /*
+        TODO: Update the error code, or alternatively allow owners to be members
+      */
+      return { error: shared.error.code.JOIN_ALREADY_MEMBER }
+    }
+    const existingMembership = await shared.db.room.memberships.getMembership(user.id, room.id)
+    if(existingMembership) {
+      return existingMembership
+    }
+    try {
+      let expires_at = null // non-expiring memberships by default
+      let resolved_at = null
+      const membership = await shared.db.pg.massive.withTransaction(async (tx) => {
+        return await tx.room_memberships.insert({
+          room_id: room.id,
+          user_id: user.id,
+          began_at: shared.db.time.now(),
+          expires_at: expires_at
+        })
+      })
+      return { membership }
+    } catch(e) {
+      // TODO: ERROR_LOGGING
+      return { error: shared.error.code.UNEXPECTER_ERROR }
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import videoSrc from './png/youtube.png';
 import whiteboardSrc from './png/whiteboard.png';
 import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
+import huddleSrc from './png/huddle.png';
 import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
 import { WidgetType } from '@roomState/types/widgets';
 
@@ -15,6 +16,7 @@ const icons = {
   [WidgetType.Whiteboard]: whiteboardSrc,
   [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
+  [WidgetType.Huddle]: huddleSrc,
   file: fileUploadSrc,
   embed: embedSrc,
 };

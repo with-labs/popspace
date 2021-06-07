@@ -63,3 +63,13 @@ declare interface Window {
   $crisp: any;
   CRISP_WEBSITE_ID: string;
 }
+
+declare module 'simple-quadtree' {
+  class QuadTree<T extends { x: number; y: number; w: number; h: number }> {
+    constructor(x: number, y: number, width: number, height: number, opts?: { maxChildren: number }): this;
+    put(obj: T): void;
+    get(view: T): T[];
+    clear(): void;
+  }
+  export default QuadTree;
+}

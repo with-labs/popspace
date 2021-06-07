@@ -1,5 +1,5 @@
 import { WidgetShape, WidgetShapeForType } from '../widgets';
-import { RoomPositionState } from '../common';
+import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
 
 /**
@@ -81,11 +81,7 @@ export interface OutgoingLeaveMessage extends BaseOutgoingSocketMessage {
 
 export interface OutgoingUpdateRoomStateMessage extends BaseOutgoingSocketMessage {
   kind: 'updateRoomState';
-  payload: {
-    wallpaperUrl?: string;
-    displayName?: string;
-    zOrder?: string[];
-  };
+  payload: RoomDetailsStateShape;
 }
 
 export interface OutgoingUpdateMicState extends BaseOutgoingSocketMessage {

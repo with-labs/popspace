@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { WidgetType } from '@roomState/types/widgets';
-import { WidgetContext, WidgetContextValue } from './Widget';
+import { WidgetContext, WidgetContextValue } from './WidgetProvider';
 
 export const useWidgetContext = <T extends WidgetType = any>() => {
   const ctx = useContext(WidgetContext) as WidgetContextValue<T>;

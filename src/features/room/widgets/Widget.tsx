@@ -4,19 +4,12 @@ import { StickyNoteWidget } from './stickyNote/StickyNoteWidget';
 import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
-import { useRoomStore } from '@roomState/useRoomStore';
-import { WidgetShape, WidgetShapeForType, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@roomState/types/widgets';
 import { MockUserWidget } from './mockUser/MockUserWidget';
-import { useDeleteWidget } from './useDeleteWidget';
-import { useSaveWidget } from './useSaveWidget';
 import { logger } from '@utils/logger';
-
-export type WidgetContextValue<T extends WidgetType> = {
-  widget: WidgetShapeForType<T>;
-  save: (state: Partial<WidgetStateByType[T]>) => void;
-  remove: () => void;
-};
-export const WidgetContext = React.createContext<WidgetContextValue<any> | null>(null);
+import { WidgetProvider } from './WidgetProvider';
+import { useWidgetContext } from './useWidgetContext';
+import { HuddleWidget } from './huddle/HuddleWidget';
 
 export interface IWidgetProps {
   id: string;
@@ -27,59 +20,20 @@ export interface IWidgetProps {
  * within a Room.
  */
 export const Widget = React.memo<IWidgetProps>(({ id }) => {
-  const widget = useRoomStore(React.useCallback((room) => room.widgets[id], [id]));
-  const handleRemove = useDeleteWidget(id);
-  const handleSave = useSaveWidget(id);
-
-  const ctx = React.useMemo(
-    () => ({
-      widget,
-      remove: handleRemove,
-      save: handleSave,
-    }),
-    [widget, handleRemove, handleSave]
-  );
-
-  React.useEffect(() => {
-    if (!widget?.widgetId || !widget?.widgetState) {
-      logger.critical(
-        `Widget sanity check failed`,
-        `Widget ID:`,
-        widget?.widgetId,
-        `Widget state present:`,
-        !!widget?.widgetState
-      );
-    }
-  }, [widget?.widgetId, widget?.widgetState]);
-
-  if (!widget) {
-    // FIXME: why are widgets which arent in the store sometimes being rendered?
-    return null;
-  }
-
-  // sanity check - widgetState should always exist, but
-  // while this is theoretically guaranteed we have seen failures
-  // crop up where it is not present.
-  if (!widget.widgetId || !widget.widgetState) {
-    return null;
-  }
-
   return (
-    <WidgetContext.Provider value={ctx}>
-      <WidgetContent widget={widget} />
-    </WidgetContext.Provider>
+    <WidgetProvider widgetId={id}>
+      <WidgetContent />
+    </WidgetProvider>
   );
 });
-
-interface IWidgetContentProps {
-  widget: WidgetShape & { ownerId: string };
-}
 
 /**
  * Renders any Widget content, deciding how to render based on the
  * Widget's `type`.
  */
-const WidgetContent = React.memo<IWidgetContentProps>(({ widget }) => {
+const WidgetContent = React.memo(() => {
+  const { widget } = useWidgetContext();
+
   switch (widget.type) {
     case WidgetType.Link:
       return <LinkWidget />;
@@ -93,6 +47,8 @@ const WidgetContent = React.memo<IWidgetContentProps>(({ widget }) => {
       return <ScreenShareWidget />;
     case WidgetType.MockUser:
       return <MockUserWidget />;
+    case WidgetType.Huddle:
+      return <HuddleWidget />;
     default:
       logger.debug(`Rendered unknown widget type: ${(widget as any).type}`);
       return null;

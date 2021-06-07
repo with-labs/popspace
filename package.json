@@ -1,0 +1,30 @@
+{
+  "name": "@withso/with-shared",
+  "version": "1.4.25",
+  "description": "Shared code for with micro services",
+  "main": "index.js",
+  "scripts": {
+    "console": "node --experimental-repl-await ./scripts/console.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/with-labs/with-shared.git"
+  },
+  "author": "Aleksei Chernikov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/with-labs/with-shared/issues"
+  },
+  "homepage": "https://github.com/with-labs/with-shared#readme",
+  "dependencies": {
+    "async-lock": "^1.2.4",
+    "aws-sdk": "^2.834.0",
+    "crypto-random-string": "^3.3.0",
+    "dotenv": "^8.2.0",
+    "massive": "^6.6.1",
+    "moment": "^2.29.1",
+    "pg": "^8.5.1",
+    "pg-monitor": "^1.4.1",
+    "redis": "^3.0.2"
+  }
+}

@@ -13,4 +13,5 @@ export interface RoomDetailsStateShape {
   displayName: string;
   zOrder: string[];
   wallpaperRepeats: boolean;
+  backgroundColor: string;
 }

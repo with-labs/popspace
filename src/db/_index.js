@@ -7,4 +7,5 @@ module.exports = {
   dynamo: require("./dynamo/dynamo.js"),
   redis: require("./redis/_redis.js"),
   magic: require("./magic.js"),
+  experienceRatings: require("./experience_ratings"),
 }

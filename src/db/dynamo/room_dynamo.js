@@ -1,3 +1,8 @@
+const ROOM_STATES_TABLE = 'noodle_room_states'
+const WIDGET_STATES_TABLE = 'noodle_widget_states'
+const PARTICIPANT_STATES_TABLE = 'noodle_participant_states'
+const ROOM_WIDGET_STATES_TABLE = 'noodle_widget_states'
+
 class RoomDynamo {
   constructor(dynamo, documentClient) {
     this.dynamo = dynamo

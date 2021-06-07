@@ -7,11 +7,6 @@ class Rooms {
     return await shared.db.pg.massive.rooms.findOne({id: id, deleted_at: null})
   }
 
-  async roomByName(name) {
-    // DEPRECATED, prefer roomByRoute
-    return this.roomByRoute(name)
-  }
-
   async roomByRoute(route) {
     const normalized = shared.db.room.namesAndRoutes.getNormalizedRoomRoute(route)
     const roomNameEntry = await shared.db.pg.massive.room_names.findOne({name: normalized})
@@ -36,11 +31,6 @@ class Rooms {
     } else if(roomId) {
       return await shared.db.rooms.roomById(roomId)
     }
-  }
-
-  async preferredNameById(id) {
-    // DEPRECATED, prefer preferredRouteById
-    return this.preferredRouteById(id)
   }
 
   async preferredRouteById(id) {
@@ -79,11 +69,6 @@ class Rooms {
     return routeEntries[0]
   }
 
-  async namedRoomById(id) {
-    // DEPRECATED, prefer routableRoomById
-    return await this.routableRoomById(id)
-  }
-
   async routableRoomById(id) {
     const namedRooms = await shared.db.pg.massive.query(`
       SELECT
@@ -104,11 +89,6 @@ class Rooms {
     return this.namedRoomsListToMostPreferredList(namedRooms)[0]
   }
 
-  async getOwnedRooms(userId) {
-    // DEPRECATED, prefer getOwnedRoutableRooms
-    return await this.getOwnedRoutableRooms(userId)
-  }
-
   async getOwnedRoutableRooms(userId) {
     return await shared.db.pg.massive.query(`
       SELECT
@@ -127,11 +107,6 @@ class Rooms {
         rooms.id DESC,
         room_names.priority_level DESC
     `, [userId])
-  }
-
-  async getMemberRooms(userId) {
-    // DEPRECATED, prefer getMemberRoutableRooms
-    return await this.getMemberRoutableRooms(userId)
   }
 
   async getMemberRoutableRooms(userId) {
@@ -199,11 +174,6 @@ class Rooms {
       }
     }
     return result
-  }
-
-  async ownerByRoomName(roomName) {
-    // DEPRECATED, prefer ownerByRoomRoute
-    return this.ownerByRoomRoute(roomName)
   }
 
   async ownerByRoomRoute(roomRoute) {

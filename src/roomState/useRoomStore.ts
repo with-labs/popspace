@@ -464,7 +464,7 @@ function createRoomStore() {
             // the incoming created message will be handled by the main incoming message
             return response.payload;
           },
-          transformSelf(payload: Partial<RoomPositionState>) {
+          async transformSelf(payload: Partial<RoomPositionState>) {
             const userId = getOwnUserId();
             const currentTransform = get().userPositions[userId] || {};
             const updatedTransform = {
@@ -475,20 +475,20 @@ function createRoomStore() {
             if (!!currentTransform && areTransformsEqual(currentTransform, updatedTransform)) return;
             // optimistic update
             internalApi.transformUser({ userId, transform: updatedTransform });
+            // update onboarding
+            useOnboarding.getState().api.markComplete('hasMoved');
             // send to peers
-            sendMessage({
+            await sendMessageWithResponse({
               kind: 'transformSelf',
               payload: {
                 transform: updatedTransform,
               },
             });
-            // update onboarding
-            useOnboarding.getState().api.markComplete('hasMoved');
           },
           /** @deprecated use transformWidget */
-          moveWidget(payload: { widgetId: string; position: Vector2 }) {
+          async moveWidget(payload: { widgetId: string; position: Vector2 }) {
             internalApi.transformWidget({ widgetId: payload.widgetId, transform: { position: payload.position } });
-            sendMessage({
+            await sendMessageWithResponse({
               kind: 'transformWidget',
               payload: {
                 widgetId: payload.widgetId,
@@ -511,14 +511,14 @@ function createRoomStore() {
               },
             });
           },
-          transformWidget(payload: { widgetId: string; transform: Partial<RoomPositionState> }) {
+          async transformWidget(payload: { widgetId: string; transform: Partial<RoomPositionState> }) {
             const currentTransform = get().widgetPositions[payload.widgetId];
             const updatedTransform = {
               ...currentTransform,
               ...payload.transform,
             };
             internalApi.transformWidget({ widgetId: payload.widgetId, transform: updatedTransform });
-            sendMessage({
+            await sendMessageWithResponse({
               kind: 'transformWidget',
               payload: {
                 widgetId: payload.widgetId,

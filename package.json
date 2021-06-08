@@ -13,6 +13,7 @@
     "url": "git+https://github.com/with-labs/with-api.git"
   },
   "author": "Aleksei Chernikov",
+  "contributors": ["Jerry Zhu"],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/with-labs/with-api/issues"
@@ -21,7 +22,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "log4js": "^6.3.0",

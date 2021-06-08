@@ -1,40 +1,60 @@
-export enum MeetingType {
-  CUSTOM = 'CUSTOM',
-  STAND_UP = 'STAND_UP',
-  WORKSHOP = 'WORKSHOP',
-  PRESENTATION = 'PRESENTATION',
-  ONE_ON_ONE = 'ONE_ON_ONE',
-  TEAM_RETROSPECTIVE = 'TEAM_RETROSPECTIVE',
+import { RoomTemplate } from '@roomState/exportRoomTemplate';
+
+import customData from '@features/meetingTemplates/templateData/custom.json';
+import oneOnOneData from '@features/meetingTemplates/templateData/oneOnOne.json';
+import presentationData from '@features/meetingTemplates/templateData/presentation.json';
+import retrospectiveData from '@features/meetingTemplates/templateData/retrospective.json';
+import standupData from '@features/meetingTemplates/templateData/standup.json';
+import workshopData from '@features/meetingTemplates/templateData/workshop.json';
+
+import customImg from '@images/illustrations/meeting_templates/custom.png';
+import oneOnOneImg from '@images/illustrations/meeting_templates/one_on_one.png';
+import presentationImg from '@images/illustrations/meeting_templates/presentation.png';
+import retrospectiveImg from '@images/illustrations/meeting_templates/retrospective.png';
+import standupImg from '@images/illustrations/meeting_templates/standup.png';
+import workshopImg from '@images/illustrations/meeting_templates/workshop.png';
+
+export enum MeetingTemplateName {
+  Custom = 'custom',
+  StandUp = 'stand_up',
+  Workshop = 'workshop',
+  Presentation = 'presentation',
+  OneOnOne = 'one_on_one',
+  Retrospective = 'team_retrospective',
 }
 
-export type MeetingTypeMetadataType = {
-  type: MeetingType;
-  coverImg: string;
+export const meetingTemplates: Record<MeetingTemplateName, RoomTemplate> = {
+  [MeetingTemplateName.Custom]: customData as RoomTemplate,
+  [MeetingTemplateName.Workshop]: workshopData as RoomTemplate,
+  [MeetingTemplateName.OneOnOne]: oneOnOneData as RoomTemplate,
+  [MeetingTemplateName.Presentation]: presentationData as RoomTemplate,
+  [MeetingTemplateName.Retrospective]: retrospectiveData as RoomTemplate,
+  [MeetingTemplateName.StandUp]: standupData as RoomTemplate,
 };
 
-export const MeetingTypeMetadata = [
-  {
-    type: MeetingType.CUSTOM,
-    coverImg: '',
+export const templateMetadata: Record<MeetingTemplateName, { i18nKey: string; image: string }> = {
+  [MeetingTemplateName.Custom]: {
+    i18nKey: 'meetingTemplates.custom',
+    image: customImg,
   },
-  {
-    type: MeetingType.STAND_UP,
-    coverImg: '',
+  [MeetingTemplateName.Workshop]: {
+    i18nKey: 'meetingTemplates.workshop',
+    image: workshopImg,
   },
-  {
-    type: MeetingType.WORKSHOP,
-    coverImg: '',
+  [MeetingTemplateName.StandUp]: {
+    i18nKey: 'meetingTemplates.standup',
+    image: standupImg,
   },
-  {
-    type: MeetingType.PRESENTATION,
-    coverImg: '',
+  [MeetingTemplateName.Presentation]: {
+    i18nKey: 'meetingTemplates.presentation',
+    image: presentationImg,
   },
-  {
-    type: MeetingType.ONE_ON_ONE,
-    coverImg: '',
+  [MeetingTemplateName.OneOnOne]: {
+    i18nKey: 'meetingTemplates.oneOnOne',
+    image: oneOnOneImg,
   },
-  {
-    type: MeetingType.TEAM_RETROSPECTIVE,
-    coverImg: '',
+  [MeetingTemplateName.Retrospective]: {
+    i18nKey: 'meetingTemplates.retrospective',
+    image: retrospectiveImg,
   },
-];
+};

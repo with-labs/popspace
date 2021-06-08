@@ -1,35 +1,53 @@
-import { EventNames } from '@analytics/constants';
-import { MeetingTemplateName } from '@features/meetingTemplates/constants';
-import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
-import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Page } from '@layouts/Page/Page';
+import { useHistory } from 'react-router-dom';
+import { RouteNames } from '@constants/RouteNames';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { Box, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { MeetingTemplateName } from '@src/constants/MeetingTypeMetadata';
 
-export function CreateMeeting() {
-  const { t } = useTranslation();
-  const create = useCreateMeeting();
+interface ICreateMeetingProps {}
+
+type createParams = {
+  meetingType: string;
+};
+
+export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
   const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const createMeeting = useCreateMeeting();
+  const { meetingType } = useParams<createParams>();
 
-  const analytics = useAnalytics();
+  useEffect(() => {
+    setIsLoading(true);
+    async function createNewMeeting(meetingType: MeetingTemplateName) {
+      try {
+        const meeting = await createMeeting(meetingType);
+        history.push(RouteNames.MEETING_LINK, {
+          meetingInfo: meeting,
+        });
+      } catch (err) {
+        //TODO: error handling
+      }
+    }
 
-  const onSelect = async (templateName: MeetingTemplateName) => {
-    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, {
-      templateName,
-    });
-    const meeting = await create(templateName);
-    history.push(`/${meeting.route}?join`);
-  };
+    // if we have a meeting
+    if (meetingType) {
+      // check if meeting type provided is supported
+      if (!Object.values(MeetingTemplateName).includes(meetingType as MeetingTemplateName)) {
+        // redirect to root with error
+        // TODO: figure out how we want to handle error messing here
+        history.push(RouteNames.ROOT);
+      }
+      // create a new meeting based on the type
+      createNewMeeting(meetingType as MeetingTemplateName);
+    } else {
+      // redirect to meeting select, since we dont have a valid
+      // TODO: figure out how we want to handle error messing here
+      history.push(RouteNames.ROOT);
+    }
+  }, [meetingType]);
 
-  return (
-    <Box flex={1} width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
-      <Box width="100%" maxWidth="800px" display="flex" flexDirection="column" alignItems="center">
-        <Typography variant="h1" style={{ maxWidth: 600, textAlign: 'center', marginBottom: 24 }}>
-          {t('pages.createRoom.meetingTemplate.title')}
-        </Typography>
-        <MeetingTemplatePicker onSelect={onSelect} />
-      </Box>
-    </Box>
-  );
-}
+  return <Page isLoading={isLoading} error={error} />;
+};

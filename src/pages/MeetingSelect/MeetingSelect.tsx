@@ -1,13 +1,13 @@
 import * as React from 'react';
-import clsx from 'clsx';
-import { makeStyles, Typography, Box, Container, TextField, Button, MuiThemeProvider } from '@material-ui/core';
+import { EventNames } from '@analytics/constants';
+import { MeetingTemplateName } from '@src/constants/MeetingTypeMetadata';
+import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
+import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { useHistory } from 'react-router';
-import { ApiNamedRoom } from '@utils/api';
+import { Box, Typography, makeStyles, Container } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 import { RouteNames } from '@constants/RouteNames';
-import toast from 'react-hot-toast';
-import { MeetingTemplateName } from '@features/meetingTemplates/constants';
 
 export interface IMeetingSelectProps {}
 
@@ -20,34 +20,33 @@ const useStyles = makeStyles((theme) => ({
 
 export const MeetingSelect: React.FC<IMeetingSelectProps> = () => {
   const { t } = useTranslation();
-  const classes = useStyles();
+  const create = useCreateMeeting();
   const history = useHistory();
-  const createMeeting = useCreateMeeting();
+  const classes = useStyles();
 
-  const onMeetingSelect = async () => {
-    try {
-      const meeting = await createMeeting(MeetingTemplateName.Custom);
-      history.push(RouteNames.MEETING_LINK, {
-        meetingInfo: meeting,
-      });
-    } catch (err) {
-      toast.error(err.message);
-    }
+  const analytics = useAnalytics();
+
+  const onSelect = async (templateName: MeetingTemplateName) => {
+    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, {
+      templateName,
+    });
+    const meeting = await create(templateName);
+    history.push(RouteNames.MEETING_LINK, {
+      meetingInfo: meeting,
+    });
   };
 
   return (
-    <>
-      <Container maxWidth="md">
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Box mt={10} mb={6}>
-            LOGO FPO
-          </Box>
-          <Typography variant="h1" className={classes.explanationText}>
-            {t('pages.meetingSelect.titleText')}
-          </Typography>
-          <Button onClick={onMeetingSelect}>Only option</Button>
+    <Container maxWidth="md">
+      <Box display="flex" flexDirection="column" alignItems="center">
+        <Box mt={10} mb={6}>
+          LOGO FPO
         </Box>
-      </Container>
-    </>
+        <Typography variant="h1" className={classes.explanationText}>
+          {t('pages.meetingSelect.titleText')}
+        </Typography>
+        <MeetingTemplatePicker onSelect={onSelect} />
+      </Box>
+    </Container>
   );
 };

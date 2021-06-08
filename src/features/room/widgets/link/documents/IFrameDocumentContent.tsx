@@ -76,6 +76,7 @@ const stopIframeZoomEvent = (ev: React.WheelEvent) => {
 
 type linkSummaryProps = {
   name: string;
+  providerUrl: string;
   url: string;
   description: string;
   thumbUrl: string;
@@ -83,7 +84,7 @@ type linkSummaryProps = {
   classes: ClassNameMap;
 };
 
-const LinkSummary = ({ name, url, description, thumbUrl, content, classes }: linkSummaryProps) => (
+const LinkSummary = ({ name, providerUrl, url, description, thumbUrl, content, classes }: linkSummaryProps) => (
   <Tooltip title={name} placement="bottom">
     <Box
       ref={content}
@@ -99,7 +100,7 @@ const LinkSummary = ({ name, url, description, thumbUrl, content, classes }: lin
       <Box p={2} flex={1} display="flex" flexDirection="column" width={LINK_SUMMARY_WIDTH}>
         <Typography variant="h2">{name}</Typography>
         <Typography id="url" variant="body1">
-          {url}
+          {providerUrl}
         </Typography>
         <Typography className={classes.clamp} variant="body2">
           {description}
@@ -215,7 +216,8 @@ export function IFrameDocumentContent({
     embed = (
       <LinkSummary
         name={data.providerName}
-        url={data.providerUrl}
+        providerUrl={data.providerUrl}
+        url={data.url}
         description={data.description}
         thumbUrl={data.thumbnailUrl}
         content={content}

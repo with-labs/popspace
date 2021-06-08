@@ -3,8 +3,6 @@ module.exports = {
   pg: require("./pg"),
   time: require("./time"),
   rooms: require("./rooms"),
-  // DEPRECATED: will drop after updating Mercury; prefer to use room.memberships
-  roomMemberships: require("./room/memberships"),
   accounts: require("./accounts"),
   room: require("./room/_room"),
   dynamo: require("./dynamo/dynamo"),

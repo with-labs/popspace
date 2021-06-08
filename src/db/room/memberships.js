@@ -35,23 +35,6 @@ class Memberships {
     })
   }
 
-  /*
-    DEPRECATED, use permissions.canEnter instead
-  */
-  async hasAccess(userId, roomId) {
-    const room = await shared.db.rooms.roomById(roomId)
-    if(!room) {
-      return false
-    }
-    if(room.is_public) {
-      return true
-    }
-    if(room.owner_id == userId) {
-      return true
-    }
-    return await this.isMember(userId, roomId)
-  }
-
   async getRoomMembers(roomId) {
     const memberships = await shared.db.pg.massive.room_memberships.find({
       room_id: roomId,

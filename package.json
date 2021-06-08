@@ -13,13 +13,16 @@
     "url": "git+https://github.com/with-labs/with-api.git"
   },
   "author": "Aleksei Chernikov",
-  "contributors": ["Jerry Zhu"],
+  "contributors": [
+    "Jerry Zhu"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/with-labs/with-api/issues"
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
+    "@withso/noodle-shared": "^1.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.6.0",

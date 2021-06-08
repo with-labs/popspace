@@ -132,10 +132,18 @@ class Participant {
       this.unauthenticate()
       return false
     }
-    const hasAccess = await shared.db.roomMemberships.hasAccess(this.user.id, this.room.id)
-    if(!hasAccess) {
+    const canEnter = await shared.db.room.permissions.canEnter(this.user, this.room)
+    if(!canEnter) {
       this.unauthenticate()
       return false
+    }
+    const isMember = await shared.db.room.memberships.isMember(this.user.id, this.room.id)
+    if(!isMember) {
+      /*
+        If the user is allowed entry and is not a member,
+        they should become a member.
+      */
+      await shared.db.room.memberships.forceMembersip(this.room, this.user)
     }
 
     this.transform = await shared.db.dynamo.room.getRoomParticipantState(this.room.id, this.user.id)
@@ -190,7 +198,7 @@ class Participant {
     if(!this.authenticated) {
       return false
     }
-    return await shared.db.roomMemberships.hasAccess(this.user.id, this.room.id)
+    return await shared.db.room.permissions.canEnter(this.user, this.room)
   }
 
   setEventHandler(handler) {

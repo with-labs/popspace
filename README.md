@@ -21,6 +21,6 @@ mkcert localhost
 Then set environment variables for your new cert:
 
 ```bash
-SSL_PRIVATE_KEY_PATH = /path/where/i/keep/cert/localhost-key.pem
-SSL_CERTIFICATE_PATH = /path/where/i/keep/cert/localhost.pem
+SSL_PRIVATE_KEY_PATH = mkcert/localhost-key.pem
+SSL_CERTIFICATE_PATH = mkcert/localhost.pem
 ```

@@ -1,4 +1,4 @@
-export const SIZE_STUB = { width: 340, height: 80 };
+export const SIZE_STUB = { width: 300, height: 80 };
 
 export const INITIAL_SIZE_FRAME = { width: 500, height: 500 };
 export const MIN_SIZE_FRAME = { width: 300, height: 200 };
@@ -17,3 +17,8 @@ export const MAX_SIZE_FRAME_MEDIA = { width: 4000, height: 4000 };
 export const INITIAL_SIZE_EDIT = { width: 240, height: 200 };
 export const MIN_SIZE_EDIT = { width: 240, height: 200 };
 export const MAX_SIZE_EDIT = { width: 400, height: 300 };
+
+// link widgets default dimensions
+export const LINK_SUMMARY_WIDTH = 500;
+export const DEFAULT_IFRAME = { width: 500, height: 500 };
+export const WIDGET_TITLE_HEIGHT = 48;

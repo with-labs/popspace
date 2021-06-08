@@ -3,6 +3,7 @@ import { SvgIcon, SvgIconProps } from '@material-ui/core';
 import linkSrc from './png/link.png';
 import stickySrc from './png/sticky.png';
 import videoSrc from './png/youtube.png';
+import notepadSrc from './png/notepad.png';
 import whiteboardSrc from './png/whiteboard.png';
 import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
@@ -14,6 +15,7 @@ const icons = {
   [WidgetType.Link]: linkSrc,
   [WidgetType.StickyNote]: stickySrc,
   [WidgetType.Whiteboard]: whiteboardSrc,
+  [WidgetType.Notepad]: notepadSrc,
   [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
   [WidgetType.Huddle]: huddleSrc,

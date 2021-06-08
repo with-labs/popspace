@@ -27,9 +27,10 @@ module.exports.handler = util.netlify.postEndpoint(
       )
     }
 
-    const existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(
-      params.email
-    )
+    let existingCreateRequest = await shared.db.accounts.getLatestAccountCreateRequest(params.email)
+    if(existingCreateRequest && shared.lib.otp.isExpired(existingCreateRequest)) {
+      existingCreateRequest = null
+    }
 
     const source = params.ref || (params.inviteId ? 'invite_public' : 'signup')
     /*

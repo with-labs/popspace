@@ -50,6 +50,7 @@
     "@types/uuid": "^8.3.0",
     "@types/youtube": "0.0.39",
     "@types/yup": "^0.29.11",
+    "@withso/pegasus": "^1.0.19",
     "babel-loader": "^8.1.0",
     "camelcase-keys": "^6.2.2",
     "change-case": "^4.1.1",

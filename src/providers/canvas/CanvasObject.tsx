@@ -204,6 +204,7 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
       resizeDisabled,
       resize,
       mediaGroup,
+      canvas,
     ]
   );
 

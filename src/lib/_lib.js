@@ -4,7 +4,7 @@ const Analytics = require("./analytics")
 const lib = {
   ws: require("ws"),
   log: require("./log"),
-  shared: require("@withso/with-shared"),
+  shared: require("@withso/noodle-shared"),
   Client: require("../client/client"),
   ErrorCodes: require("./error_codes"),
   event: require("./event/_events"),

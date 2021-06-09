@@ -11,6 +11,14 @@ const util = {
 
   camelToSnakeCase: (camelCase) => {
     return snakecaseKeys(camelCase)
+  },
+
+  removeFromArray: (array, value) => {
+    const index = array.indexOf(value)
+    if(index > 0) {
+      array.splice(index, 1)
+    }
+    return array
   }
 }
 

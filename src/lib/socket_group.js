@@ -4,15 +4,22 @@
   that room.
 */
 
-let id = 0
-
 class SocketGroup {
   constructor(room) {
-    this.id = id++
+    /*
+      rooms and socket groups are 1:1
+      the concepts are different like a program and a process:
+      a room is static, a persistent anchor;
+      a socket group is the dynamic in-memory manifestation of a
+      networking session anchored to a room.
+
+      The in-memory entity needs an ID, but since they are 1:1 on
+      rooms, there is no better ID source than the room itself
+    */
+    this.id = room.id
     this._room = room
     this._participants = []
   }
-
 
   getMaxParticipants() {
     return Infinity

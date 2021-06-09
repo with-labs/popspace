@@ -8,40 +8,40 @@ module.exports = class {
     this.mercury = mercury
   }
 
-  async createLoggedInUser(client, room=null, roomNameEntry=null) {
-    const created = await this.createUserWithRoomAccess(client, room, roomNameEntry)
-    return this.logIntoRoom(client, created.user, created.room, created.roomNameEntry)
+  async createLoggedInUser(client, room=null, roomRouteEntry=null) {
+    const created = await this.createUserWithRoomAccess(client, room, roomRouteEntry)
+    return this.logIntoRoom(client, created.user, created.room, created.roomRouteEntry)
   }
 
-  async createClientWithRoomAccess(room, roomNameEntry) {
+  async createClientWithRoomAccess(room, roomRouteEntry) {
     const clients = await tlib.util.addClients(this.mercury, 1)
     const client = clients[0]
-    const created = await this.createUserWithRoomAccess(client, room, roomNameEntry)
-    const roomUserClient = new tlib.models.RoomUserClient(created.room, created.user, client, created.roomNameEntry)
+    const created = await this.createUserWithRoomAccess(client, room, roomRouteEntry)
+    const roomUserClient = new tlib.models.RoomUserClient(created.room, created.user, client, created.roomRouteEntry)
     return roomUserClient
   }
 
-  async createUserWithRoomAccess(client, room, roomNameEntry) {
+  async createUserWithRoomAccess(client, room, roomRouteEntry) {
     const user = await factory.create("user")
     if(room && room.owner_id != user.id) {
-      const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(user.id, room.id)
-      if(!alreadyHasAccess) {
-        await shared.db.roomMemberships.forceMembership(room.id, user)
+      const alreadyCanEnter = await shared.db.room.permission.canEnter(user, room)
+      if(!alreadyCanEnter) {
+        await shared.db.room.memberships.forceMembership(room, user)
       }
     } else {
       const isEmptyRoom = true
       let roomInfo = await shared.db.rooms.generateRoom(user.id, isEmptyRoom)
       room = roomInfo.room
-      roomNameEntry = roomInfo.roomNameEntry
+      roomRouteEntry = roomInfo.roomRouteEntry
     }
 
-    return { user, room, roomNameEntry }
+    return { user, room, roomRouteEntry }
   }
 
-  async logIntoRoom(client, user, room, roomNameEntry) {
+  async logIntoRoom(client, user, room, roomRouteEntry) {
     // TODO: this should move out to RoomUserClient
     const { session, token } = await this.initiateLoggedInSession(user.id)
-    const roomUserClient = new tlib.models.RoomUserClient(room, user, client, roomNameEntry)
+    const roomUserClient = new tlib.models.RoomUserClient(room, user, client, roomRouteEntry)
     await roomUserClient.setLogInSession(session, token)
     this.loggedInUsers.push(roomUserClient)
     return roomUserClient
@@ -57,7 +57,7 @@ module.exports = class {
   async authenticate(roomUserClient) {
     // TODO: I don't think we can replace this with roomUserClient.authenticate(), since we
     // have some places where we haven't transitioned to using the class yet (in the tests themselves)
-    const auth = await roomUserClient.client.authenticate(roomUserClient.token, roomUserClient.roomNameEntry.name)
+    const auth = await roomUserClient.client.authenticate(roomUserClient.token, roomUserClient.roomRouteEntry.route)
     roomUserClient.auth = auth
   }
 }

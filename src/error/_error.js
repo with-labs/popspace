@@ -27,11 +27,12 @@ const ERROR_CODES = {
 
   // User logic
   ALREADY_REGISTERED: "ALREADY_REGISTERED",
-  // We prefer string error codes but thave not yet fully migrated towards them
   UNAUTHORIZED_USER: "UNAUTHORIZED_USER",
   ADMIN_ONLY_RESTRICTED: "ADMIN_ONLY_RESTRICTED",
   NO_SUCH_USER: "NO_SUCH_USER",
+  LOG_IN_REQUIRED: "LOG_IN_REQUIRED",
 
+  // Other
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
 }
 

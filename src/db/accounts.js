@@ -82,6 +82,11 @@ class Accounts {
     return shared.db.pg.massive.users.findOne({id: id, deleted_at: null})
   }
 
+  async createUser() {
+    const user = await shared.db.pg.massive.user.insert({})
+    return user
+  }
+
   async createLoginRequest(user) {
     const loginRequest = {
       otp: shared.lib.otp.generate(),

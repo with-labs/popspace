@@ -25,6 +25,14 @@ const middleware = {
     next()
   },
 
+  getIp: async (req, res, next) => {
+    /*
+      https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
+    */
+    req.ip = req.headers['x-forwarded-for'] || (req.connection ? req.connection.remoteAddress : null)
+    next()
+  },
+
   requireUser: async (req, res, next) => {
     if(!req.user) {
       return next({ errorCode: shared.error.code.UNAUTHORIZED_USER, message: "Must be logged in", httpCode: shared.api.http.code.UNAUTHORIZED })

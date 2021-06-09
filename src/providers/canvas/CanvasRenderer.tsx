@@ -25,6 +25,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     transformOrigin: 'center center',
     overflow: 'visible',
+    overscrollBehavior: 'none',
   },
 });
 

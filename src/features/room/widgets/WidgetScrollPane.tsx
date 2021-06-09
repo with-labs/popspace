@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useWheel } from 'react-use-gesture';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import { useViewportGestureState } from '@providers/viewport/useViewportGestureState';
 
 export interface IWidgetScrollPaneProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -21,11 +22,15 @@ export const WidgetScrollPane: React.FC<IWidgetScrollPaneProps> = (props) => {
   // we need to use a ref to bind the scroll element to enable active event interception
   const ref = React.useRef<HTMLDivElement>(null);
 
+  const isViewportGestureActive = useViewportGestureState((s) => s.isGesturing);
+
   useWheel(
     (state) => {
-      const yScroll = state.delta[1];
+      // don't scroll while viewport gesture is active
+      if (isViewportGestureActive) return;
+
       // ignore zoom events or horizontal scrolling
-      if (state.event?.metaKey || state.event?.ctrlKey || yScroll === 0) {
+      if (state.event?.metaKey || state.event?.ctrlKey) {
         return;
       }
 
@@ -34,12 +39,9 @@ export const WidgetScrollPane: React.FC<IWidgetScrollPaneProps> = (props) => {
       if (!state.last && state.event && state.event.currentTarget) {
         const el = state.event.currentTarget as HTMLDivElement;
         const hasScrollSpace = el.clientHeight !== el.scrollHeight;
-        const isAtBottom = el.scrollTop + el.clientHeight === el.scrollHeight;
-        const isAtTop = el.scrollTop === 0;
 
-        // only filter events when the scrollable view can actually scroll. that includes
-        // ignoring upward scroll at the top and downward scroll at the bottom
-        if (hasScrollSpace && !(isAtBottom && yScroll > 0) && !(isAtTop && yScroll < 0)) {
+        // only filter events when the scrollable view can actually scroll.
+        if (hasScrollSpace) {
           state.event.stopPropagation();
         }
       }

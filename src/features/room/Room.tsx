@@ -25,10 +25,18 @@ import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 
 interface IRoomProps {}
 
+/**
+ * Renders either the active Huddle or the Room itself
+ * TODO: extract huddle branch upward, maybe at the page level?
+ */
+export const Room: React.FC<IRoomProps> = () => {
+  return <RoomView />;
+};
+
 const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgetPositions);
 const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.userPositions);
 
-export const Room = React.memo<IRoomProps>(() => {
+export const RoomView = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);

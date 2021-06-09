@@ -4,9 +4,36 @@ import TurndownService from 'turndown';
 
 const turndown = new TurndownService();
 
+function targetWasNotepadWidget(el: HTMLElement | null) {
+  /*
+    The notepad widget relies on Quill.js
+
+    Quill.js relies on a single div being put into the DOM and passed into its framework.
+
+    After that it injects DOM elements depending on the theme.
+
+    The actual copy+paste can land on a variety of elements. Quill is segmented into <p>aragraphs.
+    If the paragraph is empty, it will have a <br/> inside, and that will be the element in this context.
+    If the paragraph has text, the <p> itself will be the target element.
+    If the cursor is on a list, el will be the <li>, under a <ul>.
+
+    To avoid having to hack into Quill's internals, we deliberately wrap it in a div -
+    with a special selector class (like ".notepad_selector").
+
+    If a div with that class is an ancestor, we think that the current selection is copy+paste in a notepad.
+  */
+  while (el) {
+    if (el.classList.contains('notepad_selector')) {
+      return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
+}
+
 function targetWasField(ev: ClipboardEvent) {
   const el = ev.target as HTMLElement;
-  return ['INPUT', 'TEXTAREA'].includes(el.tagName) || el.getAttribute('contenteditable');
+  return ['INPUT', 'TEXTAREA'].includes(el.tagName) || el.getAttribute('contenteditable') || targetWasNotepadWidget(el);
 }
 
 function getFileItems(data: DataTransfer) {

@@ -37,6 +37,7 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
             <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Whiteboard} />
             <QuickAccessoryButton type={WidgetType.YouTube} />
+            <QuickAccessoryButton type={WidgetType.Notepad} />
             <QuickFileButton />
             <QuickAccessoryButton type={WidgetType.Huddle} />
           </Spacing>

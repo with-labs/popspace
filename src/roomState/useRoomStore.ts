@@ -432,6 +432,7 @@ function createRoomStore() {
               kind: 'createWidget',
               payload,
             });
+
             // track the widget creation event
             Analytics.trackEvent(EventNames.CREATE_WIDGET, {
               type: response.payload.type,

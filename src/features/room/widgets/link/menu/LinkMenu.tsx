@@ -29,8 +29,6 @@ export function LinkMenu(props: LinkMenuProps) {
 
   const { remove, widget } = useWidgetContext<WidgetType.Link>();
 
-  const iframeable = canUseIframe(widget.widgetState);
-
   const deleteWidget = async () => {
     // if this is a file widget, try to delete the file first
     if (widget.widgetState.isFileUpload && widget.widgetState.mediaUrl) {
@@ -64,7 +62,6 @@ export function LinkMenu(props: LinkMenuProps) {
         onClose={() => setAnchorEl(null)}
         onClick={() => setAnchorEl(null)}
       >
-        {iframeable && <IframeOption />}
         <OpenInNewTabOption />
         <Divider />
         <MenuItem button onClick={deleteWidget}>

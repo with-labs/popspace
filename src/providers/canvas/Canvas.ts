@@ -117,6 +117,8 @@ export class Canvas extends EventEmitter {
   private _positionSnapIncrement = 1;
   private _sizeSnapIncrement = 1;
 
+  private _gestureActive = false;
+
   readonly name = 'roomCanvas';
 
   constructor(private viewport: Viewport, options?: CanvasOptions) {
@@ -138,6 +140,20 @@ export class Canvas extends EventEmitter {
     this.unsubscribeMeasurementChanges = this.measurementsStore.subscribe((measurements) => {
       this.intersections.rebuild(selectAllPositions(useRoomStore.getState()), measurements);
     });
+  }
+
+  onGestureStart() {
+    this._gestureActive = true;
+    this.emit('gestureStart');
+  }
+
+  onGestureEnd() {
+    this._gestureActive = true;
+    this.emit('gestureEnd');
+  }
+
+  get isGestureActive() {
+    return this._gestureActive;
   }
 
   private commitGesture = async (
@@ -215,7 +231,7 @@ export class Canvas extends EventEmitter {
       objectKind: objectType,
       position: worldPosition,
     });
-    this.emit('gestureStart');
+    this.onGestureStart();
   };
 
   onObjectDrag = (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {
@@ -238,7 +254,7 @@ export class Canvas extends EventEmitter {
     // wait for confirmation from server of gesture change before finishing the gesture
     await this.commitActiveGesture();
     this.clearActiveGesture();
-    this.emit('gestureEnd');
+    this.onGestureEnd();
   };
 
   /**
@@ -465,14 +481,6 @@ export class Canvas extends EventEmitter {
     return () => {
       this.intersectionObservers[objectId].delete(observer);
     };
-  };
-
-  onGestureStart = () => {
-    this.emit('gestureStart');
-  };
-
-  onGestureEnd = () => {
-    this.emit('gestureEnd');
   };
 
   dispose = () => {

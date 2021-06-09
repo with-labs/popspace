@@ -2,6 +2,7 @@ import { RefObject } from 'react';
 import { useGesture } from 'react-use-gesture';
 import { useTrackCursor } from '@features/room/useTrackCursor';
 import { Viewport } from './Viewport';
+import { useViewportGestureState } from './useViewportGestureState';
 
 const PINCH_GESTURE_DAMPING = 500;
 const WHEEL_GESTURE_DAMPING = 400;
@@ -15,6 +16,8 @@ export function useViewportGestureControls(
   ref: RefObject<HTMLElement>,
   { initialZoom }: ViewportGestureConfig
 ) {
+  const { onGestureStart, onGestureEnd } = useViewportGestureState((s) => s.api);
+
   // active is required to prevent default behavior, which
   // we want to do for zoom.
   useGesture(
@@ -47,9 +50,19 @@ export function useViewportGestureControls(
       },
       onPinchStart: ({ event }) => {
         event?.preventDefault();
+        onGestureStart();
       },
       onPinchEnd: ({ event }) => {
         event?.preventDefault();
+        onGestureEnd();
+      },
+      onWheelStart: ({ event }) => {
+        event?.preventDefault();
+        onGestureStart();
+      },
+      onWheelEnd: ({ event }) => {
+        event?.preventDefault();
+        onGestureEnd();
       },
     },
     {
@@ -81,6 +94,8 @@ export function useViewportGestureControls(
     onMove: ({ xy }) => {
       onCursorMove(viewport.viewportToWorld({ x: xy[0], y: xy[1] }));
     },
+    onDragStart: onGestureStart,
+    onDragEnd: onGestureEnd,
   });
 
   return bindPassiveGestures();

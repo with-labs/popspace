@@ -3,7 +3,6 @@ const btoa = require('btoa')
 
 class HttpClient {
   constructor(host, certificate, port) {
-    super()
     this.host = host
     this.certificate = certificate
     this.port = port

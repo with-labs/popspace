@@ -10,7 +10,6 @@ class Meetings {
       const { template } = req.body
       const { room, roomNameEntry, roomData } = await shared.db.rooms.createRoomFromTemplate(template, user.id)
       const namedRoom = new shared.models.NamedRoom(room, roomNameEntry, roomData.state)
-      //TODO: restore welcome email
       return http.succeed(req, res, { newMeeting: namedRoom.serialize() })
     })
   }

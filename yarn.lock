@@ -2,13 +2,14 @@
 # yarn lockfile v1
 
 
-"@withso/noodle-shared@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.0.tgz#50a93668f57e80af39d02fb922d28fbdafb8437f"
-  integrity sha512-bdGZ0B8oMdehfHWhkLzbR5oxyvbDHqqJ4aRet11oUuTXtL3P0n6vnNgy9BhuS7w63aLdvTs2V4fqZMQHq92iWA==
+"@withso/noodle-shared@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.7.tgz#364eba72a19db9f4a54f9d1b5aeaa201573ec454"
+  integrity sha512-dzEU/TBRWxVzAAFsyCP+QYz9EX2b9p97kHqjjjzePO+qeRthym2rTjIMumoNoVhvsG132kPMr0ggf1uQ+gGa5w==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
+    btoa "^1.2.1"
     crypto-random-string "^3.3.0"
     dotenv "^8.2.0"
     massive "^6.6.1"
@@ -93,6 +94,11 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
+
+btoa@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
+  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
 
 buffer-writer@2.0.0:
   version "2.0.0"

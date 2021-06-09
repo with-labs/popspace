@@ -1,3 +1,4 @@
 module.exports = {
-  Accounts: require("./accounts.js"),
+  Accounts: require("./accounts"),
+  Meetings: require("./meetings")
 }

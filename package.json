@@ -1,10 +1,10 @@
 {
-  "name": "with-api",
+  "name": "noodle-api",
   "version": "1.0.0",
-  "description": "Backend for With.so",
+  "description": "API for noodle.so",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production node index.js",
+    "start": "node index.js",
     "dev": "NODE_ENV=development node index.js",
     "test": "test"
   },
@@ -13,13 +13,17 @@
     "url": "git+https://github.com/with-labs/with-api.git"
   },
   "author": "Aleksei Chernikov",
-  "contributors": ["Jerry Zhu"],
+  "contributors": [
+    "Aleksei Chernikov",
+    "Jerry Zhu"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/with-labs/with-api/issues"
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
+    "@withso/noodle-shared": "^1.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.6.0",

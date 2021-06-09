@@ -1,24 +1,11 @@
 module.exports = class {
   constructor() {
     this.loggedInUsers = []
-    this.mercury = null
-  }
-
-  setMercury(mercury) {
-    this.mercury = mercury
   }
 
   async createLoggedInUser(client, room=null, roomNameEntry=null) {
     const created = await this.createUserWithRoomAccess(client, room, roomNameEntry)
     return this.logIntoRoom(client, created.user, created.room, created.roomNameEntry)
-  }
-
-  async createClientWithRoomAccess(room, roomNameEntry) {
-    const clients = await tlib.util.addClients(this.mercury, 1)
-    const client = clients[0]
-    const created = await this.createUserWithRoomAccess(client, room, roomNameEntry)
-    const roomUserClient = new tlib.models.RoomUserClient(created.room, created.user, client, created.roomNameEntry)
-    return roomUserClient
   }
 
   async createUserWithRoomAccess(client, room, roomNameEntry) {

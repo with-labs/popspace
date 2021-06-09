@@ -1,5 +1,4 @@
 const testLib = {
-  util: require("./util"),
   factories: require("./factories/_factories"),
   TestTemplate: require("./test_template"),
   TestEnvironment: require("./test_environment"),

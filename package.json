@@ -4,7 +4,8 @@
   "description": "Shared code for Noodle micro services",
   "main": "index.js",
   "scripts": {
-    "console": "node --experimental-repl-await ./scripts/console.js"
+    "console": "node --experimental-repl-await ./scripts/console.js",
+    "test:all": "NODE_ENV=test jest --runInBand"
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,10 @@
     "pg": "^8.5.1",
     "pg-monitor": "^1.4.1",
     "redis": "^3.0.2"
+  },
+  "devDependencies": {
+    "factory-girl": "^5.0.4",
+    "jest": "^27.0.4",
+    "jest-cli": "^27.0.4"
   }
 }

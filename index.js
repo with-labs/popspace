@@ -34,7 +34,7 @@ const shared = {
     since it involves an npm version bump. Downstream repos can upgrade as they
     upgrade the version.
   */
-  test: require("./test/_test.js")
+  test: require("./test/_test.js"),
 }
 
-
+module.exports = shared

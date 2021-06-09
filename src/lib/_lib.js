@@ -6,6 +6,7 @@ const lib = {
   util: require("./util.js"),
   appInfo: require("./app_info.js"),
   error: require("./error.js"),
+  feedback: require("./feedback"),
   init: async () => {
     await shared.db.pg.init()
     if(process.env.NODE_ENV == "test") {

@@ -35,7 +35,7 @@ const middleware = {
 
   requireUser: async (req, res, next) => {
     if(!req.user) {
-      return next({ errorCode: shared.error.code.UNAUTHORIZED_USER, message: "Must be logged in", httpCode: shared.api.http.code.UNAUTHORIZED })
+      return next({ errorCode: shared.error.code.LOG_IN_REQUIRED, message: "Must be logged in", httpCode: shared.api.http.code.UNAUTHORIZED })
     }
     next()
   },

@@ -23,43 +23,43 @@ const otplib = {
   },
 
   // prioritizes IS_VALID -> IS_RESOLVED -> IS_EXPIRED
-  verify: (entry, otp) => {
-    if(!entry || entry.otp != otp) {
-      return { error: shared.error.code.INVALID_OTP }
+  verify: (entry, code) => {
+    if(!entry || entry.code != code) {
+      return { error: shared.error.code.INVALID_CODE }
     }
     return otplib.checkEntryValidity(entry)
   },
 
   checkEntryValidity: (entry) => {
     if(entry.revoked_at) {
-      return { error: shared.error.code.REVOKED_OTP }
+      return { error: shared.error.code.REVOKED_CODE }
     }
     // Note: one other thing we can do that may be equivalent is to
     // just rely on the expiry, and allow resolved unexpired links to be reused.
     // Though perhaps for long-running OTPs that don't expire for a while
     // that would be a bit less secure.
     if(entry.resolved_at && isPastResolvedOtpBuffer(entry.resolved_at)) {
-      return { error: shared.error.code.RESOLVED_OTP }
+      return { error: shared.error.code.RESOLVED_CODE }
     }
     if(otplib.isExpired(entry)) {
-      return { error: shared.error.code.EXPIRED_OTP }
+      return { error: shared.error.code.EXPIRED_CODE }
     }
     return { error: null, result: null }
   },
 
-  verifyUnresolvable: (entry, otp) => {
-    if(!entry || entry.otp != otp) {
-      return { error: shared.error.code.INVALID_OTP }
+  verifyUnresolvable: (entry, code) => {
+    if(!entry || entry.code != code) {
+      return { error: shared.error.code.INVALID_CODE }
     }
     return otplib.checkEntryValidityUnresolvable(entry)
   },
 
   checkEntryValidityUnresolvable: (entry) => {
     if(entry.revoked_at) {
-      return { error: shared.error.code.REVOKED_OTP }
+      return { error: shared.error.code.REVOKED_CODE }
     }
     if(otplib.isExpired(entry)) {
-      return { error: shared.error.code.EXPIRED_OTP }
+      return { error: shared.error.code.EXPIRED_CODE }
     }
     return { error: null, result: null }
   },
@@ -80,13 +80,13 @@ const otplib = {
     return moment(moment.utc().valueOf() + ONE_DAY_MILLIS * n).utc().format()
   },
 
-  isValidForEmail(otp, email, entry) {
-    const verification = shared.lib.otp.verify(entry, otp)
+  isValidForEmail(code, email, entry) {
+    const verification = shared.lib.otp.verify(entry, code)
     if(verification.error != null) {
       return verification
     }
     if(shared.lib.args.consolidateEmailString(entry.email) != shared.lib.args.consolidateEmailString(email)) {
-      return { error: shared.error.code.INVALID_OTP }
+      return { error: shared.error.code.INVALID_CODE }
     }
     return { isValid: true, error: null }
   }

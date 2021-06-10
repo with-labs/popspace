@@ -13,7 +13,7 @@ export const PageTitle: React.FC<IPageTitleProps> = ({ title }) => {
   // the js escaped version. ie: speaker with strike is \uD83D\uDD07
   return (
     <Helmet>
-      <title>{title ?? t('common.with')}</title>
+      <title>{title ?? t('common.noodle')}</title>
     </Helmet>
   );
 };

@@ -4,10 +4,11 @@ import { MeetingTemplateName } from '@src/constants/MeetingTypeMetadata';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { Box, Typography, makeStyles, Container } from '@material-ui/core';
+import { Typography, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 import { RouteNames } from '@constants/RouteNames';
+import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 
 export interface IMeetingSelectProps {}
 
@@ -37,16 +38,11 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Box display="flex" flexDirection="column" alignItems="center">
-        <Box mt={10} mb={6}>
-          LOGO FPO
-        </Box>
-        <Typography variant="h1" className={classes.explanationText}>
-          {t('pages.meetingSelect.titleText')}
-        </Typography>
-        <MeetingTemplatePicker onSelect={onSelect} />
-      </Box>
-    </Container>
+    <CenterColumnPage>
+      <Typography variant="h1" className={classes.explanationText}>
+        {t('pages.meetingSelect.titleText')}
+      </Typography>
+      <MeetingTemplatePicker onSelect={onSelect} />
+    </CenterColumnPage>
   );
 };

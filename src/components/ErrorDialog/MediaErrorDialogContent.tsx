@@ -57,7 +57,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
           <DialogContentText>
             <Trans i18nKey="error.media.supportText" values={{ device }}>
               Instructions for enabling your {device} access can be found in the
-              <Link to={Links.HELP_PORTAL}>With help portal.</Link>
+              <Link to={Links.HELP_PORTAL}>Noodle help portal.</Link>
             </Trans>
           </DialogContentText>
           {code && (

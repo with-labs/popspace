@@ -14,6 +14,9 @@ import { MediaReadinessProvider } from './components/MediaReadinessProvider/Medi
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
 import { useCrisp } from './hooks/useCrisp/useCrisp';
+import { isMobileOnly } from 'react-device-detect';
+
+import { NotSupported } from '@src/pages/NotSupported/NotSupported';
 
 export interface IAppProps {}
 
@@ -36,9 +39,7 @@ export const App: React.FC<IAppProps> = () => {
               <Router history={history}>
                 <AppStateProvider>
                   <MediaReadinessProvider>
-                    <SoundEffectProvider>
-                      <Routes />
-                    </SoundEffectProvider>
+                    <SoundEffectProvider>{isMobileOnly ? <NotSupported /> : <Routes />}</SoundEffectProvider>
                   </MediaReadinessProvider>
                 </AppStateProvider>
               </Router>

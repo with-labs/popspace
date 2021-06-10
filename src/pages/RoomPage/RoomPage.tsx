@@ -14,6 +14,7 @@ import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteC
 import { TwilioProvider } from '@providers/twilio/TwilioProvider';
 import { LocalTracksProvider } from '@providers/media/LocalTracksProvider';
 import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
+import { isMobile } from 'react-device-detect';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {

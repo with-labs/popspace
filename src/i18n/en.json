@@ -11,7 +11,7 @@
       "licenses": "License Info"
     },
     "common": {
-      "with": "With",
+      "noodle": "Noodle",
       "emailInput": {
         "placeHolder": "dorothy@emerald.so",
         "label": "Email Address"
@@ -143,29 +143,9 @@
         "snackSuccessMsg": "We just sent you new magic link.",
         "snackFailMsg": "An error has occurred."
       },
-      "finalizeAccount": {
-        "title": "Join the room",
-        "firstNamePlaceholder": "Dorothy",
-        "fistNameLabel": "First Name",
-        "lastNamePlaceholder": "Gale",
-        "lastNameLabel": "Last Name",
-        "tosCheckboxName": "terms of service checkbox",
-        "tosCheckboxText": "",
-        "martketingCheckboxName": "Please send me how-to guides and updates",
-        "marketingCheckboxText": "Please send me how-to guides and updates",
-        "submitBtnText": "Join the room",
-        "imgAltText": "sign in",
-        "tosCheck": "I agree to the <1>Terms of Service</1>",
-        "email": {
-          "placeholder": "dorothy@emerald.so",
-          "label": "Email Address",
-          "invalid": "Please enter a valid email"
-        },
-        "earlyAccessAccept": "By signing up to With Early Access, you agree to receive occasional emails asking for your feedback. As one of our first users, your input will help us make With even better."
-      },
       "room": {
         "joinTitle": "Joining {{roomName}}",
-        "analyticsDisclaimer": "We use analytics software to improve With. Please feel free to come back later, when we've made it optional.",
+        "analyticsDisclaimer": "We use analytics software to improve Noodle. Please feel free to come back later, when we've made it optional.",
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
         "noVideo": "No video"
@@ -173,7 +153,7 @@
       "subscribe": {
         "quoteText": "",
         "title": "You are now subscribed!",
-        "body": "You will now receive tips on how to use With and news about updates.",
+        "body": "You will now receive tips on how to use Noodle and news about updates.",
         "button": "Take me Home",
         "imgAltText": "Subscribed"
       },
@@ -184,21 +164,6 @@
         "button": "Tell us why",
         "imgAltText": "Sad Blobby"
       },
-      "joinRoom": {
-        "title": "Finalize your account",
-        "body": "Please finalize your account {{email}} to join the room {{roomName}}.",
-        "firstNamePlaceholder": "Dorothy",
-        "fistNameLabel": "First Name",
-        "lastNamePlaceholder": "Gale",
-        "lastNameLabel": "Last Name",
-        "tosCheckboxName": "terms of service checkbox",
-        "tosCheckboxText": "",
-        "martketingCheckboxName": "Please send me how-to guides and updates",
-        "marketingCheckboxText": "Please send me how-to guides and updates",
-        "submitBtnText": "Finalize my account",
-        "imgAltText": "sign in",
-        "tosCheck": "I agree to the <1>Terms of Service</1>"
-      },
       "meetingLink": {
         "titleText": "Your meeting room is ready",
         "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Noodle.",
@@ -208,6 +173,10 @@
       },
       "meetingSelect": {
         "titleText": "What kind of meeting room do you need?"
+      },
+      "NotSupported": {
+        "title": "Oops, we’re sorry.",
+        "body": "FPO"
       }
     },
     "widgets": {
@@ -323,8 +292,7 @@
         "provideValidUrl": "Please provide a valid URL.",
         "provideValidYoutubeUrl": "Please provide a valid YouTube URL",
         "malformedUrl": "Please check to make sure URL has been properly copied from the email.",
-        "mobileNotOptimized": "With is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
-        "chromeOnIosRestrictions": "Due to technical restrictions on iOS, With cannot work in Chrome on iOS - please use Safari. Sorry for the inconvenience",
+        "mobileNotOptimized": "Noodle is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         "noRoomPassword": "You need a password to join this room",
         "incorrectRoomPassword": "The password you entered is incorrect",
         "noRoomAccess": "You don't have access to this room. You'll need the password to get in.",
@@ -389,17 +357,17 @@
       },
       "media": {
         "title": "{{device}} access has been denied.",
-        "supportText": "Instructions for enabling your {{device}} access can be found in the <1>With help portal.</1>",
+        "supportText": "Instructions for enabling your {{device}} access can be found in the <3>Noodle help portal.</3>",
         "video": "camera",
         "audio": "microphone",
         "screenShare": "screen share",
         "audioPermissionDismissed": "If you want to share your voice, we'll need microphone access. Press the button to enable your mic, then choose \"Allow\"",
-        "audioPermissionDenied": "You've told your browser not to allow microphone access for With. Change that setting to start sharing your voice.",
+        "audioPermissionDenied": "You've told your browser not to allow microphone access for Noodle. Change that setting to start sharing your voice.",
         "videoPermissionDismissed": "If you want to share your video, we'll need camera access. Press the button to enable your camera, then choose \"Allow\"",
-        "videoPermissionDenied": "You've told your browser not to allow camera access for With. Change that setting to start sharing your video.",
+        "videoPermissionDenied": "You've told your browser not to allow camera access for Noodle. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
-        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for With. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@with.so</3>."
+        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Noodle. Change that setting to start sharing your screen.",
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@noodle.so</3>."
       },
       "roomMangement": {
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",
@@ -554,7 +522,7 @@
         "submitButton": "Send bug report",
         "imgAltText": "Report a bug",
         "confirmationText": "Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!",
-        "errorMessage": "Something unexpected has happened. Please contact us directly at support@with.so."
+        "errorMessage": "Something unexpected has happened. Please contact us directly at support@noodle.so."
       },
       "devicePermissionsModal": {
         "title": "Audio & video access",
@@ -564,7 +532,7 @@
         "enterRoomButton": "Enter Room",
         "continueWithoutPermissionsButton": "Continue without devices",
         "goToSupportButton": "Go to support",
-        "permissionDeniedExplanation": "Oops! Seems like With doesn’t have access to your camera and microphone.",
+        "permissionDeniedExplanation": "Oops! Seems like Noodle doesn’t have access to your camera and microphone.",
         "cameraPermissionDenied": "Camera permission denied",
         "prepareTitle": "Welcome!",
         "namePlaceholder": "Your name"

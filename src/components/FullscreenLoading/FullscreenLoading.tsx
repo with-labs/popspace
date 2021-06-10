@@ -11,7 +11,7 @@ export function FullscreenLoading(props: IFullscreenLoadingProps) {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bgcolor="brandColors.sand.regular"
+      bgcolor="brandColors.snow.regular"
       position="fixed"
       {...props}
     >

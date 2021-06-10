@@ -10,6 +10,8 @@ import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 
+import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
+
 // TODO: change this to the shortened url
 const BASE_URL = 'https://www.noodle.so';
 
@@ -89,57 +91,50 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
   };
 
   return (
-    <>
-      <Container maxWidth="md">
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Box mt={10} mb={6}>
-            LOGO FPO
-          </Box>
-          <Typography variant="h1" className={classes.explanationText}>
-            {t('pages.meetingLink.titleText')}
-          </Typography>
-          <Box mt={4} mb={4} width="100%">
-            <TextField
-              classes={{ root: classes.inputRoot }}
-              variant="outlined"
-              fullWidth
-              value={meetingUrl}
-              inputProps={{ readOnly: true }}
-              InputProps={{
-                classes: { root: classes.inputRoot, notchedOutline: classes.notchedOutline },
-                endAdornment: (
-                  <Box display="flex" flexDirection="row">
-                    <Box mr={1.5}>
-                      <MuiThemeProvider theme={toggleCopyButton ? oregano : mandarin}>
-                        <Button
-                          classes={
-                            toggleCopyButton
-                              ? {
-                                  startIcon: classes.copied,
-                                }
-                              : {}
-                          }
-                          startIcon={toggleCopyButton ? <DoneIcon /> : <CopyIcon />}
-                          className={clsx(classes.buttonRoot, classes.copyBtn)}
-                          onClick={onCopyLink}
-                        >
-                          {t(`pages.meetingLink.${toggleCopyButton ? 'copied' : 'copyLinkButton'}`)}
-                        </Button>
-                      </MuiThemeProvider>
-                    </Box>
-                    <MuiThemeProvider theme={lavender}>
-                      <Button className={clsx(classes.buttonRoot, classes.joinBtn)} onClick={onGoToMeeting}>
-                        {t('pages.meetingLink.joinRoomButton')}
-                      </Button>
-                    </MuiThemeProvider>
-                  </Box>
-                ),
-              }}
-            />
-          </Box>
-          <Typography variant="body1">{t('pages.meetingLink.explanationText')}</Typography>
-        </Box>
-      </Container>
-    </>
+    <CenterColumnPage>
+      <Typography variant="h1" className={classes.explanationText}>
+        {t('pages.meetingLink.titleText')}
+      </Typography>
+      <Box mt={4} mb={4} width="100%">
+        <TextField
+          classes={{ root: classes.inputRoot }}
+          variant="outlined"
+          fullWidth
+          value={meetingUrl}
+          inputProps={{ readOnly: true }}
+          InputProps={{
+            classes: { root: classes.inputRoot, notchedOutline: classes.notchedOutline },
+            endAdornment: (
+              <Box display="flex" flexDirection="row">
+                <Box mr={1.5}>
+                  <MuiThemeProvider theme={toggleCopyButton ? oregano : mandarin}>
+                    <Button
+                      classes={
+                        toggleCopyButton
+                          ? {
+                              startIcon: classes.copied,
+                            }
+                          : {}
+                      }
+                      startIcon={toggleCopyButton ? <DoneIcon /> : <CopyIcon />}
+                      className={clsx(classes.buttonRoot, classes.copyBtn)}
+                      onClick={onCopyLink}
+                    >
+                      {t(`pages.meetingLink.${toggleCopyButton ? 'copied' : 'copyLinkButton'}`)}
+                    </Button>
+                  </MuiThemeProvider>
+                </Box>
+                <MuiThemeProvider theme={lavender}>
+                  <Button className={clsx(classes.buttonRoot, classes.joinBtn)} onClick={onGoToMeeting}>
+                    {t('pages.meetingLink.joinRoomButton')}
+                  </Button>
+                </MuiThemeProvider>
+              </Box>
+            ),
+          }}
+        />
+      </Box>
+      <Typography variant="body1">{t('pages.meetingLink.explanationText')}</Typography>
+    </CenterColumnPage>
   );
 };

@@ -7,7 +7,6 @@ export interface INotSupportedProps {}
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    width: 500,
     textAlign: 'center',
   },
 }));
@@ -19,8 +18,9 @@ export const NotSupported: React.FC<INotSupportedProps> = () => {
   return (
     <CenterColumnPage>
       <Typography variant="h1" className={classes.title}>
-        {t('pages.notSupported.titleText')}
+        {t('pages.notSupported.title')}
       </Typography>
+      <Typography variant="body1">{t('pages.notSupported.body')}</Typography>
     </CenterColumnPage>
   );
 };

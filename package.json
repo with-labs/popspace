@@ -153,7 +153,7 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
-    "prebuild": "yarn licenses && node ./scripts/write_env.js && cd functions && yarn build:setup",
+    "prebuild": "yarn run licenses && node ./scripts/write_env.js && cd functions && yarn build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode craco build",
     "build:client": "cross-env CI=false craco build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",

@@ -1,7 +1,7 @@
-factory.define("room", "rooms", (params) => {
+shared.test.factory.define("room", "rooms", (params) => {
   return {
-    id: factory.sequence('room.id', (n) => n),
-    owner_id: params.owner_id || factory.assoc('user', 'id'),
+    id: shared.test.factory.sequence('rooms.id', (n) => n),
+    owner_id: params.owner_id || shared.test.factory.assoc('user', 'id'),
     is_public: true
   }
 })

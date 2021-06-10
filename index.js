@@ -35,6 +35,7 @@ const shared = {
     upgrade the version.
   */
   test: require("./test/_test.js"),
+  tool: require("./tool/_tool.js"),
 }
 
 module.exports = shared

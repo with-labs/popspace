@@ -8,6 +8,11 @@ class NoodleMiddleware {
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use((req, res, next) => {
+      log.request.info(req.path, req.ip, req.body)
+      next()
+    })
+
+    this.express.use((req, res, next) => {
       req.body = lib.util.camelToSnakeCase(req.body)
       next()
     })
@@ -22,4 +27,4 @@ class NoodleMiddleware {
   }
 }
 
-module.exports = Noodle
+module.exports = NoodleMiddleware

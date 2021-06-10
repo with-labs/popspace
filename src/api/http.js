@@ -1,7 +1,7 @@
 const getRequestSignature = (req) => {
   const values = [
     req.path,
-    `uid ${req.user ? req.user.id} : 'none'`,
+    `uid ${req.user ? req.user.id : 'none'}`,
     `body ${JSON.stringify(req.body)}`,
     `ip ${req.ip}`
   ]

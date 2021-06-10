@@ -25,6 +25,7 @@ const appInfo = {
     return `wss://${appInfo.apiHost(req)}:${appInfo.apiPort()}`
   },
 
+
   apiUrl: (req) => {
     if(req) {
       const parsed = url.parse(req.url)
@@ -32,16 +33,31 @@ const appInfo = {
     } else {
       switch(process.env.NODE_ENV) {
         case 'production':
-          return `https://hermes.noodle.so:${app.apiPort()}`
+          return `https://hermes.noodle.so:${appInfo.apiPort()}`
         case 'development':
-          return `https://localhost:${app.apiPort()}`
+          return `https://localhost:${appInfo.apiPort()}`
         case 'staging':
-          return `https://test.noodle.so:${app.apiPort()}`
+          return `https://test.noodle.so:${appInfo.apiPort()}`
         case 'test':
-          return `https://localhost:${app.apiPort()}`
+          return `https://localhost:${appInfo.apiPort()}`
         default:
           return null
       }
+    }
+  },
+
+  webUrl: (req) => {
+    switch(process.env.NODE_ENV) {
+      case 'production':
+        return `https://app.noodle.so:${appInfo.apiPort()}`
+      case 'development':
+        return `https://localhost:${appInfo.apiPort()}`
+      case 'staging':
+        return `https://staging.noodle.so:${appInfo.apiPort()}`
+      case 'test':
+        return `https://localhost:${appInfo.apiPort()}`
+      default:
+        return null
     }
   },
 

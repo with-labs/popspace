@@ -2,3 +2,6 @@
 node_modules
 mkcert
 .env
+logs/
+
+

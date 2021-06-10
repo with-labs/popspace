@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "NODE_ENV=development node index.js",
-    "test": "test"
+    "test:all": "NODE_ENV=test jest --runInBand",
+    "test:one": "NODE_ENV=test node scripts/run_scenario.js"
   },
   "repository": {
     "type": "git",
@@ -23,14 +24,22 @@
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.0.7",
+    "@withso/noodle-shared": "1.0.8",
     "body-parser": "^1.19.0",
+    "camelcase-keys": "^6.2.2",
     "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "log4js": "^6.3.0",
     "passport": "^0.4.1",
-    "session": "^0.1.0"
+    "session": "^0.1.0",
+    "snakecase-keys": "^4.0.2"
+  },
+  "devDependencies": {
+    "factory-girl": "^5.0.4",
+    "jest": "^27.0.4",
+    "jest-cli": "^27.0.4"
   }
 }

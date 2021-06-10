@@ -1,15 +1,21 @@
+const shared = require("@withso/noodle-shared")
+
 const lib = {
-  shared: require("@withso/noodle-shared"),
+  shared: shared,
   log: require("./log.js"),
   util: require("./util.js"),
   appInfo: require("./app_info.js"),
   error: require("./error.js"),
   init: async () => {
-    await lib.shared.db.pg.init()
+    await shared.db.pg.init()
   },
   cleanup: async () => {
-    await lib.shared.db.pg.tearDown()
+    await shared.db.pg.tearDown()
   },
+}
+
+if(process.env.NODE_ENV == "test") {
+  lib.test = require("../../test/_test.js")
 }
 
 module.exports = lib

@@ -20,7 +20,7 @@ lib.init = async (appUrl) => {
     appUrl: () => appUrl
   }
   // Pull this in after the env vas are loaded
-  global.shared = require("@withso/with-shared")
+  global.shared = require("@withso/noodle-shared")
   // order is not important, running in parallel
   await Promise.all([lib.db.init(), shared.init(), shared.initDynamo(), lib.s3.init(), lib.opengraph.init()])
 }

@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - run: npm ci
-      - run: npm run test:ci
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:ci
         env:
           CI: true

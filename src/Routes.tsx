@@ -76,7 +76,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
       <AuthenticatedRoute
         path="/:roomRoute"
         render={(renderProps) => {
-          return <RoomPage name={renderProps.match.params.roomRoute} />;
+          return <RoomPage name={renderProps.match.params.roomRoute || null} />;
         }}
       />
     </Switch>

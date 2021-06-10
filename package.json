@@ -51,7 +51,6 @@
     "@types/youtube": "0.0.39",
     "@types/yup": "^0.29.11",
     "@withso/pegasus": "^1.0.19",
-    "babel-loader": "^8.1.0",
     "camelcase-keys": "^6.2.2",
     "change-case": "^4.1.1",
     "clsx": "^1.1.1",
@@ -141,7 +140,10 @@
     "workbox-strategies": "^6.1.0",
     "workbox-streams": "^6.1.0",
     "yup": "^0.32.9",
-    "zustand": "^3.2.0"
+    "zustand": "3.2.0"
+  },
+  "resolutions": {
+    "babel-loader": "8.1.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
@@ -151,12 +153,12 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
-    "prebuild": "npm run licenses && node ./scripts/write_env.js && cd functions && npm run build:setup",
+    "prebuild": "yarn run licenses && node ./scripts/write_env.js && cd functions && yarn build:setup",
     "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode craco build",
     "build:client": "cross-env CI=false craco build",
     "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
-    "local:dev": "NODE_ENV=development REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://localhost:3000' REACT_APP_WITH_API_HOST='https://localhost:3000'  REACT_APP_SOCKET_HOST='wss://localhost:3000' npm run dev",
-    "local:staging": "NODE_ENV=staging REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://test.with.so:8443' REACT_APP_WITH_API_HOST='https://test.with.so:8443' REACT_APP_SOCKET_HOST='wss://test.with.so:8443' npm run dev",
+    "local:dev": "NODE_ENV=development REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://localhost:3000' REACT_APP_WITH_API_HOST='https://localhost:3000'  REACT_APP_SOCKET_HOST='wss://localhost:3000' yarn dev",
+    "local:staging": "NODE_ENV=staging REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://test.with.so:8443' REACT_APP_WITH_API_HOST='https://test.with.so:8443' REACT_APP_SOCKET_HOST='wss://test.with.so:8443' yarn dev",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
     "test:watch": "jest --watch --bail",

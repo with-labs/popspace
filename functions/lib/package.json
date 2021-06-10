@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@withso/with-shared": "1.4.22",
+    "@withso/noodle-shared": "1.0.1",
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.739.0",
     "axios": "^0.21.1",
@@ -19,5 +19,6 @@
   "main": "index.js",
   "scripts": {
     "console": "node --experimental-repl-await ../../scripts/console"
-  }
+  },
+  "version": "1.0.0"
 }

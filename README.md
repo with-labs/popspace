@@ -3,12 +3,13 @@
 A spatial workspace for remote teams.
 
 This repo contains the code that powers the main web app experience and the serverless functions that handle authentication, joining rooms, and some advanced accessory behaviors.
+
 ## Pre-requisites
 
 You must have the following installed:
 
 - [Node.js v10+](https://nodejs.org/en/download/)
-- NPM v6+ (comes installed with newer Node versions)
+- [Yarn v1.x](https://classic.yarnpkg.com/lang/en/)
 - Netlify CLI - [docs](https://docs.netlify.com/cli/get-started/)
   - Install the CLI (see below)
   - Authenticate with Netlify (see below)
@@ -18,13 +19,13 @@ You must have the following installed:
 
 ### NPM Install the project
 
-From the root of the project, run `npm install`.
+From the root of the project, run `yarn install --frozen-lockfile`.
 
 ### Install Netlify CLI
 
 The app is deployed to Netlify using the Netlify CLI. Install netlify-cli with
 
-    $ npm install -g netlify-cli
+    $ yarn add -g netlify-cli
 
 ### Authenticate with our Netlify Account
 
@@ -63,7 +64,7 @@ Here are the [docs](https://docs.netlify.com/cli/get-started/#manual-deploys).
 
 Build the React app with
 
-    $ npm run build
+    $ yarn build
 
 This script will build the static assets for the application in the `build/` directory.
 
@@ -75,15 +76,17 @@ This application has unit tests (using [Jest](https://jestjs.io/)) and E2E tests
 
 Run unit tests with
 
-    $ npm test
+    $ yarn test
 
 This will run all unit tests with Jest and output the results to the console.
 
 #### E2E Tests
 
+> **NOTE:** Temporarily non-functional
+
 Run end to end tests with
 
-    $ npm run cypress:open
+    $ yarn cypress:open
 
 This will open the Cypress test runner. When it's open, select a test file to run.
 
@@ -99,11 +102,11 @@ Some additional setup may be useful for a better development experience:
 
 Install the [i18n-ally](https://marketplace.visualstudio.com/items?itemName=antfu.i18n-ally) plugin to see previews of i18n strings and get autocompletion for our i18n definitions. This plugin will require some setup to use. Open User Settings (`Cmd/Ctrl+Shift+K`, search "User Settings"), then change:
 
-* Global Default Namespace: `translation`
-* Enabled Frameworks: `react`, `i18next`
-* Locales Paths: `"src/i18n"`
-* Path Matcher: `"{locale}.{ext}"`
-* Namespace: `true`
+- Global Default Namespace: `translation`
+- Enabled Frameworks: `react`, `i18next`
+- Locales Paths: `"src/i18n"`
+- Path Matcher: `"{locale}.{ext}"`
+- Namespace: `true`
 
 You can change these just for the Workspace, or globally.
 

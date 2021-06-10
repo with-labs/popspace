@@ -1,9 +1,9 @@
 class RoomUserClient {
-  constructor(room, user, client, roomNameEntry) {
+  constructor(room, user, client, roomRouteEntry) {
     this.user = user
     this.room = room
     this.client = client
-    this.roomNameEntry = roomNameEntry
+    this.roomRouteEntry = roomRouteEntry
   }
 
   get userId() {
@@ -17,7 +17,7 @@ class RoomUserClient {
       // so I want to upgrade the test framework to not create these
       token = await shared.lib.auth.tokenFromSession(session)
     }
-    this.token = await shared.lib.auth.tokenFromSession(session)
+    this.token = token
   }
 
   async initiateLoggedInSession() {
@@ -34,11 +34,10 @@ class RoomUserClient {
 
   async authenticateSocket() {
     await this.client.connect()
-    const auth = await this.client.authenticate(this.token, this.roomNameEntry.name)
+    const auth = await this.client.authenticate(this.token, this.roomRouteEntry.route)
     this.auth = auth
   }
 }
-
 
 RoomUserClient.anyOrCreate = async () => {
   let user = await shared.db.pg.massive.users.findOne({})
@@ -67,12 +66,12 @@ RoomUserClient.forUser = async (user, room=null) => {
     room = await shared.db.pg.massive.rooms.findOne({owner_id: user.id, deleted_at: null})
     if(!room) {
       const isEmptyRoom = true
-      room = await shared.db.rooms.createRoomFromDisplayName(chance.company(), user.id, isEmptyRoom)
+      room = await shared.db.rooms.createRoomFromDisplayName(shared.test.chance.company(), user.id, isEmptyRoom)
     }
   }
-  const roomNameEntry = await shared.db.rooms.latestMostPreferredRouteEntry(room.id)
+  const roomRouteEntry = await shared.db.rooms.latestMostPreferredRouteEntry(room.id)
   const client = new lib.Client(lib.appInfo.wssUrl())
-  const result = new RoomUserClient(room, user, client, roomNameEntry)
+  const result = new RoomUserClient(room, user, client, roomRouteEntry)
   await result.initiateLoggedInSession()
   await result.authenticateSocket()
   return result

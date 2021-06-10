@@ -75,8 +75,8 @@ class Pg {
 
   async tearDown() {
     await lock.acquire('with_teardown_pg', async () => {
-      log.app.info("Acquired tear down lock")
       if(__db) {
+        log.app.info("Acquired tear down lock")
         try {
           monitor.detach()
         } catch(e) {

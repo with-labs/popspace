@@ -1,10 +1,10 @@
-factory.define("user", "users", (params) => {
+shared.test.factory.define("user", "users", (params) => {
   return {
-    id: factory.sequence("user.id", (n) => n),
-    email: chance.email(),
-    first_name: chance.name(),
-    last_name: chance.last(),
-    display_name: chance.name() + " " + chance.last(),
+    id: shared.test.factory.sequence("users.id", (n) => n),
+    email: shared.test.chance.email(),
+    first_name: shared.test.chance.name(),
+    last_name: shared.test.chance.last(),
+    display_name: shared.test.chance.name() + " " + shared.test.chance.last(),
     verified_at: params.verified_at
   }
 })

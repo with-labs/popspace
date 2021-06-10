@@ -1,7 +1,3 @@
-global.FactoryGirl = require("factory-girl");
-global.factory = FactoryGirl.factory;
-
-
 class MassiveJsAdapter {
   constructor() {
     if(process.env.NODE_ENV != 'test') {
@@ -36,7 +32,7 @@ class MassiveJsAdapter {
 }
 
 const init = () => {
-  factory.setAdapter(new MassiveJsAdapter());
+  shared.test.factory.setAdapter(new MassiveJsAdapter());
 
   require("./factory_user")
   require("./factory_session")

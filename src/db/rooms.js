@@ -11,7 +11,7 @@ class Rooms {
 
   async roomByRoute(route) {
     const normalized = shared.db.room.namesAndRoutes.getNormalizedRoomRoute(route)
-    const roomNameEntry = await shared.db.pg.massive.room_names.findOne({name: normalized})
+    const roomNameEntry = await shared.db.pg.massive.room_routes.findOne({route: normalized})
     if(!roomNameEntry) return null;
     return await shared.db.rooms.roomById(roomNameEntry.room_id)
   }
@@ -36,7 +36,7 @@ class Rooms {
   }
 
   async preferredRouteById(id) {
-    const names = await shared.db.pg.massive.room_names.find({
+    const names = await shared.db.pg.massive.room_routes.find({
       room_id: id
     }, {
       order: [{
@@ -56,7 +56,7 @@ class Rooms {
 
       So we can choose the latest of the routes with the highest priority.
     */
-    const routeEntries = await shared.db.pg.massive.room_names.find(
+    const routeEntries = await shared.db.pg.massive.room_routes.find(
       {room_id: roomId},
       {
         order: [
@@ -231,21 +231,21 @@ class Rooms {
         we won't even lose access to the old routes, because
         we're already respecting that URL schema.
       */
-      const roomUrlIdEntry = await tx.room_names.insert({
+      const roomUrlIdEntry = await tx.room_routes.insert({
         room_id: room.id,
-        name: urlId,
+        route: urlId,
         priority_level: shared.db.room.namesAndRoutes.URL_ID_AS_ROUTE_PRIORITY_LEVEL,
         is_vanity: false
       })
-      const roomNameEntry = await tx.room_names.insert({
+      const roomRouteEntry = await tx.room_routes.insert({
         room_id: room.id,
-        name: urlName,
+        route: urlName,
         priority_level: shared.db.room.namesAndRoutes.STANDARD_ROOM_ROUTE_PRIORITY_LEVEL,
         is_vanity: false
       })
       return {
         room: room,
-        roomNameEntry: roomNameEntry,
+        roomRouteEntry: roomNameEntry,
         urlIdEntry: roomUrlIdEntry
       }
     })
@@ -263,7 +263,7 @@ class Rooms {
    * @param {TemplateData} template
    * @param {number} ownerId - may be deprecated as we move to anon users
    */
-  async createRoomFromTemplate(template, ownerId) {
+  async createRoomFromTemplate(template, ownerId, isPublic=true) {
   /*
     When a user creates a room, they enter a display name.
     We transform that display name into a route.
@@ -276,6 +276,7 @@ class Rooms {
   const result = await shared.db.pg.massive.withTransaction(async (tx) => {
     const room = await tx.rooms.insert({
       owner_id: ownerId,
+      is_public: isPublic
     })
     /*
       For now, we can keep track of a room's ID by just writing
@@ -296,23 +297,23 @@ class Rooms {
       we won't even lose access to the old routes, because
       we're already respecting that URL schema.
     */
-      const roomUrlIdEntry = await tx.room_names.insert({
+      const roomUrlIdEntry = await tx.room_routes.insert({
         room_id: room.id,
-        name: urlId,
+        route: urlId,
         priority_level:
           shared.db.room.namesAndRoutes.URL_ID_AS_ROUTE_PRIORITY_LEVEL,
         is_vanity: false,
       })
-      const roomNameEntry = await tx.room_names.insert({
+      const roomRouteEntry = await tx.room_routes.insert({
         room_id: room.id,
-        name: urlName,
+        route: urlName,
         priority_level:
           shared.db.room.namesAndRoutes.STANDARD_ROOM_ROUTE_PRIORITY_LEVEL,
         is_vanity: false,
       })
       return {
         room: room,
-        roomNameEntry: roomNameEntry,
+        roomRouteEntry: roomRouteEntry,
         urlIdEntry: roomUrlIdEntry,
       }
     })
@@ -330,13 +331,13 @@ class Rooms {
     const normalizedDisplayName = shared.db.room.namesAndRoutes.getNormalizedDisplayName(newDisplayName)
     const urlName = shared.db.room.namesAndRoutes.generateRoute(normalizedDisplayName, urlIdEntry.name)
     // Maybe we're renaming to a name it's already had?
-    let roomRouteEntry = await shared.db.pg.massive.room_names.findOne({
+    let roomRouteEntry = await shared.db.pg.massive.room_routes.findOne({
       room_id: roomId,
-      name: urlName
+      route: urlName
     })
     if(roomRouteEntry)  {
       const newCreatedAt = shared.db.time.now()
-      await shared.db.pg.massive.room_names.update({room_id: roomId, name: urlName}, {
+      await shared.db.pg.massive.room_routes.update({room_id: roomId, route: urlName}, {
         /*
           Pretend this is the latest entry... we lose some history,
           but I don't want to introduce a special column like "last_used_at"
@@ -346,9 +347,9 @@ class Rooms {
       })
       roomRouteEntry.created_at = newCreatedAt
     } else {
-      roomRouteEntry = await shared.db.pg.massive.room_names.insert({
+      roomRouteEntry = await shared.db.pg.massive.room_routes.insert({
         room_id: roomId,
-        name: urlName,
+        route: urlName,
         priority_level: shared.db.room.namesAndRoutes.STANDARD_ROOM_ROUTE_PRIORITY_LEVEL,
         is_vanity: false
       })
@@ -377,15 +378,15 @@ class Rooms {
       const room = await tx.rooms.insert({
         owner_id: ownerId
       })
-      const roomNameEntry = await tx.room_names.insert({
+      const roomRouteEntry = await tx.room_routes.insert({
         room_id: room.id,
-        name: route,
+        route: route,
         priority_level: priorityLevel,
         is_vanity: isVanity
       })
       return {
         room: room,
-        roomNameEntry: roomNameEntry
+        roomRouteEntry: roomRouteEntry
       }
     })
   }

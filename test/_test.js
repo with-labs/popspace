@@ -1,4 +1,7 @@
+const FactoryGirl = require("factory-girl");
+
 const testLib = {
+  factory: FactoryGirl.factory,
   factories: require("./factories/_factories.js"),
   TestTemplate: require("./test_template.js"),
   TestEnvironment: require("./test_environment.js"),

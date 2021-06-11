@@ -592,16 +592,21 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.8.tgz#1ca2d60d4f26204d349bc80c92852c3b88187164"
-  integrity sha512-3fPTVtwUo/Yj4N5DUCZDNzpBO32xPaUUcyGVCWub+q/cA64+pRUNT99VC2n5XFs7mAn9gLsNEk9brPiEvfbiPg==
+"@withso/noodle-shared@1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.10.tgz#b11a366ee2cf0315184bc2f0d2f605ed1d7e680d"
+  integrity sha512-YoK6zGL34EPGUO4Zz+T9YcZPm2YaN5RHfIEkjVuhm/kafofdW/lJnq0/JRh9Lj8Yck6lq64uV5z9MQcOCrKiwQ==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
     btoa "^1.2.1"
+    chance "^1.1.7"
+    commander "^7.2.0"
     crypto-random-string "^3.3.0"
     dotenv "^8.2.0"
+    factory-girl "^5.0.4"
+    jest "^27.0.4"
+    jest-cli "^27.0.4"
     massive "^6.6.1"
     moment "^2.29.1"
     pg "^8.5.1"
@@ -870,6 +875,11 @@ bser@2.1.1:
   dependencies:
     node-int64 "^0.4.0"
 
+btoa@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
+  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
+
 buffer-from@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
@@ -940,7 +950,7 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chance@^1.0.4:
+chance@^1.0.4, chance@^1.1.7:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/chance/-/chance-1.1.7.tgz#e99dde5ac16681af787b5ba94c8277c090d6cfe8"
   integrity sha512-bua/2cZEfzS6qPm0vi3JEvGNbriDLcMj9lKxCQOjUcCJRcyjA7umP0zZm6bKWWlBN04vA0L99QGH/CZQawr0eg==
@@ -1027,7 +1037,7 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@7.2.0:
+commander@7.2.0, commander@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-7.2.0.tgz#a36cb57d0b501ce108e4d20559a150a391d97ab7"
   integrity sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw==

@@ -21,17 +21,17 @@
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.834.0",
     "btoa": "^1.2.1",
+    "chance": "^1.1.7",
+    "commander": "^7.2.0",
     "crypto-random-string": "^3.3.0",
     "dotenv": "^8.2.0",
+    "factory-girl": "^5.0.4",
+    "jest": "^27.0.4",
+    "jest-cli": "^27.0.4",
     "massive": "^6.6.1",
     "moment": "^2.29.1",
     "pg": "^8.5.1",
     "pg-monitor": "^1.4.1",
     "redis": "^3.0.2"
-  },
-  "devDependencies": {
-    "factory-girl": "^5.0.4",
-    "jest": "^27.0.4",
-    "jest-cli": "^27.0.4"
   }
 }

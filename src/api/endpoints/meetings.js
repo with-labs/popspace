@@ -3,8 +3,8 @@ const getRoomUrl = (req, displayName, urlId) => {
 }
 
 const createRoom = async (template, userId) => {
-    const { room, roomNameEntry, roomData } = await shared.db.rooms.createRoomFromTemplate(template, userId)
-    const namedRoom = new shared.models.NamedRoom(room, roomNameEntry, roomData.state)
+    const { room, roomData } = await shared.db.rooms.createRoomFromTemplate(template, userId)
+    const namedRoom = new shared.models.NamedRoom(room, roomData.state)
     return namedRoom
 }
 

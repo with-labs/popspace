@@ -1,4 +1,8 @@
 const log4js = require("log4js")
+
+const NO_TEST = process.env.NODE_ENV == "test" ? "off" : "info"
+const DEV_ONLY = ["development"].includes(process.env.NODE_ENV) ? "trace" : "off"
+
 const log4jsConfig = {
   appenders: {
     all: { type: "file", filename: "logs/all.log" },
@@ -12,14 +16,14 @@ const log4jsConfig = {
   },
   categories: {
     default: { appenders: ["console", "all"], level: "info" },
-    app: { appenders: ["app", "console", "all"], level: process.env.NODE_ENV == "test" ? "info" : "info" },
+    app: { appenders: ["app", "console", "all"], level: NO_TEST },
     http: { appenders: ["http", "console", "all"], level: "trace" },
     dev: {
       appenders: ["console", "dev", "all"],
-      level: ["development"].includes(process.env.NODE_ENV) ? "trace" : "off"
+      level: DEV_ONLY
     },
-    request: { appenders: ["request", "console", "all"], level: "trace" },
-    response: { appenders: ["response", "console", "all"], level: "trace" },
+    request: { appenders: ["request", "console", "all"], level: NO_TEST },
+    response: { appenders: ["response", "console", "all"], level: NO_TEST },
     error: { appenders: ["error", "all"], level: "trace" }
   }
 }

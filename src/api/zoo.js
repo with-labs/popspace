@@ -64,8 +64,8 @@ class Api {
   loggedInPostEndpoint(endpoint, handler, additionalMiddleware=[]) {
     log.app.info(`Initializing logged in POST: ${endpoint}`)
     const middlewareList = [
-      shared.api.middleware.getUser,
-      shared.api.middleware.requireUser,
+      shared.api.middleware.getActor,
+      shared.api.middleware.requireActor,
       ...additionalMiddleware
     ]
     this.express.post(endpoint, middlewareList, safeHandleRequest(endpoint, handler))
@@ -74,8 +74,8 @@ class Api {
   loggedInGetEndpoint(endpoint, handler, additionalMiddleware=[]) {
     log.app.info(`Initializing logged in GET: ${endpoint}`)
     const middlewareList = [
-      shared.api.middleware.getUser,
-      shared.api.middleware.requireUser,
+      shared.api.middleware.getActor,
+      shared.api.middleware.requireActor,
       ...additionalMiddleware
     ]
     this.express.get(endpoint, this.middleware, safeHandleRequest(endpoint, handler))
@@ -83,12 +83,12 @@ class Api {
 
   loggedOutPostEndpoint(endpoint, handler,) {
     log.app.info(`Initializing logged out POST: ${endpoint}`)
-    this.express.post(endpoint, safeHandleRequest(endpoint, handler))
+    this.express.post(endpoint, [], safeHandleRequest(endpoint, handler))
   }
 
   loggedOutGetEndpoint(endpoint, handler) {
     log.app.info(`Initializing logged out GET: ${endpoint}`)
-    this.express.get(endpoint, safeHandleRequest(endpoint, handler))
+    this.express.get(endpoint, [], safeHandleRequest(endpoint, handler))
   }
 }
 

@@ -21,11 +21,12 @@ const carefulDynamoCall = async (endpoint, req, res, f) => {
 }
 
 const createActor = async (req, res, kind) => {
-  const actor = await shared.db.accounts.createActor(kind)
-  const session = await shared.db.accounts.createSession(actor.id)
+  const pgActor = await shared.db.accounts.createActor(kind)
+  const session = await shared.db.accounts.createSession(pgActor.id)
   const token = await shared.db.accounts.tokenFromSession(session)
+  const actor = new shared.models.Actor(pgActor)
   return api.http.succeed(req, res, {
-    actor: {id: actor.id, kind: actor.kind},
+    actor: (await actor.serialize()),
     sessionToken: token
   })
 }
@@ -43,6 +44,14 @@ class Accounts {
 
     this.zoo.loggedOutPostEndpoint("/stub_bot", async (req, res) => {
       createActor(req, res, "bot")
+    })
+
+    this.zoo.loggedOutPostEndpoint("/stub_slack", async (req, res) => {
+      createActor(req, res, "slack")
+    })
+
+    this.zoo.loggedOutPostEndpoint("/stub_gcal", async (req, res) => {
+      createActor(req, res, "gcal")
     })
 
     this.zoo.loggedInPostEndpoint("/profile", async (req, res) => {

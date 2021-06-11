@@ -3,7 +3,7 @@ const moment = require("moment")
 
 module.exports = class {
   constructor(credentials) {
-    console.log("Initializing redis")
+    console.log("Connecting to redis...")
     this.client = redis.createClient(credentials);
     this.client.on("error", (error) => {
       console.log("Error initializing redis", error)

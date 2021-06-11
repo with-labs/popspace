@@ -5,6 +5,7 @@ const testLib = {
   factories: require("./factories/_factories.js"),
   TestTemplate: require("./test_template.js"),
   TestEnvironment: require("./test_environment.js"),
+  TestScenarioRunner: require("./test_scenario_runner.js"),
   models: require("./models/_models.js"),
   clients: require("./clients/_clients.js"),
   init: async () => {
@@ -12,6 +13,7 @@ const testLib = {
 		  throw "NODE_ENV must be test"
 		}
 		testLib.factories()
+    return testLib
   }
 }
 

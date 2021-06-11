@@ -31,7 +31,7 @@ class RoomWidget {
     return this._ownerDisplayName
   }
 
-  serialize() {
+  async serialize() {
     return {
       widget_id: this._pgWidget.id,
       owner_id: this._pgWidget.owner_id,
@@ -40,9 +40,9 @@ class RoomWidget {
       /*
         NOTE: the way we get the display name now is a bit ugly.
         We create RoomWidget objects in various contexts, and
-        we don't always have the user's display name handy -
+        we don't always have the actor's display name handy -
         so right now we receive just the display name as an extra arg,
-        and we have to JOIN with users in many contexts to get it.
+        and we have to JOIN with actors in many contexts to get it.
 
         Perhaps it'd be nicer to have serialize() be async,
         then we could fetch it as we serialize, and eventually
@@ -63,8 +63,8 @@ RoomWidget.fromWidgetId = async (widgetId, roomId) => {
   const pgWidgets = await shared.db.pg.massive.query(`
     SELECT
       widgets.id, widgets._type, widgets.owner_id,
-      users.display_name AS owner_display_name
-    FROM widgets JOIN users ON widgets.owner_id = users.id
+      actors.display_name AS owner_display_name
+    FROM widgets JOIN actors ON widgets.owner_id = actors.id
     WHERE widgets.id = $1
   `, parseInt(widgetId))
   if(pgWidgets.length < 1) {

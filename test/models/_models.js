@@ -1,3 +1,3 @@
 module.exports = {
-  RoomUserClient: require("./room_user_client")
+  RoomActorClient: require("./room_actor_client")
 }

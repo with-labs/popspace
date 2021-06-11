@@ -1,22 +1,17 @@
 module.exports = class {
-  constructor(user) {
-    this.user = user
+  constructor(actor) {
+    this.actor = actor
   }
 
   async serialize() {
-    const ownedRoomRoutes = await shared.db.rooms.getOwnedRoutableRooms(this.user.id)
-    const memberRoomRoutes = await shared.db.rooms.getMemberRoutableRooms(this.user.id)
-
-    const ownedNamedRooms = await shared.models.NamedRoom.preferredFromRoomsWithRoute(ownedRoomRoutes)
-    const memberNamedRooms = await shared.models.NamedRoom.preferredFromRoomsWithRoute(memberRoomRoutes)
-    const participantState = await shared.db.dynamo.room.getParticipantState(this.user.id)
-
+    const participantState = await shared.db.dynamo.room.getParticipantState(this.actor.id)
+    const visitableRooms = await shared.models.RoomWithState.allVisitableForUserId(this.actor.id)
     return {
-      user: this.user,
+      actor: this.actor,
       participant_state: participantState,
       rooms: {
-        owned: Promise.all(ownedNamedRooms.map(async (r) => await r.serialize())),
-        member: Promise.all(memberNamedRooms.map(async (r) => await r.serialize()))
+        owned: Promise.all(visitableRooms.owned.map(async (r) => await r.serialize())),
+        member: Promise.all(visitableRooms.member.map(async (r) => await r.serialize()))
       }
     }
   }

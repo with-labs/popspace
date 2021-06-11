@@ -2,7 +2,7 @@
 Manages life cycle of magic links.
 
 Magic links permit executing various restricted access for
-a given user account: e.g. unsubscribing from a mailing list.
+a given actor: e.g. unsubscribing from a mailing list.
 */
 class Magic {
   constructor() {
@@ -12,9 +12,9 @@ class Magic {
     return `${appUrl}/unsubscribe?otp=${magicLink.otp}&mlid=${magicLink.id}`
   }
 
-  async createUnsubscribe(userId) {
+  async createUnsubscribe(actorId) {
     const existingLink = await shared.db.pg.massive.magic_codes.findOne({
-      user_id: userId,
+      actor_id: actorId,
       expires_at: null,
       resolved_at: null,
       action: Magic.actions.UNSUBSCRIBE
@@ -23,8 +23,8 @@ class Magic {
       return existingLink
     }
     const request = {
-      user_id: userId,
-      otp: shared.lib.otp.generate(),
+      actor_id: actorId,
+      code: shared.lib.otp.generate(),
       issued_at: shared.db.time.now(),
       /**
         According to the CAN SPAM guidelines
@@ -40,9 +40,9 @@ class Magic {
     return await shared.db.pg.massive.magic_codes.insert(request)
   }
 
-  async createSubscribe(userId) {
+  async createSubscribe(actorId) {
     const existingLink = await shared.db.pg.massive.magic_codes.findOne({
-      user_id: userId,
+      actor_id: actorId,
       expires_at: null,
       resolved_at: null,
       action: Magic.actions.SUBSCRIBE
@@ -51,8 +51,8 @@ class Magic {
       return existingLink
     }
     const request = {
-      user_id: userId,
-      otp: shared.lib.otp.generate(),
+      actor_id: actorId,
+      code: shared.lib.otp.generate(),
       issued_at: shared.db.time.now(),
       /*
         It's ok to never expire these - as long as they don't log you in.
@@ -95,31 +95,31 @@ class Magic {
 
   // Private
   async unsubscribe(request, otp) {
-    const validation = await this.requireUser(request)
+    const validation = await this.requireActor(request)
     if(validation.error) {
       return validation
     }
     // Usually we'd want to mark the magic link as expired in a transaction,
     // but there is no reason to invalidate unsubscribe links.
     // https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
-    await shared.db.accounts.newsletterUnsubscribe(request.user_id)
+    await shared.db.accounts.newsletterUnsubscribe(request.actor_id)
     return { }
   }
 
   async subscribe(request, otp) {
-    const validation = await this.requireUser(request)
+    const validation = await this.requireActor(request)
     if(validation.error) {
       return validation
     }
-    await shared.db.accounts.newsletterSubscribe(request.user_id)
+    await shared.db.accounts.newsletterSubscribe(request.actor_id)
     return { }
   }
 
-  async requireUser(request) {
-    const userId = request.user_id
-    const user = await shared.db.pg.massive.users.find(userId)
-    if(!user) {
-        return { error : shared.error.code.NO_SUCH_USER }
+  async requireActor(request) {
+    const actorId = request.actor_id
+    const actor = await shared.db.pg.massive.actors.find(actorId)
+    if(!actor) {
+        return { error : shared.error.code.NO_SUCH_ACTOR }
     }
     return { }
   }

@@ -4,85 +4,41 @@ const NUMBERS = '0123456789'
 const LOWERCASE_AND_NUMBERS = LOWERCASE + NUMBERS
 
 /*
-NOTE: On room names and routes
-right now, we have several distinct concepts of "name" for a room:
-1.) Its routing name
+There are several "names" of a room:
+1.) Its route
 2.) Its display name
 3.) Its URL name
+4.) Its URL identifier
 
-Originally 1 and 2 were more tightly coupled, so the pg table for
-routes is called "room_names".
+The route of a room always looks like "/room-url-name-url_id_12345"
+The url name is derived from the display name - converting spaces to dashes,
+lowercasing, removing special characters...
 
-The display_name is stored in dynamo.
+When the room is renamed, the route changes - though old routes remain valid.
 
-Routes for user-created rooms are based off the display name.
+A room is only really matched by its url ID - a user-facing static
+identifier for the room.
 
-Perhaps we could move to be more explicit with the room_names table.
-Ideally rename it to something like room_routes - but before that,
-maybe the code can use "name" and "route" interchangeably, striving
-for "route", and displayNames are named explicitly each time.
-
---------------------------------------------------------------------
-ANOTHER NOTE: On route priority levels
-There are a few special priority levels that are in play from
-before the current naming/routing logic was established.
-
-999 - used to be priority level 0, which stood for randomly-generated
-room routes (created from admin panel by inviting someone to own
-a With room, w/o specifying the room name explicitly )
-
-999999 - used to be priority level 1, which stood for hand-created
-and named room from the admin panel. These are rooms we named manually,
-and gave them out.
-
-They are sorted just below the priority levels that are currently
-generated, or that are used when the user changes the name for a room.
-
-That way, if users change their initial room names, they'll
-lose the vanity URL, but we can always recover it for them,
-and we'll be able to easily perform mass operations on them,
-if our requirements change.
+It's distinct from the indexing identifier which is used to query rooms.
+URL IDs don't reveal information about how many rooms we have,
+are harder to brute force, and re-oxygenate the internet at night.
 */
 class NamesAndRoutes {
   constructor() {
-    /*
-      Right now we store all ways of getting to a room in one place.
-      There are vanity rooms, non-vanity/standard rooms,
-      and also identifiers that act as a stable part of the URL
-      when the display name of a room changes.
 
-      These different kinds of room-route related strings are
-      stratified by different priority levels.
-
-      E.g. the standard routes may have some further distinctions
-      of preference - though usually it should be fine to use
-      the same priority level for all standard routes,
-      as it's always possible to fetch the latest one.
-
-      The special priority level for URL IDs is used to
-      have a stable ID for the room as its display name changes,
-      which we do want to reflect in the URL.
-
-      We do this so that we are under no obligation to keep
-      storing the old names/routes in the database, and
-      yet all links from the internet to them will continue to work,
-      because we can always identify a room by its standard identifier.
-
-      To make fetching it easy, we assign it that special priority level.
-      This would also allow for a simple migration to an external store,
-      e.g. a key-value store; we'd migrate all the existing routes with
-      the special priority level.
-    **/
-    this.STANDARD_ROOM_ROUTE_PRIORITY_LEVEL = 1000
-    this.VANITY_ROOM_ROUTE_PRIORITY_LEVEL = 1000000
-    this.URL_ID_AS_ROUTE_PRIORITY_LEVEL = -1
   }
 
-  generateRoute(displayName, urlRoomId) {
-    /*
-      We distinguish between internal database IDs and object
-      identifiers visible to users through e.g. routes: that's urlRoomId.
-    */
+  roomToRoute(room) {
+    return this.route(room.display_name, room.url_id)
+  }
+
+  /*
+    A route always looks like "/room-url-name-url_id_12345"
+
+    The room-url-name is derived from displayName
+    urlRoomId is a unique user-facing static identifier of the room,
+  */
+  route(displayName, urlRoomId) {
     /*
       For am empty urlName, stil add a prefix. Currently
       more an artifact of the data model, we can't have
@@ -97,48 +53,14 @@ class NamesAndRoutes {
     } else {
       return`room-${urlRoomId}`
     }
-
   }
 
-  async getOrCreateUrlIdEntry(roomId) {
+  urlIdFromRoute(route) {
     /*
-      For now, we can keep track of a room's ID by just writing
-      it to the room_names table with a special priority (-1).
-      For example, after that free generated IDs can be priority 1000+,
-      and vanity rooms 1000000+.
-
-      If we want to migrate to something more efficient eventually,
-      the url IDs should probably not be in postgres at all -
-      we'd move them out to e.g. a persistent redis for O(1) access.
-      For now I don't want to worry about that, and we don't have
-      access to redis from netlify, and performance is not a concern.
-
-      If we want to drop the multi-room paradigm - that would be very easy too.
-      We could simply remove all room_names but the one with the latest
-      created_at, stop writing room_names each time the room is changed,
-      and instead update or replace the record. Assuming the rest of
-      our route resolution already relies on just the room's URL ID by then
-      (which is arguably the point of that type of migration),
-      we won't even lose access to the old routes, because
-      we're already respecting that URL schema.
+      If a route is like display-name-hey-id12345,
+      we can get the last element after a dash.
     */
-    const existingEntry = await shared.db.pg.massive.room_names.findOne({
-      room_id: roomId,
-      priority_level: this.URL_ID_AS_ROUTE_PRIORITY_LEVEL
-    })
-    if(existingEntry) {
-      return existingEntry
-    }
-    if(!existingEntry) {
-      const urlId = await this.generateUniqueRoomUrlId()
-      const roomUrlIdEntry = await shared.db.pg.massive.room_names.insert({
-        room_id: roomId,
-        name: urlId,
-        priority_level: this.URL_ID_AS_ROUTE_PRIORITY_LEVEL,
-        is_vanity: false
-      })
-      return roomUrlIdEntry
-    }
+    return route.split("-").pop()
   }
 
   async generateUniqueRoomUrlId() {
@@ -151,10 +73,17 @@ class NamesAndRoutes {
     // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
     let idString = this.generateRoomId()
     let isUnique = await this.isUniqueIdString(idString)
+    let iterations = 0
     while(!isUnique) {
-      // TODO: alert if too many collisions
       idString = this.generateRoomId()
       isUnique = await this.isUniqueIdString(idString)
+      iterations++
+      if(iterations == 101) {
+        log.error.warn("Over 100 iterations genereating unique room ID...")
+      }
+      if(iterations == 1001) {
+        log.error.error("Over 1000 iterations genereating unique room ID...")
+      }
     }
     return idString
   }
@@ -163,13 +92,11 @@ class NamesAndRoutes {
     return shared.lib.args.multiSpaceToSingleSpace(displayName.trim())
   }
 
-  getNormalizedRoomRoute(roomRoute) {
-    // DEPRECATED
-    // We don't really need this, since getUrlName covers the case of routes
-    // being used as names.
-    return shared.lib.args.multiDashToSingleDash(roomRoute.trim().toLowerCase())
-  }
-
+  /*
+    A URL name is a version of a display name that is
+    lowercased, trimmed, has spaced converted to dashes
+    and special characters removed
+  */
   getUrlName(displayName) {
     const normalized = this.getNormalizedDisplayName(displayName).toLowerCase()
     // Don't need to replace the A-Z range since we're already normalized.
@@ -243,7 +170,7 @@ class NamesAndRoutes {
   }
 
   async isUniqueIdString(idString) {
-    const existingEntry = await shared.db.pg.massive.room_names.findOne({name: idString})
+    const existingEntry = await shared.db.pg.massive.rooms.findOne({url_id: idString})
     return !existingEntry
   }
 }

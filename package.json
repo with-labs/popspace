@@ -1,6 +1,6 @@
 {
   "name": "@withso/noodle-shared",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Shared code for Noodle micro services",
   "main": "index.js",
   "scripts": {

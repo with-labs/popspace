@@ -3,6 +3,7 @@ const SIGNUP_REQUEST_EXPIRY_DAYS = 30
 
 class Accounts {
   constructor() {
+
   }
 
   getSignupUrl(appUrl, accountCreateRequest) {
@@ -10,121 +11,93 @@ class Accounts {
   }
 
   getLoginUrl(appUrl, loginRequest) {
-    return `${appUrl}/loginwithemail?otp=${encodeURIComponent(loginRequest.otp)}&uid=${encodeURIComponent(loginRequest.user_id)}`
+    return `${appUrl}/loginwithemail?otp=${encodeURIComponent(loginRequest.otp)}&uid=${encodeURIComponent(loginRequest.actor_id)}`
   }
 
-  async delete(userId) {
-    return await shared.db.pg.massive.users.update({id: userId}, {deleted_at: shared.db.time.now()})
+  async delete(actorId) {
+    return await shared.db.pg.massive.actors.update({id: actorId}, {deleted_at: shared.db.time.now()})
   }
 
-  async hardDelete(userId) {
-    // support hard-deleting soft-deleted users
-    userId = parseInt(userId)
-    const user = await shared.db.pg.massive.users.findOne({id: userId, "deleted_at IS NOT NULL": null})
-    if(!user) {
-      throw "No such user"
+  async hardDelete(actorId) {
+    // support hard-deleting soft-deleted actors
+    actorId = parseInt(actorId)
+    const actor = await shared.db.pg.massive.actors.findOne({id: actorId, "deleted_at IS NOT NULL": null})
+    if(!actor) {
+      throw "No such actor"
     }
-    const email = user.email
-    const ownedRooms = await shared.db.rooms.getOwnedRooms(userId)
-    const roomIds = ownedRooms.map((r) => (r.id))
-
+    const createdRooms = await shared.db.rooms.getCreatedRooms(actorId)
+    const roomIds = createdRooms.map((r) => (r.id))
     const membershipsToOwnedRooms = await shared.db.pg.massive.room_memberships.find({room_id: roomIds})
-    const roomRoutes = await shared.db.pg.massive.room_routes.find({room_id: roomIds})
-
     const membershipsToOwnedRoomsIds = membershipsToOwnedRooms.map((m) => (m.id))
-    const roomRouteIds = roomRoutes.map((n) => (n.id))
-
-    const widgets = await shared.db.pg.massive.widgets.find({owner_id: userId})
+    const widgets = await shared.db.pg.massive.widgets.find({creator_id: actorId})
     const widgetIds = widgets.map((w) => (w.id))
 
     await shared.db.pg.massive.withTransaction(async (tx) => {
-      await tx.users.destroy({id: userId})
-      await tx.sessions.destroy({user_id: userId})
-      await tx.magic_codes.destroy({user_id: userId})
+      await tx.actors.destroy({id: actorId})
+      await tx.sessions.destroy({actor_id: actorId})
+      await tx.magic_codes.destroy({actor_id: actorId})
       // All room membership info
-      await tx.room_memberships.destroy({user_id: userId})
-      // All users rooms, their members and metainfo
-      await tx.room_routes.destroy({id: roomRouteIds})
+      await tx.room_memberships.destroy({actor_id: actorId})
+      // All actors rooms, their members and metainfo
       await tx.room_memberships.destroy({id: membershipsToOwnedRoomsIds})
-      await tx.rooms.destroy({owner_id: userId})
-      await tx.widgets.destroy({owner_id: userId})
+      await tx.rooms.destroy({creator_id: actorId})
+      await tx.widgets.destroy({creator_id: actorId})
       await tx.room_widgets.destroy({widget_id: widgetIds})
     })
-
   }
 
-  async getLatestAccountCreateRequest(email) {
-    const requests = await shared.db.pg.massive.otp_account_create_requests.find({
-      email: shared.lib.args.consolidateEmailString(email)
-    }, {
-      order: [{
-        field: "created_at",
-        direction: "desc"
-      }],
-      limit: 1
-    })
-    return requests[0]
-  }
-
-  async userByEmail(email) {
-    return shared.db.pg.massive.users.findOne({
+  async actorByEmail(email) {
+    return shared.db.pg.massive.actors.findOne({
       email: shared.lib.args.consolidateEmailString(email),
       deleted_at: null
     })
   }
 
-  async usersByEmails(emails) {
+  async actorsByEmails(emails) {
     const consolidatedEmails = emails.map((e) => (shared.lib.args.consolidateEmailString(e)))
-    return shared.db.pg.massive.users.find({email: consolidatedEmails, deleted_at: null})
+    return shared.db.pg.massive.actors.find({email: consolidatedEmails, deleted_at: null})
   }
 
-  async userById(id) {
-    return shared.db.pg.massive.users.findOne({id: id, deleted_at: null})
+  async actorById(id) {
+    return shared.db.pg.massive.actors.findOne({id: id, deleted_at: null})
   }
 
   async createActor(kind) {
-    const actor = await shared.db.pg.massive.users.insert({
+    const actor = await shared.db.pg.massive.actors.insert({
       kind: kind
     })
     return actor
   }
 
-  async createLoginRequest(user) {
+  async createLoginRequest(actor) {
     const loginRequest = {
-      otp: shared.lib.otp.generate(),
-      requested_at: shared.db.time.now(),
+      code: shared.lib.otp.generate(),
+      issued_at: shared.db.time.now(),
       expires_at: shared.lib.otp.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
-      user_id: user.id
+      actor_id: actor.id,
+      action: "login"
     }
-
-    return await shared.db.pg.massive.otp_login_requests.insert(loginRequest)
+    return await shared.db.pg.massive.magic_codes.insert(loginRequest)
   }
 
-  async resolveLoginRequest(userId, otp) {
-    const request = await shared.db.pg.massive.otp_login_requests.findOne({user_id: userId, otp: otp})
-    const verification = shared.lib.otp.verify(request, otp)
+  async resolveLoginRequest(actorId, code) {
+    const request = await shared.db.pg.massive.magic_codes.findOne({
+      actor_id: actorId,
+      code: code,
+      action: "login"
+    })
+    const verification = shared.lib.otp.verify(request, code)
     if(verification.error != null) {
       return verification
     }
-
-    try {
-      const session = await shared.db.pg.massive.withTransaction(async (tx) => {
-        await tx.otp_login_requests.update({id: request.id}, {resolved_at: shared.db.time.now()})
-        return await this.createSession(userId, tx)
-      })
-
-      return { session: session }
-
-    } catch(e) {
-      // TODO: ERROR_LOGGING
-      return { error: shared.error.code.UNEXPECTER_ERROR }
-    }
+    const session = await this.createSession(actorId)
+    return { session: session }
   }
 
-  async createSession(userId, tx=null) {
+  async createSession(actorId, tx=null) {
     const txOrMassive = tx || shared.db.pg.massive
     return await txOrMassive.sessions.insert({
-      user_id: userId,
+      actor_id: actorId,
       secret: shared.lib.otp.generate(),
       expires_at: null
     })
@@ -132,14 +105,25 @@ class Accounts {
 
   tokenFromSession(session) {
     return JSON.stringify({
-      secret: session.secret,
-      uid: session.user_id
+      /*
+        At scale, we should use an O(1) store keyed on secrets,
+        since btrees on random strings are quite inefficient (i.e.
+        postgres is inefficient for session tokens).
+
+        I thought about adding the actor or session ID to the token
+        to speed up the query search.
+
+        It'd work! But I think we don't want to leak our internal
+        primary (enumerable) IDs. When we're at scale, we should be in
+        an O(1) store for sessions anyway, so performance doesn't matter.
+      */
+      secret: session.secret
     })
   }
 
   async sessionFromToken(sessionToken) {
     const sessionObject = JSON.parse(sessionToken)
-    const session = await shared.db.pg.massive.sessions.findOne({user_id: sessionObject.uid, secret: sessionObject.secret})
+    const session = await shared.db.pg.massive.sessions.findOne({secret: sessionObject.secret})
     if(!session || shared.lib.otp.isExpired(session)) {
       return null
     } else {
@@ -147,7 +131,7 @@ class Accounts {
     }
   }
 
-  async needsNewSessionToken(sessionToken, user) {
+  async needsNewSessionToken(sessionToken, actor) {
     if(!sessionToken) {
       return true
     }
@@ -155,17 +139,16 @@ class Accounts {
     if(!session) {
       return true
     }
-    return parseInt(session.user_id) != parseInt(user.id)
+    return parseInt(session.actor_id) != parseInt(actor.id)
   }
 
-  async newsletterSubscribe(userId) {
-    return await shared.db.pg.massive.users.update({id: userId}, {newsletter_opt_in: true})
+  async newsletterSubscribe(actorId) {
+    return await shared.db.pg.massive.actors.update({id: actorId}, {newsletter_opt_in: true})
   }
 
-  async newsletterUnsubscribe(userId) {
-    return await shared.db.pg.massive.users.update({id: userId}, {newsletter_opt_in: false})
+  async newsletterUnsubscribe(actorId) {
+    return await shared.db.pg.massive.actors.update({id: actorId}, {newsletter_opt_in: false})
   }
-
 
 }
 

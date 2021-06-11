@@ -8,9 +8,9 @@ class HttpClient {
     this.port = port
 
     /*
-      Call setUser + initSession to send logged in HTTP calls
+      Call setActor + initSession to send logged in HTTP calls
     */
-    this.user = null
+    this.actor = null
     this.session = null
     this.token = null
   }
@@ -54,22 +54,22 @@ class HttpClient {
     })
   }
 
-  async setUser(user) {
-    this.user = user
+  async setActor(actor) {
+    this.actor = actor
     this.session = null
     this.token = null
   }
 
   async initSession() {
-    if(!this.user) {
-      throw "Call setUser() before calling initSession()"
+    if(!this.actor) {
+      throw "Call setActor() before calling initSession()"
     }
     this.session = await shared.db.pg.massive.sessions.findOne({
-      user_id: this.user.id,
+      actor_id: this.actor.id,
       revoked_at: null
     })
     if(!this.session) {
-      this.session = await shared.test.factory.create("session", {user_id: this.user.id})
+      this.session = await shared.test.factory.create("session", {actor_id: this.actor.id})
     }
     this.token = await shared.lib.auth.tokenFromSession(this.session)
     return { session: this.session, token: this.token }
@@ -78,16 +78,16 @@ class HttpClient {
 }
 
 HttpClient.anyLoggedInOrCreate = async (host, certificate, port) => {
-  let user = await shared.db.pg.massive.users.findOne({})
-  if(!user) {
-     user = await shared.test.factory.create("user")
+  let actor = await shared.db.pg.massive.actors.findOne({})
+  if(!actor) {
+     actor = await shared.test.factory.create("actor")
   }
-  return HttpClient.forUser(user, host, certificate, port)
+  return HttpClient.forActor(actor, host, certificate, port)
 }
 
-HttpClient.forUser = async (user, host, certificate, port) => {
+HttpClient.forActor = async (actor, host, certificate, port) => {
   const client = new HttpClient(host, certificate, port)
-  await client.setUser(user)
+  await client.setActor(actor)
   await client.initSession()
   return client
 }

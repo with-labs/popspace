@@ -1,7 +1,7 @@
 const base64Decode = (str) => Buffer.from(str, "base64").toString("utf-8")
 
 const middleware = {
-  getUser: async (req, res, next) => {
+  getActor: async (req, res, next) => {
     // support Authorization header with a bearer token,
     // fallback to a `token` field on a POST body
     const authHeader = req.headers.authorization || req.headers.Authorization
@@ -15,12 +15,12 @@ const middleware = {
     if (!session) {
       return next()
     }
-    const userId = parseInt(session.user_id)
-    const user = await shared.db.accounts.userById(userId)
-    if (!user) {
+    const actorId = parseInt(session.actor_id)
+    const actor = await shared.db.accounts.actorById(actorId)
+    if (!actor) {
       return next()
     }
-    req.user = user
+    req.actor = actor
     req.session = session
     next()
   },
@@ -33,9 +33,9 @@ const middleware = {
     next()
   },
 
-  requireUser: async (req, res, next) => {
-    if(!req.user) {
-      return next({ errorCode: shared.error.code.LOG_IN_REQUIRED, message: "Must be logged in", httpCode: shared.api.http.code.UNAUTHORIZED })
+  requireActor: async (req, res, next) => {
+    if(!req.actor) {
+      return next({ errorCode: shared.error.code.SESSION_REQUIRED, message: "Must have a valid session", httpCode: shared.api.http.code.UNAUTHORIZED })
     }
     next()
   },
@@ -55,16 +55,16 @@ const middleware = {
     next()
   },
 
-  requireRoomOwner: async (req, res, next) => {
-    if(req.user.id != req.room.owner_id) {
+  requireRoomCreator: async (req, res, next) => {
+    if(req.actor.id != req.room.creator_id) {
       return next({ errorCode: shared.error.code.PERMISSION_DENIED, message: "Insufficient permission", httpCode: shared.api.http.code.UNAUTHORIZED })
     }
     next()
   },
 
-  requireRoomMemberOrOwner: async (req, res, next) => {
-    const isMemberOrOwner = await shared.db.room.permissions.isMemberOrOwner(req.user, req.room)
-    if(!isMemberOrOwner) {
+  requireRoomMemberOrCreator: async (req, res, next) => {
+    const isMemberOrCreator = await shared.db.room.permissions.isMemberOrCreator(req.actor, req.room)
+    if(!isMemberOrCreator) {
       return next({ errorCode: shared.error.code.PERMISSION_DENIED, message:"Insufficient permission", httpCode: shared.api.http.code.UNAUTHORIZED })
     }
     next()

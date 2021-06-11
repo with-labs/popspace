@@ -1,50 +1,50 @@
 module.exports = class {
   constructor() {
-    this.loggedInUsers = []
+    this.loggedInActors = []
   }
 
-  async createLoggedInUser(client, room=null, roomNameEntry=null) {
-    const created = await this.createUserWithRoomAccess(client, room, roomNameEntry)
-    return this.logIntoRoom(client, created.user, created.room, created.roomNameEntry)
+  async createLoggedInActor(client, room=null, roomNameEntry=null) {
+    const created = await this.createActorWithRoomAccess(client, room, roomNameEntry)
+    return this.logIntoRoom(client, created.actor, created.room, created.roomNameEntry)
   }
 
-  async createUserWithRoomAccess(client, room, roomNameEntry) {
-    const user = await factory.create("user")
-    if(room && room.owner_id != user.id) {
-      const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(user.id, room.id)
+  async createActorWithRoomAccess(client, room, roomNameEntry) {
+    const actor = await factory.create("actor")
+    if(room && room.owner_id != actor.id) {
+      const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(actor.id, room.id)
       if(!alreadyHasAccess) {
-        await shared.db.roomMemberships.forceMembership(room.id, user)
+        await shared.db.roomMemberships.forceMembership(room.id, actor)
       }
     } else {
       const isEmptyRoom = true
-      let roomInfo = await shared.db.rooms.generateRoom(user.id, isEmptyRoom)
+      let roomInfo = await shared.db.rooms.generateRoom(actor.id, isEmptyRoom)
       room = roomInfo.room
       roomNameEntry = roomInfo.roomNameEntry
     }
 
-    return { user, room, roomNameEntry }
+    return { actor, room, roomNameEntry }
   }
 
-  async logIntoRoom(client, user, room, roomNameEntry) {
-    // TODO: this should move out to RoomUserClient
-    const { session, token } = await this.initiateLoggedInSession(user.id)
-    const roomUserClient = new tlib.models.RoomUserClient(room, user, client, roomNameEntry)
-    await roomUserClient.setLogInSession(session, token)
-    this.loggedInUsers.push(roomUserClient)
-    return roomUserClient
+  async logIntoRoom(client, actor, room, roomNameEntry) {
+    // TODO: this should move out to RoomActorClient
+    const { session, token } = await this.initiateLoggedInSession(actor.id)
+    const roomActorClient = new tlib.models.RoomActorClient(room, actor, client, roomNameEntry)
+    await roomActorClient.setLogInSession(session, token)
+    this.loggedInActors.push(roomActorClient)
+    return roomActorClient
   }
 
-  async initiateLoggedInSession(userId) {
-    // TODO: move this out to RoomUserClient
-    const session = await factory.create("session", {user_id: userId})
+  async initiateLoggedInSession(actorId) {
+    // TODO: move this out to RoomActorClient
+    const session = await factory.create("session", {actor_id: actorId})
     const token = await shared.lib.auth.tokenFromSession(session)
     return { session, token }
   }
 
-  async authenticate(roomUserClient) {
-    // TODO: I don't think we can replace this with roomUserClient.authenticate(), since we
+  async authenticate(roomActorClient) {
+    // TODO: I don't think we can replace this with roomActorClient.authenticate(), since we
     // have some places where we haven't transitioned to using the class yet (in the tests themselves)
-    const auth = await roomUserClient.client.authenticate(roomUserClient.token, roomUserClient.roomNameEntry.name)
-    roomUserClient.auth = auth
+    const auth = await roomActorClient.client.authenticate(roomActorClient.token, roomActorClient.roomNameEntry.name)
+    roomActorClient.auth = auth
   }
 }

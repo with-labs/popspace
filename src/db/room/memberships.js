@@ -1,6 +1,6 @@
 class Memberships {
-  async isMember(userId, roomId) {
-    const membership = await this.getMembership(userId, roomId)
+  async isMember(actorId, roomId) {
+    const membership = await this.getMembership(actorId, roomId)
     if(!membership) {
       return false
     }
@@ -8,9 +8,9 @@ class Memberships {
     return current
   }
 
-  async getMembership(userId, roomId) {
+  async getMembership(actorId, roomId) {
     return await shared.db.pg.massive.room_memberships.findOne({
-      user_id: userId,
+      actor_id: actorId,
       room_id: roomId,
       revoked_at: null,
       "began_at <>": null
@@ -40,21 +40,21 @@ class Memberships {
       room_id: roomId,
       revoked_at: null
     })
-    const userIds = memberships.map((m) => (m.user_id))
-    const users = await shared.db.pg.massive.users.find({id: userIds})
+    const actorIds = memberships.map((m) => (m.actor_id))
+    const actors = await shared.db.pg.massive.actors.find({id: actorIds})
     await Promise.all(
-      users.map(async (u) => {
+      actors.map(async (u) => {
         u.participantState = await shared.db.dynamo.room.getParticipantState(u.id)
         return u
       })
     )
-    return users
+    return actors
   }
 
-  async revokeMembership(roomId, userId) {
+  async revokeMembership(roomId, actorId) {
     return await shared.db.pg.massive.room_memberships.update(
       {
-        user_id: userId,
+        actor_id: actorId,
         room_id: roomId,
         revoked_at: null
       },
@@ -62,14 +62,14 @@ class Memberships {
     )
   }
 
-  async forceMembership(room, user) {
-    if(room.owner_id == user.id) {
+  async forceMembership(room, actor) {
+    if(room.creator_id == actor.id) {
       /*
         TODO: Update the error code, or alternatively allow owners to be members
       */
       return { error: shared.error.code.JOIN_ALREADY_MEMBER }
     }
-    const existingMembership = await shared.db.room.memberships.getMembership(user.id, room.id)
+    const existingMembership = await shared.db.room.memberships.getMembership(actor.id, room.id)
     if(existingMembership) {
       return existingMembership
     }
@@ -79,7 +79,7 @@ class Memberships {
       const membership = await shared.db.pg.massive.withTransaction(async (tx) => {
         return await tx.room_memberships.insert({
           room_id: room.id,
-          user_id: user.id,
+          actor_id: actor.id,
           began_at: shared.db.time.now(),
           expires_at: expires_at
         })

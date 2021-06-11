@@ -34,10 +34,9 @@ class MassiveJsAdapter {
 const init = () => {
   shared.test.factory.setAdapter(new MassiveJsAdapter());
 
-  require("./factory_user")
+  require("./factory_actor")
   require("./factory_session")
   require("./factory_room")
-  require("./factory_room_route")
   require("./factory_room_membership")
 }
 

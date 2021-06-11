@@ -5,12 +5,12 @@ class Widgets {
       SELECT
         widgets.id AS id,
         widgets._type as _type,
-        widgets.owner_id as owner_id,
-        users.display_name as owner_display_name
+        widgets.creator_id as creator_id,
+        actors.display_name as creator_display_name
       FROM
         widgets
           JOIN room_widgets ON widgets.id = room_widgets.widget_id
-          JOIN users        ON widgets.owner_id = users.id
+          JOIN actors       ON widgets.creator_id = actors.id
       WHERE
         room_widgets.room_id = $1
         AND

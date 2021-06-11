@@ -1,31 +1,31 @@
 class Permissions {
-  async canEnter(user, room) {
-    if(!room || !user) {
+  async canEnter(actor, room) {
+    if(!room || !actor) {
       return false
     }
     if(room.is_public) {
       return true
     }
-    if(room.owner_id == user.id) {
+    if(room.creator_id == actor.id) {
       return true
     }
-    return await this.isMember(user, room)
+    return await this.isMember(actor, room)
   }
 
 
-  async isMemberOrOwner(user, room) {
-    if(room.owner_id == user.id) {
+  async isMemberOrOwner(actor, room) {
+    if(room.creator_id == actor.id) {
       return true
     }
-    return await shared.db.room.memberships.isMember(user.id, room.id)
+    return await shared.db.room.memberships.isMember(actor.id, room.id)
   }
 
-  async isMember(user, room) {
-    return await shared.db.room.memberships.isMember(user.id, room.id)
+  async isMember(actor, room) {
+    return await shared.db.room.memberships.isMember(actor.id, room.id)
   }
 
-  async isOwner(user, room) {
-    return room.owner_id == user.id
+  async isOwner(actor, room) {
+    return room.creator_id == actor.id
   }
 }
 

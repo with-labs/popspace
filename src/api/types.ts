@@ -10,6 +10,13 @@ export type BaseResponse = {
   success: true;
 };
 
+export type Actor = {
+  actorId: string;
+  displayName: string;
+  kind: string;
+  admin: boolean;
+};
+
 export type ApiOpenGraphResult = {
   title: string | null;
   iframeUrl: string | null;

@@ -1,6 +1,6 @@
 import { RoomTemplate } from '@roomState/exportRoomTemplate';
 import { ApiError } from '@src/errors/ApiError';
-import { ErrorResponse, BaseResponse, ApiOpenGraphResult } from './types';
+import { ErrorResponse, BaseResponse, ApiOpenGraphResult, Actor } from './types';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
@@ -23,7 +23,9 @@ export class ApiClient {
   };
 
   private _sessionToken: string | null = null;
-  private _actor: any = null;
+  private _actor: Actor | null = null;
+
+  private _actorCreatePromise: Promise<Actor> | null = null;
 
   get actor() {
     return this._actor;
@@ -36,7 +38,7 @@ export class ApiClient {
     }
   }
 
-  createActor = async () => {
+  private createActor = async () => {
     // bail early if we have one already
     if (this._actor) {
       return this._actor;
@@ -55,21 +57,52 @@ export class ApiClient {
     return actor;
   };
 
+  /**
+   * Ensures an actor is assigned to this client in a synchronized way,
+   * so that even if called multiple times in async only one actor is created.
+   *
+   * It does this by synchronously assigning a Promise class variable with
+   * an actor creation promise if such a promise is not already extant,
+   * otherwise it just returns that created promise.
+   */
+  private ensureActor = () => {
+    // if an actor exists, we're done.
+    if (this.actor) {
+      return Promise.resolve(this.actor);
+    }
+    if (!this._actorCreatePromise) {
+      // create and assign the promise, then clear it after it is finished.
+      this._actorCreatePromise = this.createActor().finally(() => {
+        this._actorCreatePromise = null;
+      });
+    }
+    return this._actorCreatePromise;
+  };
+
+  /** Request method wrapper for mandating an actor before making a request. */
+  private requireActor = <Handler extends (...args: any[]) => any>(handler: Handler) => {
+    return async (...args: Parameters<Handler>) => {
+      await this.ensureActor();
+      return handler(...args);
+    };
+  };
+
   logout = () => {
     this._actor = null;
     this._sessionToken = null;
+    this._actorCreatePromise = null;
     localStorage.removeItem(SESSION_TOKEN_KEY);
   };
 
-  createMeeting = (template: RoomTemplate) => {
+  createMeeting = this.requireActor((template: RoomTemplate) => {
     return this.post<{ newMeeting: any }>('/create_meeting', { template }, ApiClient.SERVICES.api);
-  };
+  });
 
-  joinMeeting = (roomName: string) => {
+  joinMeeting = this.requireActor((roomName: string) => {
     return this.post<{ token: string }>('/logged_in_join_room', { roomName }, ApiClient.SERVICES.netlify);
-  };
+  });
 
-  async getRoomFileUploadUrl(fileName: string, contentType: string) {
+  getRoomFileUploadUrl = this.requireActor(async (fileName: string, contentType: string) => {
     return await this.post<{ uploadUrl: string; downloadUrl: string }>(
       '/get_room_file_upload_url',
       {
@@ -78,13 +111,13 @@ export class ApiClient {
       },
       ApiClient.SERVICES.netlify
     );
-  }
+  });
 
-  async deleteFile(fileUrl: string) {
+  deleteFile = this.requireActor(async (fileUrl: string) => {
     return await this.post('/delete_file', { fileUrl }, ApiClient.SERVICES.netlify);
-  }
+  });
 
-  async getOpenGraph(url: string) {
+  getOpenGraph = this.requireActor(async (url: string) => {
     return await this.post<{ result: ApiOpenGraphResult }>(
       '/opengraph',
       {
@@ -92,15 +125,15 @@ export class ApiClient {
       },
       ApiClient.SERVICES.netlify
     );
-  }
+  });
 
-  async magicLinkUnsubscribe(otp: string, magicLinkId: string) {
-    return await this.post('/magic_link_unsubscribe', { otp, magicLinkId }, ApiClient.SERVICES.api);
-  }
+  magicLinkUnsubscribe = (otp: string, magicLinkId: string) => {
+    return this.post('/magic_link_unsubscribe', { otp, magicLinkId }, ApiClient.SERVICES.api);
+  };
 
-  async magicLinkSubscribe(otp: string, magicLinkId: string) {
-    return await this.post('/magic_link_subscribe', { otp, magicLinkId }, ApiClient.SERVICES.api);
-  }
+  magicLinkSubscribe = (otp: string, magicLinkId: string) => {
+    return this.post('/magic_link_subscribe', { otp, magicLinkId }, ApiClient.SERVICES.api);
+  };
 
   /* TODO: service should be mandatory/explicit; update all uses and remove the default value */
   async post<Response = {}>(endpoint: string, data: any = {}, service: Service) {

@@ -4,7 +4,6 @@ import { Route, Switch } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
-import { ActorRoute } from './components/ActorRoute/ActorRoute';
 import RoomPage from './pages/RoomPage/RoomPage';
 import { Subscribe } from './pages/Subscribe/Subscribe';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
@@ -18,17 +17,17 @@ export interface IRoutesProps {}
 export const Routes: React.FC<IRoutesProps> = () => {
   return (
     <Switch>
-      <ActorRoute exact path={RouteNames.ROOT}>
+      <Route exact path={RouteNames.ROOT}>
         <MeetingSelect />
-      </ActorRoute>
+      </Route>
 
-      <ActorRoute exact path={RouteNames.MEETING_LINK}>
+      <Route exact path={RouteNames.MEETING_LINK}>
         <MeetingLink />
-      </ActorRoute>
+      </Route>
 
-      <ActorRoute exact path={RouteNames.CREATE_MEETING}>
+      <Route exact path={RouteNames.CREATE_MEETING}>
         <CreateMeeting />
-      </ActorRoute>
+      </Route>
 
       <Route path={RouteNames.SUBSCRIBE}>
         <Subscribe />
@@ -49,7 +48,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
         </React.Suspense>
       </Route>
 
-      <ActorRoute
+      <Route
         path="/:roomRoute"
         render={(renderProps) => {
           return <RoomPage name={renderProps.match.params.roomRoute || null} />;

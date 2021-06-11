@@ -3,7 +3,6 @@ import { addVectors } from '@utils/math';
 import { Bounds, Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
 import { LinkWidgetState, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useRoomStore } from '@roomState/useRoomStore';
 import { Origin } from '@analytics/constants';
 import { useViewport } from '@providers/viewport/useViewport';
@@ -13,8 +12,7 @@ import { useViewport } from '@providers/viewport/useViewport';
  * assigning them as the owner and by default making it a draft.
  */
 export function useAddAccessory() {
-  const { user } = useCurrentUserProfile();
-  const userId = user?.id;
+  const userId = useRoomStore((room) => room.api.getActiveUserId());
 
   const viewport = useViewport();
 

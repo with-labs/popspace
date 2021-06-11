@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import { GrabbyIcon } from '@components/icons/GrabbyIcon';
 import { WidgetType } from '@roomState/types/widgets';
 import { useRoomStore } from '@roomState/useRoomStore';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '@utils/trackNames';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
@@ -77,7 +76,7 @@ export const SidecarStreamPreview = React.memo(
 
     // using Twilio IDs to compare ownership
     const localParticipant = useLocalParticipant();
-    const isLocal = userId === useCurrentUserProfile().user?.id;
+    const isLocal = useRoomStore((room) => room.api.getActiveUserId() === userId);
 
     const addWidget = useAddAccessory();
     const viewport = useViewport();

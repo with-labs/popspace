@@ -32,6 +32,9 @@
       "@images/*": [
         "./src/images/*"
       ],
+      "@api/*": [
+        "./src/api/*"
+      ],
       "@src/*": [
         "./src/*"
       ]

@@ -4,12 +4,8 @@ import { Route, Switch } from 'react-router-dom';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
-import { AuthenticatedRoute } from './components/AuthenticatedRoute/AuthenticatedRoute';
+import { ActorRoute } from './components/ActorRoute/ActorRoute';
 import RoomPage from './pages/RoomPage/RoomPage';
-import { Signup } from './pages/Signup/Signup';
-import { Signin } from './pages/SignIn/Signin';
-import { LoginWithEmail } from './pages/LoginWithEmail/LoginWithEmail';
-import { VerifyEmail } from './pages/VerifyEmail/VerifyEmail';
 import { Subscribe } from './pages/Subscribe/Subscribe';
 import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
@@ -19,44 +15,20 @@ const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}
 
-export const Routes: React.FC<IRoutesProps> = (props) => {
+export const Routes: React.FC<IRoutesProps> = () => {
   return (
     <Switch>
-      {/* TODO: open this to anon users */}
-      <AuthenticatedRoute exact path={RouteNames.ROOT}>
+      <ActorRoute exact path={RouteNames.ROOT}>
         <MeetingSelect />
-      </AuthenticatedRoute>
+      </ActorRoute>
 
-      {/* TODO: open this to anon users */}
-      <AuthenticatedRoute exact path={RouteNames.MEETING_LINK}>
+      <ActorRoute exact path={RouteNames.MEETING_LINK}>
         <MeetingLink />
-      </AuthenticatedRoute>
+      </ActorRoute>
 
-      {/* TODO: open this to anon users */}
-      <AuthenticatedRoute exact path={RouteNames.CREATE_MEETING}>
+      <ActorRoute exact path={RouteNames.CREATE_MEETING}>
         <CreateMeeting />
-      </AuthenticatedRoute>
-
-      {/* 
-        Commenting out signup / signin / login routes instead of deleting
-        since we will be revisting these in v2 and most is not all
-        of this work will be re-used
-      */}
-      {/* <Route exact path={RouteNames.SIGN_IN}>
-        <Signin />
-      </Route>
-
-      <Route exact path={RouteNames.SIGN_UP}>
-        <Signup />
-      </Route>
-
-      <Route path={RouteNames.COMPLETE_SIGNUP}>
-        <VerifyEmail />
-      </Route>
-
-      <Route path={RouteNames.LOGIN_IN_WITH_EMAIL}>
-        <LoginWithEmail />
-      </Route>
+      </ActorRoute>
 
       <Route path={RouteNames.SUBSCRIBE}>
         <Subscribe />
@@ -64,7 +36,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
 
       <Route path={RouteNames.UNSUBSCRIBE}>
         <Unsubscribe />
-      </Route> */}
+      </Route>
 
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}
@@ -77,8 +49,7 @@ export const Routes: React.FC<IRoutesProps> = (props) => {
         </React.Suspense>
       </Route>
 
-      {/* TODO: open this to anon users */}
-      <AuthenticatedRoute
+      <ActorRoute
         path="/:roomRoute"
         render={(renderProps) => {
           return <RoomPage name={renderProps.match.params.roomRoute || null} />;

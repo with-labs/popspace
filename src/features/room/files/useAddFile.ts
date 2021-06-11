@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { WidgetType } from '@roomState/types/widgets';
 import { useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
-import api from '@utils/api';
+import api from '@api/client';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { SIZE_STUB } from '../widgets/link/constants';
 

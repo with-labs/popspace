@@ -3,11 +3,12 @@ import clsx from 'clsx';
 import { makeStyles, CircularProgress, Box } from '@material-ui/core';
 import { PageTitle } from '@components/PageTitle/PageTitle';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
-import { ErrorInfo } from '../../types/api';
+import { ErrorResponse } from '@api/types';
+import { ApiError } from '@src/errors/ApiError';
 
 interface IPageProps {
   isLoading?: boolean;
-  error?: ErrorInfo | null;
+  error?: ErrorResponse | ApiError | null;
   className?: string;
   children?: React.ReactNode;
   pageTitle?: string;
@@ -27,7 +28,7 @@ export const Page: React.FC<IPageProps> = (props) => {
   const classes = useStyles();
 
   return error ? (
-    <ErrorPage type={error.errorCode} errorMessage={error.error?.message} />
+    <ErrorPage type={error.errorCode} errorMessage={error.message} />
   ) : (
     <main className={clsx(classes.root, className)}>
       <PageTitle title={pageTitle} />

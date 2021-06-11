@@ -1,8 +1,8 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Typography, Box, Container, TextField, Button, MuiThemeProvider } from '@material-ui/core';
+import { makeStyles, Typography, Box, TextField, Button, MuiThemeProvider } from '@material-ui/core';
 import { useHistory } from 'react-router';
-import { ApiNamedRoom } from '@utils/api';
+import { ApiNamedMeeting } from '@api/types';
 import { useTranslation } from 'react-i18next';
 import { RouteNames } from '@constants/RouteNames';
 import { lavender, mandarin, oregano } from '@src/theme/theme';
@@ -53,7 +53,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
   const classes = useStyles();
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false);
 
-  const history = useHistory<{ meetingInfo: ApiNamedRoom }>();
+  const history = useHistory<{ meetingInfo: ApiNamedMeeting }>();
   const meetingInfo = history.location.state?.meetingInfo;
 
   // if we are on prod, use the shortented base url for share links, otherwise just

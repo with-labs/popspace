@@ -3,9 +3,8 @@ import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { RoomEvent, RoomState } from '@constants/twilio';
 import { FatalError } from '../../errors/FatalError';
-import { JoinError } from '../../errors/JoinError';
 import i18n from '../../i18n';
-import api from '@utils/api';
+import client from '@api/client';
 import { logger } from '@utils/logger';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
@@ -53,22 +52,8 @@ export class ReconnectingTwilioRoom extends EventEmitter {
       throw new FatalError(i18n.t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
     }
     this.emit('connecting');
-    const tokenResult = await api.loggedInEnterRoom(this.roomName);
-    if (!tokenResult.success || !tokenResult.token) {
-      // TODO: update these error messages to use the utils/ErrorMessage functions to get
-      // error messages from the error it self sicne we dont have some of these error messages right now.
-      if (tokenResult.errorCode === ErrorCodes.UNAUTHORIZED_ROOM_ACCESS) {
-        throw new JoinError(i18n.t('error.messages.roomAccess'), tokenResult.errorCode);
-      } else if (tokenResult.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-        throw new FatalError(i18n.t('error.messages.unknownRoom'), tokenResult.errorCode);
-      } else if (tokenResult.errorCode === ErrorCodes.UNAUTHORIZED_USER) {
-        throw new JoinError(i18n.t('error.messages.unauthorized'), tokenResult.errorCode);
-      } else {
-        logger.error(`Unhandled exception during room join`, tokenResult.errorCode, tokenResult.message);
-        throw new JoinError(i18n.t('error.messages.joinRoomUnknownFailure'), ErrorCodes.JOIN_ROOM_UNKNOWN);
-      }
-    }
     try {
+      const tokenResult = await client.joinMeeting(this.roomName);
       this._room = await Video.connect(tokenResult.token, this.options);
       this.emit('connected', this._room);
       this.emit('roomChanged', this._room);

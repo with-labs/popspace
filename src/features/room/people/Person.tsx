@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { PersonBubble } from './PersonBubble';
 import { useRoomStore } from '@roomState/useRoomStore';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useSoundEffects } from '@components/SoundEffectProvider/useSoundEffects';
 import { CanvasObject } from '@providers/canvas/CanvasObject';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import { makeStyles } from '@material-ui/core';
 import { usePersonStreams } from './usePersonStreams';
+import shallow from 'zustand/shallow';
 
 const MAX_Z_INDEX = 2147483647;
 export interface IPersonProps {
@@ -23,8 +23,10 @@ const useStyles = makeStyles(() => ({
 export const Person = React.memo<IPersonProps>(({ personId }) => {
   const classes = useStyles();
 
-  const person = useRoomStore(React.useCallback((room) => room.users[personId], [personId]));
-  const isMe = personId === useCurrentUserProfile().user?.id;
+  const [person, isMe] = useRoomStore(
+    React.useCallback((room) => [room.users[personId], room.api.getActiveUserId() === personId], [personId]),
+    shallow
+  );
 
   const { mainStream, secondaryStreams: sidecarStreams } = usePersonStreams(personId);
 

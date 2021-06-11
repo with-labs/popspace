@@ -9,7 +9,6 @@ import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '@components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 import { WidgetType } from '@roomState/types/widgets';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
@@ -57,8 +56,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 
   const { widget: state, save } = useWidgetContext<WidgetType.StickyNote>();
 
-  const { user } = useCurrentUserProfile();
-  const localUserId = user?.id;
+  const localUserId = useRoomStore((room) => room.api.getActiveUserId());
 
   const isOwnedByLocalUser = state.ownerId === localUserId;
 

@@ -1,30 +1,20 @@
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
-import { Markdown } from '../../../../components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 import { WidgetType } from '../../../../roomState/types/widgets';
-import { useCurrentUserProfile } from '../../../../hooks/api/useCurrentUserProfile';
-import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
-import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
-import { EditIcon } from '../../../../components/icons/EditIcon';
-import { DoneIcon } from '../../../../components/icons/DoneIcon';
 import { ThemeName } from '../../../../theme/theme';
-import { Analytics } from '../../../../analytics/Analytics';
-import { EventNames } from '../../../../analytics/constants';
 import { useRoomStore } from '../../../../roomState/useRoomStore';
 import CollaborativeQuill from '@withso/pegasus';
 import { useCanvas } from '../../../../providers/canvas/CanvasProvider';
 import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
 
 import { CircularProgress } from '@material-ui/core';
-
-import api from '../../../../utils/api';
 
 export interface INotepadWidgetProps {}
 
@@ -58,11 +48,12 @@ const useStyles = makeStyles((theme) => ({
 export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const roomId = useRoomStore((store) => store.id);
+  const localUserId = useRoomStore((store) => store.api.getActiveUserId());
+  const userDisplayName = useRoomStore(
+    (store) => store.users[store.api.getActiveUserId()]?.participantState.displayName ?? ''
+  );
 
-  const { widget: state, save } = useWidgetContext<WidgetType.Notepad>();
-  const { user } = useCurrentUserProfile();
-  const localUserId = user?.id;
+  const { widget: state } = useWidgetContext<WidgetType.Notepad>();
 
   const startSize = useRoomStore(
     React.useCallback(
@@ -133,7 +124,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
               host={process.env.REACT_APP_PEGASUS_SOCKET_HOST}
               docId={state.widgetId}
               docCollection="documents"
-              userDisplayName={user?.display_name ?? ''}
+              userDisplayName={userDisplayName}
               height={size.height}
               width={size.width}
             />

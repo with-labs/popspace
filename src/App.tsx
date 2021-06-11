@@ -4,7 +4,6 @@ import { mandarin as theme } from './theme/theme';
 import { Router } from 'react-router';
 import AppStateProvider from './state';
 import { Routes } from './Routes';
-import { useAnalyticsUserIdentity } from './hooks/useAnalyticsUserIdentity/useAnalyticsUserIdentity';
 import { FlaggProvider } from 'flagg/dist/react';
 import { featureFlags } from './featureFlags';
 import { ReactQueryCacheProvider } from 'react-query';
@@ -21,9 +20,7 @@ import { NotSupported } from '@src/pages/NotSupported/NotSupported';
 export interface IAppProps {}
 
 export const App: React.FC<IAppProps> = () => {
-  // on load, if the user is logged in, identify them to various
-  // tooling
-  useAnalyticsUserIdentity();
+  // TODO: set up analytics identity using whatever user information is available to us
 
   // setup crisp inegration
   useCrisp();

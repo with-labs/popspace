@@ -1,6 +1,6 @@
 {
-  "name": "with-app",
-  "version": "1.134.0",
+  "name": "noodle-app",
+  "version": "1.0.0",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {

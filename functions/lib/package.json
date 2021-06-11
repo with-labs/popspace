@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@withso/noodle-shared": "1.0.1",
+    "@withso/noodle-shared": "^1.0.9",
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.739.0",
     "axios": "^0.21.1",

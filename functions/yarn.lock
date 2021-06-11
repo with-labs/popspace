@@ -16,13 +16,14 @@
     pg-protocol "^1.2.0"
     pg-types "^2.2.0"
 
-"@withso/noodle-shared@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-1.0.1.tgz"
-  integrity sha512-/KwjmU1UJYF2E/NjZrpEXN77+7o4ihXyD9Ya0xXKDGigVmFRdkYOAnIk5TslLPRdQOkN6fFVzAKD4mQl8rkEjw==
+"@withso/noodle-shared@^1.0.0":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.8.tgz#1ca2d60d4f26204d349bc80c92852c3b88187164"
+  integrity sha512-3fPTVtwUo/Yj4N5DUCZDNzpBO32xPaUUcyGVCWub+q/cA64+pRUNT99VC2n5XFs7mAn9gLsNEk9brPiEvfbiPg==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
+    btoa "^1.2.1"
     crypto-random-string "^3.3.0"
     dotenv "^8.2.0"
     massive "^6.6.1"
@@ -192,6 +193,11 @@ browser-process-hrtime@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz"
   integrity sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==
+
+btoa@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/btoa/-/btoa-1.2.1.tgz#01a9909f8b2c93f6bf680ba26131eb30f7fa3d73"
+  integrity sha512-SB4/MIGlsiVkMcHmT+pSmIPoNDoHg+7cMzmt3Uxt628MTz2487DKSqK/fuhFBrkuqrYv5UCEnACpF4dTFNKc/g==
 
 buffer-writer@2.0.0:
   version "2.0.0"
@@ -773,7 +779,7 @@ levn@~0.3.0:
 "lib@file:./lib":
   version "1.0.0"
   dependencies:
-    "@withso/noodle-shared" "1.0.1"
+    "@withso/noodle-shared" "^1.0.0"
     async-lock "^1.2.4"
     aws-sdk "^2.739.0"
     axios "^0.21.1"

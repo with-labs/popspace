@@ -1,12 +1,12 @@
-const bodyParser = require("body-parser")
 const cors = require("cors")
+const express = require('express')
 
 class NoodleMiddleware {
-  constructor(express) {
-    this.express = express
+  constructor(expressInstance) {
+    this.express = expressInstance
     this.express.use(cors())
-    this.express.use(bodyParser.json());
-    this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use(express.json());
+    this.express.use(express.urlencoded({ extended: false }));
     this.express.use(shared.api.middleware.getIp)
     this.express.use((req, res, next) => {
       log.request.info(req.path, req.ip, req.body)

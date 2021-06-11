@@ -601,7 +601,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@^1.0.9":
+"@withso/noodle-shared@^1.0.0":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.9.tgz#8a0423c83c5a66d86eda2a1a2da5cb2c3cc3b424"
   integrity sha512-AAnsq3cVsK9U4bBlSF6zuqkdd6kV+Go4eNJG77WSXb6fmTUeQGpMk0bANDr07pqknFg/m2ZEtP/dKuiA7+SSJA==

@@ -3,10 +3,9 @@ Shared code between Noodle microservices
 
 ## Using testing tools
 
-Currently to use the testing tools you have to install their dependencies manually.
+
+Import them from `@withso/noodle-shared/test`:
 
 ```
-yarn add --dev factory-girl dotenv commander chance btoa
+const { test, tool } = require('@withso/noodle-shared/test');
 ```
-
-Then import them from `@withso/noodle-shared/test`

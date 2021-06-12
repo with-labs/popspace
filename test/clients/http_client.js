@@ -79,9 +79,11 @@ class HttpClient {
 
 HttpClient.anyLoggedInOrCreate = async (host, certificate, port) => {
   let actor = await shared.db.pg.massive.actors.findOne({})
-  if(!actor) {
-     actor = await shared.test.factory.create("actor")
-  }
+  return HttpClient.create(host, certificate, port)
+}
+
+HttpClient.create = async (host, certificate, port) => {
+  const actor = await shared.test.factory.create("actor")
   return HttpClient.forActor(actor, host, certificate, port)
 }
 

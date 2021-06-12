@@ -1,10 +1,10 @@
 class RoomWidget {
-  constructor(roomId, pgWidget, widgetState, roomState, ownerDisplayName) {
+  constructor(roomId, pgWidget, widgetState, roomState, creatorDisplayName) {
     this._roomId = roomId
     this._pgWidget = pgWidget
     this._widgetState = widgetState
     this._roomState = roomState
-    this._ownerDisplayName = ownerDisplayName
+    this._creatorDisplayName = creatorDisplayName
   }
 
   widgetId() {
@@ -23,18 +23,18 @@ class RoomWidget {
     return this._roomId
   }
 
-  ownerId() {
-    return this._pgWidget.owner_id
+  creatorId() {
+    return this._pgWidget.creator_id
   }
 
-  ownerDisplayName() {
-    return this._ownerDisplayName
+  creatorDisplayName() {
+    return this._creatorDisplayName
   }
 
   async serialize() {
     return {
       widget_id: this._pgWidget.id,
-      owner_id: this._pgWidget.owner_id,
+      creator_id: this._pgWidget.creator_id,
       type: this._pgWidget._type,
       widget_state: this.widgetState(),
       /*
@@ -49,11 +49,11 @@ class RoomWidget {
         fetch it from a cached global store.
 
         FOLLOWUP: E.g. in another context though, it's really nice
-        to be able to override the display name no matter who the owner is:
+        to be able to override the display name no matter who the creator is:
         for our system-made objects, like for default objects created in rooms,
-        it's nice to control the owner name based on the context, not the owner.
+        it's nice to control the creator name based on the context, not the creator.
       */
-      owner_display_name: this._ownerDisplayName,
+      creator_display_name: this._creatorDisplayName,
       transform: this._roomState
     }
   }
@@ -62,9 +62,9 @@ class RoomWidget {
 RoomWidget.fromWidgetId = async (widgetId, roomId) => {
   const pgWidgets = await shared.db.pg.massive.query(`
     SELECT
-      widgets.id, widgets._type, widgets.owner_id,
-      actors.display_name AS owner_display_name
-    FROM widgets JOIN actors ON widgets.owner_id = actors.id
+      widgets.id, widgets._type, widgets.creator_id,
+      actors.display_name AS creator_display_name
+    FROM widgets JOIN actors ON widgets.creator_id = actors.id
     WHERE widgets.id = $1
   `, parseInt(widgetId))
   if(pgWidgets.length < 1) {

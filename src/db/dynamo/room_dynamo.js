@@ -40,7 +40,7 @@ class RoomDynamo {
   async getRoomWidget(roomId, widget) {
     const widgetState = await this.getWidgetState(widget.id)
     const roomState = await this.getRoomWidgetState(roomId, widget.id)
-    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomState, widget.owner_display_name)
+    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomState, widget.creator_display_name)
     return roomWidget
   }
 

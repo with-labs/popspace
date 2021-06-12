@@ -5,11 +5,11 @@ const STANDARD_WIDGET_STATE = [
 const STANDARD_WIDGET_TRANSFORM = [
 ]
 
-const createStandardWidgets = async (ownerId, roomId) => {
+const createStandardWidgets = async (creatorId, roomId) => {
   const result = []
   for(let i = 0; i < STANDARD_WIDGET_STATE.length; i++) {
     const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
-      const widget = await tx.widgets.insert({owner_id: ownerId, _type: STANDARD_WIDGET_TYPE[i]})
+      const widget = await tx.widgets.insert({creator_id: creatorId, _type: STANDARD_WIDGET_TYPE[i]})
       const roomWidget = await tx.room_widgets.insert({widget_id: widget.id, room_id: roomId})
       return widget
     })
@@ -27,7 +27,7 @@ const createStandardWidgets = async (ownerId, roomId) => {
   return result
 }
 
-const getMockOwnerId = async () => {
+const getMockCreatorId = async () => {
   switch(process.env.NODE_ENV) {
     case "production":
       return 306 // Dorothy Gale
@@ -44,8 +44,8 @@ const getMockOwnerId = async () => {
 
 const defaults = {
   setUpDefaultRoomData: async (roomId, displayName) => {
-    const standardOwnerId = await getMockOwnerId()
-    const roomWidgets = await createStandardWidgets(standardOwnerId, roomId)
+    const standardCreatorId = await getMockCreatorId()
+    const roomWidgets = await createStandardWidgets(standardCreatorId, roomId)
     return defaults.setUpDefaultRoom(roomId, displayName, roomWidgets)
   },
 
@@ -89,7 +89,7 @@ const defaults = {
     return roomData
   },
 
-  getMockOwnerId
+  getMockCreatorId
 }
 
 

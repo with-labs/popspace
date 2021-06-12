@@ -3,14 +3,14 @@ module.exports = class {
     this.loggedInActors = []
   }
 
-  async createLoggedInActor(client, room=null, roomNameEntry=null) {
-    const created = await this.createActorWithRoomAccess(client, room, roomNameEntry)
-    return this.logIntoRoom(client, created.actor, created.room, created.roomNameEntry)
+  async createLoggedInActor(client, room=null) {
+    const created = await this.createActorWithRoomAccess(client, room)
+    return this.logIntoRoom(client, created.actor, created.room)
   }
 
-  async createActorWithRoomAccess(client, room, roomNameEntry) {
+  async createActorWithRoomAccess(client, room) {
     const actor = await factory.create("actor")
-    if(room && room.owner_id != actor.id) {
+    if(room && room.creator_id != actor.id) {
       const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(actor.id, room.id)
       if(!alreadyHasAccess) {
         await shared.db.roomMemberships.forceMembership(room.id, actor)
@@ -19,16 +19,15 @@ module.exports = class {
       const isEmptyRoom = true
       let roomInfo = await shared.db.rooms.generateRoom(actor.id, isEmptyRoom)
       room = roomInfo.room
-      roomNameEntry = roomInfo.roomNameEntry
     }
 
-    return { actor, room, roomNameEntry }
+    return { actor, room }
   }
 
-  async logIntoRoom(client, actor, room, roomNameEntry) {
+  async logIntoRoom(client, actor, room) {
     // TODO: this should move out to RoomActorClient
     const { session, token } = await this.initiateLoggedInSession(actor.id)
-    const roomActorClient = new tlib.models.RoomActorClient(room, actor, client, roomNameEntry)
+    const roomActorClient = new tlib.models.RoomActorClient(room, actor, client)
     await roomActorClient.setLogInSession(session, token)
     this.loggedInActors.push(roomActorClient)
     return roomActorClient
@@ -44,7 +43,7 @@ module.exports = class {
   async authenticate(roomActorClient) {
     // TODO: I don't think we can replace this with roomActorClient.authenticate(), since we
     // have some places where we haven't transitioned to using the class yet (in the tests themselves)
-    const auth = await roomActorClient.client.authenticate(roomActorClient.token, roomActorClient.roomNameEntry.name)
+    const auth = await roomActorClient.client.authenticate(roomActorClient.token, roomActorClient.room)
     roomActorClient.auth = auth
   }
 }

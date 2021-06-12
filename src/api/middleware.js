@@ -62,6 +62,14 @@ const middleware = {
     next()
   },
 
+  requireRoomMember: async (req, res, next) => {
+    const isMember = await shared.db.room.permissions.isMember(req.user, req.room)
+    if(!isMember) {
+      return next({ errorCode: shared.error.code.PERMISSION_DENIED, message:"Insufficient permission", httpCode: shared.api.http.code.UNAUTHORIZED })
+    }
+    next()
+  },
+
   requireRoomMemberOrCreator: async (req, res, next) => {
     const isMemberOrCreator = await shared.db.room.permissions.isMemberOrCreator(req.actor, req.room)
     if(!isMemberOrCreator) {

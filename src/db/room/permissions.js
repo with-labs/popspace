@@ -13,7 +13,7 @@ class Permissions {
   }
 
 
-  async isMemberOrOwner(actor, room) {
+  async isMemberOrCreator(actor, room) {
     if(room.creator_id == actor.id) {
       return true
     }
@@ -24,7 +24,7 @@ class Permissions {
     return await shared.db.room.memberships.isMember(actor.id, room.id)
   }
 
-  async isOwner(actor, room) {
+  async isCreator(actor, room) {
     return room.creator_id == actor.id
   }
 }

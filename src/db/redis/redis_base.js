@@ -3,10 +3,32 @@ const moment = require("moment")
 
 module.exports = class {
   constructor(credentials) {
-    console.log("Connecting to redis...")
     this.client = redis.createClient(credentials);
+    this.client.on("ready", () => {
+      /*
+        TODO: right now, this serendipitously works,
+        since by the time this line is reached,
+        all of our downstream repos dependent on redis
+        will already have logging initialized in this style.
+
+        But we should move towards a longer-term solution. Ideas:
+        - log is defined in shared
+          - downstream apps need to control the directory of logging
+          - but perhaps if it defaults to being in the repos `./logs` it's fine
+          - there needs to be a capacity to add more log outputs
+          - the problem is log4js takes a config with outputs up front,
+            so we gotta figure out how to best handle the config/init handshake
+        - log is stubbed in shared
+          - if no log is defined, we can define logging via console.log
+          - the problem is where to define it
+          - log is now global in downstream repos
+          - but shared shouldn't reference globals other than shared
+          - we could do shared.log, and declare log as a synonym downstream
+      */
+      log.app.info("Redis is ready")
+    })
     this.client.on("error", (error) => {
-      console.log("Error initializing redis", error)
+      log.error.error("Error initializing redis", error)
     })
   }
 

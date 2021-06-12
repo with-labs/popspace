@@ -1,4 +1,4 @@
-const { getMockOwnerId } = require("./defaults")
+const { getMockCreatorId } = require("./defaults")
 
 /**
  * @typedef {Object} RoomState
@@ -20,7 +20,7 @@ module.exports = {
    * @param {TemplateData} templateData
    */
   setUpRoomFromTemplate: async (roomId, templateData) => {
-    const ownerId = await getMockOwnerId()
+    const creatorId = await getMockCreatorId()
 
     const state = {
       ...templateData.state,
@@ -36,7 +36,7 @@ module.exports = {
     for (const [type, widgetState, transform] of templateData.widgets) {
       const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
         const widget = await tx.widgets.insert({
-          owner_id: ownerId,
+          creator_id: creatorId,
           _type: type,
         })
         const roomWidget = await tx.room_widgets.insert({

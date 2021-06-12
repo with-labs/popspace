@@ -73,12 +73,12 @@ class Rooms {
   /**
    * Create a room using provided template data.
    * @param {TemplateData} template
-   * @param {number} ownerId - may be deprecated as we move to anon actors
+   * @param {number} creatorId - may be deprecated as we move to anon actors
    */
-  async createRoomFromTemplate(template, ownerId, isPublic=true) {
+  async createRoomFromTemplate(template, creatorId, isPublic=true) {
     const urlId = await shared.db.room.namesAndRoutes.generateUniqueRoomUrlId()
     const room = await shared.db.pg.massive.rooms.insert({
-      owner_id: ownerId,
+      creator_id: creatorId,
       is_public: isPublic,
       url_id: urlId,
       display_name: template.state.display_name

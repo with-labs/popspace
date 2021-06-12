@@ -65,7 +65,7 @@ class Memberships {
   async forceMembership(room, actor) {
     if(room.creator_id == actor.id) {
       /*
-        TODO: Update the error code, or alternatively allow owners to be members
+        TODO: Update the error code, or alternatively allow creators to be members
       */
       return { error: shared.error.code.JOIN_ALREADY_MEMBER }
     }

@@ -39,7 +39,7 @@ class PeerEvent {
   serialize() {
     return {
       sender: {
-        user_id: this.sender().userId(),
+        actor_id: this.sender().actorId(),
         session_id: this.sender().sessionId()
       },
       kind: this.kind(),

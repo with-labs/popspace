@@ -1,7 +1,7 @@
-global.tlib = require("../../../lib/_testlib")
+require("../../../test/_test.js")
 const scenarios = require('./events_scenarios')
 
-tlib.TestTemplate.describeWithLib('mercury_events', () => {
+shared.test.TestTemplate.describeWithLib('mercury_events', () => {
   // We have some long-running tests
   jest.setTimeout(30000);
 

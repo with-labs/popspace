@@ -48,12 +48,12 @@ class EventProcessor {
 
       if(!PUBLIC_EVENT_KINDS[eventKind]) {
         if(!sender.isAuthenticated()) {
-          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+          return sender.sendError(mercuryEvent, shared.error.code.UNAUTHORIZED_USER, "Please authenticate.")
         }
         const hasAuthorizedRoomAccess = await sender.hasAuthorizedRoomAccess()
         if(!hasAuthorizedRoomAccess) {
-          /* This can happen if a user was kicked */
-          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Lost authorization")
+          /* This can happen if a actor was kicked */
+          return sender.sendError(mercuryEvent, shared.error.code.UNAUTHORIZED_USER, "Lost authorization")
         }
       }
 

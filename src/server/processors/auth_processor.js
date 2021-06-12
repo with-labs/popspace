@@ -59,7 +59,7 @@ class AuthProcessor {
   }
 
   async getAuthData(mercuryEvent) {
-    const user = mercuryEvent.senderUser()
+    const actor = mercuryEvent.senderActor()
     const participant = mercuryEvent.senderParticipant()
     const roomId = mercuryEvent.roomId()
     const room = await lib.roomData.getRoomData(roomId)

@@ -91,9 +91,9 @@ class Client extends EventEmitter {
     clearTimeout(this.heartbeatTimeout)
   }
 
-  userId() {
+  actorId() {
     this.requireReady()
-    return this.roomData.userId()
+    return this.roomData.actorId()
   }
 
   async disconnect() {

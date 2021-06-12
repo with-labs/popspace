@@ -1,10 +1,10 @@
 module.exports = {
-  "connect_send_disconnect": tlib.TestTemplate.testServerClients(1, async (clients) => {
+  "connect_send_disconnect": lib.test.template.testServerClients(1, async (clients) => {
     clients[0].broadcast("hello")
     return true
   }),
 
-  "heartbeat_timeout_disconnect": tlib.TestTemplate.testServerClients(1, async (clients, mercury) => {
+  "heartbeat_timeout_disconnect": lib.test.template.testServerClients(1, async (clients, mercury) => {
     const heartbeatIntervalMillis = 60000
     const heartbeatTimeoutMillis = 100
     const client = new lib.Client(`wss://localhost:${process.env.TEST_PORT}`, heartbeatIntervalMillis, heartbeatTimeoutMillis)
@@ -22,8 +22,8 @@ module.exports = {
     }
   }),
 
-  "heartbeat_timeout_event_propagate": tlib.TestTemplate.authenticatedUser(async (testEnvironment) => {
-    const existingClient = testEnvironment.loggedInUsers[0].client
+  "heartbeat_timeout_event_propagate": lib.test.template.authenticatedActor(async (testEnvironment) => {
+    const existingClient = testEnvironment.loggedInActors[0].client
     const mercury = testEnvironment.mercury
     let leaveEvent
     const leaveEventPromise = new Promise((resolve, reject) => {
@@ -33,17 +33,16 @@ module.exports = {
       })
     })
 
-    const room = testEnvironment.loggedInUsers[0].room
-    const roomNameEntry = testEnvironment.loggedInUsers[0].roomNameEntry
+    const room = testEnvironment.loggedInActors[0].room
 
     const heartbeatIntervalMillis = 60000
     // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
     const heartbeatTimeoutMillis = 1500
-    const clients = await tlib.util.addClients(testEnvironment.mercury, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
+    const clients = await lib.test.util.addClients(testEnvironment.mercury, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
     const client = clients[0]
 
-    const environmentUser = await testEnvironment.createLoggedInUser(client, room, roomNameEntry)
-    await testEnvironment.authenticate(environmentUser)
+    const environmentActor = await testEnvironment.createLoggedInActor(client, room)
+    await testEnvironment.authenticate(environmentActor)
 
     const readyBeforeTimeout = client.isReady()
     const clientsBeforeTimeout = mercury.clientsCount()
@@ -60,17 +59,17 @@ module.exports = {
     }
   }),
 
-  "1_sender_2_receivers": tlib.TestTemplate.nAuthenticatedUsers(3, async (testEnvironment) => {
-    const loggedInUsers = testEnvironment.loggedInUsers
+  "1_sender_2_receivers": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
+    const loggedInActors = testEnvironment.loggedInActors
     const sentMessage = 'hello'
-    const sender = loggedInUsers[0].client
+    const sender = loggedInActors[0].client
     const messagesReceived = []
     const receivePromises = []
 
-    loggedInUsers.forEach((loggedInUser) => {
-      if(loggedInUser.client != sender) {
+    loggedInActors.forEach((loggedInActor) => {
+      if(loggedInActor.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {
-          loggedInUser.client.on('event.echo', (event) => {
+          loggedInActor.client.on('event.echo', (event) => {
             messagesReceived.push(event.payload.message)
             resolve()
           })
@@ -86,7 +85,7 @@ module.exports = {
     }
   }),
 
-  "2_peers_back_and_forth": tlib.TestTemplate.nAuthenticatedUsers(2, async (testEnvironment) => {
+  "2_peers_back_and_forth": lib.test.template.nAuthenticatedActors(2, async (testEnvironment) => {
     const messageList1 = ["hello", "msg1", "hi", "msg3"]
     const messageList2 = ["goodbye", "msg2", "bye", "msg4"]
 
@@ -96,7 +95,7 @@ module.exports = {
     const messagesReceived1 = []
     const messagesReceived2 = []
     const sequence = []
-    const clients = testEnvironment.loggedInUsers.map((u) => (u.client))
+    const clients = testEnvironment.loggedInActors.map((u) => (u.client))
 
     await new Promise((resolve, reject) => {
       clients[0].on('event.echo', (event) => {

@@ -1,9 +1,9 @@
-class MercuryError {
+class HermesError {
   constructor(errorCode, message) {
     this.errorCode = errorCode
     this.message = message
-    this.name = "MercuryError"
+    this.name = "HermesError"
   }
 }
 
-module.exports = MercuryError
+module.exports = HermesError

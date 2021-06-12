@@ -1,7 +1,7 @@
 require("../../../test/_test.js")
 const scenarios = require('./events_scenarios')
 
-shared.test.TestTemplate.describeWithLib('mercury_events', () => {
+shared.test.TestTemplate.describeWithLib('hermes_events', () => {
   // We have some long-running tests
   jest.setTimeout(30000);
 

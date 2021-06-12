@@ -33,12 +33,11 @@ class Analytics {
       room_id: participant.roomId(),
       actor_id: participant.actorId(),
       participant_id: participant.sessionId(),
-      socket_group_id: socketGroup.getId(),
       began_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()
     })
     /*
-      Since participant_ids reset between mercury run, we can't rely on them
+      Since participant_ids reset between hermes run, we can't rely on them
       to identify a usage session.
 
       So instead, every time beginSession() is called, remember the id of
@@ -65,7 +64,6 @@ class Analytics {
       room_id: event.roomId(),
       actor_id: event.actorId(),
       participant_id: event.sessionId(),
-      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
       is_toggled_on: event.payload().is_on,
       toggled_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()
@@ -91,7 +89,6 @@ class Analytics {
       room_id: event.roomId(),
       actor_id: event.actorId(),
       participant_id: event.sessionId(),
-      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
       is_toggled_on: event.payload().is_on,
       toggled_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()

@@ -17,7 +17,7 @@ module.exports = {
           remainingNotifications--
           if(remainingNotifications == 0) {
             /*
-              We'll actually get some final notifications as mercury
+              We'll actually get some final notifications as hermes
               is shutting down - since we try to gracefuly disconect clients,
               which sends other clients participantLeft notifications.
               So compare == instead of <=

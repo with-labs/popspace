@@ -4,15 +4,15 @@ module.exports = {
     return true
   }),
 
-  "heartbeat_timeout_disconnect": lib.test.template.testServerClients(1, async (clients, mercury) => {
+  "heartbeat_timeout_disconnect": lib.test.template.testServerClients(1, async (clients, hermes) => {
     const heartbeatIntervalMillis = 60000
     const heartbeatTimeoutMillis = 100
     const client = new lib.Client(`wss://localhost:${process.env.TEST_PORT}`, heartbeatIntervalMillis, heartbeatTimeoutMillis)
     await client.connect()
     const readyBeforeTimeout = client.isReady()
-    const clientsBeforeTimeout = mercury.clientsCount()
+    const clientsBeforeTimeout = hermes.clientsCount()
     await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
-    const clientsAfterTimeout = mercury.clientsCount()
+    const clientsAfterTimeout = hermes.clientsCount()
     const readyAfterTimeout = client.isReady()
     return {
       clientsBeforeTimeout,
@@ -24,7 +24,7 @@ module.exports = {
 
   "heartbeat_timeout_event_propagate": lib.test.template.authenticatedActor(async (testEnvironment) => {
     const existingClient = testEnvironment.loggedInActors[0].client
-    const mercury = testEnvironment.mercury
+    const hermes = testEnvironment.hermes
     let leaveEvent
     const leaveEventPromise = new Promise((resolve, reject) => {
       existingClient.on('event.participantLeft', (event) => {
@@ -38,16 +38,16 @@ module.exports = {
     const heartbeatIntervalMillis = 60000
     // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
     const heartbeatTimeoutMillis = 1500
-    const clients = await lib.test.util.addClients(testEnvironment.mercury, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
+    const clients = await lib.test.util.addClients(testEnvironment.hermes, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
     const client = clients[0]
 
     const environmentActor = await testEnvironment.createLoggedInActor(client, room)
     await testEnvironment.authenticate(environmentActor)
 
     const readyBeforeTimeout = client.isReady()
-    const clientsBeforeTimeout = mercury.clientsCount()
+    const clientsBeforeTimeout = hermes.clientsCount()
     await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
-    const clientsAfterTimeout = mercury.clientsCount()
+    const clientsAfterTimeout = hermes.clientsCount()
     const readyAfterTimeout = client.isReady()
     await leaveEventPromise
     return {

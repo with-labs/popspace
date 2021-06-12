@@ -1,4 +1,4 @@
-const MercuryMiddleware = require("./mercury_middleware")
+const HermesMiddleware = require("./hermes_middleware")
 const http = require("./http")
 
 const safeHandleRequest = (endpoint, handler) => {
@@ -19,7 +19,7 @@ const safeHandleRequest = (endpoint, handler) => {
 class Api {
   constructor(express) {
     this.express = express
-    this.middleware = new MercuryMiddleware(express)
+    this.middleware = new HermesMiddleware(express)
   }
 
   setupGenericErrorHandling() {

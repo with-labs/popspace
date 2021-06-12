@@ -2,36 +2,36 @@
   Represents an event that was triggered by a PeerEvent
 */
 module.exports = class ResponseEvent {
-  constructor(sourceMercuryEvent, payload, kind) {
-    this._sourceMercuryEvent = sourceMercuryEvent
+  constructor(sourceHermesEvent, payload, kind) {
+    this._sourceHermesEvent = sourceHermesEvent
     this._data = {
       payload: payload,
-      kind: kind || `${sourceMercuryEvent.kind()}.response`,
-      request_id: sourceMercuryEvent.requestId()
+      kind: kind || `${sourceHermesEvent.kind()}.response`,
+      request_id: sourceHermesEvent.requestId()
     }
   }
 
   sourceKind() {
-    return this._sourceMercuryEvent.kind()
+    return this._sourceHermesEvent.kind()
   }
 
   kind() {
     return this._data.kind
   }
 
-  mercuryEvent() {
-    return this._sourceMercuryEvent
+  hermesEvent() {
+    return this._sourceHermesEvent
   }
 
   roomId() {
-    return this._sourceMercuryEvent.roomId()
+    return this._sourceHermesEvent.roomId()
   }
 
   serialize() {
     const serialized = Object.assign({}, this._data)
     serialized.sender = {
-      actor_id: this._sourceMercuryEvent.actorId(),
-      session_id: this._sourceMercuryEvent.sessionId()
+      actor_id: this._sourceHermesEvent.actorId(),
+      session_id: this._sourceHermesEvent.sessionId()
     }
     return serialized
   }

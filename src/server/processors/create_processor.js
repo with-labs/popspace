@@ -1,13 +1,13 @@
 class CreateProcessor {
-  async process(mercuryEvent) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent) {
+    switch(hermesEvent.kind()) {
       case "createWidget":
-        return this.createWidget(mercuryEvent)
+        return this.createWidget(hermesEvent)
       default:
-        return mercuryEvent._sender.sendError(
-          mercuryEvent,
+        return hermesEvent._sender.sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvents.kind()}`
+          `Unrecognized event type: ${hermesEvents.kind()}`
         )
     }
   }
@@ -48,7 +48,7 @@ class CreateProcessor {
     })
     /**
       TODO: ensure that if the server dies here, the data is not lost
-      https://with.height.app/mercury/T-765
+      https://with.height.app/hermes/T-765
     */
     try {
       const roomWidget = new shared.models.RoomWidget(room.id, widget, payload.widget_state, payload.transform, widgetCreator.display_name)

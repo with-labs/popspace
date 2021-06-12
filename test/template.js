@@ -3,25 +3,25 @@ module.exports = {
   testServerClients: (nClients, lambda, heartbeatTimeoutMillis) => {
     return async () => {
       let result = null
-      const { clients, mercury } = await lib.test.util.serverWithClients(nClients, heartbeatTimeoutMillis)
+      const { clients, hermes } = await lib.test.util.serverWithClients(nClients, heartbeatTimeoutMillis)
       try {
-        result = await lambda(clients, mercury)
+        result = await lambda(clients, hermes)
       } catch(e) {
         throw(e)
       } finally {
-        await mercury.stop()
+        await hermes.stop()
       }
       return result
     }
   },
   authenticatedActor: (lambda) => {
-    return lib.test.Template.testServerClients(1, async (clients, mercury) => {
+    return lib.test.Template.testServerClients(1, async (clients, hermes) => {
       const testEnvironment = new lib.test.TestEnvironment()
       const client = clients[0]
       const environmentActor = await testEnvironment.createLoggedInActor(client)
       await testEnvironment.authenticate(environmentActor)
-      testEnvironment.setMercury(mercury)
-      return await lambda(testEnvironment, mercury)
+      testEnvironment.setHermes(hermes)
+      return await lambda(testEnvironment, hermes)
     })
   },
 
@@ -38,7 +38,7 @@ module.exports = {
       */
       let joinsRemaining = nActors * (nActors - 1)/2 - 1
 
-      const clients = await lib.test.util.addClients(testEnvironment.mercury, nActors - 1)
+      const clients = await lib.test.util.addClients(testEnvironment.hermes, nActors - 1)
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
         [firstClient, ...clients].forEach((client) => {
           client.on('event.participantJoined', (event) => {

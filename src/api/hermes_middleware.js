@@ -18,7 +18,7 @@ class HermesMiddleware {
       next()
     })
     this.express.use((req, res, next) => {
-      req.mercury = {
+      req.hermes = {
         webUrl: lib.appInfo.webUrl(req),
         apiUrl: lib.appInfo.apiUrl(req),
       }

@@ -1,5 +1,5 @@
 {
-  "name": "mercury",
+  "name": "hermes",
   "version": "1.0.0",
   "description": "Server for streaming data to with clients",
   "main": "index.js",
@@ -20,16 +20,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/with-labs/mercury.git"
+    "url": "git+https://github.com/with-labs/hermes.git"
   },
   "author": "Aleksei Chernikov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/with-labs/mercury/issues"
+    "url": "https://github.com/with-labs/hermes/issues"
   },
-  "homepage": "https://github.com/with-labs/mercury#readme",
+  "homepage": "https://github.com/with-labs/hermes#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.0.0",
+    "@withso/noodle-shared": "1.0.11",
     "aws-sdk": "^2.797.0",
     "btoa": "^1.2.1",
     "camelcase-keys": "^6.2.2",

@@ -1,7 +1,7 @@
 require("../../../test/_test.js")
-const scenarios = require('./mercury_server_scenarios')
+const scenarios = require('./hermes_server_scenarios')
 
-shared.test.TestTemplate.describeWithLib('mercury_server', () => {
+shared.test.TestTemplate.describeWithLib('hermes_server', () => {
   jest.setTimeout(30000)
 
   test("starts up and shuts down gracefully", async () => {

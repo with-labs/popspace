@@ -1,8 +1,8 @@
 /**
-  Internal mercury events - not sent over the network.
+  Internal hermes events - not sent over the network.
   Wraps a PeerEvent with additional processing meta-info.
 */
-module.exports = class MercuryEvent {
+module.exports = class HermesEvent {
   constructor(sender, message) {
     this._sender = sender
     this._message = message
@@ -49,6 +49,6 @@ module.exports = class MercuryEvent {
     return this._sourceEvent
   }
 
-  // Non-serializable: represents events internal to mercury, carrying serializable network events
+  // Non-serializable: represents events internal to hermes, carrying serializable network events
 
 }

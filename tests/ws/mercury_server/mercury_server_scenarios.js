@@ -1,13 +1,13 @@
 module.exports = {
   "restarts_correclty": async () => {
     for(let i = 0; i < 5; i++) {
-      let { clients, mercury } = await lib.test.util.serverWithClients(i + 1)
-      await mercury.stop()
+      let { clients, hermes } = await lib.test.util.serverWithClients(i + 1)
+      await hermes.stop()
     }
   },
 
-  "keep_track_of_clients": lib.test.template.testServerClients(1, async (clients, mercury) => {
-    const connectedClients = mercury.clientsCount()
+  "keep_track_of_clients": lib.test.template.testServerClients(1, async (clients, hermes) => {
+    const connectedClients = hermes.clientsCount()
     return {
       clientsCountOnServer: connectedClients,
       clientsCreated: clients.length
@@ -18,7 +18,7 @@ module.exports = {
       const firstClient = testEnvironment.loggedInActors[0].client
       const room = testEnvironment.loggedInActors[0].room
 
-      const unauthorizedClients = await lib.test.util.addClients(testEnvironment.mercury, 1)
+      const unauthorizedClients = await lib.test.util.addClients(testEnvironment.hermes, 1)
       const unauthorizedClient = unauthorizedClients[0]
 
       const actor = await factory.create("actor")
@@ -33,10 +33,10 @@ module.exports = {
       }
   }),
 
-  "heartbeat_timeout_disconnect": lib.test.template.testServerClients(1, async (clients, mercury) => {
-    const clientsBeforeTimeout = mercury.clientsCount()
+  "heartbeat_timeout_disconnect": lib.test.template.testServerClients(1, async (clients, hermes) => {
+    const clientsBeforeTimeout = hermes.clientsCount()
     await new Promise((resolve, reject) => setTimeout(resolve, 200));
-    const clientsAfterTimeout = mercury.clientsCount()
+    const clientsAfterTimeout = hermes.clientsCount()
     return {
       clientsBeforeTimeout,
       clientsAfterTimeout

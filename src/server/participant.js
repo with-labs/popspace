@@ -32,7 +32,7 @@ class Participant {
     }
 
     this.dieFromNoAuth = () => {
-      // I think we currently rely on connecting to mercury w/o authenticating
+      // I think we currently rely on connecting to hermes w/o authenticating
       // in the dashboard; but we should move away from that behavior
 
       // log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName()}`)
@@ -62,7 +62,7 @@ class Participant {
       log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
-        event = new lib.event.MercuryEvent(this, message)
+        event = new lib.event.HermesEvent(this, message)
       } catch {
         log.app.error(`Invalid event format ${this.sessionName()} ${message}`)
         return this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})

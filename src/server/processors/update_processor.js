@@ -1,21 +1,21 @@
 class UpdateProcessor {
-  async process(mercuryEvent) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent) {
+    switch(hermesEvent.kind()) {
       case "transformWidget":
-        return this.updateWidgetRoomState(mercuryEvent)
+        return this.updateWidgetRoomState(hermesEvent)
       case "updateWidget":
-        return this.updateWidgetState(mercuryEvent)
+        return this.updateWidgetState(hermesEvent)
       case "transformSelf":
-        return this.updateRoomParticipantState(mercuryEvent)
+        return this.updateRoomParticipantState(hermesEvent)
       case "updateSelf":
-        return this.updateParticipantState(mercuryEvent)
+        return this.updateParticipantState(hermesEvent)
       case "updateRoomState":
-        return this.updateRoomState(mercuryEvent)
+        return this.updateRoomState(hermesEvent)
       default:
-        return mercuryEvent.senderParticipant().sendError(
-          mercuryEvent,
+        return hermesEvent.senderParticipant().sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvent.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }

@@ -7,6 +7,7 @@ class NoodleMiddleware {
     this.express.use(cors())
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
+    this.express.use(shared.api.middleware.getIp)
     this.express.use((req, res, next) => {
       log.request.info(req.path, req.ip, req.body)
       next()
@@ -23,7 +24,7 @@ class NoodleMiddleware {
       }
       next()
     })
-    this.express.use(shared.api.middleware.getIp)
+
   }
 }
 

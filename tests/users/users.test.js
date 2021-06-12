@@ -1,6 +1,4 @@
-require("dotenv").config()
-require("../../src/globals.js")
-shared.test = shared.requireTesting()
+require("../../test/_test.js")
 const scenarios = require("./users_scenarios.js")
 
 shared.test.TestTemplate.describeWithLib("users", () => {

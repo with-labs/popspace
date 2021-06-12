@@ -20,7 +20,7 @@ const safeHandleRequest = (endpoint, handler) => {
   }
 }
 
-class Api {
+class Zoo {
   constructor(express) {
     this.express = express
   }
@@ -31,9 +31,9 @@ class Api {
     })
   }
 
-  memberOrOwnerRoomRouteEndpoint(endpoint, handler) {
+  memberOrCreatorRoomRouteEndpoint(endpoint, handler) {
     const middlewareList = [
-      shared.api.middleware.requireRoomMemberOrOwner
+      shared.api.middleware.requireRoomMemberOrCreator
     ]
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
@@ -45,9 +45,9 @@ class Api {
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
 
-  ownerOnlyRoomRouteEndpoint(endpoint, handler) {
+  creatorOnlyRoomRouteEndpoint(endpoint, handler) {
     const middlewareList = [
-      shared.api.middleware.requireRoomOwner
+      shared.api.middleware.requireRoomCreator
     ]
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
@@ -92,4 +92,4 @@ class Api {
   }
 }
 
-module.exports = Api
+module.exports = Zoo

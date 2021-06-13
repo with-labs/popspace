@@ -15,7 +15,7 @@ module.exports = {
     }
   },
   authenticatedActor: (lambda) => {
-    return lib.test.Template.testServerClients(1, async (clients, hermes) => {
+    return lib.test.template.testServerClients(1, async (clients, hermes) => {
       const testEnvironment = new lib.test.TestEnvironment()
       const client = clients[0]
       const environmentActor = await testEnvironment.createLoggedInActor(client)
@@ -26,7 +26,7 @@ module.exports = {
   },
 
   nAuthenticatedActors: (nActors, lambda) => {
-    return lib.test.Template.authenticatedActor(async (testEnvironment) => {
+    return lib.test.template.authenticatedActor(async (testEnvironment) => {
       const firstClient = testEnvironment.loggedInActors[0].client
       const room = testEnvironment.loggedInActors[0].room
 

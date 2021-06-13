@@ -1,5 +1,5 @@
-const Hermes = require("../../src/hermes")
-const Client = require("../../src/client/client")
+const Hermes = require("../src/hermes")
+const Client = require("../src/client/client")
 
 module.exports = {
   serverWithClients: async (clientCount, heartbeatTimeoutMillis=process.env.HEARTBEAT_TIMEOUT_MILLIS) => {
@@ -11,7 +11,7 @@ module.exports = {
       console.log(e)
       return
     }
-    const clients = await tlib.util.addClients(hermes, clientCount)
+    const clients = await lib.test.util.addClients(hermes, clientCount)
     return { clients, hermes }
   },
 

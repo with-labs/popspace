@@ -1,5 +1,5 @@
 require("../../../test/_test.js")
-const scenarios = require('./hermes_client_scenarios')
+const scenarios = require('./client_scenarios')
 
 shared.test.TestTemplate.describeWithLib('hermes_client', () => {
   // We have some long-running tests

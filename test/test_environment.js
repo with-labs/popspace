@@ -14,10 +14,10 @@ module.exports = class {
   }
 
   async createClientWithRoomAccess(room) {
-    const clients = await tlib.util.addClients(this.hermes, 1)
+    const clients = await lib.test.util.addClients(this.hermes, 1)
     const client = clients[0]
     const created = await this.createActorWithRoomAccess(client, room)
-    const roomActorClient = new tlib.models.RoomActorClient(created.room, created.actor, client)
+    const roomActorClient = new lib.test.models.RoomActorClient(created.room, created.actor, client)
     return roomActorClient
   }
 
@@ -40,7 +40,7 @@ module.exports = class {
   async logIntoRoom(client, actor, room) {
     // TODO: this should move out to RoomActorClient
     const { session, token } = await this.initiateLoggedInSession(actor.id)
-    const roomActorClient = new tlib.models.RoomActorClient(room, actor, client)
+    const roomActorClient = new lib.test.models.RoomActorClient(room, actor, client)
     await roomActorClient.setLogInSession(session, token)
     this.loggedInActors.push(roomActorClient)
     return roomActorClient

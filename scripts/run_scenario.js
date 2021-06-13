@@ -1,6 +1,6 @@
 require("dotenv").config()
 const util = require("util")
-global.tlib = require("../test/lib/_testlib")
+require("../test/_test.js")
 
 const commander = require("commander")
 
@@ -14,8 +14,8 @@ commander
 
 const runScenario = async () => {
 
-  const testSuite = require(`../test/tests/${commander.component}/${commander.test}/${commander.test}_scenarios.js`)
-  await tlib.init()
+  const testSuite = require(`../tests/${commander.component}/${commander.test}/${commander.test}_scenarios.js`)
+  await lib.test.init()
   await lib.init()
   console.log("Running", commander.test, commander.scenario)
   const result = await testSuite[commander.scenario]()

@@ -21,8 +21,8 @@ module.exports = {
       const unauthorizedClients = await lib.test.util.addClients(testEnvironment.hermes, 1)
       const unauthorizedClient = unauthorizedClients[0]
 
-      const actor = await factory.create("actor")
-      const session = await factory.create("session", {actor_id: actor.id})
+      const actor = await shared.test.factory.create("actor")
+      const session = await shared.test.factory.create("session", {actor_id: actor.id})
       const token = await shared.lib.auth.tokenFromSession(session)
       const environmentActor = { actor, session, token, room, client: unauthorizedClient }
 

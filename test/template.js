@@ -1,7 +1,13 @@
-module.exports = {
+require("../src/globals")
+const fs = require("fs")
 
-  testServerClients: (nClients, lambda, heartbeatTimeoutMillis) => {
-    return async () => {
+class Template {
+  constructor() {
+    this.certificate = fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')
+  }
+
+  testServerClients(nClients, lambda, heartbeatTimeoutMillis) {
+    return this.withLib(async () => {
       let result = null
       const { clients, hermes } = await lib.test.util.serverWithClients(nClients, heartbeatTimeoutMillis)
       try {
@@ -12,9 +18,9 @@ module.exports = {
         await hermes.stop()
       }
       return result
-    }
-  },
-  authenticatedActor: (lambda) => {
+    })
+  }
+  authenticatedActor(lambda) {
     return lib.test.template.testServerClients(1, async (clients, hermes) => {
       const testEnvironment = new lib.test.TestEnvironment()
       const client = clients[0]
@@ -23,9 +29,9 @@ module.exports = {
       testEnvironment.setHermes(hermes)
       return await lambda(testEnvironment, hermes)
     })
-  },
+  }
 
-  nAuthenticatedActors: (nActors, lambda) => {
+  nAuthenticatedActors(nActors, lambda) {
     return lib.test.template.authenticatedActor(async (testEnvironment) => {
       const firstClient = testEnvironment.loggedInActors[0].client
       const room = testEnvironment.loggedInActors[0].room
@@ -63,4 +69,22 @@ module.exports = {
     })
 
   }
+
+  async httpClient() {
+    const host = lib.appInfo.apiHost()
+    const port = lib.appInfo.apiPort()
+    const client = await shared.test.clients.HttpClient.anyLoggedInOrCreate(host, this.certificate, port)
+    return client
+  }
+
+  withLib(lambda) {
+    return async (params) => {
+      await lib.init()
+      const result = await lambda(params)
+      await lib.cleanup()
+      return result
+    }
+  }
 }
+
+module.exports = new Template()

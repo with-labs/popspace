@@ -22,15 +22,14 @@ module.exports = class {
   }
 
   async createActorWithRoomAccess(client, room) {
-    const actor = await factory.create("actor")
+    const actor = await shared.test.factory.create("actor")
     if(room && room.creator_id != actor.id) {
       const alreadyCanEnter = await shared.db.room.permission.canEnter(actor, room)
       if(!alreadyCanEnter) {
         await shared.db.room.memberships.forceMembership(room, actor)
       }
     } else {
-      const isEmptyRoom = true
-      let roomInfo = await shared.db.rooms.generateRoom(actor.id, isEmptyRoom)
+      let roomInfo = await shared.db.rooms.createEmptyRoom(actor.id)
       room = roomInfo.room
     }
 
@@ -48,7 +47,7 @@ module.exports = class {
 
   async initiateLoggedInSession(actorId) {
     // TODO: move this out to RoomActorClient
-    const session = await factory.create("session", {actor_id: actorId})
+    const session = await shared.test.factory.create("session", {actor_id: actorId})
     const token = await shared.lib.auth.tokenFromSession(session)
     return { session, token }
   }

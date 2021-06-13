@@ -6,9 +6,9 @@ class Analytics {
   }
 
   async participantCountChanged(newCount) {
-    await shared.db.pg.massive.analytics_online_actors_count.insert({
+    await shared.db.pg.massive.analytics_total_participant_counts.insert({
       measured_at: shared.db.time.now(),
-      actors_count: newCount
+      count: newCount
     })
   }
 

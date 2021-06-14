@@ -31,7 +31,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
       transform: RoomPositionState;
     })[];
     self: ParticipantShape;
-    room: {
+    roomData: {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
       id: string | number; // TODO: clarify
       state: RoomDetailsStateShape;

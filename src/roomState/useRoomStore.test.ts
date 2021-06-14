@@ -96,7 +96,7 @@ describe('the central room state store (useRoomStore)', () => {
                 },
               },
             ],
-            room: {
+            roomData: {
               id: 'room-id',
               state: {
                 backgroundColor: '#ffffff',
@@ -157,7 +157,7 @@ describe('the central room state store (useRoomStore)', () => {
             },
           },
           state: {
-            ...init.payload.room.state,
+            ...init.payload.roomData.state,
           },
           widgetPositions: {
             'widget-1': {

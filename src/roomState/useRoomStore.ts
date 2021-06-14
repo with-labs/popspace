@@ -153,7 +153,7 @@ function createRoomStore() {
           initialize(init: IncomingAuthResponseMessage) {
             logger.debug(`Initialize`, init);
             const {
-              payload: { room, participants },
+              payload: { roomData: room, participants },
             } = init;
             set((draft) => {
               Object.assign(draft.state, room.state);

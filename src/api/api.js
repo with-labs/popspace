@@ -1,4 +1,4 @@
-const MercuryMiddleware = require("./mercury_middleware")
+const HermesMiddleware = require("./hermes_middleware")
 const http = require("./http")
 
 const safeHandleRequest = (endpoint, handler) => {
@@ -9,7 +9,7 @@ const safeHandleRequest = (endpoint, handler) => {
     } catch (e) {
       log.error.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`)
       return http.fail(req, res, "Unexpected error", {
-        errorCode: lib.ErrorCodes.UNEXPECTED_ERROR,
+        errorCode: shared.error.code.UNEXPECTED_ERROR,
         params: req.body
       })
     }
@@ -19,7 +19,7 @@ const safeHandleRequest = (endpoint, handler) => {
 class Api {
   constructor(express) {
     this.express = express
-    this.middleware = new MercuryMiddleware(express)
+    this.middleware = new HermesMiddleware(express)
   }
 
   setupGenericErrorHandling() {
@@ -28,9 +28,9 @@ class Api {
     })
   }
 
-  memberOrOwnerRoomRouteEndpoint(endpoint, handler) {
+  memberOrCreatorRoomRouteEndpoint(endpoint, handler) {
     const middlewareList = [
-      this.middleware.requireRoomMemberOrOwner()
+      this.middleware.requireRoomMemberOrCreator()
     ]
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
@@ -42,9 +42,9 @@ class Api {
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
 
-  ownerOnlyRoomRouteEndpoint(endpoint, handler) {
+  creatorOnlyRoomRouteEndpoint(endpoint, handler) {
     const middlewareList = [
-      this.middleware.requireRoomOwner()
+      this.middleware.requireRoomCreator()
     ]
     return this.roomRouteEndpoint(endpoint, handler, middlewareList)
   }
@@ -60,8 +60,8 @@ class Api {
 
   loggedInPostEndpoint(endpoint, handler, additionalMiddleware=[]) {
     const middlewareList = [
-      this.middleware.getUser(),
-      this.middleware.requireUser(),
+      this.middleware.getActor(),
+      this.middleware.requireActor(),
       ...additionalMiddleware
     ]
     this.express.post(endpoint, middlewareList, safeHandleRequest(endpoint, handler))
@@ -69,8 +69,8 @@ class Api {
 
   loggedInGetEndpoint(endpoint, handler, additionalMiddleware=[]) {
     const middlewareList = [
-      this.middleware.getUser(),
-      this.middleware.requireUser(),
+      this.middleware.getActor(),
+      this.middleware.requireActor(),
       ...additionalMiddleware
     ]
     this.express.get(endpoint, this.middleware, safeHandleRequest(endpoint, handler))

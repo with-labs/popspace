@@ -1,7 +1,6 @@
 require("dotenv").config()
 console.log(`Starting console - ${process.env.NODE_ENV}`)
 global.lib = require("../src/lib/_lib.js")
-global.tlib = require("../test/lib/_testlib.js")
 
 const repl = require("repl")
 

@@ -10,7 +10,7 @@ const DEFAULT_STATE_IN_ROOM = {
 }
 
 /*
-  Require that users authenticate within a certain time
+  Require that actors authenticate within a certain time
   to avoid zombie socket connections
 */
 const COUNTDOWN_TO_AUTHENTICATE_MILLIS = 120000
@@ -32,7 +32,7 @@ class Participant {
     }
 
     this.dieFromNoAuth = () => {
-      // I think we currently rely on connecting to mercury w/o authenticating
+      // I think we currently rely on connecting to hermes w/o authenticating
       // in the dashboard; but we should move away from that behavior
 
       // log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName()}`)
@@ -62,7 +62,7 @@ class Participant {
       log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
       let event = null
       try {
-        event = new lib.event.MercuryEvent(this, message)
+        event = new lib.event.HermesEvent(this, message)
       } catch {
         log.app.error(`Invalid event format ${this.sessionName()} ${message}`)
         return this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
@@ -83,7 +83,7 @@ class Participant {
   }
 
   sessionName() {
-    return `(uid ${this.userId()}, rid ${this.roomId()}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+    return `(uid ${this.actorId()}, rid ${this.roomId()}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
   }
 
   keepalive() {
@@ -111,8 +111,8 @@ class Participant {
     return this.room.id
   }
 
-  userId() {
-    return this.user.id
+  actorId() {
+    return this.actor.id
   }
 
   listPeersIncludingSelf() {
@@ -126,30 +126,30 @@ class Participant {
       an authentication request after the connection is established.
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
-    this.user = await shared.lib.auth.userFromToken(token)
+    this.actor = await shared.lib.auth.actorFromToken(token)
     this.room = await shared.db.rooms.roomByName(roomName)
-    if(!this.user || !this.room) {
+    if(!this.actor || !this.room) {
       this.unauthenticate()
       return false
     }
-    const canEnter = await shared.db.room.permissions.canEnter(this.user, this.room)
+    const canEnter = await shared.db.room.permissions.canEnter(this.actor, this.room)
     if(!canEnter) {
       this.unauthenticate()
       return false
     }
-    const isMember = await shared.db.room.memberships.isMember(this.user.id, this.room.id)
+    const isMember = await shared.db.room.memberships.isMember(this.actor.id, this.room.id)
     if(!isMember) {
       /*
-        If the user is allowed entry and is not a member,
+        If the actor is allowed entry and is not a member,
         they should become a member.
       */
-      await shared.db.room.memberships.forceMembersip(this.room, this.user)
+      await shared.db.room.memberships.forceMembersip(this.room, this.actor)
     }
 
-    this.transform = await shared.db.dynamo.room.getRoomParticipantState(this.room.id, this.user.id)
+    this.transform = await shared.db.dynamo.room.getRoomParticipantState(this.room.id, this.actor.id)
     if(!this.transform) {
       this.transform = DEFAULT_STATE_IN_ROOM
-      await lib.roomData.addParticipantInRoom(this.room.id, this.user.id, this.transform)
+      await lib.roomData.addParticipantInRoom(this.room.id, this.actor.id, this.transform)
     }
     await this.getState()
     this.authenticated = true
@@ -198,7 +198,7 @@ class Participant {
     if(!this.authenticated) {
       return false
     }
-    return await shared.db.room.permissions.canEnter(this.user, this.room)
+    return await shared.db.room.permissions.canEnter(this.actor, this.room)
   }
 
   setEventHandler(handler) {
@@ -244,7 +244,7 @@ class Participant {
     if(this.participantState) {
       return this.participantState
     } else {
-      this.participantState = await shared.db.dynamo.room.getParticipantState(this.user.id)
+      this.participantState = await shared.db.dynamo.room.getParticipantState(this.actor.id)
       this.participantState = this.participantState || {}
       if(!this.participantState.display_name) {
         /*
@@ -253,8 +253,8 @@ class Participant {
           Originally, the account creation process couldn't have dynamo hooked up,
           as we didn't yet have shared code available to the netlify app.
         **/
-        this.participantState.display_name = this.user.display_name
-        await shared.db.dynamo.room.setParticipantState(this.user.id, this.participantState)
+        this.participantState.display_name = this.actor.display_name
+        await shared.db.dynamo.room.setParticipantState(this.actor.id, this.participantState)
       }
       return this.participantState
     }
@@ -276,7 +276,7 @@ class Participant {
 
   unauthenticate() {
     this.authenticated = false
-    this.user = {}
+    this.actor = {}
     this.room = {}
     this.transform = null
     this.participantState = null
@@ -286,8 +286,8 @@ class Participant {
   serialize() {
     return {
       authenticated: this.authenticated,
-      user: {
-        id: this.user.id
+      actor: {
+        id: this.actor.id
       },
       sessionId: this.id,
       roomId: this.room.id,

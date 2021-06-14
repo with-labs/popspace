@@ -37,34 +37,30 @@ const processors = {
 class EventProcessor {
   constructor(participants) {
     this.participants = participants
-
-    this.participants.setEventHandler(async (mercuryEvent) => {
-      const eventKind = mercuryEvent.kind()
+    this.participants.setEventHandler(async (hermesEvent) => {
+      const eventKind = hermesEvent.kind()
       const action = ACTION_BY_EVENT_KIND[eventKind]
-      const sender = mercuryEvent.senderParticipant()
+      const sender = hermesEvent.senderParticipant()
       if(!processors[action]) {
-        return sender.sendError(mercuryEvent, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event ${mercuryEvent.kind()}.`)
+        return sender.sendError(hermesEvent, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Unrecognized event ${hermesEvent.kind()}.`)
       }
-
       if(!PUBLIC_EVENT_KINDS[eventKind]) {
         if(!sender.isAuthenticated()) {
-          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Please authenticate.")
+          return sender.sendError(hermesEvent, shared.error.code.UNAUTHORIZED_USER, "Please authenticate.")
         }
         const hasAuthorizedRoomAccess = await sender.hasAuthorizedRoomAccess()
         if(!hasAuthorizedRoomAccess) {
-          /* This can happen if a user was kicked */
-          return sender.sendError(mercuryEvent, lib.ErrorCodes.UNAUTHORIZED, "Lost authorization")
+          /* This can happen if an actor was kicked */
+          return sender.sendError(hermesEvent, shared.error.code.UNAUTHORIZED_USER, "Lost authorization")
         }
       }
-
       try {
-        return await processors[action].process(mercuryEvent, this.participants)
+        return await processors[action].process(hermesEvent, this.participants)
       } catch(e) {
         log.app.error(`Error processing ${action}: ${e ? e.message || e : 'null error'}\n${e ? e.stack : ''}`)
-        return sender.sendError(mercuryEvent, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.", {message: e.message, stack: e.stack})
+        return sender.sendError(hermesEvent, lib.ErrorCodes.UNEXPECTED_ERROR, "Something went wrong.", {message: e.message, stack: e.stack})
       }
     })
-
   }
 }
 

@@ -35,7 +35,7 @@ const appInfo = {
     } else {
       switch(process.env.NODE_ENV) {
         case 'production':
-          return `mercury.with.so`
+          return `hermes.with.so`
         case 'development':
           return `localhost`
         case 'staging':
@@ -59,7 +59,7 @@ const appInfo = {
     } else {
       switch(process.env.NODE_ENV) {
         case 'production':
-          return `https://mercury.with.so:${app.apiPort()}`
+          return `https://hermes.with.so:${app.apiPort()}`
         case 'development':
           return `https://localhost:${app.apiPort()}`
         case 'staging':

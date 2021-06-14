@@ -39,8 +39,8 @@ module.exports = class {
     }
   }
 
-  userId() {
-    return this._roomData.self.user.id
+  actorId() {
+    return this._roomData.self.actor.id
   }
 
   sessionId() {

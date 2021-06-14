@@ -6,9 +6,9 @@ class Analytics {
   }
 
   async participantCountChanged(newCount) {
-    await shared.db.pg.massive.analytics_online_users_count.insert({
+    await shared.db.pg.massive.analytics_total_participant_counts.insert({
       measured_at: shared.db.time.now(),
-      users_count: newCount
+      count: newCount
     })
   }
 
@@ -31,14 +31,13 @@ class Analytics {
   async beginSession(participant, socketGroup) {
     const roomUsageEntry = await shared.db.pg.massive.analytics_room_usage.insert({
       room_id: participant.roomId(),
-      user_id: participant.userId(),
+      actor_id: participant.actorId(),
       participant_id: participant.sessionId(),
-      socket_group_id: socketGroup.getId(),
       began_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()
     })
     /*
-      Since participant_ids reset between mercury run, we can't rely on them
+      Since participant_ids reset between hermes run, we can't rely on them
       to identify a usage session.
 
       So instead, every time beginSession() is called, remember the id of
@@ -63,9 +62,8 @@ class Analytics {
   async toggleVoice(event) {
     const toggleEntry = await shared.db.pg.massive.analytics_voice_usage.insert({
       room_id: event.roomId(),
-      user_id: event.userId(),
+      actor_id: event.actorId(),
       participant_id: event.sessionId(),
-      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
       is_toggled_on: event.payload().is_on,
       toggled_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()
@@ -79,7 +77,7 @@ class Analytics {
     if(!entryId){
       return
     }
-    
+
     await shared.db.pg.massive.analytics_voice_usage.update(
       {id: entryId},
       {last_heartbeat_at: shared.db.time.now()}
@@ -89,9 +87,8 @@ class Analytics {
   async toggleVideo(event) {
     const toggleEntry = await shared.db.pg.massive.analytics_video_usage.insert({
       room_id: event.roomId(),
-      user_id: event.userId(),
+      actor_id: event.actorId(),
       participant_id: event.sessionId(),
-      socket_group_id: event.senderParticipant().getSocketGroup().getId(),
       is_toggled_on: event.payload().is_on,
       toggled_at: shared.db.time.now(),
       last_heartbeat_at: shared.db.time.now()
@@ -105,7 +102,7 @@ class Analytics {
     if(!entryId){
       return
     }
-    
+
     await shared.db.pg.massive.analytics_video_usage.update(
       {id: entryId},
       {last_heartbeat_at: shared.db.time.now()}

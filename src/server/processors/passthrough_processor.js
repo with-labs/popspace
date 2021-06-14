@@ -1,36 +1,36 @@
 class PassthroughProcessor {
-  async process(mercuryEvent) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent) {
+    switch(hermesEvent.kind()) {
       case "echo":
-        return await this.sendEcho(mercuryEvent)
+        return await this.sendEcho(hermesEvent)
       case "ping":
-        return await this.processPing(mercuryEvent)
+        return await this.processPing(hermesEvent)
       case "passthrough":
-        return await this.processPassthrough(mercuryEvent)
+        return await this.processPassthrough(hermesEvent)
       default:
-        return mercuryEvent.senderParticipant().sendError(
-          mercuryEvent,
+        return hermesEvent.senderParticipant().sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvent.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }
 
-  async sendEcho(mercuryEvent) {
-    const sender = mercuryEvent.senderParticipant()
-    sender.broadcastPeerEvent(mercuryEvent.kind(), mercuryEvent.payload())
-    sender.sendResponse(mercuryEvent, { received: true })
+  async sendEcho(hermesEvent) {
+    const sender = hermesEvent.senderParticipant()
+    sender.broadcastPeerEvent(hermesEvent.kind(), hermesEvent.payload())
+    sender.sendResponse(hermesEvent, { received: true })
   }
 
-  async processPing(mercuryEvent) {
-    const sender = mercuryEvent.senderParticipant()
+  async processPing(hermesEvent) {
+    const sender = hermesEvent.senderParticipant()
     sender.keepalive()
-    sender.sendResponse(mercuryEvent, { received: true }, "pong")
+    sender.sendResponse(hermesEvent, { received: true }, "pong")
   }
 
-  async processPassthrough(mercuryEvent) {
-    const sender = mercuryEvent.senderParticipant()
-    sender.broadcastPeerEvent(mercuryEvent.kind(), mercuryEvent.payload())
+  async processPassthrough(hermesEvent) {
+    const sender = hermesEvent.senderParticipant()
+    sender.broadcastPeerEvent(hermesEvent.kind(), hermesEvent.payload())
   }
 }
 

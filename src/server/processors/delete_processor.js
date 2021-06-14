@@ -1,15 +1,15 @@
 class DeleteProcessor {
-  async process(mercuryEvent) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent) {
+    switch(hermesEvent.kind()) {
       case "deleteWidget":
-        return this.deleteWidget(mercuryEvent)
+        return this.deleteWidget(hermesEvent)
       case "leave":
-        return this.removeParticipant(mercuryEvent)
+        return this.removeParticipant(hermesEvent)
       default:
-        return mercuryEvent.senderParticipant().sendError(
-          mercuryEvent,
+        return hermesEvent.senderParticipant().sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvent.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }

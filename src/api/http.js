@@ -20,16 +20,16 @@ const http = {
       case shared.error.code.EXPIRED_OTP:
         return await http.fail(req, res, "Sorry, this link has expired.", errorDetails);
       case shared.error.code.RESOLVED_OTP:
-        // We could be more elaborate and try to figure out if it's the current user
+        // We could be more elaborate and try to figure out if it's the current actor
         // and whether they already have access to the OTP-protected resource
         return await http.fail(req, res, "This code is no longer valid.", errorDetails);
       case shared.error.code.MAGIC_LINK_INVALID_ACTION:
         return await http.fail(req, res, "Invalid magic link action.", errorDetails);
       case shared.error.code.UNEXPECTER_ERROR:
-        log.error.error(`authFail with unexpected error (user: ${req.user ? req.user.id : 'no user'}, url: ${req.url}, body: ${req.body})`)
+        log.error.error(`authFail with unexpected error (actor: ${req.actor ? req.actor.id : 'no actor'}, url: ${req.url}, body: ${req.body})`)
         return await http.fail(req, res, "An unexpected error happened. Please try again.", errorDetails);
       default:
-        log.error.error(`authFail critical error (user: ${req.user ? req.user.id : 'no user'}, url: ${req.url}, body: ${req.body})`)
+        log.error.error(`authFail critical error (actor: ${req.actor ? req.actor.id : 'no actor'}, url: ${req.url}, body: ${req.body})`)
         return await http.fail(req, res, "An unexpected error happened. Please try again.", errorDetails);
     }
   },

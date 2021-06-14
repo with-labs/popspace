@@ -39,7 +39,7 @@ class PeerEvent {
   serialize() {
     return {
       sender: {
-        user_id: this.sender().userId(),
+        actor_id: this.sender().actorId(),
         session_id: this.sender().sessionId()
       },
       kind: this.kind(),
@@ -60,10 +60,10 @@ PeerEvent.fromMessage = function(sender, message) {
     // 'select "WidgetId" from "RoomWidgets";'.
     data = lib.util.camelToSnakeCase(JSON.parse(message))
   } catch(e) {
-    throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "events must be JSON")
+    throw new lib.event.HermesError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "events must be JSON")
   }
   if(!data.kind) {
-    throw new lib.event.MercuryError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "event field 'kind' required")
+    throw new lib.event.HermesError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "event field 'kind' required")
   }
   return new PeerEvent(sender, data.kind, data.payload || {}, data.id)
 }

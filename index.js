@@ -1,13 +1,13 @@
 require("dotenv").config()
 
 require("./src/globals")
-const Mercury = require("./src/mercury")
+const Hermes = require("./src/hermes")
 
 const begin = async () => {
   await lib.init()
-  log.system.info(`${process.env.NODE_ENV} Mercury started`)
-  const mercury = new Mercury(process.env.EXPRESS_PORT, process.env.HEARTBEAT_TIMEOUT_MILLIS || 60000).start()
-  global.mercury = mercury
+  log.system.info(`${process.env.NODE_ENV} Hermes started`)
+  const hermes = new Hermes(process.env.EXPRESS_PORT, process.env.HEARTBEAT_TIMEOUT_MILLIS || 60000).start()
+  global.hermes = hermes
 }
 
 begin()

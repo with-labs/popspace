@@ -1,11 +1,11 @@
 class AnalyticsProcessor {
-  async process(mercuryEvent) {
+  async process(hermesEvent) {
 
-    switch(mercuryEvent.kind()) {
+    switch(hermesEvent.kind()) {
       case "updateMicState":
-        return lib.analytics.toggleVoice(mercuryEvent)
+        return lib.analytics.toggleVoice(hermesEvent)
       case "updateVideoState":
-        return lib.analytics.toggleVideo(mercuryEvent)
+        return lib.analytics.toggleVideo(hermesEvent)
     }
   }
 }

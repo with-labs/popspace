@@ -1,15 +1,15 @@
 class GetProcessor {
-  async process(mercuryEvent) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent) {
+    switch(hermesEvent.kind()) {
       case "getRoom":
-        return await this.respondRoomData(mercuryEvent)
+        return await this.respondRoomData(hermesEvent)
       case "getWidget":
-        return await this.respondWidgetData(mercuryEvent)
+        return await this.respondWidgetData(hermesEvent)
       default:
-        return mercuryEvent.senderParticipant().sendError(
-          mercuryEvent,
+        return hermesEvent.senderParticipant().sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvent.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }

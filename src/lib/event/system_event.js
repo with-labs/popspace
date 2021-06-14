@@ -5,10 +5,10 @@
 */
 let eventId = 0
 /**
-  Represents an event that does not have a sender user.
+  Represents an event that does not have a sender actor.
   It could be generated because parts of the system configuration changed
   from some internal sequence of events, or it could be from
-  user action where the user doesn't matter.
+  actor action where the actor doesn't matter.
 
   One example is a premium subscription expiring, and perhaps
   that decreases the maximum participant limit.

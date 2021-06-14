@@ -1,25 +1,25 @@
 class AuthProcessor {
-  async process(mercuryEvent, participants) {
-    switch(mercuryEvent.kind()) {
+  async process(hermesEvent, participants) {
+    switch(hermesEvent.kind()) {
       case "auth":
-        return this.authenticate(mercuryEvent, participants)
+        return this.authenticate(hermesEvent, participants)
       default:
-        return mercuryEvent.senderParticipant().sendError(
-          mercuryEvent,
+        return hermesEvent.senderParticipant().sendError(
+          hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${mercuryEvent.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }
 
-  async authenticate(mercuryEvent, participants) {
-    const payload = mercuryEvent.payload()
+  async authenticate(hermesEvent, participants) {
+    const payload = hermesEvent.payload()
     const room = await shared.db.rooms.roomByName(payload.room_name)
-    const sender = mercuryEvent.senderParticipant()
+    const sender = hermesEvent.senderParticipant()
 
     if(!room) {
       return sender.sendError(
-        mercuryEvent,
+        hermesEvent,
         shared.error.code.UNKNOWN_ROOM,
         `No such room`,
         {room_route: payload.room_name}
@@ -29,7 +29,7 @@ class AuthProcessor {
     const socketGroup = participants.getSocketGroup(room.id)
     if(socketGroup && socketGroup.hasExceededMaxParticipantsLimit()) {
       return sender.sendError(
-        mercuryEvent,
+        hermesEvent,
         lib.ErrorCodes.TOO_MANY_PARTICIPANTS,
         `The current participant limit has been exceeded.`,
         {limit: socketGroup.getMaxParticipants()}
@@ -42,26 +42,26 @@ class AuthProcessor {
         TODO: it'd be nice to get rid of this participants reference.
         Some options:
         1. sender emits an event that participants listen on and handle room joining
-        2. MercuryEvent has the relevant socket group
+        2. HermesEvent has the relevant socket group
         3. socket groups or participants available globally
       */
       await participants.joinRoom(sender)
-      const authData = await this.getAuthData(mercuryEvent)
-      sender.sendResponse(mercuryEvent, authData)
+      const authData = await this.getAuthData(hermesEvent)
+      sender.sendResponse(hermesEvent, authData)
       sender.broadcastPeerEvent("participantJoined", sender.serialize())
     } else {
       return sender.sendError(
-        mercuryEvent,
+        hermesEvent,
         lib.ErrorCodes.AUTH_FAILED,
         "Invalid credentials"
       )
     }
   }
 
-  async getAuthData(mercuryEvent) {
-    const user = mercuryEvent.senderUser()
-    const participant = mercuryEvent.senderParticipant()
-    const roomId = mercuryEvent.roomId()
+  async getAuthData(hermesEvent) {
+    const actor = hermesEvent.senderActor()
+    const participant = hermesEvent.senderParticipant()
+    const roomId = hermesEvent.roomId()
     const room = await lib.roomData.getRoomData(roomId)
 
     const peers = participant.listPeersIncludingSelf()

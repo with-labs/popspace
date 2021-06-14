@@ -9,6 +9,27 @@ const moment = require("moment")
 const AsyncLock = require('async-lock')
 const lock = new AsyncLock();
 
+/*
+  Massive relies on setImmediate wtf.
+  https://developer.mozilla.org/en-US/docs/Web/API/Window/setImmediate
+  It's not standard js; when I run tests in noodle-api,
+  it works, but in hermes I get an error that setImmediate isn't defined.
+
+  They do have it in Node... so I don't understand why it
+  works in one repo and not another.
+  https://nodejs.dev/learn/understanding-setimmediate
+
+  We can always pull in a proper polyfill
+  https://www.npmjs.com/package/setimmediate
+
+  But seems like there should be a better solution if it works
+  in noodle-api - and used to work previously in mercury and others.
+*/
+global.setImmediate = global.setImmediate || ((x) => {
+  // https://stackoverflow.com/questions/15349733/setimmediate-vs-nexttick/15349865#15349865
+  return process.nextTick(x)
+})
+
 if(!global.log) {
   // Perhaps the shared repo can have a standard log defined at the top level
   global.log = {

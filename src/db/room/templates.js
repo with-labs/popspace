@@ -24,9 +24,6 @@ module.exports = {
 
     const state = {
       ...templateData.state,
-      display_name: shared.db.room.namesAndRoutes.getNormalizedDisplayName(
-        templateData.state.display_name
-      ),
       z_order: [],
     }
     await shared.db.dynamo.room.setRoomState(roomId, state)

@@ -76,18 +76,30 @@ class Rooms {
    * @param {number} creatorId - may be deprecated as we move to anon actors
    */
   async createRoomFromTemplate(template, creatorId, isPublic=true) {
+    const room = await this.createRoom(creatorId, template.state.display_name, isPublic)
+    const roomData = await templates.setUpRoomFromTemplate(
+      room.id,
+      template
+    )
+    return { room, roomData }
+  }
+
+  async createRoom(creatorId, displayName, isPublic=true) {
     const urlId = await shared.db.room.namesAndRoutes.generateUniqueRoomUrlId()
     const room = await shared.db.pg.massive.rooms.insert({
       creator_id: creatorId,
       is_public: isPublic,
       url_id: urlId,
-      display_name: template.state.display_name
+      display_name: displayName
     })
-    const roomData = await templates.setUpRoomFromTemplate(
-      result.room.id,
-      template
-    )
-    return { room, roomData }
+    return room
+  }
+
+  async createEmptyRoom(creatorId, isPublic) {
+    return this.createRoomFromTemplate({
+      state: {display_name: "generated"},
+      widgets: []
+    }, creatorId, isPublic)
   }
 
   async setDisplayName(roomId, newDisplayName) {

@@ -34,7 +34,7 @@ class RoomActorClient {
       expires_at: null
     })
     if(!session) {
-      session = await factory.create("session", {actor_id: this.actor.id})
+      session = await shared.test.factory.create("session", {actor_id: this.actor.id})
     }
     this.setLogInSession(session)
     return { session: this.session, token: this.token }
@@ -50,7 +50,7 @@ class RoomActorClient {
 RoomActorClient.anyOrCreate = async () => {
   let actor = await shared.db.pg.massive.actors.findOne({})
   if(!actor) {
-     actor = await factory.create("actor")
+     actor = await shared.test.factory.create("actor")
   }
   return RoomActorClient.forActor(actor)
 }

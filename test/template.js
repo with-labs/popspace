@@ -14,7 +14,7 @@ class Template {
   }
 
   serverClients(nClients, lambda) {
-    return this.withLib(async () => {
+    return async () => {
       const server = new Server(process.env.EXPRESS_PORT_TEST)
       await server.start()
       let result
@@ -32,7 +32,7 @@ class Template {
         await server.stop()
       }
       return result
-    })
+    }
   }
 
   async httpClient() {
@@ -40,15 +40,6 @@ class Template {
     const port = lib.appInfo.apiPort()
     const client = await shared.test.clients.HttpClient.anyLoggedInOrCreate(host, this.certificate, port)
     return client
-  }
-
-  withLib(lambda) {
-    return async (params) => {
-      await lib.init()
-      const result = await lambda(params)
-      await lib.cleanup()
-      return result
-    }
   }
 }
 

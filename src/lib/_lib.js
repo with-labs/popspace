@@ -8,14 +8,13 @@ const lib = {
   error: require("./error.js"),
   init: async () => {
     await shared.db.pg.init()
+    if(process.env.NODE_ENV == "test") {
+      lib.test = require("../../test/_test.js")
+    }
   },
   cleanup: async () => {
     await shared.db.pg.tearDown()
   },
-}
-
-if(process.env.NODE_ENV == "test") {
-  lib.test = require("../../test/_test.js")
 }
 
 module.exports = lib

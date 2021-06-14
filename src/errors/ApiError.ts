@@ -1,7 +1,7 @@
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { ErrorTypes } from '@constants/ErrorTypes';
 
-import { BaseResponse } from '@utils/api';
+import { ErrorResponse } from '@api/types';
 
 export class ApiError extends Error {
   private _code: ErrorCodes;
@@ -15,7 +15,7 @@ export class ApiError extends Error {
     return this._type;
   }
 
-  constructor(response: BaseResponse) {
+  constructor(response: ErrorResponse) {
     super(response.message || 'Unexpected error');
     this._code = (response.errorCode?.toString() as ErrorCodes) || ErrorCodes.UNEXPECTED;
     this._type = ErrorTypes.API;

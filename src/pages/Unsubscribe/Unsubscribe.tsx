@@ -5,16 +5,15 @@ import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '@layouts/TwoColLayout/TwoColLayout';
 import { Column } from '@layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography } from '@material-ui/core';
-import Api from '@utils/api';
+import client from '@api/client';
 import useQueryParams from '@hooks/useQueryParams/useQueryParams';
 import { ErrorCodes } from '@constants/ErrorCodes';
-import { ErrorInfo } from '../../types/api';
 import { Page } from '@layouts/Page/Page';
-import { getSessionToken } from '@utils/sessionToken';
 
 import { RouteNames } from '@constants/RouteNames';
 import SadBlobby from './images/sadblobby.png';
 import { logger } from '@utils/logger';
+import { ApiError } from '@src/errors/ApiError';
 
 interface IUnsubscribeProps {}
 
@@ -49,7 +48,7 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   const { t } = useTranslation();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ErrorInfo>(null!);
+  const [error, setError] = useState<ApiError | null>(null);
 
   // get the query params from the url
   const query = useQueryParams();
@@ -58,35 +57,12 @@ export const Unsubscribe: React.FC<IUnsubscribeProps> = (props) => {
   const mlid = query.get('mlid') || '';
 
   useEffect(() => {
-    Api.unsubscribeFromEmail(otp, mlid)
-      .then((result: any) => {
-        if (!result.success) {
-          if (result.errorCode === ErrorCodes.INVALID_OTP) {
-            // the link is invalid, expired, or already resolved
-            if (getSessionToken()) {
-              // if the user is logged in, go to the dash
-              history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
-            } else {
-              // the user is not logged in, something is wrong with the link
-              // redirect to signin page with invalid popup message
-              history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
-            }
-          } else {
-            // something unexpected happened with the link
-            logger.warn(`Warning unsubcribing email for ${mlid}`, result.message, result.errorCode);
-            setError({
-              errorCode: ErrorCodes.UNEXPECTED,
-            });
-          }
-        }
-      })
+    client
+      .magicLinkUnsubscribe(otp, mlid)
       .catch((e: any) => {
         setIsLoading(false);
         logger.error(`Error unsubcribing email for ${mlid}`, e);
-        setError({
-          errorCode: ErrorCodes.UNEXPECTED,
-          error: e,
-        });
+        setError(e);
       })
       .finally(() => {
         setIsLoading(false);

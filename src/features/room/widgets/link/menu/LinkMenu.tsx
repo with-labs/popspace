@@ -7,9 +7,8 @@ import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
 import { LinkWidgetState, WidgetType } from '@roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
-import { IframeOption } from './IframeOption';
 import { logger } from '@utils/logger';
-import api from '@utils/api';
+import api from '@api/client';
 import { ApiError } from '../../../../../errors/ApiError';
 
 export type LinkMenuProps = {
@@ -34,10 +33,7 @@ export function LinkMenu(props: LinkMenuProps) {
     if (widget.widgetState.isFileUpload && widget.widgetState.mediaUrl) {
       const fileUrl = widget.widgetState.mediaUrl;
       try {
-        const response = await api.deleteFile(fileUrl);
-        if (!response.success) {
-          throw new ApiError(response);
-        }
+        await api.deleteFile(fileUrl);
       } catch (err) {
         logger.error(`Failed to delete file ${fileUrl}`, err);
       }

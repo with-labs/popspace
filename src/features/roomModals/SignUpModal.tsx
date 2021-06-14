@@ -15,8 +15,6 @@ import { Link } from '@components/Link/Link';
 import { MAX_EMAIL_LENTH, MAX_NAME_LENGTH } from '@src/constants';
 import { Spacing } from '@components/Spacing/Spacing';
 import { Box } from '@material-ui/core';
-import Api from '@utils/api';
-import { ErrorCodes } from '@constants/ErrorCodes';
 
 interface ISignUpModalProps {}
 
@@ -52,20 +50,7 @@ export const SignUpModal: React.FC<ISignUpModalProps> = (props) => {
   const handleSubmit = useCallback(
     async ({ email, firstName, lastName, ...rest }: SignupFormValues, util: FormikHelpers<SignupFormValues> | null) => {
       try {
-        const response = await Api.signup({
-          email: email.trim(),
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          ...rest,
-        });
-        if (!response.success) {
-          if (response.errorCode === ErrorCodes.ALREADY_REGISTERED) {
-            // pop up prefilled sign in modal?
-            alert('already registered');
-          }
-        } else {
-          // we have submitted sign up, close this modal and pop code confirm
-        }
+        // TODO: convert actor into registered user
       } catch (err) {
         // throw error
       }

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@utils/api';
+import api from '@api/client';
 import { logger } from '@utils/logger';
 import { useTranslation } from 'react-i18next';
 import { LinkWidgetState } from '@roomState/types/widgets';
@@ -17,10 +17,7 @@ export function useGetLinkData() {
       }
 
       try {
-        const { result, success, message, errorCode } = await api.getOpenGraph(url);
-        if (!success) {
-          throw new Error(`${message} (code: ${errorCode})`);
-        }
+        const { result } = await api.getOpenGraph(url);
 
         return {
           ...baseData,

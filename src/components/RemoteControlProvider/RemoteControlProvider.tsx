@@ -2,10 +2,10 @@ import * as React from 'react';
 import { RemoteDataTrack, RemoteParticipant } from 'twilio-video';
 import { RoomEvent } from '@constants/twilio';
 import { CAMERA_TRACK_NAME, MIC_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useTwilio } from '@providers/twilio/TwilioProvider';
 import { useRoomStore } from '@roomState/useRoomStore';
+import shallow from 'zustand/shallow';
 
 type MutableTrackName = typeof CAMERA_TRACK_NAME | typeof MIC_TRACK_NAME | typeof SCREEN_SHARE_TRACK_NAME;
 
@@ -18,8 +18,7 @@ export const RemoteControlContext = React.createContext<{
  * by session ID
  */
 export const RemoteControlProvider: React.FC = ({ children }) => {
-  const localSessionId = useRoomStore((room) => room.sessionId);
-  const userId = useCurrentUserProfile().user?.id;
+  const [localSessionId, userId] = useRoomStore((room) => [room.sessionId, room.api.getActiveUserId()], shallow);
 
   const { room } = useTwilio();
 

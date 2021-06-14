@@ -17,6 +17,7 @@ module.exports = {
     '^@analytics(.*)$': '<rootDir>/src/analytics$1',
     '^@layouts(.*)$': '<rootDir>/src/Layouts$1',
     '^@images(.*)$': '<rootDir>/src/images$1',
+    '^@api(.*)$': '<rootDir>/src/api/$1',
     '^@src(.*)$': '<rootDir>/src$1',
   },
   snapshotSerializers: [],

@@ -9,11 +9,11 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '@roomState/types/widgets';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 export interface IYoutubeWidgetProps {}
 
@@ -73,8 +73,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
 
   const { widget: state } = useWidgetContext<WidgetType.YouTube>();
 
-  const { user } = useCurrentUserProfile();
-  const localUserId = user?.id;
+  const localUserId = useRoomStore((room) => room.api.getActiveUserId());
 
   const saveWidget = useSaveWidget(state.widgetId);
 

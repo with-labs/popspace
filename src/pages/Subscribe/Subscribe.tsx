@@ -4,15 +4,13 @@ import { useHistory } from 'react-router-dom';
 import { TwoColLayout } from '@layouts/TwoColLayout/TwoColLayout';
 import { Column } from '@layouts/TwoColLayout/Column/Column';
 import { Button, makeStyles, Typography } from '@material-ui/core';
-import Api from '@utils/api';
+import client from '@api/client';
 import useQueryParams from '@hooks/useQueryParams/useQueryParams';
-import { ErrorCodes } from '@constants/ErrorCodes';
-import { ErrorInfo } from '../../types/api';
 import { Page } from '@layouts/Page/Page';
-import { getSessionToken } from '@utils/sessionToken';
 import Subscribed from './images/subscribed.png';
 import { RouteNames } from '@constants/RouteNames';
 import { logger } from '@utils/logger';
+import { ApiError } from '@src/errors/ApiError';
 
 interface ISubscribeProps {}
 
@@ -47,7 +45,7 @@ export const Subscribe: React.FC<ISubscribeProps> = (props) => {
   const { t } = useTranslation();
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<ErrorInfo>(null!);
+  const [error, setError] = useState<ApiError | null>(null);
 
   // get the query params from the url
   const query = useQueryParams();
@@ -56,37 +54,11 @@ export const Subscribe: React.FC<ISubscribeProps> = (props) => {
   const mlid = query.get('mlid') || '';
 
   useEffect(() => {
-    Api.magicLinkSubscribe(otp, mlid)
-      .then((result: any) => {
-        if (!result.success) {
-          if (result.errorCode === ErrorCodes.INVALID_OTP) {
-            // the link is invalid, expired, or already resolved
-            if (getSessionToken()) {
-              history.push(`${RouteNames.ROOT}?e=${ErrorCodes.INVALID_LINK}`);
-            } else {
-              // the user is not logged in, something is wrong with the link
-              // redirect to signin page with invalid popup message
-              history.push(`${RouteNames.SIGN_IN}?e=${ErrorCodes.INVALID_LINK}`);
-            }
-          } else {
-            // something unexpected happened with the link
-            logger.warn(
-              `Warning subcribing to newsletter for magic link ${mlid} with otp ${otp}`,
-              result.message,
-              result.errorCode
-            );
-            setError({
-              errorCode: ErrorCodes.UNEXPECTED,
-            });
-          }
-        }
-      })
+    client
+      .magicLinkSubscribe(otp, mlid)
       .catch((e: any) => {
         logger.error(`Error subcribing to newsletter for magic link ${mlid} with otp ${otp}`, e);
-        setError({
-          errorCode: ErrorCodes.UNEXPECTED,
-          error: e,
-        });
+        setError(e);
       })
       .finally(() => {
         setIsLoading(false);

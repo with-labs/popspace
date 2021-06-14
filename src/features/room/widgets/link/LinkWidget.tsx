@@ -6,12 +6,12 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { MediaLinkWidget } from './media/MediaLinkWidget';
 import { LinkWidgetShape, WidgetType } from '@roomState/types/widgets';
-import { useCurrentUserProfile } from '@hooks/api/useCurrentUserProfile';
 import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
 import { UploadingWidget } from './UploadingWidget';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_EDIT, MIN_SIZE_EDIT } from './constants';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 export interface ILinkWidgetProps {}
 
@@ -28,12 +28,12 @@ function isMedia(widget: LinkWidgetShape) {
 export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   const { t } = useTranslation();
 
-  const { user } = useCurrentUserProfile();
+  const userId = useRoomStore((room) => room.api.getActiveUserId());
 
   const { save, widget: state } = useWidgetContext<WidgetType.Link>();
 
   if (!state.widgetState.url) {
-    if (state.ownerId === user?.id) {
+    if (state.ownerId === userId) {
       return (
         <WidgetFrame
           color={ThemeName.Lavender}

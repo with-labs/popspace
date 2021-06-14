@@ -96,6 +96,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             onChange={toggleMicOn}
             onContextMenu={handleContextMenu}
             disabled={busy}
+            data-test-id="toggleAudio"
             {...otherProps}
             className={className}
           >

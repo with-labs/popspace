@@ -8,7 +8,7 @@ import { randomString } from '../util/randomString';
 context('An anonymous user', () => {
   const USERNAME = randomString('user');
 
-  describe('when joining a room they have access to, with another user already there', () => {
+  describe('when joining a room, with another user already there', () => {
     const OTHER_USERNAME = randomString('user');
 
     before(() => {

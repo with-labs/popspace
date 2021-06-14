@@ -32,6 +32,7 @@ export const ScreenShareToggle = (props: { className?: string }) => {
         selected={isSharingOn}
         onChange={toggleSharingOn}
         disabled={roomStatus !== TwilioStatus.Connected}
+        data-test-id="toggleScreenShare"
         {...props}
       >
         {isSharingOn ? (

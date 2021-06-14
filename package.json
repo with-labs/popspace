@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.0.11",
+    "@withso/noodle-shared": "1.0.12",
     "body-parser": "^1.19.0",
     "camelcase-keys": "^6.2.2",
     "cookie-parser": "^1.4.5",

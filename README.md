@@ -60,20 +60,16 @@ DEVELOPMENT_PG_PASSWORD=withso
 DEVELOPMENT_PG_HOST=localhost
 DEVELOPMENT_PG_DATABASE=withso
 
-NPM_WITHSO_TOKEN=token_for_with_shared_can_get_from_eg_netlify
-
-WITH_DYNAMO_DB_ACCESS_KEY=get_from_netlify_we_only_have_1_set_of_dynamo_credentials_but_per_env_tables
-WITH_DYNAMO_DB_SECRET_KEY=get_from_netlify
-WITH_DYNAMO_DB_REGION=get_from_netlify
-
 TEST_PG_USER=test_with
 TEST_PG_PASSWORD=withsotest
 TEST_PG_HOST=localhost
 TEST_PG_DATABASE=test_withso
 TEST_PG_PORT=5432
 
+# Make sure you've pre-generated these with the instructions above
 SSL_PRIVATE_KEY_PATH = mkcert/localhost-key.pem
 SSL_CERTIFICATE_PATH = mkcert/localhost.pem
 
 HEARTBEAT_TIMEOUT_MILLIS=60000
+NPM_WITHSO_TOKEN=token_for_with_shared_can_get_from_eg_netlify
 ```

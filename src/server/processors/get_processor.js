@@ -15,7 +15,10 @@ class GetProcessor {
   }
 
   async respondRoomData(event) {
-    const roomData = await lib.roomData.getRoomData(event.roomId())
+    const participant = event.senderParticipant()
+    const room = participant.getRoom()
+    const roomData = new shared.models.RoomData(room)
+
     return await event.senderParticipant().sendResponse(event, roomData)
   }
 

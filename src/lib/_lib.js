@@ -16,7 +16,6 @@ const lib = {
   init: async () => {
     await lib.roomData.init()
     await shared.db.pg.init()
-    await shared.db.dynamo.init()
   },
   cleanup: async () => {
     await shared.db.pg.tearDown()

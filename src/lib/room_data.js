@@ -12,25 +12,8 @@ class RoomData {
   async init() {
   }
 
-  /* Perhaps this can go into shared */
-  async getRoomData(roomId) {
-    /**
-      TODO: probably make a RoomData model in shared
-      that captures this format and has helpers like
-      being constructed from roomId
-    */
-    const room = {}
-    const widgetsInRoom = await shared.db.room.widgets.getWidgetsInRoom(roomId)
-    room.widgets = widgetsInRoom.map((w) => (w.serialize()))
-    room.id = roomId
-    room.state = await shared.db.dynamo.room.getRoomState(roomId)
-    const activePublicInviteUrls = await shared.db.room.invites.getActivePublicInviteUrls(roomId)
-    room.public_invite_url = activePublicInviteUrls[0]
-    return room
-  }
-
   /*
-    Participant-related maangement probably does not go into shared,
+    Participant-related management probably does not go into shared,
     at least not yet.
     But with most other things moving out, perhaps this should just go
     straight into Particiants, and room_data sould be dropped.
@@ -62,16 +45,6 @@ class RoomData {
     return newState
   }
 
-  async removeParticipant(roomId, participant) {
-    /*
-      When might we need this?
-      Not so much when people leave the room, or lose their membership.
-      If they ever come back, we can keep their data.
-      If the actor or room is deleted though there's no reason to keep the data entry around.
-      Perhaps the best way to handle that is just with a background sweep job.
-    */
-    return shared.db.dynamo.room.deleteParticipant(roomId, participant.actor.id)
-  }
 }
 
 module.exports = RoomData

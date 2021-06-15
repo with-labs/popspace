@@ -40,7 +40,7 @@ cd mkcert
 mkcert localhost
 ```
 
-Then set environment variables for your new cert:
+They're pulled into the app via env vars (included in the sample .env below)
 
 ```bash
 SSL_PRIVATE_KEY_PATH = mkcert/localhost-key.pem

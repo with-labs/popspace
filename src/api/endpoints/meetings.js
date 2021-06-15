@@ -2,8 +2,8 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const createRoom = async (template, userId) => {
-    const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, userId)
+const createRoom = async (template, actorId) => {
+    const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, actorId)
     const namedRoom = new shared.models.RoomWithState(room, roomData.state)
     return namedRoom
 }
@@ -49,7 +49,7 @@ class Meetings {
         about usage patterns around our core features. E.g. we'd like to know if the same
         person created many rooms - regardless of whether they signed up or not. We'd also like to know
         if a third party integration like a Slack app for noodle calls our API from the same
-        user (e.g. from the same Slack workspace, or the same slack account).
+        actor (e.g. from the same Slack workspace, or the same slack account).
 
         However, we may be in a context where all we can do is call a URL and parse the result.
       */

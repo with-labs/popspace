@@ -75,8 +75,8 @@ describe('the central room state store (useRoomStore)', () => {
                 id: 'cat-id',
               },
               participantState: {
-                avatarName: 'cat',
                 displayName: 'Cat',
+                avatarName: 'cat',
               },
             },
             participants: [
@@ -87,8 +87,8 @@ describe('the central room state store (useRoomStore)', () => {
                   id: 'cat-id',
                 },
                 participantState: {
-                  avatarName: 'cat',
                   displayName: 'Cat',
+                  avatarName: 'cat',
                 },
                 transform: {
                   position: { x: 0, y: 0 },
@@ -96,6 +96,7 @@ describe('the central room state store (useRoomStore)', () => {
                 },
               },
             ],
+            displayName: 'room',
             roomData: {
               id: 'room-id',
               state: {
@@ -103,7 +104,6 @@ describe('the central room state store (useRoomStore)', () => {
                 wallpaperRepeats: false,
                 wallpaperUrl: 'https://with.so/wallpapers/board.png',
                 isCustomWallpaper: true,
-                displayName: 'room',
                 zOrder: [],
               },
               widgets: [
@@ -131,6 +131,7 @@ describe('the central room state store (useRoomStore)', () => {
           api: expect.anything(),
           socket: expect.anything(),
           id: 'room-id',
+          displayName: 'room',
           widgets: {
             'widget-1': {
               type: WidgetType.StickyNote,
@@ -187,8 +188,8 @@ describe('the central room state store (useRoomStore)', () => {
               authenticated: true,
               sessionIds: new Set(['session-id']),
               participantState: {
-                avatarName: 'cat',
                 displayName: 'Cat',
+                avatarName: 'cat',
               },
               id: 'user1',
             },
@@ -196,8 +197,8 @@ describe('the central room state store (useRoomStore)', () => {
               authenticated: true,
               sessionIds: new Set(['other-session']),
               participantState: {
-                avatarName: 'bunny',
                 displayName: 'Bunny',
+                avatarName: 'bunny',
               },
               id: 'user2',
             },
@@ -357,8 +358,8 @@ describe('the central room state store (useRoomStore)', () => {
 
         expect(useRoomStore.getState().users['user1']).toEqual({
           id: 'user1',
+          displayName: 'User 1',
           participantState: {
-            displayName: 'User 1',
             avatarName: 'bear',
           },
           authenticated: true,
@@ -650,7 +651,7 @@ describe('the central room state store (useRoomStore)', () => {
     });
 
     describe('room operations', () => {
-      it('updates room wallpaper and display name', () => {
+      it('updates room wallpaper', () => {
         socket.emit('message', {
           kind: 'roomStateUpdated',
           sender: {
@@ -658,14 +659,13 @@ describe('the central room state store (useRoomStore)', () => {
             sessionId: 'doesntmatter',
           },
           payload: {
-            displayName: 'foo',
             wallpaperUrl: 'some url',
             width: 2400,
             height: 2400,
           },
         });
 
-        expect(useRoomStore.getState().state.displayName).toEqual('foo');
+        expect(useRoomStore.getState().displayName).toEqual('foo');
         expect(useRoomStore.getState().state.wallpaperUrl).toEqual('some url');
       });
     });

@@ -56,6 +56,7 @@ export type RoomStateShape = {
   socket: SocketConnection | null;
   sessionId: string | null;
   cursors: Record<string, RoomCursorStateShape>;
+  displayName: string;
 };
 
 const emptyState: RoomStateShape = {
@@ -63,10 +64,10 @@ const emptyState: RoomStateShape = {
   widgets: {},
   users: {},
   sessionLookup: {},
+  displayName: '',
   state: {
     wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
     isCustomWallpaper: false,
-    displayName: '',
     zOrder: [],
     wallpaperRepeats: false,
     backgroundColor: '#ffffff',

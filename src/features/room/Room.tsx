@@ -42,7 +42,7 @@ export const RoomView = React.memo<IRoomProps>(() => {
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
   const openModal = useRoomModalStore((store) => store.api.openModal);
 
-  const roomName = useRoomStore((room: RoomStateShape) => room.state.displayName);
+  const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
   useExitToPreRoom();
   useBindPaste();
 

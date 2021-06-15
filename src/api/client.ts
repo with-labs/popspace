@@ -17,7 +17,6 @@ export class ApiClient {
       url: process.env.REACT_APP_HERMES_API_HOST || null,
     },
     api: {
-      // this will eventually live on a separate URL
       url: process.env.REACT_APP_NOODLE_API_HOST || null,
     },
   };

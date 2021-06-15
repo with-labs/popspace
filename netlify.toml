@@ -20,7 +20,6 @@ REACT_APP_SOCKET_HOST = "wss://hermes.with.so:8443"
 # and we wouldn't need to host the API on hermes to have access to participants.
 REACT_APP_HERMES_API_HOST = "https://hermes.with.so:8443"
 REACT_APP_UNICORN_SOCKET_HOST = "wss://pegasus.with.so"
-# This will eventually be something like https://api.with.so
 REACT_APP_NOODLE_API_HOST = "https://hermes.with.so:8443"
 REACT_APP_ANALYTICS_ID = "c5dca48b9e8589e669570e0d795eb51a"
 

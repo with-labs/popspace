@@ -3,8 +3,8 @@ const getRoomUrl = (req, displayName, urlId) => {
 }
 
 const createRoom = async (template, userId) => {
-    const { room, roomData } = await shared.db.rooms.createRoomFromTemplate(template, userId)
-    const namedRoom = new shared.models.NamedRoom(room, roomData.state)
+    const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, userId)
+    const namedRoom = new shared.models.RoomWithState(room, roomData.state)
     return namedRoom
 }
 
@@ -24,15 +24,15 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(req.body.template, req.user.id)
-      return api.http.succeed(req, res, { newMeeting: namedRoom.serialize() })
+      const namedRoom = await createRoom(req.body.template, req.actor.id)
+      return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
     })
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res) => {
       /*
         Creates a meeting from a template and returns a URL to it
       */
-      const namedRoom = await createRoom(req.body.template, req.user.id)
+      const namedRoom = await createRoom(req.body.template, req.actor.id)
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()

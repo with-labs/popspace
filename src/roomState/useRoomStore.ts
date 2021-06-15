@@ -21,6 +21,7 @@ import { SIZE_AVATAR } from '@features/room/people/constants';
 import { useOnboarding } from '@features/onboarding/useOnboarding';
 import { areTransformsEqual } from './utils';
 import { exportRoomTemplate } from './exportRoomTemplate';
+import { randomAvatar } from '@utils/AvatarOptions';
 
 const defaultWallpaperCategory = 'todoBoards';
 const defaultWallpaper = 0;
@@ -79,27 +80,36 @@ const emptyState: RoomStateShape = {
   cursors: {},
 };
 
+const createEmptyParticipantState = (actorId: string) => ({
+  displayName: '',
+  avatarName: randomAvatar(actorId).name,
+});
+
 // this requires some additional logic to reshape the user payload information
 function addUserToState(state: Pick<RoomStateShape, 'users' | 'sessionLookup'>, participant: ParticipantShape) {
-  if (!state.users[participant.user.id]) {
-    state.users[participant.user.id] = {
-      ...participant.user,
-      participantState: participant.participantState,
+  if (!state.users[participant.actor.id]) {
+    state.users[participant.actor.id] = {
+      ...participant.actor,
+      // patch in an empty display name default to keep data consistent
+      participantState: {
+        ...createEmptyParticipantState(participant.actor.id),
+        ...(participant.participantState as any),
+      },
       authenticated: participant.authenticated,
       sessionIds: new Set<string>(),
     };
   } else {
-    Object.assign(state.users[participant.user.id], {
-      ...participant.user,
+    Object.assign(state.users[participant.actor.id], {
+      ...participant.actor,
       participantState: participant.participantState,
       authenticated: participant.authenticated,
     });
   }
 
   // participantId === session ID
-  state.users[participant.user.id].sessionIds.add(participant.sessionId);
+  state.users[participant.actor.id].sessionIds.add(participant.sessionId);
   // add to lookup table
-  state.sessionLookup[participant.sessionId] = participant.user.id;
+  state.sessionLookup[participant.sessionId] = participant.actor.id;
 
   return state;
 }
@@ -175,7 +185,7 @@ function createRoomStore() {
               draft.sessionLookup = {};
               participants.forEach((session) => {
                 addUserToState(draft, session);
-                draft.userPositions[session.user.id] = {
+                draft.userPositions[session.actor.id] = {
                   size: session.transform.size || SIZE_AVATAR,
                   position: session.transform.position,
                 };
@@ -253,7 +263,7 @@ function createRoomStore() {
           addSession(payload: ParticipantShape & { transform: RoomPositionState }) {
             set((draft) => {
               addUserToState(draft, payload);
-              mergeTransformToState(draft.userPositions, payload.user.id, payload.transform);
+              mergeTransformToState(draft.userPositions, payload.actor.id, payload.transform);
             });
           },
           deleteSession(payload: { sessionId: string }) {

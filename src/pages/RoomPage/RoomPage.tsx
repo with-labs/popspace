@@ -14,7 +14,6 @@ import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteC
 import { TwilioProvider } from '@providers/twilio/TwilioProvider';
 import { LocalTracksProvider } from '@providers/media/LocalTracksProvider';
 import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
-import { isMobile } from 'react-device-detect';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -47,7 +46,7 @@ const RoomFallback = () => {
   );
 };
 interface IRoomPageProps {
-  name: string | null;
+  roomRoute: string | null;
 }
 
 export default function RoomPage(props: IRoomPageProps) {
@@ -58,9 +57,9 @@ export default function RoomPage(props: IRoomPageProps) {
     <>
       <ErrorDialog dismissError={() => setError(null)} error={error} />
       <LocalTracksProvider>
-        {props.name ? (
-          <RoomStateProvider roomName={props.name}>
-            <TwilioProvider roomName={props.name}>
+        {props.roomRoute ? (
+          <RoomStateProvider roomRoute={props.roomRoute}>
+            <TwilioProvider roomName={props.roomRoute}>
               <RemoteControlProvider>
                 <div className={classes.roomWrapper}>
                   <ErrorBoundary fallback={() => <RoomFallback />}>

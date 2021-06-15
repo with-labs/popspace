@@ -71,7 +71,7 @@ describe('the central room state store (useRoomStore)', () => {
             self: {
               authenticated: true,
               sessionId: 'session-id',
-              user: {
+              actor: {
                 id: 'cat-id',
               },
               participantState: {
@@ -83,7 +83,7 @@ describe('the central room state store (useRoomStore)', () => {
               {
                 authenticated: true,
                 sessionId: 'session-id',
-                user: {
+                actor: {
                   id: 'cat-id',
                 },
                 participantState: {
@@ -259,7 +259,7 @@ describe('the central room state store (useRoomStore)', () => {
               position: { x: 10, y: 0 },
               size: { width: 140, height: 140 },
             },
-            user: {
+            actor: {
               id: 'new-user',
             },
           },
@@ -300,7 +300,7 @@ describe('the central room state store (useRoomStore)', () => {
               position: { x: 10, y: 0 },
               size: { width: 140, height: 140 },
             },
-            user: {
+            actor: {
               id: 'user1',
             },
           },
@@ -339,7 +339,7 @@ describe('the central room state store (useRoomStore)', () => {
               position: { x: 10, y: 0 },
               size: { width: 140, height: 140 },
             },
-            user: {
+            actor: {
               id: 'user1',
             },
           },
@@ -399,7 +399,7 @@ describe('the central room state store (useRoomStore)', () => {
             authenticated: true,
             participantState: {},
             sessionId: 'other-session',
-            user: {
+            actor: {
               id: 'user2',
             },
           },

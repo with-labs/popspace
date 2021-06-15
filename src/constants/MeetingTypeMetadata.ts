@@ -23,13 +23,13 @@ export enum MeetingTemplateName {
   Retrospective = 'team_retrospective',
 }
 
-export const meetingTemplates: Record<MeetingTemplateName, RoomTemplate> = {
-  [MeetingTemplateName.Custom]: customData as RoomTemplate,
-  [MeetingTemplateName.Workshop]: workshopData as RoomTemplate,
-  [MeetingTemplateName.OneOnOne]: oneOnOneData as RoomTemplate,
-  [MeetingTemplateName.Presentation]: presentationData as RoomTemplate,
-  [MeetingTemplateName.Retrospective]: retrospectiveData as RoomTemplate,
-  [MeetingTemplateName.StandUp]: standupData as RoomTemplate,
+export const meetingTemplates: Record<MeetingTemplateName, any> = {
+  [MeetingTemplateName.Custom]: customData,
+  [MeetingTemplateName.Workshop]: workshopData,
+  [MeetingTemplateName.OneOnOne]: oneOnOneData,
+  [MeetingTemplateName.Presentation]: presentationData,
+  [MeetingTemplateName.Retrospective]: retrospectiveData,
+  [MeetingTemplateName.StandUp]: standupData,
 };
 
 export const templateMetadata: Record<MeetingTemplateName, { i18nKey: string; image: string }> = {

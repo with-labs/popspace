@@ -1,5 +1,8 @@
+import { ErrorCodes } from '@constants/ErrorCodes';
 import { RoomTemplate } from '@roomState/exportRoomTemplate';
 import { ApiError } from '@src/errors/ApiError';
+import i18n from '@src/i18n';
+import { logger } from '@utils/logger';
 import { ErrorResponse, BaseResponse, ApiOpenGraphResult, Actor } from './types';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
@@ -28,6 +31,10 @@ export class ApiClient {
 
   get actor() {
     return this._actor;
+  }
+
+  get sessionToken() {
+    return this._sessionToken;
   }
 
   constructor() {
@@ -84,6 +91,10 @@ export class ApiClient {
       await this.ensureActor();
       return handler(...args);
     };
+  };
+
+  login = () => {
+    return this.ensureActor();
   };
 
   logout = () => {
@@ -159,22 +170,37 @@ export class ApiClient {
   private async request<Response>(opts: { method: string; endpoint: string; data?: any; service: Service }) {
     const { service, method, endpoint, data } = opts;
 
-    const response = await fetch(`${service.url}${endpoint}`, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...this.getAuthHeaders(),
-      },
-      body: data ? JSON.stringify(data) : undefined,
-    });
+    // timeout requests after 15s
+    const abortController = new AbortController();
+    const timeout = setTimeout(() => abortController.abort(), 15_000);
 
-    const body = (await response.json()) as (BaseResponse & Response) | ErrorResponse;
+    try {
+      const response = await fetch(`${service.url}${endpoint}`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders(),
+        },
+        body: data ? JSON.stringify(data) : undefined,
+        signal: abortController.signal,
+      });
+      clearTimeout(timeout);
 
-    if (!body.success) {
-      throw new ApiError(body);
+      const body = (await response.json()) as (BaseResponse & Response) | ErrorResponse;
+
+      if (!body.success) {
+        throw new ApiError(body);
+      }
+
+      return body;
+    } catch (err) {
+      logger.error(err);
+      throw new ApiError({
+        errorCode: ErrorCodes.UNEXPECTED,
+        message: i18n.t('error.api.UNEXPECTED.message'),
+        success: false,
+      });
     }
-
-    return body;
   }
 
   private getAuthHeaders(): { Authorization: string } | {} {

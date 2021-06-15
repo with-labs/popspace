@@ -13,6 +13,7 @@ import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
+import { useRoomStore } from '@roomState/useRoomStore';
 
 interface IUserEntryModalProps {}
 
@@ -63,10 +64,13 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
 
   const isOpen = useRoomModalStore((modals) => modals.userEntry);
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
-  const onClose = () => closeModal('userEntry');
+  const updateSelf = useRoomStore((room) => room.api.updateSelf);
 
-  const onSubmitHandler = () => {
-    onClose();
+  const onSubmitHandler = (values: { displayName: string }) => {
+    closeModal('userEntry');
+    updateSelf({
+      displayName: values.displayName,
+    });
     onReady();
   };
 

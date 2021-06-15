@@ -1,4 +1,4 @@
-export interface UserShape {
+export interface ActorShape {
   id: string;
 }
 export interface ParticipantState {
@@ -12,6 +12,6 @@ export interface ParticipantShape {
   /** Is the user a With registered user or anonymous? */
   authenticated: boolean;
   /** With user data */
-  user: UserShape;
+  actor: ActorShape;
   participantState: ParticipantState;
 }

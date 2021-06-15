@@ -16,6 +16,9 @@ mkcert -install
 mkdir mkcert
 cd mkcert
 mkcert localhost
+
+# get the location where cert authority stashed its keys
+mkcert -CAROOT
 ```
 
 Then set environment variables for your new cert:
@@ -23,6 +26,7 @@ Then set environment variables for your new cert:
 ```bash
 SSL_PRIVATE_KEY_PATH = mkcert/localhost-key.pem
 SSL_CERTIFICATE_PATH = mkcert/localhost.pem
+SSL_CAROOT_PATH= "<path to CA root location>/rootCA.pem"
 ```
 
 # Env example

@@ -10,36 +10,35 @@ functions = "functions"
 REACT_APP_ANALYTICS_ENV = "production"
 TWILIO_API_KEYS_ENV = "production"
 NODE_ENV = "production"
-REACT_APP_SOCKET_HOST = "wss://mercury.with.so:8443"
+REACT_APP_SOCKET_HOST = "wss://hermes.with.so:8443"
 # This may stay around forever, or for a long time:
 # some HTTP requests may require us to send socket notifications.
 # This _could_ eventually be gone:
 # one scaling strategy for sockets could be establishing a shared queue
 # and intelligent message routing system (a'la RabbitMQ).
 # Then the API service could simply push to the queue,
-# and we wouldn't need to host the API on mercury to have access to participants.
-REACT_APP_MERCURY_API_HOST = "https://mercury.with.so:8443"
-REACT_APP_PEGASUS_SOCKET_HOST = "wss://pegasus.with.so"
-# This will eventually be something like https://api.with.so
-REACT_APP_WITH_API_HOST = "https://mercury.with.so:8443"
+# and we wouldn't need to host the API on hermes to have access to participants.
+REACT_APP_HERMES_API_HOST = "https://hermes.with.so:8443"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://pegasus.with.so"
+REACT_APP_NOODLE_API_HOST = "https://hermes.with.so:8443"
 REACT_APP_ANALYTICS_ID = "c5dca48b9e8589e669570e0d795eb51a"
 
 [context.deploy-preview.environment]
 REACT_APP_ANALYTICS_ENV = "staging"
 TWILIO_API_KEYS_ENV = "staging"
 NODE_ENV = "staging"
-REACT_APP_MERCURY_API_HOST = "https://test.with.so:8443"
-REACT_APP_WITH_API_HOST = "https://test.with.so:8443"
-REACT_APP_PEGASUS_SOCKET_HOST = "wss://test.with.so:3006"
+REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
+REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3006"
 REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
 
 [context.branch-deploy.environment]
 REACT_APP_ANALYTICS_ENV = "staging"
 TWILIO_API_KEYS_ENV = "staging"
 NODE_ENV = "staging"
-REACT_APP_MERCURY_API_HOST = "https://test.with.so:8443"
-REACT_APP_WITH_API_HOST = "https://test.with.so:8443"
-REACT_APP_PEGASUS_SOCKET_HOST = "wss://test.with.so:3006"
+REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
+REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3006"
 REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
 
 # We are obliged under US law not to serve countries

@@ -1,3 +1,52 @@
+const AccessToken = require("twilio").jwt.AccessToken
+const VideoGrant = AccessToken.VideoGrant
+const uuidv4 = require("uuid").v4
+
+// 240 hours
+// https://www.twilio.com/docs/chat/create-tokens
+const MAX_ALLOWED_SESSION_SECONDS = 14400
+
+/**
+ * The various secret constants to access the Twilio API are stored in sereral
+ * places. The file /.netlify.toml holds the TWILIO_API_KEYS_ENV values. They
+ * are set based on the build context when Netlify makes a build.
+ * (https://docs.netlify.com/site-deploys/overview/#deploy-contexts)
+ *
+ * The TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, and TWILIO_API_KEY_SECRET
+ * are stored inside the Netlify admin panel. They are injected during build.
+ * Also, during local development, they are pulled down from the servers. So,
+ * your local app (netlify dev), has access to the same API keys as when a
+ * build is made on the Netlify servers.
+ */
+
+// the Twilio Account SID is universal for all services
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID
+// This value comes from netlify.toml, and is a based on Netlify build context
+// It is either "production" or "development"
+const TWILIO_API_KEYS_ENV = process.env.TWILIO_API_KEYS_ENV
+// These API keys were generated inside the Twilio admin panel, then are stored
+// inside the Netlify admin panel.
+const TWILIO_API_KEYS = {
+  development: {
+    TWILIO_API_KEY_SID: process.env.TWILIO_API_KEY_SID_DEV,
+    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_DEV
+  },
+  production: {
+    TWILIO_API_KEY_SID: process.env.TWILIO_API_KEY_SID_PROD,
+    TWILIO_API_KEY_SECRET: process.env.TWILIO_API_KEY_SECRET_PROD
+  }
+}
+
+// If you have access to the Netlify environment context, use it to determien
+// which API keys to use. Otherwise, fallback to the 'development' API keys.
+const TWILIO_API_KEY_SID = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV]
+  ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SID
+  : TWILIO_API_KEYS["development"].TWILIO_API_KEY_SID
+const TWILIO_API_KEY_SECRET = TWILIO_API_KEYS[TWILIO_API_KEYS_ENV]
+  ? TWILIO_API_KEYS[TWILIO_API_KEYS_ENV].TWILIO_API_KEY_SECRET
+  : TWILIO_API_KEYS["development"].TWILIO_API_KEY_SECRET
+
+
 const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
@@ -15,6 +64,35 @@ class Meetings {
   }
 
   initPost() {
+    this.zoo.loggedInPostEndpoint("/logged_in_join_room", async (req, res) => {
+      const actor = req.actor
+      const roomRoute = req.body.roomRoute
+      const room = await shared.db.rooms.roomByRoute(roomRoute)
+
+      if (!room) {
+        return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
+      }
+
+      const userUuid4 = uuidv4()
+      const token = new AccessToken(
+        TWILIO_ACCOUNT_SID,
+        TWILIO_API_KEY_SID,
+        TWILIO_API_KEY_SECRET,
+        {
+          ttl: MAX_ALLOWED_SESSION_SECONDS
+        }
+      )
+
+      // TODO: use User ID from our database
+      token.identity = `${actor.id}#!${userUuid4}`
+      const videoGrant = new VideoGrant({
+        room: `${process.env.NODE_ENV}_${room.id}`
+      })
+      token.addGrant(videoGrant)
+
+      return await api.http.succeed(req, res, { token: token.toJwt() })
+    })
+
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)
       return http.succeed(req, res)

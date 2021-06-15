@@ -61,7 +61,7 @@ const http = {
       case shared.error.code.MAGIC_CODE_INVALID_ACTION:
         error.message = "Invalid magic code action."
         break
-      case shared.error.code.UNEXPECTER_ERROR:
+      case shared.error.code.UNEXPECTED_ERROR:
         log.error.error(`authFail with unexpected error (user: ${req.user ? req.user.id : 'no user'}, url: ${req.url}, body: ${req.body})`)
         error.message = "An unexpected error happened. Please try again."
         break

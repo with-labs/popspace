@@ -13,7 +13,7 @@ const carefulDynamoCall = async (endpoint, req, res, f) => {
       return api.http.fail(req, res, e)
     } else {
       log.error.error(`Unexpected error (${endpoint}) (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e}`)
-      e.errorCode = shared.error.code.UNEXPECTER_ERROR
+      e.errorCode = shared.error.code.UNEXPECTED_ERROR
       e.message = `Could not complete request: ${e.message}`
       return api.http.fail(req, res, e)
     }

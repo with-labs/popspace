@@ -39,4 +39,17 @@ DEVELOPMENT_PG_PASSWORD=noodleso
 DEVELOPMENT_PG_HOST=localhost
 DEVELOPMENT_PG_DATABASE=development_noodle
 
+AWS_APP_ACCESS_KEY=<get from aws pannel>
+AWS_APP_SECRET_KEY=<get from aws pannel>
+AWS_S3_REGION=<get from aws pannel>
+NOODLE_USER_FILES_BUCKET=<get from aws pannel>
+
+TWILIO_ACCOUNT_SID=<ask for them>
+TWILIO_API_KEYS_ENV=<env you want to use>
+
+TWILIO_API_KEY_SID_DEV=<ask for them>
+TWILIO_API_KEY_SECRET_DEV=<ask for them>
+
+TWILIO_API_KEY_SID_PROD=<ask for them>
+TWILIO_API_KEY_SECRET_PROD=<ask for them>
 ```

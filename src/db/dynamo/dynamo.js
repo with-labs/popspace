@@ -1,6 +1,5 @@
 const Aws = require("aws-sdk");
 const EmailDynamo = require("./email_dynamo")
-const RoomDynamo = require("./room_dynamo")
 
 class Dynamo {
   constructor() {
@@ -16,9 +15,7 @@ class Dynamo {
       region: process.env.WITH_DYNAMO_DB_REGION
     })
     this.documentClient = new Aws.DynamoDB.DocumentClient({service: this.dynamo})
-
     this.email = new EmailDynamo(this.dynamo, this.documentClient)
-    this.room = new RoomDynamo(this.dynamo, this.documentClient)
   }
 
 }

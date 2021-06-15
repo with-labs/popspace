@@ -1,9 +1,9 @@
 const shared = {
-  db: require("./src/db/_index"),
-  lib: require("./src/lib/_index"),
-  error: require("./src/error/_error"),
-  models: require("./src/models/_models"),
-  api: require("./src/api/_api"),
+  db: require("./src/db/_index.js"),
+  lib: require("./src/lib/_index.js"),
+  error: require("./src/error/_error.js"),
+  models: require("./src/models/_models.js"),
+  api: require("./src/api/_api.js"),
   init: async () => {
     await shared.db.pg.init()
   },

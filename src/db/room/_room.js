@@ -1,7 +1,8 @@
 module.exports = {
-  memberships: require("./memberships"),
-  permissions: require("./permissions"),
-  namesAndRoutes: require("./names_and_routes"),
-  widgets: require("./widgets"),
-  defaults: require("./defaults"),
+  memberships: require("./memberships.js"),
+  permissions: require("./permissions.js"),
+  namesAndRoutes: require("./names_and_routes.js"),
+  defaults: require("./defaults.js"),
+  data: require("./data.js"),
+  core: require("./core.js"),
 }

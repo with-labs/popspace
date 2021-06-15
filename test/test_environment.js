@@ -17,7 +17,7 @@ module.exports = class {
       }
     } else {
       const isEmptyRoom = true
-      let roomInfo = await shared.db.rooms.generateRoom(actor.id, isEmptyRoom)
+      let roomInfo = await shared.db.room.core.generateRoom(actor.id, isEmptyRoom)
       room = roomInfo.room
     }
 

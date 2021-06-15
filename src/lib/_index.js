@@ -1,6 +1,6 @@
 module.exports = {
-  auth: require("./auth"),
-  args: require("./args"),
-  otp: require("./otp"),
-  routes: require("./routes"),
+  auth: require("./auth.js"),
+  args: require("./args.js"),
+  otp: require("./otp.js"),
+  routes: require("./routes.js"),
 }

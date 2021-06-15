@@ -70,19 +70,19 @@ class RoomWithState {
 }
 
 RoomWithState.fromRoomId = async (roomId) => {
-  const pgRoom = await shared.db.rooms.roomById(roomId)
+  const pgRoom = await shared.db.room.core.roomById(roomId)
   if(!pgRoom) {
     return null
   }
-  const routeEntry = await shared.db.rooms.latestMostPreferredRouteEntry(roomId)
-  const roomState = await shared.db.dynamo.room.getRoomState(roomId)
+  const routeEntry = await shared.db.room.core.latestMostPreferredRouteEntry(roomId)
+  const roomState = await shared.db.room.core.getRoomState(roomId)
   const idRouteEntry = await shared.db.room.namesAndRoutes.getOrCreateUrlIdEntry(roomId)
   return new RoomWithState(pgRoom, routeEntry, roomState, idRouteEntry)
 }
 
 RoomWithState.allVisitableForActorId = async (actorId) => {
-  const created = await shared.db.rooms.getCreatedRoutableRooms(actorId)
-  const member = await shared.db.rooms.getMemberRoutableRooms(actorId)
+  const created = await shared.db.room.core.getCreatedRoutableRooms(actorId)
+  const member = await shared.db.room.core.getMemberRoutableRooms(actorId)
   return {
     created,
     member
@@ -93,7 +93,7 @@ RoomWithState.fromRooms = async (rooms) => {
   const statesById = {}
   const result = []
   const promises = rooms.map(async (room, index) => {
-    let state = await shared.db.dynamo.room.getRoomState(room.id)
+    let state = await shared.db.room.core.getRoomState(room.id)
     state = state || getDefaultRoomState(room)
     result[index] = new RoomWithState(room, state)
   })

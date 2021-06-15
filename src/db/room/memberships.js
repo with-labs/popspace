@@ -36,19 +36,7 @@ class Memberships {
   }
 
   async getRoomMembers(roomId) {
-    const memberships = await shared.db.pg.massive.room_memberships.find({
-      room_id: roomId,
-      revoked_at: null
-    })
-    const actorIds = memberships.map((m) => (m.actor_id))
-    const actors = await shared.db.pg.massive.actors.find({id: actorIds})
-    await Promise.all(
-      actors.map(async (u) => {
-        u.participantState = await shared.db.dynamo.room.getParticipantState(u.id)
-        return u
-      })
-    )
-    return actors
+    return await shared.models.RoomMember.allInRoom(roomId)
   }
 
   async revokeMembership(roomId, actorId) {

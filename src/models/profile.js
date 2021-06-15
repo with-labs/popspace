@@ -4,7 +4,7 @@ module.exports = class {
   }
 
   async serialize() {
-    const participantState = await shared.db.dynamo.room.getParticipantState(this.actor.id)
+    const participantState = await shared.db.room.data.getParticipantState(this.actor.id)
     const visitableRooms = await shared.models.RoomWithState.allVisitableForUserId(this.actor.id)
     return {
       actor: this.actor,

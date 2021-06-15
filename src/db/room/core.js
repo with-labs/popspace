@@ -1,6 +1,6 @@
-const templates = require("./room/templates");
+const templates = require("./templates");
 
-class Rooms {
+class Core {
   constructor() {
   }
 
@@ -15,7 +15,7 @@ class Rooms {
 
   async roomByRoute(route) {
     const urlId = shared.db.room.namesAndRoutes.urlIdFromRoute(route)
-    return await shared.db.rooms.roomByUrlId(urlId)
+    return await shared.db.room.core.roomByUrlId(urlId)
   }
 
   async routableRoomById(id) {
@@ -95,9 +95,9 @@ class Rooms {
     return room
   }
 
-  async createEmptyRoom(creatorId, isPublic) {
+  async createEmptyRoom(creatorId, isPublic, displayName="generated") {
     return this.createRoomFromTemplate({
-      state: {display_name: "generated"},
+      state: {display_name: displayName},
       widgets: []
     }, creatorId, isPublic)
   }
@@ -117,4 +117,4 @@ class Rooms {
   }
 }
 
-module.exports = new Rooms()
+module.exports = new Core()

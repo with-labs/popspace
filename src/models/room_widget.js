@@ -37,22 +37,6 @@ class RoomWidget {
       creator_id: this._pgWidget.creator_id,
       type: this._pgWidget._type,
       widget_state: this.widgetState(),
-      /*
-        NOTE: the way we get the display name now is a bit ugly.
-        We create RoomWidget objects in various contexts, and
-        we don't always have the actor's display name handy -
-        so right now we receive just the display name as an extra arg,
-        and we have to JOIN with actors in many contexts to get it.
-
-        Perhaps it'd be nicer to have serialize() be async,
-        then we could fetch it as we serialize, and eventually
-        fetch it from a cached global store.
-
-        FOLLOWUP: E.g. in another context though, it's really nice
-        to be able to override the display name no matter who the creator is:
-        for our system-made objects, like for default objects created in rooms,
-        it's nice to control the creator name based on the context, not the creator.
-      */
       creator_display_name: this._creatorDisplayName,
       transform: this._roomState
     }
@@ -70,7 +54,58 @@ RoomWidget.fromWidgetId = async (widgetId, roomId) => {
   if(pgWidgets.length < 1) {
     return null
   }
-  return await shared.db.dynamo.room.getRoomWidget(roomId, pgWidgets[0])
+  return await shared.db.room.data.widgets.getRoomWidget(roomId, pgWidgets[0])
+}
+
+RoomWidget.allInRoom = async (roomId) => {
+  roomId = parseInt(roomId)
+  const widgets = await shared.db.pg.massive.query(`
+    SELECT
+      widgets.id AS id,
+      widgets._type as _type,
+      widgets.creator_id as creator_id,
+      actors.display_name as creator_display_name
+    FROM
+      widgets
+        JOIN room_widgets       ON widgets.id = room_widgets.widget_id
+        JOIN actors             ON widgets.creator_id = actors.id
+    WHERE
+      room_widgets.room_id = $1
+      AND
+      widgets.deleted_at IS NULL
+      AND
+      widgets.archived_at IS NULL
+  `, [roomId])
+
+  const widgetIds = widgets.map((w) => (w.id))
+  const widgetStates = await shared.db.pg.massive.widget_states.find({widget_id: widgetIds})
+  const roomWidgetStates = await shared.db.pg.massive.room_widget_states.find({
+    widget_id: widgetIds,
+    room_id: roomId
+  })
+  const widgetStatesById = {}
+  const roomWidgetStatesById = {}
+  const widgetsById = {}
+  for(const widgetState of widgetStates) {
+    widgetStatesById[widgetState.widget_id] = widgetState
+  }
+  for(const roomWidgetState of roomWidgetStates) {
+    widgetStatesById[roomWidgetState.widget_id] = roomWidgetState
+  }
+  for(const widget of widgets) {
+    widgetsById[widget.id] = widget
+  }
+
+  const result = []
+  for(const widgetId of widgetIds) {
+    const widgetState = widgetStatesById[widgetId]
+    const roomWidgetState = roomWidgetStatesById[widgetId]
+    const widget = widgetsById[widgetId]
+    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomState, widget.creator_display_name)
+    result.push(roomWidget)
+  }
+
+  return result
 }
 
 module.exports = RoomWidget

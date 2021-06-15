@@ -6,14 +6,6 @@ class Accounts {
 
   }
 
-  getSignupUrl(appUrl, accountCreateRequest) {
-    return `${appUrl}/complete_signup?otp=${encodeURIComponent(accountCreateRequest.otp)}&email=${encodeURIComponent(accountCreateRequest.email)}`
-  }
-
-  getLoginUrl(appUrl, loginRequest) {
-    return `${appUrl}/loginwithemail?otp=${encodeURIComponent(loginRequest.otp)}&uid=${encodeURIComponent(loginRequest.actor_id)}`
-  }
-
   async delete(actorId) {
     return await shared.db.pg.massive.actors.update({id: actorId}, {deleted_at: shared.db.time.now()})
   }
@@ -25,7 +17,7 @@ class Accounts {
     if(!actor) {
       throw "No such actor"
     }
-    const createdRooms = await shared.db.rooms.getCreatedRooms(actorId)
+    const createdRooms = await shared.db.room.core.getCreatedRooms(actorId)
     const roomIds = createdRooms.map((r) => (r.id))
     const membershipsToOwnedRooms = await shared.db.pg.massive.room_memberships.find({room_id: roomIds})
     const membershipsToOwnedRoomsIds = membershipsToOwnedRooms.map((m) => (m.id))

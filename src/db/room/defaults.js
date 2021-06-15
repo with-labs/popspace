@@ -21,7 +21,7 @@ const createStandardWidgets = async (creatorId, roomId) => {
       // Mock name for our default objects
       "Dorothy"
     )
-    await shared.db.room.widgets.addWidgetInRoom(roomWidget)
+    await shared.db.room.data.addWidgetInRoom(roomWidget)
     result.push(roomWidget)
   }
   return result
@@ -79,7 +79,7 @@ const defaults = {
       display_name: normalizedDisplayName,
       z_order: roomWidgets.map((w) => (w.widgetId()))
     }
-    await shared.db.dynamo.room.setRoomState(roomId, state)
+    await shared.db.room.data.setRoomState(roomId, state)
 
     const roomData = {
       state,

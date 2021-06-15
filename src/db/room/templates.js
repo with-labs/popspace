@@ -26,7 +26,7 @@ module.exports = {
       ...templateData.state,
       z_order: [],
     }
-    await shared.db.dynamo.room.setRoomState(roomId, state)
+    await shared.db.room.data.setRoomState(roomId, state)
 
     // add widgets
     const widgets = []
@@ -49,7 +49,7 @@ module.exports = {
         transform,
         "Dorothy"
       )
-      await shared.db.room.widgets.addWidgetInRoom(roomWidget)
+      await shared.db.room.data.addWidgetInRoom(roomWidget)
       widgets.push(roomWidget)
     }
 

@@ -44,7 +44,7 @@ const middleware = {
     if(!req.body.room_route) {
       return next({ errorCode: shared.error.code.INVALID_API_PARAMS, message: "Must provide room_route" }, shared.api.http.code.BAD_REQUEST)
     }
-    req.room = await shared.db.rooms.roomByRoute(req.body.room_route)
+    req.room = await shared.db.room.core.roomByRoute(req.body.room_route)
     next()
   },
 

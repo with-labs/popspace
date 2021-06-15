@@ -64,7 +64,6 @@ module.exports = {
     const receivePromises = []
 
     testEnvironment.forEachParticipant((roomActorClient) => {
-      console.log("RAC!", Object.keys(roomActorClient))
       if(roomActorClient.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {
           roomActorClient.client.on('event.echo', (event) => {

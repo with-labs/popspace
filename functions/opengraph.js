@@ -1,3 +1,5 @@
+//TODO delete
+
 const lib = require("lib")
 lib.util.env.init(require("./env.json"))
 

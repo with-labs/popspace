@@ -108,8 +108,8 @@ export class ApiClient {
     return this.post<{ newMeeting: any }>('/create_meeting', { template }, ApiClient.SERVICES.api);
   });
 
-  joinMeeting = this.requireActor((roomName: string) => {
-    return this.post<{ token: string }>('/logged_in_join_room', { roomName }, ApiClient.SERVICES.netlify);
+  joinMeeting = this.requireActor((roomRoute: string) => {
+    return this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, ApiClient.SERVICES.api);
   });
 
   getRoomFileUploadUrl = this.requireActor(async (fileName: string, contentType: string) => {
@@ -119,12 +119,12 @@ export class ApiClient {
         fileName,
         contentType,
       },
-      ApiClient.SERVICES.netlify
+      ApiClient.SERVICES.api
     );
   });
 
   deleteFile = this.requireActor(async (fileUrl: string) => {
-    return await this.post('/delete_file', { fileUrl }, ApiClient.SERVICES.netlify);
+    return await this.post('/delete_file', { fileUrl }, ApiClient.SERVICES.api);
   });
 
   getOpenGraph = this.requireActor(async (url: string) => {
@@ -133,7 +133,7 @@ export class ApiClient {
       {
         url,
       },
-      ApiClient.SERVICES.netlify
+      ApiClient.SERVICES.api
     );
   });
 

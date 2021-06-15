@@ -1,3 +1,5 @@
+//TODO delete
+
 const axios = require("axios").default
 const cheerio = require("cheerio")
 const getFavicons = require("node-get-favicons")

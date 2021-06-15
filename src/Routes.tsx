@@ -5,8 +5,6 @@ import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { FlaggAdmin } from 'flagg/dist/react';
 import { Page } from './Layouts/Page/Page';
 import RoomPage from './pages/RoomPage/RoomPage';
-import { Subscribe } from './pages/Subscribe/Subscribe';
-import { Unsubscribe } from './pages/Unsubscribe/Unsubscribe';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 import { CreateMeeting } from './pages/CreateMeeting/CreateMeeting';
@@ -27,14 +25,6 @@ export const Routes: React.FC<IRoutesProps> = () => {
 
       <Route exact path={RouteNames.CREATE_MEETING_URL}>
         <CreateMeeting />
-      </Route>
-
-      <Route path={RouteNames.SUBSCRIBE}>
-        <Subscribe />
-      </Route>
-
-      <Route path={RouteNames.UNSUBSCRIBE}>
-        <Unsubscribe />
       </Route>
 
       <AdminRoute

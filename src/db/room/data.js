@@ -32,8 +32,6 @@ const getNewState = async (tableName, criteria, stateUpdate, curState=null) => {
     extracting JSON fields into columns will be the best solution.
   */
   if(!curState) {
-    const criteria = {}
-    criteria[pkey] = id
     curState = await shared.db.pg.massive[tableName].findOne(criteria)
   }
   return Object.assign(curState || {}, stateUpdate)

@@ -8,8 +8,16 @@ module.exports = class {
     this.hermes = hermes
   }
 
-  addRoomActorClient(rac) {
-    this.roomActorClients.push(rac)
+  addRoomActorClients(...racs) {
+    this.roomActorClients.push(...racs)
+  }
+
+  forEachParticipant(lambda) {
+    return this.roomActorClients.forEach(lambda)
+  }
+
+  allRoomActorClients() {
+    return this.roomActorClients
   }
 
   nthRoomClientActor(n) {

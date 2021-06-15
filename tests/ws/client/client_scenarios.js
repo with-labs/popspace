@@ -58,16 +58,16 @@ module.exports = {
   }),
 
   "1_sender_2_receivers": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
-    const loggedInActors = testEnvironment.loggedInActors
     const sentMessage = 'hello'
-    const sender = loggedInActors[0].client
+    const sender = testEnvironment.nthRoomClientActor(0).client
     const messagesReceived = []
     const receivePromises = []
 
-    loggedInActors.forEach((loggedInActor) => {
-      if(loggedInActor.client != sender) {
+    testEnvironment.forEachParticipant((roomActorClient) => {
+      console.log("RAC!", Object.keys(roomActorClient))
+      if(roomActorClient.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {
-          loggedInActor.client.on('event.echo', (event) => {
+          roomActorClient.client.on('event.echo', (event) => {
             messagesReceived.push(event.payload.message)
             resolve()
           })
@@ -93,7 +93,9 @@ module.exports = {
     const messagesReceived1 = []
     const messagesReceived2 = []
     const sequence = []
-    const clients = testEnvironment.loggedInActors.map((u) => (u.client))
+    const clients = testEnvironment
+      .allRoomActorClients()
+      .map((rac) => (rac.client))
 
     await new Promise((resolve, reject) => {
       clients[0].on('event.echo', (event) => {

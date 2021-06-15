@@ -45,7 +45,7 @@ class Template {
 
       const testEnvironment = new lib.test.TestEnvironment()
       testEnvironment.setHermes(hermes)
-      testEnvironment.addRoomActorClient(roomActorClient)
+      testEnvironment.addRoomActorClients(roomActorClient)
 
       return await lambda(testEnvironment)
     }, heartbeatTimeoutMillis)
@@ -53,8 +53,7 @@ class Template {
 
   nAuthenticatedActors(nActors, lambda) {
     return lib.test.template.authenticatedActor(async (testEnvironment) => {
-      const firstClient = testEnvironment.loggedInActors[0].client
-      const room = testEnvironment.loggedInActors[0].room
+      const host = testEnvironment.nthRoomClientActor(0)
 
       /*
         Each actor after the first one produces a certain number of join events.
@@ -63,11 +62,15 @@ class Template {
         We go up to (nActors - 1), because we don't count the first actor.
       */
       let joinsRemaining = nActors * (nActors - 1)/2 - 1
-
-      const clients = await lib.test.util.addClients(nActors - 1)
+      let roomActorClients = []
+      for(let i = 0; i < nActors - 1; i++) {
+        roomActorClients.push(lib.test.models.RoomActorClient.create(host.room))
+      }
+      roomActorClients = await Promise.all(roomActorClients)
+      testEnvironment.addRoomActorClients(...roomActorClients)
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
-        [firstClient, ...clients].forEach((client) => {
-          client.on('event.participantJoined', (event) => {
+        [host, ...roomActorClients].forEach((rac) => {
+          rac.client.on('event.participantJoined', (event) => {
             joinsRemaining--
             if(joinsRemaining <= 0) {
               resolve()
@@ -79,9 +82,8 @@ class Template {
         }
       })
 
-      const inits = clients.map(async (client) => {
-        const environmentActor = await testEnvironment.createLoggedInActor(client, room)
-        await testEnvironment.authenticate(environmentActor)
+      const inits = roomActorClients.map(async (rac) => {
+        await rac.join()
       })
       await Promise.all(inits)
       await joinsPropagatedPromise

@@ -13,12 +13,12 @@ export class ApiClient {
     netlify: {
       url: '/.netlify/functions',
     },
-    mercury: {
-      url: process.env.REACT_APP_MERCURY_API_HOST || null,
+    hermes: {
+      url: process.env.REACT_APP_HERMES_API_HOST || null,
     },
     api: {
       // this will eventually live on a separate URL
-      url: process.env.REACT_APP_WITH_API_HOST || null,
+      url: process.env.REACT_APP_NOODLE_API_HOST || null,
     },
   };
 

@@ -4,6 +4,7 @@ const shared = {
   error: require("./src/error/_error.js"),
   models: require("./src/models/_models.js"),
   api: require("./src/api/_api.js"),
+  net: require("./src/net/_net.js"),
   init: async () => {
     await shared.db.pg.init()
   },

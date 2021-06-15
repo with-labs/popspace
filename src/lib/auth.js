@@ -25,7 +25,7 @@ class Auth {
       return null
     }
     const sessionObject = JSON.parse(sessionToken)
-    const session = await shared.db.pg.massive.sessions.findOne({actor_id: sessionObject.uid, secret: sessionObject.secret})
+    const session = await shared.db.pg.massive.sessions.findOne({secret: sessionObject.secret})
     if(!session || this.isExpired(session)) {
       return null
     } else {

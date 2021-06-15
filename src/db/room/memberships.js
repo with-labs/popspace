@@ -51,12 +51,17 @@ class Memberships {
   }
 
   async forceMembership(room, actor) {
-    if(room.creator_id == actor.id) {
-      /*
-        TODO: Update the error code, or alternatively allow creators to be members
-      */
-      return { error: shared.error.code.JOIN_ALREADY_MEMBER }
-    }
+    /*
+      NOTE: we're currently allowing room creators to be members.
+
+      It seems that creating a room should allow joining it by default.
+
+      We can either allow creators to join, or make creators members.
+
+      Perhaps it's easier to just make everyone a member, and in situations
+      where creators should be treated differently, they can explicitly be
+      treated differently.
+    */
     const existingMembership = await shared.db.room.memberships.getMembership(actor.id, room.id)
     if(existingMembership) {
       return existingMembership

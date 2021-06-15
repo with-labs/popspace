@@ -15,8 +15,8 @@ class RoomActorClient {
   }
 
   async join() {
-    await initiateLoggedInSession()
-    await authenticateSocket()
+    await this.initiateLoggedInSession()
+    await this.authenticateSocket()
   }
 
   async initiateLoggedInSession() {
@@ -60,9 +60,9 @@ RoomActorClient.anyOrCreate = async () => {
   return RoomActorClient.forActor(actor)
 }
 
-RoomActorClient.create = async () => {
+RoomActorClient.create = async (inRoom) => {
   const actor = await shared.test.factory.create("actor")
-  return RoomActorClient.forActor(actor)
+  return RoomActorClient.forActor(actor, inRoom)
 }
 
 RoomActorClient.forAnyActor = async () => {
@@ -89,8 +89,7 @@ RoomActorClient.forActor = async (actor, room=null) => {
   }
   const client = new lib.Client(lib.appInfo.wssUrl())
   const result = new RoomActorClient(room, actor, client)
-  await result.initiateLoggedInSession()
-  await result.authenticateSocket()
+  await result.join()
   return result
 }
 

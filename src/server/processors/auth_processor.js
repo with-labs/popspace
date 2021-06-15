@@ -35,7 +35,6 @@ class AuthProcessor {
         {limit: socketGroup.getMaxParticipants()}
       )
     }
-
     const success = await sender.authenticate(payload.token, payload.room_route)
     if(success) {
       /*

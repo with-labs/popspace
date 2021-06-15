@@ -39,6 +39,19 @@ class Client extends EventEmitter {
   /**********************************/
   /* API: usually use these methods */
   /**********************************/
+
+  setHeartbeatIntervalMillis(heartbeatIntervalMillis) {
+    this.heartbeatIntervalMillis = heartbeatIntervalMillis
+    this.stopHeartbeat()
+    this.startHeartbeat()
+  }
+
+  setHeartbeatTimeoutMillis(heartbeatTimeoutMillis) {
+    this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+    this.stopHeartbeat()
+    this.startHeartbeat()
+  }
+
   async connect() {
     if(this.socket) {
       return

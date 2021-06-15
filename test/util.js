@@ -15,7 +15,7 @@ const testUtils = {
   },
 
   serverWithClients: async (clientCount, heartbeatTimeoutMillis=process.env.HEARTBEAT_TIMEOUT_MILLIS) => {
-    const hermes = testUtils.server(heartbeatTimeoutMillis)
+    const hermes = await testUtils.server(heartbeatTimeoutMillis)
     const clients = await lib.test.util.addClients(clientCount)
     return { clients, hermes }
   },

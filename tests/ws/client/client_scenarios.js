@@ -23,7 +23,8 @@ module.exports = {
   }),
 
   "heartbeat_timeout_event_propagate": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const existingClient = testEnvironment.loggedInActors[0].client
+    const host = testEnvironment.nthRoomClientActor(0)
+    const existingClient = host.client
     const hermes = testEnvironment.hermes
     let leaveEvent
     const leaveEventPromise = new Promise((resolve, reject) => {
@@ -33,22 +34,19 @@ module.exports = {
       })
     })
 
-    const room = testEnvironment.loggedInActors[0].room
-
-    const heartbeatIntervalMillis = 60000
+    const joining = await lib.test.models.RoomActorClient.create(host.room)
     // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
     const heartbeatTimeoutMillis = 1500
-    const clients = await lib.test.util.addClients(1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
-    const client = clients[0]
+    joining.client.setHeartbeatTimeoutMillis(heartbeatTimeoutMillis)
+    await joining.join()
 
-    const environmentActor = await testEnvironment.createLoggedInActor(client, room)
-    await testEnvironment.authenticate(environmentActor)
-
-    const readyBeforeTimeout = client.isReady()
+    const readyBeforeTimeout = joining.client.isReady()
     const clientsBeforeTimeout = hermes.clientsCount()
-    await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
+    await new Promise((resolve, reject) => {
+      setTimeout(resolve, heartbeatTimeoutMillis * 2)
+    })
     const clientsAfterTimeout = hermes.clientsCount()
-    const readyAfterTimeout = client.isReady()
+    const readyAfterTimeout = joining.client.isReady()
     await leaveEventPromise
     return {
       clientsBeforeTimeout,

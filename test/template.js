@@ -19,6 +19,8 @@ class Template {
       }
       return result
     }
+
+
   }
 
   testServer(lambda, heartbeatTimeoutMillis) {
@@ -36,7 +38,7 @@ class Template {
     }
   }
 
-  authenticatedActor(lambda) {
+  authenticatedActor(lambda, heartbeatTimeoutMillis) {
     return lib.test.template.testServer(async (hermes) => {
       const roomActorClient = await lib.test.models.RoomActorClient.create()
       await roomActorClient.join()
@@ -46,7 +48,7 @@ class Template {
       testEnvironment.addRoomActorClient(roomActorClient)
 
       return await lambda(testEnvironment)
-    })
+    }, heartbeatTimeoutMillis)
   }
 
   nAuthenticatedActors(nActors, lambda) {

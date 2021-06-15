@@ -12,4 +12,8 @@ module.exports = class {
     this.roomActorClients.push(rac)
   }
 
+  nthRoomClientActor(n) {
+    return this.roomActorClients[n]
+  }
+
 }

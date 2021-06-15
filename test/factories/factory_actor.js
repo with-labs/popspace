@@ -1,6 +1,6 @@
 shared.test.factory.define("actor", "actors", (params) => {
   return {
-    id: shared.test.factory.sequence("actors.id", (n) => n),
+    id: shared.test.factory.sequence("actor.id", (n) => n),
     kind: params.kind || "user",
     display_name: shared.test.chance.name() + " " + shared.test.chance.last(),
     avatar_name: params.avatar_name,

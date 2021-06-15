@@ -80,7 +80,7 @@ class Memberships {
       return { membership }
     } catch(e) {
       // TODO: ERROR_LOGGING
-      return { error: shared.error.code.UNEXPECTER_ERROR }
+      return { error: shared.error.code.UNEXPECTED_ERROR }
     }
   }
 }

@@ -12,17 +12,22 @@ const runScenario = (testPath="../tests") => {
     .option("-s, --scenario <scenario_name>", "Scenario name")
     .parse(process.argv)
 
+  const runOptions = commander.opts();
 
   const doRun = async () => {
     let path = testPath
-    if(commander.component) {
-      path += `/${commander.component}`
+    
+    if(runOptions.component) {
+      path += `/${runOptions.component}`
     }
-    const testSuite = require(`${path}/${commander.test}/${commander.test}_scenarios.js`)
+
+    console.log("Running", runOptions.test, runOptions.scenario)
+
+    const testSuite = require(`${path}/${runOptions.test}/${runOptions.test}_scenarios.js`)
     await shared.test.init()
     await shared.init()
-    console.log("Running", commander.test, commander.scenario)
-    const result = await testSuite[commander.scenario]()
+    console.log("Running", runOptions.test, runOptions.scenario)
+    const result = await testSuite[runOptions.scenario]()
     console.log("Test result", util.inspect(result, {depth: 20, colors: true}))
     await shared.cleanup()
     return result

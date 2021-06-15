@@ -18,7 +18,7 @@ module.exports = {
       const firstClient = testEnvironment.loggedInActors[0].client
       const room = testEnvironment.loggedInActors[0].room
 
-      const unauthorizedClients = await lib.test.util.addClients(testEnvironment.hermes, 1)
+      const unauthorizedClients = await lib.test.util.addClients(1)
       const unauthorizedClient = unauthorizedClients[0]
 
       const actor = await shared.test.factory.create("actor")

@@ -14,7 +14,7 @@ class AuthProcessor {
 
   async authenticate(hermesEvent, participants) {
     const payload = hermesEvent.payload()
-    const room = await shared.db.rooms.roomByRoute(payload.room_route)
+    const room = await shared.db.room.core.roomByRoute(payload.room_route)
     const sender = hermesEvent.senderParticipant()
 
     if(!room) {
@@ -36,7 +36,7 @@ class AuthProcessor {
       )
     }
 
-    const success = await sender.authenticate(payload.token, payload.room_name)
+    const success = await sender.authenticate(payload.token, payload.room_route)
     if(success) {
       /*
         TODO: it'd be nice to get rid of this participants reference.

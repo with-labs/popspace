@@ -127,7 +127,7 @@ class Participant {
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
     this.actor = await shared.lib.auth.actorFromToken(token)
-    this.room = await shared.db.rooms.roomByRoute(roomRoute)
+    this.room = await shared.db.room.core.roomByRoute(roomRoute)
     if(!this.actor || !this.room) {
       this.unauthenticate()
       return false
@@ -143,7 +143,7 @@ class Participant {
         If the actor is allowed entry and is not a member,
         they should become a member.
       */
-      await shared.db.room.memberships.forceMembersip(this.room, this.actor)
+      await shared.db.room.memberships.forceMembership(this.room, this.actor)
     }
     await this.getTransform()
     await this.getState()
@@ -213,7 +213,7 @@ class Participant {
 
   respondAndBroadcast(hermesEvent, kind) {
     if(event.senderParticipant != this) {
-      log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant.actorId() vs this.actorId()}`)
+      log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant.actorId()} vs ${this.actorId()}`)
       /*
         We could throw an exception.
 
@@ -256,17 +256,18 @@ class Participant {
     if(this.participantState) {
       return this.participantState
     } else {
-      this.participantState = await shared.db.dynamo.room.getParticipantState(this.actor.id)
+      this.participantState = await shared.db.room.data.getParticipantState(this.actor.id)
       this.participantState = this.participantState || {}
       if(!this.participantState.display_name) {
         /*
-          Perhaps it would be better if these were just set at account creation.
-          Even still this fallback wouldn't hurt in case something goes wrong there.
-          Originally, the account creation process couldn't have dynamo hooked up,
-          as we didn't yet have shared code available to the netlify app.
+          TODO: delete this. The source of truth for display_names
+          should be just the room.
+
+          But let's not break existing client code and just do the migration
+          slowly.
         **/
         this.participantState.display_name = this.actor.display_name
-        await shared.db.dynamo.room.setParticipantState(this.actor.id, this.participantState)
+        await shared.db.room.data.setParticipantState(this.actor.id, this.participantState)
       }
       return this.participantState
     }

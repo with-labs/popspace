@@ -38,7 +38,7 @@ module.exports = {
     const heartbeatIntervalMillis = 60000
     // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
     const heartbeatTimeoutMillis = 1500
-    const clients = await lib.test.util.addClients(testEnvironment.hermes, 1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
+    const clients = await lib.test.util.addClients(1, heartbeatIntervalMillis, heartbeatTimeoutMillis)
     const client = clients[0]
 
     const environmentActor = await testEnvironment.createLoggedInActor(client, room)

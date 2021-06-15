@@ -7,7 +7,7 @@ class Template {
   }
 
   testServerClients(nClients, lambda, heartbeatTimeoutMillis) {
-    return this.withLib(async () => {
+    return async () => {
       let result = null
       const { clients, hermes } = await lib.test.util.serverWithClients(nClients, heartbeatTimeoutMillis)
       try {
@@ -18,16 +18,34 @@ class Template {
         await hermes.stop()
       }
       return result
-    })
+    }
   }
+
+  testServer(lambda, heartbeatTimeoutMillis) {
+    return async () => {
+      let result = null
+      const hermes = await lib.test.util.server(heartbeatTimeoutMillis)
+      try {
+        result = await lambda(hermes)
+      } catch(e) {
+        throw(e)
+      } finally {
+        await hermes.stop()
+      }
+      return result
+    }
+  }
+
   authenticatedActor(lambda) {
-    return lib.test.template.testServerClients(1, async (clients, hermes) => {
+    return lib.test.template.testServer(async (hermes) => {
+      const roomActorClient = await lib.test.models.RoomActorClient.create()
+      await roomActorClient.join()
+
       const testEnvironment = new lib.test.TestEnvironment()
-      const client = clients[0]
-      const environmentActor = await testEnvironment.createLoggedInActor(client)
-      await testEnvironment.authenticate(environmentActor)
       testEnvironment.setHermes(hermes)
-      return await lambda(testEnvironment, hermes)
+      testEnvironment.addRoomActorClient(roomActorClient)
+
+      return await lambda(testEnvironment)
     })
   }
 
@@ -44,7 +62,7 @@ class Template {
       */
       let joinsRemaining = nActors * (nActors - 1)/2 - 1
 
-      const clients = await lib.test.util.addClients(testEnvironment.hermes, nActors - 1)
+      const clients = await lib.test.util.addClients(nActors - 1)
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
         [firstClient, ...clients].forEach((client) => {
           client.on('event.participantJoined', (event) => {
@@ -77,13 +95,19 @@ class Template {
     return client
   }
 
-  withLib(lambda) {
-    return async (params) => {
-      await lib.init()
+  async withLib(lambda, params=null) {
+    /*
+      NOTE: usually we don't want to do this.
+      The shared tempalte lib already initializes the library.
+      But for running individual test scenarios it can be useful.
+    */
+    await lib.init()
+    try {
       const result = await lambda(params)
+    } finally {
       await lib.cleanup()
-      return result
     }
+    return result
   }
 }
 

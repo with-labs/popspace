@@ -159,15 +159,17 @@ function createRoomStore() {
               draft.sessionLookup = {};
               draft.socket = null;
               draft.cursors = {};
+              draft.displayName = '';
             });
           },
           initialize(init: IncomingAuthResponseMessage) {
             logger.debug(`Initialize`, init);
             const {
-              payload: { roomData: room, participants },
+              payload: { roomData: room, participants, displayName },
             } = init;
             set((draft) => {
               Object.assign(draft.state, room.state);
+              draft.displayName = displayName;
               // reset widgets
               draft.widgets = {};
               for (const widget of room.widgets) {

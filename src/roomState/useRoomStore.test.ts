@@ -358,8 +358,8 @@ describe('the central room state store (useRoomStore)', () => {
 
         expect(useRoomStore.getState().users['user1']).toEqual({
           id: 'user1',
-          displayName: 'User 1',
           participantState: {
+            displayName: 'User 1',
             avatarName: 'bear',
           },
           authenticated: true,
@@ -665,7 +665,6 @@ describe('the central room state store (useRoomStore)', () => {
           },
         });
 
-        expect(useRoomStore.getState().displayName).toEqual('foo');
         expect(useRoomStore.getState().state.wallpaperUrl).toEqual('some url');
       });
     });

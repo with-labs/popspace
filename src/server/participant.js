@@ -119,7 +119,7 @@ class Participant {
     return (this.socketGroup ? this.socketGroup.authenticatedParticipants() : [])
   }
 
-  async authenticate(token, roomName) {
+  async authenticate(token, roomRoute) {
     /*
       It seems that the JS WebSockets API doesn't well support setting custom headers
       when the connection is being established. A reasonable alternative is to send
@@ -127,7 +127,7 @@ class Participant {
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
     this.actor = await shared.lib.auth.actorFromToken(token)
-    this.room = await shared.db.rooms.roomByName(roomName)
+    this.room = await shared.db.room.core.roomByRoute(roomRoute)
     if(!this.actor || !this.room) {
       this.unauthenticate()
       return false
@@ -143,14 +143,9 @@ class Participant {
         If the actor is allowed entry and is not a member,
         they should become a member.
       */
-      await shared.db.room.memberships.forceMembersip(this.room, this.actor)
+      await shared.db.room.memberships.forceMembership(this.room, this.actor)
     }
-
-    this.transform = await shared.db.dynamo.room.getRoomParticipantState(this.room.id, this.actor.id)
-    if(!this.transform) {
-      this.transform = DEFAULT_STATE_IN_ROOM
-      await lib.roomData.addParticipantInRoom(this.room.id, this.actor.id, this.transform)
-    }
+    await this.getTransform()
     await this.getState()
     this.authenticated = true
     clearTimeout(this.dieUnlessAuthenticateTimeout)
@@ -183,13 +178,6 @@ class Participant {
     }
   }
 
-  broadcastPeerEvent(kind, payload, eventId=null) {
-    if(!this.socketGroup) {
-      throw "Must authenticate before broadcasting"
-    }
-    this.socketGroup.broadcastPeerEvent(this, kind, payload, eventId)
-  }
-
   isAuthenticated() {
     return this.authenticated
   }
@@ -212,8 +200,32 @@ class Participant {
     this.socket.send(message)
   }
 
+  broadcastPeerEvent(kind, payload, eventId=null) {
+    if(!this.socketGroup) {
+      throw "Must authenticate before broadcasting"
+    }
+    this.socketGroup.broadcastPeerEvent(this, kind, payload, eventId)
+  }
+
   sendResponse(requestEvent, payload={}, kind=null) {
     this.sendEvent(new lib.event.ResponseEvent(requestEvent, payload, kind))
+  }
+
+  respondAndBroadcast(hermesEvent, kind) {
+    if(event.senderParticipant != this) {
+      log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant.actorId()} vs ${this.actorId()}`)
+      /*
+        We could throw an exception.
+
+        But that could crash the server, and break the service for everyone.
+
+        I don't think there's a need to be so drastic in this case.
+        We can log the issue and drop the event.
+      */
+      return
+    }
+    this.broadcastPeerEvent(kind, hermesEvent.payload())
+    this.sendResponse(event, event.payload(), kind)
   }
 
   sendPeerEvent(sender, kind, payload, eventId=null) {
@@ -244,34 +256,64 @@ class Participant {
     if(this.participantState) {
       return this.participantState
     } else {
-      this.participantState = await shared.db.dynamo.room.getParticipantState(this.actor.id)
+      this.participantState = await shared.db.room.data.getParticipantState(this.actor.id)
       this.participantState = this.participantState || {}
       if(!this.participantState.display_name) {
         /*
-          Perhaps it would be better if these were just set at account creation.
-          Even still this fallback wouldn't hurt in case something goes wrong there.
-          Originally, the account creation process couldn't have dynamo hooked up,
-          as we didn't yet have shared code available to the netlify app.
+          TODO: delete this. The source of truth for display_names
+          should be just the room.
+
+          But let's not break existing client code and just do the migration
+          slowly.
         **/
         this.participantState.display_name = this.actor.display_name
-        await shared.db.dynamo.room.setParticipantState(this.actor.id, this.participantState)
+        await shared.db.room.data.setParticipantState(this.actor.id, this.participantState)
       }
       return this.participantState
     }
   }
 
   async getTransform() {
+    if(this.transform) {
+      return this.transform
+    }
+    const roomId = this.roomId()
+    const actorId = this.actorId()
+    this.transform = await shared.db.room.data.getRoomParticipantState(roomId, actorId)
+    if(!this.transform) {
+      this.transform = DEFAULT_STATE_IN_ROOM
+      await shared.db.room.data.setRoomParticipantState(roomId, actorId, this.transform)
+    }
     return this.transform
   }
 
-  updateState(newState) {
-    // TODO: maybe move the broadcast and dynamo write out here
-    this.participantState = newState
+  async updateTransform(newTransform, sourceEvent=null) {
+    this.transform = await shared.db.room.data.updateRoomParticipantState(
+      this.roomId(),
+      this.actorId(),
+      newTransform
+    )
+    if(sourceEvent) {
+      return this.respondAndBroadcast(sourceEvent, "participantTransformed")
+    } else {
+      log.error.warn("Dropping updateTransform - sourceEvent missing")
+      /*
+        We should probably still send the updated position to everyone,
+        but it won't be a response.
+      */
+    }
   }
 
-  updateTransform(newTransform) {
-    // TODO: maybe move the broadcast and dynamo write out here
-    this.transform = newTransform
+  async updateState(newState, sourceEvent=null) {
+    this.participantState = await shared.db.room.data.updateParticipantState(
+      this.actorId(),
+      newState
+    )
+    if(sourceEvent) {
+      return this.respondAndBroadcast(sourceEvent, "participantUpdated")
+    } else {
+      log.error.warn("Dropping updateTransform - sourceEvent missing")
+    }
   }
 
   unauthenticate() {

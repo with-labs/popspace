@@ -61,10 +61,11 @@ module.exports = {
     const creatorInfo = testEnvironment.loggedInActors[0]
 
     const room = creatorInfo.room
-    const clientWithRoomAccess = await testEnvironment.createClientWithRoomAccess(room)
+    const rac = RoomActorClient.create()
+    await rac.enableRoomAccess(room)
     try {
-      await clientWithRoomAccess.initiateLoggedInSession()
-      await clientWithRoomAccess.authenticateSocket()
+      await rac.initiateLoggedInSession()
+      await rac.authenticateSocket()
     } catch (error) {
       return {
         error,

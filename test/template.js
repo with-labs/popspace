@@ -7,7 +7,7 @@ class Template {
   }
 
   testServerClients(nClients, lambda, heartbeatTimeoutMillis) {
-    return this.withLib(async () => {
+    return async () => {
       let result = null
       const { clients, hermes } = await lib.test.util.serverWithClients(nClients, heartbeatTimeoutMillis)
       try {
@@ -18,23 +18,42 @@ class Template {
         await hermes.stop()
       }
       return result
-    })
+    }
+
+
   }
-  authenticatedActor(lambda) {
-    return lib.test.template.testServerClients(1, async (clients, hermes) => {
+
+  testServer(lambda, heartbeatTimeoutMillis) {
+    return async () => {
+      let result = null
+      const hermes = await lib.test.util.server(heartbeatTimeoutMillis)
+      try {
+        result = await lambda(hermes)
+      } catch(e) {
+        throw(e)
+      } finally {
+        await hermes.stop()
+      }
+      return result
+    }
+  }
+
+  authenticatedActor(lambda, heartbeatTimeoutMillis) {
+    return lib.test.template.testServer(async (hermes) => {
+      const roomActorClient = await lib.test.models.RoomActorClient.create()
+      await roomActorClient.join()
+
       const testEnvironment = new lib.test.TestEnvironment()
-      const client = clients[0]
-      const environmentActor = await testEnvironment.createLoggedInActor(client)
-      await testEnvironment.authenticate(environmentActor)
       testEnvironment.setHermes(hermes)
-      return await lambda(testEnvironment, hermes)
-    })
+      testEnvironment.addRoomActorClients(roomActorClient)
+
+      return await lambda(testEnvironment)
+    }, heartbeatTimeoutMillis)
   }
 
   nAuthenticatedActors(nActors, lambda) {
     return lib.test.template.authenticatedActor(async (testEnvironment) => {
-      const firstClient = testEnvironment.loggedInActors[0].client
-      const room = testEnvironment.loggedInActors[0].room
+      const host = testEnvironment.nthRoomClientActor(0)
 
       /*
         Each actor after the first one produces a certain number of join events.
@@ -43,11 +62,15 @@ class Template {
         We go up to (nActors - 1), because we don't count the first actor.
       */
       let joinsRemaining = nActors * (nActors - 1)/2 - 1
-
-      const clients = await lib.test.util.addClients(testEnvironment.hermes, nActors - 1)
+      let roomActorClients = []
+      for(let i = 0; i < nActors - 1; i++) {
+        roomActorClients.push(lib.test.models.RoomActorClient.create(host.room))
+      }
+      roomActorClients = await Promise.all(roomActorClients)
+      testEnvironment.addRoomActorClients(...roomActorClients)
       const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
-        [firstClient, ...clients].forEach((client) => {
-          client.on('event.participantJoined', (event) => {
+        [host, ...roomActorClients].forEach((rac) => {
+          rac.client.on('event.participantJoined', (event) => {
             joinsRemaining--
             if(joinsRemaining <= 0) {
               resolve()
@@ -59,9 +82,8 @@ class Template {
         }
       })
 
-      const inits = clients.map(async (client) => {
-        const environmentActor = await testEnvironment.createLoggedInActor(client, room)
-        await testEnvironment.authenticate(environmentActor)
+      const inits = roomActorClients.map(async (rac) => {
+        await rac.join()
       })
       await Promise.all(inits)
       await joinsPropagatedPromise
@@ -77,13 +99,19 @@ class Template {
     return client
   }
 
-  withLib(lambda) {
-    return async (params) => {
-      await lib.init()
+  async withLib(lambda, params=null) {
+    /*
+      NOTE: usually we don't want to do this.
+      The shared tempalte lib already initializes the library.
+      But for running individual test scenarios it can be useful.
+    */
+    await lib.init()
+    try {
       const result = await lambda(params)
+    } finally {
       await lib.cleanup()
-      return result
     }
+    return result
   }
 }
 

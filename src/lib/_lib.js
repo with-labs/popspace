@@ -1,4 +1,3 @@
-const RoomData = require("./room_data")
 const Analytics = require("./analytics")
 
 const lib = {
@@ -12,11 +11,11 @@ const lib = {
   appInfo: require("./app_info"),
   SocketGroup: require("./socket_group"),
   analytics: new Analytics(),
-  roomData: new RoomData(),
   init: async () => {
-    await lib.roomData.init()
     await shared.db.pg.init()
-    await shared.db.dynamo.init()
+    if(process.env.NODE_ENV == "test") {
+      lib.test = require("../../test/_test.js")
+    }
   },
   cleanup: async () => {
     await shared.db.pg.tearDown()
@@ -31,8 +30,5 @@ const lib = {
   },
 }
 
-if(process.env.NODE_ENV == "test") {
-  lib.test = require("../../test/_test.js")
-}
 
 module.exports = lib

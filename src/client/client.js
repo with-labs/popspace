@@ -39,6 +39,19 @@ class Client extends EventEmitter {
   /**********************************/
   /* API: usually use these methods */
   /**********************************/
+
+  setHeartbeatIntervalMillis(heartbeatIntervalMillis) {
+    this.heartbeatIntervalMillis = heartbeatIntervalMillis
+    this.stopHeartbeat()
+    this.startHeartbeat()
+  }
+
+  setHeartbeatTimeoutMillis(heartbeatTimeoutMillis) {
+    this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+    this.stopHeartbeat()
+    this.startHeartbeat()
+  }
+
   async connect() {
     if(this.socket) {
       return
@@ -177,8 +190,8 @@ class Client extends EventEmitter {
     this.authToken = token
   }
 
-  async authenticate(token, roomName) {
-    const response = await this.sendEventWithPromise("auth", { token, roomName })
+  async authenticate(token, roomRoute) {
+    const response = await this.sendEventWithPromise("auth", { token, roomRoute })
     if(response.kind == "error") {
       throw response
     } else {

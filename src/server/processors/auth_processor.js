@@ -14,7 +14,7 @@ class AuthProcessor {
 
   async authenticate(hermesEvent, participants) {
     const payload = hermesEvent.payload()
-    const room = await shared.db.rooms.roomByName(payload.room_name)
+    const room = await shared.db.room.core.roomByRoute(payload.room_route)
     const sender = hermesEvent.senderParticipant()
 
     if(!room) {
@@ -22,7 +22,7 @@ class AuthProcessor {
         hermesEvent,
         shared.error.code.UNKNOWN_ROOM,
         `No such room`,
-        {room_route: payload.room_name}
+        {room_route: payload.room_route}
       )
     }
 
@@ -35,8 +35,7 @@ class AuthProcessor {
         {limit: socketGroup.getMaxParticipants()}
       )
     }
-
-    const success = await sender.authenticate(payload.token, payload.room_name)
+    const success = await sender.authenticate(payload.token, payload.room_route)
     if(success) {
       /*
         TODO: it'd be nice to get rid of this participants reference.
@@ -59,15 +58,16 @@ class AuthProcessor {
   }
 
   async getAuthData(hermesEvent) {
-    const actor = hermesEvent.senderActor()
+    const roomData = new shared.models.RoomData(hermesEvent.room())
     const participant = hermesEvent.senderParticipant()
-    const roomId = hermesEvent.roomId()
-    const room = await lib.roomData.getRoomData(roomId)
 
     const peers = participant.listPeersIncludingSelf()
     const serializedParticipants = peers.map((p) => (p.serialize()))
-
-    return { room, self: participant.serialize(), participants: serializedParticipants }
+    return {
+      roomData: (await roomData.serialize()),
+      self: participant.serialize(),
+      participants: serializedParticipants
+    }
   }
 
 }

@@ -17,7 +17,7 @@ export interface IRoutesProps {}
 export const Routes: React.FC<IRoutesProps> = () => {
   return (
     <Switch>
-      <Route exact path={RouteNames.ROOT}>
+      <Route exact path={RouteNames.CREATE_MEETING}>
         <MeetingSelect />
       </Route>
 
@@ -25,7 +25,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
         <MeetingLink />
       </Route>
 
-      <Route exact path={RouteNames.CREATE_MEETING}>
+      <Route exact path={RouteNames.CREATE_MEETING_URL}>
         <CreateMeeting />
       </Route>
 

@@ -1,3 +1,3 @@
 module.exports = {
-  HttpClient: "./http_client.js",
+  HttpClient: require("./http_client.js"),
 }

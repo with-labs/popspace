@@ -163,7 +163,7 @@ class Data {
       "room_widget_states", {
         room_id: roomId,
         widget_id: widgetId
-      }, stateUpdate, curState
+      }, stateUpdate
     ))
   }
   async setRoomWidgetState(roomId, widgetId, newState) {

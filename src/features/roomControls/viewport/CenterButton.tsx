@@ -1,6 +1,6 @@
 import { IconButton } from '@material-ui/core';
 import * as React from 'react';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { CrosshairIcon } from '@components/icons/CrosshairIcon';
 import { useViewport } from '@providers/viewport/useViewport';
 

@@ -130,3 +130,11 @@ export type IncomingSocketMessage =
   | IncomingParticipantUpdatedMessage
   | IncomingRoomStateUpdatedMessage
   | IncomingPassthroughMessage;
+
+// util types for mapping discriminated union by keys
+type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;
+type MapDiscriminatedUnion<T extends Record<K, string>, K extends keyof T> = {
+  [V in T[K]]: DiscriminateUnion<T, K, V>;
+};
+
+export type IncomingSocketMessageByKind = MapDiscriminatedUnion<IncomingSocketMessage, 'kind'>;

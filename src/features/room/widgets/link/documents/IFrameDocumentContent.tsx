@@ -4,7 +4,7 @@ import { makeStyles, Tooltip, Box, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { Link } from '../../../../../components/Link/Link';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { WidgetTitlebar } from '../../WidgetTitlebar';

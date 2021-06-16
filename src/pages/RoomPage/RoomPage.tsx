@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@components/Modal/Modal';
 import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { RoomStateProvider } from '@roomState/RoomStateProvider';
 import { useAppState } from '../../state';
 import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteControlProvider';
 import { TwilioProvider } from '@providers/twilio/TwilioProvider';
@@ -58,17 +57,15 @@ export default function RoomPage(props: IRoomPageProps) {
       <ErrorDialog dismissError={() => setError(null)} error={error} />
       <LocalTracksProvider>
         {props.roomRoute ? (
-          <RoomStateProvider roomRoute={props.roomRoute}>
-            <TwilioProvider roomName={props.roomRoute}>
-              <RemoteControlProvider>
-                <div className={classes.roomWrapper}>
-                  <ErrorBoundary fallback={() => <RoomFallback />}>
-                    <Room />
-                  </ErrorBoundary>
-                </div>
-              </RemoteControlProvider>
-            </TwilioProvider>
-          </RoomStateProvider>
+          <TwilioProvider roomName={props.roomRoute}>
+            <RemoteControlProvider>
+              <div className={classes.roomWrapper}>
+                <ErrorBoundary fallback={() => <RoomFallback />}>
+                  <Room />
+                </ErrorBoundary>
+              </div>
+            </RemoteControlProvider>
+          </TwilioProvider>
         ) : (
           <>
             <FullscreenLoading />

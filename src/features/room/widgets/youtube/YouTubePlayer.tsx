@@ -3,7 +3,7 @@ import YouTube from 'react-youtube';
 import { MediaControls } from '../common/MediaControls';
 import { useSyncYoutube } from './useSyncYoutube';
 import { makeStyles } from '@material-ui/core';
-import { YoutubeWidgetShape, YoutubeWidgetState } from '@roomState/types/widgets';
+import { YoutubeWidgetShape, YoutubeWidgetState } from '@api/roomState/types/widgets';
 
 export interface IYouTubePlayerProps {
   isMuted?: boolean;

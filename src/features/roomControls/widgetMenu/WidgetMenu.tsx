@@ -2,7 +2,7 @@ import * as React from 'react';
 import { makeStyles, Paper } from '@material-ui/core';
 import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
 import { QuickFileButton } from '../addContent/QuickFileButton';
-import { WidgetType } from '../../../roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
 import clsx from 'clsx';
 import { Spacing } from '@components/Spacing/Spacing';

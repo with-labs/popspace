@@ -1,8 +1,8 @@
 // Abstraction around our analytics lib
 import mixpanel from 'mixpanel-browser';
 import { EventNames, StatusUpdate, UserEventData } from './constants';
-import { ParticipantState } from '@roomState/types/participants';
-import { WidgetState } from '@roomState/types/widgets';
+import { ParticipantState } from '@api/roomState/types/participants';
+import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 
 // Helper methods

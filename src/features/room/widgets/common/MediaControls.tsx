@@ -3,7 +3,7 @@ import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@mater
 import clsx from 'clsx';
 import { PauseIcon } from '@components/icons/PauseIcon';
 import { PlayIcon } from '@components/icons/PlayIcon';
-import { WidgetMediaState } from '@roomState/types/widgets';
+import { WidgetMediaState } from '@api/roomState/types/widgets';
 import { Fullscreen } from '@material-ui/icons';
 import { LoopIcon } from '@components/icons/LoopIcon';
 

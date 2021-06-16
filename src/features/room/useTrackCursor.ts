@@ -1,7 +1,7 @@
 import throttle from 'lodash.throttle';
 import { useRef, useMemo, useCallback, useEffect } from 'react';
-import { useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
+import client from '@api/client';
 
 /**
  * Tracks cursor position and sends updates to the socket connection
@@ -9,8 +9,7 @@ import { Vector2 } from '../../types/spatials';
 export function useTrackCursor() {
   const lastKnownPositionRef = useRef<Vector2>({ x: 0, y: 0 });
 
-  const update = useRoomStore((room) => room.api.updateCursor);
-  const throttledUpdate = useMemo(() => throttle(update, 500), [update]);
+  const throttledUpdate = useMemo(() => throttle(client.passthrough.updateCursor, 500), []);
 
   const onMove = useCallback(
     (pos: Vector2) => {
@@ -25,7 +24,7 @@ export function useTrackCursor() {
 
   useEffect(() => {
     const handleWindowBlur = () => {
-      update({
+      client.passthrough.updateCursor({
         position: lastKnownPositionRef.current,
         active: false,
       });
@@ -34,7 +33,7 @@ export function useTrackCursor() {
     return () => {
       window.removeEventListener('blur', handleWindowBlur);
     };
-  }, [update, lastKnownPositionRef]);
+  }, [lastKnownPositionRef]);
 
   return onMove;
 }

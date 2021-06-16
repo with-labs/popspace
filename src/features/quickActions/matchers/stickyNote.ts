@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { isSmallScreen } from '@utils/environment';
 import { INITIAL_SIZE } from '../../room/widgets/stickyNote/constants';
 import { QuickAction, QuickActionKind } from '../types';

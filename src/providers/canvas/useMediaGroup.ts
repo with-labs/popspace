@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { useRoomStore } from '@api/useRoomStore';
 import { useCanvas } from './CanvasProvider';
 
 export function useMediaGroup(objectId: string) {

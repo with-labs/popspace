@@ -2,23 +2,22 @@ import { useCallback } from 'react';
 import { addVectors } from '@utils/math';
 import { Bounds, Vector2 } from '../../../../types/spatials';
 import { useGetLinkData } from '../../../room/widgets/link/useGetLinkData';
-import { LinkWidgetState, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { LinkWidgetState, WidgetStateByType, WidgetType } from '@api/roomState/types/widgets';
 import { Origin } from '@analytics/constants';
 import { useViewport } from '@providers/viewport/useViewport';
+import { useLocalActorId } from '@api/useLocalActorId';
+import client from '@api/client';
 
 /**
  * Creates a new accessory near the center of the user's viewport,
  * assigning them as the owner and by default making it a draft.
  */
 export function useAddAccessory() {
-  const userId = useRoomStore((room) => room.api.getActiveUserId());
+  const userId = useLocalActorId();
 
   const viewport = useViewport();
 
   const getLinkData = useGetLinkData();
-
-  const addWidget = useRoomStore((room) => room.api.addWidget);
 
   return useCallback(
     async <Type extends WidgetType>(
@@ -57,7 +56,7 @@ export function useAddAccessory() {
         data = (await getLinkData(initialData as LinkWidgetState)) as any;
       }
 
-      return addWidget(
+      return client.widgets.addWidget(
         {
           type,
           transform: {
@@ -69,6 +68,6 @@ export function useAddAccessory() {
         origin
       );
     },
-    [addWidget, userId, viewport, getLinkData]
+    [userId, viewport, getLinkData]
   );
 }

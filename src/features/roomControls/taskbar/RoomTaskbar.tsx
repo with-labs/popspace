@@ -1,11 +1,11 @@
-import { Hidden, makeStyles, Paper, Theme, useMediaQuery, Box } from '@material-ui/core';
+import { Hidden, makeStyles, Paper, Box } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
 import { Spacing } from '@components/Spacing/Spacing';
-import { MediaFailedWrapper } from '@roomState/MediaFailedWrapper';
+import { MediaFailedWrapper } from '@providers/media/MediaFailedWrapper';
 import { isPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
 import { ACTION_BAR_ID } from '../addContent/ActionBar';
 import { FloatingActionBarButton } from '../addContent/FloatingActionBarButton';

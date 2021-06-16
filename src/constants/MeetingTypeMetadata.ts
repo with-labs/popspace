@@ -1,5 +1,3 @@
-import { RoomTemplate } from '@roomState/exportRoomTemplate';
-
 import customData from '@features/meetingTemplates/templateData/custom.json';
 import oneOnOneData from '@features/meetingTemplates/templateData/oneOnOne.json';
 import presentationData from '@features/meetingTemplates/templateData/presentation.json';

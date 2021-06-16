@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PlayState } from '../common/MediaControls';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { YoutubeWidgetState, YoutubeWidgetShape } from '@roomState/types/widgets';
+import { YoutubeWidgetState, YoutubeWidgetShape } from '@api/roomState/types/widgets';
 
 function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: string | null) {
   if (lastPlayedUTC) {
@@ -32,7 +32,11 @@ export function useSyncYoutube({
   onLoad?: () => void;
   isMuted?: boolean;
 }) {
-  const { isPlaying = false, timestamp = 0, playStartedTimestampUtc = null } = state.widgetState.mediaState || {
+  const {
+    isPlaying = false,
+    timestamp = 0,
+    playStartedTimestampUtc = null,
+  } = state.widgetState.mediaState || {
     isPlaying: false,
     timestamp: 0,
     playStartedTimestampUtc: null,

@@ -1,5 +1,5 @@
 import { TFunction } from 'i18next';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { isSmallScreen } from '@utils/environment';
 import { parseYoutubeLink } from '@utils/youtube';
 import { INITIAL_SIZE_PLAYER, SIZE_EDIT } from '../../room/widgets/youtube/constants';

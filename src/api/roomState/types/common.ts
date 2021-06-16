@@ -1,4 +1,4 @@
-import { Vector2, Bounds } from '../../types/spatials';
+import { Vector2, Bounds } from '@src/types/spatials';
 
 export interface RoomPositionState {
   position: Vector2;

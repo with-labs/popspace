@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useTwilio } from '@providers/twilio/TwilioProvider';
-import { useRoomStore } from '@roomState/useRoomStore';
 import { LeaveIcon } from '@components/icons/LeaveIcon';
 import { makeStyles, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import client from '@api/client';
 
 export interface ILeaveMeetingButtonProps {}
 
@@ -24,13 +24,12 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   const { t } = useTranslation();
   const classes = useStyles();
   const { room } = useTwilio();
-  const leave = useRoomStore((r) => r.api.leave);
 
   // todo add analytics
   const leaveRoom = React.useCallback(() => {
     room?.disconnect();
-    leave();
-  }, [room, leave]);
+    client.leaveMeeting();
+  }, [room]);
 
   return (
     <Button variant="text" className={classes.button} startIcon={<LeaveIcon />} onClick={leaveRoom} fullWidth={false}>

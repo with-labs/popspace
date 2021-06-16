@@ -7,7 +7,7 @@ import { Widget } from './widgets/Widget';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
 import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
-import { useRoomStore, RoomStateShape } from '@roomState/useRoomStore';
+import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
 import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
 import { PageTitle } from '@components/PageTitle/PageTitle';
 import shallow from 'zustand/shallow';
@@ -22,6 +22,7 @@ import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
+import { ReconnectingAlert } from './ReconnectingAlert';
 
 interface IRoomProps {}
 
@@ -75,6 +76,7 @@ export const RoomView = React.memo<IRoomProps>(() => {
       <SignUpModal />
       <UserEntryModal />
       <ConfirmCodeModal email={'test@test.com'} />
+      <ReconnectingAlert />
     </RoomViewportProvider>
   );
 });

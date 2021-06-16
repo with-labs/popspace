@@ -6,7 +6,7 @@ import { SidecarStreamPreview } from './SidecarStreamPreview';
 import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
-import { RoomUserStateShape } from '@roomState/useRoomStore';
+import { RoomUserStateShape } from '@api/roomState/roomStateStore';
 import { Stream } from '../../../types/streams';
 import { PersonBubbleFrame } from './PersonBubbleFrame';
 import { PersonBubbleContent } from './PersonBubbleContent';

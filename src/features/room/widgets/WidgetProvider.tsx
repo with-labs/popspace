@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { WidgetShapeForType, WidgetStateByType, WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetShapeForType, WidgetStateByType, WidgetType } from '@api/roomState/types/widgets';
+import { useRoomStore } from '@api/useRoomStore';
 import { logger } from '@utils/logger';
 import { useDeleteWidget } from './useDeleteWidget';
 import { useSaveWidget } from './useSaveWidget';

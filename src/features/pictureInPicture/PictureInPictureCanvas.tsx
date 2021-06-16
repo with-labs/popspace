@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { logger } from '@utils/logger';
 import { PictureInPictureMuteIcon } from './PictureInPictureMuteIcon';
 import { PictureInPictureSettingsState, usePictureInPictureSettings } from './usePictureInPictureSettings';

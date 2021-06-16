@@ -2,13 +2,14 @@ import { EventEmitter } from 'events';
 import throttle from 'lodash.throttle';
 import create from 'zustand/vanilla';
 import { Viewport } from '../viewport/Viewport';
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { Bounds, Vector2 } from '../../types/spatials';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
 import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '@utils/math';
 import { SMALL_SIZE } from '@features/room/people/constants';
 import { CanvasObjectIntersections, IntersectionData } from './CanvasObjectIntersections';
 import shallow from 'zustand/shallow';
+import client from '@api/client';
 
 const MOVE_THROTTLE_PERIOD = 100;
 
@@ -163,14 +164,13 @@ export class Canvas extends EventEmitter {
     size: Bounds | null
   ) => {
     if (objectKind === 'person') {
-      const { getActiveUserId, transformSelf } = useRoomStore.getState().api;
       // local user can only move or resize themselves; ignore gestures for all
       // other users
-      if (objectId !== getActiveUserId()) return;
+      if (objectId !== client.actor?.actorId) return;
 
-      await transformSelf({ position: position || undefined, size: size || undefined });
+      await client.transforms.transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {
-      await useRoomStore.getState().api.transformWidget({
+      await client.transforms.transformWidget({
         widgetId: objectId,
         transform: {
           position: position || undefined,

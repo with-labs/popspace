@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import api from '@api/client';
 import { logger } from '@utils/logger';
 import { useTranslation } from 'react-i18next';
-import { LinkWidgetState } from '@roomState/types/widgets';
+import { LinkWidgetState } from '@api/roomState/types/widgets';
 
 /** Returns a function to call to retrieve opengraph data for a URL */
 export function useGetLinkData() {
@@ -17,7 +17,7 @@ export function useGetLinkData() {
       }
 
       try {
-        const { result } = await api.getOpenGraph(url);
+        const { result } = await api.openGraph.getOpenGraph(url);
 
         return {
           ...baseData,

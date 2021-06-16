@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { FormikBorderlessTextarea } from '@components/fieldBindings/FormikBorderlessTextarea';
 import { useGetLinkData } from './useGetLinkData';
-import { LinkWidgetState } from '@roomState/types/widgets';
+import { LinkWidgetState } from '@api/roomState/types/widgets';
 
 export interface IEditLinkWidgetFormProps {
   onSave: (data: LinkWidgetState) => any;

@@ -1,5 +1,5 @@
 import { WhiteboardState } from '@components/Whiteboard/types';
-import { ThemeName } from '../../theme/theme';
+import { ThemeName } from '@src/theme/theme';
 
 // eslint-disable-next-line no-shadow
 export enum WidgetType {

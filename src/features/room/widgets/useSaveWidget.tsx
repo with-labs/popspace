@@ -1,20 +1,18 @@
-import { useRoomStore } from '@roomState/useRoomStore';
 import { useCallback } from 'react';
-import { WidgetState } from '@roomState/types/widgets';
+import { WidgetState } from '@api/roomState/types/widgets';
+import client from '@api/client';
 
 /**
- * saves a widget, syncing its state to peers, and publishing it if
- * it is not already public
+ * @deprecated call client.widgets.updateWidget directly
  */
 export const useSaveWidget = (widgetId: string) => {
-  const update = useRoomStore((room) => room.api.updateWidget);
   return useCallback(
     (data: Partial<WidgetState>) => {
-      update({
+      client.widgets.updateWidget({
         widgetId,
         widgetState: data,
       });
     },
-    [update, widgetId]
+    [widgetId]
   );
 };

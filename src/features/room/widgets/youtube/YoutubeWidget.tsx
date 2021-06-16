@@ -10,10 +10,11 @@ import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { YouTubePlayer } from './YouTubePlayer';
 import { useWidgetContext } from '../useWidgetContext';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
+import { useIsMe } from '@api/useIsMe';
 
 export interface IYoutubeWidgetProps {}
 
@@ -73,7 +74,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
 
   const { widget: state } = useWidgetContext<WidgetType.YouTube>();
 
-  const localUserId = useRoomStore((room) => room.api.getActiveUserId());
+  const isMine = useIsMe(state.ownerId);
 
   const saveWidget = useSaveWidget(state.widgetId);
 
@@ -83,7 +84,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
   const isPlaying = !!state.widgetState.mediaState?.isPlaying;
 
   if (!state.widgetState.videoId) {
-    if (state.ownerId === localUserId) {
+    if (isMine) {
       return (
         <WidgetFrame
           color={ThemeName.Cherry}

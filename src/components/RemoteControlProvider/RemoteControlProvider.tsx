@@ -4,8 +4,8 @@ import { RoomEvent } from '@constants/twilio';
 import { CAMERA_TRACK_NAME, MIC_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useTwilio } from '@providers/twilio/TwilioProvider';
-import { useRoomStore } from '@roomState/useRoomStore';
-import shallow from 'zustand/shallow';
+import { useRoomStore } from '@api/useRoomStore';
+import client from '@api/client';
 
 type MutableTrackName = typeof CAMERA_TRACK_NAME | typeof MIC_TRACK_NAME | typeof SCREEN_SHARE_TRACK_NAME;
 
@@ -18,7 +18,7 @@ export const RemoteControlContext = React.createContext<{
  * by session ID
  */
 export const RemoteControlProvider: React.FC = ({ children }) => {
-  const [localSessionId, userId] = useRoomStore((room) => [room.sessionId, room.api.getActiveUserId()], shallow);
+  const localSessionId = useRoomStore((room) => room.sessionId);
 
   const { room } = useTwilio();
 
@@ -29,7 +29,7 @@ export const RemoteControlProvider: React.FC = ({ children }) => {
     function onMessage(rawMessage: string | ArrayBuffer, track: RemoteDataTrack, participant: RemoteParticipant) {
       // for now we authenticate the message as being from another participant
       // with our same user ID
-      if (!participant.identity.startsWith(`${userId}#`)) return;
+      if (!client.actor || !participant.identity.startsWith(`${client.actor.actorId}#`)) return;
       try {
         const parsed = JSON.parse(rawMessage.toString());
         // if this is a mute operation aimed at our session
@@ -53,7 +53,7 @@ export const RemoteControlProvider: React.FC = ({ children }) => {
     }
     room.on(RoomEvent.TrackMessage, onMessage);
     return () => void room.off(RoomEvent.TrackMessage, onMessage);
-  }, [room, userId, localSessionId, stopVideo, stopAudio, stopScreenShare]);
+  }, [room, localSessionId, stopVideo, stopAudio, stopScreenShare]);
 
   const muteSession = React.useCallback(
     (sessionId: string, track: MutableTrackName) => {

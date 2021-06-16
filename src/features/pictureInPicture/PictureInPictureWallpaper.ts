@@ -1,5 +1,6 @@
+import client from '@api/client';
+import { RoomStateShape } from '@api/useRoomStore';
 import { DEFAULT_ROOM_SIZE } from '@constants/room';
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
 import { Vector2 } from '../../types/spatials';
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 
@@ -19,9 +20,9 @@ export class PictureInPictureWallpaper extends PictureInPictureRenderable {
     this.image = new Image(WALLPAPER_SIZE, WALLPAPER_SIZE);
     this.image.crossOrigin = 'anonymous';
     this.image.style.objectFit = 'cover';
-    this.image.src = this.getImgSrc(selectWallpaperUrl(useRoomStore.getState()));
+    this.image.src = this.getImgSrc(selectWallpaperUrl(client.roomStateStore.getState()));
 
-    this.unsubscribe = useRoomStore.subscribe<string>((src) => {
+    this.unsubscribe = client.roomStateStore.subscribe<string>((src) => {
       this.image.src = this.getImgSrc(src);
     }, selectWallpaperUrl);
   }

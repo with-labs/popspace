@@ -3,7 +3,7 @@ import { MicToggle } from './MicToggle';
 import { logger } from '@utils/logger';
 import { useRemoteControl } from '@hooks/useRemoteControl/useRemoteControl';
 import { MIC_TRACK_NAME } from '@constants/User';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import usePublishedAudioToggle from '@providers/media/hooks/usePublishedAudioToggle';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '@providers/twilio/TwilioProvider';

@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
-import { useRoomStore } from '@roomState/useRoomStore';
+import client from '@api/client';
 
+/** @deprecated call client.widgets.deleteWidget directly */
 export function useDeleteWidget(widgetId: string) {
-  const deleteWidget = useRoomStore((room) => room.api.deleteWidget);
-
   return useCallback(() => {
-    deleteWidget({ widgetId });
-  }, [deleteWidget, widgetId]);
+    client.widgets.deleteWidget({ widgetId });
+  }, [widgetId]);
 }

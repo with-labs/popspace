@@ -1,12 +1,13 @@
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import client from '@api/client';
 import { Vector2 } from '../../types/spatials';
 import { options as avatarMetadata } from '@utils/AvatarOptions';
 import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '@utils/math';
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 import { snow } from '../../theme/theme';
 import { MAX_AUDIO_RANGE } from '@constants/room';
-import { ParticipantState } from '@roomState/types/participants';
+import { ParticipantState } from '@api/roomState/types/participants';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
+import { RoomStateShape } from '@api/useRoomStore';
 
 const SIZE = 60;
 const PROXIMITY_RANGE = 400;
@@ -28,7 +29,7 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     this.avatarImage.crossOrigin = 'anonymous';
     this.avatarImage.style.objectFit = 'cover';
 
-    const roomState = useRoomStore.getState();
+    const roomState = client.roomStateStore.getState();
 
     // bootstrap initial user data
     this.setData(this.selectUserData(roomState));
@@ -36,8 +37,8 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     this.position = this.selectPosition(roomState);
 
     // subscribe to data and position changes
-    const unsubData = useRoomStore.subscribe<ParticipantState>(this.setData, this.selectUserData);
-    const unsubPosition = useRoomStore.subscribe<Vector2 | null>((pos) => {
+    const unsubData = client.roomStateStore.subscribe<ParticipantState>(this.setData, this.selectUserData);
+    const unsubPosition = client.roomStateStore.subscribe<Vector2 | null>((pos) => {
       this.position = pos;
     }, this.selectPosition);
 

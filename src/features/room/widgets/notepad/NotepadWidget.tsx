@@ -6,15 +6,17 @@ import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetType } from '../../../../roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
-import { useRoomStore } from '../../../../roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import CollaborativeQuill from '@withso/pegasus';
 import { useCanvas } from '../../../../providers/canvas/CanvasProvider';
 import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
 
 import { CircularProgress } from '@material-ui/core';
+import { useIsMe } from '@api/useIsMe';
+import { useLocalActor } from '@api/useLocalActor';
 
 export interface INotepadWidgetProps {}
 
@@ -48,10 +50,8 @@ const useStyles = makeStyles((theme) => ({
 export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const localUserId = useRoomStore((store) => store.api.getActiveUserId());
-  const userDisplayName = useRoomStore(
-    (store) => store.users[store.api.getActiveUserId()]?.participantState.displayName ?? ''
-  );
+  const actor = useLocalActor();
+  const userDisplayName = actor?.displayName;
 
   const { widget: state } = useWidgetContext<WidgetType.Notepad>();
 
@@ -66,7 +66,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     )
   );
 
-  const isOwnedByLocalUser = state.ownerId === localUserId;
+  const isOwnedByLocalUser = useIsMe(state.ownerId);
   const [size, setSize] = React.useState(startSize);
 
   const spinner = (

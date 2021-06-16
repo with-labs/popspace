@@ -6,7 +6,7 @@ import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import { SpatialVideo } from '@components/SpatialVideo/SpatialVideo';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';

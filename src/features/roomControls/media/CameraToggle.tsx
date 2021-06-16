@@ -9,10 +9,11 @@ import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { makeStyles } from '@material-ui/core';
+import client from '@api/client';
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -32,7 +33,6 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { className, isLocal, isVideoOn, toggleVideoOn, busy, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const socket = useRoomStore((room) => room.socket);
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const handleVideoToggle = React.useCallback(() => {
@@ -41,7 +41,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
       timestamp: new Date().getTime(),
     });
 
-    socket?.send({
+    client.socket.send({
       kind: 'updateVideoState',
       payload: {
         isOn: !isVideoOn,
@@ -50,7 +50,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     });
 
     toggleVideoOn();
-  }, [toggleVideoOn, isVideoOn, socket, trackEvent]);
+  }, [toggleVideoOn, isVideoOn, trackEvent]);
 
   useHotkeys(
     KeyShortcut.ToggleVideo,

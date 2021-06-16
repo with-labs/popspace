@@ -29,7 +29,7 @@ class Rooms {
         folder
       )
 
-      return await util.http.succeed(req, res, {
+      return await api.http.succeed(req, res, {
         uploadUrl,
         downloadUrl
       })
@@ -47,13 +47,11 @@ class Rooms {
     })
 
     this.zoo.loggedInPostEndpoint("/opengraph", async(req, res) => {
-      console.log('here')
-      console.log(req)
       try {
         const ogResult = await lib.opengraph.getGraphData(req.body.url)
-        console.log('before')
-        return await lib.util.http.succeed(req, res, {result: ogResult})
+        return await api.http.succeed(req, res, {result: ogResult})
       } catch (err) {
+        log.error.error(`Error fetching opengraph data`)
         return await api.http.fail(req, res, { errorCode: shared.error.code.OPENGRAPH_NO_DATA })
       }
     })

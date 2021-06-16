@@ -74,7 +74,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
 
   const { widget: state } = useWidgetContext<WidgetType.YouTube>();
 
-  const isMine = useIsMe(state.ownerId);
+  const isMine = useIsMe(state.creatorId);
 
   const saveWidget = useSaveWidget(state.widgetId);
 

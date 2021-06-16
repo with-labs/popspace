@@ -1,5 +1,4 @@
 import create from 'zustand/vanilla';
-import { SocketConnection } from './SocketConnection';
 import { Vector2 } from '@src/types/spatials';
 import { combineAndImmer } from './combineAndImmer';
 import { wallPaperOptions } from '@features/roomControls/roomSettings/WallpaperOptions';
@@ -31,7 +30,7 @@ export type RoomCursorStateShape = {
 
 export type RoomStateShape = {
   id: string | null;
-  widgets: Record<string, WidgetShape & { ownerId: string }>;
+  widgets: Record<string, WidgetShape>;
   users: Record<string, RoomUserStateShape>;
   /** Allows finding users based on session IDs */
   sessionLookup: Record<string, string>;

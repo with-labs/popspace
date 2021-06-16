@@ -29,7 +29,7 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   const { t } = useTranslation();
 
   const { save, widget: state } = useWidgetContext<WidgetType.Link>();
-  const isMine = useIsMe(state.ownerId);
+  const isMine = useIsMe(state.creatorId);
 
   if (!state.widgetState.url) {
     if (isMine) {

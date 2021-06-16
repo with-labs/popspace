@@ -16,7 +16,7 @@ export const WidgetAuthor: React.FC<IWidgetAuthorProps> = ({ disableYou, ...prop
   const { t } = useTranslation();
 
   const {
-    widget: { ownerDisplayName: authorName, ownerId },
+    widget: { creatorDisplayName: authorName, creatorId: ownerId },
   } = useWidgetContext<WidgetType.StickyNote>();
 
   const userId = useRoomStore((room) => room.sessionLookup[room.sessionId ?? '']);

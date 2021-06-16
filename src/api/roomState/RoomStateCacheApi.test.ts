@@ -71,8 +71,8 @@ describe('RoomStateCacheApi', () => {
             widgets: [
               {
                 type: WidgetType.StickyNote,
-                ownerId: 'cat-id',
-                ownerDisplayName: 'Cat',
+                creatorId: 'cat-id',
+                creatorDisplayName: 'Cat',
                 widgetId: 'widget-1',
                 widgetState: {
                   text: 'something',

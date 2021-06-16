@@ -27,7 +27,7 @@ export interface AuthMessage extends BaseOutgoingSocketMessage {
 
 export interface OutgoingAddWidgetMessage extends BaseOutgoingSocketMessage {
   kind: 'createWidget';
-  payload: Omit<WidgetShape, 'widgetId' | 'ownerId' | 'ownerDisplayName'> & {
+  payload: Omit<WidgetShape, 'widgetId' | 'creatorId' | 'creatorDisplayName'> & {
     transform: RoomPositionState;
   };
 }

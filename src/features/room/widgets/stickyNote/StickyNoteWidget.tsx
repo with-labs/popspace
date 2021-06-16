@@ -57,7 +57,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 
   const { widget: state, save } = useWidgetContext<WidgetType.StickyNote>();
 
-  const isOwnedByLocalUser = useIsMe(state.ownerId);
+  const isOwnedByLocalUser = useIsMe(state.creatorId);
 
   const [editing, setEditing] = React.useState(!state.widgetState.text && isOwnedByLocalUser);
 

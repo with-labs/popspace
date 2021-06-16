@@ -66,7 +66,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     )
   );
 
-  const isOwnedByLocalUser = useIsMe(state.ownerId);
+  const isOwnedByLocalUser = useIsMe(state.creatorId);
   const [size, setSize] = React.useState(startSize);
 
   const spinner = (

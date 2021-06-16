@@ -52,6 +52,7 @@ export class RoomStateCacheApi {
 
         const { transform, ...widgetInfo } = widget;
         draft.widgets[widget.widgetId] = widgetInfo;
+        console.log(widget.widgetId, transform);
         draft.widgetPositions[widget.widgetId] = transform;
       }
       // reset users
@@ -113,7 +114,7 @@ export class RoomStateCacheApi {
 
     return state;
   };
-  addWidget = ({ transform, ...widget }: WidgetShape & { transform: RoomPositionState; ownerId: string }) => {
+  addWidget = ({ transform, ...widget }: WidgetShape & { transform: RoomPositionState; creatorId: string }) => {
     this.set((draft) => {
       if (!sanityCheckWidget(widget)) {
         logger.error(`Invalid widget data from server addWidget`, `Widget ID: ${widget.widgetId}`);

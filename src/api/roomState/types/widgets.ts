@@ -109,8 +109,8 @@ export interface HuddleWidgetState {}
 /** Common properties to all widgets */
 export interface BaseWidgetShape {
   widgetId: string;
-  ownerId: string;
-  ownerDisplayName: string;
+  creatorId: string;
+  creatorDisplayName: string;
 }
 
 // FIXME: can this be automatically created using TypeScript generics?

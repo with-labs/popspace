@@ -68,7 +68,7 @@ export function LinkMenu(props: LinkMenuProps) {
         </MenuItem>
         <Divider />
         <Box p={1}>
-          <Typography variant="caption">{`${t('widgets.link.uploadedBy')}${widget.ownerDisplayName}`}</Typography>
+          <Typography variant="caption">{`${t('widgets.link.uploadedBy')}${widget.creatorDisplayName}`}</Typography>
         </Box>
       </ResponsiveMenu>
     </>

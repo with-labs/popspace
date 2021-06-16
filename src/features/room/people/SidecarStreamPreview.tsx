@@ -88,7 +88,7 @@ export const SidecarStreamPreview = React.memo(
 
     // hide the preview when a widget is out in the room for this stream
     const hasWidgetInRoom = useRoomStore((room) => {
-      const userWidgets = Object.values(room.widgets).filter((w) => w.ownerId === userId);
+      const userWidgets = Object.values(room.widgets).filter((w) => w.creatorId === userId);
       return userWidgets.some((w) => {
         if (w.type !== WidgetType.SidecarStream) return false;
         return (

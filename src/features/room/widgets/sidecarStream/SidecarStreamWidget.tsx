@@ -63,7 +63,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
     }
   }, [onClose, participant]);
 
-  const isOwnStream = useIsMe(state.ownerId);
+  const isOwnStream = useIsMe(state.creatorId);
   const isLocalDeviceStream = useLocalParticipant()?.identity === state.widgetState.twilioParticipantIdentity;
 
   const [isFullscreen, setIsFullscreen] = React.useState(false);

@@ -136,7 +136,7 @@ export class RoomStateCacheApi {
       positions[id] = {
         ...transform,
         position: transform.position || { x: 0, y: 0 },
-        size: transform.size || { width: 140, height: 80 },
+        size: transform.size || { width: 140, height: 140 },
       };
     } else {
       if (transform.position) {

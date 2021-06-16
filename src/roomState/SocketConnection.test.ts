@@ -17,11 +17,11 @@ function createTestHarness(sc: SocketConnection) {
   const harness = {
     /** Easy access to WebSocket mock instance */
     get socket() {
-      return (sc.__socket as any) as MockWebSocket;
+      return sc.__socket as any as MockWebSocket;
     },
     /** Emits an open event on the underlying WebSocket mock */
     open: () => {
-      ((sc.__socket as any) as MockWebSocket).readyState = WebSocket.OPEN;
+      (sc.__socket as any as MockWebSocket).readyState = WebSocket.OPEN;
       sc.__socket.dispatchEvent(new Event('open'));
     },
     /** Emits an error event on the underlying WebSocket mock */
@@ -34,7 +34,7 @@ function createTestHarness(sc: SocketConnection) {
     },
     /** Emits a close event on the underlying WebSocket mock */
     close: () => {
-      ((sc.__socket as any) as MockWebSocket).readyState = WebSocket.CLOSED;
+      (sc.__socket as any as MockWebSocket).readyState = WebSocket.CLOSED;
       sc.__socket.dispatchEvent(new CloseEvent('close'));
     },
     /** Mock fn called when SocketConnection encounters an error */
@@ -119,7 +119,7 @@ describe('SocketConnection', () => {
     sc.send({
       kind: 'auth',
       payload: {
-        roomName: 'testRoom',
+        roomRoute: 'testRoom',
         token: 'token!',
       },
     });

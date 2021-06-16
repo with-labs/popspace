@@ -9,18 +9,18 @@ import { IncomingAuthResponseMessage } from './types/socketProtocol';
 import { useRoomStore } from './useRoomStore';
 import { useHistory } from 'react-router';
 import { RouteNames } from '@constants/RouteNames';
-import { getSessionToken } from '@utils/sessionToken';
 import { useTranslation } from 'react-i18next';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
+import client from '@api/client';
 
 const WS_SERVER = process.env.REACT_APP_SOCKET_HOST || 'wss://test.with.so:8443';
 const AUTH_RESPONSE_TIMEOUT = 10 * 1000; // 10 seconds
 export interface IRoomStateProviderProps {
-  roomName: string;
+  roomRoute: string;
 }
 
-const useSocketConnection = (roomName: string) => {
+const useSocketConnection = (roomRoute: string) => {
   const { t } = useTranslation();
 
   // tracking mounted state helps avoid the "set state on unmounted component"
@@ -67,10 +67,7 @@ const useSocketConnection = (roomName: string) => {
         setError(null);
         setReconnecting(false);
 
-        const sessionToken = getSessionToken();
-        if (!sessionToken) {
-          throw new Error(t('errors.unauthorized'));
-        }
+        await client.login();
 
         // authenticate and wait for response - this will automatically
         // trigger state rehydration when the server responds, which is
@@ -79,8 +76,9 @@ const useSocketConnection = (roomName: string) => {
           {
             kind: 'auth',
             payload: {
-              roomName,
-              token: sessionToken,
+              roomRoute,
+              // will be defined after successful login
+              token: client.sessionToken!,
             },
           },
           AUTH_RESPONSE_TIMEOUT
@@ -109,7 +107,7 @@ const useSocketConnection = (roomName: string) => {
       sock.removeAllListeners();
       sock.close();
     };
-  }, [roomName, isMountedRef, connect, history, t]);
+  }, [roomRoute, isMountedRef, connect, history, t]);
 
   return { ready, error, reconnecting };
 };
@@ -117,7 +115,7 @@ const useSocketConnection = (roomName: string) => {
 /**
  * Manages websocket connection state
  */
-export const RoomStateProvider: React.FC<IRoomStateProviderProps> = ({ roomName, children }) => {
+export const RoomStateProvider: React.FC<IRoomStateProviderProps> = ({ roomRoute: roomName, children }) => {
   const { ready, error, reconnecting } = useSocketConnection(roomName);
 
   if (error) {

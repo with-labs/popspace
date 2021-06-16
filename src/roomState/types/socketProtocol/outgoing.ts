@@ -20,7 +20,7 @@ export interface PingMessage extends BaseOutgoingSocketMessage {
 export interface AuthMessage extends BaseOutgoingSocketMessage {
   kind: 'auth';
   payload: {
-    roomName: string;
+    roomRoute: string;
     token: string;
   };
 }

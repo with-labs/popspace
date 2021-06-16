@@ -39,6 +39,7 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
         // redirect to root with error
         // TODO: figure out how we want to handle error messing here
         history.push(RouteNames.ROOT);
+        return;
       }
       // create a new meeting based on the type
       createNewMeeting(meetingType as MeetingTemplateName);

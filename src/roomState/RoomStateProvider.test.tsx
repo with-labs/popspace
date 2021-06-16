@@ -5,11 +5,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { useRoomStore } from './useRoomStore';
 
 jest.mock('./SocketConnection');
-jest.mock('@utils/sessionToken', () => ({
-  getSessionToken: jest.fn(() => 'MOCK TOKEN'),
+jest.mock('@api/client', () => ({
+  login: jest.fn().mockResolvedValue(undefined),
+  sessionToken: 'MOCK TOKEN',
 }));
 
-const props = { roomName: 'foo' };
+const props = { roomRoute: 'foo' };
 const testContent = <div data-testid="content" />;
 
 async function getSocketConnection() {
@@ -44,7 +45,7 @@ describe('RoomStateProvider component', () => {
         {
           kind: 'auth',
           payload: {
-            roomName: props.roomName,
+            roomRoute: props.roomRoute,
             token: 'MOCK TOKEN', // this is from the mocked module above
           },
         },
@@ -69,7 +70,7 @@ describe('RoomStateProvider component', () => {
         {
           kind: 'auth',
           payload: {
-            roomName: props.roomName,
+            roomRoute: props.roomRoute,
             token: 'MOCK TOKEN', // this is from the mocked module above
           },
         },
@@ -99,7 +100,7 @@ describe('RoomStateProvider component', () => {
         {
           kind: 'auth',
           payload: {
-            roomName: props.roomName,
+            roomRoute: props.roomRoute,
             token: 'MOCK TOKEN', // this is from the mocked module above
           },
         },

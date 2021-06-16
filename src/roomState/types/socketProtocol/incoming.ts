@@ -31,7 +31,8 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
       transform: RoomPositionState;
     })[];
     self: ParticipantShape;
-    room: {
+    displayName: string;
+    roomData: {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
       id: string | number; // TODO: clarify
       state: RoomDetailsStateShape;
@@ -89,7 +90,6 @@ export interface IncomingRoomStateUpdatedMessage extends BaseIncomingSocketMessa
   kind: 'roomStateUpdated';
   payload: {
     wallpaperUrl: string;
-    displayName: string;
     width: number;
     height: number;
   };

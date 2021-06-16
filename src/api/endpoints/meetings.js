@@ -66,8 +66,8 @@ class Meetings {
   initPost() {
     this.zoo.loggedInPostEndpoint("/logged_in_join_room", async (req, res) => {
       const actor = req.actor
-      const roomRoute = req.body.roomRoute
-      const room = await shared.db.rooms.roomByRoute(roomRoute)
+      const roomRoute = req.body.room_route
+      const room = await shared.db.room.core.roomByRoute(roomRoute)
 
       if (!room) {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })

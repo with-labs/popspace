@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { Viewport } from '@providers/viewport/Viewport';
+import { Vector2 } from '@src/types/spatials';
 
 const CONTROLLED_KEYS = ['=', '+', '-', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 const PAN_SPEED = 1;
@@ -50,6 +51,10 @@ export function useKeyboardControls(viewport: Viewport) {
     // pan velocity for smooth panning regardless of framerate
     let lastFrameTime: number | null = null;
     let animationFrame: number | null = null;
+
+    // extracted to reduce memory allocation in tight loop
+    const velocity: Vector2 = { x: 0, y: 0 };
+
     function loop() {
       const activeKeys = activeKeysRef.current;
       const now = Date.now();
@@ -67,10 +72,8 @@ export function useKeyboardControls(viewport: Viewport) {
       }
       const xInput = activeKeys.has('ArrowLeft') ? -1 : activeKeys.has('ArrowRight') ? 1 : 0;
       const yInput = activeKeys.has('ArrowUp') ? -1 : activeKeys.has('ArrowDown') ? 1 : 0;
-      const velocity = {
-        x: delta * xInput * PAN_SPEED,
-        y: delta * yInput * PAN_SPEED,
-      };
+      velocity.x = delta * xInput * PAN_SPEED;
+      velocity.y = delta * yInput * PAN_SPEED;
       if (velocity.x !== 0 || velocity.y !== 0) {
         viewport.doRelativePan(velocity, {
           origin: 'direct',

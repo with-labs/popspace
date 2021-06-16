@@ -10,9 +10,7 @@ require("./globals")
 const lib = (global.lib = {
   util: require("./util"),
   db: require("./db"),
-  email: require("./email"),
-  s3: require("./s3/s3"),
-  opengraph: require("./opengraph/opengraph")
+  email: require("./email")
 })
 
 lib.init = async (appUrl) => {

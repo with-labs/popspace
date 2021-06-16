@@ -109,11 +109,12 @@ class Data {
     ))
   }
   async setRoomParticipantState(roomId, actorId, newState) {
-    return upsertState("room_participant_states", ["room_id", "actor_id"], {
+    const entry = await upsertState("room_participant_states", ["room_id", "actor_id"], {
       room_id: roomId,
       actor_id: actorId,
       state: newState
     })
+    return entry.state
   }
 
   /************************************************/

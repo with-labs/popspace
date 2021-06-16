@@ -27,7 +27,7 @@ export declare interface ApiCoreClient {
 }
 
 export class ApiCoreClient extends EventEmitter {
-  static SERVICES = {
+  readonly SERVICES = {
     netlify: {
       url: '/.netlify/functions',
     },
@@ -38,8 +38,6 @@ export class ApiCoreClient extends EventEmitter {
       url: process.env.REACT_APP_NOODLE_API_HOST || null,
     },
   };
-  // local copy is more useful in most cases. TODO: deprecate and remove static copy
-  readonly SERVICES = ApiCoreClient.SERVICES;
 
   private _sessionToken: string | null = null;
   private _actor: Actor | null = null;
@@ -89,7 +87,7 @@ export class ApiCoreClient extends EventEmitter {
     const { actor, sessionToken } = await this.post<{ actor: any; sessionToken: string }>(
       '/stub_user',
       {},
-      ApiCoreClient.SERVICES.api
+      this.SERVICES.api
     );
 
     this._actor = actor;
@@ -149,7 +147,7 @@ export class ApiCoreClient extends EventEmitter {
   // Core Meeting Functionality
 
   createMeeting = this.requireActor((template: RoomTemplate) => {
-    return this.post<{ newMeeting: any }>('/create_meeting', { template }, ApiCoreClient.SERVICES.api);
+    return this.post<{ newMeeting: any }>('/create_meeting', { template }, this.SERVICES.api);
   });
 
   /**
@@ -159,11 +157,7 @@ export class ApiCoreClient extends EventEmitter {
    */
   joinMeeting = this.requireActor(async (roomRoute: string) => {
     // retrieve a media token in parallel - don't await yet
-    const mediaResponse = this.post<{ token: string }>(
-      '/logged_in_join_room',
-      { roomRoute },
-      ApiCoreClient.SERVICES.api
-    );
+    const mediaResponse = this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, this.SERVICES.api);
 
     // wait for the socket to be connected ... this could be smoother
     await this.socketReadyPromise;
@@ -196,7 +190,6 @@ export class ApiCoreClient extends EventEmitter {
 
   // Generic HTTP methods
 
-  /* TODO: service should be mandatory/explicit; update all uses and remove the default value */
   async post<Response = {}>(endpoint: string, data: any = {}, service: Service) {
     return this.request<Response>({
       method: 'POST',
@@ -206,7 +199,6 @@ export class ApiCoreClient extends EventEmitter {
     });
   }
 
-  /* TODO: service should be mandatory/explicit; update all uses and remove the default value */
   async get<Response = {}>(endpoint: string, service: Service) {
     return this.request<Response>({
       method: 'GET',

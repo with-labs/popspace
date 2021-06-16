@@ -67,7 +67,8 @@ class Data {
     return entry.state
   }
   async updateParticipantState(actorId, stateUpdate, curState=null) {
-    if(stateUpdate.display_name) {
+    const { display_name, ...participantState } = stateUpdate;
+    if(display_name) {
       /*
         TODO: we should use a different route for updating display_name.
         It should not be stored in the participant state.
@@ -78,12 +79,11 @@ class Data {
       log.error.warn("Setting display_name for actors through updateParticipantState")
       await shared.db.pg.massive.query(`
         UPDATE actors SET display_name = $1 WHERE id = $2
-      `, [stateUpdate.display_name, actorId])
-      delete stateUpdate.display_name
+      `, [display_name, actorId])
     }
 
     return this.setParticipantState(actorId, await getNewState(
-      "participant_states", {actor_id: actorId}, stateUpdate, curState
+      "participant_states", {actor_id: actorId}, participantState, curState
     ))
   }
   async setParticipantState(actorId, newState) {

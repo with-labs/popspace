@@ -43,20 +43,6 @@ class RoomWidget {
   }
 }
 
-RoomWidget.fromWidgetId = async (widgetId, roomId) => {
-  const pgWidgets = await shared.db.pg.massive.query(`
-    SELECT
-      widgets.id, widgets._type, widgets.creator_id,
-      actors.display_name AS creator_display_name
-    FROM widgets JOIN actors ON widgets.creator_id = actors.id
-    WHERE widgets.id = $1
-  `, parseInt(widgetId))
-  if(pgWidgets.length < 1) {
-    return null
-  }
-  return await shared.db.room.data.widgets.getRoomWidget(roomId, pgWidgets[0])
-}
-
 RoomWidget.allInRoom = async (roomId) => {
   roomId = parseInt(roomId)
   const widgets = await shared.db.pg.massive.query(`

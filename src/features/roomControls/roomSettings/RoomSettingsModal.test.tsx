@@ -8,6 +8,7 @@ import { useRoomModalStore } from '../useRoomModalStore';
 import client from '@api/client';
 
 jest.mock('@api/client');
+jest.mock('@api/useRoomStore');
 
 const TEST_CATEGORY = 'todoBoards';
 

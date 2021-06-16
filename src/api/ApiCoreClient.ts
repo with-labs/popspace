@@ -125,8 +125,8 @@ export class ApiCoreClient extends EventEmitter {
   };
 
   /** Request method wrapper for mandating an actor before making a request. */
-  requireActor = <Handler extends (...args: any[]) => any>(handler: Handler) => {
-    return async (...args: Parameters<Handler>) => {
+  requireActor = <Args extends any[], Ret extends any>(handler: (...args: Args) => Ret): AsyncMiddleware<Args, Ret> => {
+    return async (...args: Args): Promise<Ret> => {
       await this.ensureActor();
       return handler(...args);
     };
@@ -262,3 +262,5 @@ export class ApiCoreClient extends EventEmitter {
       : {};
   }
 }
+
+type AsyncMiddleware<Args extends any[], Ret extends any> = (...args: Args) => Promise<Ret>;

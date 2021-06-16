@@ -10,9 +10,6 @@ import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '@api/useRoomStore';
 import client from '@api/client';
 
-jest.mock('@api/client');
-jest.mock('@api/useRoomStore');
-
 const useStyles = makeStyles((theme) => ({
   button: {
     marginTop: theme.spacing(1),

@@ -21,7 +21,6 @@ const defaultWallpaper = 0;
 export type RoomUserStateShape = {
   id: string;
   participantState: ParticipantState;
-  authenticated: boolean;
   sessionIds: Set<string>;
 };
 

@@ -2,6 +2,7 @@ import { WidgetShape, WidgetState } from '../widgets';
 import { ParticipantShape, ParticipantState } from '../participants';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
+import { Actor } from '@api/types';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -14,7 +15,7 @@ import { PassthroughPayload } from '../passthrough';
 interface BaseIncomingSocketMessage {
   requestId?: string;
   sender: {
-    userId: string;
+    actorId: string;
     sessionId: string;
   };
 }
@@ -27,9 +28,14 @@ export interface IncomingPongMessage extends BaseIncomingSocketMessage {
 export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   kind: 'auth.response';
   payload: {
-    participants: (ParticipantShape & {
+    participants: {
+      authenticated: boolean;
+      actor: { id: string };
+      sessionId: string;
+      participantState: ParticipantState;
+      roomId: string;
       transform: RoomPositionState;
-    })[];
+    }[];
     self: ParticipantShape;
     displayName: string;
     roomData: {

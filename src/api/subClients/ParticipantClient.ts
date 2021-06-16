@@ -17,7 +17,7 @@ export class ParticipantClient extends ApiSubClient {
   }
 
   private onParticipantJoined = (message: IncomingParticipantJoinedMessage) => {
-    this.core.cacheApi.addSession(message.payload);
+    this.core.cacheApi.addSession(message);
   };
 
   private onParticipantLeft = (message: IncomingParticipantLeftMessage) => {
@@ -26,7 +26,7 @@ export class ParticipantClient extends ApiSubClient {
 
   private onParticipantUpdated = (message: IncomingParticipantUpdatedMessage) => {
     this.core.cacheApi.updateUser({
-      id: message.payload.actor.id,
+      id: message.sender.actorId,
       participantState: message.payload.participantState,
     });
   };

@@ -7,7 +7,7 @@ import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';
 import { sanityCheckWidget } from './sanityCheckWidget';
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { ParticipantShape, ParticipantState } from './types/participants';
-import { IncomingAuthResponseMessage } from './types/socketProtocol';
+import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
 
 const createEmptyParticipantState = (actorId: string) => ({
@@ -58,7 +58,11 @@ export class RoomStateCacheApi {
       draft.users = {};
       draft.sessionLookup = {};
       participants.forEach((session) => {
-        this.addUserToState(draft, session);
+        this.addUserToState(draft, {
+          sessionId: session.sessionId,
+          actorId: session.actor.id,
+          participantState: session.participantState,
+        });
         draft.userPositions[session.actor.id] = {
           size: session.transform.size || SIZE_AVATAR,
           position: session.transform.position,
@@ -76,30 +80,36 @@ export class RoomStateCacheApi {
       }, []);
     });
   };
-  private addUserToState = (state: Pick<RoomStateShape, 'users' | 'sessionLookup'>, participant: ParticipantShape) => {
-    if (!state.users[participant.actor.id]) {
-      state.users[participant.actor.id] = {
-        ...participant.actor,
+  private addUserToState = (
+    state: Pick<RoomStateShape, 'users' | 'sessionLookup'>,
+    data: {
+      actorId: string;
+      sessionId: string;
+      participantState: ParticipantState;
+    }
+  ) => {
+    const actorId = data.actorId;
+    const sessionId = data.sessionId;
+    if (!state.users[actorId]) {
+      state.users[actorId] = {
+        id: actorId,
         // patch in an empty display name default to keep data consistent
         participantState: {
-          ...createEmptyParticipantState(participant.actor.id),
-          ...(participant.participantState as any),
+          ...createEmptyParticipantState(actorId),
+          ...(data.participantState as any),
         },
-        authenticated: participant.authenticated,
         sessionIds: new Set<string>(),
       };
     } else {
-      Object.assign(state.users[participant.actor.id], {
-        ...participant.actor,
-        participantState: participant.participantState,
-        authenticated: participant.authenticated,
+      Object.assign(state.users[actorId], {
+        participantState: data.participantState,
       });
     }
 
     // participantId === session ID
-    state.users[participant.actor.id].sessionIds.add(participant.sessionId);
+    state.users[actorId].sessionIds.add(sessionId);
     // add to lookup table
-    state.sessionLookup[participant.sessionId] = participant.actor.id;
+    state.sessionLookup[sessionId] = actorId;
 
     return state;
   };
@@ -183,10 +193,14 @@ export class RoomStateCacheApi {
       Object.assign(draft.state, state);
     });
   };
-  addSession = (payload: ParticipantShape & { transform: RoomPositionState }) => {
+  addSession = (message: IncomingParticipantJoinedMessage) => {
     this.set((draft) => {
-      this.addUserToState(draft, payload);
-      this.mergeTransformToState(draft.userPositions, payload.actor.id, payload.transform);
+      this.addUserToState(draft, {
+        actorId: message.sender.actorId,
+        sessionId: message.sender.sessionId,
+        participantState: message.payload.participantState,
+      });
+      this.mergeTransformToState(draft.userPositions, message.sender.actorId, message.payload.transform);
     });
   };
   deleteSession = (payload: { sessionId: string }) => {

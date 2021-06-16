@@ -14,7 +14,7 @@ export class TransformClient extends ApiSubClient {
 
   private onParticipantTransformed = (message: IncomingParticipantMovedMessage) => {
     this.core.cacheApi.transformUser({
-      userId: message.sender.userId,
+      userId: message.sender.actorId,
       transform: message.payload.transform,
     });
   };

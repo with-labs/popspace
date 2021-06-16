@@ -9,9 +9,5 @@ export interface ParticipantState {
 export interface ParticipantShape {
   /** Represents the active client session for this view of the user */
   sessionId: string;
-  /** Is the user a With registered user or anonymous? */
-  authenticated: boolean;
-  /** With user data */
-  actor: ActorShape;
   participantState: ParticipantState;
 }

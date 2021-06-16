@@ -19,8 +19,6 @@ class Template {
       }
       return result
     }
-
-
   }
 
   testServer(lambda, heartbeatTimeoutMillis) {
@@ -46,6 +44,7 @@ class Template {
       const testEnvironment = new lib.test.TestEnvironment()
       testEnvironment.setHermes(hermes)
       testEnvironment.addRoomActorClients(roomActorClient)
+      testEnvironment.setPrimaryRoom(roomActorClient.room)
 
       return await lambda(testEnvironment)
     }, heartbeatTimeoutMillis)

@@ -2,6 +2,11 @@ module.exports = class {
   constructor() {
     this.roomActorClients = []
     this.hermes = null
+    this.host = null
+  }
+
+  setHost(roomActorClient) {
+    this.host = roomActorClient
   }
 
   setHermes(hermes) {
@@ -10,6 +15,12 @@ module.exports = class {
 
   addRoomActorClients(...racs) {
     this.roomActorClients.push(...racs)
+  }
+
+  async createRoomActorClient() {
+    const roomActorClient = await lib.test.models.RoomActorClient.create(this.getHostRoom())
+    await roomActorClient.join()
+    return roomActorClient
   }
 
   forEachParticipant(lambda) {
@@ -22,6 +33,17 @@ module.exports = class {
 
   nthRoomClientActor(n) {
     return this.roomActorClients[n]
+  }
+
+  getHost() {
+    return this.host
+  }
+
+  getHostRoom() {
+    if(this.host) {
+      return this.host.room
+    }
+    return null
   }
 
 }

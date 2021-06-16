@@ -46,7 +46,7 @@ const http = {
         // We could be more elaborate and try to figure out if it's the current user
         // and whether they already have access to the OTP-protected resource
         return await util.http.fail(callback, "This code is no longer valid.", errorDetails);
-      case shared.error.code.UNEXPECTER_ERROR:
+      case shared.error.code.UNEXPECTED_ERROR:
         // TODO: ERROR_LOGGING
         return await util.http.fail(callback, "An unexpected error happened. Please try again.", errorDetails);
       default:

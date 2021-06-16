@@ -7,6 +7,7 @@ import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle
 import { makeStyles } from '@material-ui/core';
 import { usePersonStreams } from './usePersonStreams';
 import { useIsMe } from '@api/useIsMe';
+import { SIZE_AVATAR } from './constants';
 
 const MAX_Z_INDEX = 2147483647;
 export interface IPersonProps {
@@ -47,6 +48,8 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
       objectKind="person"
       origin="center"
       preserveAspect
+      minHeight={SIZE_AVATAR.height}
+      minWidth={SIZE_AVATAR.width}
     >
       <CanvasObjectDragHandle disabled={!isMe} className={classes.dragHandle}>
         <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />

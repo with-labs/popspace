@@ -18,7 +18,9 @@ export class PassthroughClient extends ApiSubClient {
 
   updateCursor = (payload: RoomCursorStateShape) => {
     if (!this.core.actor) {
-      throw new Error('Must authenticate to send cursor position');
+      // not a big deal to lose passthrough events if the user hasn't
+      // authenticated yet
+      return;
     }
 
     this.core.socket.send({

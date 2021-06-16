@@ -207,10 +207,9 @@ export class PictureInPictureCanvas extends EventEmitter {
       this.ctx.clearRect(0, 0, VIEW_SIZE, VIEW_SIZE);
 
       const ownPosition = selectOwnPosition(useRoomStore.getState());
+      if (!ownPosition) return;
 
       this.wallpaper.render(ownPosition);
-
-      if (!ownPosition) return;
 
       Object.values(this.users).forEach((user) => user.render(ownPosition));
 

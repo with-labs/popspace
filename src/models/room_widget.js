@@ -64,7 +64,6 @@ RoomWidget.allInRoom = async (roomId) => {
   `, [roomId])
 
   const widgetIds = widgets.map((w) => (w.id))
-  const roomState = await shared.db.room.data.getRoomState(roomId)
   const widgetStates = await shared.db.pg.massive.widget_states.find({widget_id: widgetIds})
   const roomWidgetStates = await shared.db.pg.massive.room_widget_states.find({
     widget_id: widgetIds,
@@ -88,7 +87,7 @@ RoomWidget.allInRoom = async (roomId) => {
     const widgetState = widgetStatesById[widgetId]
     const roomWidgetState = roomWidgetStatesById[widgetId]
     const widget = widgetsById[widgetId]
-    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomState, widget.creator_display_name)
+    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomWidgetState, widget.creator_display_name)
     result.push(roomWidget)
   }
 

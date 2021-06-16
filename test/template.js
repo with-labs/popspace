@@ -4,7 +4,7 @@ const fs = require("fs")
 
 class Template {
   constructor() {
-    this.certificate = fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')
+    this.certificate = fs.readFileSync(process.env.SSL_CAROOT_PATH, 'utf8')
   }
 
   serverClient(lambda) {

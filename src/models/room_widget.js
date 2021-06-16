@@ -76,7 +76,7 @@ RoomWidget.allInRoom = async (roomId) => {
     widgetStatesById[widgetState.widget_id] = widgetState
   }
   for(const roomWidgetState of roomWidgetStates) {
-    widgetStatesById[roomWidgetState.widget_id] = roomWidgetState
+    roomWidgetStatesById[roomWidgetState.widget_id] = roomWidgetState.state
   }
   for(const widget of widgets) {
     widgetsById[widget.id] = widget

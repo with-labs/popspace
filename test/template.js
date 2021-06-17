@@ -94,8 +94,12 @@ class Template {
             await lock.acquire('record_join', () => {
               if(initializedClients[client.id]) {
                 /*
-                  This could happen! A client could simultaneously
-                  react to 2 events and pass through to the lock
+                  This could happen! Primarily as a race
+                  condition between the final tryToFinishInitClient()
+                  call, and an event from another client.
+                  The final call can happen after an event comes in.
+                  But I'm not sure if there's a way to get rid of that,
+                  since we can't control which client will connect last.
                 */
                 return
               }

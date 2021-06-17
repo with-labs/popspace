@@ -19,7 +19,8 @@ class RoomData {
   }
 
   async state() {
-    return shared.db.room.data.getRoomState(this.roomId)
+    const entry = await shared.db.room.data.getRoomState(this.roomId)
+    return entry.state
   }
 
   async serialize() {
@@ -31,7 +32,8 @@ class RoomData {
     room.widgets = await Promise.all(
       widgetsInRoom.map(async (w) => (w.serialize()))
     )
-    room.state = await this.state()
+    room.state = await this.state() || {}
+    room.widgets = room.widgets || []
     return room
   }
 }

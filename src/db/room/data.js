@@ -120,18 +120,29 @@ class Data {
   /************************************************/
   /****************** WIDGETS   *******************/
   /************************************************/
-  async addWidgetInRoom(roomWidget) {
-    return await shared.db.pg.massive.withTransaction(async (tx) => {
-      await tx.widget_states.insert({
-        widget_id: roomWidget.widgetId(),
-        state: roomWidget.widgetState()
+  async addWidgetInRoom(creatorId, roomId, type, desiredWidgetState, desiredRoomWidgetState) {
+    const { widget, roomWidget, widgetState, roomWidgetState } = await shared.db.pg.massive.withTransaction(async (tx) => {
+      const widget = await tx.widgets.insert({
+        creator_id: creatorId,
+        _type: type,
       })
-      await tx.room_widget_states.insert({
-        room_id: roomWidget.roomId(),
-        widget_id: roomWidget.widgetId(),
-        state: roomWidget.roomState()
+      const roomWidget = await tx.room_widgets.insert({
+        widget_id: widget.id,
+        room_id: roomId,
       })
+      const widgetState = await tx.widget_states.insert({
+        widget_id: widget.id,
+        state: desiredWidgetState
+      })
+      const roomWidgetState = await tx.room_widget_states.insert({
+        room_id: roomId,
+        widget_id: widget.id,
+        state: desiredRoomWidgetState
+      })
+      return { widget, roomWidget, widgetState, roomWidgetState }
     })
+    const model = new shared.models.RoomWidget(roomId, widget, widgetState, roomWidgetState)
+    return model
   }
 
   async softDeleteWidget(widgetId) {
@@ -158,12 +169,13 @@ class Data {
     })
     return entry.state
   }
+
   async updateRoomWidgetState(roomId, widgetId, stateUpdate, roomWidgetState=null) {
     return this.setRoomWidgetState(roomId, widgetId, await getNewState(
       "room_widget_states", {
         room_id: roomId,
         widget_id: widgetId
-      }, stateUpdate
+      }, stateUpdate, roomWidgetState
     ))
   }
   async setRoomWidgetState(roomId, widgetId, newState) {
@@ -182,7 +194,7 @@ class Data {
   }
   async updateWidgetState(widgetId, stateUpdate, widgetState=null) {
     return this.setWidgetState(widgetId, await getNewState(
-      "widget_states", {widget_id: widgetId}, stateUpdate, curState
+      "widget_states", {widget_id: widgetId}, stateUpdate, widgetState
     ))
   }
   async setWidgetState(widgetId, newState) {

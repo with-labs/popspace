@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import shallow from 'zustand/shallow';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { Cursor } from './Cursor';
 
 const useStyles = makeStyles((theme) => ({

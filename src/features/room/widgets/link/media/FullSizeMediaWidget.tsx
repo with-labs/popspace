@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';

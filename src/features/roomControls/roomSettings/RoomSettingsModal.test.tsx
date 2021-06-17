@@ -1,16 +1,14 @@
-/* eslint-disable import/first */
-const updateRoomState = jest.fn();
-jest.mock('@roomState/useRoomStore', () => ({ useRoomStore: () => updateRoomState }));
-
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { RoomSettingsModal } from './RoomSettingsModal';
 import { MuiThemeProvider } from '@material-ui/core';
 import { mandarin as theme } from '../../../theme/theme';
-
-// mocked
 import { wallPaperOptions } from './WallpaperOptions';
 import { useRoomModalStore } from '../useRoomModalStore';
+import client from '@api/client';
+
+jest.mock('@api/client');
+jest.mock('@api/useRoomStore');
 
 const TEST_CATEGORY = 'todoBoards';
 
@@ -33,9 +31,10 @@ describe('RoomSettingsModal component', () => {
 
     fireEvent.click(result.getByRole('button', { name: wallPaperOptions[TEST_CATEGORY][2].name }));
 
-    expect(updateRoomState).toHaveBeenCalledWith(
+    expect(client.roomState.setWallpaperUrl).toHaveBeenCalledWith(
       // index 2, because our label indices start at 1
-      { wallpaperUrl: wallPaperOptions[TEST_CATEGORY][2].url, isCustomWallpaper: false }
+      wallPaperOptions[TEST_CATEGORY][2].url,
+      false
     );
   });
 
@@ -59,10 +58,7 @@ describe('RoomSettingsModal component', () => {
     fireEvent.click(button);
 
     waitFor(() => {
-      expect(updateRoomState).toHaveBeenCalledWith({
-        wallpaperUrl: 'https://imaginary.images/unicorn.png',
-        isCustomWallpaper: true,
-      });
+      expect(client.roomState.setWallpaperUrl).toHaveBeenCalledWith('https://imaginary.images/unicorn.png', true);
     });
   });
 
@@ -82,6 +78,6 @@ describe('RoomSettingsModal component', () => {
     });
 
     fireEvent.click(button);
-    expect(updateRoomState).not.toHaveBeenCalled();
+    expect(client.roomState.setWallpaperUrl).not.toHaveBeenCalled();
   });
 });

@@ -1,6 +1,6 @@
 import { addVectors, vectorDistance } from '@utils/math';
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { logger } from '@utils/logger';
 import { MAX_AUDIO_RANGE as MAX_RANGE } from '@constants/room';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';

@@ -3,7 +3,7 @@ import { AccessoryIcon } from '@components/icons/AccessoryIcon';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
 import i18n from '@src/i18n';
-import { WidgetState, WidgetType } from '@roomState/types/widgets';
+import { WidgetState, WidgetType } from '@api/roomState/types/widgets';
 import { useAddAccessory } from './quickActions/useAddAccessory';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { EventNames } from '@analytics/constants';

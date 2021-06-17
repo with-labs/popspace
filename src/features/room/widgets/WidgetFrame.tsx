@@ -2,11 +2,12 @@ import * as React from 'react';
 import { makeStyles, ThemeProvider } from '@material-ui/core';
 import clsx from 'clsx';
 import * as themes from '../../../theme/theme';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 import { ThemeName } from '../../../theme/theme';
 import { CanvasObject, ICanvasObjectProps } from '@providers/canvas/CanvasObject';
 import { WidgetResizeHandle } from './WidgetResizeHandle';
+import client from '@api/client';
 
 export interface IWidgetFrameProps extends Omit<ICanvasObjectProps, 'objectId' | 'objectKind'> {
   children: React.ReactNode;
@@ -57,10 +58,9 @@ export const WidgetFrame: React.FC<IWidgetFrameProps> = ({ className, children, 
   } = useWidgetContext();
 
   const zIndex = useZIndex(widgetId);
-  const bringToFrontAction = useRoomStore((room) => room.api.bringToFront);
   const bringToFront = React.useCallback(() => {
-    bringToFrontAction({ widgetId });
-  }, [bringToFrontAction, widgetId]);
+    client.roomState.bringToFront({ widgetId });
+  }, [widgetId]);
 
   const theme = color === 'transparent' ? themes.snow : themes[color || 'lavender'];
 

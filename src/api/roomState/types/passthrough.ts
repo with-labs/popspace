@@ -1,4 +1,4 @@
-import { Vector2 } from '../../types/spatials';
+import { Vector2 } from '@src/types/spatials';
 
 export interface CursorUpdatePassthroughPayload {
   kind: 'cursorUpdate';

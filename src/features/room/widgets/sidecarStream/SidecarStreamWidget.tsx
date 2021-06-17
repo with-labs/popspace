@@ -10,7 +10,7 @@ import { Fullscreen } from '@material-ui/icons';
 import { MinimizeIcon } from '@components/icons/MinimizeIcon';
 import { MuteButton } from '../MuteButton';
 import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
-import { SidecarStreamWidgetState, WidgetType } from '@roomState/types/widgets';
+import { SidecarStreamWidgetState, WidgetType } from '@api/roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { FullscreenableMedia } from '@components/FullscreenableMedia/FullscreenableMedia';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
@@ -21,7 +21,8 @@ import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 import { useParticipantByIdentity } from '@providers/twilio/hooks/useParticipantByIdentity';
 import { MAX_SIZE, MIN_SIZE } from './constants';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
+import { useIsMe } from '@api/useIsMe';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.
@@ -62,8 +63,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
     }
   }, [onClose, participant]);
 
-  const localUserId = useRoomStore((room) => room.api.getActiveUserId());
-  const isOwnStream = localUserId === state.ownerId;
+  const isOwnStream = useIsMe(state.creatorId);
   const isLocalDeviceStream = useLocalParticipant()?.identity === state.widgetState.twilioParticipantIdentity;
 
   const [isFullscreen, setIsFullscreen] = React.useState(false);

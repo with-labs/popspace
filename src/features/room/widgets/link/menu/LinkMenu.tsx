@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { OptionsIcon } from '@components/icons/OptionsIcon';
 import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
-import { LinkWidgetState, WidgetType } from '@roomState/types/widgets';
+import { LinkWidgetState, WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 import { logger } from '@utils/logger';
@@ -33,7 +33,7 @@ export function LinkMenu(props: LinkMenuProps) {
     if (widget.widgetState.isFileUpload && widget.widgetState.mediaUrl) {
       const fileUrl = widget.widgetState.mediaUrl;
       try {
-        await api.deleteFile(fileUrl);
+        await api.files.deleteFile(fileUrl);
       } catch (err) {
         logger.error(`Failed to delete file ${fileUrl}`, err);
       }
@@ -68,7 +68,7 @@ export function LinkMenu(props: LinkMenuProps) {
         </MenuItem>
         <Divider />
         <Box p={1}>
-          <Typography variant="caption">{`${t('widgets.link.uploadedBy')}${widget.ownerDisplayName}`}</Typography>
+          <Typography variant="caption">{`${t('widgets.link.uploadedBy')}${widget.creatorDisplayName}`}</Typography>
         </Box>
       </ResponsiveMenu>
     </>

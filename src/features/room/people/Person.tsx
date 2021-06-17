@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { PersonBubble } from './PersonBubble';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { useSoundEffects } from '@components/SoundEffectProvider/useSoundEffects';
 import { CanvasObject } from '@providers/canvas/CanvasObject';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import { makeStyles } from '@material-ui/core';
 import { usePersonStreams } from './usePersonStreams';
-import shallow from 'zustand/shallow';
+import { useIsMe } from '@api/useIsMe';
+import { SIZE_AVATAR } from './constants';
 
 const MAX_Z_INDEX = 2147483647;
 export interface IPersonProps {
@@ -23,10 +24,8 @@ const useStyles = makeStyles(() => ({
 export const Person = React.memo<IPersonProps>(({ personId }) => {
   const classes = useStyles();
 
-  const [person, isMe] = useRoomStore(
-    React.useCallback((room) => [room.users[personId], room.api.getActiveUserId() === personId], [personId]),
-    shallow
-  );
+  const isMe = useIsMe(personId);
+  const person = useRoomStore(React.useCallback((room) => room.users[personId], [personId]));
 
   const { mainStream, secondaryStreams: sidecarStreams } = usePersonStreams(personId);
 
@@ -49,6 +48,8 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
       objectKind="person"
       origin="center"
       preserveAspect
+      minHeight={SIZE_AVATAR.height}
+      minWidth={SIZE_AVATAR.width}
     >
       <CanvasObjectDragHandle disabled={!isMe} className={classes.dragHandle}>
         <PersonBubble person={person} isMe={isMe} mainStream={mainStream} sidecarStreams={sidecarStreams} />

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { Markdown } from '@components/Markdown/Markdown';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { WidgetAuthor } from '../WidgetAuthor';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
@@ -18,8 +18,9 @@ import { ThemeName } from '../../../../theme/theme';
 import { ColorPickerMenu } from './ColorPickerMenu';
 import { Analytics } from '@analytics/Analytics';
 import { EventNames } from '@analytics/constants';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { MIN_SIZE, MAX_SIZE, INITIAL_SIZE } from './constants';
+import { useIsMe } from '@api/useIsMe';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -56,9 +57,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
 
   const { widget: state, save } = useWidgetContext<WidgetType.StickyNote>();
 
-  const localUserId = useRoomStore((room) => room.api.getActiveUserId());
-
-  const isOwnedByLocalUser = state.ownerId === localUserId;
+  const isOwnedByLocalUser = useIsMe(state.creatorId);
 
   const [editing, setEditing] = React.useState(!state.widgetState.text && isOwnedByLocalUser);
 

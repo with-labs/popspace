@@ -2,6 +2,7 @@ import { WidgetShape, WidgetState } from '../widgets';
 import { ParticipantShape, ParticipantState } from '../participants';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
+import { Actor } from '@api/types';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -14,7 +15,7 @@ import { PassthroughPayload } from '../passthrough';
 interface BaseIncomingSocketMessage {
   requestId?: string;
   sender: {
-    userId: string;
+    actorId: string;
     sessionId: string;
   };
 }
@@ -27,9 +28,14 @@ export interface IncomingPongMessage extends BaseIncomingSocketMessage {
 export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   kind: 'auth.response';
   payload: {
-    participants: (ParticipantShape & {
+    participants: {
+      authenticated: boolean;
+      actor: { id: string };
+      sessionId: string;
+      participantState: ParticipantState;
+      roomId: string;
       transform: RoomPositionState;
-    })[];
+    }[];
     self: ParticipantShape;
     displayName: string;
     roomData: {
@@ -130,3 +136,11 @@ export type IncomingSocketMessage =
   | IncomingParticipantUpdatedMessage
   | IncomingRoomStateUpdatedMessage
   | IncomingPassthroughMessage;
+
+// util types for mapping discriminated union by keys
+type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;
+type MapDiscriminatedUnion<T extends Record<K, string>, K extends keyof T> = {
+  [V in T[K]]: DiscriminateUnion<T, K, V>;
+};
+
+export type IncomingSocketMessageByKind = MapDiscriminatedUnion<IncomingSocketMessage, 'kind'>;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { useRoomStore } from '@api/useRoomStore';
 import { useWidgetContext } from './useWidgetContext';
 
 export interface IWidgetAuthorProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -16,7 +16,7 @@ export const WidgetAuthor: React.FC<IWidgetAuthorProps> = ({ disableYou, ...prop
   const { t } = useTranslation();
 
   const {
-    widget: { ownerDisplayName: authorName, ownerId },
+    widget: { creatorDisplayName: authorName, creatorId: ownerId },
   } = useWidgetContext<WidgetType.StickyNote>();
 
   const userId = useRoomStore((room) => room.sessionLookup[room.sessionId ?? '']);

@@ -6,8 +6,6 @@ import AppStateProvider from './state';
 import { Routes } from './Routes';
 import { FlaggProvider } from 'flagg/dist/react';
 import { featureFlags } from './featureFlags';
-import { ReactQueryCacheProvider } from 'react-query';
-import { queryCache } from './queryCache';
 import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
@@ -26,24 +24,20 @@ export const App: React.FC<IAppProps> = () => {
   useCrisp();
 
   return (
-    <>
-      <ReactQueryCacheProvider queryCache={queryCache}>
-        <FlaggProvider featureFlags={featureFlags}>
-          <StylesProvider injectFirst>
-            <MuiThemeProvider theme={theme}>
-              <Toaster />
-              <CssBaseline />
-              <Router history={history}>
-                <AppStateProvider>
-                  <MediaReadinessProvider>
-                    <SoundEffectProvider>{isMobileOnly ? <NotSupported /> : <Routes />}</SoundEffectProvider>
-                  </MediaReadinessProvider>
-                </AppStateProvider>
-              </Router>
-            </MuiThemeProvider>
-          </StylesProvider>
-        </FlaggProvider>
-      </ReactQueryCacheProvider>
-    </>
+    <FlaggProvider featureFlags={featureFlags}>
+      <StylesProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          <Toaster />
+          <CssBaseline />
+          <Router history={history}>
+            <AppStateProvider>
+              <MediaReadinessProvider>
+                <SoundEffectProvider>{isMobileOnly ? <NotSupported /> : <Routes />}</SoundEffectProvider>
+              </MediaReadinessProvider>
+            </AppStateProvider>
+          </Router>
+        </MuiThemeProvider>
+      </StylesProvider>
+    </FlaggProvider>
   );
 };

@@ -3,7 +3,7 @@ import throttle from 'lodash.throttle';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@components/Link/Link';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 

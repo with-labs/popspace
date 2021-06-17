@@ -4,7 +4,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import { useKeyboardControls } from '../../roomControls/viewport/useKeyboardControls';
 import useMergedRefs from '@react-hook/merged-ref';
 import { FileDropLayer } from '../files/FileDropLayer';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 import { useViewport } from '@providers/viewport/useViewport';

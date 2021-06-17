@@ -7,14 +7,15 @@ import { SPRINGS } from '@constants/springs';
 import { makeStyles, Box, useTheme } from '@material-ui/core';
 import clsx from 'clsx';
 import { GrabbyIcon } from '@components/icons/GrabbyIcon';
-import { WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { useRoomStore } from '@api/useRoomStore';
 import { Stream } from '../../../types/streams';
 import { getTrackName, hasTrackName } from '@utils/trackNames';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 import { useViewport } from '@providers/viewport/useViewport';
 import { useCanvas } from '@providers/canvas/CanvasProvider';
 import { INITIAL_SIZE } from '../widgets/sidecarStream/constants';
+import { useIsMe } from '@api/useIsMe';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -76,7 +77,7 @@ export const SidecarStreamPreview = React.memo(
 
     // using Twilio IDs to compare ownership
     const localParticipant = useLocalParticipant();
-    const isLocal = useRoomStore((room) => room.api.getActiveUserId() === userId);
+    const isLocal = useIsMe(userId);
 
     const addWidget = useAddAccessory();
     const viewport = useViewport();
@@ -87,7 +88,7 @@ export const SidecarStreamPreview = React.memo(
 
     // hide the preview when a widget is out in the room for this stream
     const hasWidgetInRoom = useRoomStore((room) => {
-      const userWidgets = Object.values(room.widgets).filter((w) => w.ownerId === userId);
+      const userWidgets = Object.values(room.widgets).filter((w) => w.creatorId === userId);
       return userWidgets.some((w) => {
         if (w.type !== WidgetType.SidecarStream) return false;
         return (

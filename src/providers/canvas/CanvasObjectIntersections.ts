@@ -43,13 +43,18 @@ export class CanvasObjectIntersections extends EventEmitter {
   rebuild = throttle(
     (positions: Record<string, Vector2>, measurements: Record<string, Bounds>) => {
       // combine spatial data into single datastructures
-      const bounds = Object.keys(positions).map((id) => ({
-        id,
-        x: positions[id].x,
-        y: positions[id].y,
-        w: measurements[id]?.width ?? 0,
-        h: measurements[id]?.height ?? 0,
-      }));
+      const bounds: { id: string; x: number; y: number; w: number; h: number }[] = [];
+      for (const [id, position] of Object.entries(positions)) {
+        if (!position) continue;
+
+        bounds.push({
+          id,
+          x: position.x,
+          y: position.y,
+          w: measurements[id]?.width ?? 0,
+          h: measurements[id]?.height ?? 0,
+        });
+      }
 
       this.quadTree.clear();
       for (const bound of bounds) {

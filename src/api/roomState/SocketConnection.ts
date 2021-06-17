@@ -1,7 +1,12 @@
 import { logger } from '@utils/logger';
 import { EventEmitter } from 'events';
 import { v4 } from 'uuid';
-import { IncomingSocketMessage, IncomingErrorMessage, OutgoingSocketMessage } from './types/socketProtocol';
+import {
+  IncomingSocketMessage,
+  IncomingErrorMessage,
+  OutgoingSocketMessage,
+  IncomingSocketMessageByKind,
+} from './types/socketProtocol';
 import camelcase from 'camelcase-keys';
 import ReconnectingWebsocket, { ErrorEvent, CloseEvent } from 'reconnecting-websocket';
 
@@ -28,7 +33,12 @@ export const HEARTBEAT_INTERVAL = 15 * 1000;
 export const HEARTBEAT_TIMEOUT = 5000;
 
 // full typing for the event emitter
-export interface SocketConnectionEvents {
+
+/** A map of events like "message:auth" => a handler for the message */
+type SocketMessageEvents = {
+  [K in IncomingSocketMessage['kind'] as `message:${K}`]: (msg: IncomingSocketMessageByKind[K]) => void;
+};
+export interface SocketConnectionEvents extends SocketMessageEvents {
   error: (error: Error) => void;
   connected: () => void;
   closed: () => void;
@@ -120,6 +130,9 @@ export class SocketConnection extends EventEmitter {
   private onMessage = (ev: MessageEvent) => {
     const parsed = camelcase(JSON.parse(ev.data), { deep: true }) as IncomingSocketMessage;
     this.emit('message', parsed);
+    // any cast because the typing is tricky with this; it's more important
+    // we get the external API right.
+    this.emit(`message:${parsed.kind}`, parsed as any);
   };
 
   private startHeartbeatLoop = () => {
@@ -260,6 +273,10 @@ export class SocketConnection extends EventEmitter {
     | typeof WebSocket.CLOSING
     | typeof WebSocket.CONNECTING {
     return this.ws.readyState;
+  }
+
+  get isConnected() {
+    return this.readyState === WebSocket.OPEN;
   }
 
   /**

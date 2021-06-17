@@ -3,7 +3,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { wallPaperOptions } from './WallpaperOptions';
 import { WallpaperGrid } from './WallpaperGrid';
 import { useTranslation } from 'react-i18next';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 
 export interface IWallpaperCategroyProps {
   onChange: (wallpaperUrl: string, isCustomWallpaper: boolean) => void;

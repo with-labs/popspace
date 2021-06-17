@@ -13,7 +13,7 @@ import { WhiteboardTools } from '@components/Whiteboard/WhiteboardTools';
 import { WhiteboardState } from '@components/Whiteboard/types';
 import { ERASER_COLOR } from '@components/Whiteboard/constants';
 import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
 import { SIZE } from './constants';

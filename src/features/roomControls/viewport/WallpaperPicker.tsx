@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import { useRoomModalStore } from '../useRoomModalStore';
 
 export interface IWallpaperPickerProps {

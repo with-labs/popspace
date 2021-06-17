@@ -13,7 +13,9 @@ import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
+import client from '@api/client';
+import { useLocalActorId } from '@api/useLocalActorId';
 
 interface IUserEntryModalProps {}
 
@@ -60,15 +62,17 @@ const useStyles = makeStyles((theme) => ({
 export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { onReady } = React.useContext(MediaReadinessContext);
+  const { isReady, onReady } = React.useContext(MediaReadinessContext);
 
-  const isOpen = useRoomModalStore((modals) => modals.userEntry);
+  const isOpen = !isReady;
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
-  const updateSelf = useRoomStore((room) => room.api.updateSelf);
+
+  const localId = useLocalActorId();
+  const self = useRoomStore((room) => room.users[localId ?? '']?.participantState);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
-    updateSelf({
+    client.participants.updateSelf({
       displayName: values.displayName,
     });
     onReady();
@@ -89,14 +93,19 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
               className={classes.avatarButton}
               userData={{
                 userId: '',
-                displayName: '',
-                avatarName: '',
+                displayName: self?.displayName,
+                avatarName: self?.avatarName,
               }}
-              updateSelf={() => {}}
+              updateSelf={client.participants.updateSelf}
               showVideo
             />
           </Box>
-          <Formik initialValues={{ displayName: '' }} onSubmit={onSubmitHandler} validationSchema={validationSchema}>
+          <Formik
+            initialValues={{ displayName: self?.displayName || '' }}
+            enableReinitialize
+            onSubmit={onSubmitHandler}
+            validationSchema={validationSchema}
+          >
             <Form>
               <Box mb={2}>
                 <FormikTextField

@@ -2,7 +2,7 @@ import { makeStyles, useTheme } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import * as React from 'react';
 import { useAvatar } from '@hooks/useAvatar/useAvatar';
-import { RoomStateShape, useRoomStore } from '@roomState/useRoomStore';
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
 import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
@@ -36,9 +36,10 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const classes = useStyles();
   const theme = useTheme();
 
-  const selectPosition = React.useCallback((room: RoomStateShape) => room.cursors[userId]?.position ?? { x: 0, y: 0 }, [
-    userId,
-  ]);
+  const selectPosition = React.useCallback(
+    (room: RoomStateShape) => room.cursors[userId]?.position ?? { x: 0, y: 0 },
+    [userId]
+  );
   const selectActive = React.useCallback((room: RoomStateShape) => room.cursors[userId]?.active ?? false, [userId]);
 
   const name = useRoomStore((room) => room.users[userId]?.participantState.displayName ?? '???');

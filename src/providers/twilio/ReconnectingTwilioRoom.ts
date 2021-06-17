@@ -54,7 +54,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     this.emit('connecting');
     try {
       const tokenResult = await client.joinMeeting(this.roomName);
-      this._room = await Video.connect(tokenResult.token, this.options);
+      this._room = await Video.connect(tokenResult, this.options);
       this.emit('connected', this._room);
       this.emit('roomChanged', this._room);
       this._room.setMaxListeners(40);

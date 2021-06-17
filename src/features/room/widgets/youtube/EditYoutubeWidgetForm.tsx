@@ -5,7 +5,7 @@ import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { parseYoutubeLink } from '@utils/youtube';
-import { YoutubeWidgetState } from '@roomState/types/widgets';
+import { YoutubeWidgetState } from '@api/roomState/types/widgets';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
 import { INITIAL_SIZE_PLAYER } from './constants';
 

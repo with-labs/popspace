@@ -1,5 +1,5 @@
 import { WhiteboardState } from '@components/Whiteboard/types';
-import { ThemeName } from '../../theme/theme';
+import { ThemeName } from '@src/theme/theme';
 
 // eslint-disable-next-line no-shadow
 export enum WidgetType {
@@ -109,8 +109,8 @@ export interface HuddleWidgetState {}
 /** Common properties to all widgets */
 export interface BaseWidgetShape {
   widgetId: string;
-  ownerId: string;
-  ownerDisplayName: string;
+  creatorId: string;
+  creatorDisplayName: string;
 }
 
 // FIXME: can this be automatically created using TypeScript generics?

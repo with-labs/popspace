@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { SpatialAudio } from '@components/SpatialAudio/SpatialAudio';
 import { SpatialVideo } from '@components/SpatialVideo/SpatialVideo';
-import { WidgetMediaState, WidgetType } from '@roomState/types/widgets';
+import { WidgetMediaState, WidgetType } from '@api/roomState/types/widgets';
 import { MediaControls, useBindMediaControls } from '../../common/MediaControls';
 import { useWidgetContext } from '../../useWidgetContext';
 import { UnsupportedFile } from './UnsupportedFile';

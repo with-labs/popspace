@@ -9,7 +9,7 @@ import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
 import huddleSrc from './png/huddle.png';
 import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 
 const icons = {
   [WidgetType.Link]: linkSrc,

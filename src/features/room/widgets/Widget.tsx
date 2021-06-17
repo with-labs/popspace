@@ -5,7 +5,7 @@ import { WhiteboardWidget } from './whiteboard/WhiteboardWidget';
 import { NotepadWidget } from './notepad/NotepadWidget';
 import { YoutubeWidget } from './youtube/YoutubeWidget';
 import { ScreenShareWidget } from './sidecarStream/SidecarStreamWidget';
-import { WidgetType } from '@roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { MockUserWidget } from './mockUser/MockUserWidget';
 import { logger } from '@utils/logger';
 import { WidgetProvider } from './WidgetProvider';

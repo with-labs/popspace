@@ -1,8 +1,7 @@
 import { toast } from 'react-hot-toast';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WidgetType } from '@roomState/types/widgets';
-import { useRoomStore } from '@roomState/useRoomStore';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { Vector2 } from '../../../types/spatials';
 import api from '@api/client';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
@@ -16,8 +15,6 @@ export function useAddFile() {
   const { t } = useTranslation();
 
   const addWidget = useAddAccessory();
-  const updateWidget = useRoomStore((room) => room.api.updateWidget);
-  const deleteWidget = useRoomStore((room) => room.api.deleteWidget);
 
   const createWidget = useCallback(
     async (file: File, position?: Vector2) => {
@@ -30,7 +27,7 @@ export function useAddFile() {
       window.addEventListener('beforeunload', confirmClose, true);
 
       // get our signed upload url to send the file directly to S3
-      const { success, uploadUrl, downloadUrl } = await api.getRoomFileUploadUrl(file.name, file.type);
+      const { success, uploadUrl, downloadUrl } = await api.files.getRoomFileUploadUrl(file.name, file.type);
 
       if (!success) {
         toast.error(t('error.messages.fileDropUnknownFailure') as string);
@@ -53,7 +50,7 @@ export function useAddFile() {
         const abort = async () => {
           window.removeEventListener('beforeunload', confirmClose, true);
           const widget = await widgetAddedPromise;
-          await deleteWidget(widget);
+          await api.widgets.deleteWidget(widget);
         };
 
         // read file as arraybuffer
@@ -84,7 +81,7 @@ export function useAddFile() {
         const widget = await widgetAddedPromise;
 
         // add the URL data to the widget now that the file is ready
-        updateWidget({
+        api.widgets.updateWidget({
           widgetId: widget.widgetId,
           widgetState: {
             ...widget.widgetState,
@@ -96,7 +93,7 @@ export function useAddFile() {
         window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
-    [addWidget, t, updateWidget, deleteWidget]
+    [addWidget, t]
   );
 
   return createWidget;

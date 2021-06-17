@@ -10,21 +10,20 @@ class Feedback {
    * @param {Object} data
    * @param {number} data.rating
    * @param {string} data.feedback
-   * @param {Object} user
-   * @param {string} user.first_name
-   * @param {string} user.last_name
-   * @param {string} user.email
+   * @param {Object} actor
+   * @param {Object} actor.id
+   * @param {string} actor.display_name
    * @param {boolean} updated
    */
-  notify = async (data, user, updated) => {
+  notify = async (data, actor, updated) => {
     if (!process.env.SLACK_FEEDBACK_WEBHOOK_URL) {
-      lib.log.default.warn("No Slack feedback webhook URL provided, cannot notify!")
+      lib.log.error.warn("No Slack feedback webhook URL provided, cannot notify!")
       return
     }
 
     try {
       await axios.post(process.env.SLACK_FEEDBACK_WEBHOOK_URL, {
-        text: `User *${this.formatUser(user)}* ${
+        text: `actor *${this.formatUser(actor)}* ${
           updated ? "updated their" : "submitted new"
         } feedback:\n_Rating:_ ${this.formatStars(data.rating)}\n_Feedback:_ ${data.feedback ?? "None"}`,
       })
@@ -35,13 +34,12 @@ class Feedback {
 
   /**
    *
-   * @param {Object} user
-   * @param {string} user.first_name
-   * @param {string} user.last_name
-   * @param {string} user.email
+   * @param {Object} actor
+   * @param {string} actor.id
+   * @param {string} actor.display_name
    */
-  formatUser = (user) => {
-    return `${user.first_name} ${user.last_name} (${user.email})`
+  formatUser = (actor) => {
+    return `${actor.display_name} (${actor.id})`
   }
 
   formatStars = (num) => {

@@ -18,21 +18,21 @@ class ExperienceRatings {
       const submittedAt = new Date()
       const feedback = req.body.feedback || null
 
-      const room = await shared.db.rooms.roomByRoute(req.body.room_route)
+      const room = await shared.db.room.core.roomByRoute(req.body.room_route)
 
       if (!room) {
         return http.fail(req, res, "Provided room not found", { errorCode: shared.error.code.UNKNOWN_ROOM })
       }
 
       const rating = await shared.db.experienceRatings.createRating(
-        req.user.id,
+        req.actor.id,
         room.id,
         req.body.rating,
         submittedAt,
         feedback
       )
 
-      lib.feedback.notify(rating, req.user, false)
+      lib.feedback.notify(rating, req.actor, false)
 
       return http.succeed(req, res, { ratingId: rating.id, rating: rating.rating, feedback: rating.feedback })
     })

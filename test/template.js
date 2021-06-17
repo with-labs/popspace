@@ -1,5 +1,6 @@
 require("../src/globals")
 const fs = require("fs")
+const AsyncLock = require('async-lock')
 
 class Template {
   constructor() {
@@ -73,27 +74,69 @@ class Template {
     return lib.test.template.authenticatedActor(async (testEnvironment) => {
       const host = testEnvironment.getHost()
 
-      let joinsRemaining = nActors * (nActors - 1)/2 - 1
+      /*
+        We don't just want to connect clients -
+        we want to make sure all the clients are aware of all connected clients
+        before continuing.
+      */
+      let initsRemaining = nActors
       let roomActorClients = []
+      const initializedClients = {}
 
-      const setupPromise = new Promise((resolve, reject) => {
-        const joinCallback = () => {
-          joinsRemaining--
-          if(joinsRemaining <= 0) {
-            resolve()
+      const setupPromise = new Promise(async (resolve, reject) => {
+        const lock = new AsyncLock();
+        const tryToFinishInitClient = async (client) => {
+          if(!client.isAuthenticated() || initializedClients[client.id]) {
+            return
+          }
+          const knownPeers = client.peersIncludingSelf()
+          if(knownPeers.length >= nActors) {
+            await lock.acquire('record_join', () => {
+              if(initializedClients[client.id]) {
+                /*
+                  This could happen! A client could simultaneously
+                  react to 2 events and pass through to the lock
+                */
+                return
+              }
+              /*
+                JS doesn't atomically decrement by default,
+                so if several threads mutate the variable simultaneously
+                horrible things happen.
+              */
+              initsRemaining--
+              initializedClients[client.id] = true
+              console.log(initsRemaining, client.id)
+              /*
+                This has to be inside the lock, to make sure
+                the client wasn't initialized in a race condition with itself.
+              */
+              if(initsRemaining <= 0) {
+                resolve()
+              }
+            })
           }
         }
+
+        const joinCallback = (e) => {
+          tryToFinishInitClient(e.recipientClient)
+        }
+
         host.client.on('event.participantJoined', joinCallback)
+        tryToFinishInitClient(host.client)
         for(let i = 0; i < nActors - 1; i++) {
-          lib.test.models.RoomActorClient.create(host.room).then(async (rac) => {
+          const rac = lib.test.models.RoomActorClient.create(host.room).then(async (rac) => {
             rac.client.on('event.participantJoined', joinCallback)
             roomActorClients.push(rac)
             await rac.join()
-          }).catch((e) => {
-            console.error(e)
+            /*
+              for the last client to join, we'll never see a participantJoined event
+            */
+            tryToFinishInitClient(rac.client)
           })
         }
       })
+
       try {
         await setupPromise
       } catch(e) {

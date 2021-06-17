@@ -71,6 +71,10 @@ class Hermes {
   clientsCount() {
     return this.participants.count()
   }
+
+  getParticipants() {
+    return this.participants
+  }
 }
 
 module.exports = Hermes

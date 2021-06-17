@@ -17,6 +17,14 @@ class ClientReceivedEvent {
   data() {
     return this._parsed
   }
+
+  get recipientActorId() {
+    return this._client.actorId()
+  }
+
+  get recipientClient() {
+    return this._client
+  }
 }
 
 module.exports = ClientReceivedEvent

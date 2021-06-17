@@ -2,9 +2,8 @@ module.exports = {
   "participants_see_each_other": lib.test.template.nAuthenticatedActors(5, async (testEnvironment) => {
     const loggedInRacs = testEnvironment.allRoomActorClients()
     return {
-      countsAtEnd: testEnvironment.allExceptHost().map((lu) => {
-        console.log(lu.client.authenticatedPeers().length)
-        return lu.client.authenticatedPeers().length
+      countsAtEnd: testEnvironment.allExceptHost().map((rac) => {
+        return rac.client.authenticatedPeers().length
       }),
       desiredParticipants: testEnvironment.allRoomActorClients().length
     }

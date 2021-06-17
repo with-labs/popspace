@@ -31,7 +31,8 @@ class RoomData {
     room.widgets = await Promise.all(
       widgetsInRoom.map(async (w) => (w.serialize()))
     )
-    room.state = await this.state()
+    room.state = await this.state() || {}
+    room.widgets = room.widgets || []
     return room
   }
 }

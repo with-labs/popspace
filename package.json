@@ -1,6 +1,6 @@
 {
   "name": "@withso/noodle-shared",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "Shared code for Noodle micro services",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.834.0",
     "btoa": "^1.2.1",
+    "chalk": "^4.1.1",
     "chance": "^1.1.7",
     "commander": "^7.2.0",
     "crypto-random-string": "^3.3.0",

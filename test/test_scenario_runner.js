@@ -2,8 +2,13 @@ const runScenario = (testPath="../tests") => {
   require("dotenv").config()
   const util = require("util")
   global.shared = require("../index.js")
-
   const commander = require("commander")
+  const chalk = require("chalk")
+
+  util.inspect.defaultOptions.depth = 20
+  util.inspect.defaultOptions.colors = true
+  util.inspect.defaultOptions.getters = true
+  util.inspect.defaultOptions.compact = true
 
   commander
     .version("1.0.0")
@@ -21,15 +26,18 @@ const runScenario = (testPath="../tests") => {
       path += `/${runOptions.component}`
     }
 
-    console.log("Running", runOptions.test, runOptions.scenario)
-
+    console.log("\n-------------- " + chalk.red.bold.underline.bgBlack(` ${runOptions.test}.${runOptions.scenario} `) + " --------------\n\n")
     const testSuite = require(`${path}/${runOptions.test}/${runOptions.test}_scenarios.js`)
     await shared.test.init()
     await shared.init()
-    console.log("Running", runOptions.test, runOptions.scenario)
+    await shared.db.pg.silenceLogs()
     const result = await testSuite[runOptions.scenario]()
-    console.log("Test result", util.inspect(result, {depth: 20, colors: true}))
+
+    console.log(chalk.bgBlack.white.bold("Test result:\n\n"))
+    console.log(util.inspect(result, {depth: 20, colors: true}))
+
     await shared.cleanup()
+    console.log("\n\n------------------------- Done -----------------------\n")
     return result
   }
 

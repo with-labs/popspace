@@ -128,7 +128,7 @@ class Data {
       await tx.room_widget_states.insert({
         room_id: roomWidget.roomId(),
         widget_id: roomWidget.widgetId(),
-        state: roomWidget.roomState()
+        state: roomWidget.roomWidgetState()
       })
     })
   }

@@ -1,9 +1,9 @@
 class RoomWidget {
-  constructor(roomId, pgWidget, widgetState, roomState, creatorDisplayName) {
+  constructor(roomId, pgWidget, widgetState, roomWidgetState, creatorDisplayName) {
     this._roomId = roomId
     this._pgWidget = pgWidget
     this._widgetState = widgetState
-    this._roomState = roomState
+    this._roomWidgetState = roomWidgetState
     this._creatorDisplayName = creatorDisplayName
   }
 
@@ -15,8 +15,8 @@ class RoomWidget {
     return this._widgetState
   }
 
-  roomState() {
-    return this._roomState
+  roomWidgetState() {
+    return this._roomWidgetState
   }
 
   roomId() {
@@ -38,7 +38,7 @@ class RoomWidget {
       type: this._pgWidget._type,
       widget_state: this.widgetState(),
       creator_display_name: this._creatorDisplayName,
-      transform: this._roomState
+      transform: this._roomWidgetState
     }
   }
 }
@@ -90,7 +90,7 @@ RoomWidget.allInRoom = async (roomId) => {
     widgetStatesById[widgetState.widget_id] = widgetState
   }
   for(const roomWidgetState of roomWidgetStates) {
-    widgetStatesById[roomWidgetState.widget_id] = roomWidgetState
+    roomWidgetStatesById[roomWidgetState.widget_id] = roomWidgetState
   }
   for(const widget of widgets) {
     widgetsById[widget.id] = widget
@@ -101,7 +101,7 @@ RoomWidget.allInRoom = async (roomId) => {
     const widgetState = widgetStatesById[widgetId]
     const roomWidgetState = roomWidgetStatesById[widgetId]
     const widget = widgetsById[widgetId]
-    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomState, widget.creator_display_name)
+    const roomWidget = new shared.models.RoomWidget(roomId, widget, widgetState, roomWidgetState, widget.creator_display_name)
     result.push(roomWidget)
   }
 

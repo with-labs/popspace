@@ -8,15 +8,16 @@ class Auth {
     if(!session) {
       return null
     }
-    const actorId = parseInt(session.actor_id)
-    const actor = await shared.db.pg.massive.actors.findOne({id: actorId, deleted_at: null})
+    const actor = await shared.db.pg.massive.actors.findOne({
+      id: session.actor_id,
+      deleted_at: null
+    })
     return actor
   }
 
   tokenFromSession(session) {
     return JSON.stringify({
-      secret: session.secret,
-      uid: session.actor_id
+      secret: session.secret
     })
   }
 

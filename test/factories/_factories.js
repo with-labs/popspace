@@ -32,6 +32,17 @@ class MassiveJsAdapter {
 }
 
 const init = () => {
+  /*
+    TODO: I think it's best to get rid of factory girl and just
+    directly write to the test database.
+
+    factory-girl has caused some inconsistencies between runs
+    (
+      sequences not properly resetting, for example,
+      or race conditions for IDs.
+      https://withlabs.slack.com/archives/C017M659MKP/p1623878527448500?thread_ts=1623877108.445300&cid=C017M659MKP
+    )
+  */
   shared.test.factory.setAdapter(new MassiveJsAdapter());
 
   require("./factory_actor")

@@ -16,7 +16,7 @@ class RoomActorClient {
 
   async join() {
     await this.initiateLoggedInSession()
-    await this.authenticateSocket()
+    return await this.authenticateSocket()
   }
 
   async initiateLoggedInSession() {
@@ -91,6 +91,9 @@ RoomActorClient.forActorId = async (actorId, roomId=null) => {
 }
 
 RoomActorClient.forActor = async (actor, room=null) => {
+  if(!actor) {
+     actor = await shared.db.accounts.createActor("test")
+  }
   if(!room) {
     room = await shared.db.pg.massive.rooms.findOne({creator_id: actor.id, deleted_at: null})
     if(!room) {
@@ -101,7 +104,6 @@ RoomActorClient.forActor = async (actor, room=null) => {
   }
   const client = new lib.Client(lib.appInfo.wssUrl())
   const result = new RoomActorClient(room, actor, client)
-  await result.join()
   return result
 }
 

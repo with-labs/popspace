@@ -18,13 +18,14 @@ class GetProcessor {
     const participant = event.senderParticipant()
     const room = participant.getRoom()
     const roomData = new shared.models.RoomData(room)
-
-    return await event.senderParticipant().sendResponse(event, roomData)
+    const response = await roomData.serialize()
+    return await event.senderParticipant().sendResponse(event, response)
   }
 
   async respondWidgetData(event) {
     const roomWidget = await shared.models.RoomWidget.fromWidgetId(event.payload().widget_id, event.roomId())
-    return await event.senderParticipant().sendResponse(event, roomWidget.serialize())
+    const result = await roomWidget.serialize()
+    return await event.senderParticipant().sendResponse(event, result)
   }
 
 }

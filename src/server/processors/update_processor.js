@@ -20,6 +20,18 @@ class UpdateProcessor {
     }
   }
 
+  async updateWidgetRoomState(event) {
+    const widget = event.payload()
+    const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), widget.widget_id, widget.transform)
+    sender.respondAndBroadcast(event, "widgetTransformed")
+  }
+
+  async updateWidgetState(event) {
+    const widget = event.payload()
+    const result = await shared.db.room.data.updateWidgetState(widget.widget_id, widget.widget_state)
+    sender.respondAndBroadcast(event, "widgetUpdated")
+  }
+
   async updateRoomParticipantState(event) {
     const sender = event.senderParticipant()
     return sender.updateTransform(event.payload().transform, event)
@@ -30,19 +42,8 @@ class UpdateProcessor {
     return sender.updateState(event.payload().participant_state, event)
   }
 
-  async updateWidgetRoomState(event) {
-    const widget = event.payload()
-    const result = await shared.db.room.data.updateWidgetRoomState(event.roomId(), widget.widget_id, widget.transform)
-    sender.respondAndBroadcast(event, "widgetTransformed")
-  }
-
-  async updateWidgetState(event) {
-    const widget = event.payload()
-    const result = await shared.db.room.data.updateWidgetState(widget.widget_id, widget.widget_state)
-    sender.respondAndBroadcast(event, "widgetUpdated")
-  }
-
   async updateRoomState(event) {
+    const sender = event.senderParticipant()
     await shared.db.room.data.updateRoomState(event.roomId(), event.payload())
     sender.respondAndBroadcast(event, "roomStateUpdated")
   }

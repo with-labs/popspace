@@ -36,6 +36,25 @@ class Template {
     }
   }
 
+  unauthenticatedActor(lambda, heartbeatTimeoutMillis) {
+    return lib.test.template.testServer(async (hermes) => {
+      const roomActorClient = await lib.test.models.RoomActorClient.create()
+
+      const testEnvironment = new lib.test.TestEnvironment()
+      testEnvironment.setHermes(hermes)
+      testEnvironment.addRoomActorClients(roomActorClient)
+      /*
+        If they're unauthenticated, they're hardly a host...
+        but arguably if there is a hosting situation,
+        there's not reason not to make the first client
+        in a test the host...
+      */
+      testEnvironment.setHost(roomActorClient)
+
+      return await lambda(testEnvironment)
+    }, heartbeatTimeoutMillis)
+  }
+
   authenticatedActor(lambda, heartbeatTimeoutMillis) {
     return lib.test.template.testServer(async (hermes) => {
       const roomActorClient = await lib.test.models.RoomActorClient.create()
@@ -66,9 +85,10 @@ class Template {
         }
         host.client.on('event.participantJoined', joinCallback)
         for(let i = 0; i < nActors - 1; i++) {
-          lib.test.models.RoomActorClient.create(host.room).then((rac) => {
-            roomActorClients.push(rac)
+          lib.test.models.RoomActorClient.create(host.room).then(async (rac) => {
             rac.client.on('event.participantJoined', joinCallback)
+            roomActorClients.push(rac)
+            await rac.join()
           }).catch((e) => {
             console.error(e)
           })

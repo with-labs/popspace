@@ -45,6 +45,11 @@ shared.test.TestTemplate.describeWithLib('hermes_events', () => {
 
   test('updating a room wallpaper', async () => {
     const result = await scenarios["update_wallpaper"]()
+    /*
+      We're not really checking that the old wallpaper is distinct from the new one,
+      could improve the test a bit - but then we'd want to deliberately create a new
+      room with a different wallpaper, or do update twice
+    */
     expect(result.updateResponse.kind).toEqual("roomStateUpdated")
     expect(result.updateResponse.payload.wallpaperUrl).toEqual(result.newRoomState.payload.state.wallpaperUrl)
   })

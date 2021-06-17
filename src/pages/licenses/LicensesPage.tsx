@@ -3,6 +3,7 @@ import { Page } from '@layouts/Page/Page';
 import { Header } from '@components/Header/Header';
 import { Box, Typography, Divider } from '@material-ui/core';
 import generatedLicenses from './data/licenses.json';
+import { useTranslation } from 'react-i18next';
 
 const hardcodedLicenses = [
   {
@@ -26,17 +27,16 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
  * A page to include all Open Source software licenses, disclaimers, etc.
  */
 const LicensesPage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <Page>
       <Header />
       <Box p={4}>
         <Typography variant="h1" gutterBottom>
-          Open Source Software Licenses
+          {t('pages.licenses.title')}
         </Typography>
-        <Typography paragraph>
-          With utilizes open source and third party software in various forms throughout the app. The following sets
-          forth attribution notices for third party software that may be contained in portions of the product.
-        </Typography>
+        <Typography paragraph>{t('pages.licenses.intro')}</Typography>
         {Object.values(generatedLicenses).map((license) => (
           <LicenseInfo key={license.name} license={license} />
         ))}

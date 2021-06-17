@@ -177,6 +177,10 @@
       "notSupported": {
         "title": "Oops, we’re sorry.",
         "body": "FPO something something, mobile isnt supported yet, please use a computer"
+      },
+      "licenses": {
+        "title": "Open Source Software Licenses",
+        "intro": "Tilde utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
       }
     },
     "widgets": {

@@ -10,7 +10,7 @@ module.exports = {
   }),
 
   "disconnecting_participants": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
-    const loggedInActors = testEnvironment.loggedInActors
+    const loggedInActors = testEnvironment.allRoomActorClients()
     const participantCountAtStart = loggedInActors.length
     let remainingNotifications = participantCountAtStart - 1
     return new Promise(async (resolve, reject) => {
@@ -37,9 +37,10 @@ module.exports = {
   }),
 
   "moving_participants": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
-    const loggedInActors = testEnvironment.loggedInActors
-    const client = loggedInActors[0].client
-    const beforeMove = loggedInActors[0].auth.stateInRoom
+    const loggedInActors = testEnvironment.allRoomActorClients()
+    const host = testEnvironment.getHost()
+    const client = host.client
+    const beforeMove = host.auth.stateInRoom
     const move = {
       roomState: {
         position: {
@@ -56,14 +57,14 @@ module.exports = {
 
 
   "max_participants_respected": lib.test.template.nAuthenticatedActors(2, async (testEnvironment) => {
-    const loggedInActors = testEnvironment.loggedInActors
+    const loggedInActors = testEnvironment.allRoomActorClients()
     const maxParticipantsGetter = lib.SocketGroup.prototype.getMaxParticipants
     const mockActorLimit = 2
     lib.SocketGroup.prototype.getMaxParticipants = () => (mockActorLimit)
-    const creatorInfo = testEnvironment.loggedInActors[0]
+    const creatorInfo = testEnvironment.getHost()
 
     const room = creatorInfo.room
-    const rac = RoomActorClient.create()
+    const rac = await lib.test.models.RoomActorClient.create()
     await rac.enableRoomAccess(room)
     try {
       await rac.initiateLoggedInSession()

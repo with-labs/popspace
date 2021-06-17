@@ -49,7 +49,7 @@ class RoomActorClient {
   }
 
   async enableRoomAccess(room) {
-    const alreadyCanEnter = await shared.db.room.permission.canEnter(this.actor, room)
+    const alreadyCanEnter = await shared.db.room.permissions.canEnter(this.actor, room)
     if(!alreadyCanEnter) {
       await shared.db.room.memberships.forceMembership(room, this.actor)
     }

@@ -22,12 +22,14 @@ class UpdateProcessor {
 
   async updateWidgetRoomState(event) {
     const widget = event.payload()
+    const sender = event.senderParticipant()
     const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), widget.widget_id, widget.transform)
     sender.respondAndBroadcast(event, "widgetTransformed")
   }
 
   async updateWidgetState(event) {
     const widget = event.payload()
+    const sender = event.senderParticipant()
     const result = await shared.db.room.data.updateWidgetState(widget.widget_id, widget.widget_state)
     sender.respondAndBroadcast(event, "widgetUpdated")
   }

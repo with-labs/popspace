@@ -15,6 +15,7 @@ import { MAX_NAME_LENGTH } from '@src/constants';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useRoomStore } from '@api/useRoomStore';
 import client from '@api/client';
+import { useLocalActorId } from '@api/useLocalActorId';
 
 interface IUserEntryModalProps {}
 
@@ -66,6 +67,9 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const isOpen = useRoomModalStore((modals) => modals.userEntry);
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
+  const localId = useLocalActorId();
+  const self = useRoomStore((room) => room.users[localId ?? '']?.participantState);
+
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
     client.participants.updateSelf({
@@ -89,10 +93,10 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
               className={classes.avatarButton}
               userData={{
                 userId: '',
-                displayName: '',
-                avatarName: '',
+                displayName: self?.displayName,
+                avatarName: self?.avatarName,
               }}
-              updateSelf={() => {}}
+              updateSelf={client.participants.updateSelf}
               showVideo
             />
           </Box>

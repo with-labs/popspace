@@ -11,12 +11,13 @@ import VideoTrack from '@components/VideoTrack/VideoTrack';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { PseudoUserBubble } from '../../room/people/PseudoUserBubble';
 import { AvatarSelector } from './AvatarSelector';
+import { ParticipantState } from '@api/roomState/types/participants';
 
 export interface IAvatarSelectorProps {
   className?: string;
   showVideo?: boolean;
   userData: { userId: string; avatarName: string; displayName: string };
-  updateSelf: (payload: { [key: string]: any }) => void;
+  updateSelf: (payload: Partial<ParticipantState>) => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +52,7 @@ export const AvatarSelectorBubble: React.FC<IAvatarSelectorProps> = ({
   const [open, setOpen] = React.useState(false);
 
   const onChange = (newAvatarName: string) => {
-    updateSelf({ avatar_name: newAvatarName });
+    updateSelf({ avatarName: newAvatarName });
   };
 
   const { videoTrack } = useLocalTracks();

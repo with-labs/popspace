@@ -7,11 +7,13 @@ class ExperienceRatings {
   initPost = () => {
     this.zoo.loggedInPostEndpoint("/submit_experience_rating", async (req, res) => {
       if (!req.body.room_route) {
-        return http.fail(req, res, "Room route must be provided", {
+        return api.http.fail(req, res, {
+          message:  "Room route must be provided",
           errorCode: shared.error.code.INVALID_API_PARAMS,
         })
       } else if (!req.body.rating && req.body.rating !== 0) {
-        return http.fail(req, res, "Rating must be provided", {
+        return api.http.fail(req, res, {
+          message: "Rating must be provided",
           errorCode: shared.error.code.INVALID_API_PARAMS,
         })
       }
@@ -21,7 +23,10 @@ class ExperienceRatings {
       const room = await shared.db.room.core.roomByRoute(req.body.room_route)
 
       if (!room) {
-        return http.fail(req, res, "Provided room not found", { errorCode: shared.error.code.UNKNOWN_ROOM })
+        return api.http.fail(req, res, {
+          message: "Provided room not found",
+          errorCode: shared.error.code.UNKNOWN_ROOM,
+        }, shared.http.code.NOT_FOUND)
       }
 
       const rating = await shared.db.experienceRatings.createRating(
@@ -34,28 +39,31 @@ class ExperienceRatings {
 
       lib.feedback.notify(rating, req.actor, false)
 
-      return http.succeed(req, res, { ratingId: rating.id, rating: rating.rating, feedback: rating.feedback })
+      return api.http.succeed(req, res, { ratingId: rating.id, rating: rating.rating, feedback: rating.feedback })
     })
 
     this.zoo.loggedInPostEndpoint("/update_experience_rating", async (req, res) => {
       if (!req.body.rating_id) {
-        return http.fail(req, res, "Rating ID must be provided", {
+        return api.http.fail(req, res, {
+          message: "Rating ID must be provided",
           errorCode: shared.error.code.INVALID_API_PARAMS,
-        })
+        });
       }
 
       const rating = await shared.db.experienceRatings.getRating(req.body.rating_id)
 
       if (!rating) {
-        return http.fail(req, res, "Rating does not exist", {
+        return api.http.fail(req, res, {
+          message: "Rating does not exist",
           errorCode: shared.error.code.NOT_FOUND,
-        })
+        }, shared.api.http.code.NOT_FOUND)
       }
 
-      if (rating.user_id !== req.user.id) {
-        return http.fail(req, res, "You can't update that rating", {
+      if (rating.actor_id !== req.actor.id) {
+        return api.http.fail(req, res, {
+          message: "You can't update that rating",
           errorCode: shared.error.code.UNAUTHORIZED,
-        })
+        }, shared.api.http.code.UNAUTHORIZED)
       }
 
       const updates = {}
@@ -69,9 +77,9 @@ class ExperienceRatings {
 
       const updated = await shared.db.experienceRatings.updateRating(rating.id, updates)
 
-      lib.feedback.notify(updated, req.user, true)
+      lib.feedback.notify(updated, req.actor, true)
 
-      return http.succeed(req, res, { ratingId: updated.id, rating: updated.rating, feedback: updated.feedback })
+      return api.http.succeed(req, res, { ratingId: updated.id, rating: updated.rating, feedback: updated.feedback })
     })
   }
 }

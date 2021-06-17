@@ -39,7 +39,7 @@ class Feedback {
    * @param {string} actor.display_name
    */
   formatUser = (actor) => {
-    return `${actor.display_name} (${actor.id})`
+    return `${actor.display_name || 'Anonymous'} (id: ${actor.id})`
   }
 
   formatStars = (num) => {

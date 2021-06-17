@@ -34,12 +34,12 @@ class Accounts {
 
     this.zoo.loggedInPostEndpoint("/subscribe_to_newsletter", async (req, res) => {
       await shared.db.accounts.newsletterSubscribe(req.actor.id)
-      return await http.succeed(req, res, {})
+      return await api.http.succeed(req, res, {})
     })
 
     this.zoo.loggedInPostEndpoint("/unsubscribe_from_newsletter", async (req, res) => {
       await shared.db.accounts.newsletterUnsubscribe(req.actor.id)
-      return await http.succeed(req, res, {})
+      return await api.http.succeed(req, res, {})
     })
 
     this.zoo.loggedOutPostEndpoint("/magic_link_subscribe", async (req, res) => {
@@ -48,9 +48,9 @@ class Accounts {
       const request = await shared.db.magic.magicLinkById(magicLinkId)
       const result = await shared.db.magic.tryToSubscribe(request, otp)
       if (result.error) {
-        return await http.authFail(req, res, result.error)
+        return await api.http.authFail(req, res, result.error)
       }
-      return await http.succeed(req, res, {})
+      return await api.http.succeed(req, res, {})
     })
 
     this.zoo.loggedOutPostEndpoint("/magic_link_unsubscribe", async (req, res) => {
@@ -59,9 +59,9 @@ class Accounts {
       const request = await shared.db.magic.magicLinkById(magicLinkId)
       const result = await shared.db.magic.tryToUnsubscribe(request, otp)
       if (result.error) {
-        return await http.authFail(req, res, result.error)
+        return await api.http.authFail(req, res, result.error)
       }
-      return await http.succeed(req, res, {})
+      return await api.http.succeed(req, res, {})
     })
 
     this.zoo.loggedInGetEndpoint("/actor", async (req, res) => {

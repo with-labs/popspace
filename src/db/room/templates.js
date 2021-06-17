@@ -31,24 +31,7 @@ module.exports = {
     // add widgets
     const widgets = []
     for (const [type, widgetState, transform] of templateData.widgets) {
-      const widget = await shared.db.pg.massive.withTransaction(async (tx) => {
-        const widget = await tx.widgets.insert({
-          creator_id: creatorId,
-          _type: type,
-        })
-        const roomWidget = await tx.room_widgets.insert({
-          widget_id: widget.id,
-          room_id: roomId,
-        })
-        return widget
-      })
-      const roomWidget = new shared.models.RoomWidget(
-        roomId,
-        widget,
-        widgetState,
-        transform,
-        "Dorothy"
-      )
+      const roomWidget = await shared.db.room.data.addWidgetInRoom(creatorId, roomId, type, widgetState, transform)
       await shared.db.room.data.addWidgetInRoom(roomWidget)
       widgets.push(roomWidget)
     }

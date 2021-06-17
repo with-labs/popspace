@@ -19,7 +19,8 @@ class RoomData {
   }
 
   async state() {
-    return shared.db.room.data.getRoomState(this.roomId)
+    const entry = await shared.db.room.data.getRoomState(this.roomId)
+    return entry.state
   }
 
   async serialize() {

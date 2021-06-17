@@ -12,11 +12,11 @@ class RoomWidget {
   }
 
   widgetState() {
-    return this._widgetState
+    return this._widgetState.state || {}
   }
 
   roomWidgetState() {
-    return this._roomWidgetState
+    return this._roomWidgetState.state
   }
 
   roomId() {
@@ -37,24 +37,18 @@ class RoomWidget {
       creator_id: this._pgWidget.creator_id,
       type: this._pgWidget._type,
       widget_state: this.widgetState(),
-      creator_display_name: this._creatorDisplayName,
-      transform: this._roomWidgetState
+      creator_display_name: this.creatorDisplayName(),
+      transform: this.roomWidgetState()
     }
   }
 }
 
 RoomWidget.fromWidgetId = async (widgetId, roomId) => {
-  const pgWidgets = await shared.db.pg.massive.query(`
-    SELECT
-      widgets.id, widgets._type, widgets.creator_id,
-      actors.display_name AS creator_display_name
-    FROM widgets JOIN actors ON widgets.creator_id = actors.id
-    WHERE widgets.id = $1
-  `, parseInt(widgetId))
-  if(pgWidgets.length < 1) {
-    return null
-  }
-  return await shared.db.room.data.widgets.getRoomWidget(roomId, pgWidgets[0])
+  const pgWidget = await shared.db.pg.massive.widgets.findOne({id: widgetId})
+  const widgetState = await shared.db.pg.massive.widget_states.findOne({widget_id: widgetId})
+  const roomWidgetState = await shared.db.pg.massive.room_widget_states.findOne({widget_id: widgetId, room_id: roomId})
+
+  return new RoomWidget(roomId, pgWidget, widgetState, roomWidgetState)
 }
 
 RoomWidget.allInRoom = async (roomId) => {

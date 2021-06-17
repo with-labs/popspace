@@ -100,7 +100,12 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
               showVideo
             />
           </Box>
-          <Formik initialValues={{ displayName: '' }} onSubmit={onSubmitHandler} validationSchema={validationSchema}>
+          <Formik
+            initialValues={{ displayName: self?.displayName || '' }}
+            enableReinitialize
+            onSubmit={onSubmitHandler}
+            validationSchema={validationSchema}
+          >
             <Form>
               <Box mb={2}>
                 <FormikTextField

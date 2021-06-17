@@ -31,6 +31,12 @@ module.exports = class {
     return this.roomActorClients
   }
 
+  allExceptHost() {
+    return this.roomActorClients.filter((lu) => (
+      lu != this.host
+    ))
+  }
+
   nthRoomClientActor(n) {
     return this.roomActorClients[n]
   }

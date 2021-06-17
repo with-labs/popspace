@@ -44,7 +44,7 @@ class Template {
       const testEnvironment = new lib.test.TestEnvironment()
       testEnvironment.setHermes(hermes)
       testEnvironment.addRoomActorClients(roomActorClient)
-      testEnvironment.setPrimaryRoom(roomActorClient.room)
+      testEnvironment.setHost(roomActorClient)
 
       return await lambda(testEnvironment)
     }, heartbeatTimeoutMillis)
@@ -52,40 +52,35 @@ class Template {
 
   nAuthenticatedActors(nActors, lambda) {
     return lib.test.template.authenticatedActor(async (testEnvironment) => {
-      const host = testEnvironment.nthRoomClientActor(0)
+      const host = testEnvironment.getHost()
 
-      /*
-        Each actor after the first one produces a certain number of join events.
-        The number of events is equal to the amount of actors connected before him.
-        Total events: 1 + 2 + 3 + 4 + 5 + ... + (nActors - 1)
-        We go up to (nActors - 1), because we don't count the first actor.
-      */
       let joinsRemaining = nActors * (nActors - 1)/2 - 1
       let roomActorClients = []
-      for(let i = 0; i < nActors - 1; i++) {
-        roomActorClients.push(lib.test.models.RoomActorClient.create(host.room))
-      }
-      roomActorClients = await Promise.all(roomActorClients)
-      testEnvironment.addRoomActorClients(...roomActorClients)
-      const joinsPropagatedPromise = new Promise(async (resolve, reject) => {
-        [host, ...roomActorClients].forEach((rac) => {
-          rac.client.on('event.participantJoined', (event) => {
-            joinsRemaining--
-            if(joinsRemaining <= 0) {
-              resolve()
-            }
+
+      const setupPromise = new Promise((resolve, reject) => {
+        const joinCallback = () => {
+          joinsRemaining--
+          if(joinsRemaining <= 0) {
+            resolve()
+          }
+        }
+        host.client.on('event.participantJoined', joinCallback)
+        for(let i = 0; i < nActors - 1; i++) {
+          lib.test.models.RoomActorClient.create(host.room).then((rac) => {
+            roomActorClients.push(rac)
+            rac.client.on('event.participantJoined', joinCallback)
+          }).catch((e) => {
+            console.error(e)
           })
-        })
-        if(joinsRemaining <= 0) {
-          resolve()
         }
       })
+      try {
+        await setupPromise
+      } catch(e) {
+        console.error(e)
+      }
 
-      const inits = roomActorClients.map(async (rac) => {
-        await rac.join()
-      })
-      await Promise.all(inits)
-      await joinsPropagatedPromise
+      testEnvironment.addRoomActorClients(...roomActorClients)
       return await lambda(testEnvironment)
     })
 

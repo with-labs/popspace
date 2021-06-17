@@ -14,8 +14,17 @@ class AuthProcessor {
 
   async authenticate(hermesEvent, participants) {
     const payload = hermesEvent.payload()
-    const room = await shared.db.room.core.roomByRoute(payload.room_route)
     const sender = hermesEvent.senderParticipant()
+    if(!payload.room_route) {
+      return sender.sendError(
+        hermesEvent,
+        shared.error.code.UNKNOWN_ROOM,
+        `Please provide room_route in the payload`,
+        {provided_payload: payload}
+      )
+    }
+    const room = await shared.db.room.core.roomByRoute(payload.room_route)
+
 
     if(!room) {
       return sender.sendError(
@@ -52,7 +61,8 @@ class AuthProcessor {
       return sender.sendError(
         hermesEvent,
         lib.ErrorCodes.AUTH_FAILED,
-        "Invalid credentials"
+        "Invalid credentials",
+        {originalPayload: payload}
       )
     }
   }

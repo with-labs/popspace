@@ -133,6 +133,7 @@ class Participant {
       return false
     }
     const canEnter = await shared.db.room.permissions.canEnter(this.actor, this.room)
+
     if(!canEnter) {
       this.unauthenticate()
       return false

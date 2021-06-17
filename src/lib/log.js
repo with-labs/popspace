@@ -1,26 +1,29 @@
 const log4js = require("log4js")
+const NO_TEST = process.env.NODE_ENV == "test" ? "off" : "info"
+const DEV_ONLY = ["development"].includes(process.env.NODE_ENV) ? "trace" : "off"
+
 const log4jsConfig = {
   appenders: {
-    all: { type: "file", filename: "logs/all.log" },
-    database: { type: "file", filename: "logs/database.log" },
-    http: {type: "file", filename: "logs/http.log"},
-    app: { type: "file", filename: "logs/app.log" },
+    all: { type: "file", filename: `logs/${process.env.NODE_ENV}_all.log` },
+    database: { type: "file", filename: `logs/${process.env.NODE_ENV}_database.log` },
+    http: {type: "file", filename: `logs/${process.env.NODE_ENV}_http.log`},
+    app: { type: "file", filename: `logs/${process.env.NODE_ENV}_app.log` },
     console: { type: "console" },
-    dev: { type: "file", filename: "logs/dev.log" },
-    received: { type: "file", filename: "logs/received.log" },
-    sent: { type: "file", filename: "logs/sent.log" },
-    error: { type: "file", filename: "logs/error.log" },
-    system: { type: "file", filename: "logs/system.log" }
+    dev: { type: "file", filename: `logs/${process.env.NODE_ENV}_dev.log` },
+    received: { type: "file", filename: `logs/${process.env.NODE_ENV}_received.log` },
+    sent: { type: "file", filename: `logs/${process.env.NODE_ENV}_sent.log` },
+    error: { type: "file", filename: `logs/${process.env.NODE_ENV}_error.log` },
+    system: { type: "file", filename: `logs/${process.env.NODE_ENV}_system.log` }
   },
   categories: {
     default: { appenders: ["console", "all"], level: "info" },
-    app: { appenders: ["app", "console", "all"], level: process.env.NODE_ENV == "test" ? "error" : "info" },
+    app: { appenders: ["app", "console", "all"], level: NO_TEST },
     http: { appenders: ["http", "console", "all"], level: "trace" },
     system: { appenders: ["system", "all"], level: "trace" },
     database: { appenders: ["database", "all"], level: "info" },
     dev: {
       appenders: ["console", "dev", "all"],
-      level: ["development"].includes(process.env.NODE_ENV) ? "trace" : "off"
+      level: DEV_ONLY
     },
     received: { appenders: ["received", "all"], level: "trace" },
     sent: { appenders: ["sent", "all"], level: "trace" },

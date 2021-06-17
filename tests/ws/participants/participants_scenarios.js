@@ -1,9 +1,12 @@
 module.exports = {
   "participants_see_each_other": lib.test.template.nAuthenticatedActors(5, async (testEnvironment) => {
-    const loggedInActors = testEnvironment.loggedInActors
+    const loggedInRacs = testEnvironment.allRoomActorClients()
     return {
-      countsAtEnd: loggedInActors.filter((lu) => (lu != loggedInActors[0])).map((lu) => (lu.client.authenticatedPeers().length)),
-      desiredParticipants: testEnvironment.loggedInActors.length
+      countsAtEnd: testEnvironment.allExceptHost().map((lu) => {
+        console.log(lu.client.authenticatedPeers().length)
+        return lu.client.authenticatedPeers().length
+      }),
+      desiredParticipants: testEnvironment.allRoomActorClients().length
     }
   }),
 

@@ -57,5 +57,3 @@ export default client;
 // debugging
 // @ts-ignore
 window.client = client;
-
-// hot reloading

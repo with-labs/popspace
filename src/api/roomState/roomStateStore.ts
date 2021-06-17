@@ -65,12 +65,11 @@ export const emptyState: RoomStateShape = {
  * The cache of the room state for the current joined meeting. This is purely
  * a state cache; the synchronization happens at the API client layer.
  */
-export const createRoomStateStore = () =>
-  create(
-    combineAndImmer(emptyState, (set, get) => ({
-      cacheApi: new RoomStateCacheApi(set, get, emptyState),
-    }))
-  );
+export const roomStateStore = create(
+  combineAndImmer(emptyState, (set, get) => ({
+    cacheApi: new RoomStateCacheApi(set, get, emptyState),
+  }))
+);
 
 // convenience named types
-export type RoomStateStore = ReturnType<typeof createRoomStateStore>;
+export type RoomStateStore = typeof roomStateStore;

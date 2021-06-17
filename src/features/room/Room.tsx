@@ -47,10 +47,6 @@ export const RoomView = React.memo<IRoomProps>(() => {
   useExitToPreRoom();
   useBindPaste();
 
-  React.useEffect(() => {
-    openModal('userEntry');
-  }, [openModal]);
-
   return (
     <RoomViewportProvider>
       <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>

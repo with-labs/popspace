@@ -6,9 +6,10 @@ import { logger } from '@utils/logger';
 import { ErrorResponse, BaseResponse, Actor } from './types';
 import { SocketConnection } from './roomState/SocketConnection';
 import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
-import { createRoomStateStore, RoomStateStore } from './roomState/roomStateStore';
+import { roomStateStore, RoomStateStore } from './roomState/roomStateStore';
 import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { EventEmitter } from 'events';
+import { ParticipantState } from '@constants/twilio';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
@@ -54,6 +55,11 @@ export class ApiCoreClient extends EventEmitter {
     return this._actor;
   }
 
+  private set actor(val: Actor | null) {
+    this._actor = val;
+    this.emit('actorChange', val);
+  }
+
   get sessionToken() {
     return this._sessionToken;
   }
@@ -69,7 +75,7 @@ export class ApiCoreClient extends EventEmitter {
     if (storedSessionToken) {
       this._sessionToken = storedSessionToken;
     }
-    this.roomStateStore = createRoomStateStore();
+    this.roomStateStore = roomStateStore;
     this.socket = new SocketConnection(process.env.REACT_APP_SOCKET_HOST!);
     this.socketReadyPromise = new Promise((resolve) => {
       this.socket.on('connected', resolve);
@@ -90,8 +96,7 @@ export class ApiCoreClient extends EventEmitter {
       this.SERVICES.api
     );
 
-    this._actor = actor;
-    this.emit('actorChange', actor);
+    this.actor = actor;
 
     this._sessionToken = sessionToken;
 
@@ -108,10 +113,20 @@ export class ApiCoreClient extends EventEmitter {
    * an actor creation promise if such a promise is not already extant,
    * otherwise it just returns that created promise.
    */
-  private ensureActor = () => {
+  private ensureActor = async () => {
     // if an actor exists, we're done.
     if (this.actor) {
-      return Promise.resolve(this.actor);
+      return this.actor;
+    }
+    if (this._sessionToken) {
+      // we have an active session, try to restore actor
+      try {
+        const actorResponse = await this.get<{ actor: Actor }>('/actor', this.SERVICES.api);
+        this.actor = actorResponse.actor;
+        return this.actor;
+      } catch (err) {
+        // keep going, create a new session.
+      }
     }
     if (!this._actorCreatePromise) {
       // create and assign the promise, then clear it after it is finished.
@@ -137,8 +152,7 @@ export class ApiCoreClient extends EventEmitter {
   };
 
   logout = () => {
-    this._actor = null;
-    this.emit('actorChange', null);
+    this.actor = null;
     this._sessionToken = null;
     this._actorCreatePromise = null;
     localStorage.removeItem(SESSION_TOKEN_KEY);

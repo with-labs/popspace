@@ -62,9 +62,9 @@ const useStyles = makeStyles((theme) => ({
 export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { onReady } = React.useContext(MediaReadinessContext);
+  const { isReady, onReady } = React.useContext(MediaReadinessContext);
 
-  const isOpen = useRoomModalStore((modals) => modals.userEntry);
+  const isOpen = !isReady;
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
   const localId = useLocalActorId();

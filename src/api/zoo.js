@@ -62,7 +62,6 @@ class Zoo {
   }
 
   loggedInPostEndpoint(endpoint, handler, additionalMiddleware=[]) {
-    console.log(`Initializing logged in POST: ${endpoint}`)
     log.app.info(`Initializing logged in POST: ${endpoint}`)
     const middlewareList = [
       shared.api.middleware.getActor,

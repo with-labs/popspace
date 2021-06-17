@@ -592,14 +592,15 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@^1.0.14":
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.14.tgz#e00da113bc61ba15cafb3283b21531b5becce9bc"
-  integrity sha512-r6qMckqZfIoh1cVuy90UbAEXybzCZqZbXhyew2E/I0RSgnyHtkfge72PbMAL0SqpoLAHq/MtTW+lpH3Vjvxfxw==
+"@withso/noodle-shared@1.0.21":
+  version "1.0.21"
+  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.0.21.tgz#88023422aeaf4482d17a9589263c00f2efd0cb6a"
+  integrity sha512-XWKyR0NlUu8RLT83HnGLcsX3kSo9rx3sdtFUhASW7z78z29pxZz/FdI1Ql3lRXpl5wtq9aHgAY5cxzL4y5Kbzw==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
     btoa "^1.2.1"
+    chalk "^4.1.1"
     chance "^1.1.7"
     commander "^7.2.0"
     crypto-random-string "^3.3.0"
@@ -1067,7 +1068,7 @@ chalk@^2.0.0:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chalk@^4.0.0:
+chalk@^4.0.0, chalk@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.1.tgz#c80b3fab28bf6371e6863325eee67e618b77e6ad"
   integrity sha512-diHzdDKxcU+bAsUboHLPEDQiw0qEe0qd7SYUn3HgcFlWgbDcfLGswOHYeGrHKzG9z6UYf01d9VFMfZxPM1xZSg==

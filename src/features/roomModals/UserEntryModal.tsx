@@ -114,7 +114,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                   placeholder={t('modals.userEntry.placeholderText')}
                   margin="normal"
                 />
-                <FormikSubmitButton activeOnChange>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
+                <FormikSubmitButton activeOnChange={false}>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
               </Box>
             </Form>
           </Formik>

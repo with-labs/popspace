@@ -111,6 +111,10 @@ class Participant {
     return this.room.id
   }
 
+  getRoom() {
+    return this.room
+  }
+
   actorId() {
     return this.actor.id
   }
@@ -133,6 +137,7 @@ class Participant {
       return false
     }
     const canEnter = await shared.db.room.permissions.canEnter(this.actor, this.room)
+
     if(!canEnter) {
       this.unauthenticate()
       return false
@@ -212,8 +217,8 @@ class Participant {
   }
 
   respondAndBroadcast(hermesEvent, kind) {
-    if(event.senderParticipant != this) {
-      log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant.actorId()} vs ${this.actorId()}`)
+    if(hermesEvent.senderParticipant() != this) {
+      log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant().actorId()} vs ${this.actorId()}`)
       /*
         We could throw an exception.
 
@@ -225,7 +230,7 @@ class Participant {
       return
     }
     this.broadcastPeerEvent(kind, hermesEvent.payload())
-    this.sendResponse(event, event.payload(), kind)
+    this.sendResponse(hermesEvent, hermesEvent.payload(), kind)
   }
 
   sendPeerEvent(sender, kind, payload, eventId=null) {

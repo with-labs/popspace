@@ -144,6 +144,10 @@ class Client extends EventEmitter {
     return this.ready
   }
 
+  isAuthenticated() {
+    return this.roomData
+  }
+
   requireReady() {
    if(!this.ready) {
       throw "Please connect"

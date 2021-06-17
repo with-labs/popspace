@@ -16,7 +16,7 @@ class RoomActorClient {
 
   async join() {
     await this.initiateLoggedInSession()
-    await this.authenticateSocket()
+    return await this.authenticateSocket()
   }
 
   async initiateLoggedInSession() {
@@ -28,7 +28,7 @@ class RoomActorClient {
       expires_at: null
     })
     if(!session) {
-      session = await shared.test.factory.create("session", {actor_id: this.actor.id})
+      session = await shared.db.accounts.createSession(this.actor.id)
     }
     this.setLogInSession(session)
     return { session: this.session, token: this.token }
@@ -41,27 +41,38 @@ class RoomActorClient {
     await this.client.connect()
     const auth = await this.client.authenticate(this.token, this.room.url_id)
     this.auth = auth
+    if(this.afterJoin) {
+      this.afterJoin(this)
+      delete this.afterJoin
+    }
     return auth
   }
 
   async enableRoomAccess(room) {
-    const alreadyCanEnter = await shared.db.room.permission.canEnter(this.actor, room)
+    const alreadyCanEnter = await shared.db.room.permissions.canEnter(this.actor, room)
     if(!alreadyCanEnter) {
       await shared.db.room.memberships.forceMembership(room, this.actor)
     }
+  }
+
+  async onceAfterJoin(callback) {
+    if(this.auth) {
+      return callback(this)
+    }
+    this.afterJoin = callback
   }
 }
 
 RoomActorClient.anyOrCreate = async () => {
   let actor = await shared.db.pg.massive.actors.findOne({})
   if(!actor) {
-     actor = await shared.test.factory.create("actor")
+     actor = await shared.db.accounts.createActor("test")
   }
   return RoomActorClient.forActor(actor)
 }
 
 RoomActorClient.create = async (inRoom) => {
-  const actor = await shared.test.factory.create("actor")
+  const actor = await shared.db.accounts.createActor("test")
   return RoomActorClient.forActor(actor, inRoom)
 }
 
@@ -80,16 +91,19 @@ RoomActorClient.forActorId = async (actorId, roomId=null) => {
 }
 
 RoomActorClient.forActor = async (actor, room=null) => {
+  if(!actor) {
+     actor = await shared.db.accounts.createActor("test")
+  }
   if(!room) {
     room = await shared.db.pg.massive.rooms.findOne({creator_id: actor.id, deleted_at: null})
     if(!room) {
       const isPublic = true
-      room = await shared.db.room.core.createEmptyRoom(actor.id, isPublic, shared.test.chance.company())
+      const roomWithData = await shared.db.room.core.createEmptyRoom(actor.id, isPublic, shared.test.chance.company())
+      room = roomWithData.room
     }
   }
   const client = new lib.Client(lib.appInfo.wssUrl())
   const result = new RoomActorClient(room, actor, client)
-  await result.join()
   return result
 }
 

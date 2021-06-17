@@ -12,8 +12,8 @@ const requestStickyNoteCreate = async (client) => {
   return response.data()
 }
 
-const getOrCreateWidget = async (client, authData) => {
-   const widgetsInRoom = authData.room.widgets
+const getOrCreateWidget = async (client, roomData) => {
+   const widgetsInRoom = roomData.widgets
     if(widgetsInRoom.length < 1) {
       const createData = await requestStickyNoteCreate(client)
       return createData.payload
@@ -23,54 +23,63 @@ const getOrCreateWidget = async (client, authData) => {
 }
 
 module.exports = {
-  "authenticate": lib.test.template.testServerClients(1, async (clients) => {
-    const testEnvironment = new lib.test.TestEnvironment()
-    const { actor, session, token, room } = await testEnvironment.createLoggedInActor()
-    const beforeAuth = await clients[0].sendEventWithPromise("createWidget", {})
-    const auth = await clients[0].authenticate(token, room)
-    const afterAuth = await clients[0].sendEventWithPromise("createWidget", {})
+  "authenticate": lib.test.template.unauthenticatedActor(async (testEnvironment) => {
+    const host = testEnvironment.getHost()
+    const client = host.client
+
+    await client.connect()
+
+    const beforeAuth = await requestStickyNoteCreate(client)
+    const auth = await host.join()
+    const afterAuth = await requestStickyNoteCreate(client)
     return {
-      beforeAuth: beforeAuth.data(),
+      beforeAuth: beforeAuth,
       auth: auth.data(),
-      afterAuth: afterAuth.data()
+      afterAuth: afterAuth
     }
   }),
 
-  "authenticate_fail_wrong_token": lib.test.template.testServerClients(1, async (clients) => {
-    const testEnvironment = new lib.test.TestEnvironment()
-    const { actor, session, token, room } = await testEnvironment.createLoggedInActor()
+  "authenticate_fail_wrong_token": lib.test.template.unauthenticatedActor(async (testEnvironment) => {
+    const host = testEnvironment.getHost()
+    const client = host.client
     let response = null
     try {
-      response = await clients[0].authenticate("{}", room)
+      await client.connect()
+      response = (await client.authenticate("{}", host.room.url_id)).data()
     } catch(e) {
       response = e
     }
 
-    const afterAuthCreateWidgetResponse = await clients[0].sendEventWithPromise("createWidget", {})
+    const afterAuthCreateWidgetResponse = await requestStickyNoteCreate(client)
     return {
-      auth: response.data(),
-      afterAuth: afterAuthCreateWidgetResponse.data()
+      auth: response,
+      afterAuth: afterAuthCreateWidgetResponse
     }
   }),
 
-  "authenticate_fail_no_such_room": lib.test.template.testServerClients(1, async (clients) => {
-    const testEnvironment = new lib.test.TestEnvironment()
+  "authenticate_fail_no_such_room": lib.test.template.unauthenticatedActor(async (testEnvironment) => {
+    const host = testEnvironment.getHost()
+    const client = host.client
     let response = null
     try {
-      response = await clients[0].authenticate("{}", null)
+      await client.connect()
+      response = (await client.authenticate("{}", null)).data()
     } catch(e) {
       response = e
     }
-    const afterAuthCreateWidgetResponse = await clients[0].sendEventWithPromise("createWidget", {})
+
+    const afterAuthCreateWidgetResponse = await requestStickyNoteCreate(client)
     return {
-      auth: response.data(),
-      afterAuth: afterAuthCreateWidgetResponse.data()
+      auth: response,
+      afterAuth: afterAuthCreateWidgetResponse
     }
   }),
 
   "create_a_widget": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const client = testEnvironment.loggedInActors[0].client
-    const startRoomData = testEnvironment.loggedInActors[0].auth.payload.room
+    const host = testEnvironment.getHost()
+    const client = host.client
+    const startRoomData = host.auth.payload.roomData
+
     const createData = await requestStickyNoteCreate(client)
     const endRoomState = await client.getRoomState()
     return {
@@ -81,9 +90,11 @@ module.exports = {
   }),
 
   "move_a_widget": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const client = testEnvironment.loggedInActors[0].client
-    const auth = testEnvironment.loggedInActors[0].auth
-    const widget = await getOrCreateWidget(client, auth.payload)
+    const host = testEnvironment.getHost()
+    const client = host.client
+    const roomData = host.auth.payload.roomData
+
+    const widget = await getOrCreateWidget(client, roomData)
     const beforeMove = Object.assign({}, widget)
 
     const move = {
@@ -95,7 +106,7 @@ module.exports = {
         }
       }
     }
-    await client.sendEventWithPromise("moveWidget", move)
+    await client.sendEventWithPromise("transformWidget", move)
     const newState = await client.getWidgetState(widget.widgetId)
 
     return {
@@ -105,21 +116,24 @@ module.exports = {
   }),
 
   "update_wallpaper": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const client = testEnvironment.loggedInActors[0].client
-    const startRoomData = testEnvironment.loggedInActors[0].auth.payload.room
+    const host = testEnvironment.getHost()
+    const client = host.client
+    const startRoomData = host.auth.payload.roomData
     const updateResponse = await client.sendEventWithPromise("updateRoomState", {
       wallpaperUrl: "https://s3-us-west-2.amazonaws.com/with.wallpapers/To-Do_Board_Galaxy.jpg"
     })
     const newRoomState = await client.getRoomState()
     return {
+      startRoomData: startRoomData,
       updateResponse: updateResponse.data(),
       newRoomState
     }
   }),
 
   "create_then_delete": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const client = testEnvironment.loggedInActors[0].client
-    const startRoomData = testEnvironment.loggedInActors[0].auth.payload.room
+    const host = testEnvironment.getHost()
+    const client = host.client
+    const startRoomData = host.auth.payload.roomData
 
     const createData = await requestStickyNoteCreate(client)
     const widgetId = createData.payload.widgetId
@@ -136,14 +150,16 @@ module.exports = {
   }),
 
   "passthrough": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
-    const sender = testEnvironment.loggedInActors[0].client
+    const host = testEnvironment.getHost()
+    const sender = host.client
+    const startRoomData = host.auth.payload.roomData
+
     const event = sender.makeEvent("passthrough", {payload: {anything: "canGoHere"}})
     const received = []
     const receivals = new Promise((resolve, reject) => {
       const receivers = testEnvironment
-        .loggedInActors
+        .allExceptHost()
         .map((loggedInActor) => (loggedInActor.client))
-        .splice(1)
       let remaining = receivers.length
       receivers.forEach((receiver) => {
         receiver.on("event.passthrough", (event) => {

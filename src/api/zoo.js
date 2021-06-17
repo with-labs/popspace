@@ -80,7 +80,7 @@ class Zoo {
       shared.api.middleware.requireActor,
       ...additionalMiddleware
     ]
-    this.express.get(endpoint, this.middleware, safeHandleRequest(endpoint, handler))
+    this.express.get(endpoint, middlewareList, safeHandleRequest(endpoint, handler))
   }
 
   loggedOutPostEndpoint(endpoint, handler,) {

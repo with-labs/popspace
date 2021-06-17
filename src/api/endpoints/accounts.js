@@ -1,25 +1,3 @@
-const carefulDynamoCall = async (endpoint, req, res, f) => {
-  /*
-    TODO: what I _really_ want to do is get rid of Dynamo (and thus this function).
-    Second best - get this out into some sort of endpoints helper util lib tool class
-  */
-  try {
-    f()
-  } catch(e) {
-    if(e.code == 'ProvisionedThroughputExceededException') {
-      log.error.error(`Dynamo throughput excededed (${endpoint}): (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e})`)
-      e.errorCode = shared.error.code.RATE_LIMIT_EXCEEDED
-      e.message = `Widget database write capacity temporarily exceeded, please retry`
-      return api.http.fail(req, res, e)
-    } else {
-      log.error.error(`Unexpected error (${endpoint}) (user_id ${req.user.id}, body ${JSON.stringify(req.body)})\n${e}`)
-      e.errorCode = shared.error.code.UNEXPECTED_ERROR
-      e.message = `Could not complete request: ${e.message}`
-      return api.http.fail(req, res, e)
-    }
-  }
-}
-
 const createActor = async (req, res, kind) => {
   const pgActor = await shared.db.accounts.createActor(kind)
   const session = await shared.db.accounts.createSession(pgActor.id)
@@ -86,12 +64,15 @@ class Accounts {
       return await http.succeed(req, res, {})
     })
 
+    this.zoo.loggedInGetEndpoint("/actor", async (req, res) => {
+      const actorModel = new shared.models.Actor(req.actor)
+      return api.http.succeed(req, res, { actor: await actorModel.serialize() })
+    })
+
     this.zoo.loggedInPostEndpoint("/profile", async (req, res) => {
-      await carefulDynamoCall("/profile", req, res, async () => {
-        const profile = new shared.models.Profile(req.user.id)
-        const serialized = await profile.serialize()
-        return api.http.succeed(req, res, { profile: serialized } )
-      })
+      const profile = new shared.models.Profile(req.actor.id)
+      const serialized = await profile.serialize()
+      return api.http.succeed(req, res, { profile: serialized } )
     })
   }
 }

@@ -23,7 +23,7 @@ module.exports = {
   }),
 
   "heartbeat_timeout_event_propagate": lib.test.template.authenticatedActor(async (testEnvironment) => {
-    const host = testEnvironment.nthRoomClientActor(0)
+    const host = testEnvironment.getHost()
     const existingClient = host.client
     const hermes = testEnvironment.hermes
     let leaveEvent
@@ -35,10 +35,11 @@ module.exports = {
     })
 
     const joining = await lib.test.models.RoomActorClient.create(host.room)
+    await joining.join()
     // NOTE: setting this to a lower number reveals certain bugs that we may encounter at scale
     const heartbeatTimeoutMillis = 1500
     joining.client.setHeartbeatTimeoutMillis(heartbeatTimeoutMillis)
-    await joining.join()
+
 
     const readyBeforeTimeout = joining.client.isReady()
     const clientsBeforeTimeout = hermes.clientsCount()
@@ -59,7 +60,7 @@ module.exports = {
 
   "1_sender_2_receivers": lib.test.template.nAuthenticatedActors(3, async (testEnvironment) => {
     const sentMessage = 'hello'
-    const sender = testEnvironment.nthRoomClientActor(0).client
+    const sender = testEnvironment.getHost().client
     const messagesReceived = []
     const receivePromises = []
 

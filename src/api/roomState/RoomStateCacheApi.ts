@@ -52,7 +52,6 @@ export class RoomStateCacheApi {
 
         const { transform, ...widgetInfo } = widget;
         draft.widgets[widget.widgetId] = widgetInfo;
-        console.log(widget.widgetId, transform);
         draft.widgetPositions[widget.widgetId] = transform;
       }
       // reset users

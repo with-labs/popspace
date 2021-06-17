@@ -26,16 +26,12 @@ describe('RoomStateCacheApi', () => {
       const init: IncomingAuthResponseMessage = {
         kind: 'auth.response',
         sender: {
-          userId: 'someone',
+          actorId: 'someone',
           sessionId: 'session-id',
         },
         payload: {
           self: {
-            authenticated: true,
             sessionId: 'session-id',
-            actor: {
-              id: 'cat-id',
-            },
             participantState: {
               displayName: 'Cat',
               avatarName: 'cat',
@@ -45,6 +41,7 @@ describe('RoomStateCacheApi', () => {
             {
               authenticated: true,
               sessionId: 'session-id',
+              roomId: 'room-id',
               actor: {
                 id: 'cat-id',
               },
@@ -97,8 +94,8 @@ describe('RoomStateCacheApi', () => {
           'widget-1': {
             type: WidgetType.StickyNote,
             widgetId: 'widget-1',
-            ownerId: 'cat-id',
-            ownerDisplayName: 'Cat',
+            creatorId: 'cat-id',
+            creatorDisplayName: 'Cat',
             widgetState: {
               text: 'something',
             },
@@ -109,7 +106,6 @@ describe('RoomStateCacheApi', () => {
         },
         users: {
           'cat-id': {
-            authenticated: true,
             id: 'cat-id',
             participantState: {
               displayName: 'Cat',
@@ -202,18 +198,21 @@ describe('RoomStateCacheApi', () => {
 
     it('adds a new user', () => {
       cache.addSession({
-        authenticated: true,
-        participantState: {
-          displayName: 'New User',
-          avatarName: 'bear',
+        kind: 'participantJoined',
+        payload: {
+          participantState: {
+            displayName: 'New User',
+            avatarName: 'bear',
+          },
+          sessionId: 'new-session',
+          transform: {
+            position: { x: 10, y: 0 },
+            size: { width: 140, height: 140 },
+          },
         },
-        sessionId: 'new-session',
-        transform: {
-          position: { x: 10, y: 0 },
-          size: { width: 140, height: 140 },
-        },
-        actor: {
-          id: 'new-user',
+        sender: {
+          actorId: 'new-user',
+          sessionId: 'new-session',
         },
       });
 
@@ -225,7 +224,6 @@ describe('RoomStateCacheApi', () => {
           displayName: 'New User',
           avatarName: 'bear',
         },
-        authenticated: true,
         sessionIds: expect.any(Set),
       });
       expect(result.users['new-user'].sessionIds).toContain('new-session');
@@ -238,18 +236,21 @@ describe('RoomStateCacheApi', () => {
 
     it('adds a second session for an existing user', () => {
       cache.addSession({
-        authenticated: true,
-        participantState: {
-          displayName: 'User 1',
-          avatarName: 'bear',
+        kind: 'participantJoined',
+        payload: {
+          participantState: {
+            displayName: 'User 1',
+            avatarName: 'bear',
+          },
+          sessionId: 'new-session',
+          transform: {
+            position: { x: 10, y: 0 },
+            size: { width: 140, height: 140 },
+          },
         },
-        sessionId: 'new-session',
-        transform: {
-          position: { x: 10, y: 0 },
-          size: { width: 140, height: 140 },
-        },
-        actor: {
-          id: 'user1',
+        sender: {
+          actorId: 'user1',
+          sessionId: 'new-session',
         },
       });
 
@@ -341,8 +342,8 @@ describe('RoomStateCacheApi', () => {
     it('creates a widget, waiting for server response before changing state', () => {
       const widget = {
         widgetId: 'mock-widget-id',
-        ownerId: 'user1',
-        ownerDisplayName: 'User 1',
+        creatorId: 'user1',
+        creatorDisplayName: 'User 1',
         type: WidgetType.StickyNote as const,
         transform: {
           position: { x: 0, y: 0 },

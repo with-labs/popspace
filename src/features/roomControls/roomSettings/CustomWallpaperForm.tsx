@@ -69,7 +69,7 @@ export const CustomWallpaperForm: React.FC<ICustomWallpaperFormProps> = ({ onCha
   const classes = useStyles();
   const [accepted, setAccepted] = useState(false);
 
-  const onSubmit = async (data: CustomWallpaperData) => {
+  const onSubmit = (data: CustomWallpaperData) => {
     onChange(data.url, true);
     setAccepted(true);
   };

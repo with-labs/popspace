@@ -60,15 +60,16 @@ module.exports = {
     const loggedInActors = testEnvironment.allRoomActorClients()
     const maxParticipantsGetter = lib.SocketGroup.prototype.getMaxParticipants
     const mockActorLimit = 2
-    lib.SocketGroup.prototype.getMaxParticipants = () => (mockActorLimit)
+    lib.SocketGroup.prototype.getMaxParticipants = () => {
+      return mockActorLimit
+    }
+
     const creatorInfo = testEnvironment.getHost()
 
     const room = creatorInfo.room
-    const rac = await lib.test.models.RoomActorClient.create()
-    await rac.enableRoomAccess(room)
+    const rac = await lib.test.models.RoomActorClient.create(room)
     try {
-      await rac.initiateLoggedInSession()
-      await rac.authenticateSocket()
+      await rac.join()
     } catch (error) {
       return {
         error,

@@ -106,7 +106,6 @@ class Template {
               */
               initsRemaining--
               initializedClients[client.id] = true
-              console.log(initsRemaining, client.id)
               /*
                 This has to be inside the lock, to make sure
                 the client wasn't initialized in a race condition with itself.

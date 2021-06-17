@@ -75,3 +75,5 @@ class ExperienceRatings {
     })
   }
 }
+
+module.exports = ExperienceRatings

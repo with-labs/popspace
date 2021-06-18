@@ -1,3 +1,5 @@
+const AsyncLock = require('async-lock')
+const lock = new AsyncLock();
 /*
   Represents a living/dynamic manifestation of a room:
   the currently connected group of people through
@@ -37,14 +39,36 @@ class SocketGroup {
     return this._room
   }
 
-  addParticipant(participant) {
-    this._participants.push(participant)
+  async addParticipant(participant) {
+    await lock.acquire('participants_array', () => {
+      /*
+        In principle, there's a race condition here.
+
+        Node.js is NOT single-threaded for I/O operations,
+        and socket connections are I/O.
+
+        So when participants connect on a socket,
+        the connect event is processed on a separate thread,
+        so 2 connecting participants can get interleaved.
+      */
+      this._participants.push(participant)
+    })
   }
 
-  removeParticipant(participant)  {
-    let index = this._participants.findIndex((p) => (p == participant))
-    if(index > -1) {
-      this._participants.splice(index, 1)
+  async removeParticipant(participant)  {
+    let removed = false
+    await lock.acquire('participants_array', () => {
+      // we should find the index inside the lock so the array is not modified mid-search
+      let index = this._participants.findIndex((p) => (p == participant))
+      if(index > -1) {
+        this._participants.splice(index, 1)
+        removed = true
+      }
+    })
+    if(removed) {
+      /*
+        Output is long-running so let's do it outside the lock
+      */
       log.app.info(`Removed participant ${this._participants.length}`)
     } else {
       log.app.error(`Removed failed for ${participant.id} in ${this.id}: ${JSON.stringify(this._participants.map((p) => (p.id + " " + (p==participant))))}`)

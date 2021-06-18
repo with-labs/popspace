@@ -1,4 +1,8 @@
 const ws = require('ws')
+const userAgentParser = require('ua-parser-js')
+
+const AsyncLock = require('async-lock')
+const lock = new AsyncLock();
 
 const DEFAULT_STATE_IN_ROOM = {
   position: {
@@ -19,15 +23,17 @@ let id = 0
 
 
 class Participant {
-  constructor(socket, heartbeatTimeoutMillis) {
+  constructor(socket, req, heartbeatTimeoutMillis) {
+    /*
+      req is the original express request from when the http upgrade
+      call happened.
+    */
+    this.req = req
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
-    this.id = id++ // perhaps a decent more verbose name is sessionId
-
-    log.app.info(`New participant ${this.id}`)
 
     this.dieFromTimeout = () => {
-      log.app.info(`Participant dying from timeout ${this.sessionName()}`)
+      log.app.info(`${this.sessionName()} Participant dying from timeout`)
       this.disconnect()
     }
 
@@ -35,7 +41,7 @@ class Participant {
       // I think we currently rely on connecting to hermes w/o authenticating
       // in the dashboard; but we should move away from that behavior
 
-      // log.app.info(`Participant dying after failing to authenticate within time limit ${this.sessionName()}`)
+      // log.app.info(`${this.sessionName()} Participant dying after failing to authenticate within time limit`)
       // this.disconnect()
     }
 
@@ -54,22 +60,29 @@ class Participant {
     })
 
     this.socket.on('message', (message) => {
+      // if(!this.ready) {
+        // log.error.error(`Receiving message on socket that's not ready ${message}`)
+        // return this.sendError(null, lib.ErrorCodes.SOCKET_NOT_READY, "Please wait for an event with kind=='system', {socketReady: true}")
+      // }
       /* TODO:
         - ratelimit
         - sanitize input: protect from js-injection attacks on peers
       */
+      console.log("======== got message", message)
       log.received.info(`${this.sessionName()} ${message}`)
-      log.dev.debug(`Got message from ${this.sessionName()} ${message}`)
+      log.dev.debug(`${this.sessionName()} Got message ${message}`)
       let event = null
       try {
         event = new lib.event.HermesEvent(this, message)
       } catch {
-        log.app.error(`Invalid event format ${this.sessionName()} ${message}`)
+        log.app.error(`${this.sessionName()}  Invalid event format ${message}`)
         return this.sendError(null, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "Invalid JSON", {source: message})
       }
 
       try {
+        console.log("Handling", this.eventHandler)
         if(this.eventHandler) {
+          console.log("Processing", this.eventHandler)
           this.eventHandler(event)
         }
       } catch(e) {
@@ -78,18 +91,91 @@ class Participant {
       }
     })
 
-    this.keepalive()
     this.dieUnlessAuthenticate()
   }
 
+  async init(roomId, actorId) {
+    return await lock.acquire('init_participant', async () => {
+      /*
+        NOTE: This lock is here to deal with a race condition.
+        This is not the most efficient way to do it, but it's simpler and
+        gives good guarantees. We can optimize this when we start to have more volume.
+
+        Why is there a race condition?
+
+        Because we'd like to assign a participant to each connecting socket,
+        and assigning a participant is an I/O operation.
+
+        In Node.js, I/O operations like database writes are done on separate threads.
+        This implies that the HTTP UPGRADE request to create the socket will return
+        before the participant is created in the database.
+
+        We need the participant ID to finish socket setup, because participants tracks
+        each participant by their ID. Until that happens, we can not receive messages.
+
+        1. We can, for example, block the auth message until the socket is initialized.
+        2. We can also handle the ID creation in a callback, and only then key the participant by their ID in participants.
+        3. Or we can risk initializing twice: init in participants, await on the init,
+        but also allow an init in auth, but handle the race condition.
+
+        This is solution (3). Solution (1) is also possible, since we send the system message
+        at the end. Solution (2) may have some underwater stones that aren't immediately obvious.
+
+        With (2) we run into a different kind of race condition. Suppose the participant enters,
+        then leaves immediately. The delete callback finishes, and after that the init callback finishes,
+        and we leak memory tracking participants. Obviously it's possible to deal with, but what seemed like
+        a simpler solution quickly becomes more complex.
+
+        Since testing this is very difficult and time-consuming, I'm doing both (3) and allowing (1)
+        as a failsafe until we can invest more into rigor and efficiency.
+      */
+      if(this.dbParticipant) {
+        /*
+          These in-memory participants should be 1:1 to DB participants.
+
+          If a new database participant is needed, a new in-memory one should be created.
+        */
+        log.error.warn(`${this.sessionName()} Attempting to re-create participant`)
+        return this.dbParticipant
+      }
+      const ua = userAgentParser(this.req.headers['user-agent'] || "")
+      this.dbParticipant = await shared.db.pg.massive.participants.insert({
+        room_id: roomId,
+        actor_id: actorId,
+        ip: this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress,
+        browser: ua.browser.name,
+        device: ua.device.type,
+        vendor: ua.device.vendor,
+        engine: ua.engine.name,
+        os: ua.os.name,
+        os_version: ua.os.version,
+        engine_version: ua.engine.version,
+        browser_version: ua.browser.version,
+        user_agent: this.req.headers['user-agent']
+      })
+      log.app.info(`New participant ${this.dbParticipant.id}`)
+      if(this.initHandler) {
+        this.initHandler(this)
+      }
+      this.ready = true
+      this.sendEvent(new lib.event.SystemEvent({socketReady: true}))
+
+      return this.dbParticipant
+    })
+  }
+
+  get id() {
+    return this.dbParticipant ? this.dbParticipant.id : null
+  }
+
   sessionName() {
-    return `(uid ${this.actorId()}, rid ${this.roomId()}, pid ${this.id}, sg ${this.socketGroup ? this.socketGroup.id : null})`
+    return `(aid ${this.actorId()}, rid ${this.roomId()}, pid ${this.id})`
   }
 
   keepalive() {
     clearTimeout(this.heartbeatTimeout)
     this.heartbeatTimeout = setTimeout(this.dieFromTimeout, this.heartbeatTimeoutMillis)
-    log.app.info(`Keepalive ${this.sessionName()}`)
+    log.app.info(`${this.sessionName()} Keepalive`)
     /*
       We don't really need to do this synchronously,
       since we expect write time to be much less than the time between heartbeats
@@ -152,9 +238,22 @@ class Participant {
     }
     await this.getTransform()
     await this.getState()
+
+    if(!this.dbParticipant) {
+      await this.init(this.room.id, this.actor.id)
+    } else {
+      this.dbParticipant = await shared.db.pg.massive.participants.update({id: this.id}, {
+        room_id: this.room.id,
+        actor_id: this.actor.id
+      })
+    }
+
     this.authenticated = true
     clearTimeout(this.dieUnlessAuthenticateTimeout)
-    log.app.info(`Authenticated ${this.sessionName()}`)
+    log.app.info(`${this.sessionName()} Authenticated`)
+    if(this.authHandler) {
+      this.authHandler(this)
+    }
     return true
   }
 
@@ -165,9 +264,9 @@ class Participant {
   async joinSocketGroup(socketGroup) {
     await this.leaveSocketGroup()
     this.socketGroup = socketGroup
-    socketGroup.addParticipant(this)
+    await socketGroup.addParticipant(this)
     this.keepalive()
-    log.app.info(`Joined socket group ${this.sessionName()}`)
+    log.app.info(`${this.sessionName()} Joined socket group`)
     await lib.analytics.participantJoinedSocketGroup(socketGroup)
     await lib.analytics.beginSession(this, socketGroup)
   }
@@ -177,7 +276,7 @@ class Participant {
     if(this.socketGroup) {
       const socketGroup = this.socketGroup
       this.socketGroup = null
-      socketGroup.removeParticipant(this)
+      await socketGroup.removeParticipant(this)
       socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       await lib.analytics.participantLeft(socketGroup)
     }
@@ -197,6 +296,14 @@ class Participant {
   setEventHandler(handler) {
     // Events are JSON objects sent over the socket
     this.eventHandler = handler
+  }
+
+  setAuthHandler(handler) {
+    this.authHandler = handler
+  }
+
+  setInitHandler(handler) {
+    this.initHandler = handler
   }
 
   sendEvent(event) {

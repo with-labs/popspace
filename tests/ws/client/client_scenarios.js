@@ -64,6 +64,8 @@ module.exports = {
     const messagesReceived = []
     const receivePromises = []
 
+
+    console.log("STARTING TEST")
     testEnvironment.forEachParticipant((roomActorClient) => {
       if(roomActorClient.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {

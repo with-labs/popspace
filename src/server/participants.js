@@ -10,14 +10,13 @@ class Participants {
         this.eventHandler(event)
       }
     }
+    this.onAuth = (participant) => {
+      this.participants[participant.id] = participant
+    }
   }
 
   getSocketGroup(roomId) {
     return this.socketGroupsByRoomId[roomId]
-  }
-
-  setMessageHandler(messageHandler) {
-    this.messageHandler = messageHandler
   }
 
   setEventHandler(eventHandler) {
@@ -32,14 +31,16 @@ class Participants {
     await participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
   }
 
-  addSocket(socket) {
-    const participant = new Participant(socket, this.heartbeatTimeoutMillis)
+  async addSocket(socket, req) {
+    const participant = new Participant(socket, req, this.heartbeatTimeoutMillis)
     socket.participant = participant
-    this.participants[participant.id] = participant
+    console.log("Initializing paritipcant")
+    // this.participants[participant.id] = participant
+    participant.setAuthHandler(this.onAuth)
     participant.setEventHandler(this.onEventReceived)
+    console.log("Set event handler")
     socket.on('close', () => (this.removeParticipant(participant)))
-    log.dev.debug(`New client - ${participant.id}`)
-
+    // log.dev.debug(`New client - ${participant.id}`)
     lib.analytics.participantCountChanged(Object.keys(this.participants).length)
   }
 

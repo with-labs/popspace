@@ -43,6 +43,7 @@
     "log4js": "^6.3.0",
     "shelljs": "^0.8.4",
     "snakecase-keys": "^3.2.1",
+    "ua-parser-js": "^0.7.28",
     "ws": "^7.4.0"
   }
 }

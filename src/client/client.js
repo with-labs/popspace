@@ -57,13 +57,14 @@ class Client extends EventEmitter {
       return
     }
     return new Promise((resolve, reject) => {
+      this.resolveConnect = resolve
       this.socket = new ws(this.serverUrl, {
         rejectUnauthorized: lib.appInfo.isProduction()
       })
       this.socket.on('open', () => {
-        this.startHeartbeat()
         this.ready = true
-        resolve(this)
+        this.resolveConnect(this)
+        this.startHeartbeat()
       })
       this.socket.on('close', () => {
         this.stopHeartbeat()
@@ -207,8 +208,10 @@ class Client extends EventEmitter {
 
   async sendEventWithPromise(kind, payload) {
     const event = this.makeEvent(kind, payload)
+    console.log("Made event", event)
     const { promise, resolver } = this.makeEventPromise(event)
     this.promiseResolvers.push(resolver)
+    console.log("Sending")
     this.sendEvent(event)
     return promise
   }
@@ -258,9 +261,6 @@ class Client extends EventEmitter {
   }
 
   handleEvent(event) {
-    if(!this.roomData) {
-      return
-    }
     switch(event.kind) {
       case 'participantJoined':
         /*
@@ -277,11 +277,16 @@ class Client extends EventEmitter {
           6. A broadcasts its join event
          (7. B broadcasts its join event)
         */
-        this.roomData.updatePeer(event.payload)
+        if(this.roomData) this.roomData.updatePeer(event.payload);
         break
       case 'participantLeft':
-        this.roomData.removePeer(event.payload)
+        if(this.roomData) this.roomData.removePeer(event.payload);
         break
+      case 'system':
+        if(event.payload.socketReady) {
+
+          this.resolveConnect = null
+        }
     }
   }
 }

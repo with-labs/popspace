@@ -20,8 +20,8 @@ class Hermes {
     this.eventProcessor =  new EventProcessor(this.participants)
 
     this.ws = new ws.Server({ noServer: true })
-    this.ws.on('connection', (socket) => {
-      this.participants.addSocket(socket)
+    this.ws.on('connection', async (socket, request) => {
+      await this.participants.addSocket(socket, request)
     })
 
     this.ws.on('close', () => {
@@ -41,13 +41,13 @@ class Hermes {
     return new Promise((resolve, reject) => {
       this.server = https.createServer(loadSsl(), this.express)
       this.server.on('upgrade', (request, socket, head) => {
+        console.log(head)
         // Standard http upgrade procedure
         // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
         this.ws.handleUpgrade(request, socket, head, (socket) => {
           this.ws.emit('connection', socket, request)
         })
       })
-
       this.listen = this.server.listen(this.port, () => {
         log.app.info(`Server live on port ${this.port}`)
         resolve()

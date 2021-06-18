@@ -178,6 +178,17 @@
         "title": "Oops, we’re sorry.",
         "body": "FPO something something, mobile isnt supported yet, please use a computer"
       },
+      "postMeeting": {
+        "surveyThanks": "Thanks for helping us make Noodle better!",
+        "positiveFeedbackPrompt": "We're glad you enjoyed it!",
+        "negativeFeedbackPrompt": "We're sorry it didn't go great...",
+        "positiveFeedbackPlaceholder": "Anything we could do better?",
+        "negativeFeedbackPlaceholder": "Please tell us why!",
+        "submitFeedback": "Send feedback",
+        "skipSurvey": "Skip survey",
+        "title": "Thank you for using Noodle!",
+        "ratingCaption": "To make sure we're providing you with the best possible app, please rate your experience"
+      },
       "licenses": {
         "title": "Open Source Software Licenses",
         "intro": "Tilde utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
@@ -320,7 +331,8 @@
         "maxRoomNameCharacters": "Room name cannot be more then {{maxChar}} characters.",
         "checkboxRequired": "Please check this box to proceed",
         "roomAccess": "You aren't a member of this room. Ask the room owner for an invite.",
-        "defaultRoomSetFailed": "We couldn't set your default room. Try again in a moment."
+        "defaultRoomSetFailed": "We couldn't set your default room. Try again in a moment.",
+        "genericUnexpected": "Something went wrong, please try again"
       },
       "widgetsFallback": {
         "title": "Accessories error",

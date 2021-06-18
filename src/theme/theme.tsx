@@ -421,6 +421,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           paddingTop: '14.5px',
           paddingBottom: '14.5px',
         },
+        multiline: {
+          padding: '10px 12px',
+        },
       },
       MuiInputLabel: {
         formControl: {

@@ -2,7 +2,6 @@ import { makeStyles, useTheme } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
-import { EXPANDED_SIZE, SMALL_SIZE } from './constants';
 
 export interface IPersonBubbleBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;

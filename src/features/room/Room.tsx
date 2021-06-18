@@ -21,7 +21,6 @@ import { SignUpModal } from '../roomModals/SignUpModal';
 import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
-import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import { ReconnectingAlert } from './ReconnectingAlert';
 
 interface IRoomProps {}
@@ -41,7 +40,6 @@ export const RoomView = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
-  const openModal = useRoomModalStore((store) => store.api.openModal);
 
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
   useExitToPreRoom();

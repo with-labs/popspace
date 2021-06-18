@@ -9,7 +9,6 @@ import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
 import { roomStateStore, RoomStateStore } from './roomState/roomStateStore';
 import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { EventEmitter } from 'events';
-import { ParticipantState } from '@constants/twilio';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 

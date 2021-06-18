@@ -21,7 +21,6 @@ import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 import { useParticipantByIdentity } from '@providers/twilio/hooks/useParticipantByIdentity';
 import { MAX_SIZE, MIN_SIZE } from './constants';
-import { useRoomStore } from '@api/useRoomStore';
 import { useIsMe } from '@api/useIsMe';
 
 /**

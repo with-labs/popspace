@@ -13,7 +13,6 @@ import { useWidgetContext } from '../useWidgetContext';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_PLAYER, MIN_SIZE_PLAYER, SIZE_EDIT } from './constants';
-import { useRoomStore } from '@api/useRoomStore';
 import { useIsMe } from '@api/useIsMe';
 
 export interface IYoutubeWidgetProps {}

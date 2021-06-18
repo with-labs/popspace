@@ -9,6 +9,7 @@ export type SoundEffectName = 'join';
 export const SoundEffectContext = React.createContext<{ playSound: (name: SoundEffectName) => void } | null>(null);
 
 // global Howl object to play sounds with
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const howl = new Howl({
   src: [soundsMp3, soundsWebm],
   // sounds are arranged into a single file, and we use timeslices to name specific sounds within the file

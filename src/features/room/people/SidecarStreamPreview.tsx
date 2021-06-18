@@ -109,7 +109,7 @@ export const SidecarStreamPreview = React.memo(
 
     const [videoStyles, videoSpring] = useSpring(() => ({
       scale: 1,
-      boxShadow: 'none',
+      boxShadow: theme.mainShadows.none,
       borderRadius: theme.shape.innerBorderRadius,
     }));
 
@@ -158,7 +158,7 @@ export const SidecarStreamPreview = React.memo(
             });
             videoSpring.start({
               scale: 1,
-              boxShadow: 'none',
+              boxShadow: theme.mainShadows.none,
               borderRadius: theme.shape.innerBorderRadius,
             });
           }

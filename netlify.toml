@@ -5,6 +5,7 @@ targetPort = 3002
 command = "yarn build"
 publish = "build"
 functions = "functions"
+base = "."
 
 [context.production.environment]
 REACT_APP_ANALYTICS_ENV = "production"
@@ -68,4 +69,4 @@ from = "/*"
 to = "/embargo.html"
 status = 403
 force = true
-conditions = { Country = ["CU", "IR", "KP", "SD", "SY"] }
+conditions = { Country=["CU", "IR", "KP", "SD", "SY"] }

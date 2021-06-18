@@ -9,8 +9,6 @@ import { KeyShortcut } from '@constants/keyShortcuts';
 import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
 import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
-import clsx from 'clsx';
-import { useRoomStore } from '@api/useRoomStore';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';

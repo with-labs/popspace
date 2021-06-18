@@ -3,7 +3,7 @@ import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { useGesture } from 'react-use-gesture';
 import { SPRINGS } from '@constants/springs';
 import { Vector2 } from '../../types/spatials';
-import { isLeftClick, isMiddleClick, isRightClick } from '@utils/mouseButtons';
+import { isMiddleClick, isRightClick } from '@utils/mouseButtons';
 import { addVectors, roundVector, subtractVectors } from '@utils/math';
 import { useViewport } from '../viewport/useViewport';
 import { AutoPan } from './AutoPan';

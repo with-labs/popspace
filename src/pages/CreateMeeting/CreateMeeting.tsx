@@ -15,7 +15,6 @@ type createParams = {
 export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const createMeeting = useCreateMeeting();
   const { meetingType } = useParams<createParams>();
 
@@ -48,7 +47,7 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
       // TODO: figure out how we want to handle error messing here
       history.push(RouteNames.ROOT);
     }
-  }, [meetingType]);
+  }, [createMeeting, history, meetingType]);
 
-  return <Page isLoading={isLoading} error={error} />;
+  return <Page isLoading={isLoading} />;
 };

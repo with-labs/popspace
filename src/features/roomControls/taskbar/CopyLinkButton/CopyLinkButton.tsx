@@ -2,6 +2,7 @@ import * as React from 'react';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { makeStyles, Button, useTheme } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 
 export interface ICopyLinkButtonProps {}
 
@@ -21,7 +22,8 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
   const theme = useTheme();
 
   const onCopy = () => {
-    alert('copyTBD');
+    navigator.clipboard.writeText(window.location.toString());
+    toast.success(t('features.roomControls.linkCopied') as string);
   };
 
   return (

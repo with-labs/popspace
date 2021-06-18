@@ -448,6 +448,7 @@
       },
       "roomControls": {
         "CopyLinkButtonText": "Copy link",
+        "linkCopied": "Link copied!",
         "leaveMeetingButtonText": "Leave Meeting"
       },
       "onboarding": {

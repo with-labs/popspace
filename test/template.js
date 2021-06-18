@@ -76,15 +76,13 @@ class Template {
       const host = testEnvironment.getHost()
       // create the remaining actors in parallel
       const peers = await Promise.all(
-        new Array(nActors - 1)
-          .fill(null)
-          .map(async (_, actorIndex) => lib.test.models.RoomActorClient.create(host.room))
+        new Array(nActors - 1).fill(null).map((_, actorIndex) => lib.test.models.RoomActorClient.create(host.room))
       )
       // merge all room actor clients into one array
       const roomActorClients = [host, ...peers]
       // for each actor we will listen for join events and wait until we have
       // witnessed every other actor join the room.
-      const allInitializedPromise = Promise.all(
+      await Promise.all(
         roomActorClients.map(
           (rac) =>
             new Promise((resolve, reject) => {
@@ -105,8 +103,6 @@ class Template {
             })
         )
       )
-      // and await the acknowledgements of their peers
-      await allInitializedPromise
       // finally, invoke the test function with the actors in the environment
       testEnvironment.addRoomActorClients(...peers)
       return await lambda(testEnvironment)

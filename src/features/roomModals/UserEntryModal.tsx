@@ -13,7 +13,7 @@ import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
-import { useRoomStore } from '@api/useRoomStore';
+import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
 import client from '@api/client';
 import { useLocalActorId } from '@api/useLocalActorId';
 
@@ -68,7 +68,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
   const localId = useLocalActorId();
-  const self = useRoomStore((room) => room.users[localId ?? '']?.participantState);
+  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.participantState);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
@@ -106,17 +106,19 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
             onSubmit={onSubmitHandler}
             validationSchema={validationSchema}
           >
-            <Form>
-              <Box mb={2}>
-                <FormikTextField
-                  id="displayName"
-                  name="displayName"
-                  placeholder={t('modals.userEntry.placeholderText')}
-                  margin="normal"
-                />
-                <FormikSubmitButton activeOnChange={false}>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
-              </Box>
-            </Form>
+            {(isValid) => (
+              <Form>
+                <Box mb={2}>
+                  <FormikTextField
+                    id="displayName"
+                    name="displayName"
+                    placeholder={t('modals.userEntry.placeholderText')}
+                    margin="normal"
+                  />
+                  <FormikSubmitButton disabled={!isValid}>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
+                </Box>
+              </Form>
+            )}
           </Formik>
         </Box>
       </ModalContentWrapper>

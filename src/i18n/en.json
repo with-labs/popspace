@@ -11,7 +11,7 @@
       "licenses": "License Info"
     },
     "common": {
-      "noodle": "Noodle",
+      "appName": "Tilde",
       "emailInput": {
         "placeHolder": "dorothy@emerald.so",
         "label": "Email Address"
@@ -145,7 +145,7 @@
       },
       "room": {
         "joinTitle": "Joining {{roomName}}",
-        "analyticsDisclaimer": "We use analytics software to improve Noodle. Please feel free to come back later, when we've made it optional.",
+        "analyticsDisclaimer": "We use analytics software to improve Tilde. Please feel free to come back later, when we've made it optional.",
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
         "noVideo": "No video"
@@ -153,7 +153,7 @@
       "subscribe": {
         "quoteText": "",
         "title": "You are now subscribed!",
-        "body": "You will now receive tips on how to use Noodle and news about updates.",
+        "body": "You will now receive tips on how to use Tilde and news about updates.",
         "button": "Take me Home",
         "imgAltText": "Subscribed"
       },
@@ -166,7 +166,7 @@
       },
       "meetingLink": {
         "titleText": "Your meeting room is ready",
-        "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Noodle.",
+        "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Tilde.",
         "copyLinkButton": "Copy link",
         "copied": "Copied",
         "joinRoomButton": "Join room now"
@@ -307,7 +307,7 @@
         "provideValidUrl": "Please provide a valid URL.",
         "provideValidYoutubeUrl": "Please provide a valid YouTube URL",
         "malformedUrl": "Please check to make sure URL has been properly copied from the email.",
-        "mobileNotOptimized": "Noodle is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
+        "mobileNotOptimized": "Tilde is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         "noRoomPassword": "You need a password to join this room",
         "incorrectRoomPassword": "The password you entered is incorrect",
         "noRoomAccess": "You don't have access to this room. You'll need the password to get in.",
@@ -373,16 +373,16 @@
       },
       "media": {
         "title": "{{device}} access has been denied.",
-        "supportText": "Instructions for enabling your {{device}} access can be found in the <3>Noodle help portal.</3>",
+        "supportText": "Instructions for enabling your {{device}} access can be found in the <3>Tilde help portal.</3>",
         "video": "camera",
         "audio": "microphone",
         "screenShare": "screen share",
         "audioPermissionDismissed": "If you want to share your voice, we'll need microphone access. Press the button to enable your mic, then choose \"Allow\"",
-        "audioPermissionDenied": "You've told your browser not to allow microphone access for Noodle. Change that setting to start sharing your voice.",
+        "audioPermissionDenied": "You've told your browser not to allow microphone access for Tilde. Change that setting to start sharing your voice.",
         "videoPermissionDismissed": "If you want to share your video, we'll need camera access. Press the button to enable your camera, then choose \"Allow\"",
-        "videoPermissionDenied": "You've told your browser not to allow camera access for Noodle. Change that setting to start sharing your video.",
+        "videoPermissionDenied": "You've told your browser not to allow camera access for Tilde. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
-        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Noodle. Change that setting to start sharing your screen.",
+        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Tilde. Change that setting to start sharing your screen.",
         "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@noodle.so</3>."
       },
       "roomMangement": {
@@ -470,7 +470,7 @@
       "onboarding": {
         "title": "Getting started",
         "move": {
-          "details": "To move in a Noodle room, drag and drop your avatar wherever you want to go!",
+          "details": "To move in a Tilde room, drag and drop your avatar wherever you want to go!",
           "title": "Move"
         },
         "addWidgets": {
@@ -539,7 +539,7 @@
         "submitButton": "Send bug report",
         "imgAltText": "Report a bug",
         "confirmationText": "Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!",
-        "errorMessage": "Something unexpected has happened. Please contact us directly at support@noodle.so."
+        "errorMessage": "Something unexpected has happened. Please contact us directly at support@tilde.so."
       },
       "devicePermissionsModal": {
         "title": "Audio & video access",
@@ -549,7 +549,7 @@
         "enterRoomButton": "Enter Room",
         "continueWithoutPermissionsButton": "Continue without devices",
         "goToSupportButton": "Go to support",
-        "permissionDeniedExplanation": "Oops! Seems like Noodle doesn’t have access to your camera and microphone.",
+        "permissionDeniedExplanation": "Oops! Seems like Tilde doesn’t have access to your camera and microphone.",
         "cameraPermissionDenied": "Camera permission denied",
         "prepareTitle": "Welcome!",
         "namePlaceholder": "Your name"
@@ -585,8 +585,8 @@
       "unsaved": {
         "title": "Meeting room unsaved",
         "infoText": "This meeting room and all the content you or other people have added will disappear after 48 hours.",
-        "explainationText": "You need a free Noodle account to persist the content of this meeting.",
-        "signUpButton": "Sign up to Noodle",
+        "explainationText": "You need a free Tilde account to persist the content of this meeting.",
+        "signUpButton": "Sign up to Tilde",
         "signInButton": "Already have an account?"
       },
       "userEntry": {

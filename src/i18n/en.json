@@ -188,6 +188,10 @@
         "skipSurvey": "Skip survey",
         "title": "Thank you for using Noodle!",
         "ratingCaption": "To make sure we're providing you with the best possible app, please rate your experience"
+      },
+      "licenses": {
+        "title": "Open Source Software Licenses",
+        "intro": "Tilde utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
       }
     },
     "widgets": {
@@ -460,6 +464,7 @@
       },
       "roomControls": {
         "CopyLinkButtonText": "Copy link",
+        "linkCopied": "Link copied!",
         "leaveMeetingButtonText": "Leave Meeting"
       },
       "onboarding": {

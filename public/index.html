@@ -8,33 +8,62 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.webmanifest" />
 
     <!-- SEO -->
-    <meta name="description" content="Tilde offers free instant meeting rooms for all your collaborative needs.">
-    <meta name="keywords" content="platform, collaborate, socialize, virtual, space, spatial, chat, invite, connect, share, friends, coworkers, apps, accessories, customize, room">
+    <meta name="description" content="Tilde offers free instant meeting rooms for all your collaborative needs." />
+    <meta
+      name="keywords"
+      content="platform, collaborate, socialize, virtual, space, spatial, chat, invite, connect, share, friends, coworkers, apps, accessories, customize, room"
+    />
     <!-- Basic Open Graph -->
-    <meta itemProp="name" content="Tilde, make room for your team." class="next-head"/>
-    <meta itemProp="description" content="Free instant meeting rooms for all your collaborative needs" class="next-head"/>
-    <meta itemProp="image" content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg" class="next-head"/>
+    <meta itemprop="name" content="Tilde, make room for your team." class="next-head" />
+    <meta
+      itemprop="description"
+      content="Free instant meeting rooms for all your collaborative needs"
+      class="next-head"
+    />
+    <meta
+      itemprop="image"
+      content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg"
+      class="next-head"
+    />
     <!-- Twitter specific Open Graph -->
-    <meta name="twitter:card" content="summary_large_image" class="next-head"/>
-    <meta name="twitter:site" content="@tildehq" class="next-head"/>
-    <meta name="twitter:title" content="Tilde, make room for your team." class="next-head"/>
-    <meta name="twitter:description" content="Free instant meeting rooms for all your collaborative needs" class="next-head"/>
-    <meta name="twitter:creator" content="@tildehq" class="next-head"/>
-    <meta name="twitter:image:src" content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg" class="next-head"/>
+    <meta name="twitter:card" content="summary_large_image" class="next-head" />
+    <meta name="twitter:site" content="@tildehq" class="next-head" />
+    <meta name="twitter:title" content="Tilde, make room for your team." class="next-head" />
+    <meta
+      name="twitter:description"
+      content="Free instant meeting rooms for all your collaborative needs"
+      class="next-head"
+    />
+    <meta name="twitter:creator" content="@tildehq" class="next-head" />
+    <meta
+      name="twitter:image:src"
+      content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg"
+      class="next-head"
+    />
     <!-- Generic Open Graph -->
-    <meta property="og:title" content="Tilde, make room for your team." class="next-head"/>
-    <meta property="og:type" content="article" class="next-head"/>
-    <meta property="og:url" content="" class="next-head"/>
-    <meta property="og:image" content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg" class="next-head"/>
-    <meta property="og:description" content="Free instant meeting rooms for all your collaborative needs" class="next-head"/>
-    <meta property="og:site_name" content="tilde" class="next-head"/>
-
+    <meta property="og:title" content="Tilde, make room for your team." class="next-head" />
+    <meta property="og:type" content="article" class="next-head" />
+    <meta property="og:url" content="" class="next-head" />
+    <meta
+      property="og:image"
+      content="https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-06-06.jpg"
+      class="next-head"
+    />
+    <meta
+      property="og:description"
+      content="Free instant meeting rooms for all your collaborative needs"
+      class="next-head"
+    />
+    <meta property="og:site_name" content="tilde" class="next-head" />
 
     <!-- favicon for non-IE browsers -->
     <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicons/favicon_16x16.png" sizes="16x16" />
     <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicons/favicon_32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicons/favicon_48x48.png" sizes="48x48" />
     <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicons/favicon_256x256.png" sizes="256x256" />
+
+    <!-- SEO: tell crawlers the canonical page for the app is tilde.so -->
+    <link rel="canonical" href="https://tilde.so" />
 
     <!-- favicon ico for IE only -->
     <link rel="shortcut icon" type="image/x-icon" href="%PUBLIC_URL%/favicons/favicon.ico" />
@@ -58,7 +87,32 @@
     <title>Tilde</title>
 
     <!-- Canny SDK -->
-    <script>!function(w,d,i,s){function l(){if(!d.getElementById(i)){var f=d.getElementsByTagName(s)[0],e=d.createElement(s);e.type="text/javascript",e.async=!0,e.src="https://canny.io/sdk.js",f.parentNode.insertBefore(e,f)}}if("function"!=typeof w.Canny){var c=function(){c.q.push(arguments)};c.q=[],w.Canny=c,"complete"===d.readyState?l():w.attachEvent?w.attachEvent("onload",l):w.addEventListener("load",l,!1)}}(window,document,"canny-jssdk","script");</script>
+    <script>
+      !(function (w, d, i, s) {
+        function l() {
+          if (!d.getElementById(i)) {
+            var f = d.getElementsByTagName(s)[0],
+              e = d.createElement(s);
+            (e.type = 'text/javascript'),
+              (e.async = !0),
+              (e.src = 'https://canny.io/sdk.js'),
+              f.parentNode.insertBefore(e, f);
+          }
+        }
+        if ('function' != typeof w.Canny) {
+          var c = function () {
+            c.q.push(arguments);
+          };
+          (c.q = []),
+            (w.Canny = c),
+            'complete' === d.readyState
+              ? l()
+              : w.attachEvent
+              ? w.attachEvent('onload', l)
+              : w.addEventListener('load', l, !1);
+        }
+      })(window, document, 'canny-jssdk', 'script');
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

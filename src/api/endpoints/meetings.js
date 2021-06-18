@@ -95,7 +95,7 @@ class Meetings {
 
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)
-      return http.succeed(req, res)
+      return api.http.succeed(req, res)
     })
 
     this.zoo.loggedInPostEndpoint("/create_meeting", async (req, res) => {

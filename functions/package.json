@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "lib": "file:./lib",
-    "uuid": "^8.3.1"
-  },
-  "scripts": {
-    "build:setup": "yarn install && cd lib && yarn install"
-  }
-}

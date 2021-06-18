@@ -28,9 +28,6 @@ export declare interface ApiCoreClient {
 
 export class ApiCoreClient extends EventEmitter {
   readonly SERVICES = {
-    netlify: {
-      url: '/.netlify/functions',
-    },
     hermes: {
       url: process.env.REACT_APP_HERMES_API_HOST || null,
     },

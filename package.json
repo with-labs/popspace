@@ -152,10 +152,9 @@
   },
   "scripts": {
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
-    "prebuild": "yarn run licenses && node ./scripts/write_env.js && cd functions && yarn build:setup",
-    "build": "cross-env CI=false REACT_APP_SET_AUTH=passcode craco build",
-    "build:client": "cross-env CI=false craco build",
-    "dev": "DISABLE_LOCAL_DEV_AUTH=true netlify dev",
+    "prebuild": "yarn run licenses",
+    "build": "craco build",
+    "dev": "netlify dev",
     "local:dev": "NODE_ENV=development REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://localhost:3000' REACT_APP_WITH_API_HOST='https://localhost:3000'  REACT_APP_SOCKET_HOST='wss://localhost:3000' yarn dev",
     "local:staging": "NODE_ENV=staging REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://test.with.so:8443' REACT_APP_WITH_API_HOST='https://test.with.so:8443' REACT_APP_SOCKET_HOST='wss://test.with.so:8443' yarn dev",
     "test": "jest",
@@ -170,7 +169,6 @@
     "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8081 start-server-and-test server http://localhost:8081 cypress:run",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "console": "node --experimental-repl-await ./scripts/console",
     "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json",
     "clearport": "npx kill-port 3002"
   },
@@ -198,10 +196,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "proxy": "http://localhost:8888/",
-  "jest": {
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ]
-  }
+  "proxy": "http://localhost:8888/"
 }

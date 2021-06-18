@@ -58,7 +58,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
       if (!state.ratingId) {
         throw new Error("Can't submit feedback, no rating provided");
       }
-      const result = await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
+      await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
 
       history.push(RouteNames.ROOT);
       toast.success(t('pages.postMeeting.surveyThanks') as string);

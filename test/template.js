@@ -1,6 +1,5 @@
 require("../src/globals")
 const fs = require("fs")
-const AsyncLock = require("async-lock")
 
 class Template {
   constructor() {

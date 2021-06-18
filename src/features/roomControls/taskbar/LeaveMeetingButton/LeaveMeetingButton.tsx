@@ -4,6 +4,7 @@ import { LeaveIcon } from '@components/icons/LeaveIcon';
 import { makeStyles, Button } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import client from '@api/client';
+import { useHistory } from 'react-router';
 
 export interface ILeaveMeetingButtonProps {}
 
@@ -26,10 +27,12 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   const { room } = useTwilio();
 
   // todo add analytics
+  const history = useHistory();
   const leaveRoom = React.useCallback(() => {
     room?.disconnect();
     client.leaveMeeting();
-  }, [room]);
+    history.push(`${history.location.pathname}/post_meeting`);
+  }, [room, history]);
 
   return (
     <Button variant="text" className={classes.button} startIcon={<LeaveIcon />} onClick={leaveRoom} fullWidth={false}>

@@ -22,6 +22,9 @@ export function useCrisp() {
     // we want to hide the default button when and only pop the chat when the user since
     // it takes up too much room in our ui
     window.$crisp.push(['on', 'chat:closed', hideChat]);
+    // disable console warning about shims
+    window.$crisp.push(['safe', true]);
+
     hideChat();
   }, []);
 }

@@ -23,7 +23,7 @@ export const Toaster: React.FC = () => {
     <>
       {toasts.slice(0, 4).map((toast) => {
         const offset = calculateOffset(toast.id, {
-          margin: 8,
+          margin: 32,
           reverseOrder: false,
         });
 
@@ -40,7 +40,7 @@ export const Toaster: React.FC = () => {
             onMouseEnter={startPause}
             onMouseLeave={endPause}
             style={{
-              transform: `translateY(-${offset}px)`,
+              transform: `translate(-50%, -${offset}px)`,
               transition: 'transform 0.12s ease-out',
             }}
             anchorOrigin={{

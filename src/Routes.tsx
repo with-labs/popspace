@@ -8,6 +8,7 @@ import RoomPage from './pages/RoomPage/RoomPage';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 import { CreateMeeting } from './pages/CreateMeeting/CreateMeeting';
+import { PostMeeting } from './pages/PostMeeting/PostMeeting';
 import { LandingPage } from './pages/LandingPage';
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
@@ -42,6 +43,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
         </React.Suspense>
       </Route>
 
+      <Route path="/:roomRoute/post_meeting" component={PostMeeting} />
       <Route
         path="/:roomRoute"
         render={(renderProps) => {

@@ -6,7 +6,7 @@ import { exportRoomTemplate } from './exportRoomTemplate';
 import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';
 import { sanityCheckWidget } from './sanityCheckWidget';
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
-import { ParticipantShape, ParticipantState } from './types/participants';
+import { ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
 

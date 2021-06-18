@@ -9,7 +9,6 @@ import { KeyShortcutText } from '@components/KeyShortcutText/KeyShortcutText';
 import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStore } from '@api/useRoomStore';
 import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { makeStyles } from '@material-ui/core';

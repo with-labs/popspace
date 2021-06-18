@@ -17,8 +17,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const MeetingTemplatePicker: React.FC<IMeetingTemplatePickerProps> = ({ onSelect, className }) => {
-  const classes = useStyles();
-
   return (
     <Box mt={2}>
       <Grid container spacing={2} style={{ width: '100%' }} className={className}>

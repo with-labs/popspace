@@ -1,4 +1,3 @@
-import { isIOS, isMacOs } from 'react-device-detect';
 import { ConnectOptions } from 'twilio-video';
 
 export enum RoomState {

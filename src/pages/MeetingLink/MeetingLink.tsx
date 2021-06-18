@@ -11,6 +11,7 @@ import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
+import { logger } from '@utils/logger';
 
 // TODO: change this to the shortened url
 const BASE_URL = 'https://www.noodle.so';
@@ -67,7 +68,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
     if (!meetingInfo) {
       history.push(RouteNames.ROOT);
     }
-  }, [meetingInfo]);
+  }, [history, meetingInfo]);
 
   const onCopyLink = async () => {
     try {
@@ -79,7 +80,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
     } catch (err) {
       // todo: clean up error state
       alert(`Error copying public invite link`);
-      console.log(err);
+      logger.error(err);
     }
   };
 

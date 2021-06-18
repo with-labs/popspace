@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { makeStyles, Button, Typography, Box } from '@material-ui/core';
 import { Modal } from '@components/Modal/Modal';
 import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import { ModalActions } from '@components/Modal/ModalActions';
 

@@ -4,23 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { OptionsIcon } from '@components/icons/OptionsIcon';
 import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
-import { LinkWidgetState, WidgetType } from '@api/roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 import { logger } from '@utils/logger';
 import api from '@api/client';
-import { ApiError } from '../../../../../errors/ApiError';
 
 export type LinkMenuProps = {
   className?: string;
   size?: 'small' | 'medium';
 };
-
-const IFRAME_CONTENT_TYPES = [/^application\/pdf$/, /^text/];
-function canUseIframe(widgetState: LinkWidgetState) {
-  const { iframeUrl, mediaContentType } = widgetState;
-  return !!iframeUrl || (mediaContentType && IFRAME_CONTENT_TYPES.some((regex) => regex.test(mediaContentType)));
-}
 
 export function LinkMenu(props: LinkMenuProps) {
   const { t } = useTranslation();

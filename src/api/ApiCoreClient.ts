@@ -9,7 +9,6 @@ import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
 import { roomStateStore, RoomStateStore } from './roomState/roomStateStore';
 import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { EventEmitter } from 'events';
-import { ParticipantState } from '@constants/twilio';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
@@ -29,9 +28,6 @@ export declare interface ApiCoreClient {
 
 export class ApiCoreClient extends EventEmitter {
   readonly SERVICES = {
-    netlify: {
-      url: '/.netlify/functions',
-    },
     hermes: {
       url: process.env.REACT_APP_HERMES_API_HOST || null,
     },

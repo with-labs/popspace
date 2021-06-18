@@ -4,7 +4,6 @@ targetPort = 3002
 [build]
 command = "yarn build"
 publish = "build"
-functions = "functions"
 base = "."
 
 [context.production.environment]

@@ -41,7 +41,7 @@ class CreateProcessor {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and transform in payload.`)
     }
 
-    const roomWidget = await shared.db.room.data.addWidgetInRoom(widgetCreator.id, room.id, payload.type, payload.widgetState, payload.transform)
+    const roomWidget = await shared.db.room.data.addWidgetInRoom(widgetCreator.id, room.id, payload.type, payload.widget_state, payload.transform)
     const result = await roomWidget.serialize()
     sender.sendResponse(event, result, "widgetCreated")
     sender.broadcastPeerEvent("widgetCreated", result)

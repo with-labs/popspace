@@ -1,9 +1,9 @@
 require("../../../test/_test.js")
-const scenarios = require('./events_scenarios')
+const scenarios = require("./events_scenarios")
 
-shared.test.TestTemplate.describeWithLib('hermes_events', () => {
+shared.test.TestTemplate.describeWithLib("hermes_events", () => {
   // We have some long-running tests
-  jest.setTimeout(30000);
+  jest.setTimeout(30000)
 
   test("authentication", async () => {
     const results = await scenarios["authenticate"]()
@@ -33,9 +33,10 @@ shared.test.TestTemplate.describeWithLib('hermes_events', () => {
 
     expect(createResponse.payload.widgetId).toBeTruthy()
     expect(endWidgetCount - beginWidgetCount).toEqual(1)
+    expect(createResponse.payload.widgetState.text).toEqual("Hello world!")
   })
 
-  test('updating widgets', async () => {
+  test("updating widgets", async () => {
     const response = await scenarios["move_a_widget"]()
     const positionBeforeMove = response.beforeMove.transform.position
     const positionAfterMove = response.afterMove.transform.position
@@ -43,7 +44,7 @@ shared.test.TestTemplate.describeWithLib('hermes_events', () => {
     expect(parseInt(positionAfterMove.y) - parseInt(positionBeforeMove.y) == 60)
   })
 
-  test('updating a room wallpaper', async () => {
+  test("updating a room wallpaper", async () => {
     const result = await scenarios["update_wallpaper"]()
     /*
       We're not really checking that the old wallpaper is distinct from the new one,
@@ -54,19 +55,20 @@ shared.test.TestTemplate.describeWithLib('hermes_events', () => {
     expect(result.updateResponse.payload.wallpaperUrl).toEqual(result.newRoomState.payload.state.wallpaperUrl)
   })
 
-  test('deleting a widget', async () => {
+  test("deleting a widget", async () => {
     const result = await scenarios["create_then_delete"]()
     expect(result.deleteResponse.kind).toEqual("widgetDeleted")
-    expect(result.roomStateAfterCreate.payload.widgets.length - 1).toEqual(result.roomStateAfterDelete.payload.widgets.length)
+    expect(result.roomStateAfterCreate.payload.widgets.length - 1).toEqual(
+      result.roomStateAfterDelete.payload.widgets.length
+    )
   })
 
-  test('passthrough events', async () => {
+  test("passthrough events", async () => {
     const result = await scenarios["passthrough"]()
     expect(result.sentEvent.kind).toEqual("passthrough")
-    for(const receivedEvent of result.receivedEvents) {
+    for (const receivedEvent of result.receivedEvents) {
       expect(receivedEvent.kind).toEqual("passthrough")
       expect(receivedEvent.payload).toEqual(result.sentEvent.payload)
     }
   })
-
 })

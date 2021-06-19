@@ -30,11 +30,17 @@ export const App: React.FC<IAppProps> = () => {
           <Toaster />
           <CssBaseline />
           <Router history={history}>
-            <AppStateProvider>
-              <MediaReadinessProvider>
-                <SoundEffectProvider>{isMobileOnly ? <NotSupported /> : <Routes />}</SoundEffectProvider>
-              </MediaReadinessProvider>
-            </AppStateProvider>
+            {isMobileOnly ? (
+              <NotSupported />
+            ) : (
+              <AppStateProvider>
+                <MediaReadinessProvider>
+                  <SoundEffectProvider>
+                    <Routes />
+                  </SoundEffectProvider>
+                </MediaReadinessProvider>
+              </AppStateProvider>
+            )}
           </Router>
         </MuiThemeProvider>
       </StylesProvider>

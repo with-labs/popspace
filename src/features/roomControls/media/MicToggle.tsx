@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
   text: {
     color: theme.palette.brandColors.ink.regular,
     paddingLeft: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
   },
 }));
 

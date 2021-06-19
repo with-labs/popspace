@@ -49,7 +49,7 @@ const MeetingTemplateCard: React.FC<{ templateName: MeetingTemplateName; onClick
         </CardMedia>
         <CardContent>
           <Box mb={1}>
-            <Typography variant="body1">{t(`${templateMetadata[templateName].i18nKey}.title`)}</Typography>
+            <Typography variant="h3">{t(`${templateMetadata[templateName].i18nKey}.title`)}</Typography>
           </Box>
           <Typography variant="body2">{t(`${templateMetadata[templateName].i18nKey}.description`)}</Typography>
         </CardContent>

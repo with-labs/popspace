@@ -176,7 +176,8 @@
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",
-        "body": "FPO something something, mobile isnt supported yet, please use a computer"
+        "body": "We're sorry, Tilde is currently not optimized for mobile devices. <br/><br/>Please use one of the recommended browsers on your computer instead: Mozilla Firefox, Google Chrome, or Microsoft Edge.",
+        "buttonText": "Go back home"
       },
       "postMeeting": {
         "surveyThanks": "Thanks for helping us make Noodle better!",

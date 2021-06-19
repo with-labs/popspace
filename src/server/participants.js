@@ -72,6 +72,15 @@ class Participants {
         socket.participant = participant
         participant.setEventHandler(this.onEventReceived)
 
+        /*
+          Still thinking about this.
+
+          Perhaps it's easier to have in-memory hermesIds for participants,
+          and key on those - for a single run of the server, that's all we need.
+
+          For analytics, we'll use the datbase IDs - but writing to the DB
+          can always wait for the first write to the DB with the participant ID.
+        */
         await participant.awaitInit()
         this.participants[participant.id] = participant
         /*

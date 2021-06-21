@@ -40,6 +40,7 @@ const silkaFonts = [
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
     mainShadows: {
+      none: string;
       surface: string;
       modal: string;
     };
@@ -54,6 +55,7 @@ declare module '@material-ui/core/styles/createMuiTheme' {
   // allow configuration using `createMuiTheme`
   interface ThemeOptions {
     mainShadows?: {
+      none: string;
       surface: string;
       modal: string;
     };
@@ -160,38 +162,31 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
   // only used to extract some MUI theme tools that can be
   // used in the overrides below, such as computed color palettes and
   // font sizing utils
-  const {
-    typography,
-    palette,
-    spacing,
-    transitions,
-    shape,
-    mainShadows,
-    focusRings,
-    zIndex,
-    breakpoints,
-  } = createMuiTheme({
-    palette: finalPalette,
-    typography: {
-      fontWeightMedium: SEMIBOLD_WEIGHT,
-    },
-    shape: {
-      borderRadius: 6,
-      contentBorderRadius: 4,
-      innerBorderRadius: 2,
-      borderWidth: 2,
-      surfaceBorderRadius: 14,
-    },
-    mainShadows: {
-      surface: `0px 45px 89px rgba(0, 0, 0, 0.0185187), 0px 14.27px 26.8309px rgba(0, 0, 0, 0.0225848), 0px 6.11599px 11.1442px rgba(0, 0, 0, 0.0264039), 0px 2.11191px 4.03063px rgba(0, 0, 0, 0.04)`,
-      modal: `0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729)`,
-    },
-    focusRings: {
-      primary: createFocusRing(brandPalette.oregano.bold),
-      create: createFocusRing,
-      idle: `inset 0 0 0 0 transparent`,
-    },
-  });
+  const { typography, palette, spacing, transitions, shape, mainShadows, focusRings, zIndex, breakpoints } =
+    createMuiTheme({
+      palette: finalPalette,
+      typography: {
+        fontWeightMedium: SEMIBOLD_WEIGHT,
+      },
+      shape: {
+        borderRadius: 6,
+        contentBorderRadius: 4,
+        innerBorderRadius: 2,
+        borderWidth: 2,
+        surfaceBorderRadius: 14,
+      },
+      mainShadows: {
+        // an invisible / nonexistent shadow of the same arity as the others, for easing animations
+        none: '0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent, 0 0 0 transparent',
+        surface: `0px 45px 89px rgba(0, 0, 0, 0.0185187), 0px 14.27px 26.8309px rgba(0, 0, 0, 0.0225848), 0px 6.11599px 11.1442px rgba(0, 0, 0, 0.0264039), 0px 2.11191px 4.03063px rgba(0, 0, 0, 0.04)`,
+        modal: `0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729)`,
+      },
+      focusRings: {
+        primary: createFocusRing(brandPalette.oregano.bold),
+        create: createFocusRing,
+        idle: `inset 0 0 0 0 transparent`,
+      },
+    });
 
   const finalShadows = generateShadows();
   finalShadows[1] = mainShadows.surface;

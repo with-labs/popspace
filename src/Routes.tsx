@@ -7,7 +7,6 @@ import { Page } from './Layouts/Page/Page';
 import RoomPage from './pages/RoomPage/RoomPage';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
-import { CreateMeeting } from './pages/CreateMeeting/CreateMeeting';
 import { PostMeeting } from './pages/PostMeeting/PostMeeting';
 import { LandingPage } from './pages/LandingPage';
 
@@ -21,16 +20,10 @@ export const Routes: React.FC<IRoutesProps> = () => {
       <Route exact path={RouteNames.ROOT}>
         <LandingPage />
       </Route>
-      <Route exact path={RouteNames.CREATE_MEETING}>
-        <MeetingSelect />
-      </Route>
+      <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
 
       <Route exact path={RouteNames.MEETING_LINK}>
         <MeetingLink />
-      </Route>
-
-      <Route exact path={RouteNames.CREATE_MEETING_URL}>
-        <CreateMeeting />
       </Route>
 
       <AdminRoute

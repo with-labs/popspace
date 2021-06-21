@@ -591,6 +591,10 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         colorPrimary: {
           color: palette.brandColors.slate.ink,
         },
+        circle: {
+          strokeWidth: 6,
+          r: 16,
+        },
       },
       MuiCheckbox: {
         root: {
@@ -1104,14 +1108,27 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiCard: {
         root: {
           overflow: 'visible',
+          '&:hover': {
+            outline: 'none',
+          },
         },
       },
       MuiCardActionArea: {
         root: {
           overflow: 'hidden',
           borderRadius: 'inherit',
+          transition: transitions.create(['box-shadow', 'background-color']),
+          transform: 'scale(1)',
+          boxShadow: mainShadows.none,
           '&$focusVisible': {
-            boxShadow: `0 0 0 4px ${palette.primary.main}`,
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
+          },
+          '&:hover': {
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
+          },
+          '&:active': {
+            backgroundColor: brandPalette.lavender.light,
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
           },
         },
         focusHighlight: {

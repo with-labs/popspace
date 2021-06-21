@@ -10,7 +10,7 @@ base = "."
 REACT_APP_ANALYTICS_ENV = "production"
 TWILIO_API_KEYS_ENV = "production"
 NODE_ENV = "production"
-REACT_APP_SOCKET_HOST = "wss://hermes.with.so:8443"
+REACT_APP_SOCKET_HOST = "wss://mercury.with.so:5555"
 # This may stay around forever, or for a long time:
 # some HTTP requests may require us to send socket notifications.
 # This _could_ eventually be gone:
@@ -18,9 +18,9 @@ REACT_APP_SOCKET_HOST = "wss://hermes.with.so:8443"
 # and intelligent message routing system (a'la RabbitMQ).
 # Then the API service could simply push to the queue,
 # and we wouldn't need to host the API on hermes to have access to participants.
-REACT_APP_HERMES_API_HOST = "https://hermes.with.so:8443"
+REACT_APP_HERMES_API_HOST = "https://mercury.with.so:5555"
 REACT_APP_UNICORN_SOCKET_HOST = "wss://pegasus.with.so"
-REACT_APP_NOODLE_API_HOST = "https://hermes.with.so:8443"
+REACT_APP_NOODLE_API_HOST = "https://mercury.with.so:5556"
 REACT_APP_ANALYTICS_ID = "c5dca48b9e8589e669570e0d795eb51a"
 
 [context.deploy-preview.environment]

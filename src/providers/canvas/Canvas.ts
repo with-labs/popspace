@@ -107,8 +107,16 @@ export class Canvas extends EventEmitter {
 
   private intersections: CanvasObjectIntersections;
 
-  private positionObservers: Record<string, Set<(position: Vector2) => void>> = {};
-  private sizeObservers: Record<string, Set<(size: Bounds) => void>> = {};
+  private positionObservers: Record<CanvasObjectKind, Record<string, Set<(position: Vector2) => void>>> = {
+    widget: {},
+    person: {},
+    other: {},
+  };
+  private sizeObservers: Record<CanvasObjectKind, Record<string, Set<(size: Bounds) => void>>> = {
+    widget: {},
+    person: {},
+    other: {},
+  };
   private intersectionObservers: Record<string, Set<(intersections: IntersectionData) => void>> = {};
 
   private unsubscribeActiveGesture: () => void;
@@ -193,14 +201,14 @@ export class Canvas extends EventEmitter {
   // subscribe to changes in active object position and forward them to the
   // correct object
   private handleActiveGestureChange = (state: ActiveGestureState) => {
-    if (state.objectId) {
+    if (state.objectId && state.objectKind) {
       if (state.position) {
         const position = state.position;
-        this.positionObservers[state.objectId]?.forEach((cb) => cb(position));
+        this.positionObservers[state.objectKind][state.objectId]?.forEach((cb) => cb(position));
       }
       if (state.size) {
         const size = state.size;
-        this.sizeObservers[state.objectId]?.forEach((cb) => cb(size));
+        this.sizeObservers[state.objectKind][state.objectId]?.forEach((cb) => cb(size));
       }
     }
   };
@@ -280,8 +288,8 @@ export class Canvas extends EventEmitter {
 
   observePosition = (objectId: string, objectType: CanvasObjectKind, observer: (position: Vector2) => void) => {
     // store the observer
-    this.positionObservers[objectId] = this.positionObservers[objectId] ?? new Set();
-    this.positionObservers[objectId].add(observer);
+    this.positionObservers[objectType][objectId] = this.positionObservers[objectType][objectId] ?? new Set();
+    this.positionObservers[objectType][objectId].add(observer);
     // subscribe to position
     const unsubscribe = useRoomStore.subscribe((position) => {
       // only notify observer of Room State position changes if the object
@@ -293,7 +301,7 @@ export class Canvas extends EventEmitter {
 
     return () => {
       unsubscribe();
-      this.positionObservers[objectId]?.delete(observer);
+      this.positionObservers[objectType][objectId]?.delete(observer);
     };
   };
 
@@ -432,8 +440,8 @@ export class Canvas extends EventEmitter {
 
   observeSize = (objectId: string, objectKind: CanvasObjectKind, observer: (size: Bounds) => void) => {
     // store the observer
-    this.sizeObservers[objectId] = this.sizeObservers[objectId] ?? new Set();
-    this.sizeObservers[objectId].add(observer);
+    this.sizeObservers[objectKind][objectId] = this.sizeObservers[objectKind][objectId] ?? new Set();
+    this.sizeObservers[objectKind][objectId].add(observer);
     // subscribe to position
     const unsubscribe = useRoomStore.subscribe((position) => {
       // only notify observer of Room State position changes if the object
@@ -445,7 +453,7 @@ export class Canvas extends EventEmitter {
 
     return () => {
       unsubscribe();
-      this.sizeObservers[objectId]?.delete(observer);
+      this.sizeObservers[objectKind][objectId]?.delete(observer);
     };
   };
 

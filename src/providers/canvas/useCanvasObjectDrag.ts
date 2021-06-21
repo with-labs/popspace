@@ -66,6 +66,7 @@ export function useCanvasObjectDrag({
   // or a new position has come in from the server.
   const [style, spring] = useSpring(() => {
     const initialPosition = canvas.getPosition(objectId, objectKind);
+    console.log('initial pos', objectId, objectKind, initialPosition);
     return {
       // initial values
       x: initialPosition.x,

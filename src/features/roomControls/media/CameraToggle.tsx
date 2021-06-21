@@ -13,6 +13,7 @@ import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { makeStyles } from '@material-ui/core';
 import client from '@api/client';
+import { useAVSources } from '@hooks/useAVSources/useAVSources';
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -69,6 +70,10 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
+  // only show the list if we have access to devices (and their IDs)
+  const { cameras } = useAVSources();
+  const showCamerasList = cameras?.every((device) => device.deviceId);
+
   return (
     <>
       <ResponsiveTooltip
@@ -92,8 +97,12 @@ export const CameraToggle = (props: ICameraToggleProps) => {
           </ToggleButton>
         </div>
       </ResponsiveTooltip>
-      <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
-      <CameraDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
+      {showCamerasList && (
+        <>
+          <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
+          <CameraDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
+        </>
+      )}
     </>
   );
 };

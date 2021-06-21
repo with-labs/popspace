@@ -13,6 +13,7 @@ import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveToolt
 import { EventNames } from '@analytics/constants';
 import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import client from '@api/client';
+import { useAVSources } from '@hooks/useAVSources/useAVSources';
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -75,6 +76,10 @@ export const MicToggle = (props: IMicToggleProps) => {
     setMenuAnchor(ev.currentTarget);
   }, []);
 
+  // only show the list if we have access to devices (and their IDs)
+  const { mics } = useAVSources();
+  const showMicsList = mics?.every((device) => device.deviceId);
+
   return (
     <>
       <ResponsiveTooltip
@@ -99,8 +104,12 @@ export const MicToggle = (props: IMicToggleProps) => {
           </ToggleButton>
         </div>
       </ResponsiveTooltip>
-      <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
-      <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
+      {showMicsList && (
+        <>
+          <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
+          <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />
+        </>
+      )}
     </>
   );
 };

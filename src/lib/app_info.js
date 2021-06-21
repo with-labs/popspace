@@ -51,7 +51,7 @@ const appInfo = {
       case 'production':
         return `https://app.noodle.so:${appInfo.apiPort()}`
       case 'development':
-        return `https://localhost:${appInfo.apiPort()}`
+        return `https://localhost:8888`
       case 'staging':
         return `https://staging.noodle.so:${appInfo.apiPort()}`
       case 'test':

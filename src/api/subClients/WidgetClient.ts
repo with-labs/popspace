@@ -73,9 +73,9 @@ export class WidgetClient extends ApiSubClient {
     return response.payload;
   };
 
-  updateWidget = (payload: { widgetId: string; widgetState: Partial<WidgetState> }) => {
+  updateWidget = async (payload: { widgetId: string; widgetState: Partial<WidgetState> }) => {
     this.core.cacheApi.updateWidget(payload);
-    this.core.socket.send({
+    await this.core.socket.sendAndWaitForResponse({
       kind: 'updateWidget',
       payload,
     });

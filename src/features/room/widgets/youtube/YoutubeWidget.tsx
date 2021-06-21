@@ -95,7 +95,7 @@ export const YoutubeWidget: React.FC<IYoutubeWidgetProps> = () => {
         >
           <WidgetTitlebar title={t('widgets.youtube.title')} />
           <WidgetContent className={classes.formContent}>
-            <EditYoutubeWidgetForm onSave={saveWidget} />
+            <EditYoutubeWidgetForm />
           </WidgetContent>
         </WidgetFrame>
       );

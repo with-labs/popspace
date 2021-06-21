@@ -8,7 +8,6 @@ import { Form, Formik } from 'formik';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import i18n from '@src/i18n';
-import { AvatarSelectorBubble } from '@features/roomControls/avatar/AvatarSelectorBubble';
 import { makeStyles, Box } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
@@ -16,6 +15,7 @@ import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaR
 import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
 import client from '@api/client';
 import { useLocalActorId } from '@api/useLocalActorId';
+import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
 
 interface IUserEntryModalProps {}
 
@@ -44,18 +44,16 @@ const useStyles = makeStyles((theme) => ({
     backgroundImage: `url(${patternBg})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    borderRadius: theme.shape.contentBorderRadius,
   },
   error: {
     marginTop: theme.spacing(1),
     color: theme.palette.error.dark,
   },
   avatarButton: {
-    border: 'none',
-    background: 'none',
     marginTop: theme.spacing(6),
     left: '50%',
     transform: 'translateX(-50%)',
-    cursor: 'pointer',
   },
 }));
 
@@ -84,44 +82,40 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   // psudeo bubble with the updateSelf function and the need to passin
   // the userId (maybe write a work around to leave support open for signed in users)
   return (
-    <Modal isOpen={isOpen} maxWidth={'sm'}>
-      <ModalContentWrapper>
-        <Box display="flex" flexDirection="column" flex={1}>
-          <Box className={classes.avatarArea} position="relative" mb={2}>
-            <div className={classes.background} />
-            <AvatarSelectorBubble
-              className={classes.avatarButton}
-              userData={{
-                userId: '',
-                displayName: self?.displayName,
-                avatarName: self?.avatarName,
-              }}
-              updateSelf={client.participants.updateSelf}
-              showVideo
-            />
+    <Formik
+      initialValues={{ displayName: self?.displayName || '' }}
+      enableReinitialize
+      onSubmit={onSubmitHandler}
+      validationSchema={validationSchema}
+      validateOnBlur
+    >
+      {({ values }) => (
+        <Modal isOpen={isOpen} maxWidth={'sm'}>
+          <Box display="flex" flexDirection="column" flex={1} m={4}>
+            <Box className={classes.avatarArea} position="relative" mb={2}>
+              <div className={classes.background} />
+              <PseudoUserBubble
+                className={classes.avatarButton}
+                userData={{
+                  userId: '',
+                  displayName: values.displayName,
+                  avatarName: self?.avatarName,
+                }}
+              />
+            </Box>
+            <Form>
+              <FormikTextField
+                id="displayName"
+                name="displayName"
+                placeholder={t('modals.userEntry.placeholderText')}
+                margin="normal"
+                autoFocus
+              />
+              <FormikSubmitButton>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
+            </Form>
           </Box>
-          <Formik
-            initialValues={{ displayName: self?.displayName || '' }}
-            enableReinitialize
-            onSubmit={onSubmitHandler}
-            validationSchema={validationSchema}
-          >
-            {(isValid) => (
-              <Form>
-                <Box mb={2}>
-                  <FormikTextField
-                    id="displayName"
-                    name="displayName"
-                    placeholder={t('modals.userEntry.placeholderText')}
-                    margin="normal"
-                  />
-                  <FormikSubmitButton disabled={!isValid}>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
-                </Box>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </ModalContentWrapper>
-    </Modal>
+        </Modal>
+      )}
+    </Formik>
   );
 };

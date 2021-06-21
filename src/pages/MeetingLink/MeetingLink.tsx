@@ -1,10 +1,8 @@
 import * as React from 'react';
 import clsx from 'clsx';
 import { makeStyles, Typography, Box, TextField, Button, MuiThemeProvider } from '@material-ui/core';
-import { RouteComponentProps, useHistory } from 'react-router';
-import { ApiNamedMeeting } from '@api/types';
+import { RouteComponentProps } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { RouteNames } from '@constants/RouteNames';
 import { lavender, mandarin, oregano } from '@src/theme/theme';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { CopyIcon } from '@components/icons/CopyIcon';
@@ -130,7 +128,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
                   </MuiThemeProvider>
                 </Box>
                 <MuiThemeProvider theme={lavender}>
-                  <Link disableStyling to={meetingUrl}>
+                  <Link disableStyling to={`/${meetingRoute}`} newTab={false}>
                     <Button className={clsx(classes.buttonRoot, classes.joinBtn)}>
                       {t('pages.meetingLink.joinRoomButton')}
                     </Button>

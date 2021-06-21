@@ -161,6 +161,7 @@ export const AvatarMetadata: { [name: string]: AvatarMetadataType[] } = {
 
 export const randomSectionAvatar = (sectionName: string, seed?: string) => {
   const sectionAvatars = AvatarMetadata[sectionName];
+  if (!sectionAvatars) throw new Error(`Unknown avatar section name ${sectionName}`);
   let pos = 0;
   // calling seedRandom with undefined seed will return the
   // same thing every time, so we need to check

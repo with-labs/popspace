@@ -1,5 +1,4 @@
 import { AvatarMetadata } from '@constants/AvatarMetadata';
-import seedRandom from 'seed-random';
 
 export interface IAvatar {
   name: string;
@@ -27,10 +26,4 @@ for (const avatarCategory of Object.keys(AvatarMetadata)) {
   }
 }
 
-const randomAvatar = (seed?: string) => {
-  const names = Object.keys(options);
-  const name = names[Math.floor(seedRandom(seed)() * names.length)];
-  return options[name]!;
-};
-
-export { options, randomAvatar };
+export { options };

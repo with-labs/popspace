@@ -1,5 +1,5 @@
+import { randomSectionAvatar } from '@constants/AvatarMetadata';
 import { SIZE_AVATAR } from '@features/room/people/constants';
-import { randomAvatar } from '@utils/AvatarOptions';
 import { logger } from '@utils/logger';
 import { WritableDraft } from 'immer/dist/internal';
 import { exportRoomTemplate } from './exportRoomTemplate';
@@ -12,7 +12,7 @@ import { WidgetShape, WidgetState } from './types/widgets';
 
 const createEmptyParticipantState = (actorId: string) => ({
   displayName: '',
-  avatarName: randomAvatar(actorId).name,
+  avatarName: randomSectionAvatar('brandedPatterns', actorId),
 });
 
 export class RoomStateCacheApi {

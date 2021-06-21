@@ -1,5 +1,3 @@
-const AsyncLock = require('async-lock')
-const lock = new AsyncLock();
 /*
   Represents a living/dynamic manifestation of a room:
   the currently connected group of people through
@@ -16,7 +14,10 @@ class SocketGroup {
       networking session anchored to a room.
 
       The in-memory entity needs an ID, but since they are 1:1 on
-      rooms, there is no better ID source than the room itself
+      rooms, there is no better ID source than the room itself.
+
+      Perhaps some mature version of huddles will require multiple socket
+      groups per room - we can deal with the problem then.
     */
     this.id = room.id
     this._room = room
@@ -40,35 +41,13 @@ class SocketGroup {
   }
 
   async addParticipant(participant) {
-    await lock.acquire('participants_array', () => {
-      /*
-        In principle, there's a race condition here.
-
-        Node.js is NOT single-threaded for I/O operations,
-        and socket connections are I/O.
-
-        So when participants connect on a socket,
-        the connect event is processed on a separate thread,
-        so 2 connecting participants can get interleaved.
-      */
-      this._participants.push(participant)
-    })
+    this._participants.push(participant)
   }
 
   async removeParticipant(participant)  {
-    let removed = false
-    await lock.acquire('participants_array', () => {
-      // we should find the index inside the lock so the array is not modified mid-search
-      let index = this._participants.findIndex((p) => (p == participant))
-      if(index > -1) {
-        this._participants.splice(index, 1)
-        removed = true
-      }
-    })
-    if(removed) {
-      /*
-        Output is long-running so let's do it outside the lock
-      */
+    let index = this._participants.findIndex((p) => (p == participant))
+    if(index > -1) {
+      this._participants.splice(index, 1)
       log.app.info(`Removed participant ${this._participants.length}`)
     } else {
       log.app.error(`Removed failed for ${participant.id} in ${this.id}: ${JSON.stringify(this._participants.map((p) => (p.id + " " + (p==participant))))}`)

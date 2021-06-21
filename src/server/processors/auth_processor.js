@@ -24,8 +24,6 @@ class AuthProcessor {
       )
     }
     const room = await shared.db.room.core.roomByRoute(payload.room_route)
-
-
     if(!room) {
       return sender.sendError(
         hermesEvent,

@@ -16,10 +16,6 @@ class Participants {
     return this.socketGroupsByRoomId[roomId]
   }
 
-  setMessageHandler(messageHandler) {
-    this.messageHandler = messageHandler
-  }
-
   setEventHandler(eventHandler) {
     this.eventHandler = eventHandler
   }
@@ -32,18 +28,34 @@ class Participants {
     await participant.joinSocketGroup(this.socketGroupsByRoomId[roomId])
   }
 
-  addSocket(socket) {
-    const participant = new Participant(socket, this.heartbeatTimeoutMillis)
+  async addSocket(socket, req) {
+    const participant = new Participant(socket, req, this.heartbeatTimeoutMillis)
     socket.participant = participant
-    this.participants[participant.id] = participant
     participant.setEventHandler(this.onEventReceived)
-    socket.on('close', () => (this.removeParticipant(participant)))
-    log.dev.debug(`New client - ${participant.id}`)
 
+    /*
+      Still thinking about this.
+
+      Perhaps it's easier to have in-memory hermesIds for participants,
+      and key on those - for a single run of the server, that's all we need.
+
+      For analytics, we'll use the datbase IDs - but writing to the DB
+      can always wait for the first write to the DB with the participant ID.
+    */
+    await participant.awaitInit()
+    this.participants[participant.id] = participant
+    /*
+      NOTE: this handler makes most sense after we've recorded the participant
+
+      In principle a race condition is possible here where the participant leaves
+      before the handler is assigned (either after it's recorded or before)...
+    */
+    socket.once('close', () => (this.removeParticipant(participant)))
+    log.dev.debug(`New client - ${participant.id}`)
     lib.analytics.participantCountChanged(Object.keys(this.participants).length)
   }
 
-  removeParticipant(participant) {
+  async removeParticipant(participant) {
     delete this.participants[participant.id]
     const promise = participant.disconnect()
     lib.analytics.participantCountChanged(Object.keys(this.participants).length)

@@ -14,7 +14,10 @@ class SocketGroup {
       networking session anchored to a room.
 
       The in-memory entity needs an ID, but since they are 1:1 on
-      rooms, there is no better ID source than the room itself
+      rooms, there is no better ID source than the room itself.
+
+      Perhaps some mature version of huddles will require multiple socket
+      groups per room - we can deal with the problem then.
     */
     this.id = room.id
     this._room = room
@@ -37,11 +40,11 @@ class SocketGroup {
     return this._room
   }
 
-  addParticipant(participant) {
+  async addParticipant(participant) {
     this._participants.push(participant)
   }
 
-  removeParticipant(participant)  {
+  async removeParticipant(participant)  {
     let index = this._participants.findIndex((p) => (p == participant))
     if(index > -1) {
       this._participants.splice(index, 1)

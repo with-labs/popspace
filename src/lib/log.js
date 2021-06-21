@@ -1,6 +1,6 @@
 const log4js = require("log4js")
 const NO_TEST = process.env.NODE_ENV == "test" ? "off" : "info"
-const DEV_ONLY = ["development"].includes(process.env.NODE_ENV) ? "trace" : "off"
+const DEV_ONLY = ["development"].includes(process.env.NODE_ENV) ? "info" : "off"
 
 const log4jsConfig = {
   appenders: {

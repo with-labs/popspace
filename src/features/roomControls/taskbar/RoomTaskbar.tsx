@@ -15,6 +15,7 @@ import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
 import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
 import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
+import { ReactComponent as Logo } from '@src/images/logo.svg';
 
 export interface IRoomTaskbarProps {
   className?: string;
@@ -47,8 +48,8 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
-          <Box width={150} display="flex" alignItems="center">
-            LOGO FPO
+          <Box width={75} display="flex" alignItems="center">
+            <Logo />
           </Box>
           <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1}>
             <MediaFailedWrapper>

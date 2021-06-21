@@ -57,7 +57,7 @@ export default function RoomPage(props: IRoomPageProps) {
       <ErrorDialog dismissError={() => setError(null)} error={error} />
       <LocalTracksProvider>
         {props.roomRoute ? (
-          <TwilioProvider roomName={props.roomRoute}>
+          <TwilioProvider roomRoute={props.roomRoute}>
             <RemoteControlProvider>
               <div className={classes.roomWrapper}>
                 <ErrorBoundary fallback={() => <RoomFallback />}>

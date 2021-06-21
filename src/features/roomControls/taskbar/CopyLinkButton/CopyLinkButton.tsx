@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CopyIcon } from '@components/icons/CopyIcon';
-import { makeStyles, Button, useTheme } from '@material-ui/core';
+import { makeStyles, Button, useTheme, Hidden, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
@@ -12,6 +12,14 @@ const useStyles = makeStyles((theme) => ({
     '&:hover': {
       backgroundColor: theme.palette.grey[300],
     },
+  },
+  buttonText: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+  iconButton: {
+    borderRadius: theme.shape.contentBorderRadius,
   },
 }));
 
@@ -27,14 +35,23 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
   };
 
   return (
-    <Button
-      variant="text"
-      className={classes.button}
-      startIcon={<CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />}
-      onClick={onCopy}
-      fullWidth={false}
-    >
-      {t('features.roomControls.CopyLinkButtonText')}
-    </Button>
+    <>
+      <Hidden smDown>
+        <Button
+          variant="text"
+          className={classes.button}
+          startIcon={<CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />}
+          onClick={onCopy}
+          fullWidth={false}
+        >
+          {t('features.roomControls.CopyLinkButtonText')}
+        </Button>
+      </Hidden>
+      <Hidden mdUp>
+        <IconButton onClick={onCopy} classes={{ root: classes.iconButton }}>
+          <CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />
+        </IconButton>
+      </Hidden>
+    </>
   );
 };

@@ -155,8 +155,6 @@
     "prebuild": "yarn run licenses",
     "build": "craco build",
     "dev": "netlify dev",
-    "local:dev": "NODE_ENV=development REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://localhost:3000' REACT_APP_WITH_API_HOST='https://localhost:3000'  REACT_APP_SOCKET_HOST='wss://localhost:3000' yarn dev",
-    "local:staging": "NODE_ENV=staging REACT_APP_SIM_PASS=true REACT_APP_MERCURY_API_HOST='https://test.with.so:8443' REACT_APP_WITH_API_HOST='https://test.with.so:8443' REACT_APP_SOCKET_HOST='wss://test.with.so:8443' yarn dev",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
     "test:watch": "jest --watch --bail",

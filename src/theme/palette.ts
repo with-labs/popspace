@@ -61,6 +61,9 @@ const palette = {
     // slate bold
     regular: 'rgba(190,195,215,0.7)',
   },
+  vintageInk: {
+    regular: '#545351',
+  },
 };
 
 export default palette;

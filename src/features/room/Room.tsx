@@ -18,10 +18,11 @@ import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
 import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 import { SignUpModal } from '../roomModals/SignUpModal';
-import { ConfirmCodeModal } from '../roomModals/ConfirmCodeModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
 import { ReconnectingAlert } from './ReconnectingAlert';
+import { useLocalActorId } from '@api/useLocalActorId';
+import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 
 interface IRoomProps {}
 
@@ -40,37 +41,45 @@ export const RoomView = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
-
+  const localId = useLocalActorId();
+  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.participantState);
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
+
+  // TODO: Do we still need this?
   useExitToPreRoom();
   useBindPaste();
 
   return (
-    <RoomViewportProvider>
-      <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>
-        <RoomControls />
-        <RoomCanvasRenderer data-test-room>
-          <PageTitle title={roomName} />
-          <ErrorBoundary fallback={() => <WidgetsFallback />}>
-            {widgetIds.map((id) => (
-              <Widget id={id} key={id} />
-            ))}
-          </ErrorBoundary>
-          {peopleIds.map((id) => (
-            <Person key={id} personId={id} />
-          ))}
-          <CursorLayer />
-          <PasteConfirmModal />
-        </RoomCanvasRenderer>
-      </Box>
-      <RoomSettingsModal />
-      <SpeakingStateObserver />
-      <ChangelogModal />
-      <UnsavedModal />
-      <SignUpModal />
-      <UserEntryModal />
-      <ConfirmCodeModal email={'test@test.com'} />
-      <ReconnectingAlert />
-    </RoomViewportProvider>
+    <>
+      {self ? (
+        <RoomViewportProvider>
+          <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>
+            <RoomControls />
+            <RoomCanvasRenderer data-test-room>
+              <PageTitle title={roomName} />
+              <ErrorBoundary fallback={() => <WidgetsFallback />}>
+                {widgetIds.map((id) => (
+                  <Widget id={id} key={id} />
+                ))}
+              </ErrorBoundary>
+              {peopleIds.map((id) => (
+                <Person key={id} personId={id} />
+              ))}
+              <CursorLayer />
+              <PasteConfirmModal />
+            </RoomCanvasRenderer>
+          </Box>
+          <RoomSettingsModal />
+          <SpeakingStateObserver />
+          <ChangelogModal />
+          <UnsavedModal />
+          <SignUpModal />
+          <UserEntryModal />
+          <ReconnectingAlert />
+        </RoomViewportProvider>
+      ) : (
+        <FullscreenLoading />
+      )}
+    </>
   );
 });

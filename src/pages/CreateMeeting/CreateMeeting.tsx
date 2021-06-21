@@ -37,7 +37,7 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
       if (!Object.values(MeetingTemplateName).includes(meetingType as MeetingTemplateName)) {
         // redirect to root with error
         // TODO: figure out how we want to handle error messing here
-        history.push(RouteNames.ROOT);
+        history.push(RouteNames.CREATE_MEETING);
         return;
       }
       // create a new meeting based on the type
@@ -45,7 +45,7 @@ export const CreateMeeting: React.FC<ICreateMeetingProps> = (props) => {
     } else {
       // redirect to meeting select, since we dont have a valid
       // TODO: figure out how we want to handle error messing here
-      history.push(RouteNames.ROOT);
+      history.push(RouteNames.CREATE_MEETING);
     }
   }, [createMeeting, history, meetingType]);
 

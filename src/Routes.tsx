@@ -10,6 +10,7 @@ import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 import { CreateMeeting } from './pages/CreateMeeting/CreateMeeting';
 import { PostMeeting } from './pages/PostMeeting/PostMeeting';
 import { LandingPage } from './pages/LandingPage';
+
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
 
 export interface IRoutesProps {}

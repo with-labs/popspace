@@ -9,6 +9,7 @@ import { lavender, mandarin, oregano } from '@src/theme/theme';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
+import toast from 'react-hot-toast';
 
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import { logger } from '@utils/logger';
@@ -21,6 +22,8 @@ export interface IMeetingLinkProps {}
 const useStyles = makeStyles((theme) => ({
   explanationText: {
     width: 290,
+    color: theme.palette.brandColors.vintageInk.regular,
+    paddingBottom: theme.spacing(4),
   },
   inputRoot: {
     height: 70,
@@ -75,6 +78,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = () => {
       if (meetingInfo) {
         setToggleCopyButton(true);
         await navigator.clipboard.writeText(meetingUrl);
+        toast.success(t('features.roomControls.linkCopied') as string);
         // todo: add analytics
       }
     } catch (err) {

@@ -38,7 +38,6 @@ export function useCanvasObjectResize({
       !isInBounds(initialSize.width, info.minWidth, info.maxWidth) ||
       !isInBounds(initialSize.height, info.minHeight, info.maxHeight)
     ) {
-      console.debug(`BOUNDS CHECK`, initialSize);
       // sanity check: if the current dimensions are outside bounds, clamp them to bounds!
       canvas.setSize(initialSize, objectId, objectKind, {
         ...info,

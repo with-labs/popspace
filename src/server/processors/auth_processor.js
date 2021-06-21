@@ -32,7 +32,6 @@ class AuthProcessor {
         {room_route: payload.room_route}
       )
     }
-    console.log("Got room")
 
     const socketGroup = participants.getSocketGroup(room.id)
     if(socketGroup && socketGroup.hasExceededMaxParticipantsLimit()) {
@@ -43,9 +42,7 @@ class AuthProcessor {
         {limit: socketGroup.getMaxParticipants()}
       )
     }
-    console.log("Authenticating")
     const success = await sender.authenticate(payload.token, payload.room_route)
-    console.log("Authed")
     if(success) {
       /*
         TODO: it'd be nice to get rid of this participants reference.

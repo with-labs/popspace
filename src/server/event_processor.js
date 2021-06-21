@@ -38,7 +38,6 @@ class EventProcessor {
   constructor(participants) {
     this.participants = participants
     this.participants.setEventHandler(async (hermesEvent) => {
-      console.log("Got event")
       const eventKind = hermesEvent.kind()
       const action = ACTION_BY_EVENT_KIND[eventKind]
       const sender = hermesEvent.senderParticipant()
@@ -56,7 +55,6 @@ class EventProcessor {
         }
       }
       try {
-        console.log("Procesing")
         return await processors[action].process(hermesEvent, this.participants)
       } catch(e) {
         log.app.error(`Error processing ${action}: ${e ? e.message || e : 'null error'}\n${e ? e.stack : ''}`)

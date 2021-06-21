@@ -38,6 +38,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "http-terminator": "^3.0.0",
     "jest": "^26.6.3",
     "jest-cli": "^26.6.3",
     "log4js": "^6.3.0",

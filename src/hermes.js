@@ -4,6 +4,7 @@ const https = require('https')
 const ws = require('ws')
 const Participants = require("./server/participants")
 const EventProcessor = require("./server/event_processor")
+const { createHttpTerminator } = require("http-terminator")
 
 const loadSsl = () => {
   const privateKey  = fs.readFileSync(process.env.SSL_PRIVATE_KEY_PATH, 'utf8')
@@ -21,6 +22,9 @@ class Hermes {
 
     this.ws = new ws.Server({ noServer: true })
     this.ws.on('connection', async (socket, request) => {
+      if(this.stopped) {
+        return socket.close()
+      }
       await this.participants.addSocket(socket, request)
     })
 
@@ -38,10 +42,10 @@ class Hermes {
   }
 
   async start() {
+    this.stopped = false
     return new Promise((resolve, reject) => {
       this.server = https.createServer(loadSsl(), this.express)
       this.server.on('upgrade', (request, socket, head) => {
-        console.log(head)
         // Standard http upgrade procedure
         // https://www.npmjs.com/package/ws#multiple-servers-sharing-a-single-https-server
         this.ws.handleUpgrade(request, socket, head, (socket) => {
@@ -56,8 +60,9 @@ class Hermes {
   }
 
   async stop() {
+    this.stopped = true
     await this.participants.disconnectAll()
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       this.server.close(() => {
         log.app.info(`Server stopped.`)
         this.ws.close(() => {

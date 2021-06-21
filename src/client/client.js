@@ -56,21 +56,24 @@ class Client extends EventEmitter {
     if(this.socket) {
       return
     }
-    return new Promise((resolve, reject) => {
+    return this.connectPromise = new Promise((resolve, reject) => {
       this.resolveConnect = resolve
       this.socket = new ws(this.serverUrl, {
+        /* TODO: pass in the ROOTCA for mkcert instead for dev/test*/
         rejectUnauthorized: lib.appInfo.isProduction()
       })
       this.socket.on('open', () => {
-        this.ready = true
-        this.resolveConnect(this)
-        this.startHeartbeat()
+        /*
+          We're not setting the ready flag here,
+          instead we're waiting for the application-level
+          ready signal, see the system socketReady event
+        */
       })
       this.socket.on('close', () => {
         this.stopHeartbeat()
         this.ready = false
       })
-      this.socket.on('message', (message) => {
+      this.socket.on('message', async (message) => {
         log.dev.debug(`${this.id} received ${message}`)
         try {
           const event = new ClientReceivedEvent(this, message)
@@ -208,16 +211,15 @@ class Client extends EventEmitter {
 
   async sendEventWithPromise(kind, payload) {
     const event = this.makeEvent(kind, payload)
-    console.log("Made event", event)
     const { promise, resolver } = this.makeEventPromise(event)
     this.promiseResolvers.push(resolver)
-    console.log("Sending")
     this.sendEvent(event)
     return promise
   }
 
   async broadcast(message) {
-    return this.sendEventWithPromise("echo", { message })
+    const result = this.sendEventWithPromise("echo", { message })
+    return result
   }
 
 
@@ -284,8 +286,11 @@ class Client extends EventEmitter {
         break
       case 'system':
         if(event.payload.socketReady) {
-
+          this.ready = true
+          this.resolveConnect(this)
+          this.startHeartbeat()
           this.resolveConnect = null
+          this.connectPromise = null
         }
     }
   }

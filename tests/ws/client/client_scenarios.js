@@ -1,6 +1,6 @@
 module.exports = {
   "connect_send_disconnect": lib.test.template.testServerClients(1, async (clients) => {
-    clients[0].broadcast("hello")
+    const result = await clients[0].broadcast("hello")
     return true
   }),
 
@@ -9,6 +9,7 @@ module.exports = {
     const heartbeatTimeoutMillis = 100
     const client = new lib.Client(`wss://localhost:${process.env.TEST_PORT}`, heartbeatIntervalMillis, heartbeatTimeoutMillis)
     await client.connect()
+
     const readyBeforeTimeout = client.isReady()
     const clientsBeforeTimeout = hermes.clientsCount()
     await new Promise((resolve, reject) => setTimeout(resolve, heartbeatTimeoutMillis * 2))
@@ -64,8 +65,6 @@ module.exports = {
     const messagesReceived = []
     const receivePromises = []
 
-
-    console.log("STARTING TEST")
     testEnvironment.forEachParticipant((roomActorClient) => {
       if(roomActorClient.client != sender) {
         receivePromises.push(new Promise((resolve, reject) => {

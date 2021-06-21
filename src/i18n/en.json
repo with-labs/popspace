@@ -471,16 +471,22 @@
       "onboarding": {
         "title": "Getting started",
         "move": {
-          "details": "To move in a Tilde room, drag and drop your avatar wherever you want to go!",
-          "title": "Move"
+          "details": "To break out in groups in a Tilde room, drag your avatar wherever you want to go. Try it now!",
+          "title": "Move & Break out"
         },
         "addWidgets": {
-          "title": "Add Widgets",
-          "details": "You can add many kind of content to the room. Try it now by clicking on one of the icons at the bottom of the window."
+          "title": "Add content to the room",
+          "details": "You can add many kinds of content to the room. Try it now! Click on one of the icons at the bottom of the window."
         },
         "persistence": {
-          "title": "Persistence",
-          "details": "All the widgets you create and the files your upload are automatically saved in the room. Bookmark this page and come back at any time and eveything will still be there."
+          "title": "Rooms are persistent",
+          "details": "All the widgets you create and the files your upload are automatically saved in the room. Bookmark this page and come back at any time and everything will still be there.",
+          "later": "Later"
+        },
+        "makeYourOwn": {
+          "title": "Your own Tilde rooms",
+          "details": "Tilde offers <strong>free</strong> and <strong>instant</strong> meeting rooms for all your collaborative needs.",
+          "learnMore": "Learn more"
         }
       }
     },

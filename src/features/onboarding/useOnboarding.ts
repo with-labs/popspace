@@ -5,12 +5,14 @@ export type OnboardingStateShape = {
   hasMoved: boolean;
   hasCreated: boolean;
   hasAcknowledgedPersistence: boolean;
+  hasAcknowledgedMakeYourOwn: boolean;
 };
 
 const DEFAULT_STATE = {
   hasMoved: false,
   hasCreated: false,
   hasAcknowledgedPersistence: false,
+  hasAcknowledgedMakeYourOwn: false,
 };
 
 const STORAGE_KEY = 'ndl_onboarding';
@@ -47,6 +49,7 @@ export const useOnboarding = create(
           hasMoved: true,
           hasCreated: true,
           hasAcknowledgedPersistence: true,
+          hasAcknowledgedMakeYourOwn: true,
         });
         saveState(get());
       },

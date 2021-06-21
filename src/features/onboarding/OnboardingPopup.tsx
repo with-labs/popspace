@@ -1,6 +1,8 @@
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
+import { Link } from '@components/Link/Link';
+import { Spacing } from '@components/Spacing/Spacing';
+import { RouteNames } from '@constants/RouteNames';
 import {
   Accordion,
   AccordionDetails,
@@ -13,20 +15,22 @@ import {
   Typography,
   useMediaQuery,
   Theme,
+  Paper,
+  Grow,
+  useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { OnboardingStateShape, useOnboarding } from './useOnboarding';
 
 export interface IOnboardingPopupProps {}
-
-const noop = () => {};
 
 const useStyles = makeStyles((theme) => ({
   root: {
     [theme.breakpoints.up('md')]: {
       width: 360,
+      maxHeight: '80vh',
     },
   },
 }));
@@ -36,15 +40,17 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   const classes = useStyles();
 
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
+  const theme = useTheme();
 
-  const { api, hasMoved, hasCreated, hasAcknowledgedPersistence } = useOnboarding();
+  const { api, hasMoved, hasCreated, hasAcknowledgedPersistence, hasAcknowledgedMakeYourOwn } = useOnboarding();
 
-  const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence;
+  const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence && hasAcknowledgedMakeYourOwn;
   const latestUndone = React.useMemo(() => {
     if (!hasMoved) return 'hasMoved';
     if (!hasCreated && !isSmall) return 'hasCreated';
-    return 'hasAcknowledgedPersistence';
-  }, [hasMoved, hasCreated, isSmall]);
+    if (!hasAcknowledgedPersistence) return 'hasAcknowledgedPersistence';
+    return 'hasAcknowledgedMakeYourOwn';
+  }, [hasMoved, hasCreated, isSmall, hasAcknowledgedPersistence]);
 
   const actionRef = React.useRef<PopoverActions>(null);
 
@@ -60,53 +66,76 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   };
 
   return (
-    <ResponsivePopover
-      open={!done}
-      onClose={noop}
-      disableBlockBackground
-      className={classes.root}
-      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      action={actionRef}
-    >
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Typography variant="h2">{t('features.onboarding.title')}</Typography>
-        <IconButton onClick={api.markAll}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-      <Box p={2} overflow="auto" height="300px">
-        <OnboardingStep
-          id="move"
-          title={t('features.onboarding.move.title')}
-          details={t('features.onboarding.move.details')}
-          expanded={expanded === 'hasMoved'}
-          done={hasMoved}
-          onChange={() => openSection('hasMoved')}
-        />
-        {!isSmall && (
+    <Grow in={!done}>
+      <Box
+        component={Paper}
+        p={2}
+        {...({ elevation: 3 } as any)}
+        position="fixed"
+        bottom={theme.spacing(2)}
+        right={theme.spacing(2)}
+        className={classes.root}
+        zIndex={theme.zIndex.modal}
+        display="flex"
+        flexDirection="column"
+      >
+        <Box display="flex" justifyContent="space-between" p={2}>
+          <Typography variant="h2">{t('features.onboarding.title')}</Typography>
+          <IconButton onClick={api.markAll}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <Box p={2} overflow="auto" flex={1}>
+          <OnboardingStep
+            id="move"
+            title={t('features.onboarding.move.title')}
+            details={t('features.onboarding.move.details')}
+            expanded={expanded === 'hasMoved'}
+            done={hasMoved}
+            onChange={() => openSection('hasMoved')}
+          />
+          {!isSmall && (
+            <OnboardingStep
+              id="create"
+              title={t('features.onboarding.addWidgets.title')}
+              details={t('features.onboarding.addWidgets.details')}
+              expanded={expanded === 'hasCreated'}
+              done={hasCreated}
+              onChange={() => openSection('hasCreated')}
+            />
+          )}
+          <OnboardingStep
+            id="persistence"
+            title={t('features.onboarding.persistence.title')}
+            details={t('features.onboarding.persistence.details')}
+            expanded={expanded === 'hasAcknowledgedPersistence'}
+            done={hasAcknowledgedPersistence}
+            onChange={() => openSection('hasAcknowledgedPersistence')}
+          >
+            <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="default">
+              {t('features.onboarding.persistence.later')}
+            </Button>
+          </OnboardingStep>
           <OnboardingStep
             id="create"
-            title={t('features.onboarding.addWidgets.title')}
-            details={t('features.onboarding.addWidgets.details')}
-            expanded={expanded === 'hasCreated'}
-            done={hasCreated}
-            onChange={() => openSection('hasCreated')}
-          />
-        )}
-        <OnboardingStep
-          id="persistence"
-          title={t('features.onboarding.persistence.title')}
-          details={t('features.onboarding.persistence.details')}
-          expanded={expanded === 'hasAcknowledgedPersistence'}
-          done={hasAcknowledgedPersistence}
-          onChange={() => openSection('hasAcknowledgedPersistence')}
-        >
-          <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="default">
-            {t('common.confirm')}
-          </Button>
-        </OnboardingStep>
+            title={t('features.onboarding.makeYourOwn.title')}
+            details={<Trans i18nKey="features.onboarding.makeYourOwn.details" />}
+            expanded={expanded === 'hasAcknowledgedMakeYourOwn'}
+            done={hasAcknowledgedMakeYourOwn}
+            onChange={() => openSection('hasAcknowledgedMakeYourOwn')}
+          >
+            <Spacing flexDirection="column">
+              <Link to={RouteNames.ROOT} disableStyling newTab>
+                <Button color="default">{t('features.onboarding.makeYourOwn.learnMore')}</Button>
+              </Link>
+              <Button onClick={() => api.markComplete('hasAcknowledgedMakeYourOwn')} color="default">
+                {t('common.confirm')}
+              </Button>
+            </Spacing>
+          </OnboardingStep>
+        </Box>
       </Box>
-    </ResponsivePopover>
+    </Grow>
   );
 };
 
@@ -132,7 +161,7 @@ const useStepStyles = makeStyles((theme) => ({
 const OnboardingStep: React.FC<{
   id: string;
   title: string;
-  details: string;
+  details: React.ReactNode;
   done: boolean;
   expanded: boolean;
   onChange: (event: any, isExpanded: boolean) => void;
@@ -157,7 +186,7 @@ const OnboardingStep: React.FC<{
         </Typography>
       </AccordionSummary>
       <AccordionDetails id={`${id}-details`} className={classes.details}>
-        <Typography paragraph>{details}</Typography>
+        <Typography paragraph={!!children}>{details}</Typography>
         {children}
       </AccordionDetails>
     </Accordion>

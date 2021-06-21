@@ -1102,12 +1102,26 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         rounded: {
           borderRadius: shape.borderRadius,
           backgroundColor: palette.grey[100],
+          border: 'none',
           margin: `${spacing(1)}px 0`,
         },
       },
       MuiAccordionDetails: {
         root: {
           fontSize: typography.pxToRem(16),
+        },
+      },
+      MuiAccordionSummary: {
+        root: {
+          '&$expanded': {
+            minHeight: 24,
+          },
+        },
+        content: {
+          margin: `${spacing(1.5)}px 0`,
+          '&$expanded': {
+            margin: `${spacing(1.5)}px 0 0 0`,
+          },
         },
       },
       MuiCard: {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Modal } from '@components/Modal/Modal';
-import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import * as Yup from 'yup';

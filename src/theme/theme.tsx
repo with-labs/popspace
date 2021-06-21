@@ -420,6 +420,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           padding: '10px 12px',
         },
       },
+      MuiOutlinedInput: {
+        inputAdornedEnd: {
+          marginRight: spacing(1),
+        },
+      },
       MuiInputLabel: {
         formControl: {
           position: 'relative',
@@ -1121,14 +1126,14 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           transform: 'scale(1)',
           boxShadow: mainShadows.none,
           '&$focusVisible': {
-            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
           '&:hover': {
-            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
           '&:active': {
             backgroundColor: brandPalette.lavender.light,
-            boxShadow: `0 0 0 4px ${brandPalette.lavender.ink}`,
+            boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
         },
         focusHighlight: {

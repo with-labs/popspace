@@ -50,7 +50,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
     (async () => {
       try {
         const meeting = await create(selected);
-        history.push(RouteNames.MEETING_LINK, {
+        history.push(RouteNames.MEETING_LINK.replace(':meetingRoute', meeting.route), {
           meetingInfo: meeting,
         });
       } catch (err) {

@@ -26,18 +26,19 @@ const runScenario = (testPath="../tests") => {
       path += `/${runOptions.component}`
     }
 
-    console.log("\n-------------- " + chalk.red.bold.underline.bgBlack(` ${runOptions.test}.${runOptions.scenario} `) + " --------------\n\n")
+    console.log("\n-------------- " + chalk.red.bold.underline.bgBlack(` ${runOptions.test}.${runOptions.scenario} `) + " --------------\n")
     const testSuite = require(`${path}/${runOptions.test}/${runOptions.test}_scenarios.js`)
     await shared.test.init()
     await shared.init()
     await shared.db.pg.silenceLogs()
     const result = await testSuite[runOptions.scenario]()
 
-    console.log(chalk.bgBlack.white.bold("Test result:\n\n"))
+    console.log(chalk.bgBlack.white.bold("\n===== Test result ======\n\n"))
     console.log(util.inspect(result, {depth: 20, colors: true}))
+    console.log(chalk.bgBlack.white.bold("\n\n========================\n"))
 
     await shared.cleanup()
-    console.log("\n\n------------------------- Done -----------------------\n")
+    console.log("\n------------------------- Done -----------------------\n")
     return result
   }
 

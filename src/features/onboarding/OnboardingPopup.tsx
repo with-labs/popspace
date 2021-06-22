@@ -1,6 +1,7 @@
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import { Link } from '@components/Link/Link';
+import { useMediaReady } from '@components/MediaReadinessProvider/useMediaReady';
 import { Spacing } from '@components/Spacing/Spacing';
 import { RouteNames } from '@constants/RouteNames';
 import {
@@ -65,8 +66,12 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
     setTimeout(() => actionRef.current?.updatePosition(), 300);
   };
 
+  const isReady = useMediaReady();
+
+  const isOpen = !done && isReady;
+
   return (
-    <Grow in={!done}>
+    <Grow in={isOpen}>
       <Box
         component={Paper}
         p={2}

@@ -1154,6 +1154,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           display: 'none',
         },
       },
+      MuiBackdrop: {
+        root: {
+          // has to override inline style :(
+          backgroundColor: 'rgba(58%, 61.2%, 72.9%, 0.4) !important',
+        },
+      },
     },
   });
 };

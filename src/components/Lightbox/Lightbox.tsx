@@ -11,7 +11,7 @@ export interface ILightboxProps extends ModalProps {
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
-    backgroundColor: 'rgba(191, 195, 215, 0.4)',
+    backgroundColor: 'rgba(58%, 61.2%, 72.9%, 0.4) !important',
   },
   modal: {
     display: 'flex',

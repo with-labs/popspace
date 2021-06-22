@@ -1,4 +1,4 @@
-import { Hidden, makeStyles, Paper, Box } from '@material-ui/core';
+import { Hidden, makeStyles, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';

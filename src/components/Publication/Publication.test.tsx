@@ -15,6 +15,10 @@ mockUseSpatialAudioVolume.mockImplementation(() => {
   return { current: 1 };
 });
 
+jest.mock('@providers/canvas/CanvasObject', () => ({
+  useCanvasObject: jest.fn(() => ({ mediaGroup: null, objectId: 'mockParticipant', objectKind: 'widget' })),
+}));
+
 describe('the Publication component', () => {
   describe('when track.kind is "video"', () => {
     it('should render a VideoTrack', () => {
@@ -25,9 +29,7 @@ describe('the Publication component', () => {
         detach: jest.fn(),
         setPriority: jest.fn(),
       }));
-      const wrapper = render(
-        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
-      );
+      const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('video').length).toBe(1);
     });
@@ -40,9 +42,7 @@ describe('the Publication component', () => {
         detach: jest.fn(),
         setPriority: jest.fn(),
       }));
-      const wrapper = render(
-        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
-      );
+      const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelector('video')?.style.transform).not.toBe('rotateY(180deg)');
     });
@@ -55,13 +55,7 @@ describe('the Publication component', () => {
         detach: jest.fn(),
         setPriority: jest.fn(),
       }));
-      const wrapper = render(
-        <Publication
-          isLocal
-          publication={{ trackName: `${CAMERA_TRACK_NAME}#foo` } as any}
-          objectId={'mockParticipant'}
-        />
-      );
+      const wrapper = render(<Publication isLocal publication={{ trackName: `${CAMERA_TRACK_NAME}#foo` } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: `${CAMERA_TRACK_NAME}#foo` });
       expect(wrapper.container.querySelector('video')?.style.transform).toBe('rotateY(180deg)');
     });
@@ -77,7 +71,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-          <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
+          <Publication isLocal publication={{ trackName: 'trackName' } as any} />
         </MediaReadinessContext.Provider>
       );
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
@@ -94,12 +88,7 @@ describe('the Publication component', () => {
       }));
       const wrapper = render(
         <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-          <Publication
-            isLocal
-            publication={{ trackName: 'trackName' } as any}
-            objectId={'mockParticipant'}
-            disableAudio={true}
-          />
+          <Publication isLocal publication={{ trackName: 'trackName' } as any} disableAudio={true} />
         </MediaReadinessContext.Provider>
       );
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
@@ -111,7 +100,7 @@ describe('the Publication component', () => {
     mockUseTrack.mockImplementation(() => null);
     const wrapper = render(
       <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-        <Publication isLocal publication={{ trackName: 'trackName' } as any} objectId={'mockParticipant'} />
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} />
       </MediaReadinessContext.Provider>
     );
     expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });

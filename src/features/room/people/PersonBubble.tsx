@@ -103,7 +103,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
       )
     );
 
-    const { mediaGroup, resize } = useCanvasObject();
+    const { resize } = useCanvasObject();
 
     // extract data from our With backend user
     const userId = person?.id;
@@ -128,14 +128,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
           {/* Still a typing issue with react-spring :( */}
           <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor}>
             {mainStream?.videoPublication && (
-              <Publication
-                classNames={classes.video}
-                publication={mainStream.videoPublication}
-                isLocal={isLocal}
-                objectId={userId}
-                objectKind="user"
-                mediaGroup={mediaGroup}
-              />
+              <Publication classNames={classes.video} publication={mainStream.videoPublication} isLocal={isLocal} />
             )}
           </PersonBubbleBackground>
           {!mainStream?.videoPublication && <PersonBubbleAvatar userId={userId} />}
@@ -144,10 +137,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               classNames={classes.audio}
               publication={mainStream?.audioPublication}
               isLocal={isLocal}
-              objectId={userId}
-              objectKind="user"
               disableAudio={isLocal}
-              mediaGroup={mediaGroup}
             />
           )}
           <PersonBubbleLabel isVideoOn={isVideoOn}>

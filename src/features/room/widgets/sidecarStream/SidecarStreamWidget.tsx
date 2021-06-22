@@ -146,7 +146,6 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
           className={classes.screenShare}
           isFullscreen={isFullscreen}
           onFullscreenExit={onExitFullscreen}
-          objectId={state.widgetId}
           muted={isLocalMuted}
           videoPublication={videoPublication}
           audioPublication={audioPublication}

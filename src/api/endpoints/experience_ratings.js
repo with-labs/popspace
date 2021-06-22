@@ -5,34 +5,14 @@ class ExperienceRatings {
   }
 
   initPost = () => {
-    this.zoo.loggedInPostEndpoint("/submit_experience_rating", async (req, res) => {
-      if (!req.body.room_route) {
-        return api.http.fail(req, res, {
-          message:  "Room route must be provided",
-          errorCode: shared.error.code.INVALID_API_PARAMS,
-        })
-      } else if (!req.body.rating && req.body.rating !== 0) {
-        return api.http.fail(req, res, {
-          message: "Rating must be provided",
-          errorCode: shared.error.code.INVALID_API_PARAMS,
-        })
-      }
+    this.zoo.roomRouteEndpoint("/submit_experience_rating", async (req, res, params) => {
       const submittedAt = new Date()
       const feedback = req.body.feedback || null
 
-      const room = await shared.db.room.core.roomByRoute(req.body.room_route)
-
-      if (!room) {
-        return api.http.fail(req, res, {
-          message: "Provided room not found",
-          errorCode: shared.error.code.UNKNOWN_ROOM,
-        }, shared.http.code.NOT_FOUND)
-      }
-
       const rating = await shared.db.experienceRatings.createRating(
         req.actor.id,
-        room.id,
-        req.body.rating,
+        req.room.id,
+        params.rating,
         submittedAt,
         feedback
       )
@@ -40,17 +20,10 @@ class ExperienceRatings {
       lib.feedback.notify(rating, req.actor, false)
 
       return api.http.succeed(req, res, { ratingId: rating.id, rating: rating.rating, feedback: rating.feedback })
-    })
+    }, ["rating"])
 
-    this.zoo.loggedInPostEndpoint("/update_experience_rating", async (req, res) => {
-      if (!req.body.rating_id) {
-        return api.http.fail(req, res, {
-          message: "Rating ID must be provided",
-          errorCode: shared.error.code.INVALID_API_PARAMS,
-        });
-      }
-
-      const rating = await shared.db.experienceRatings.getRating(req.body.rating_id)
+    this.zoo.loggedInPostEndpoint("/update_experience_rating", async (req, res, params) => {
+      const rating = await shared.db.experienceRatings.getRating(params.rating_id)
 
       if (!rating) {
         return api.http.fail(req, res, {
@@ -67,11 +40,11 @@ class ExperienceRatings {
       }
 
       const updates = {}
-      // account for zero falsiness
-      if (!!req.body.rating || req.body.rating === 0) {
+
+      if (parseInt(req.body.rating)) {
         updates.rating = req.body.rating
       }
-      if (!!req.body.feedback) {
+      if (req.body.feedback != null) {
         updates.feedback = req.body.feedback
       }
 
@@ -80,7 +53,7 @@ class ExperienceRatings {
       lib.feedback.notify(updated, req.actor, true)
 
       return api.http.succeed(req, res, { ratingId: updated.id, rating: updated.rating, feedback: updated.feedback })
-    })
+    }, ["rating_id"])
   }
 }
 

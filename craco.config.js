@@ -16,26 +16,32 @@ module.exports = {
     },
   ],
   webpack: {
-    plugins: [
-      new webpack.DefinePlugin({
-        VERSION: JSON.stringify(git.short()),
-      }),
-      new CopyPlugin({
-        patterns: [
-          { context: 'node_modules/noodle-landing/dist/', from: '**/*', globOptions: { ignore: ['**/index.html'] } },
-        ],
-      }),
-    ],
     configure: (config, { env, paths }) => {
-      config.module.rules.push({
-        test: /\.html$/i,
-        loader: 'html-loader',
-        options: {
-          esModule: false,
-          attributes: false,
-        },
-      });
+      // assuming HtmlWebpackPlugin is plugin 0.
+      // We reconfigure the plugin to output our app's HTML entry file to app.html
+      // instead of index.html.
+      config.plugins[0].options.filename = 'app.html';
+
+      config.plugins.push(
+        ...[
+          new webpack.DefinePlugin({
+            VERSION: JSON.stringify(git.short()),
+          }),
+          // copy files from the landing page to the public directory
+          new CopyPlugin({
+            patterns: [{ context: './landing/dist/', from: '**/*', globOptions: { ignore: ['**/_*'] } }],
+          }),
+        ]
+      );
+
       return config;
     },
+  },
+  devServer: (devServerConfig) => {
+    devServerConfig.historyApiFallback = {
+      disableDotRule: true,
+      rewrites: [{ from: /./, to: '/app.html' }],
+    };
+    return devServerConfig;
   },
 };

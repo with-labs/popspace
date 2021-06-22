@@ -153,10 +153,12 @@
     ]
   },
   "scripts": {
+    "prestart": "yarn run build:landing",
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
-    "prebuild": "yarn run licenses",
+    "prebuild": "yarn run licenses && yarn run build:landing",
+    "build:landing": "cd ./landing && yarn build",
     "build": "craco build",
-    "dev": "netlify dev",
+    "dev": "yarn start",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
     "test:watch": "jest --watch --bail",

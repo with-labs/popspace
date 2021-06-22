@@ -1,18 +1,12 @@
 const { v4 } = require("uuid")
-class Rooms {
+
+class Files {
   constructor(zoo) {
     this.zoo = zoo
     this.initPost()
   }
 
   initPost() {
-    this.zoo.loggedInPostEndpoint("/update_participant_state", async (req, res, params) => {
-      await carefulDynamoCall("/update_participant_state", req, res, async () => {
-        await shared.db.dynamo.room.setParticipantState(req.actor.id, params.participant_state)
-        return http.succeed(req, res, { participantState: params.participant_state })
-      })
-    }, ["participant_state"])
-
     this.zoo.loggedInPostEndpoint("/get_room_file_upload_url", async (req, res, params) => {
       // to avoid name collisions but keep the original filename,
       // we put each uploaded file in a randomly generated "folder"
@@ -44,19 +38,7 @@ class Rooms {
 
       return api.http.succeed(req, res, { errorCode: shared.error.code.UNEXPECTED_ERROR });
     }, ["file_url"])
-
-    this.zoo.loggedInPostEndpoint("/opengraph", async(req, res, params) => {
-      try {
-        const ogResult = await lib.opengraph.getGraphData(params.url)
-        return await api.http.succeed(req, res, {result: ogResult})
-      } catch (err) {
-        log.error.error(`Error fetching opengraph data`)
-        return await api.http.fail(req, res, { errorCode: shared.error.code.OPENGRAPH_NO_DATA })
-      }
-    }, ["url"])
   }
 }
 
-module.exports = Rooms
-
-
+module.exports = Files

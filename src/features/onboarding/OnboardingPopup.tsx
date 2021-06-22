@@ -118,7 +118,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
             onChange={() => openSection('hasAcknowledgedPersistence')}
           >
             <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="default">
-              {t('features.onboarding.persistence.later')}
+              {t('common.confirm')}
             </Button>
           </OnboardingStep>
           <OnboardingStep

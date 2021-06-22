@@ -19,7 +19,7 @@ REACT_APP_SOCKET_HOST = "wss://mercury.with.so:5555"
 # Then the API service could simply push to the queue,
 # and we wouldn't need to host the API on hermes to have access to participants.
 REACT_APP_HERMES_API_HOST = "https://mercury.with.so:5555"
-REACT_APP_UNICORN_SOCKET_HOST = "wss://pegasus.with.so"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://mercury.with.so:5558"
 REACT_APP_NOODLE_API_HOST = "https://mercury.with.so:5556"
 REACT_APP_ANALYTICS_ID = "c5dca48b9e8589e669570e0d795eb51a"
 

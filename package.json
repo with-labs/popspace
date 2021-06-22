@@ -153,7 +153,7 @@
   },
   "scripts": {
     "prestart": "yarn run build:landing",
-    "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
+    "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=8888 craco start",
     "prebuild": "yarn run licenses && yarn run build:landing",
     "build:landing": "cd ./landing-page && yarn build",
     "build": "craco build",
@@ -170,8 +170,7 @@
     "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8081 start-server-and-test server http://localhost:8081 cypress:run",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
-    "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json",
-    "clearport": "npx kill-port 3002"
+    "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json"
   },
   "eslintConfig": {
     "extends": "react-app",

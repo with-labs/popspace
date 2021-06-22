@@ -2,7 +2,7 @@
 
 A spatial workspace for remote teams.
 
-This repo contains the code that powers the main web app experience and the serverless functions that handle authentication, joining rooms, and some advanced accessory behaviors.
+This repo contains the code that powers the main web app experience and the landing page.
 
 ## Pre-requisites
 
@@ -10,10 +10,6 @@ You must have the following installed:
 
 - [Node.js v10+](https://nodejs.org/en/download/)
 - [Yarn v1.x](https://classic.yarnpkg.com/lang/en/)
-- Netlify CLI - [docs](https://docs.netlify.com/cli/get-started/)
-  - Install the CLI (see below)
-  - Authenticate with Netlify (see below)
-  - Connect your local repo (see below)
 
 ## Installation and setup details
 
@@ -21,44 +17,17 @@ You must have the following installed:
 
 From the root of the project, run `yarn install --frozen-lockfile`.
 
-### Install Netlify CLI
-
-The app is deployed to Netlify using the Netlify CLI. Install netlify-cli with
-
-    $ yarn add -g netlify-cli
-
-### Authenticate with our Netlify Account
-
-Contact Brent to get an invite into our team. That will enable you to [login to Netlify via the CLI](https://docs.netlify.com/cli/get-started/#authentication):
-
-`netlify login`
-
-### Connect your local repo to Netlify
-
-You'll need to [connect your local code to our app that is registered inside Netlify](https://docs.netlify.com/cli/get-started/#automated-setup). Here's the command:
-
-`netlify init`
-
 ### Development locally
 
-With Netlify CLI installed globally, you only need to run one command to develop locally. It will activate the Netlify development environment, which will run a server to host the React app with hot-reload, PLUS a server for token serverless function.
+Run `yarn dev` to run the app live. Your changes will be automatically hot-loaded into any open tabs.
 
-1. Activate Netlify dev environment: `netlify dev`
+### The Landing Page
 
-_There is a convenience npm script as well: `npm run dev`_
+The code for the main landing page lives in this repo, too - in the `landing-page` directory.
 
-### Deploy the app and token serverless function to Netlify
+You can run `npm start` in there to develop on the landing page.
 
-There is no need to do manual deploys to Netlify. When code is merged into the `dev` or `master` branches. Netlify will make a build and deploy to the associated branch's environment (dev->dev, master->production).
-
-- Production: https://app.with.so
-- Development: https://dev.app.with.so
-
-You can do manual deploys directly from your local repo without merging code to a remote branch. The command below will create a "draft" URL. That means that is a testable, shareable, non-production deploy.
-
-`netlify deploy`
-
-Here are the [docs](https://docs.netlify.com/cli/get-started/#manual-deploys).
+The built landing page is automatically copied into the final app files before deployment. The app serves the landing page at `/`, and the React app everywhere else.
 
 ### Building
 

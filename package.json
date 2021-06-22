@@ -56,6 +56,7 @@
     "clsx": "^1.1.1",
     "command-line-args": "^5.1.1",
     "concurrently": "^5.1.0",
+    "copy-webpack-plugin": "^6.0.0",
     "craco-alias": "^3.0.1",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",
@@ -72,6 +73,7 @@
     "fscreen": "^1.0.2",
     "git-rev-sync": "3.0.1",
     "howler": "^2.2.1",
+    "html-loader": "^1.0.0",
     "husky": "^4.2.5",
     "i18next": "^19.8.2",
     "i18next-browser-languagedetector": "^6.0.1",
@@ -193,6 +195,5 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "proxy": "http://localhost:8888/"
+  }
 }

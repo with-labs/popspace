@@ -15,19 +15,22 @@ import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
 import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
 import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
-import { ReactComponent as Logo } from '@src/images/logo.svg';
-
+import { Logo } from '@components/Logo/Logo';
 export interface IRoomTaskbarProps {
   className?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: theme.spacing(1),
     position: 'relative',
     zIndex: theme.zIndex.modal - 1,
+    '& > *': {
+      flex: '1 0 0',
+    },
   },
   floatingActionButton: {
     position: 'fixed',
@@ -48,21 +51,18 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
-          <Box width={75} display="flex" alignItems="center">
-            <Logo />
-          </Box>
-          <Spacing gap={2} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1}>
-            <MediaFailedWrapper>
-              <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={'row'}>
-                <PublishedCameraToggle />
-                <PublishedMicToggle />
-                <Hidden xsDown>
-                  <ScreenShareToggle />
-                  {isPIPAvailable && hasPip && <PictureInPictureToggle />}
-                </Hidden>
-              </Spacing>
-            </MediaFailedWrapper>
-          </Spacing>
+          <Logo width={75} link />
+
+          <MediaFailedWrapper>
+            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={'row'}>
+              <PublishedCameraToggle />
+              <PublishedMicToggle />
+              <Hidden xsDown>
+                <ScreenShareToggle />
+                {isPIPAvailable && hasPip && <PictureInPictureToggle />}
+              </Hidden>
+            </Spacing>
+          </MediaFailedWrapper>
           <Spacing gap={0.5} alignItems="center" justifyContent="flex-end" color="grey.900" flexDirection={'row'}>
             <CopyLinkButton />
             <LeaveMeetingButton />

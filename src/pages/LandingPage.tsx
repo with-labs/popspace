@@ -8,7 +8,7 @@ export function LandingPage() {
         flex: 1,
         border: 'none',
       }}
-      src="https://deploy-preview-3--stoic-mestorf-230354.netlify.app/"
+      src="https://tilde.so/"
       title="The Tilde landing page"
     />
   );

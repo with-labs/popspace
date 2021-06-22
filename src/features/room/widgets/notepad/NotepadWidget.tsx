@@ -10,7 +10,7 @@ import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
 import { useRoomStore } from '@api/useRoomStore';
-import CollaborativeQuill from '@withso/pegasus';
+import CollaborativeQuill from '@withso/unicorn';
 import { useCanvas } from '../../../../providers/canvas/CanvasProvider';
 import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
 

@@ -4129,10 +4129,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@withso/pegasus@^1.0.19":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@withso/pegasus/-/pegasus-1.0.19.tgz#4b8c5085ed22401520b4d2523dae7700ad0b4c6a"
-  integrity sha512-l5uuElHUTPuSt6t3AFRgRh2MrOLdLieXypTp/C2Uxh3p9tr/5k6cqXe5Ec3662Y3p8DZz341EgmwX2vWTzW1Mg==
+"@withso/unicorn@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@withso/unicorn/-/unicorn-1.0.0.tgz#f32c185c54bef920ec1db75048d877a4531a7531"
+  integrity sha512-tQpcWGBncO+IqwTLQgY7NpZEVtt+PmZujC+LLq3LNwPHJix61y+oyfjiRZOHRmF87Oyv0YZnv6CxDupDwC8sOg==
   dependencies:
     quill "^1.3.7"
     reconnecting-websocket "^4.4.0"

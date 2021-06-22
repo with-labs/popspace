@@ -82,11 +82,10 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
     try {
       setToggleCopyButton(true);
       await navigator.clipboard.writeText(meetingUrl);
-      toast.success(t('features.roomControls.linkCopied') as string);
       // todo: add analytics
     } catch (err) {
-      // todo: clean up error state
-      alert(`Error copying public invite link`);
+      // todo: i18n
+      toast.error(`Error copying public invite link`);
       logger.error(err);
     }
   };

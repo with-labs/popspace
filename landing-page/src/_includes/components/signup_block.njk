@@ -1,0 +1,92 @@
+{# <form action="#" method="get" target="_blank" novalidate>
+	<input aria-label="Email" type="email" value="" placeholder="Enter your email" name="email"/>
+	<input aria-label="hiddenRef" class="hiddenRef" type="text" value="" name="ref"/>
+	<input aria-label="Sign Up" type="submit" value="Be notified"/>
+</form> #}
+
+<!-- Begin Mailchimp Signup Form -->
+<form action="https://with.us19.list-manage.com/subscribe/post?u=c6267bfd8c52de70f5e135e0c&amp;id=7b89d99434" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+		<input type="email" value="" name="EMAIL" placeholder="Enter your email" class="required email" id="mce-EMAIL" />
+		<div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_c6267bfd8c52de70f5e135e0c_7b89d99434" tabindex="-1" value="" /></div>
+		{# <div style="position: absolute; left: -5000px;" aria-hidden="true"><input id="refInput" type="text" name="REF" tabindex="-1" value=""></div> #}
+		<div style="position: absolute; left: -5000px;" aria-hidden="true"><input id="refInput" type="text" name="REF" value="" /></div>
+		<input type="submit" value="Be notified" name="subscribe" id="mc-embedded-subscribe" class="button" />
+</form>
+<p class="alignCenter smallText margin_above_small">Register now to be notified as soon as we launch!</p>
+
+
+
+<style type="text/css">
+	.hiddenRef {
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -99999;
+		display: none;
+		visibility: hidden;
+		width: 0;
+		height: 0;
+	}
+
+	form {
+		max-width: 480px;
+		background-color: var(--color-slate-surface);
+		padding: 12px;
+		display: grid;
+		grid-template-columns: auto auto;
+		grid-column-gap: 8px;
+		grid-row-gap: 8px;
+		margin: 0 auto;
+		border-radius: 12px;
+	}
+
+	input {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+	}
+
+	form > input[type=email] {
+		display: block;
+		line-height: 24px;
+		font-size: 18px;
+		font-family: var(--font-silka);
+		font-weight: 400;
+		min-width: 100px;
+		padding: 16px 8px;
+		border-radius: 4px;
+		background-color: var(--color-slate-surface);
+	}
+
+	form > input[type=submit] {
+		display: block;
+		padding: 12px 16px;
+		min-width: 100px;
+		background-color: var(--color-lavender-ink);
+		color: var(--color-snow);
+		font-family: var(--font-silka);
+		font-weight: 700;
+		font-size: 18px;
+		text-decoration: none;
+		text-align: center;
+		border-radius: 4px;
+		float: right;
+	}
+
+	form > input[type=submit]:hover {
+		color: var(--color-snow);
+		background-color: var(--color-lavender-bold);
+		box-shadow: var(--box-shadow-bold);
+	}
+
+	form > input[type=submit]:active {
+		box-shadow: inset 0 0 0 2px var(--color-lavender-ink);
+	}
+
+	@media only screen and (max-width: 720px) {
+		form {
+			max-width: 420px;
+			grid-template-columns: auto;
+		}
+	}
+</style>

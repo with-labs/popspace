@@ -56,6 +56,7 @@
     "clsx": "^1.1.1",
     "command-line-args": "^5.1.1",
     "concurrently": "^5.1.0",
+    "copy-webpack-plugin": "^6.0.0",
     "craco-alias": "^3.0.1",
     "cross-env": "^7.0.2",
     "crypto-random-string": "^3.2.0",
@@ -151,10 +152,12 @@
     ]
   },
   "scripts": {
+    "prestart": "yarn run build:landing",
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
-    "prebuild": "yarn run licenses",
+    "prebuild": "yarn run licenses && yarn run build:landing",
+    "build:landing": "cd ./landing-page && yarn build",
     "build": "craco build",
-    "dev": "netlify dev",
+    "dev": "yarn start",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
     "test:watch": "jest --watch --bail",
@@ -193,6 +196,5 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "proxy": "http://localhost:8888/"
+  }
 }

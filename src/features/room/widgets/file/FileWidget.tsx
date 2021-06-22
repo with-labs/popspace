@@ -21,7 +21,7 @@ function isFramedMedia(contentType: string) {
   return contentType.startsWith('audio') || contentType === 'application/pdf';
 }
 
-export const FileWidget: React.FC<IFileWidgetProps> = ({}) => {
+export const FileWidget: React.FC<IFileWidgetProps> = () => {
   const { widget } = useWidgetContext<WidgetType.File>();
 
   if (widget.widgetState.uploadProgress < 100) {

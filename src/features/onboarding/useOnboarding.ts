@@ -29,8 +29,8 @@ const loadState = () => {
   }
 };
 
-const saveState = ({ hasMoved, hasCreated, hasAcknowledgedPersistence }: OnboardingStateShape) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({ hasMoved, hasCreated, hasAcknowledgedPersistence }));
+const saveState = ({ api: _, ...rest }: any) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(rest));
 };
 
 export const useOnboarding = create(

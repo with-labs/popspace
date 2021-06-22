@@ -9,7 +9,7 @@ class Magic {
   }
 
   async unsubscribeUrl(appUrl, magicLink) {
-    return `${appUrl}/unsubscribe?otp=${magicLink.otp}&mlid=${magicLink.id}`
+    return `${appUrl}/unsubscribe?code=${magicLink.code}`
   }
 
   async createUnsubscribe(actorId) {
@@ -63,38 +63,34 @@ class Magic {
     return await shared.db.pg.massive.magic_codes.insert(request)
   }
 
-  async magicLinkById(magicLinkId) {
-    return await shared.db.pg.massive.magic_codes.find(magicLinkId)
+  async magicLinkByCode(code) {
+    return await shared.db.pg.massive.magic_codes.findOne({code: code})
   }
 
-  async tryToResolveMagicLink(request, otp, expectedAction) {
+  async tryToResolveMagicLink(request, expectedAction) {
     if(request.action != expectedAction) {
       return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION }
     }
-    const verification = shared.lib.otp.verify(request, otp)
-    if(verification.error != null) {
-      return verification
-    }
     switch(request.action) {
       case Magic.actions.UNSUBSCRIBE:
-        return await this.unsubscribe(request, otp)
+        return await this.unsubscribe(request)
       case Magic.actions.SUBSCRIBE:
-        return await this.subscribe(request, otp)
+        return await this.subscribe(request)
       default:
         return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION }
     }
   }
 
-  async tryToUnsubscribe(request, otp) {
-    return await this.tryToResolveMagicLink(request, otp, Magic.actions.UNSUBSCRIBE)
+  async tryToUnsubscribe(request) {
+    return await this.tryToResolveMagicLink(request, Magic.actions.UNSUBSCRIBE)
   }
 
-  async tryToSubscribe(request, otp) {
-    return await this.tryToResolveMagicLink(request, otp, Magic.actions.SUBSCRIBE)
+  async tryToSubscribe(request) {
+    return await this.tryToResolveMagicLink(request, Magic.actions.SUBSCRIBE)
   }
 
   // Private
-  async unsubscribe(request, otp) {
+  async unsubscribe(request) {
     const validation = await this.requireActor(request)
     if(validation.error) {
       return validation
@@ -106,7 +102,7 @@ class Magic {
     return { }
   }
 
-  async subscribe(request, otp) {
+  async subscribe(request) {
     const validation = await this.requireActor(request)
     if(validation.error) {
       return validation
@@ -119,7 +115,7 @@ class Magic {
     const actorId = request.actor_id
     const actor = await shared.db.pg.massive.actors.find(actorId)
     if(!actor) {
-        return { error : shared.error.code.NO_SUCH_ACTOR }
+      return { error : shared.error.code.NO_SUCH_ACTOR }
     }
     return { }
   }

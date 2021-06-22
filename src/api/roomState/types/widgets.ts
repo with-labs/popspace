@@ -10,6 +10,7 @@ export enum WidgetType {
   Notepad = 'NOTEPAD',
   SidecarStream = 'SIDECAR_STREAM',
   Huddle = 'HUDDLE',
+  File = 'FILE',
   // not used by end-users - this is just for demos
   MockUser = 'MOCK_USER',
 }
@@ -41,12 +42,6 @@ export interface LinkWidgetState {
   url: string;
   title?: string;
   iconUrl?: string | null;
-  mediaUrl?: string;
-  mediaContentType?: string;
-  /**
-   * Percentage progress of upload, from 0-100
-   */
-  uploadProgress?: number;
   /**
    * Should everyone see this link as an iframe?
    */
@@ -56,12 +51,6 @@ export interface LinkWidgetState {
    * be the URL to provide to the iframe.
    */
   iframeUrl?: string | null;
-  mediaState?: WidgetMediaState;
-  /**
-   * Indicates this is a file uploaded from With.
-   * This just keeps things straight.
-   */
-  isFileUpload?: boolean;
   /**
    * Embedly Data
    */
@@ -77,6 +66,14 @@ export interface LinkWidgetState {
     thumbnailHeight: number;
     type: string;
   };
+}
+
+export interface FileWidgetState {
+  url: string;
+  fileName: string;
+  contentType: string;
+  uploadProgress: number;
+  mediaState?: WidgetMediaState;
 }
 
 export interface NotepadState {
@@ -123,6 +120,7 @@ export type WidgetStateByType = {
   [WidgetType.SidecarStream]: SidecarStreamWidgetState;
   [WidgetType.MockUser]: MockUserWidgetState;
   [WidgetType.Huddle]: HuddleWidgetState;
+  [WidgetType.File]: FileWidgetState;
 };
 export type WidgetShapeByType = {
   [WidgetType.StickyNote]: BaseWidgetShape & {
@@ -149,6 +147,9 @@ export type WidgetShapeByType = {
   [WidgetType.Huddle]: BaseWidgetShape & {
     widgetState: HuddleWidgetState;
   };
+  [WidgetType.File]: BaseWidgetShape & {
+    widgetState: FileWidgetState;
+  };
 };
 export type WidgetShapeForType<T extends WidgetType> = WidgetShapeTable[T];
 
@@ -167,6 +168,7 @@ export type YoutubeWidgetShape = WidgetShapeTable[WidgetType.YouTube];
 export type ScreenShareWidgetShape = WidgetShapeTable[WidgetType.SidecarStream];
 export type MockUserWidgetShape = WidgetShapeTable[WidgetType.MockUser];
 export type HuddleWidgetShape = WidgetShapeTable[WidgetType.Huddle];
+export type FileWidgetShape = WidgetShapeTable[WidgetType.File];
 
 export type WidgetShape = Unionize<WidgetShapeTable>;
 

@@ -11,6 +11,7 @@ import { logger } from '@utils/logger';
 import { WidgetProvider } from './WidgetProvider';
 import { useWidgetContext } from './useWidgetContext';
 import { HuddleWidget } from './huddle/HuddleWidget';
+import { FileWidget } from './file/FileWidget';
 
 export interface IWidgetProps {
   id: string;
@@ -52,6 +53,8 @@ const WidgetContent = React.memo(() => {
       return <MockUserWidget />;
     case WidgetType.Huddle:
       return <HuddleWidget />;
+    case WidgetType.File:
+      return <FileWidget />;
     default:
       logger.debug(`Rendered unknown widget type: ${(widget as any).type}`);
       return null;

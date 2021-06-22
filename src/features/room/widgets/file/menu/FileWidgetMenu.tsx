@@ -7,17 +7,29 @@ import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
+import { logger } from '@utils/logger';
+import api from '@api/client';
 
-export type LinkMenuProps = {
+export type FileWidgetMenuProps = {
   className?: string;
   size?: 'small' | 'medium';
 };
 
-export function LinkMenu(props: LinkMenuProps) {
+export function FileWidgetMenu(props: FileWidgetMenuProps) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
-  const { remove, widget } = useWidgetContext<WidgetType.Link>();
+  const { remove, widget } = useWidgetContext<WidgetType.File>();
+
+  const deleteWidget = async () => {
+    const fileUrl = widget.widgetState.url;
+    try {
+      await api.files.deleteFile(fileUrl);
+    } catch (err) {
+      logger.error(`Failed to delete file ${fileUrl}`, err);
+    }
+    remove();
+  };
 
   return (
     <>
@@ -38,7 +50,7 @@ export function LinkMenu(props: LinkMenuProps) {
       >
         <OpenInNewTabOption />
         <Divider />
-        <MenuItem button onClick={remove}>
+        <MenuItem button onClick={deleteWidget}>
           <ListItemIcon>
             <DeleteIcon />
           </ListItemIcon>

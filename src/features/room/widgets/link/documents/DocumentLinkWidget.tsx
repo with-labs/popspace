@@ -16,9 +16,6 @@ export function DocumentLinkWidget() {
     return await fetch(url).then((response) => response.text());
   };
 
-  // disable sandbox for PDFs specifically, it breaks in Chrome
-  const isPDF = widgetState.mediaContentType === 'application/pdf';
-
   //calling fetch here to set the value of resizeDisabled
   React.useEffect(() => {
     if (!widgetState.embedly) {
@@ -32,7 +29,7 @@ export function DocumentLinkWidget() {
         }
       );
     }
-  }, [isPDF, save, widgetState.embedly, widgetState.iframeUrl, widgetState.url]);
+  }, [save, widgetState.embedly, widgetState.iframeUrl, widgetState.url]);
 
   if (widgetState.embedly) {
     return (
@@ -45,7 +42,6 @@ export function DocumentLinkWidget() {
         resizeDisabled={!widgetState.embedly.html && !widgetState.iframeUrl}
       >
         <IFrameDocumentContent
-          disableSandbox={isPDF}
           data={widgetState.embedly}
           goodResponse={
             !!widgetState.iframeUrl || (widgetState.embedly.type !== 'error' && widgetState.embedly.type !== '')

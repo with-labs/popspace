@@ -7,7 +7,7 @@ import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 import { WidgetContent } from '../../WidgetContent';
 import { SIZE_STUB } from '../constants';
-import { FileIcon } from '../FileIcon';
+import { FileIcon } from '../../file/FileIcon';
 import { LinkMenu } from '../menu/LinkMenu';
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +61,7 @@ export function CollapsedDocumentContent() {
               overflow="hidden"
               {...({ href: widgetState.url, newTab: true } as any)}
             >
-              <FileIcon state={widgetState} className={classes.icon} />
+              <FileIcon iconUrl={widgetState.iconUrl} className={classes.icon} />
               <Box ml={2} flex={1} display="flex" flexDirection="column" overflow="hidden">
                 <Typography variant="h3" component="span" className={classes.label}>
                   {widgetState.title}

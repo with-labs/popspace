@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
-import { ThemeName } from '../../../../theme/theme';
+import { ThemeName } from '@src/theme/theme';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 
 export function UploadingWidget() {
@@ -13,7 +13,7 @@ export function UploadingWidget() {
   const { remove } = useWidgetContext();
 
   return (
-    <WidgetFrame color={ThemeName.Snow} minHeight={80} minWidth={340}>
+    <WidgetFrame color={ThemeName.Snow} minHeight={80} minWidth={340} resizeDisabled>
       <CanvasObjectDragHandle>
         <WidgetContent>
           <Box display="flex" flexDirection="row" alignItems="center" width={340}>

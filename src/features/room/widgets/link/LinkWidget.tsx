@@ -4,26 +4,14 @@ import { WidgetTitlebar } from '../WidgetTitlebar';
 import { EditLinkWidgetForm } from './EditLinkWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { MediaLinkWidget } from './media/MediaLinkWidget';
-import { LinkWidgetShape, WidgetType } from '@api/roomState/types/widgets';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
-import { UploadingWidget } from './UploadingWidget';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_EDIT, MIN_SIZE_EDIT } from './constants';
 import { useIsMe } from '@api/useIsMe';
 
 export interface ILinkWidgetProps {}
-
-const MEDIA_TYPE_BLOCK_LIST = ['video/mov'];
-
-function isMedia(widget: LinkWidgetShape) {
-  return (
-    widget.widgetState.mediaContentType &&
-    /^(image|video|audio)/.test(widget.widgetState.mediaContentType) &&
-    !MEDIA_TYPE_BLOCK_LIST.includes(widget.widgetState.mediaContentType)
-  );
-}
 
 export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
   const { t } = useTranslation();
@@ -54,12 +42,5 @@ export const LinkWidget: React.FC<ILinkWidgetProps> = () => {
     }
   }
 
-  // media links are rendered differently
-  const isMediaWidget = isMedia(state);
-
-  if (state.widgetState.uploadProgress !== undefined && state.widgetState.uploadProgress < 100) {
-    return <UploadingWidget />;
-  }
-
-  return isMediaWidget ? <MediaLinkWidget /> : <DocumentLinkWidget />;
+  return <DocumentLinkWidget />;
 };

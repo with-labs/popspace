@@ -34,14 +34,12 @@ export function useAddFile() {
       } else {
         // immediately add a pending widget, but don't block on it yet
         const widgetAddedPromise = addWidget({
-          type: WidgetType.Link,
+          type: WidgetType.File,
           initialData: {
             url: downloadUrl,
-            mediaUrl: downloadUrl,
-            title: file.name,
-            mediaContentType: file.type,
+            fileName: file.name,
+            contentType: file.type,
             uploadProgress: 0,
-            isFileUpload: true,
           },
           screenCoordinate: position,
           size: SIZE_STUB,

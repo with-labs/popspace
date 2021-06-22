@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { LinkWidgetState } from '@api/roomState/types/widgets';
 import { fileIcons } from './fileIcons';
 
 type FileIconType = keyof typeof fileIcons;
@@ -44,7 +43,7 @@ const fileIconContentTypes: Record<Exclude<FileIconType, 'fallback'>, Array<stri
   ],
 };
 
-function getIconType({ mediaContentType }: LinkWidgetState): FileIconType {
+function getIconType(mediaContentType?: string): FileIconType {
   if (!mediaContentType) {
     return 'fallback';
   }
@@ -58,12 +57,20 @@ function getIconType({ mediaContentType }: LinkWidgetState): FileIconType {
   return 'fallback';
 }
 
-export const FileIcon = ({ state, ...rest }: { state: LinkWidgetState; className?: string }) => {
-  if (state.iconUrl) {
-    return <img src={state.iconUrl} alt="" style={{ width: 48, height: 48 }} />;
+export const FileIcon = ({
+  contentType,
+  iconUrl,
+  ...rest
+}: {
+  contentType?: string;
+  iconUrl?: string | null;
+  className?: string;
+}) => {
+  if (iconUrl) {
+    return <img src={iconUrl} alt="" style={{ width: 48, height: 48 }} />;
   }
 
-  const Component = fileIcons[getIconType(state)];
+  const Component = fileIcons[getIconType(contentType)];
 
   return <Component {...rest} />;
 };

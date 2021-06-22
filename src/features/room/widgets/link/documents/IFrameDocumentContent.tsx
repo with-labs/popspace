@@ -12,7 +12,7 @@ import { LinkMenu } from '../menu/LinkMenu';
 import { useCanvasObject } from '../../../../../providers/canvas/CanvasObject';
 import { DEFAULT_IFRAME, LINK_SUMMARY_WIDTH, SIZE_STUB, WIDGET_TITLE_HEIGHT } from '../constants';
 import { ClassNameMap } from '@material-ui/styles';
-import { FileIcon } from '../FileIcon';
+import { FileIcon } from '../../file/FileIcon';
 import { CanvasObjectDragHandle } from '../../../../../providers/canvas/CanvasObjectDragHandle';
 
 const useStyles = makeStyles((theme) => ({
@@ -196,7 +196,7 @@ export function IFrameDocumentContent({
                 overflow="hidden"
                 {...({ href: widgetState.url, newTab: true } as any)}
               >
-                <FileIcon state={widgetState} className={classes.icon} />
+                <FileIcon iconUrl={widgetState.iconUrl} className={classes.icon} />
                 <Box ml={2} flex={1} display="flex" flexDirection="column" overflow="hidden">
                   <Typography variant="h3" component="span" className={classes.label}>
                     {widgetState.title}

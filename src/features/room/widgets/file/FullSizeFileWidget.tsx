@@ -3,14 +3,14 @@ import * as React from 'react';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
-import { useWidgetContext } from '../../useWidgetContext';
-import { WidgetContent } from '../../WidgetContent';
-import { WidgetFrame } from '../../WidgetFrame';
-import { WidgetResizeHandle } from '../../WidgetResizeHandle';
-import { LinkMenu } from '../menu/LinkMenu';
-import { MediaLinkMedia } from './MediaWidgetMedia';
+import { useWidgetContext } from '@features/room/widgets/useWidgetContext';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetFrame } from '../WidgetFrame';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { FileWidgetMenu } from './menu/FileWidgetMenu';
+import { FileWidgetMedia } from './FileWidgetMedia';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
-import { MAX_INITIAL_SIZE_MEDIA, MAX_SIZE_MEDIA, MIN_SIZE_MEDIA } from '../constants';
+import { MAX_INITIAL_SIZE_MEDIA, MAX_SIZE_MEDIA, MIN_SIZE_MEDIA } from './constants';
 import { compareWithTolerance } from '@utils/math';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
  * The kind of media widget that shows an image or video
  * edge-to-edge. It's resizeable.
  */
-export const FullSizeMediaWidget: React.FC = () => (
+export const FullSizeFileWidget: React.FC = () => (
   <WidgetFrame
     color={'transparent'}
     minWidth={MIN_SIZE_MEDIA.width}
@@ -56,17 +56,17 @@ export const FullSizeMediaWidget: React.FC = () => (
   >
     <CanvasObjectDragHandle>
       <WidgetContent disablePadding>
-        <FullSizeMediaWidgetContent />
+        <FullSizeFileWidgetContent />
       </WidgetContent>
     </CanvasObjectDragHandle>
   </WidgetFrame>
 );
 
-const FullSizeMediaWidgetContent: React.FC = () => {
+const FullSizeFileWidgetContent: React.FC = () => {
   const classes = useStyles();
   const {
     widget: { widgetId },
-  } = useWidgetContext<WidgetType.Link>();
+  } = useWidgetContext<WidgetType.File>();
 
   const { getSize, resize } = useCanvasObject();
 
@@ -124,8 +124,8 @@ const FullSizeMediaWidgetContent: React.FC = () => {
 
   return (
     <>
-      <MediaLinkMedia className={classes.media} widgetId={widgetId} ref={ref} />
-      <LinkMenu className={classes.menu} size="small" />
+      <FileWidgetMedia className={classes.media} widgetId={widgetId} ref={ref} />
+      <FileWidgetMenu className={classes.menu} size="small" />
       <WidgetResizeHandle />
     </>
   );

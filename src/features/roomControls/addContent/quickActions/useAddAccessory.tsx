@@ -49,9 +49,7 @@ export function useAddAccessory() {
       // a bit of an awkward edge case - perhaps we could refactor how this works.
       // add opengraph data to links
       let data = initialData;
-      // kind of a heuristic - only fetch opengraph data if we don't already
-      // have a media preview
-      if (type === WidgetType.Link && !(initialData as LinkWidgetState).mediaUrl) {
+      if (type === WidgetType.Link) {
         // FIXME: any cast
         data = (await getLinkData(initialData as LinkWidgetState)) as any;
       }

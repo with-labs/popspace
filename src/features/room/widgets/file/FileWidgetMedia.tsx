@@ -5,8 +5,8 @@ import * as React from 'react';
 import { SpatialAudio } from '@components/SpatialAudio/SpatialAudio';
 import { SpatialVideo } from '@components/SpatialVideo/SpatialVideo';
 import { WidgetMediaState, WidgetType } from '@api/roomState/types/widgets';
-import { MediaControls, useBindMediaControls } from '../../common/MediaControls';
-import { useWidgetContext } from '../../useWidgetContext';
+import { MediaControls, useBindMediaControls } from '../common/MediaControls';
+import { useWidgetContext } from '../useWidgetContext';
 import { UnsupportedFile } from './UnsupportedFile';
 
 const useStyles = makeStyles((theme) => ({
@@ -59,9 +59,14 @@ const useStyles = makeStyles((theme) => ({
     objectFit: 'cover',
     borderRadius: theme.shape.borderRadius,
   },
+  iframe: {
+    border: 'none',
+    width: '100%',
+    height: '100%',
+  },
 }));
 
-export const MediaLinkMedia = React.forwardRef<
+export const FileWidgetMedia = React.forwardRef<
   HTMLVideoElement | HTMLAudioElement | HTMLImageElement,
   {
     className?: string;
@@ -73,8 +78,8 @@ export const MediaLinkMedia = React.forwardRef<
   const {
     widget: { widgetState },
     save,
-  } = useWidgetContext<WidgetType.Link>();
-  const { mediaUrl, mediaContentType, title, mediaState } = widgetState;
+  } = useWidgetContext<WidgetType.File>();
+  const { url, contentType, fileName, mediaState } = widgetState;
 
   const onMediaStateChanged = React.useCallback(
     (ms: WidgetMediaState) => {
@@ -86,22 +91,22 @@ export const MediaLinkMedia = React.forwardRef<
   );
 
   const [mediaRef, mediaControlsProps] = useBindMediaControls(mediaState, onMediaStateChanged, {
-    allowFullscreen: !!mediaContentType?.startsWith('video'),
+    allowFullscreen: !!contentType?.startsWith('video'),
     allowRepeat: true,
   });
 
   const finalRef = useMergedRef(mediaRef, ref as any);
 
-  if (mediaContentType?.startsWith('image')) {
-    return <img src={mediaUrl} alt={title} className={className} ref={ref as any} />;
-  } else if (mediaContentType?.startsWith('video')) {
+  if (contentType?.startsWith('image')) {
+    return <img src={url} alt={fileName} className={className} ref={ref as any} />;
+  } else if (contentType?.startsWith('video')) {
     return (
       <div className={clsx(classes.wrapper, className)}>
         <SpatialVideo
           objectKind="widget"
           objectId={widgetId}
-          src={mediaUrl}
-          title={title}
+          src={url}
+          title={fileName}
           controls={false}
           className={classes.video}
           ref={finalRef}
@@ -109,14 +114,14 @@ export const MediaLinkMedia = React.forwardRef<
         <MediaControls {...mediaControlsProps} className={classes.videoControls} />
       </div>
     );
-  } else if (mediaContentType?.startsWith('audio')) {
+  } else if (contentType?.startsWith('audio')) {
     return (
       <div className={clsx(classes.audioWrapper, className)}>
         <SpatialAudio
           objectKind="widget"
           objectId={widgetId}
-          src={mediaUrl}
-          title={title}
+          src={url}
+          title={fileName}
           controls={false}
           className={classes.hiddenAudio}
           ref={finalRef}
@@ -124,6 +129,8 @@ export const MediaLinkMedia = React.forwardRef<
         <MediaControls {...mediaControlsProps} className={classes.audioControls} />
       </div>
     );
+  } else if (contentType === 'application/pdf') {
+    return <iframe src={url} title={fileName} allow="encrypted-media" allowFullScreen className={classes.iframe} />;
   } else {
     // TODO: support more?
     return (

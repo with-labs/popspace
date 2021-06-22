@@ -29,7 +29,7 @@ module.exports = {
           }),
           // copy files from the landing page to the public directory
           new CopyPlugin({
-            patterns: [{ context: './landing/dist/', from: '**/*', globOptions: { ignore: ['**/_*'] } }],
+            patterns: [{ context: './landing-page/dist/', from: '**/*', globOptions: { ignore: ['**/_*'] } }],
           }),
         ]
       );

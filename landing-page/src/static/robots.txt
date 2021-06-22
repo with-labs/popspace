@@ -1,0 +1,3 @@
+Sitemap: http://with.so/sitemap.xml
+User-agent: *
+Disallow:

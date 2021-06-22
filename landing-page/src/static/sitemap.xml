@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>https://with.so/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://with.so/about/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/pricing/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-virtual-meetings/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-virtual-office/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-remote-hiring/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-digital-workshops/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-happy-hours/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/for-team-building/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://with.so/contact-us/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>https://with.so/terms-of-service/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.50</priority>
+</url>
+<url>
+  <loc>https://with.so/privacy-policy/</loc>
+  <lastmod>2021-04-16T09:48:55+00:00</lastmod>
+  <priority>0.50</priority>
+</url>
+
+
+</urlset>

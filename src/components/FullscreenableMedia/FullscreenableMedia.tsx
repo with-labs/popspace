@@ -15,11 +15,6 @@ export interface IFullscreenableMediaProps {
   muted?: boolean;
   videoPublication: RemoteTrackPublication | LocalTrackPublication | null;
   audioPublication: RemoteTrackPublication | LocalTrackPublication | null;
-  /**
-   * If this ScreenShare video is associated with a particular object, like a widget or user,
-   * you can pass its ID to enable spatial audio.
-   */
-  objectId?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +35,6 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   isFullscreen,
   onFullscreenExit,
   muted,
-  objectId,
   videoPublication,
   audioPublication,
 }) => {
@@ -65,7 +59,6 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
       )}
       {audioPublication && (
         <Publication
-          objectId={objectId}
           publication={audioPublication}
           isLocal={false}
           classNames={className}

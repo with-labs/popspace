@@ -2,6 +2,7 @@ import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
+import { CanvasObjectKind } from '@providers/canvas/Canvas';
 
 export interface SpatialAudioProps
   extends Omit<React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>, 'ref'> {
@@ -14,7 +15,7 @@ export interface SpatialAudioProps
    * The kind of room object ('widget' or 'user') this media source
    * is associated with
    */
-  objectKind: 'widget' | 'user';
+  objectKind: CanvasObjectKind;
   /**
    * Allows control of whether spatial volume is applied
    */

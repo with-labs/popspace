@@ -224,7 +224,6 @@ export const SidecarStreamPreview = React.memo(
             onFullscreenExit={onFullscreenExit}
             className={clsx(classes.screenShare, isFullscreen && classes.screenShareFullscreen)}
             placeholderClassName={classes.screenSharePlaceholder}
-            objectId={userId}
             muted={!isFullscreen}
             videoPublication={videoPublication ?? null}
             audioPublication={audioPublication ?? null}

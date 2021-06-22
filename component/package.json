@@ -1,0 +1,86 @@
+{
+  "name": "@withso/unicorn",
+  "version": "1.0.0",
+  "description": "React components with collaborative editing capabilities for Tilde",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "rm -rf dist && mkdir dist &&  babel src -d dist --copy-files",
+    "publish:npm": "npm run build && npm publish",
+    "test": "jest",
+    "lint": "eslint src/**/*.js[x]"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "jest": {
+    "clearMocks": true,
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setup.js"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+      "configFile": "./.babelrc"
+    },
+    "env": {
+      "browser": true
+    },
+    "plugins": [
+      "react-hooks",
+      "@babel"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/prop-types": 0
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/with-labs/unicorn.git"
+  },
+  "author": "Alexey Chernikov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/with-labs/unicorn/issues"
+  },
+  "homepage": "https://github.com/with-labs/unicorn#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/eslint-parser": "^7.14.4",
+    "@babel/eslint-plugin": "^7.13.16",
+    "@babel/preset-env": "^7.14.4",
+    "@babel/preset-react": "^7.13.13",
+    "@testing-library/react": "^11.2.7",
+    "babel-jest": "^27.0.2",
+    "eslint": "^7.27.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.0.4",
+    "regenerator-runtime": "^0.13.7"
+  },
+  "dependencies": {
+    "quill": "^1.3.7",
+    "reconnecting-websocket": "^4.4.0",
+    "rich-text": "^4.1.0",
+    "sharedb": "^1.8.1"
+  }
+}

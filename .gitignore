@@ -1,0 +1,8 @@
+.DS_Store
+node_modules
+mkcert
+logs
+.next
+.env
+component/dist
+screenshots/

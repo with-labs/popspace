@@ -29,7 +29,7 @@ TWILIO_API_KEYS_ENV = "staging"
 NODE_ENV = "staging"
 REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
 REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
-REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3006"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3011"
 REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
 
 [context.branch-deploy.environment]
@@ -38,7 +38,7 @@ TWILIO_API_KEYS_ENV = "staging"
 NODE_ENV = "staging"
 REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
 REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
-REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3006"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3011"
 REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
 
 # We are obliged under US law not to serve countries

@@ -155,7 +155,7 @@
     "prestart": "yarn run build:landing",
     "start": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=3002 craco start",
     "prebuild": "yarn run licenses && yarn run build:landing",
-    "build:landing": "cd ./landing && yarn build",
+    "build:landing": "cd ./landing-page && yarn build",
     "build": "craco build",
     "dev": "yarn start",
     "test": "jest",

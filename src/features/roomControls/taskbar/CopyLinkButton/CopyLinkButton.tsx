@@ -13,11 +13,6 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.grey[300],
     },
   },
-  buttonText: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'none',
-    },
-  },
   iconButton: {
     borderRadius: theme.shape.contentBorderRadius,
   },
@@ -36,7 +31,7 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
 
   return (
     <>
-      <Hidden smDown>
+      <Hidden mdDown>
         <Button
           variant="text"
           className={classes.button}
@@ -47,7 +42,7 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
           {t('features.roomControls.CopyLinkButtonText')}
         </Button>
       </Hidden>
-      <Hidden mdUp>
+      <Hidden lgUp>
         <IconButton onClick={onCopy} classes={{ root: classes.iconButton }}>
           <CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />
         </IconButton>

@@ -42,7 +42,7 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
 
   return (
     <>
-      <Hidden smDown>
+      <Hidden mdDown>
         <Button
           variant="text"
           className={clsx(classes.buttonColor, classes.button)}
@@ -53,7 +53,7 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
           {t('features.roomControls.leaveMeetingButtonText')}
         </Button>
       </Hidden>
-      <Hidden mdUp>
+      <Hidden lgUp>
         <IconButton className={classes.buttonColor} classes={{ root: classes.iconButton }} onClick={leaveRoom}>
           <LeaveIcon />
         </IconButton>

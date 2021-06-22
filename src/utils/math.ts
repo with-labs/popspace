@@ -121,3 +121,7 @@ export function compareWithTolerance(value: number, target: number, tolerance = 
   const delta = Math.abs(ratio - 1);
   return delta < tolerance;
 }
+
+export function roundTenths(percentage: number) {
+  return Math.round(percentage * 10) / 10;
+}

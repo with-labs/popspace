@@ -197,9 +197,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       values: {
         xs: 300,
         sm: 440,
-        // accommodates the entire room controls with all available features
         md: 850,
-        lg: 960,
+        // accommodates the entire room controls with all available features and labels in English
+        lg: 1080,
       },
     },
 

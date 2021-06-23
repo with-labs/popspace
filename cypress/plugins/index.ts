@@ -8,7 +8,7 @@ const participants: Record<string, Page> = {};
 // `config` is the resolved Cypress config
 const noodlePlugin = (on, config) => {
   const participantFunctions = {
-    addParticipant: async ({ name, roomRoute, color }: { name: string; roomRoute: string; color: string }) => {
+    addParticipant: async ({ name, roomUrl, color }: { name: string; roomUrl: string; color: string }) => {
       const args = ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'];
 
       if (color) {
@@ -20,7 +20,8 @@ const noodlePlugin = (on, config) => {
         args,
       });
       const page = (participants[name] = await browser.newPage()); // keep track of this participant for future use
-      await page.goto(config.baseUrl + '/' + roomRoute);
+      await page.goto(roomUrl);
+      await page.waitForSelector('#displayName');
       await page.type('#displayName', name);
       await page.click('[type="submit"]');
       await page.waitForSelector(`[data-test-person="${name}"]`);
@@ -39,6 +40,7 @@ const noodlePlugin = (on, config) => {
     },
     removeParticipant: async (name: string) => {
       const page = participants[name];
+      if (!page) return Promise.resolve(null);
       await page.close({ runBeforeUnload: true });
       delete participants[name];
       return Promise.resolve(null);

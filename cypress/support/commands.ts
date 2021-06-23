@@ -1,7 +1,14 @@
 import detectSound from './detectSound';
 
-Cypress.Commands.add('joinRoom', (username, roomRoute) => {
-  cy.visit(`/${roomRoute}`);
+Cypress.Commands.add('createRoom', () => {
+  cy.visit('/create');
+  cy.get('[data-test-id="meetingTemplate-custom"]').click();
+  cy.contains('Join room now').click();
+  return cy.url();
+});
+
+Cypress.Commands.add('joinRoom', (username: string, roomUrl: string) => {
+  cy.visit(roomUrl);
   cy.get('#displayName').type(username);
   cy.get('[type="submit"]').click();
   // wait for room to load
@@ -11,8 +18,7 @@ Cypress.Commands.add('joinRoom', (username, roomRoute) => {
 });
 
 Cypress.Commands.add('leaveRoom', () => {
-  cy.wait(500);
-  cy.get('[data-test-id="leaveMeeting"]');
+  cy.get('[data-test-id="leaveMeeting"]').click();
 });
 
 Cypress.Commands.add('shouldBeColor', { prevSubject: 'element' }, (subject, color) => {

@@ -53,6 +53,7 @@ const MeetingTemplateCard: React.FC<{
         disableRipple
         disableTouchRipple
         style={{ opacity: loading ? 0.3 : 1 }}
+        data-test-id={`meetingTemplate-${templateName}`}
       >
         <CardMedia style={{ position: 'relative' }}>
           <img

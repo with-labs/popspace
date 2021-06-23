@@ -51,10 +51,11 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const createRoom = async (template, actorId) => {
-    const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, actorId)
-    const namedRoom = new shared.models.RoomWithState(room, roomData.state)
-    return namedRoom
+const createRoom = async (template, actorId, roomKind, req) => {
+  const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, actorId)
+  const namedRoom = new shared.models.RoomWithState(room, roomData.state)
+  const event = await shared.db.events.roomCreateEvent(actorId, roomKind, req)
+  return namedRoom
 }
 
 class Meetings {
@@ -101,20 +102,20 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(params.template, req.actor.id)
+      const namedRoom = await createRoom(params.template, req.actor.id, params.template_name, req)
       return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
-    }, ["template"])
+    }, ["template", "template_name"])
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res, params) => {
       /*
         Creates a meeting from a template and returns a URL to it
       */
-      const namedRoom = await createRoom(params.template, req.actor.id)
+      const namedRoom = await createRoom(params.template, req.actor.id, params.template_name, req)
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()
       })
-    }, ["template"])
+    }, ["template", "template_name"])
 
     this.zoo.loggedOutPostEndpoint("/anonymous_meeting", async (req, res, params) => {
       /*
@@ -131,13 +132,13 @@ class Meetings {
         However, we may be in a context where all we can do is call a URL and parse the result.
       */
       log.error.warn("/anonymous_meeting called - shouldn't be used yet, we don't have use cases")
-      const namedRoom = await createRoom(params.template, null)
+      const namedRoom = await createRoom(params.template, null, params.template_name, req)
       return api.http.succeed(req, res, {
         warning: "don't use w/o making sure it's impossible otherwise",
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()
       })
-    }, ["template"])
+    }, ["template", "template_name"])
   }
 }
 

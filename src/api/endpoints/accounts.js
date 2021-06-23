@@ -1,5 +1,5 @@
-const createActor = async (req, res, kind) => {
-  const pgActor = await shared.db.accounts.createActor(kind)
+const createActor = async (req, res, kind, source) => {
+  const pgActor = await shared.db.accounts.createActor(kind, source, req)
   const session = await shared.db.accounts.createSession(pgActor.id)
   const token = await shared.db.accounts.tokenFromSession(session)
   const actor = new shared.models.Actor(pgActor)
@@ -17,19 +17,19 @@ class Accounts {
 
   initPost() {
     this.zoo.loggedOutPostEndpoint("/stub_user", async (req, res) => {
-      createActor(req, res, "user")
+      createActor(req, res, "user", req.body.source || "stub_user")
     }, [])
 
     this.zoo.loggedOutPostEndpoint("/stub_bot", async (req, res) => {
-      createActor(req, res, "bot")
+      createActor(req, res, "bot", req.body.source || "stub_bot")
     }, [])
 
     this.zoo.loggedOutPostEndpoint("/stub_slack", async (req, res) => {
-      createActor(req, res, "slack")
+      createActor(req, res, "slack", req.body.source || "stub_slack")
     }, [])
 
     this.zoo.loggedOutPostEndpoint("/stub_gcal", async (req, res) => {
-      createActor(req, res, "gcal")
+      createActor(req, res, "gcal", req.body.source || "stub_gcal")
     }, [])
 
     this.zoo.loggedInPostEndpoint("/subscribe_to_newsletter", async (req, res) => {

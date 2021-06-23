@@ -36,7 +36,7 @@ class Files {
         return api.http.fail(req, res, err)
       }
 
-      return api.http.succeed(req, res, { errorCode: shared.error.code.UNEXPECTED_ERROR });
+      return api.http.succeed(req, res, { });
     }, ["file_url"])
   }
 }

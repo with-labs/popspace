@@ -32,7 +32,7 @@ const getNewState = async (tableName, criteria, stateUpdate, curState=null) => {
     extracting JSON fields into columns will be the best solution.
   */
   if(!curState) {
-    curState = await shared.db.pg.massive[tableName].findOne(criteria)
+    curState = (await shared.db.pg.massive[tableName].findOne(criteria)).state
   }
   return Object.assign(curState || {}, stateUpdate)
 }
@@ -87,10 +87,11 @@ class Data {
     ))
   }
   async setParticipantState(actorId, newState) {
-    return upsertState("participant_states", ["actor_id"], {
+    const result = await upsertState("participant_states", ["actor_id"], {
       actor_id: actorId,
       state: newState
     })
+    return result.state
   }
 
   async getRoomParticipantState(roomId, actorId) {

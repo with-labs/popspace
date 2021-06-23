@@ -37,5 +37,16 @@ const ERROR_CODES = {
 }
 
 module.exports = {
-  code: ERROR_CODES
+  code: ERROR_CODES,
+  report: async (error, tag, actorId) => {
+    if(log && log.error) {
+      log.error.info(error)
+    }
+    return await shared.db.pg.massive.errors.insert({
+      actor_id: actorId,
+      stack: error.stack,
+      message: error.message,
+      tag: tag
+    })
+  }
 }

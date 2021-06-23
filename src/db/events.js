@@ -1,22 +1,22 @@
 const userAgentParser = require('ua-parser-js')
 
 class Events {
-  actorCreateEvent(actorId, source, expressRequest, tx=null) {
+  async actorCreateEvent(actorId, source, expressRequest, tx=null) {
     const meta = null
     const key = "sourced"
     return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
   }
 
-  roomCreateEvent(actorId, kind, expressRequest, tx=null) {
+  async roomCreateEvent(actorId, kind, expressRequest, tx=null) {
     const meta = null
     key = "room_create"
     return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
   }
 
-  recordEvent(actorId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {
+  async recordEvent(actorId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {
     const ua = userAgentParser(expressRequest.headers['user-agent'] || "")
     const txOrMassive = tx || shared.db.pg.massive
-    const event = await txOrMassive.actor_events.insert({
+    return txOrMassive.actor_events.insert({
       actor_id: actorId,
       key: key,
       value: value,
@@ -33,7 +33,6 @@ class Events {
       browser_version: ua.browser.version,
       user_agent: expressRequest.headers['user-agent']
     })
-    return event
   }
 
 }

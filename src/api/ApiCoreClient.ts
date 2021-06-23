@@ -9,6 +9,8 @@ import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
 import { roomStateStore, RoomStateStore } from './roomState/roomStateStore';
 import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { EventEmitter } from 'events';
+import { getRef } from '@analytics/analyticsRef';
+import { MeetingTemplateName } from '@constants/MeetingTypeMetadata';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
@@ -88,7 +90,9 @@ export class ApiCoreClient extends EventEmitter {
     }
     const { actor, sessionToken } = await this.post<{ actor: any; sessionToken: string }>(
       '/stub_user',
-      {},
+      {
+        source: getRef(),
+      },
       this.SERVICES.api
     );
 
@@ -156,8 +160,12 @@ export class ApiCoreClient extends EventEmitter {
 
   // Core Meeting Functionality
 
-  createMeeting = this.requireActor((template: RoomTemplate) => {
-    return this.post<{ newMeeting: any }>('/create_meeting', { template }, this.SERVICES.api);
+  createMeeting = this.requireActor((template: RoomTemplate, templateName: MeetingTemplateName) => {
+    return this.post<{ newMeeting: any }>(
+      '/create_meeting',
+      { template, templateName, source: getRef() },
+      this.SERVICES.api
+    );
   });
 
   /**
@@ -228,10 +236,12 @@ export class ApiCoreClient extends EventEmitter {
     const timeout = setTimeout(() => abortController.abort(), 15_000);
 
     try {
+      const analyticsRef = getRef();
       const response = await fetch(`${service.url}${endpoint}`, {
         method,
         headers: {
           'Content-Type': 'application/json',
+          ...(analyticsRef ? { 'X-Analytics-Ref': analyticsRef } : {}),
           ...this.getAuthHeaders(),
         },
         body: data ? JSON.stringify(data) : undefined,

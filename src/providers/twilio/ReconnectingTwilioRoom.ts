@@ -53,7 +53,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     }
     this.emit('connecting');
     try {
-      const tokenResult = await client.joinMeeting(this.roomName);
+      const tokenResult = await client.connectToMeeting(this.roomName);
       this._room = await Video.connect(tokenResult, this.options);
       this.emit('connected', this._room);
       this.emit('roomChanged', this._room);

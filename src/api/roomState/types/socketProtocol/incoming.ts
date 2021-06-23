@@ -36,7 +36,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
       roomId: string;
       transform: RoomPositionState;
     }[];
-    self: ParticipantShape;
+    self: ParticipantShape & { actor: { id: string } };
     displayName: string;
     roomData: {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
@@ -133,6 +133,7 @@ export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
   | IncomingAuthResponseMessage
+  | IncomingJoinResponseMessage
   | IncomingWidgetCreatedMessage
   | IncomingParticipantJoinedMessage
   | IncomingWidgetMovedMessage

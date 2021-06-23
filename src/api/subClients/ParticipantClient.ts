@@ -42,6 +42,20 @@ export class ParticipantClient extends ApiSubClient {
 
   // Public API
 
+  enterMeeting = () => {
+    if (!this.core.actor) {
+      throw new Error('Must be authenticated to enter meeting');
+    }
+    if (!this.core.roomId) {
+      throw new Error('Must be connected to a meeting to join');
+    }
+
+    this.core.socket.send({
+      kind: 'join',
+      payload: {},
+    });
+  };
+
   updateSelf = (payload: Partial<ActorShape>) => {
     if (!this.core.actor) {
       throw new Error('Must be authenticated to update self');

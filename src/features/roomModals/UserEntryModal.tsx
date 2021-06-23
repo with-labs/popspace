@@ -74,6 +74,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
     client.participants.updateSelf({
       displayName: values.displayName,
     });
+    client.participants.enterMeeting();
     onReady();
   };
 

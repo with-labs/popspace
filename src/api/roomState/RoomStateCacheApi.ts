@@ -40,7 +40,7 @@ export class RoomStateCacheApi {
   initialize = (init: IncomingAuthResponseMessage) => {
     logger.debug(`Initialize`, init);
     const {
-      payload: { roomData: room, participants, displayName },
+      payload: { roomData: room, participants, displayName, self },
     } = init;
     this.set((draft) => {
       Object.assign(draft.state, room.state);
@@ -71,6 +71,14 @@ export class RoomStateCacheApi {
           position: session.transform.position,
         };
       });
+      // add self, but don't include transform data - we wait for the
+      // user to actually enter the room for that.
+      this.addUserToState(draft, {
+        actorId: self.actor.id,
+        participantState: self.participantState,
+        sessionId: self.sessionId,
+      });
+
       draft.id = room.id.toString();
       // store our own sessionId, just so we know
       draft.sessionId = init.sender.sessionId;

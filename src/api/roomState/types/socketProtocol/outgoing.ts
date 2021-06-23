@@ -25,6 +25,11 @@ export interface AuthMessage extends BaseOutgoingSocketMessage {
   };
 }
 
+export interface JoinMessage extends BaseOutgoingSocketMessage {
+  kind: 'join';
+  payload: {};
+}
+
 export interface OutgoingAddWidgetMessage extends BaseOutgoingSocketMessage {
   kind: 'createWidget';
   payload: Omit<WidgetShape, 'widgetId' | 'creatorId' | 'creatorDisplayName'> & {
@@ -119,6 +124,7 @@ export interface OutgoingPassthroughMessage<T extends PassthroughPayload = Passt
 export type OutgoingSocketMessage =
   | PingMessage
   | AuthMessage
+  | JoinMessage
   | OutgoingAddWidgetMessage
   | OutgoingMoveWidgetMessage
   | OutgoingMoveParticipantMessage

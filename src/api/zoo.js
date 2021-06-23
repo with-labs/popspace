@@ -10,7 +10,7 @@ const http = require("./http")
 const parseUriParams = (receivedParams, expectedParams) => {
   const result = {}
   try {
-    for(const param of expectedParams) {
+    for(const param of expectedParams.foo.bar) {
       if(receivedParams[param] == null) {
         throw {missing: param, code: shared.error.code.INVALID_API_PARAMS}
       }
@@ -50,15 +50,23 @@ const safeHandleRequest = async (req, res, handler, params) => {
 
 const safePostHandler = (endpoint, handler, requiredParams) => {
   return async (req, res) => {
-    const params = parseBodyParams(req.body, requiredParams)
-    return safeHandleRequest(req, res, handler, params)
+    try {
+      const params = parseBodyParams(req.body, requiredParams)
+      return await safeHandleRequest(req, res, handler, params)
+    } catch (err) {
+      http.fail(req, res, err, 500)
+    }
   }
 }
 
 const safeGetHandler = (endpoint, handler, requiredParams) => {
   return async (req, res) => {
-    const params = parseUriParams(req.params)
-    return safeHandleRequest(req, res, handler, params)
+    try {
+      const params = parseUriParams(req.params)
+      return await safeHandleRequest(req, res, handler, params)
+    } catch (err) {
+      http.fail(req, res, err, 500)
+    }
   }
 }
 

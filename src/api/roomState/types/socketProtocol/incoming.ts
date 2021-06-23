@@ -24,7 +24,6 @@ export interface IncomingPongMessage extends BaseIncomingSocketMessage {
   kind: 'pong';
 }
 
-// room initialize message
 export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   kind: 'auth.response';
   payload: {

@@ -65,6 +65,7 @@ export class RoomStateCacheApi {
           sessionId: session.sessionId,
           actor: session.actor,
           participantState: session.participantState,
+          observer: session.observer,
         });
         draft.userPositions[session.actor.id] = {
           size: session.transform.size || SIZE_AVATAR,
@@ -77,6 +78,7 @@ export class RoomStateCacheApi {
         actorId: self.actor.id,
         participantState: self.participantState,
         sessionId: self.sessionId,
+        observer: self.observer,
       });
 
       draft.id = room.id.toString();
@@ -97,6 +99,7 @@ export class RoomStateCacheApi {
       actor: ActorShape;
       sessionId: string;
       participantState: ParticipantState;
+      observer: boolean;
     }
   ) => {
     const actorId = data.actor.id;
@@ -111,11 +114,13 @@ export class RoomStateCacheApi {
           ...(data.participantState as any),
         },
         sessionIds: new Set<string>(),
+        observer: data.observer,
       };
     } else {
       Object.assign(state.users[actorId], {
         participantState: data.participantState,
         actor: data.actor,
+        observer: data.observer,
       });
     }
 
@@ -212,6 +217,7 @@ export class RoomStateCacheApi {
         actor: message.payload.actor,
         sessionId: message.sender.sessionId,
         participantState: message.payload.participantState,
+        observer: message.payload.observer,
       });
       this.mergeTransformToState(draft.userPositions, message.sender.actorId, message.payload.transform);
     });
@@ -242,6 +248,9 @@ export class RoomStateCacheApi {
       }
       if (payload.actor) {
         Object.assign(draft.users[payload.id].actor, payload.actor);
+      }
+      if (payload.observer !== undefined) {
+        draft.users[payload.id].observer = payload.observer;
       }
     });
   };

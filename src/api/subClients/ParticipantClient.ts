@@ -30,6 +30,7 @@ export class ParticipantClient extends ApiSubClient {
     this.core.cacheApi.updateUser({
       id: message.sender.actorId,
       participantState: message.payload.participantState,
+      observer: message.payload.observer,
     });
   };
 

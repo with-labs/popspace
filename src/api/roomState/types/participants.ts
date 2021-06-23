@@ -12,4 +12,5 @@ export interface ParticipantShape {
   sessionId: string;
   participantState: ParticipantState;
   actor: ActorShape;
+  observer: boolean;
 }

@@ -13,9 +13,6 @@ import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPag
 import { logger } from '@utils/logger';
 import { Link } from '@components/Link/Link';
 
-// TODO: change this to the shortened url
-const BASE_URL = 'https://www.noodle.so';
-
 export interface IMeetingLinkProps extends RouteComponentProps<{ meetingRoute: string }> {}
 
 const useStyles = makeStyles((theme) => ({
@@ -66,9 +63,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
   const classes = useStyles();
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false);
 
-  // if we are on prod, use the shortented base url for share links, otherwise just
-  // use the origin of whatever url we are using
-  const meetingUrl = `${process.env.NODE_ENV !== 'production' ? window.location.origin : BASE_URL}/${meetingRoute}`;
+  const meetingUrl = `${window.location.origin}/${meetingRoute}`;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 

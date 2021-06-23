@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core';
 import { Links } from '@constants/Links';
 import { Link } from '@components/Link/Link';
 import { USER_SUPPORT_EMAIL } from '@constants/User';
+import { headerCase } from 'change-case';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -52,7 +53,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
     const device = t(`error.media.${mediaType}`);
     return (
       <>
-        <DialogTitle className={classes.title}>{t('error.media.title', { device })}</DialogTitle>
+        <DialogTitle className={classes.title}>{t('error.media.title', { device: headerCase(device) })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Trans i18nKey="error.media.supportText" values={{ device }}>

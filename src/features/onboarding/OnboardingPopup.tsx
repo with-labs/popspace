@@ -159,7 +159,7 @@ const useStepStyles = makeStyles((theme) => ({
     color: theme.palette.brandColors.oregano.bold,
     fontSize: theme.typography.pxToRem(24),
     position: 'relative',
-    bottom: -6,
+    marginBottom: -6,
   },
 }));
 

@@ -24,4 +24,12 @@ class Actor {
   }
 }
 
+Actor.fromActorId = async (actorId) => {
+  const pgActor = await shared.db.accounts.actorById(actorId)
+  if(!pgActor) {
+    return null
+  }
+  return new Actor(pgActor)
+}
+
 module.exports = Actor

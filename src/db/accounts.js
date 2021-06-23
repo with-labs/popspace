@@ -15,7 +15,7 @@ class Accounts {
     actorId = parseInt(actorId)
     const actor = await shared.db.pg.massive.actors.findOne({id: actorId, "deleted_at IS NOT NULL": null})
     if(!actor) {
-      throw "No such actor"
+      throw "No such actor - can only hard delete soft deleted actors."
     }
     const createdRooms = await shared.db.room.core.getCreatedRooms(actorId)
     const roomIds = createdRooms.map((r) => (r.id))
@@ -54,11 +54,14 @@ class Accounts {
     return shared.db.pg.massive.actors.findOne({id: id, deleted_at: null})
   }
 
-  async createActor(kind) {
-    const actor = await shared.db.pg.massive.actors.insert({
-      kind: kind
+  async createActor(kind, source, expressRequest) {
+    return shared.db.pg.massive.withTransaction(async (tx) => {
+      const actor = await tx.actors.insert({
+        kind: kind
+      })
+      const event = await shared.db.events.actorCreateEvent(actor.id, source, expressRequest, tx)
+      return actor
     })
-    return actor
   }
 
   async createLoginRequest(actor) {
@@ -72,9 +75,8 @@ class Accounts {
     return await shared.db.pg.massive.magic_codes.insert(loginRequest)
   }
 
-  async resolveLoginRequest(actorId, code) {
+  async resolveLoginRequest(code) {
     const request = await shared.db.pg.massive.magic_codes.findOne({
-      actor_id: actorId,
       code: code,
       action: "login"
     })
@@ -82,7 +84,8 @@ class Accounts {
     if(verification.error != null) {
       return verification
     }
-    const session = await this.createSession(actorId)
+    // TODO: resolve the request
+    const session = await this.createSession(request.actor_id)
     return { session: session }
   }
 

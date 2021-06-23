@@ -3,6 +3,8 @@ class AuthProcessor {
     switch(hermesEvent.kind()) {
       case "auth":
         return this.authenticate(hermesEvent, participants)
+      case "join":
+        return this.join(hermesEvent, participants)
       default:
         return hermesEvent.senderParticipant().sendError(
           hermesEvent,
@@ -54,7 +56,6 @@ class AuthProcessor {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(hermesEvent)
       sender.sendResponse(hermesEvent, authData)
-      sender.broadcastPeerEvent("participantJoined", sender.serialize())
     } else {
       return sender.sendError(
         hermesEvent,
@@ -63,6 +64,13 @@ class AuthProcessor {
         {originalPayload: payload}
       )
     }
+  }
+
+  async join(hermesEvent, participants) {
+    const sender = hermesEvent.senderParticipant()
+    sender.joined = true
+    sender.sendResponse(hermesEvent, sender.serialize())
+    sender.broadcastPeerEvent("participantJoined", sender.serialize())
   }
 
   async getAuthData(hermesEvent) {

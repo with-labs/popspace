@@ -12,6 +12,7 @@ const ACTION_BY_EVENT_KIND = {
   "getRoom": "get",
   "getWidget": "get",
   "auth": "auth",
+  "join": "auth",
   "ping": "passthrough",
   "echo": "passthrough",
   "passthrough": "passthrough",

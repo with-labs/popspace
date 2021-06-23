@@ -28,6 +28,7 @@ class Participant {
     this.req = req
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+    this.joined = false
 
     this.dieFromTimeout = () => {
       log.app.info(`${this.sessionName()} Participant dying from timeout`)
@@ -180,7 +181,7 @@ class Participant {
   }
 
   listPeersIncludingSelf() {
-    return (this.socketGroup ? this.socketGroup.authenticatedParticipants() : [])
+    return (this.socketGroup ? this.socketGroup.joinedParticipants() : [])
   }
 
   async authenticate(token, roomRoute) {

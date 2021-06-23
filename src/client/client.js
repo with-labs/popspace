@@ -209,6 +209,15 @@ class Client extends EventEmitter {
     return response
   }
 
+  async join() {
+    const response = await this.sendEventWithPromise("join", {})
+    if (response.kind == "error") {
+      throw response
+    } else {
+      this.roomData.updatePeer(response.payload)
+    }
+  }
+
   async sendEventWithPromise(kind, payload) {
     const event = this.makeEvent(kind, payload)
     const { promise, resolver } = this.makeEventPromise(event)

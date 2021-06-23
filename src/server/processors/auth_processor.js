@@ -17,6 +17,7 @@ class AuthProcessor {
   async authenticate(hermesEvent, participants) {
     const payload = hermesEvent.payload()
     const sender = hermesEvent.senderParticipant()
+    sender.observer = true
     if(!payload.room_route) {
       return sender.sendError(
         hermesEvent,
@@ -56,6 +57,7 @@ class AuthProcessor {
       await participants.joinRoom(sender)
       const authData = await this.getAuthData(hermesEvent)
       sender.sendResponse(hermesEvent, authData)
+      sender.broadcastPeerEvent("participantJoined", sender.serialize())
     } else {
       return sender.sendError(
         hermesEvent,
@@ -68,9 +70,7 @@ class AuthProcessor {
 
   async join(hermesEvent, participants) {
     const sender = hermesEvent.senderParticipant()
-    sender.joined = true
-    sender.sendResponse(hermesEvent, sender.serialize())
-    sender.broadcastPeerEvent("participantJoined", sender.serialize())
+    sender.setObserver(false, hermesEvent)
   }
 
   async getAuthData(hermesEvent) {

@@ -62,10 +62,6 @@ class SocketGroup {
     return this._participants.filter((p) => (p.authenticated))
   }
 
-  joinedParticipants() {
-    return this._participants.filter((p) => (p.authenticated && p.joined))
-  }
-
   broadcastRoomStateFieldChanged(field, newValue) {
     const payload = { kind: "roomStateFieldChange", params: {}}
     payload.params[field] = newValue

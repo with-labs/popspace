@@ -16,7 +16,9 @@ class RoomActorClient {
 
   async join() {
     await this.initiateLoggedInSession()
-    return await this.authenticateSocket()
+    await this.authenticateSocket()
+    await this.joinRoom()
+    return this.auth
   }
 
   async initiateLoggedInSession() {
@@ -46,6 +48,10 @@ class RoomActorClient {
       delete this.afterJoin
     }
     return auth
+  }
+
+  async joinRoom() {
+    await this.client.join()
   }
 
   async enableRoomAccess(room) {

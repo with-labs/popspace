@@ -28,7 +28,7 @@ class Participant {
     this.req = req
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
-    this.joined = false
+    this.observer = false
 
     this.dieFromTimeout = () => {
       log.app.info(`${this.sessionName()} Participant dying from timeout`)
@@ -181,7 +181,7 @@ class Participant {
   }
 
   listPeersIncludingSelf() {
-    return (this.socketGroup ? this.socketGroup.joinedParticipants() : [])
+    return (this.socketGroup ? this.socketGroup.authenticatedParticipants() : [])
   }
 
   async authenticate(token, roomRoute) {
@@ -394,6 +394,16 @@ class Participant {
     }
   }
 
+  async setObserver(isObserver, sourceEvent = null) {
+    this.observer = isObserver
+    if (sourceEvent) {
+      this.sendResponse(sourceEvent, this.serialize())
+      this.broadcastPeerEvent("participantUpdated", this.serialize())
+    } else {
+      log.error.warn("Dropping setObserver - sourceEvent missing")
+    }
+  }
+
   unauthenticate() {
     this.authenticated = false
     this.actor = {}
@@ -414,7 +424,8 @@ class Participant {
       sessionId: this.id,
       roomId: this.room.id,
       transform: this.transform,
-      participantState: this.participantState
+      participantState: this.participantState,
+      observer: this.observer
     }
   }
 }

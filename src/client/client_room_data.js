@@ -5,7 +5,7 @@ module.exports = class {
   }
 
   peersExcludingSelf() {
-    return this.peersIncludingSelf().filter((p) => (p.sessionId() == this.sessionId()))
+    return this.peersIncludingSelf().filter((p) => (p.sessionId != this.sessionId()))
   }
 
   peersIncludingSelf() {

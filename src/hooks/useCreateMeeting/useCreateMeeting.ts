@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 
 export function useCreateMeeting() {
   const createMeeting = useCallback(async (templateName: MeetingTemplateName) => {
-    const response = await api.createMeeting(meetingTemplates[templateName]);
+    const response = await api.createMeeting(meetingTemplates[templateName], templateName);
     return response.newMeeting;
   }, []);
 

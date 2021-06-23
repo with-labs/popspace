@@ -78,7 +78,7 @@ export const MicToggle = (props: IMicToggleProps) => {
 
   // only show the list if we have access to devices (and their IDs)
   const { mics } = useAVSources();
-  const showMicsList = mics?.every((device) => device.deviceId);
+  const showMicsList = mics?.every((device) => device.deviceId && device.label);
 
   return (
     <>

@@ -72,7 +72,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
 
   // only show the list if we have access to devices (and their IDs)
   const { cameras } = useAVSources();
-  const showCamerasList = cameras?.every((device) => device.deviceId);
+  const showCamerasList = cameras?.every((device) => device.deviceId && device.label);
 
   return (
     <>

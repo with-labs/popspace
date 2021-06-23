@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.0.23",
+    "@withso/noodle-shared": "1.0.24",
     "aws-sdk": "^2.928.0",
     "axios": "^0.21.1",
     "camelcase-keys": "^6.2.2",

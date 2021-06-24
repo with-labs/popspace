@@ -1,7 +1,7 @@
 {
-  "name": "With",
-  "short_name": "With",
-  "description": "A virtual space for your work sessions. With helps teams collaborate more efficiently, build companionship, and create serendipity.",
+  "name": "Tilde",
+  "short_name": "Tilde",
+  "description": "A virtual space for your work sessions. Tilde helps teams collaborate more efficiently, build companionship, and create serendipity.",
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#F4F5F8",

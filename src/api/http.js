@@ -44,7 +44,8 @@ const http = {
       result = error.toJson()
       /* The message field does not serialize for whatever reason */
       result.message = error.message
-      await shared.error.report(error, "noodle_api", req.actor ? req.actor.id : null, httpCode)
+      const error = await shared.error.report(error, "noodle_api", req.actor ? req.actor.id : null, httpCode)
+      result.error_id = error.id
     } else {
       /*
         Let's start getting rid of them

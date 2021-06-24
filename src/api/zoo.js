@@ -36,7 +36,7 @@ const parseBodyParams = (receivedParams, expectedParams) => {
   return result
 }
 
-const safeHandleRequest = async (req, res, handler) => {
+const safeHandleRequest = async (handler) => (req, res) => {
   try {
     return handler(req, res)
   } catch (e) {
@@ -49,14 +49,14 @@ const safeHandleRequest = async (req, res, handler) => {
 }
 
 const safePostHandler = (endpoint, handler, requiredParams) => {
-  return safeHandleRequest(req, res, async (req, res) => {
+  return safeHandleRequest(async (req, res) => {
     const params = parseBodyParams(req.body, requiredParams)
     return await handler(req, res, params)
   })
 }
 
 const safeGetHandler = (endpoint, handler, requiredParams) => {
-  return safeHandleRequest(req, res, async (req, res) => {
+  return safeHandleRequest(async (req, res) => {
     const params = parseUriParams(req.params)
     return await handler(req, res, params)
   })

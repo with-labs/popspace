@@ -54,7 +54,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
           <Logo width={75} style={{ marginLeft: 8 }} link newTab />
 
           <MediaFailedWrapper>
-            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection={'row'}>
+            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">
               <PublishedCameraToggle />
               <PublishedMicToggle />
               <Hidden xsDown>

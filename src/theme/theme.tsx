@@ -356,6 +356,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiAccordion: {
         elevation: 0,
       },
+      MuiCircularProgress: {
+        thickness: 6,
+      },
     },
     overrides: {
       MuiCssBaseline: {
@@ -595,10 +598,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiCircularProgress: {
         colorPrimary: {
           color: palette.brandColors.slate.ink,
-        },
-        circle: {
-          strokeWidth: 6,
-          r: 16,
         },
       },
       MuiCheckbox: {

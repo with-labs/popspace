@@ -36,7 +36,7 @@ const parseBodyParams = (receivedParams, expectedParams) => {
   return result
 }
 
-const safeHandleRequest = async (handler) => (req, res) => {
+const safeHandleRequest = (handler) => async (req, res) => {
   try {
     return handler(req, res)
   } catch (e) {

@@ -405,7 +405,9 @@ class Participant {
     return {
       authenticated: this.authenticated,
       actor: {
-        id: this.actor.id
+        id: this.actor.id,
+        display_name: this.actor.display_name,
+        avatar_name: this.actor.avatar_name,
       },
       sessionId: this.id,
       roomId: this.room.id,

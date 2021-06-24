@@ -10,7 +10,7 @@ const http = require("./http")
 const parseUriParams = (receivedParams, expectedParams) => {
   const result = {}
   try {
-    for(const param of expectedParams.foo.bar) {
+    for(const param of expectedParams) {
       if(receivedParams[param] == null) {
         throw {missing: param, code: shared.error.code.INVALID_API_PARAMS}
       }
@@ -36,9 +36,9 @@ const parseBodyParams = (receivedParams, expectedParams) => {
   return result
 }
 
-const safeHandleRequest = async (req, res, handler, params) => {
+const safeHandleRequest = async (req, res, handler) => {
   try {
-    return handler(req, res, params)
+    return handler(req, res)
   } catch (e) {
     log.error.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`)
     e.message = e.message || "Unexpected error"
@@ -49,25 +49,17 @@ const safeHandleRequest = async (req, res, handler, params) => {
 }
 
 const safePostHandler = (endpoint, handler, requiredParams) => {
-  return async (req, res) => {
-    try {
-      const params = parseBodyParams(req.body, requiredParams)
-      return await safeHandleRequest(req, res, handler, params)
-    } catch (err) {
-      http.fail(req, res, err, 500)
-    }
-  }
+  return safeHandleRequest(req, res, async (req, res) => {
+    const params = parseBodyParams(req.body, requiredParams)
+    return await handler(req, res, params)
+  })
 }
 
 const safeGetHandler = (endpoint, handler, requiredParams) => {
-  return async (req, res) => {
-    try {
-      const params = parseUriParams(req.params)
-      return await safeHandleRequest(req, res, handler, params)
-    } catch (err) {
-      http.fail(req, res, err, 500)
-    }
-  }
+  return safeHandleRequest(req, res, async (req, res) => {
+    const params = parseUriParams(req.params)
+    return await handler(req, res, params)
+  })
 }
 
 

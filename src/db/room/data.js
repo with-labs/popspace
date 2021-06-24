@@ -61,7 +61,7 @@ class Data {
   /************************************************/
 
   async getParticipantState(actorId) {
-    const entry = await shared.db.pg.massive.participant_states.find({
+    const entry = await shared.db.pg.massive.participant_states.findOne({
       actor_id: actorId
     })
     return entry.state

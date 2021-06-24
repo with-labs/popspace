@@ -38,6 +38,8 @@ export function PostMeeting({ match }: PostMeetingProps) {
 
   const submitRating = async (rating: number) => {
     try {
+      setState((cur) => ({ ...cur, rating }));
+
       let result: { success: boolean; message?: string; ratingId: number; rating: number };
       if (state.ratingId) {
         // updating existing rating

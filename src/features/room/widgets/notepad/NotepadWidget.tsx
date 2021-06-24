@@ -121,7 +121,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
               quillRef={quillRef}
               spinner={spinner}
               id={`__notepad_${state.widgetId}`}
-              host={process.env.REACT_APP_PEGASUS_SOCKET_HOST}
+              host={process.env.REACT_APP_UNICORN_SOCKET_HOST}
               docId={state.widgetId}
               docCollection="documents"
               userDisplayName={userDisplayName}

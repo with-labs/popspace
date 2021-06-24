@@ -40,11 +40,11 @@ class SocketGroup {
     return this._room
   }
 
-  async addParticipant(participant) {
+  addParticipant(participant) {
     this._participants.push(participant)
   }
 
-  async removeParticipant(participant)  {
+  removeParticipant(participant)  {
     let index = this._participants.findIndex((p) => (p == participant))
     if(index > -1) {
       this._participants.splice(index, 1)

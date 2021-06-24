@@ -232,7 +232,7 @@ class Participant {
   async joinSocketGroup(socketGroup) {
     await this.leaveSocketGroup()
     this.socketGroup = socketGroup
-    await socketGroup.addParticipant(this)
+    socketGroup.addParticipant(this)
     this.keepalive()
     log.app.info(`${this.sessionName()} Joined socket group`)
     await lib.analytics.participantJoinedSocketGroup(socketGroup)
@@ -244,7 +244,7 @@ class Participant {
     if(this.socketGroup) {
       const socketGroup = this.socketGroup
       this.socketGroup = null
-      await socketGroup.removeParticipant(this)
+      socketGroup.removeParticipant(this)
       socketGroup.broadcastPeerEvent(this, "participantLeft", { sessionId: this.id })
       await lib.analytics.participantLeft(socketGroup)
     }

@@ -8,7 +8,7 @@ import api from '@api/client';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { logger } from '@utils/logger';
 
@@ -110,7 +110,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
             <StarRating value={state.rating} onChange={submitRating} className={classes.starRating} />
 
             <Typography variant="body1" className={classes.ratingText}>
-              {t('pages.postMeeting.ratingCaption')}
+              <Trans i18nKey="pages.postMeeting.ratingCaption" />
             </Typography>
 
             <SkipButton />

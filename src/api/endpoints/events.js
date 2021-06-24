@@ -6,7 +6,8 @@ class Events {
 
   initPost() {
     this.zoo.loggedInPostEndpoint("/actor_event", async (req, res, params) => {
-      const event = await shared.db.events.recordEvent(req.actor, params.key, params.value, req, params.meta)
+      /* Optional arg: { meta } (json) */
+      const event = await shared.db.events.recordEvent(req.actor, params.key, params.value, req, req.body.meta)
       return api.http.succeed(req, res, { })
     }, ["key", "value"])
 

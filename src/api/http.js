@@ -8,6 +8,23 @@ const getRequestSignature = (req) => {
   return values.join(", ")
 }
 
+if (!('toJson' in Error.prototype))
+  /*
+    https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify
+  */
+  Object.defineProperty(Error.prototype, 'toJson', {
+    value: function () {
+      const result = {}
+      Object.getOwnPropertyNames(this).forEach(function(property) {
+          result[property] = this[property]
+      }, this)
+
+      return result
+    },
+    configurable: true,
+    writable: true
+})
+
 const http = {
   fail: async (req, res, error={}, httpCode=shared.api.http.code.BAD_REQUEST) => {
     error.message = error.message || "Unknown error"
@@ -27,6 +44,7 @@ const http = {
       result = error.toJson()
       /* The message field does not serialize for whatever reason */
       result.message = error.message
+      await shared.error.report(error, "noodle_api", req.actor ? req.actor.id : null, httpCode)
     } else {
       /*
         Let's start getting rid of them

@@ -27,8 +27,12 @@ class RoomWidget {
     return this._pgWidget.creator_id
   }
 
-  creatorDisplayName() {
-    return this._creatorDisplayName
+  async creator() {
+    return this._creator = (this._creator || (await shared.db.accounts.actorById(this.creatorId()))) || {}
+  }
+
+  async creatorDisplayName() {
+    return this._creatorDisplayName = this._creatorDisplayName || (await this.creator()).display_name
   }
 
   async serialize() {
@@ -37,7 +41,7 @@ class RoomWidget {
       creator_id: this._pgWidget.creator_id,
       type: this._pgWidget._type,
       widget_state: this.widgetState(),
-      creator_display_name: this.creatorDisplayName(),
+      creator_display_name: (await this.creatorDisplayName()),
       transform: this.roomWidgetState()
     }
   }

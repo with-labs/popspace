@@ -95,7 +95,7 @@ class Data {
   }
 
   async getRoomParticipantState(roomId, actorId) {
-    const entry = await shared.db.pg.massive.room_participant_states.find({
+    const entry = await shared.db.pg.massive.room_participant_states.findOne({
       room_id: roomId,
       actor_id: actorId
     })

@@ -11,7 +11,7 @@ const getMockCreator = async () => {
     mockCreator = await shared.db.pg.massive.actors.insert({
       id: MOCK_USER_ID,
       kind: "system",
-      display_name: "Dorothy Gale"
+      display_name: "Tilde"
     })
     log.app.info("Successfully created mock widget creator!", mockCreator)
   }

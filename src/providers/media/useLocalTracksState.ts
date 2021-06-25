@@ -71,6 +71,12 @@ export function useLocalTracksState(onError: (err: Error) => void) {
     setDataTrack(new LocalDataTrack());
   }, []);
 
+  const stopAll = useCallback(() => {
+    stopAudio();
+    stopVideo();
+    stopScreenShare();
+  }, [stopAudio, stopScreenShare, stopVideo]);
+
   return useMemo(
     () => ({
       audioTrack,
@@ -92,6 +98,7 @@ export function useLocalTracksState(onError: (err: Error) => void) {
       restartVideo,
       restartScreenShare,
       restartData,
+      stopAll,
     }),
     [
       audioTrack,
@@ -113,6 +120,7 @@ export function useLocalTracksState(onError: (err: Error) => void) {
       restartVideo,
       restartScreenShare,
       restartData,
+      stopAll,
     ]
   );
 }

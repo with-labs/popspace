@@ -50,7 +50,7 @@ describe('RoomStateCacheApi', () => {
               actor: {
                 id: 'cat-id',
                 displayName: 'Cat',
-                avatarname: 'cat',
+                avatarName: 'cat',
               },
               participantState: {
                 displayName: 'Cat',

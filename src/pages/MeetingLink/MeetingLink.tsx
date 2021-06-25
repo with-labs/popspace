@@ -1,6 +1,6 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Typography, Box, TextField, Button } from '@material-ui/core';
+import { makeStyles, Typography, Box, TextField, Button, ThemeProvider } from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
@@ -18,6 +18,7 @@ import gcal from './images/calendar.png';
 import outlook from './images/outlook.png';
 import chrome from './images/chrome.png';
 import slack from './images/slack.png';
+import { mandarin } from '@src/theme/theme';
 
 export interface IMeetingLinkProps extends RouteComponentProps<{ meetingRoute: string }> {}
 
@@ -103,23 +104,27 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
             classes: { root: classes.inputRoot, input: classes.input, notchedOutline: classes.notchedOutline },
             endAdornment: (
               <Spacing flexShrink={0} flexBasis="auto">
-                <Button
-                  fullWidth={false}
-                  startIcon={toggleCopyButton ? <DoneIcon /> : <CopyIcon />}
-                  className={clsx(toggleCopyButton && classes.copied)}
-                  onClick={onCopyLink}
-                  color="secondary"
-                  style={{ flexBasis: 'auto', flexShrink: 0 }}
-                >
-                  {t(`pages.meetingLink.${toggleCopyButton ? 'copied' : 'copyLinkButton'}`)}
-                </Button>
+                <ThemeProvider theme={mandarin}>
+                  <Button
+                    fullWidth={false}
+                    startIcon={toggleCopyButton ? <DoneIcon /> : <CopyIcon />}
+                    className={clsx(toggleCopyButton && classes.copied)}
+                    onClick={onCopyLink}
+                    color="primary"
+                    style={{ flexBasis: 'auto', flexShrink: 0 }}
+                  >
+                    {t(`pages.meetingLink.${toggleCopyButton ? 'copied' : 'copyLinkButton'}`)}
+                  </Button>
+                </ThemeProvider>
                 <Link
                   disableStyling
                   to={`/${meetingRoute}`}
                   newTab={false}
                   style={{ flexBasis: 'auto', flexShrink: 0 }}
                 >
-                  <Button fullWidth={false}>{t('pages.meetingLink.joinRoomButton')}</Button>
+                  <Button tabIndex={-1} fullWidth={false}>
+                    {t('pages.meetingLink.joinRoomButton')}
+                  </Button>
                 </Link>
               </Spacing>
             ),

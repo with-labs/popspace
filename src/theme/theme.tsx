@@ -929,12 +929,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           },
 
           '&:active': {
-            boxShadow: focusRings.create(palette.secondary.main),
+            boxShadow: focusRings.create(brandPalette.oregano.regular),
             backgroundColor: palette.grey[300],
           },
 
           '&$selected': {
-            color: palette.secondary.main,
+            color: brandPalette.oregano.regular,
             backgroundColor: 'transparent',
 
             '& + &': {
@@ -944,21 +944,21 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
             },
 
             '&:hover': {
-              boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.secondary.main,
-              color: palette.secondary.contrastText,
+              boxShadow: focusRings.create(brandPalette.oregano.regular),
+              backgroundColor: brandPalette.oregano.regular,
+              color: brandPalette.oregano.ink,
             },
 
             '&:focus': {
               boxShadow: focusRings.primary,
-              backgroundColor: palette.secondary.light,
-              color: palette.secondary.contrastText,
+              backgroundColor: brandPalette.oregano.light,
+              color: brandPalette.oregano.ink,
             },
 
             '&:active': {
-              boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.secondary.light,
-              color: palette.secondary.contrastText,
+              boxShadow: focusRings.create(brandPalette.oregano.regular),
+              backgroundColor: brandPalette.oregano.light,
+              color: brandPalette.oregano.ink,
             },
           },
         },
@@ -1231,7 +1231,6 @@ export const cherry = createPaletteTheme({
 
 export const lavender = createPaletteTheme({
   primary: brandPalette.lavender,
-  secondary: brandPalette.mandarin,
 });
 
 export const oregano = createPaletteTheme({

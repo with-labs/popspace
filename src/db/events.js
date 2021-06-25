@@ -9,7 +9,7 @@ class Events {
 
   async roomCreateEvent(actorId, kind, expressRequest, tx=null) {
     const meta = null
-    key = "room_create"
+    const key = "room_create"
     return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
   }
 

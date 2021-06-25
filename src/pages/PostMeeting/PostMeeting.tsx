@@ -6,35 +6,49 @@ import { RouteNames } from '@constants/RouteNames';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import api from '@api/client';
 import { Form, Formik } from 'formik';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Trans, useTranslation } from 'react-i18next';
-import { RouteComponentProps, useHistory } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { logger } from '@utils/logger';
+import { Logo } from '@components/Logo/Logo';
+import { Spacing } from '@components/Spacing/Spacing';
+import * as Yup from 'yup';
+import i18n from '@src/i18n';
 
 export interface PostMeetingProps extends RouteComponentProps<{ roomRoute: string }> {}
 
 const useStyles = makeStyles((theme) => ({
+  logo: {
+    marginBottom: theme.spacing(4),
+  },
   title: {
-    marginBottom: theme.spacing(8),
-  },
-  starRating: {
-    marginBottom: theme.spacing(2),
-    margin: 'auto',
-  },
-  ratingText: {
     marginBottom: theme.spacing(4),
     textAlign: 'center',
   },
+  starRating: {},
+  mainBlock: {
+    boxShadow: theme.focusRings.create(theme.palette.primary.dark),
+    borderRadius: 8,
+  },
 }));
+
+const validationSchema = Yup.object().shape({
+  feedback: Yup.string()
+    .required(i18n.t('common.required'))
+    .max(2048, i18n.t('pages.postMeeting.tooLong', { maxChars: 2048 })),
+});
 
 export function PostMeeting({ match }: PostMeetingProps) {
   const { t } = useTranslation();
 
   const classes = useStyles();
-  const history = useHistory();
 
-  const [state, setState] = useState<{ ratingId: number | null; rating: number }>({ ratingId: null, rating: -1 });
+  const [state, setState] = useState<{ ratingId: number | null; rating: number; done: boolean }>({
+    ratingId: null,
+    rating: -1,
+    done: false,
+  });
 
   const submitRating = async (rating: number) => {
     try {
@@ -48,12 +62,14 @@ export function PostMeeting({ match }: PostMeetingProps) {
         result = await api.experienceRatings.submitExperienceRating({ rating, roomRoute: match.params.roomRoute });
       }
 
-      setState({ ratingId: result.ratingId, rating: result.rating });
+      setState({ ratingId: result.ratingId, rating: result.rating, done: false });
     } catch (err) {
       logger.error(err);
       toast.error(t('error.messages.genericUnexpected') as string);
     }
   };
+
+  const onDone = () => setState((cur) => ({ ...cur, done: true }));
 
   const submitFeedback = async (feedback: string) => {
     try {
@@ -61,9 +77,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
         throw new Error("Can't submit feedback, no rating provided");
       }
       await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
-
-      history.push(RouteNames.ROOT);
-      toast.success(t('pages.postMeeting.surveyThanks') as string);
+      onDone();
     } catch (err) {
       logger.error(err);
       toast.error(t('error.messages.genericUnexpected') as string);
@@ -73,20 +87,53 @@ export function PostMeeting({ match }: PostMeetingProps) {
   const collectFeedback = !!state.ratingId;
   const wasPositive = state.rating >= 3;
 
+  const titleKey = collectFeedback
+    ? wasPositive
+      ? 'pages.postMeeting.positiveFeedbackPrompt'
+      : 'pages.postMeeting.negativeFeedbackPrompt'
+    : 'pages.postMeeting.title';
+
   return (
-    <Box width="100%" height="100%" flex={1} display="flex" flexDirection="column" p={4}>
-      <Box width="100%" maxWidth="600px" margin="auto">
-        {collectFeedback ? (
-          <Formik onSubmit={(data) => submitFeedback(data.feedback)} initialValues={{ feedback: '' }}>
-            <Box component={Form} display="flex" flexDirection="column">
-              <Typography variant="h1" className={classes.title}>
-                {wasPositive
-                  ? t('pages.postMeeting.positiveFeedbackPrompt')
-                  : t('pages.postMeeting.negativeFeedbackPrompt')}
-              </Typography>
+    <Box
+      width="100%"
+      height="100%"
+      flex={1}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      pl={4}
+      pr={4}
+      pt={6}
+      pb={4}
+    >
+      <Logo className={classes.logo} />
+      <Typography variant="h1" className={classes.title}>
+        <Trans i18nKey={titleKey} />
+      </Typography>
+      <Box width="100%" maxWidth="760px" mx="auto" p={4} mb={3} className={classes.mainBlock}>
+        {state.done ? (
+          <Spacing flexDirection="column" alignItems="center" textAlign="center" p={2}>
+            <Typography variant="h2" gutterBottom>
+              {t('pages.postMeeting.surveyThanks')}
+            </Typography>
+            <Link to={RouteNames.CREATE_MEETING} disableStyling>
+              <Button color="primary" tabIndex={-1}>
+                {t('pages.postMeeting.createAnother')}
+              </Button>
+            </Link>
+          </Spacing>
+        ) : collectFeedback ? (
+          <Formik
+            onSubmit={(data) => submitFeedback(data.feedback)}
+            initialValues={{ feedback: '' }}
+            validateOnBlur
+            validateOnMount
+            validationSchema={validationSchema}
+          >
+            <Spacing component={Form} flexDirection="column" alignItems="center" gap={2} textAlign="center">
               <FormikTextField
                 multiline
-                rows={3}
+                rows={4}
                 name="feedback"
                 margin="normal"
                 placeholder={
@@ -95,40 +142,53 @@ export function PostMeeting({ match }: PostMeetingProps) {
                     : t('pages.postMeeting.negativeFeedbackPlaceholder')
                 }
               />
-              <Box display="flex" flexDirection="row" justifyContent="space-between">
-                <SkipButton />
+              <Spacing justifyContent="flex-end" width="100%">
+                <Button onClick={onDone} color="default" fullWidth={false}>
+                  {t('pages.postMeeting.skipSurvey')}
+                </Button>
                 <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>
-              </Box>
-            </Box>
+              </Spacing>
+            </Spacing>
           </Formik>
         ) : (
-          <Box display="flex" flexDirection="column">
-            <Typography variant="h1" className={classes.title}>
-              {t('pages.postMeeting.title')}
-            </Typography>
-
-            <StarRating value={state.rating} onChange={submitRating} className={classes.starRating} />
-
-            <Typography variant="body1" className={classes.ratingText}>
+          <Spacing flexDirection="column" gap={2} alignItems="center" textAlign="center">
+            <Typography variant="h2">
               <Trans i18nKey="pages.postMeeting.ratingCaption" />
             </Typography>
-
-            <SkipButton />
-          </Box>
+            <Typography variant="body1">{t('pages.postMeeting.howWasIt')}</Typography>
+            <StarRating value={state.rating} onChange={submitRating} className={classes.starRating} />
+          </Spacing>
         )}
       </Box>
+      <SaveLinkSection />
     </Box>
   );
 }
 
-function SkipButton() {
+function SaveLinkSection() {
   const { t } = useTranslation();
 
+  const roomLink = useMemo(() => {
+    if (typeof window === 'undefined') return '';
+    return window.location.toString().replace('/post_meeting', '');
+  }, []);
+
   return (
-    <Link disableStyling to={RouteNames.ROOT}>
-      <Button variant="text" color="inherit">
-        {t('pages.postMeeting.skipSurvey')}
-      </Button>
-    </Link>
+    <Box
+      p={4}
+      borderRadius={8}
+      maxWidth="760px"
+      bgcolor="primary.contrastText"
+      color="white"
+      textAlign="center"
+      width="100%"
+    >
+      <Typography variant="body1" paragraph style={{ textAlign: 'center' }}>
+        {t('pages.postMeeting.saveThisLink')}
+      </Typography>
+      <Link style={{ color: 'inherit' }} to={roomLink}>
+        {roomLink}
+      </Link>
+    </Box>
   );
 }

@@ -7,10 +7,10 @@ class Events {
     return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
   }
 
-  async roomCreateEvent(actorId, kind, expressRequest, tx=null) {
+  async roomCreateEvent(actorId, templateName, expressRequest, tx=null) {
     const meta = null
-    key = "room_create"
-    return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
+    const key = "room_create"
+    return shared.db.events.recordEvent(actorId, key, templateName, expressRequest, meta, tx)
   }
 
   async recordEvent(actorId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {

@@ -1,7 +1,10 @@
 const HttpClient = {}
 
 HttpClient.anyLoggedInOrCreate = async (host, certificate, port) => {
-  let actor = await shared.db.pg.massive.actors.findOne({})
+  const actor = await shared.db.pg.massive.actors.findOne({})
+  if(actor) {
+    return HttpClient.forActor(actor, host, certificate, port)
+  }
   return HttpClient.create(host, certificate, port)
 }
 

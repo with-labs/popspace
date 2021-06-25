@@ -6,13 +6,19 @@ import { exportRoomTemplate } from './exportRoomTemplate';
 import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';
 import { sanityCheckWidget } from './sanityCheckWidget';
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
-import { ParticipantState } from './types/participants';
+import { ActorShape, ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
 
 const createEmptyParticipantState = (actorId: string) => ({
   displayName: '',
   avatarName: randomSectionAvatar('brandedPatterns', actorId),
+});
+
+const initializeActor = (actor: ActorShape) => ({
+  id: actor.id,
+  displayName: actor.displayName ?? '',
+  avatarName: actor.avatarName || randomSectionAvatar('brandedPatterns', actor.id),
 });
 
 export class RoomStateCacheApi {
@@ -60,7 +66,7 @@ export class RoomStateCacheApi {
       participants.forEach((session) => {
         this.addUserToState(draft, {
           sessionId: session.sessionId,
-          actorId: session.actor.id,
+          actor: session.actor,
           participantState: session.participantState,
         });
         draft.userPositions[session.actor.id] = {
@@ -83,16 +89,17 @@ export class RoomStateCacheApi {
   private addUserToState = (
     state: Pick<RoomStateShape, 'users' | 'sessionLookup'>,
     data: {
-      actorId: string;
+      actor: ActorShape;
       sessionId: string;
       participantState: ParticipantState;
     }
   ) => {
-    const actorId = data.actorId;
+    const actorId = data.actor.id;
     const sessionId = data.sessionId;
     if (!state.users[actorId]) {
       state.users[actorId] = {
         id: actorId,
+        actor: initializeActor(data.actor),
         // patch in an empty display name default to keep data consistent
         participantState: {
           ...createEmptyParticipantState(actorId),
@@ -103,6 +110,7 @@ export class RoomStateCacheApi {
     } else {
       Object.assign(state.users[actorId], {
         participantState: data.participantState,
+        actor: data.actor,
       });
     }
 
@@ -196,7 +204,7 @@ export class RoomStateCacheApi {
   addSession = (message: IncomingParticipantJoinedMessage) => {
     this.set((draft) => {
       this.addUserToState(draft, {
-        actorId: message.sender.actorId,
+        actor: message.payload.actor,
         sessionId: message.sender.sessionId,
         participantState: message.payload.participantState,
       });
@@ -224,6 +232,13 @@ export class RoomStateCacheApi {
     this.set((draft) => {
       if (!draft.users[payload.id]) return;
       Object.assign(draft.users[payload.id].participantState, payload.participantState);
+      // TODO: this event should give us an actor
+      if (payload.participantState.displayName) {
+        draft.users[payload.id].actor.displayName = payload.participantState.displayName;
+      }
+      if (payload.participantState.avatarName) {
+        draft.users[payload.id].actor.avatarName = payload.participantState.avatarName;
+      }
     });
   };
   updateCursor = (payload: { userId: string; cursorState: RoomCursorStateShape }) => {

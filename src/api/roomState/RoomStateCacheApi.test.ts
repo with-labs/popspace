@@ -36,6 +36,11 @@ describe('RoomStateCacheApi', () => {
               displayName: 'Cat',
               avatarName: 'cat',
             },
+            actor: {
+              id: 'someone',
+              displayName: 'Cat',
+              avatarName: 'cat',
+            },
           },
           participants: [
             {
@@ -44,6 +49,8 @@ describe('RoomStateCacheApi', () => {
               roomId: 'room-id',
               actor: {
                 id: 'cat-id',
+                displayName: 'Cat',
+                avatarname: 'cat',
               },
               participantState: {
                 displayName: 'Cat',
@@ -204,6 +211,11 @@ describe('RoomStateCacheApi', () => {
             displayName: 'New User',
             avatarName: 'bear',
           },
+          actor: {
+            id: 'new-user',
+            displayName: 'New User',
+            avatarName: 'bear',
+          },
           sessionId: 'new-session',
           transform: {
             position: { x: 10, y: 0 },
@@ -239,6 +251,11 @@ describe('RoomStateCacheApi', () => {
         kind: 'participantJoined',
         payload: {
           participantState: {
+            displayName: 'User 1',
+            avatarName: 'bear',
+          },
+          actor: {
+            id: 'user1',
             displayName: 'User 1',
             avatarName: 'bear',
           },

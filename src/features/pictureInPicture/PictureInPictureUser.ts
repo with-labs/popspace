@@ -5,7 +5,7 @@ import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '
 import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 import { snow } from '../../theme/theme';
 import { MAX_AUDIO_RANGE } from '@constants/room';
-import { ParticipantState } from '@api/roomState/types/participants';
+import { ActorShape } from '@api/roomState/types/participants';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { RoomStateShape } from '@api/useRoomStore';
 
@@ -37,7 +37,7 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     this.position = this.selectPosition(roomState);
 
     // subscribe to data and position changes
-    const unsubData = client.roomStateStore.subscribe<ParticipantState>(this.setData, this.selectUserData);
+    const unsubData = client.roomStateStore.subscribe<ActorShape>(this.setData, this.selectUserData);
     const unsubPosition = client.roomStateStore.subscribe<Vector2 | null>((pos) => {
       this.position = pos;
     }, this.selectPosition);
@@ -48,7 +48,7 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     };
   }
 
-  private setData = (state: Pick<ParticipantState, 'displayName' | 'avatarName'> | null) => {
+  private setData = (state: Pick<ActorShape, 'displayName' | 'avatarName'> | null) => {
     state = state || {
       displayName: '',
       avatarName: getAvatarFromUserId('brandedPatterns', this.id),
@@ -151,6 +151,6 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
   };
 
   // some selectors for fetching and subscribing to data
-  private selectUserData = (room: RoomStateShape) => room.users[this.id]?.participantState ?? null;
+  private selectUserData = (room: RoomStateShape) => room.users[this.id]?.actor ?? null;
   private selectPosition = (room: RoomStateShape) => room.userPositions[this.id]?.position ?? null;
 }

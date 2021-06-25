@@ -42,9 +42,9 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   );
   const selectActive = React.useCallback((room: RoomStateShape) => room.cursors[userId]?.active ?? false, [userId]);
 
-  const name = useRoomStore((room) => room.users[userId]?.participantState.displayName ?? '???');
+  const name = useRoomStore((room) => room.users[userId]?.actor.displayName ?? '???');
   const avatarName = useRoomStore(
-    (room) => room.users[userId]?.participantState.avatarName ?? getAvatarFromUserId('brandedPatterns', userId)
+    (room) => room.users[userId]?.actor.avatarName ?? getAvatarFromUserId('brandedPatterns', userId)
   );
   const avatar = useAvatar(avatarName);
   const color = avatar?.backgroundColor ?? theme.palette.primary.dark;

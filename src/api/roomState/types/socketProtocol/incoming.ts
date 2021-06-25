@@ -30,7 +30,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   payload: {
     participants: {
       authenticated: boolean;
-      actor: { id: string };
+      actor: { id: string; displayName: string; avatarName: string };
       sessionId: string;
       participantState: ParticipantState;
       roomId: string;

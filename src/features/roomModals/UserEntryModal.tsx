@@ -67,7 +67,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
   const localId = useLocalActorId();
-  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.participantState);
+  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.actor);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');

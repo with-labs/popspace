@@ -61,10 +61,10 @@ class Data {
   /************************************************/
 
   async getParticipantState(actorId) {
-    const entry = await shared.db.pg.massive.participant_states.find({
+    const entry = await shared.db.pg.massive.participant_states.findOne({
       actor_id: actorId
     })
-    return entry.state
+    return entry ? entry.state : null
   }
   async updateParticipantState(actorId, stateUpdate, curState=null) {
     const { display_name, ...participantState } = stateUpdate;
@@ -95,11 +95,11 @@ class Data {
   }
 
   async getRoomParticipantState(roomId, actorId) {
-    const entry = await shared.db.pg.massive.room_participant_states.find({
+    const entry = await shared.db.pg.massive.room_participant_states.findOne({
       room_id: roomId,
       actor_id: actorId
     })
-    return entry.state
+    return entry ? entry.state : null
   }
   async updateRoomParticipantState(roomId, actorId, stateUpdate, curState=null) {
     return this.setRoomParticipantState(roomId, actorId, await getNewState(

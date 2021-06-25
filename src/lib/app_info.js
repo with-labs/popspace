@@ -49,11 +49,11 @@ const appInfo = {
   webUrl: (req) => {
     switch(process.env.NODE_ENV) {
       case 'production':
-        return `https://tilde.so:${appInfo.apiPort()}`
+        return `https://tilde.so`
       case 'development':
         return `https://localhost:8888`
       case 'staging':
-        return `https://staging.tilde.so:${appInfo.apiPort()}`
+        return `https://staging.tilde.so`
       case 'test':
         return `https://localhost:${appInfo.apiPort()}`
       default:

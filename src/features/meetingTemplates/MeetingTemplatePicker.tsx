@@ -46,25 +46,14 @@ const MeetingTemplateCard: React.FC<{
   const { t } = useTranslation();
 
   return (
-    <Card elevation={0}>
-      <CardActionArea
-        disabled={disabled}
-        onClick={onClick}
-        disableRipple
-        disableTouchRipple
-        style={{ opacity: loading ? 0.3 : 1 }}
-      >
-        <CardMedia style={{ position: 'relative' }}>
+    <Card elevation={0} style={{ position: 'relative' }}>
+      <CardActionArea disabled={disabled} onClick={onClick} disableRipple disableTouchRipple>
+        <CardMedia>
           <img
             src={templateMetadata[templateName].image}
             alt={t(`${templateMetadata[templateName].i18nKey}.imgAlt`)}
             style={{ width: '100%', paddingLeft: 5, paddingRight: 5, paddingTop: 5 }}
           />
-          {loading && (
-            <Box position="absolute" top="0" width="100%" height="100%" display="flex">
-              <CircularProgress style={{ margin: 'auto' }} size="48px" />
-            </Box>
-          )}
         </CardMedia>
         <CardContent>
           <Box mb={1}>
@@ -73,6 +62,23 @@ const MeetingTemplateCard: React.FC<{
           <Typography variant="body1">{t(`${templateMetadata[templateName].i18nKey}.description`)}</Typography>
         </CardContent>
       </CardActionArea>
+      {loading && <LoadingOverlay />}
     </Card>
   );
 };
+
+const LoadingOverlay = () => (
+  <Box
+    position="absolute"
+    left={0}
+    top={0}
+    width="100%"
+    height="100%"
+    display="flex"
+    alignItems="center"
+    justifyContent="center"
+    style={{ backdropFilter: 'blur(8px)', backgroundColor: 'rgba(255,255,255,0.6)' }}
+  >
+    <CircularProgress style={{ margin: 'auto' }} size={48} />
+  </Box>
+);

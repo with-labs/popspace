@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
-import { mandarin as theme } from './theme/theme';
+import { lavender as theme } from './theme/theme';
 import { Router } from 'react-router';
 import AppStateProvider from './state';
 import { Routes } from './Routes';

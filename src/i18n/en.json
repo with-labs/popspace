@@ -464,7 +464,7 @@
         "massiveRoomExplainer": "Warning: very experimental! Removes the boundaries on your room, letting you move and place accessories anywhere you like. You can turn this back off, but your accessories will be re-arranged if you do."
       },
       "roomControls": {
-        "CopyLinkButtonText": "Copy link",
+        "copyLinkButtonText": "Copy link",
         "linkCopied": "Link copied!",
         "leaveMeetingButtonText": "Leave Meeting"
       },

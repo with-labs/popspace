@@ -41,6 +41,13 @@ class Template {
     const client = await shared.test.clients.HttpClient.anyLoggedInOrCreate(host, this.certificate, port)
     return client
   }
+
+  async loggedOutClient() {
+    const host = lib.appInfo.apiHost()
+    const port = lib.appInfo.apiPort()
+    const client = new shared.net.HttpClient(host, this.certificate, port)
+    return client
+  }
 }
 
 module.exports = new Template()

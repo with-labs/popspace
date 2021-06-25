@@ -25,33 +25,39 @@ if (!('toJson' in Error.prototype))
     writable: true
 })
 
+const maybeWrapError = (errorObject) => {
+  if(errorObject instanceof Error) {
+    /*
+      It's nice to have stack traces included with error messages,
+      so we should use this style.
+
+      The alternative is a POJO, which we semi-support for now,
+      since that's what we used to do.
+    */
+    return errorObject
+  } else {
+    /*
+      Let's start getting rid of them
+    */
+    log.error.warn("Non-JS Error in HTTP fail", errorObject)
+    const jsError = new Error(errorObject.message)
+    Object.assign(jsError, errorObject)
+    return jsError
+  }
+}
+
 const http = {
   fail: async (req, res, error={}, httpCode=shared.api.http.code.BAD_REQUEST) => {
+    error = maybeWrapError(error)
     error.message = error.message || "Unknown error"
     error.success = false
     log.response.info(`Fail (${getRequestSignature(req)})`)
     res.status(httpCode)
-    let result = error
-    if(error.toJson) {
-      /*
-        This means that it's a JS Error/exception error.
-        It's nice to have stack traces included with error messages,
-        so we should use this style.
-
-        The alternative is a POJO, which we semi-support for now,
-        since that's what we used to do.
-      */
-      result = error.toJson()
-      /* The message field does not serialize for whatever reason */
-      result.message = error.message
-      const error = await shared.error.report(error, "noodle_api", req.actor ? req.actor.id : null, httpCode)
-      result.error_id = error.id
-    } else {
-      /*
-        Let's start getting rid of them
-      */
-      log.error.warn("Non-JS Error in HTTP fail", error)
-    }
+    const result = error.toJson()
+    /* The message field does not serialize, not exposed as own property from Error */
+    result.message = error.message
+    const report = await shared.error.report(error, `noodle_api:${req.originalUrl}`, req.actor ? req.actor.id : null, httpCode)
+    result.error_id = report.id
     return res.send(lib.util.snakeToCamelCase(result))
   },
 
@@ -89,7 +95,7 @@ const http = {
         error.message = "An unexpected error happened. Please try again."
         break
     }
-    return http.fail(req, res, error)
+    return http.fail(req, res, error, shared.api.http.code.FORBIDDEN)
   },
 
 }

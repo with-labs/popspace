@@ -603,35 +603,50 @@
       }
     },
     "meetingTemplates": {
-      "custom": {
-        "title": "Custom",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+      "blank": {
+        "title": "Blank",
+        "description": "A blank room for your custom needs.",
         "imgAlt": "A speech bubble with a friendly exclamation"
       },
-      "standup": {
-        "title": "Stand Up",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+      "daily": {
+        "title": "Daily Stand-Up",
+        "description": "Identify and tackle daily roadblocks.",
         "imgAlt": "A streaming cup of morning beverage"
       },
-      "workshop": {
-        "title": "Workshop",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A timer on a grid-like abstract background"
+      "weekly": {
+        "title": "Weekly Sync-Up",
+        "description": "Check in on how is the team doing.",
+        "imgAlt": "A calendar with colorful meeting blocks"
       },
-      "presentation": {
-        "title": "Presentations",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A projection screen with an upward-trending graph"
+      "allHands": {
+        "title": "All-Hands Meeting",
+        "description": "Keep everybody aligned with goals.",
+        "imgAlt": "A stylish microphone"
       },
       "oneOnOne": {
-        "title": "One-on-one",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "title": "One-on-One",
+        "description": "A cozy place to build a relationship.",
         "imgAlt": "Two comfy chairs facing one another"
       },
       "retrospective": {
         "title": "Team retrospective",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A document being inspected with a magnifying glass"
+        "description": "Evaluate goals and reflect on setbacks.",
+        "imgAlt": "A collection of floating documents"
+      },
+      "happyHour": {
+        "title": "Happy Hour",
+        "description": "Team bonding and trust building.",
+        "imgAlt": "A striped party hat"
+      },
+      "brainstorm": {
+        "title": "Brainstorm",
+        "description": "Ideate as a group to solve problems.",
+        "imgAlt": "A classic-looking lightbulb"
+      },
+      "interview": {
+        "title": "Remote Interview",
+        "description": "Personal and fluid for both sides.",
+        "imgAlt": "A silhouette of someone speaking"
       }
     }
   }

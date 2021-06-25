@@ -10,7 +10,7 @@ import { roomStateStore, RoomStateStore } from './roomState/roomStateStore';
 import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { EventEmitter } from 'events';
 import { getRef } from '@analytics/analyticsRef';
-import { MeetingTemplateName } from '@constants/MeetingTypeMetadata';
+import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 

@@ -1,4 +1,4 @@
-import { MeetingTemplateName, templateMetadata } from '@src/constants/MeetingTypeMetadata';
+import { MeetingTemplateName, templateMetadata } from '@features/meetingTemplates/templateData/templateData';
 import {
   Card,
   CardActionArea,

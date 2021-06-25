@@ -1,10 +1,28 @@
 {
   "state": {
-    "displayName": "Retrospective",
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_retro.png",
     "isCustomWallpaper": true,
-    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/onboarding/onboarding_new_3500.png",
-    "wallpaperRepeats": false,
-    "backgroundColor": "#ffffff"
+    "wallpaperRepeats": true,
+    "backgroundColor": "#787aad",
+    "displayName": "Retrospective"
   },
-  "widgets": []
+  "widgets": [
+    ["NOTEPAD", {}, { "size": { "width": 580, "height": 470 }, "position": { "x": -835, "y": -477 } }],
+    ["NOTEPAD", {}, { "size": { "width": 580, "height": 471 }, "position": { "x": -221, "y": -477 } }],
+    ["NOTEPAD", {}, { "size": { "width": 580, "height": 469 }, "position": { "x": 388, "y": -477 } }],
+    [
+      "STICKY_NOTE",
+      {
+        "text": "### Reminder!\\n\\nThis is a team exercise. The goal is not to argue each point, but to list what everyone has to say, then vote on the top 3 in each category."
+      },
+      { "size": { "width": 339, "height": 248 }, "position": { "x": 625, "y": 130 } }
+    ],
+    [
+      "STICKY_NOTE",
+      {
+        "text": "### [The Prime Directive](https://retrospectivewiki.org/index.php?title=The_Prime_Directive)\\n\\n*\\\"Regardless of what we discover, we understand and truly believe that everyone did the best job they could, given what they knew at the time, their skills and abilities, the resources available, and the situation at hand.\\\"*\\n\\n- Norm Kerth, Project Retrospectives: A Handbook for Team Review"
+      },
+      { "size": { "width": 424, "height": 311 }, "position": { "x": -835, "y": 130 } }
+    ]
+  ]
 }

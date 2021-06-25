@@ -4,5 +4,5 @@ module.exports = {
   namesAndRoutes: require("./names_and_routes.js"),
   data: require("./data.js"),
   core: require("./core.js"),
-  templates: require("./template.js"),
+  templates: require("./templates.js"),
 }

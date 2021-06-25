@@ -121,7 +121,7 @@ class Data {
   /************************************************/
   /****************** WIDGETS   *******************/
   /************************************************/
-  async addWidgetInRoom(creatorId, roomId, type, desiredWidgetState, desiredRoomWidgetState) {
+  async addWidgetInRoom(creatorId, roomId, type, desiredWidgetState, desiredRoomWidgetState, creator=null) {
     const { widget, roomWidget, widgetState, roomWidgetState } = await shared.db.pg.massive.withTransaction(async (tx) => {
       const widget = await tx.widgets.insert({
         creator_id: creatorId,
@@ -143,6 +143,9 @@ class Data {
       return { widget, roomWidget, widgetState, roomWidgetState }
     })
     const model = new shared.models.RoomWidget(roomId, widget, widgetState, roomWidgetState)
+    if(creator) {
+      model.setCreator(creator)
+    }
     return model
   }
 

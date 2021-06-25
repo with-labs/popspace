@@ -1,5 +1,3 @@
-const templates = require("./templates");
-
 class Core {
   constructor() {
   }
@@ -77,7 +75,7 @@ class Core {
    */
   async createRoomFromTemplate(template, creatorId, isPublic=true) {
     const room = await this.createRoom(creatorId, template.state.display_name, isPublic)
-    const roomData = await templates.setUpRoomFromTemplate(
+    const roomData = await shared.db.room.templates.setUpRoomFromTemplate(
       room.id,
       template
     )
@@ -95,11 +93,8 @@ class Core {
     return room
   }
 
-  async createEmptyRoom(creatorId, isPublic, displayName="generated") {
-    return this.createRoomFromTemplate({
-      state: {display_name: displayName},
-      widgets: []
-    }, creatorId, isPublic)
+  async createEmptyRoom(creatorId, isPublic, displayName) {
+    return this.createRoomFromTemplate(shared.db.room.templates.empty(), creatorId, isPublic)
   }
 
   async setDisplayName(roomId, newDisplayName) {

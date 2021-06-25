@@ -27,6 +27,20 @@ class RoomWidget {
     return this._pgWidget.creator_id
   }
 
+  setCreator(creator) {
+    if(!creator) {
+      if(this.creatorId()) {
+        return
+      } else {
+        throw `Invalid null creator - expected creator with id ${this.creatorId()}`
+      }
+    }
+    if(creator.id != this.creatorId()) {
+      throw `Invalid creator (expected ${this.creatorId()}, got ${creator ? creator.id : null}`
+    }
+    this._creator = creator
+  }
+
   async creator() {
     return this._creator = (this._creator || (await shared.db.accounts.actorById(this.creatorId()))) || {}
   }

@@ -623,7 +623,7 @@
         "placeholderText": "Your display name",
         "submitButtonText": "Enter room",
         "maxSize": "Display name must be less than {{maxNameLength}} characters",
-        "tosDisclaimer": "By clicking \"Enter room\", you agree to our <1>Terms of Service</1> and that you have read our <2>Privacy Policy</2>."
+        "tosDisclaimer": "By clicking \"Enter room\", you agree to our <1>Terms of Service</1> and that you have read our <3>Privacy Policy</3>."
       }
     },
     "meetingTemplates": {

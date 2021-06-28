@@ -2,7 +2,11 @@
 
 (From: https://web.dev/how-to-use-local-https/)
 
-For Linux install homebrew first.
+For *Linux only* install homebrew first :
+```
+# from https://brew.sh/
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
 For MacOS and Linux:
 

@@ -9,6 +9,8 @@ class UpdateProcessor {
         return this.updateRoomParticipantState(hermesEvent)
       case "updateSelf":
         return this.updateParticipantState(hermesEvent)
+      case "updateSelfActor":
+        return this.updateActorState(hermesEvent)
       case "updateRoomState":
         return this.updateRoomState(hermesEvent)
       default:
@@ -48,6 +50,11 @@ class UpdateProcessor {
     const sender = event.senderParticipant()
     await shared.db.room.data.updateRoomState(event.roomId(), event.payload())
     sender.respondAndBroadcast(event, "roomStateUpdated")
+  }
+
+  async updateActorState(event) {
+    const sender = event.senderParticipant()
+    return sender.updateActor(event.payload().actor, event)
   }
 }
 

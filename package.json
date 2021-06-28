@@ -13,11 +13,6 @@
     "test:ws": "NODE_ENV=test jest --runInBand ./tests/ws",
     "test:one": "NODE_ENV=test node scripts/run_scenario.js"
   },
-  "prettier": {
-    "singleQuote": false,
-    "semi": false,
-    "printWidth": 120
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/with-labs/hermes.git"

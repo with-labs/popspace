@@ -392,6 +392,18 @@ class Participant {
     }
   }
 
+  async updateActor(actorChanges, sourceEvent=null) {
+    this.actor = await shared.db.accounts.updateActor(
+      this.actorId(),
+      actorChanges
+    )
+    if (sourceEvent) {
+      return this.respondAndBroadcast(sourceEvent, "actorUpdated")
+    } else {
+      log.error.warn("Dropping updateSelfActor - sourceEvent missing")
+    }
+  }
+
   unauthenticate() {
     this.authenticated = false
     this.actor = {}

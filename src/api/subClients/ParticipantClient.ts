@@ -2,6 +2,7 @@ import { Analytics } from '@analytics/Analytics';
 import { ApiCoreClient } from '@api/ApiCoreClient';
 import { ParticipantState } from '@api/roomState/types/participants';
 import {
+  IncomingActorUpdatedMessage,
   IncomingParticipantJoinedMessage,
   IncomingParticipantLeftMessage,
   IncomingParticipantUpdatedMessage,
@@ -14,6 +15,7 @@ export class ParticipantClient extends ApiSubClient {
     core.socket.on('message:participantJoined', this.onParticipantJoined);
     core.socket.on('message:participantLeft', this.onParticipantLeft);
     core.socket.on('message:participantUpdated', this.onParticipantUpdated);
+    core.socket.on('message:actorUpdated', this.onActorUpdated);
   }
 
   private onParticipantJoined = (message: IncomingParticipantJoinedMessage) => {
@@ -31,6 +33,13 @@ export class ParticipantClient extends ApiSubClient {
     });
   };
 
+  private onActorUpdated = (message: IncomingActorUpdatedMessage) => {
+    this.core.cacheApi.updateUser({
+      id: message.sender.actorId,
+      actor: message.payload.actor,
+    });
+  };
+
   // Public API
 
   updateSelf = (payload: Partial<ParticipantState>) => {
@@ -40,9 +49,9 @@ export class ParticipantClient extends ApiSubClient {
 
     this.core.cacheApi.updateUser({ participantState: payload, id: this.core.actor.actorId });
     this.core.socket.send({
-      kind: 'updateSelf',
+      kind: 'updateSelfActor',
       payload: {
-        participantState: payload,
+        actor: payload,
       },
     });
 

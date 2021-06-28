@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "console": "node scripts/console.js",
     "dev": "NODE_ENV=development node index.js",
     "test:all": "NODE_ENV=test jest --runInBand",
     "test:one": "NODE_ENV=test node scripts/run_scenario.js"

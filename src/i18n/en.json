@@ -209,7 +209,7 @@
         "ratingCaption": "Help us improve your experience",
         "howWasIt": "How was your meeting?",
         "tooLong": "Sorry, this is a bit too long. Max is {{maxChars}} characters.",
-        "saveThisLink": "Save this link if you want to come back to the meeting content at any time.",
+        "saveThisLink": "Bookmark this page if you want to come back to the meeting content at any time.",
         "createAnother": "Create another meeting"
       },
       "licenses": {

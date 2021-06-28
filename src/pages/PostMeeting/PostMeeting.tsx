@@ -186,9 +186,11 @@ function SaveLinkSection() {
       <Typography variant="body1" paragraph style={{ textAlign: 'center' }}>
         {t('pages.postMeeting.saveThisLink')}
       </Typography>
-      <Link style={{ color: 'inherit' }} to={roomLink}>
-        {roomLink}
-      </Link>
+      <Typography variant="body1">
+        <Link style={{ color: 'inherit' }} to={roomLink}>
+          {roomLink}
+        </Link>
+      </Typography>
     </Box>
   );
 }

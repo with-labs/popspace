@@ -66,22 +66,7 @@ class Data {
     })
     return entry ? entry.state : null
   }
-  async updateParticipantState(actorId, stateUpdate, curState=null) {
-    const { display_name, ...participantState } = stateUpdate;
-    if(display_name) {
-      /*
-        TODO: we should use a different route for updating display_name.
-        It should not be stored in the participant state.
-        The actors table is the source of truth for display_names.
-
-        TODO: logging in shared
-      */
-      log.error.warn("Setting display_name for actors through updateParticipantState")
-      await shared.db.pg.massive.query(`
-        UPDATE actors SET display_name = $1 WHERE id = $2
-      `, [display_name, actorId])
-    }
-
+  async updateParticipantState(actorId, participantState, curState=null) {
     return this.setParticipantState(actorId, await getNewState(
       "participant_states", {actor_id: actorId}, participantState, curState
     ))

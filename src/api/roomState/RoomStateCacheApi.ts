@@ -10,10 +10,7 @@ import { ActorShape, ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
 
-const createEmptyParticipantState = (actorId: string) => ({
-  displayName: '',
-  avatarName: randomSectionAvatar('brandedPatterns', actorId),
-});
+const createEmptyParticipantState = () => ({});
 
 const initializeActor = (actor: ActorShape) => ({
   id: actor.id,
@@ -102,7 +99,7 @@ export class RoomStateCacheApi {
         actor: initializeActor(data.actor),
         // patch in an empty display name default to keep data consistent
         participantState: {
-          ...createEmptyParticipantState(actorId),
+          ...createEmptyParticipantState(),
           ...(data.participantState as any),
         },
         sessionIds: new Set<string>(),

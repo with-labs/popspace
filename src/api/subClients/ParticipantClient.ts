@@ -1,6 +1,6 @@
 import { Analytics } from '@analytics/Analytics';
 import { ApiCoreClient } from '@api/ApiCoreClient';
-import { ParticipantState } from '@api/roomState/types/participants';
+import { ActorShape } from '@api/roomState/types/participants';
 import {
   IncomingActorUpdatedMessage,
   IncomingParticipantJoinedMessage,
@@ -42,12 +42,12 @@ export class ParticipantClient extends ApiSubClient {
 
   // Public API
 
-  updateSelf = (payload: Partial<ParticipantState>) => {
+  updateSelf = (payload: Partial<ActorShape>) => {
     if (!this.core.actor) {
       throw new Error('Must be authenticated to update self');
     }
 
-    this.core.cacheApi.updateUser({ participantState: payload, id: this.core.actor.actorId });
+    this.core.cacheApi.updateUser({ actor: payload, id: this.core.actor.actorId });
     this.core.socket.send({
       kind: 'updateSelfActor',
       payload: {

@@ -49,6 +49,8 @@ export class ApiCoreClient extends EventEmitter {
 
   private socketReadyPromise: Promise<void>;
 
+  private connectedRoomRoute: string | null = null;
+
   get actor() {
     return this._actor;
   }
@@ -78,8 +80,18 @@ export class ApiCoreClient extends EventEmitter {
     this.socketReadyPromise = new Promise((resolve) => {
       this.socket.on('connected', resolve);
     });
+    this.socket.on('connected', this.handleSocketReconnect);
     this.cacheApi = this.roomStateStore.getState().cacheApi;
   }
+
+  // Internal Socket Management
+  private handleSocketReconnect = () => {
+    if (this.connectedRoomRoute) {
+      // we are connected to a room -- reset the room state
+      // to get the latest updates and rejoin!
+      this.joinMeeting(this.connectedRoomRoute);
+    }
+  };
 
   // Internal Actor State Management
 
@@ -197,12 +209,15 @@ export class ApiCoreClient extends EventEmitter {
     this.cacheApi.reset();
     this.cacheApi.initialize(authResponse);
 
+    this.connectedRoomRoute = roomRoute;
+
     const { token } = await mediaResponse;
     return token;
   });
 
   leaveMeeting = () => {
     this.cacheApi.reset();
+    this.connectedRoomRoute = null;
     // TODO: socket leave event
   };
 

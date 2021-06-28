@@ -334,17 +334,6 @@ class Participant {
     } else {
       this.participantState = await shared.db.room.data.getParticipantState(this.actor.id)
       this.participantState = this.participantState || {}
-      if(!this.participantState.display_name) {
-        /*
-          TODO: delete this. The source of truth for display_names
-          should be just the room.
-
-          But let's not break existing client code and just do the migration
-          slowly.
-        **/
-        this.participantState.display_name = this.actor.display_name
-        await shared.db.room.data.setParticipantState(this.actor.id, this.participantState)
-      }
       return this.participantState
     }
   }

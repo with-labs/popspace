@@ -1,10 +1,10 @@
 class AuthProcessor {
   async process(hermesEvent, participants) {
     switch(hermesEvent.kind()) {
-      case "auth":
-        return this.authenticate(hermesEvent, participants)
-      case "join":
-        return this.join(hermesEvent, participants)
+      case "connect":
+        return this.connect(hermesEvent, participants)
+      case "setObserver":
+        return this.setObserver(hermesEvent, participants)
       default:
         return hermesEvent.senderParticipant().sendError(
           hermesEvent,
@@ -14,10 +14,12 @@ class AuthProcessor {
     }
   }
 
-  async authenticate(hermesEvent, participants) {
+  async connect(hermesEvent, participants) {
     const payload = hermesEvent.payload()
     const sender = hermesEvent.senderParticipant()
-    sender.observer = true
+    // avoid using setter as it broadcasts a message
+    sender.isObserver = payload.isObserver || false
+
     if(!payload.room_route) {
       return sender.sendError(
         hermesEvent,
@@ -68,9 +70,9 @@ class AuthProcessor {
     }
   }
 
-  async join(hermesEvent, participants) {
+  async setObserver(hermesEvent, participants) {
     const sender = hermesEvent.senderParticipant()
-    sender.setObserver(false, hermesEvent)
+    sender.setObserver(hermesEvent.payload().isObserver, hermesEvent)
   }
 
   async getAuthData(hermesEvent) {

@@ -11,8 +11,8 @@ const ACTION_BY_EVENT_KIND = {
   "deleteWidget": "delete",
   "getRoom": "get",
   "getWidget": "get",
-  "auth": "auth",
-  "join": "auth",
+  "connect": "connection",
+  "setObserver": "connection",
   "ping": "passthrough",
   "echo": "passthrough",
   "passthrough": "passthrough",
@@ -22,12 +22,12 @@ const ACTION_BY_EVENT_KIND = {
 }
 
 const PUBLIC_EVENT_KINDS = {
-  "auth": true,
+  "connect": true,
   "ping": true
 }
 
 const processors = {
-  auth: new _processors.AuthProcessor(),
+  connection: new _processors.ConnectionProcessor(),
   create: new _processors.CreateProcessor(),
   update: new _processors.UpdateProcessor(),
   get: new _processors.GetProcessor(),

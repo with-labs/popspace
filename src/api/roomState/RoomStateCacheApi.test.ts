@@ -114,6 +114,11 @@ describe('RoomStateCacheApi', () => {
         users: {
           'cat-id': {
             id: 'cat-id',
+            actor: {
+              id: 'cat-id',
+              displayName: 'Cat',
+              avatarName: 'cat',
+            },
             participantState: {
               displayName: 'Cat',
               avatarName: 'cat',
@@ -232,6 +237,11 @@ describe('RoomStateCacheApi', () => {
 
       expect(result.users['new-user']).toEqual({
         id: 'new-user',
+        actor: {
+          id: 'new-user',
+          displayName: 'New User',
+          avatarName: 'bear',
+        },
         participantState: {
           displayName: 'New User',
           avatarName: 'bear',
@@ -275,6 +285,11 @@ describe('RoomStateCacheApi', () => {
 
       expect(result.users['user1']).toEqual({
         id: 'user1',
+        actor: {
+          id: 'user1',
+          displayName: 'User 1',
+          avatarName: 'bear',
+        },
         participantState: {
           displayName: 'User 1',
           avatarName: 'bear',

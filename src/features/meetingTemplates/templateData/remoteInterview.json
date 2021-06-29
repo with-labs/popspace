@@ -1,10 +1,10 @@
 {
+  "displayName": "Remote Interview",
   "state": {
     "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_interview.png",
     "isCustomWallpaper": true,
     "wallpaperRepeats": true,
-    "backgroundColor": "#4e756b",
-    "displayName": "Remote Interview"
+    "backgroundColor": "#4e756b"
   },
   "widgets": [
     [

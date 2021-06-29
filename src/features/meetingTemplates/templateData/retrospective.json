@@ -1,10 +1,10 @@
 {
+  "displayName": "Retrospective",
   "state": {
     "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_retro.png",
     "isCustomWallpaper": true,
     "wallpaperRepeats": true,
-    "backgroundColor": "#787aad",
-    "displayName": "Retrospective"
+    "backgroundColor": "#787aad"
   },
   "widgets": [
     ["NOTEPAD", {}, { "size": { "width": 580, "height": 470 }, "position": { "x": -835, "y": -477 } }],

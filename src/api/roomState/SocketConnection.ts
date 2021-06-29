@@ -107,7 +107,6 @@ export class SocketConnection extends EventEmitter {
     if (ev.error) {
       logger.error(ev.error);
     }
-    this.emit('error', new Error('The socket encountered an error'));
   };
 
   private onClose = (ev: CloseEvent) => {

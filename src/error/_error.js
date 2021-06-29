@@ -38,7 +38,7 @@ const ERROR_CODES = {
 
 module.exports = {
   code: ERROR_CODES,
-  report: async (error, tag, actorId, statusCode) => {
+  report: async (error, tag, actorId, httpCode, noodleCode) => {
     if(log && log.error) {
       log.error.info(error)
     }
@@ -47,7 +47,8 @@ module.exports = {
       stack: error.stack,
       message: error.message,
       tag: tag,
-      code: statusCode
+      http_code: httpCode,
+      noodle_code: noodleCode
     })
   }
 }

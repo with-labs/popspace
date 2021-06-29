@@ -334,17 +334,6 @@ class Participant {
     } else {
       this.participantState = await shared.db.room.data.getParticipantState(this.actor.id)
       this.participantState = this.participantState || {}
-      if(!this.participantState.display_name) {
-        /*
-          TODO: delete this. The source of truth for display_names
-          should be just the room.
-
-          But let's not break existing client code and just do the migration
-          slowly.
-        **/
-        this.participantState.display_name = this.actor.display_name
-        await shared.db.room.data.setParticipantState(this.actor.id, this.participantState)
-      }
       return this.participantState
     }
   }
@@ -389,6 +378,18 @@ class Participant {
       return this.respondAndBroadcast(sourceEvent, "participantUpdated")
     } else {
       log.error.warn("Dropping updateTransform - sourceEvent missing")
+    }
+  }
+
+  async updateActor(actorChanges, sourceEvent=null) {
+    this.actor = await shared.db.accounts.updateActor(
+      this.actorId(),
+      actorChanges
+    )
+    if (sourceEvent) {
+      return this.respondAndBroadcast(sourceEvent, "actorUpdated")
+    } else {
+      log.error.warn("Dropping updateSelfActor - sourceEvent missing")
     }
   }
 

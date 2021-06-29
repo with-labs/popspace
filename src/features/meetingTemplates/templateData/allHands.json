@@ -3,8 +3,8 @@
     "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_allHands.png",
     "isCustomWallpaper": true,
     "wallpaperRepeats": true,
-    "backgroundColor": "#EEF8FF",
-    "displayName": "All Hands"
+    "backgroundColor": "#EEF8FF"
   },
+  "displayName": "All Hands",
   "widgets": [["NOTEPAD", {}, { "size": { "width": 700, "height": 550 }, "position": { "x": 388, "y": -588 } }]]
 }

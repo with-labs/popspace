@@ -9,8 +9,10 @@ class UpdateProcessor {
         return this.updateRoomParticipantState(hermesEvent)
       case "updateSelf":
         return this.updateParticipantState(hermesEvent)
-      case "updateSelfActor":
-        return this.updateActorState(hermesEvent)
+      case "updateSelfDisplayName":
+        return this.updateActorDisplayName(hermesEvent)
+      case "updateSelfAvatarName":
+        return this.updateActorAvatarName(hermesEvent)
       case "updateRoomState":
         return this.updateRoomState(hermesEvent)
       default:
@@ -52,9 +54,14 @@ class UpdateProcessor {
     sender.respondAndBroadcast(event, "roomStateUpdated")
   }
 
-  async updateActorState(event) {
+  async updateActorDisplayName(event) {
     const sender = event.senderParticipant()
-    return sender.updateActor(event.payload().actor, event)
+    return sender.updateDisplayName(event.payload().display_name, event)
+  }
+
+  async updateActorAvatarName(event) {
+    const sender = event.senderParticipant()
+    return sender.updateAvatarName(event.payload().avatar_name, event)
   }
 }
 

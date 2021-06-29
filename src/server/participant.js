@@ -369,9 +369,18 @@ class Participant {
     return this.respondAndBroadcast(sourceEvent, "participantUpdated")
   }
 
-  async updateActor(actorChanges, sourceEvent) {
-    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), actorChanges);
-    return this.respondAndBroadcast(sourceEvent, "actorUpdated")
+  async updateDisplayName(newDisplayName, sourceEvent) {
+    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), {
+      display_name: newDisplayName
+    });
+    return this.respondAndBroadcast(sourceEvent, "displayNameUpdated")
+  }
+
+  async updateAvatarName(newAvatarName, sourceEvent) {
+    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), {
+      avatar_name: newAvatarName
+    });
+    return this.respondAndBroadcast(sourceEvent, "avatarNameUpdated")
   }
 
   unauthenticate() {

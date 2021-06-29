@@ -45,16 +45,17 @@ export const MicToggle = (props: IMicToggleProps) => {
       handleMicOn();
     }
 
+    const timestamp = new Date().getTime();
     trackEvent(EventNames.TOGGLE_MIC, {
       isOn: !isMicOn,
-      timestamp: new Date().getTime(),
+      timestamp: timestamp,
     });
 
     client.socket.send({
       kind: 'updateMicState',
       payload: {
         isOn: !isMicOn,
-        timestamp: new Date().getTime(),
+        timestamp: timestamp,
       },
     });
 
@@ -84,9 +85,9 @@ export const MicToggle = (props: IMicToggleProps) => {
     <>
       <ResponsiveTooltip
         title={
-          <>
+          <span>
             {t('features.mediaControls.micToggle')} <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText>
-          </>
+          </span>
         }
       >
         <div>

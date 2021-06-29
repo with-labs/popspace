@@ -2,6 +2,9 @@ import * as React from 'react';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { makeStyles, Button, useTheme, Hidden, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { Analytics } from '@analytics/Analytics';
+import { EventNames } from '@analytics/constants';
 
 export interface ICopyLinkButtonProps {}
 
@@ -28,6 +31,7 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
   const onCopy = () => {
     navigator.clipboard.writeText(window.location.toString());
     setCopied(true);
+    Analytics.trackEvent(EventNames.COPY_LINK_BUTTOIN_PRESSED);
   };
 
   React.useEffect(() => {
@@ -51,9 +55,11 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
         </Button>
       </Hidden>
       <Hidden lgUp>
-        <IconButton onClick={onCopy} classes={{ root: classes.iconButton }}>
-          <CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />
-        </IconButton>
+        <ResponsiveTooltip title={t('features.roomControls.copyLinkButtonText') as string}>
+          <IconButton onClick={onCopy} classes={{ root: classes.iconButton }}>
+            <CopyIcon htmlColor={theme.palette.brandColors.slate.ink} />
+          </IconButton>
+        </ResponsiveTooltip>
       </Hidden>
     </>
   );

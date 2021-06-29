@@ -73,7 +73,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     save({
       color,
     });
-    Analytics.trackEvent(EventNames.CHANGE_WIDGET_COLOR, {
+    Analytics.trackEvent(EventNames.CHANGE_WIDGET_COLOR, color, {
       color,
       widgetId: state.widgetId,
       type: state.type,

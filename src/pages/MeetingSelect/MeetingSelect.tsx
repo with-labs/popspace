@@ -43,9 +43,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
 
   React.useEffect(() => {
     if (!selected) return;
-    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, {
-      templateName: providedTemplateName,
-    });
+    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, providedTemplateName);
     (async () => {
       try {
         const meeting = await create(selected);

@@ -21,8 +21,8 @@ export function useAnalytics(include?: IncludeData[], defaultData?: { [key: stri
     }
   });
 
-  const trackEvent = (eventName: EventNames, eventProperties?: { [key: string]: any }) => {
-    Analytics.trackEvent(eventName, { ...includeData, ...defaultData, ...eventProperties });
+  const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key: string]: any }) => {
+    Analytics.trackEvent(eventName, value, { ...includeData, ...defaultData, ...eventProperties });
   };
 
   return { trackEvent };

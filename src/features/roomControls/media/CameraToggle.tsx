@@ -39,16 +39,17 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const handleVideoToggle = React.useCallback(() => {
-    trackEvent(EventNames.TOGGLE_VIDEO, {
+    const timestamp = new Date().getTime();
+    trackEvent(EventNames.TOGGLE_VIDEO, timestamp, {
       isOn: !isVideoOn,
-      timestamp: new Date().getTime(),
+      timestamp,
     });
 
     client.socket.send({
       kind: 'updateVideoState',
       payload: {
         isOn: !isVideoOn,
-        timestamp: new Date().getTime(),
+        timestamp: timestamp,
       },
     });
 
@@ -78,9 +79,9 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     <>
       <ResponsiveTooltip
         title={
-          <>
+          <span>
             {t('features.mediaControls.videoToggle')} <KeyShortcutText>{KeyShortcut.ToggleVideo}</KeyShortcutText>
-          </>
+          </span>
         }
       >
         <div onContextMenu={handleContextMenu}>

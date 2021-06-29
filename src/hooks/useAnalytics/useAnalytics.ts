@@ -8,7 +8,6 @@ export enum IncludeData {
 
 export function useAnalytics(include?: IncludeData[], defaultData?: { [key: string]: any }) {
   const includeData: { [key: string]: any } = {};
-  debugger;
 
   include?.forEach((dataName) => {
     switch (dataName) {

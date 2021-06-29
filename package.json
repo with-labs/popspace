@@ -36,6 +36,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "log4js": "^6.3.0",
+    "mixpanel": "^0.13.0",
     "node-get-favicons": "^1.2.0",
     "passport": "^0.4.1",
     "session": "^0.1.0",

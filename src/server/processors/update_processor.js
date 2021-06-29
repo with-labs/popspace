@@ -2,19 +2,24 @@ class UpdateProcessor {
   async process(hermesEvent) {
     switch(hermesEvent.kind()) {
       case "transformWidget":
-        return this.updateWidgetRoomState(hermesEvent)
+        return await this.updateWidgetRoomState(hermesEvent)
       case "updateWidget":
-        return this.updateWidgetState(hermesEvent)
+        return await this.updateWidgetState(hermesEvent)
       case "transformSelf":
-        return this.updateRoomParticipantState(hermesEvent)
+        return await this.updateRoomParticipantState(hermesEvent)
       case "updateSelf":
-        return this.updateParticipantState(hermesEvent)
+        return await this.updateParticipantState(hermesEvent)
+      case "updateSelfDisplayName":
+        return await this.updateActorDisplayName(hermesEvent)
+      case "updateSelfAvatarName":
+        return await this.updateActorAvatarName(hermesEvent)
       case "updateSelfActor":
-        return this.updateActorState(hermesEvent)
+        /* DEPRECATED - use updateSelfDisplayName and updateSelfAvatarName instead*/
+        return await this.tempUpdateDisplayAndAvatarName(hermesEvent)
       case "updateRoomState":
-        return this.updateRoomState(hermesEvent)
+        return await this.updateRoomState(hermesEvent)
       default:
-        return hermesEvent.senderParticipant().sendError(
+        return await hermesEvent.senderParticipant().sendError(
           hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
           `Unrecognized event type: ${hermesEvent.kind()}`
@@ -52,9 +57,26 @@ class UpdateProcessor {
     sender.respondAndBroadcast(event, "roomStateUpdated")
   }
 
-  async updateActorState(event) {
+  /* DEPRECATED - use updateSelfDisplayName and updateSelfAvatarName instead*/
+  async tempUpdateDisplayAndAvatarName(event) {
+    log.error.warn("Deprecated use of tempUpdateDisplayAndAvatarName")
+    const payload = event.payload()
+    if(payload.display_name) {
+      this.updateActorDisplayName(event)
+    }
+    if(payload.avatar_name) {
+      this.updateActorAvatarName(event)
+    }
+  }
+
+  async updateActorDisplayName(event) {
     const sender = event.senderParticipant()
-    return sender.updateActor(event.payload().actor, event)
+    return sender.updateDisplayName(event.payload().display_name, event)
+  }
+
+  async updateActorAvatarName(event) {
+    const sender = event.senderParticipant()
+    return sender.updateAvatarName(event.payload().avatar_name, event)
   }
 }
 

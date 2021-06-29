@@ -2,21 +2,24 @@ class UpdateProcessor {
   async process(hermesEvent) {
     switch(hermesEvent.kind()) {
       case "transformWidget":
-        return this.updateWidgetRoomState(hermesEvent)
+        return await this.updateWidgetRoomState(hermesEvent)
       case "updateWidget":
-        return this.updateWidgetState(hermesEvent)
+        return await this.updateWidgetState(hermesEvent)
       case "transformSelf":
-        return this.updateRoomParticipantState(hermesEvent)
+        return await this.updateRoomParticipantState(hermesEvent)
       case "updateSelf":
-        return this.updateParticipantState(hermesEvent)
+        return await this.updateParticipantState(hermesEvent)
       case "updateSelfDisplayName":
-        return this.updateActorDisplayName(hermesEvent)
+        return await this.updateActorDisplayName(hermesEvent)
       case "updateSelfAvatarName":
-        return this.updateActorAvatarName(hermesEvent)
+        return await this.updateActorAvatarName(hermesEvent)
+      case "updateSelfActor":
+        /* DEPRECATED - use updateSelfDisplayName and updateSelfAvatarName instead*/
+        return await this.tempUpdateDisplayAndAvatarName(hermesEvent)
       case "updateRoomState":
-        return this.updateRoomState(hermesEvent)
+        return await this.updateRoomState(hermesEvent)
       default:
-        return hermesEvent.senderParticipant().sendError(
+        return await hermesEvent.senderParticipant().sendError(
           hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
           `Unrecognized event type: ${hermesEvent.kind()}`
@@ -52,6 +55,18 @@ class UpdateProcessor {
     const sender = event.senderParticipant()
     await shared.db.room.data.updateRoomState(event.roomId(), event.payload())
     sender.respondAndBroadcast(event, "roomStateUpdated")
+  }
+
+  /* DEPRECATED - use updateSelfDisplayName and updateSelfAvatarName instead*/
+  async tempUpdateDisplayAndAvatarName(event) {
+    log.error.warn("Deprecated use of tempUpdateDisplayAndAvatarName")
+    const payload = event.payload()
+    if(payload.display_name) {
+      this.updateActorDisplayName(event)
+    }
+    if(payload.avatar_name) {
+      this.updateActorAvatarName(event)
+    }
   }
 
   async updateActorDisplayName(event) {

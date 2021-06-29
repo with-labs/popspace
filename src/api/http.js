@@ -56,8 +56,9 @@ const http = {
     const result = error.toJson()
     /* The message field does not serialize, not exposed as own property from Error */
     result.message = error.message
-    const report = await shared.error.report(error, `noodle_api:${req.originalUrl}`, req.actor ? req.actor.id : null, httpCode)
+    const report = await shared.error.report(error, `noodle_api:${req.originalUrl}`, req.actor ? req.actor.id : null, httpCode, error.errorCode)
     result.error_id = report.id
+    delete result.stack
     return res.send(lib.util.snakeToCamelCase(result))
   },
 

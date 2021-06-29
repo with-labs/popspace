@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "console": "node scripts/console.js",
+    "console": "node --experimental-repl-await ./scripts/console.js",
     "dev": "NODE_ENV=development node index.js",
     "test:all": "NODE_ENV=test jest --runInBand",
     "test:one": "NODE_ENV=test node scripts/run_scenario.js"
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/with-labs/with-api#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.1.5",
+    "@withso/noodle-shared": "1.1.8",
     "aws-sdk": "^2.928.0",
     "axios": "^0.21.1",
     "camelcase-keys": "^6.2.2",

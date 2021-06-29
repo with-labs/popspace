@@ -51,10 +51,10 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const createRoom = async (template, actorId, roomKind, req) => {
-  const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(template, actorId)
+const createRoom = async (template, actorId, templateName, req) => {
+  const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(templateName, template, actorId)
   const namedRoom = new shared.models.RoomWithState(room, roomData.state)
-  const event = await shared.db.events.roomCreateEvent(actorId, roomKind, req)
+  const event = await shared.db.events.roomCreateEvent(actorId, templateName, req)
   return namedRoom
 }
 

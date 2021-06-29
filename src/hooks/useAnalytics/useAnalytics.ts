@@ -1,20 +1,19 @@
 import { Analytics } from '@analytics/Analytics';
 import { EventNames } from '@analytics/constants';
-import { useRoomStore } from '@api/useRoomStore';
+import client from '@api/client';
 
 export enum IncludeData {
   roomId,
 }
 
 export function useAnalytics(include?: IncludeData[], defaultData?: { [key: string]: any }) {
-  const roomId = useRoomStore((store) => store.id);
-
   const includeData: { [key: string]: any } = {};
+  debugger;
 
   include?.forEach((dataName) => {
     switch (dataName) {
       case IncludeData.roomId:
-        includeData.roomId = roomId;
+        includeData.roomId = client.roomId;
         break;
       default:
         break;

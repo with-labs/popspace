@@ -8,8 +8,8 @@ import client from '@api/client';
 import { useHistory } from 'react-router';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
-import { Analytics } from '@analytics/Analytics';
 import { EventNames } from '@analytics/constants';
+import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 
 export interface ILeaveMeetingButtonProps {}
 
@@ -36,11 +36,12 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   const classes = useStyles();
   const { room } = useTwilio();
   const { stopAll } = useLocalTracks();
+  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   // todo add analytics
   const history = useHistory();
   const leaveRoom = React.useCallback(() => {
-    Analytics.trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
+    trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
     stopAll();
     room?.disconnect();
     client.leaveMeeting();

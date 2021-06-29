@@ -64,6 +64,11 @@ class Accounts {
     })
   }
 
+  async updateActor(actorId, changes) {
+    const result = await shared.db.pg.massive.actors.update(actorId, changes);
+    return result;
+  }
+
   async createLoginRequest(actor) {
     const loginRequest = {
       code: shared.lib.otp.generate(),

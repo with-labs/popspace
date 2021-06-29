@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
-import { mandarin as theme } from './theme/theme';
+import { lavender as theme } from './theme/theme';
 import { Router } from 'react-router';
 import AppStateProvider from './state';
 import { Routes } from './Routes';
@@ -10,7 +10,7 @@ import history from './history';
 import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
-import { useCrisp } from './hooks/useCrisp/useCrisp';
+// import { useCrisp } from './hooks/useCrisp/useCrisp';
 import { isMobileOnly } from 'react-device-detect';
 
 import { NotSupported } from '@src/pages/NotSupported/NotSupported';
@@ -20,8 +20,8 @@ export interface IAppProps {}
 export const App: React.FC<IAppProps> = () => {
   // TODO: set up analytics identity using whatever user information is available to us
 
-  // setup crisp inegration
-  useCrisp();
+  // setup crisp integration
+  // useCrisp();
 
   return (
     <FlaggProvider featureFlags={featureFlags}>

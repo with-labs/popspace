@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { EventNames } from '@analytics/constants';
-import { MeetingTemplateName } from '@src/constants/MeetingTypeMetadata';
+import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';

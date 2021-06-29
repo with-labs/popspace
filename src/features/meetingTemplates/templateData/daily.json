@@ -1,0 +1,10 @@
+{
+  "displayName": "Daily Stand-Up",
+  "state": {
+    "isCustomWallpaper": true,
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_daily.png",
+    "wallpaperRepeats": true,
+    "backgroundColor": "#E3CCAD"
+  },
+  "widgets": [["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }]]
+}

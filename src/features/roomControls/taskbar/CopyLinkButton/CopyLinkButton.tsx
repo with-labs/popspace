@@ -2,7 +2,6 @@ import * as React from 'react';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { makeStyles, Button, useTheme, Hidden, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import toast from 'react-hot-toast';
 
 export interface ICopyLinkButtonProps {}
 
@@ -24,10 +23,19 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
   const classes = useStyles();
   const theme = useTheme();
 
+  const [copied, setCopied] = React.useState(false);
+
   const onCopy = () => {
     navigator.clipboard.writeText(window.location.toString());
-    toast.success(t('features.roomControls.linkCopied') as string);
+    setCopied(true);
   };
+
+  React.useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => setCopied(false), 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [copied]);
 
   return (
     <>
@@ -39,7 +47,7 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
           onClick={onCopy}
           fullWidth={false}
         >
-          {t('features.roomControls.CopyLinkButtonText')}
+          {copied ? t('features.roomControls.linkCopied') : t('features.roomControls.copyLinkButtonText')}
         </Button>
       </Hidden>
       <Hidden lgUp>

@@ -1,5 +1,5 @@
 import { WidgetShape, WidgetState } from '../widgets';
-import { ParticipantShape, ParticipantState } from '../participants';
+import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
 import { Actor } from '@api/types';
@@ -30,7 +30,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   payload: {
     participants: {
       authenticated: boolean;
-      actor: { id: string };
+      actor: { id: string; displayName: string; avatarName: string };
       sessionId: string;
       participantState: ParticipantState;
       roomId: string;
@@ -109,6 +109,13 @@ export interface IncomingParticipantUpdatedMessage extends BaseIncomingSocketMes
   };
 }
 
+export interface IncomingActorUpdatedMessage extends BaseIncomingSocketMessage {
+  kind: 'actorUpdated';
+  payload: {
+    actor: ActorShape;
+  };
+}
+
 export interface IncomingParticipantLeftMessage extends BaseIncomingSocketMessage {
   kind: 'participantLeft';
   payload: {
@@ -135,7 +142,8 @@ export type IncomingSocketMessage =
   | IncomingParticipantLeftMessage
   | IncomingParticipantUpdatedMessage
   | IncomingRoomStateUpdatedMessage
-  | IncomingPassthroughMessage;
+  | IncomingPassthroughMessage
+  | IncomingActorUpdatedMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

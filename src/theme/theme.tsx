@@ -121,7 +121,7 @@ function createFocusRing(color: string, outside: boolean = false) {
  *
  * @param colors Color palette configuration
  */
-const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
+const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: WithColorPalette }) => {
   const finalPalette: MuiPaletteOptions = {
     // all themes use this grey, for now.
     grey: {
@@ -155,7 +155,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       black: brandPalette.ink.regular,
     },
     primary: toMuiColorPalette(colors.primary),
-    secondary: toMuiColorPalette(brandPalette.oregano),
+    secondary: toMuiColorPalette(colors.secondary || brandPalette.oregano),
     brandColors: brandPalette,
   };
 
@@ -223,6 +223,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         fontSize: typography.pxToRem(42),
         lineHeight: 48 / 42,
         fontWeight: typography.fontWeightBold,
+        color: brandPalette.vintageInk.regular,
       },
       h2: {
         fontSize: typography.pxToRem(24),
@@ -354,6 +355,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         elevation: 1,
       },
       MuiAccordion: {
+        elevation: 0,
+      },
+      MuiCircularProgress: {
+        thickness: 6,
+      },
+      MuiCard: {
         elevation: 0,
       },
     },
@@ -498,43 +505,77 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiButton: {
         root: {
           borderRadius: shape.contentBorderRadius,
-          padding: '13px 30px',
+          padding: '13px 24px',
         },
-        contained: {
-          boxShadow: focusRings.idle,
-          backgroundColor: palette.brandColors.snow.regular,
+        // ok, pretty inelegant... but necessary right now... MUI is opinionated about variants.
+        contained:
+          colors.primary === brandPalette.lavender
+            ? {
+                boxShadow: focusRings.idle,
+                backgroundColor: brandPalette.lavender.wash,
+                color: brandPalette.lavender.ink,
 
-          transition: transitions.create(['background-color', 'box-shadow', 'color']),
+                transition: transitions.create(['background-color', 'box-shadow', 'color']),
 
-          '&:hover': {
-            boxShadow: focusRings.idle,
-          },
+                '&:hover': {
+                  boxShadow: focusRings.idle,
+                  backgroundColor: brandPalette.lavender.light,
+                },
 
-          '&$disabled': {
-            backgroundColor: palette.grey[50],
-            '& > $label': {
-              color: palette.grey[900],
-            },
-          },
-          '&:focus, &$focusVisible': {
-            boxShadow: focusRings.create(palette.grey[900]),
-          },
-        },
-        containedPrimary: {
-          backgroundColor: palette.primary.light,
-          '&:hover': {
-            backgroundColor: palette.primary.main,
-          },
-          '&:focus, &$focusVisible': {
-            boxShadow: focusRings.create(palette.primary.dark),
-          },
-        },
+                '&$disabled': {
+                  backgroundColor: palette.grey[50],
+                  '& > $label': {
+                    color: palette.grey[900],
+                  },
+                },
+                '&:focus, &$focusVisible': {
+                  backgroundColor: brandPalette.lavender.light,
+                  boxShadow: focusRings.create(brandPalette.lavender.bold),
+                },
+              }
+            : {
+                boxShadow: focusRings.idle,
+                backgroundColor: palette.brandColors.snow.regular,
+                transition: transitions.create(['background-color', 'box-shadow', 'color']),
+                '&:hover': {
+                  boxShadow: focusRings.idle,
+                },
+                '&$disabled': {
+                  backgroundColor: palette.grey[50],
+                  '& > $label': {
+                    color: palette.grey[900],
+                  },
+                },
+              },
+        containedPrimary:
+          colors.primary === brandPalette.lavender
+            ? {
+                backgroundColor: brandPalette.lavender.ink,
+                color: brandPalette.snow.regular,
+                '&:hover': {
+                  backgroundColor: '#7c50da',
+                },
+                '&:focus, &$focusVisible': {
+                  backgroundColor: '#7c50da',
+                  boxShadow: focusRings.create('#4b2aaa'),
+                },
+              }
+            : {
+                backgroundColor: palette.primary.light,
+                '&:hover': {
+                  backgroundColor: palette.primary.main,
+                },
+                '&:focus, &$focusVisible': {
+                  boxShadow: focusRings.create(palette.primary.dark),
+                },
+              },
         containedSecondary: {
           backgroundColor: palette.secondary.light,
           '&:hover': {
             backgroundColor: palette.secondary.main,
           },
           '&:focus, &$focusVisible': {
+            backgroundColor: palette.secondary.main,
             boxShadow: focusRings.create(palette.secondary.dark),
           },
         },
@@ -558,12 +599,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         },
         startIcon: {
           paddingLeft: 0,
-          marginLeft: -22,
+          marginLeft: -8,
           marginRight: 8,
         },
         endIcon: {
           paddingRight: 0,
-          marginRight: -22,
+          marginRight: -8,
           marginLeft: 8,
         },
       },
@@ -595,10 +636,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiCircularProgress: {
         colorPrimary: {
           color: palette.brandColors.slate.ink,
-        },
-        circle: {
-          strokeWidth: 6,
-          r: 16,
         },
       },
       MuiCheckbox: {
@@ -767,9 +804,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
         rounded: {
           borderRadius: shape.borderRadius,
         },
-        elevation0: {
-          border: `1px solid ${palette.grey[500]}`,
-        },
+        elevation0: {},
         elevation1: {
           boxShadow: mainShadows.surface,
         },
@@ -894,12 +929,12 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           },
 
           '&:active': {
-            boxShadow: focusRings.create(palette.secondary.main),
+            boxShadow: focusRings.create(brandPalette.oregano.regular),
             backgroundColor: palette.grey[300],
           },
 
           '&$selected': {
-            color: palette.secondary.main,
+            color: brandPalette.oregano.regular,
             backgroundColor: 'transparent',
 
             '& + &': {
@@ -909,21 +944,21 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
             },
 
             '&:hover': {
-              boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.secondary.main,
-              color: palette.secondary.contrastText,
+              boxShadow: focusRings.create(brandPalette.oregano.regular),
+              backgroundColor: brandPalette.oregano.regular,
+              color: brandPalette.oregano.ink,
             },
 
             '&:focus': {
               boxShadow: focusRings.primary,
-              backgroundColor: palette.secondary.light,
-              color: palette.secondary.contrastText,
+              backgroundColor: brandPalette.oregano.light,
+              color: brandPalette.oregano.ink,
             },
 
             '&:active': {
-              boxShadow: focusRings.create(palette.secondary.main),
-              backgroundColor: palette.secondary.light,
-              color: palette.secondary.contrastText,
+              boxShadow: focusRings.create(brandPalette.oregano.regular),
+              backgroundColor: brandPalette.oregano.light,
+              color: brandPalette.oregano.ink,
             },
           },
         },
@@ -1095,13 +1130,14 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
             display: 'none',
           },
           '&$expanded': {
-            backgroundColor: brandPalette.lavender.light,
+            backgroundColor: brandPalette.snow.regular,
             margin: `${spacing(1)}px 0`,
+            boxShadow: focusRings.create(brandPalette.lavender.bold),
           },
         },
         rounded: {
           borderRadius: shape.borderRadius,
-          backgroundColor: palette.grey[100],
+          backgroundColor: brandPalette.lavender.wash,
           border: 'none',
           margin: `${spacing(1)}px 0`,
         },
@@ -1127,6 +1163,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
       MuiCard: {
         root: {
           overflow: 'visible',
+          backgroundColor: brandPalette.lavender.wash,
           '&:hover': {
             outline: 'none',
           },
@@ -1139,19 +1176,27 @@ const createPaletteTheme = (colors: { primary: WithColorPalette }) => {
           transition: transitions.create(['box-shadow', 'background-color']),
           transform: 'scale(1)',
           boxShadow: mainShadows.none,
-          '&$focusVisible': {
+          backgroundColor: brandPalette.lavender.wash,
+          '&$focusVisible, &:focus': {
             boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
           '&:hover': {
             boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
           '&:active': {
-            backgroundColor: brandPalette.lavender.light,
+            backgroundColor: brandPalette.snow.regular,
             boxShadow: `0 0 0 4px ${brandPalette.lavender.bold}`,
           },
         },
         focusHighlight: {
           display: 'none',
+        },
+      },
+      MuiCardMedia: {
+        root: {
+          '& > img': {
+            padding: '0 !important',
+          },
         },
       },
       MuiBackdrop: {

@@ -26,6 +26,7 @@ const palette = {
     regular: '#D2CEF5',
     light: '#EAE8FC',
     surface: '#F3F2FE',
+    wash: '#F8F7FE',
   },
   cherry: {
     ink: '#9C2F08',

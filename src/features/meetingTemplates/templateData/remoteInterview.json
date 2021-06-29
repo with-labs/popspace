@@ -1,0 +1,22 @@
+{
+  "displayName": "Remote Interview",
+  "state": {
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_interview.png",
+    "isCustomWallpaper": true,
+    "wallpaperRepeats": true,
+    "backgroundColor": "#4e756b"
+  },
+  "widgets": [
+    [
+      "FILE",
+      {
+        "url": "https://withhq.sirv.com/external/template_content/Upload%20Resume.pdf",
+        "fileName": "Upload Resume.pdf",
+        "contentType": "application/pdf",
+        "uploadProgress": 100
+      },
+      { "size": { "width": 628, "height": 743 }, "position": { "x": -730, "y": -16 } }
+    ],
+    ["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }]
+  ]
+}

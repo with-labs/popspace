@@ -169,7 +169,25 @@
         "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Tilde.",
         "copyLinkButton": "Copy link",
         "copied": "Copied",
-        "joinRoomButton": "Join room now"
+        "joinRoomButton": "Join room now",
+        "extensions": {
+          "slack": {
+            "label": "Slack Extension",
+            "iconAlt": "The Slack logo"
+          },
+          "browser": {
+            "chomeIconAlt": "The Google Chrome logo",
+            "label": "Browser Extension"
+          },
+          "outlook": {
+            "iconAlt": "The Outlook Calendar logo",
+            "label": "Outlook Calendar"
+          },
+          "google": {
+            "iconAlt": "The Google Calendar logo",
+            "label": "Google Calendar"
+          }
+        }
       },
       "meetingSelect": {
         "titleText": "What kind of meeting room do you need?"
@@ -180,15 +198,19 @@
         "buttonText": "Go back home"
       },
       "postMeeting": {
-        "surveyThanks": "Thanks for helping us make Noodle better!",
+        "surveyThanks": "Thanks for your feedback!",
         "positiveFeedbackPrompt": "We're glad you enjoyed it!",
         "negativeFeedbackPrompt": "We're sorry it didn't go great...",
         "positiveFeedbackPlaceholder": "Anything we could do better?",
         "negativeFeedbackPlaceholder": "Please tell us why!",
         "submitFeedback": "Send feedback",
         "skipSurvey": "Skip survey",
-        "title": "Thank you for using Noodle!",
-        "ratingCaption": "To make sure we're providing you with the best possible app, please rate your experience"
+        "title": "Thank you for<br/>using Tilde!",
+        "ratingCaption": "Help us improve your experience",
+        "howWasIt": "How was your meeting?",
+        "tooLong": "Sorry, this is a bit too long. Max is {{maxChars}} characters.",
+        "saveThisLink": "Bookmark this page if you want to come back to the meeting content at any time.",
+        "createAnother": "Create another meeting"
       },
       "licenses": {
         "title": "Open Source Software Licenses",
@@ -384,7 +406,7 @@
         "videoPermissionDenied": "You've told your browser not to allow camera access for Tilde. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
         "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Tilde. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@noodle.so</3>."
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>."
       },
       "roomMangement": {
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",
@@ -464,29 +486,30 @@
         "massiveRoomExplainer": "Warning: very experimental! Removes the boundaries on your room, letting you move and place accessories anywhere you like. You can turn this back off, but your accessories will be re-arranged if you do."
       },
       "roomControls": {
-        "CopyLinkButtonText": "Copy link",
+        "copyLinkButtonText": "Copy link",
         "linkCopied": "Link copied!",
         "leaveMeetingButtonText": "Leave Meeting"
       },
       "onboarding": {
         "title": "Getting started",
         "move": {
-          "details": "To break out in groups in a Tilde room, drag your avatar wherever you want to go. Try it now!",
+          "details": "Drag your avatar wherever you want to go. Try it now!",
           "title": "Move & Break out"
         },
         "addWidgets": {
           "title": "Add content to the room",
-          "details": "You can add many kinds of content to the room. Try it now! Click on one of the icons at the bottom of the window."
+          "details": "You can add many kinds of content to the room. Try it now!"
         },
         "persistence": {
           "title": "Rooms are persistent",
-          "details": "All the widgets you create and the files your upload are automatically saved in the room. Bookmark this page and come back at any time and everything will still be there.",
+          "details": "Bookmark this page and everything will still be there when you get back.",
           "later": "Later"
         },
         "makeYourOwn": {
           "title": "Your own Tilde rooms",
-          "details": "Tilde offers <strong>free</strong> and <strong>instant</strong> meeting rooms for all your collaborative needs.",
-          "learnMore": "Learn more"
+          "details": "<strong>Free</strong>, <strong>instant</strong> meeting rooms for all your collaborative needs.",
+          "learnMore": "Learn more",
+          "later": "Later"
         }
       }
     },
@@ -598,40 +621,56 @@
       },
       "userEntry": {
         "placeholderText": "Your display name",
-        "submitButtonText": "Set display name",
-        "maxSize": "Display name must be less than {{maxNameLength}} characters"
+        "submitButtonText": "Enter room",
+        "maxSize": "Display name must be less than {{maxNameLength}} characters",
+        "tosDisclaimer": "By clicking \"Enter room\", you agree to our <1>Terms of Service</1> and that you have read our <3>Privacy Policy</3>."
       }
     },
     "meetingTemplates": {
-      "custom": {
-        "title": "Custom",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+      "blank": {
+        "title": "Blank",
+        "description": "A blank room for your custom needs.",
         "imgAlt": "A speech bubble with a friendly exclamation"
       },
-      "standup": {
-        "title": "Stand Up",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+      "daily": {
+        "title": "Daily Stand-Up",
+        "description": "Identify and tackle daily roadblocks.",
         "imgAlt": "A streaming cup of morning beverage"
       },
-      "workshop": {
-        "title": "Workshop",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A timer on a grid-like abstract background"
+      "weekly": {
+        "title": "Weekly Sync-Up",
+        "description": "Check in on how is the team doing.",
+        "imgAlt": "A calendar with colorful meeting blocks"
       },
-      "presentation": {
-        "title": "Presentations",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A projection screen with an upward-trending graph"
+      "allHands": {
+        "title": "All-Hands Meeting",
+        "description": "Keep everybody aligned with goals.",
+        "imgAlt": "A stylish microphone"
       },
       "oneOnOne": {
-        "title": "One-on-one",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
+        "title": "One-on-One",
+        "description": "A cozy place to build a relationship.",
         "imgAlt": "Two comfy chairs facing one another"
       },
       "retrospective": {
         "title": "Team retrospective",
-        "description": "Lorem ipsum dolor sit amet, consectetur adici elit, sed eiusmod tempor",
-        "imgAlt": "A document being inspected with a magnifying glass"
+        "description": "Evaluate goals and reflect on setbacks.",
+        "imgAlt": "A collection of floating documents"
+      },
+      "happyHour": {
+        "title": "Happy Hour",
+        "description": "Team bonding and trust building.",
+        "imgAlt": "A striped party hat"
+      },
+      "brainstorm": {
+        "title": "Brainstorm",
+        "description": "Ideate as a group to solve problems.",
+        "imgAlt": "A classic-looking lightbulb"
+      },
+      "interview": {
+        "title": "Remote Interview",
+        "description": "Personal and fluid for both sides.",
+        "imgAlt": "A silhouette of someone speaking"
       }
     }
   }

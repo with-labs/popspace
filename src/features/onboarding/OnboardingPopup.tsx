@@ -1,9 +1,6 @@
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { Link } from '@components/Link/Link';
 import { useMediaReady } from '@components/MediaReadinessProvider/useMediaReady';
-import { Spacing } from '@components/Spacing/Spacing';
-import { RouteNames } from '@constants/RouteNames';
 import {
   Accordion,
   AccordionDetails,
@@ -22,8 +19,12 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { OnboardingStateShape, useOnboarding } from './useOnboarding';
+
+import moveVideo from '@src/videos/onboarding/move.mp4';
+import contentVideo from '@src/videos/onboarding/content.mp4';
+import persistenceVideo from '@src/videos/onboarding/persistence.mp4';
 
 export interface IOnboardingPopupProps {}
 
@@ -43,15 +44,17 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
   const theme = useTheme();
 
-  const { api, hasMoved, hasCreated, hasAcknowledgedPersistence, hasAcknowledgedMakeYourOwn } = useOnboarding();
+  const { api, hasMoved, hasCreated, hasAcknowledgedPersistence /*hasAcknowledgedMakeYourOwn*/ } = useOnboarding();
 
-  const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence && hasAcknowledgedMakeYourOwn;
+  const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence; /* && hasAcknowledgedMakeYourOwn*/
   const latestUndone = React.useMemo(() => {
     if (!hasMoved) return 'hasMoved';
     if (!hasCreated && !isSmall) return 'hasCreated';
-    if (!hasAcknowledgedPersistence) return 'hasAcknowledgedPersistence';
-    return 'hasAcknowledgedMakeYourOwn';
-  }, [hasMoved, hasCreated, isSmall, hasAcknowledgedPersistence]);
+    // TODO: re-enable this step
+    // if (!hasAcknowledgedPersistence) return 'hasAcknowledgedPersistence';
+    // return 'hasAcknowledgedMakeYourOwn';
+    return 'hasAcknowledgedPersistence';
+  }, [hasMoved, hasCreated, isSmall]);
 
   const actionRef = React.useRef<PopoverActions>(null);
 
@@ -98,6 +101,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
             expanded={expanded === 'hasMoved'}
             done={hasMoved}
             onChange={() => openSection('hasMoved')}
+            videoSrc={moveVideo}
           />
           {!isSmall && (
             <OnboardingStep
@@ -107,6 +111,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
               expanded={expanded === 'hasCreated'}
               done={hasCreated}
               onChange={() => openSection('hasCreated')}
+              videoSrc={contentVideo}
             />
           )}
           <OnboardingStep
@@ -116,28 +121,30 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
             expanded={expanded === 'hasAcknowledgedPersistence'}
             done={hasAcknowledgedPersistence}
             onChange={() => openSection('hasAcknowledgedPersistence')}
+            videoSrc={persistenceVideo}
           >
-            <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="default">
+            <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="primary">
               {t('common.confirm')}
             </Button>
           </OnboardingStep>
-          <OnboardingStep
+          {/* <OnboardingStep
             id="create"
             title={t('features.onboarding.makeYourOwn.title')}
             details={<Trans i18nKey="features.onboarding.makeYourOwn.details" />}
             expanded={expanded === 'hasAcknowledgedMakeYourOwn'}
             done={hasAcknowledgedMakeYourOwn}
             onChange={() => openSection('hasAcknowledgedMakeYourOwn')}
+            videoSrc={learnMoreVideo}
           >
-            <Spacing flexDirection="column">
-              <Link to={RouteNames.ROOT} disableStyling newTab>
-                <Button color="default">{t('features.onboarding.makeYourOwn.learnMore')}</Button>
-              </Link>
-              <Button onClick={() => api.markComplete('hasAcknowledgedMakeYourOwn')} color="default">
-                {t('common.confirm')}
+            <Spacing flexDirection="row" justifyContent="space-evenly">
+              <Button onClick={() => api.markComplete('hasAcknowledgedMakeYourOwn')} color="default" fullWidth={false}>
+                {t('features.onboarding.makeYourOwn.later')}
               </Button>
+              <Link to={RouteNames.ROOT} disableStyling newTab>
+                <Button color="primary">{t('features.onboarding.makeYourOwn.learnMore')}</Button>
+              </Link>
             </Spacing>
-          </OnboardingStep>
+          </OnboardingStep> */}
         </Box>
       </Box>
     </Grow>
@@ -161,6 +168,12 @@ const useStepStyles = makeStyles((theme) => ({
     position: 'relative',
     marginBottom: -6,
   },
+  video: {
+    width: '100%',
+    height: 'auto',
+    borderRadius: theme.shape.contentBorderRadius,
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const OnboardingStep: React.FC<{
@@ -169,8 +182,9 @@ const OnboardingStep: React.FC<{
   details: React.ReactNode;
   done: boolean;
   expanded: boolean;
+  videoSrc?: string;
   onChange: (event: any, isExpanded: boolean) => void;
-}> = ({ id, title, details, done, expanded, onChange, children }) => {
+}> = ({ id, title, details, done, expanded, onChange, videoSrc, children }) => {
   const classes = useStepStyles();
   const ref = React.useRef<HTMLElement>(null);
 
@@ -191,6 +205,7 @@ const OnboardingStep: React.FC<{
         </Typography>
       </AccordionSummary>
       <AccordionDetails id={`${id}-details`} className={classes.details}>
+        {videoSrc && <video className={classes.video} src={videoSrc} controls={false} autoPlay muted loop />}
         <Typography paragraph={!!children}>{details}</Typography>
         {children}
       </AccordionDetails>

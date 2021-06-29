@@ -6,6 +6,7 @@ import { makeStyles, Button, Hidden, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import client from '@api/client';
 import { useHistory } from 'react-router';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 
 export interface ILeaveMeetingButtonProps {}
 
@@ -31,14 +32,16 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
   const { t } = useTranslation();
   const classes = useStyles();
   const { room } = useTwilio();
+  const { stopAll } = useLocalTracks();
 
   // todo add analytics
   const history = useHistory();
   const leaveRoom = React.useCallback(() => {
+    stopAll();
     room?.disconnect();
     client.leaveMeeting();
     history.push(`${history.location.pathname}/post_meeting`);
-  }, [room, history]);
+  }, [room, history, stopAll]);
 
   return (
     <>

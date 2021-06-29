@@ -3,7 +3,7 @@ import { Vector2 } from '@src/types/spatials';
 import { combineAndImmer } from './combineAndImmer';
 import { wallPaperOptions } from '@features/roomControls/roomSettings/WallpaperOptions';
 import { WidgetShape } from './types/widgets';
-import { ParticipantState } from './types/participants';
+import { ActorShape, ParticipantState } from './types/participants';
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { RoomStateCacheApi } from './RoomStateCacheApi';
 
@@ -21,6 +21,7 @@ export type RoomUserStateShape = {
   id: string;
   participantState: ParticipantState;
   sessionIds: Set<string>;
+  actor: ActorShape;
 };
 
 export type RoomCursorStateShape = {

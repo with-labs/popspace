@@ -107,8 +107,8 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
 
     // extract data from our With backend user
     const userId = person?.id;
-    const displayIdentity = person?.participantState.displayName;
-    const avatarName = person?.participantState.avatarName;
+    const displayIdentity = person?.actor.displayName;
+    const avatarName = person?.actor.avatarName;
 
     // determine background color based on avatar
     const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };

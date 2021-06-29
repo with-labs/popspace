@@ -1,13 +1,13 @@
 import React from 'react';
 import { Modal } from '@components/Modal/Modal';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import i18n from '@src/i18n';
-import { makeStyles, Box } from '@material-ui/core';
+import { makeStyles, Box, Typography } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
 import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
@@ -15,6 +15,8 @@ import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
 import client from '@api/client';
 import { useLocalActorId } from '@api/useLocalActorId';
 import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
+import { Link } from '@components/Link/Link';
+import { Links } from '@constants/Links';
 
 interface IUserEntryModalProps {}
 
@@ -65,7 +67,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
   const localId = useLocalActorId();
-  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.participantState);
+  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.actor);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
@@ -111,6 +113,14 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                 autoFocus
               />
               <FormikSubmitButton>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
+              <Box mt={1}>
+                <Typography variant="body2" style={{ textAlign: 'center' }}>
+                  <Trans i18nKey="modals.userEntry.tosDisclaimer">
+                    By clicking "Enter room", you agree to our <Link to={Links.TOS}>Terms of Service</Link> and that you
+                    have read our <Link to={Links.PRIVACY_POLICY}>Privacy Policy</Link>.
+                  </Trans>
+                </Typography>
+              </Box>
             </Form>
           </Box>
         </Modal>

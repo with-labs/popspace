@@ -45,22 +45,28 @@ const useStyles = makeStyles((theme) => ({
  * The kind of media widget that shows an image or video
  * edge-to-edge. It's resizeable.
  */
-export const FullSizeFileWidget: React.FC = () => (
-  <WidgetFrame
-    color={'transparent'}
-    minWidth={MIN_SIZE_MEDIA.width}
-    minHeight={MIN_SIZE_MEDIA.height}
-    maxWidth={MAX_SIZE_MEDIA.width}
-    maxHeight={MAX_SIZE_MEDIA.height}
-    preserveAspect
-  >
-    <CanvasObjectDragHandle>
-      <WidgetContent disablePadding>
-        <FullSizeFileWidgetContent />
-      </WidgetContent>
-    </CanvasObjectDragHandle>
-  </WidgetFrame>
-);
+export const FullSizeFileWidget: React.FC = () => {
+  const classes = useStyles();
+
+  return (
+    <WidgetFrame
+      color={'transparent'}
+      minWidth={MIN_SIZE_MEDIA.width}
+      minHeight={MIN_SIZE_MEDIA.height}
+      maxWidth={MAX_SIZE_MEDIA.width}
+      maxHeight={MAX_SIZE_MEDIA.height}
+      preserveAspect
+    >
+      <CanvasObjectDragHandle>
+        <WidgetContent disablePadding>
+          <FullSizeFileWidgetContent />
+        </WidgetContent>
+        <FileWidgetMenu className={classes.menu} size="small" />
+        <WidgetResizeHandle />
+      </CanvasObjectDragHandle>
+    </WidgetFrame>
+  );
+};
 
 const FullSizeFileWidgetContent: React.FC = () => {
   const classes = useStyles();
@@ -122,11 +128,5 @@ const FullSizeFileWidgetContent: React.FC = () => {
     }
   }, [resize, getSize]);
 
-  return (
-    <>
-      <FileWidgetMedia className={classes.media} widgetId={widgetId} ref={ref} />
-      <FileWidgetMenu className={classes.menu} size="small" />
-      <WidgetResizeHandle />
-    </>
-  );
+  return <FileWidgetMedia className={classes.media} widgetId={widgetId} ref={ref} />;
 };

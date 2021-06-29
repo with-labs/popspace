@@ -1,0 +1,25 @@
+{
+  "displayName": "Happy Hour",
+  "state": {
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_happyHour.png",
+    "isCustomWallpaper": true,
+    "wallpaperRepeats": true,
+    "backgroundColor": "#8bab62"
+  },
+  "widgets": [
+    ["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }],
+    [
+      "YOU_TUBE",
+      {
+        "videoId": "5qap5aO4i9A",
+        "mediaState": { "timestamp": 0, "isPlaying": false, "playStartedTimestampUtc": null }
+      },
+      { "size": { "width": 480, "height": 320 }, "position": { "x": -730, "y": 0 } }
+    ],
+    [
+      "WHITEBOARD",
+      { "whiteboardState": { "lines": [] } },
+      { "size": { "width": 720, "height": 528 }, "position": { "x": 300, "y": -490 } }
+    ]
+  ]
+}

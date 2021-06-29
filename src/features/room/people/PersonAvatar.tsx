@@ -13,8 +13,8 @@ export interface IPersonAvatarProps extends Omit<IAvatarProps, 'name' | 'useFall
 export const PersonAvatar = React.memo<IPersonAvatarProps>(({ personId, avatarName, ...rest }) => {
   const avatar = useRoomStore((room) => {
     let ret = getAvatarFromUserId('brandedPatterns', personId);
-    if (room.users[personId]?.participantState.avatarName) {
-      ret = room.users[personId]?.participantState.avatarName;
+    if (room.users[personId]?.actor.avatarName) {
+      ret = room.users[personId]?.actor.avatarName;
     } else if (avatarName) {
       ret = avatarName;
     }

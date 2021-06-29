@@ -74,7 +74,7 @@ class Core {
    * @param {number} creatorId - may be deprecated as we move to anon actors
    */
   async createRoomFromTemplate(templateName, template, creatorId, isPublic=true) {
-    const room = await this.createRoom(creatorId, template.state.display_name, templateName, isPublic)
+    const room = await this.createRoom(creatorId, template.display_name, templateName, isPublic)
     const roomData = await shared.db.room.templates.setUpRoomFromTemplate(
       room.id,
       template

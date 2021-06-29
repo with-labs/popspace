@@ -3,10 +3,9 @@ export interface ActorShape {
   displayName: string;
   avatarName: string;
 }
-export interface ParticipantState {
-  displayName: string;
-  avatarName: string;
-}
+
+/** Empty... for now. */
+export interface ParticipantState {}
 
 export interface ParticipantShape {
   /** Represents the active client session for this view of the user */

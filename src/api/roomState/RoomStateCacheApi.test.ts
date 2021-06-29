@@ -32,10 +32,7 @@ describe('RoomStateCacheApi', () => {
         payload: {
           self: {
             sessionId: 'session-id',
-            participantState: {
-              displayName: 'Cat',
-              avatarName: 'cat',
-            },
+            participantState: {},
             actor: {
               id: 'someone',
               displayName: 'Cat',
@@ -52,10 +49,7 @@ describe('RoomStateCacheApi', () => {
                 displayName: 'Cat',
                 avatarName: 'cat',
               },
-              participantState: {
-                displayName: 'Cat',
-                avatarName: 'cat',
-              },
+              participantState: {},
               transform: {
                 position: { x: 0, y: 0 },
                 size: { width: 140, height: 140 },
@@ -114,12 +108,9 @@ describe('RoomStateCacheApi', () => {
         users: {
           'cat-id': {
             id: 'cat-id',
+            participantState: {},
             actor: {
               id: 'cat-id',
-              displayName: 'Cat',
-              avatarName: 'cat',
-            },
-            participantState: {
               displayName: 'Cat',
               avatarName: 'cat',
             },
@@ -155,7 +146,9 @@ describe('RoomStateCacheApi', () => {
         user1: {
           authenticated: true,
           sessionIds: new Set(['session-id']),
-          participantState: {
+          participantState: {},
+          actor: {
+            id: 'user1',
             displayName: 'Cat',
             avatarName: 'cat',
           },
@@ -164,7 +157,9 @@ describe('RoomStateCacheApi', () => {
         user2: {
           authenticated: true,
           sessionIds: new Set(['other-session']),
-          participantState: {
+          participantState: {},
+          actor: {
+            id: 'user2',
             displayName: 'Bunny',
             avatarName: 'bunny',
           },
@@ -212,10 +207,7 @@ describe('RoomStateCacheApi', () => {
       cache.addSession({
         kind: 'participantJoined',
         payload: {
-          participantState: {
-            displayName: 'New User',
-            avatarName: 'bear',
-          },
+          participantState: {},
           actor: {
             id: 'new-user',
             displayName: 'New User',
@@ -237,12 +229,9 @@ describe('RoomStateCacheApi', () => {
 
       expect(result.users['new-user']).toEqual({
         id: 'new-user',
+        participantState: {},
         actor: {
           id: 'new-user',
-          displayName: 'New User',
-          avatarName: 'bear',
-        },
-        participantState: {
           displayName: 'New User',
           avatarName: 'bear',
         },
@@ -260,10 +249,7 @@ describe('RoomStateCacheApi', () => {
       cache.addSession({
         kind: 'participantJoined',
         payload: {
-          participantState: {
-            displayName: 'User 1',
-            avatarName: 'bear',
-          },
+          participantState: {},
           actor: {
             id: 'user1',
             displayName: 'User 1',
@@ -290,10 +276,7 @@ describe('RoomStateCacheApi', () => {
           displayName: 'User 1',
           avatarName: 'bear',
         },
-        participantState: {
-          displayName: 'User 1',
-          avatarName: 'bear',
-        },
+        participantState: {},
         authenticated: true,
         sessionIds: expect.any(Set),
       });
@@ -327,7 +310,9 @@ describe('RoomStateCacheApi', () => {
 
       expect(result.users['user1']).toEqual({
         id: 'user1',
-        participantState: {
+        participantState: {},
+        actor: {
+          id: 'user1',
           displayName: 'Cat',
           avatarName: 'cat',
         },

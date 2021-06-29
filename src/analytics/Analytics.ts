@@ -1,6 +1,6 @@
 // Abstraction around our analytics lib
 import { EventNames } from './constants';
-import { ParticipantState } from '@api/roomState/types/participants';
+import { ActorShape } from '@api/roomState/types/participants';
 import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
@@ -67,7 +67,7 @@ const trackEvent = (eventName: EventNames, eventProperties?: { [key: string]: an
   //mixpanel.track(eventName, eventProperties);
 };
 
-const trackUserEvent = (roomId: string | null, eventPayload: Partial<ParticipantState>) => {
+const trackUserEvent = (roomId: string | null, eventPayload: Partial<ActorShape>) => {
   // track the avatar change event
   if (eventPayload.hasOwnProperty('avatarName')) {
     trackEvent(EventNames.CHANGED_AVATAR, {

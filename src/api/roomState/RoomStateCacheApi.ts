@@ -10,10 +10,7 @@ import { ActorShape, ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
 
-const createEmptyParticipantState = (actorId: string) => ({
-  displayName: '',
-  avatarName: randomSectionAvatar('brandedPatterns', actorId),
-});
+const createEmptyParticipantState = () => ({});
 
 const initializeActor = (actor: ActorShape) => ({
   id: actor.id,
@@ -102,7 +99,7 @@ export class RoomStateCacheApi {
         actor: initializeActor(data.actor),
         // patch in an empty display name default to keep data consistent
         participantState: {
-          ...createEmptyParticipantState(actorId),
+          ...createEmptyParticipantState(),
           ...(data.participantState as any),
         },
         sessionIds: new Set<string>(),
@@ -228,16 +225,15 @@ export class RoomStateCacheApi {
     });
   };
   // ID is required, everything else is optional.
-  updateUser = (payload: { id: string; participantState: Partial<ParticipantState> }) => {
+  updateUser = (payload: { id: string; participantState?: Partial<ParticipantState>; actor?: Partial<ActorShape> }) => {
     this.set((draft) => {
       if (!draft.users[payload.id]) return;
       Object.assign(draft.users[payload.id].participantState, payload.participantState);
-      // TODO: this event should give us an actor
-      if (payload.participantState.displayName) {
-        draft.users[payload.id].actor.displayName = payload.participantState.displayName;
+      if (payload.participantState) {
+        Object.assign(draft.users[payload.id].participantState, payload.participantState);
       }
-      if (payload.participantState.avatarName) {
-        draft.users[payload.id].actor.avatarName = payload.participantState.avatarName;
+      if (payload.actor) {
+        Object.assign(draft.users[payload.id].actor, payload.actor);
       }
     });
   };

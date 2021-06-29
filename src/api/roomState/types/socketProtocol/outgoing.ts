@@ -62,6 +62,16 @@ export interface OutgoingUpdateParticipantMessage extends BaseOutgoingSocketMess
   };
 }
 
+export interface OutgoingUpdateSelfActorMessage extends BaseOutgoingSocketMessage {
+  kind: 'updateSelfActor';
+  payload: {
+    actor: {
+      displayName?: string;
+      avatarName?: string;
+    };
+  };
+}
+
 /**
  * Makes payload partial - users may provide a subset
  * of the fields on update.
@@ -119,4 +129,5 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateRoomStateMessage
   | OutgoingPassthroughMessage
   | OutgoingUpdateMicState
-  | OutgoingUpdateVideoState;
+  | OutgoingUpdateVideoState
+  | OutgoingUpdateSelfActorMessage;

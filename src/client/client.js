@@ -199,7 +199,7 @@ class Client extends EventEmitter {
   }
 
   async authenticate(token, roomRoute) {
-    const response = await this.sendEventWithPromise("auth", { token, roomRoute })
+    const response = await this.sendEventWithPromise("connect", { token, roomRoute })
     if(response.kind == "error") {
       throw response
     } else {
@@ -207,15 +207,6 @@ class Client extends EventEmitter {
       this.roomData = new ClientRoomData(response.payload)
     }
     return response
-  }
-
-  async join() {
-    const response = await this.sendEventWithPromise("join", {})
-    if (response.kind == "error") {
-      throw response
-    } else {
-      this.roomData.updatePeer(response.payload)
-    }
   }
 
   async sendEventWithPromise(kind, payload) {

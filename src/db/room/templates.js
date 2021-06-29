@@ -20,7 +20,6 @@ const getMockCreator = async () => {
 
 /**
  * @typedef {Object} RoomState
- * @property {string} display_name
  * @property {string} wallpaper_url
  * @property {boolean} is_custom_wallpaper
  * @property {number} width
@@ -28,6 +27,7 @@ const getMockCreator = async () => {
  *
  * @typedef {Object} TemplateData
  * @property {RoomState} state
+ * @property {string} display_name
  * @property {Array} widgets - A tuple of [WidgetType, WidgetState, Transform]
  */
 
@@ -78,7 +78,8 @@ module.exports = {
 
   empty: (displayName="generated") => {
     return {
-      state: {display_name: displayName},
+      display_name: displayName,
+      state: {},
       widgets: []
     }
   },

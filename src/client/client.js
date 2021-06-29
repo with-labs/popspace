@@ -8,6 +8,8 @@ const fs = require('fs')
 
 const ClientReceivedEvent = require("./client_received_event")
 
+const DEV_ROOTCA = fs.readFileSync(process.env.SSL_ROOTCA_PATH, 'utf8')
+
 class Client extends EventEmitter {
   constructor(serverUrl, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) {
     super()
@@ -59,8 +61,7 @@ class Client extends EventEmitter {
     return this.connectPromise = new Promise((resolve, reject) => {
       this.resolveConnect = resolve
       this.socket = new ws(this.serverUrl, {
-        /* TODO: pass in the ROOTCA for mkcert instead for dev/test*/
-        rejectUnauthorized: lib.appInfo.isProduction()
+        ca: DEV_ROOTCA
       })
       this.socket.on('open', () => {
         /*
@@ -171,8 +172,7 @@ class Client extends EventEmitter {
       port: lib.appInfo.apiPort(),
       path: endpoint,
       method: 'POST',
-      rejectUnauthorized: lib.appInfo.isProduction(),
-      ca: [fs.readFileSync(process.env.SSL_CERTIFICATE_PATH, 'utf8')],
+      ca: DEV_ROOTCA,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': authHeader

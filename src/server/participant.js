@@ -352,45 +352,26 @@ class Participant {
     return this.transform
   }
 
-  async updateTransform(newTransform, sourceEvent=null) {
+  async updateTransform(newTransform, sourceEvent) {
     this.transform = await shared.db.room.data.updateRoomParticipantState(
       this.roomId(),
       this.actorId(),
       newTransform
     )
-    if(sourceEvent) {
-      return this.respondAndBroadcast(sourceEvent, "participantTransformed")
-    } else {
-      log.error.warn("Dropping updateTransform - sourceEvent missing")
-      /*
-        We should probably still send the updated position to everyone,
-        but it won't be a response.
-      */
-    }
+    return this.respondAndBroadcast(sourceEvent, "participantTransformed")
   }
 
-  async updateState(newState, sourceEvent=null) {
+  async updateState(newState, sourceEvent) {
     this.participantState = await shared.db.room.data.updateParticipantState(
       this.actorId(),
       newState
     )
-    if(sourceEvent) {
-      return this.respondAndBroadcast(sourceEvent, "participantUpdated")
-    } else {
-      log.error.warn("Dropping updateTransform - sourceEvent missing")
-    }
+    return this.respondAndBroadcast(sourceEvent, "participantUpdated")
   }
 
-  async updateActor(actorChanges, sourceEvent=null) {
-    this.actor = await shared.db.accounts.updateActor(
-      this.actorId(),
-      actorChanges
-    )
-    if (sourceEvent) {
-      return this.respondAndBroadcast(sourceEvent, "actorUpdated")
-    } else {
-      log.error.warn("Dropping updateSelfActor - sourceEvent missing")
-    }
+  async updateActor(actorChanges, sourceEvent) {
+    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), actorChanges);
+    return this.respondAndBroadcast(sourceEvent, "actorUpdated")
   }
 
   unauthenticate() {

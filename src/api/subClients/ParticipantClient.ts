@@ -6,6 +6,7 @@ import {
   IncomingParticipantJoinedMessage,
   IncomingParticipantLeftMessage,
   IncomingParticipantUpdatedMessage,
+  IncomingSetObserverResponseMessage,
 } from '@api/roomState/types/socketProtocol';
 import { ApiSubClient } from './ApiSubClient';
 
@@ -30,7 +31,7 @@ export class ParticipantClient extends ApiSubClient {
     this.core.cacheApi.updateUser({
       id: message.sender.actorId,
       participantState: message.payload.participantState,
-      observer: message.payload.observer,
+      isObserver: message.payload.isObserver,
     });
   };
 
@@ -43,7 +44,7 @@ export class ParticipantClient extends ApiSubClient {
 
   // Public API
 
-  enterMeeting = () => {
+  enterMeeting = async () => {
     if (!this.core.actor) {
       throw new Error('Must be authenticated to enter meeting');
     }
@@ -51,9 +52,16 @@ export class ParticipantClient extends ApiSubClient {
       throw new Error('Must be connected to a meeting to join');
     }
 
-    this.core.socket.send({
-      kind: 'join',
-      payload: {},
+    const response = await this.core.socket.sendAndWaitForResponse<IncomingSetObserverResponseMessage>({
+      kind: 'setObserver',
+      payload: {
+        isObserver: false,
+      },
+    });
+
+    this.core.cacheApi.updateUser({
+      id: response.payload.actor.id,
+      isObserver: response.payload.isObserver,
     });
   };
 

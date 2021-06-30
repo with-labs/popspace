@@ -200,6 +200,7 @@ export class ApiCoreClient extends EventEmitter {
           roomRoute,
           // requireActor ensures this
           token: this.sessionToken!,
+          isObserver,
         },
       },
       // 10 second timeout; it can be a large payload

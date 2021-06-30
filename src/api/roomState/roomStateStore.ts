@@ -22,7 +22,7 @@ export type RoomUserStateShape = {
   participantState: ParticipantState;
   sessionIds: Set<string>;
   actor: ActorShape;
-  observer: boolean;
+  isObserver: boolean;
 };
 
 export type RoomCursorStateShape = {

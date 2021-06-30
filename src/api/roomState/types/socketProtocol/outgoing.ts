@@ -22,12 +22,15 @@ export interface AuthMessage extends BaseOutgoingSocketMessage {
   payload: {
     roomRoute: string;
     token: string;
+    isObserver?: boolean;
   };
 }
 
 export interface JoinMessage extends BaseOutgoingSocketMessage {
-  kind: 'join';
-  payload: {};
+  kind: 'setObserver';
+  payload: {
+    isObserver: boolean;
+  };
 }
 
 export interface OutgoingAddWidgetMessage extends BaseOutgoingSocketMessage {

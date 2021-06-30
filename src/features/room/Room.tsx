@@ -36,7 +36,7 @@ const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgetPositio
 const selectPeopleIds = (room: RoomStateShape) =>
   Object.entries(room.users)
     .filter(([id, user]) => {
-      return !user.observer && !!room.userPositions[id];
+      return !user.isObserver && !!room.userPositions[id];
     })
     .map(([id]) => id);
 

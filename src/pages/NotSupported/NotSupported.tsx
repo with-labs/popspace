@@ -3,7 +3,7 @@ import { Typography, makeStyles, Button, Box } from '@material-ui/core';
 import { useTranslation, Trans } from 'react-i18next';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import { Links } from '@constants/Links';
-import { useHistory } from 'react-router-dom';
+import { Link } from '@components/Link/Link';
 
 export interface INotSupportedProps {}
 
@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
 export const NotSupported: React.FC<INotSupportedProps> = () => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const history = useHistory();
 
   return (
     <CenterColumnPage>
@@ -29,9 +28,11 @@ export const NotSupported: React.FC<INotSupportedProps> = () => {
           <Trans i18nKey="pages.notSupported.body">test</Trans>
         </Typography>
       </Box>
-      <Button fullWidth={false} onClick={() => history.push(Links.LANDING_PAGE)}>
-        {t('pages.notSupported.buttonText')}
-      </Button>
+      <Link disableStyling to={Links.LANDING_PAGE} newTab={false}>
+        <Button fullWidth={false} tabIndex={-1}>
+          {t('pages.notSupported.buttonText')}
+        </Button>
+      </Link>
     </CenterColumnPage>
   );
 };

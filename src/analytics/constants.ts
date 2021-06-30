@@ -32,7 +32,7 @@ export enum EventNames {
   TOGGLE_VIDEO = 'toggle_video',
   CREATE_MEETING_FROM_TEMPLATE = 'create_meeting_from_template',
   LEAVE_ROOM_BUTTON_PRESSED = 'leave_room_button_pressed',
-  COPY_LINK_BUTTOIN_PRESSED = 'copy_link_button_pressed',
+  COPY_LINK_BUTTON_PRESSED = 'copy_link_button_pressed',
 }
 
 export enum Origin {

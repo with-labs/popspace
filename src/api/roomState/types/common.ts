@@ -6,7 +6,7 @@ export interface RoomPositionState {
 }
 
 export interface RoomDetailsStateShape {
-  wallpaperUrl: string;
+  wallpaperUrl: string | null;
   isCustomWallpaper: boolean;
   zOrder: string[];
   wallpaperRepeats: boolean;

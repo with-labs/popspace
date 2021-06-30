@@ -8,7 +8,7 @@ import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveToolt
 import { Spacing } from '@components/Spacing/Spacing';
 import { USER_SUPPORT_EMAIL } from '@constants/User';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/TwilioProvider';
+import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 
 export interface IMediaFailedWrapperProps extends React.HTMLAttributes<HTMLDivElement> {}
 

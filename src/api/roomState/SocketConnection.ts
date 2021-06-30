@@ -41,6 +41,9 @@ type SocketMessageEvents = {
 export interface SocketConnectionEvents extends SocketMessageEvents {
   error: (error: Error) => void;
   connected: () => void;
+  /** Unintentional disconnects */
+  disconnected: () => void;
+  /** Intentional disconnects */
   closed: () => void;
   message: (msg: IncomingSocketMessage) => void;
   sent: (msg: OutgoingSocketMessage & { id: string }) => void;
@@ -116,7 +119,7 @@ export class SocketConnection extends EventEmitter {
     }
     this.stopHeartbeatLoop();
     this.generation++;
-    this.emit('closed');
+    this.emit('disconnected');
   };
 
   private onOpen = () => {

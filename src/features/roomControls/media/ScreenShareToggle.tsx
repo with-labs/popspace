@@ -5,7 +5,7 @@ import useScreenShareToggle from '@providers/media/hooks/useScreenShareToggle';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/TwilioProvider';
+import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 import { makeStyles, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({

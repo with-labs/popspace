@@ -4,13 +4,12 @@ import { MeetingTemplateName } from '@features/meetingTemplates/templateData/tem
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { Typography, makeStyles } from '@material-ui/core';
+import { Typography, makeStyles, Box, CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, useHistory } from 'react-router';
 import { RouteNames } from '@constants/RouteNames';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import toast from 'react-hot-toast';
-import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
 
 export interface IMeetingSelectProps extends RouteComponentProps<{ meetingType?: string }> {}
 
@@ -65,7 +64,22 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
   // the request fails and selection is reset. `selected` will
   // be reset to null in case of a failure.
   if (providedTemplateName && selected) {
-    return <FullscreenLoading />;
+    return (
+      <CenterColumnPage>
+        <Typography variant="h1">{t('pages.meetingSelect.creatingTemplate')}</Typography>
+        <Box
+          flex={1}
+          mt={4}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+        >
+          <CircularProgress />
+        </Box>
+      </CenterColumnPage>
+    );
   }
 
   return (

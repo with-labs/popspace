@@ -7,13 +7,16 @@ import { useTranslation } from 'react-i18next';
 import client from '@api/client';
 import { useHistory } from 'react-router';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
+import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
+import { EventNames } from '@analytics/constants';
+import { Analytics } from '@analytics/Analytics';
 
 export interface ILeaveMeetingButtonProps {}
 
 const useStyles = makeStyles((theme) => ({
   buttonColor: {
     color: theme.palette.brandColors.cherry.bold,
-    '&:hover:not($active)': {
+    '&:hover:not(.active)': {
       backgroundColor: theme.palette.brandColors.cherry.light,
     },
   },
@@ -27,16 +30,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// TODO: addin in analytics
 export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const { room } = useTwilio();
   const { stopAll } = useLocalTracks();
-
-  // todo add analytics
   const history = useHistory();
+
   const leaveRoom = React.useCallback(() => {
+    Analytics.trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
     stopAll();
     room?.disconnect();
     client.leaveMeeting();
@@ -57,9 +59,11 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
         </Button>
       </Hidden>
       <Hidden lgUp>
-        <IconButton className={classes.buttonColor} classes={{ root: classes.iconButton }} onClick={leaveRoom}>
-          <LeaveIcon />
-        </IconButton>
+        <ResponsiveTooltip title={t('features.roomControls.leaveMeetingButtonText') as string}>
+          <IconButton className={classes.buttonColor} classes={{ root: classes.iconButton }} onClick={leaveRoom}>
+            <LeaveIcon />
+          </IconButton>
+        </ResponsiveTooltip>
       </Hidden>
     </>
   );

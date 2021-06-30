@@ -27,20 +27,22 @@ export const ScreenShareToggle = (props: { className?: string }) => {
 
   return (
     <ResponsiveTooltip title={t('features.mediaControls.screenShareToggle') as string}>
-      <ToggleButton
-        value="video"
-        selected={isSharingOn}
-        onChange={toggleSharingOn}
-        disabled={roomStatus !== TwilioStatus.Connected}
-        {...props}
-      >
-        {isSharingOn ? (
-          <ScreenShareIcon fontSize="default" htmlColor={theme.palette.brandColors.blueberry.bold} />
-        ) : (
-          <ScreenShareIcon fontSize="default" />
-        )}
-        <span className={classes.text}>{t('features.mediaControls.shareTitle')}</span>
-      </ToggleButton>
+      <span>
+        <ToggleButton
+          value="video"
+          selected={isSharingOn}
+          onChange={toggleSharingOn}
+          disabled={roomStatus !== TwilioStatus.Connected}
+          {...props}
+        >
+          {isSharingOn ? (
+            <ScreenShareIcon fontSize="default" htmlColor={theme.palette.brandColors.blueberry.bold} />
+          ) : (
+            <ScreenShareIcon fontSize="default" />
+          )}
+          <span className={classes.text}>{t('features.mediaControls.shareTitle')}</span>
+        </ToggleButton>
+      </span>
     </ResponsiveTooltip>
   );
 };

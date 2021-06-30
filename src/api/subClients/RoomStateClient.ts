@@ -24,7 +24,7 @@ export class RoomStateClient extends ApiSubClient {
       // retrieve the full state for sending to the socket
       payload: this.core.roomStateStore.getState().state,
     });
-    Analytics.trackEvent(EventNames.CHANGED_WALLPAPER, {
+    Analytics.trackEvent(EventNames.CHANGED_WALLPAPER, null, {
       roomId: this.core.roomStateStore.getState().id,
       isCustomWallpaper,
     });

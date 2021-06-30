@@ -39,10 +39,10 @@ export const PictureInPictureToggle: React.FC<IPictureInPictureToggleProps> = ({
   return (
     <ResponsiveTooltip
       title={
-        <>
+        <span>
           {t('features.pictureInPicture.toggle') as string}{' '}
           <KeyShortcutText>{KeyShortcut.TogglePictureInPicture}</KeyShortcutText>
-        </>
+        </span>
       }
     >
       <div>

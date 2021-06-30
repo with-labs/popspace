@@ -42,6 +42,7 @@ const quillOptions = {
   @param {number} props.width
   @param {number} props.height
   @param {string} props.host
+  @param {Object} props.initialData
 */
 const CollaborativeQuill = (props) => {
   const [socketReady, setSocketReady] = useState(false);
@@ -113,7 +114,7 @@ const CollaborativeQuill = (props) => {
 
       // If doc.type is undefined, the document has not been created yet
       if (!doc.type) {
-        doc.create([{ insert: '' }], 'rich-text', (error) => {
+        doc.create(props.initialData || [{ insert: '' }], 'rich-text', (error) => {
           if (error) {
             /*
               TODO: it's possible this would be triggered if multiple clients race to create the doc.
@@ -152,7 +153,7 @@ const CollaborativeQuill = (props) => {
       connection.close();
       socket.close();
     };
-  }, [quill, doc]);
+  }, [quill, doc, props.initialData]);
 
   if (error) {
     console.error(error);

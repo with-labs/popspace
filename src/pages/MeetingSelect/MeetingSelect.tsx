@@ -2,7 +2,6 @@ import * as React from 'react';
 import { EventNames } from '@analytics/constants';
 import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
-import { useAnalytics } from '@hooks/useAnalytics/useAnalytics';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
 import { Typography, makeStyles, Box, CircularProgress } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import { RouteComponentProps, useHistory } from 'react-router';
 import { RouteNames } from '@constants/RouteNames';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import toast from 'react-hot-toast';
+import { Analytics } from '@analytics/Analytics';
 
 export interface IMeetingSelectProps extends RouteComponentProps<{ meetingType?: string }> {}
 
@@ -32,8 +32,6 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
   const history = useHistory();
   const classes = useStyles();
 
-  const analytics = useAnalytics();
-
   const [selected, setSelected] = React.useState<MeetingTemplateName | null>(() => {
     if (providedTemplateName && Object.values(MeetingTemplateName).includes(providedTemplateName as any)) {
       return providedTemplateName as MeetingTemplateName;
@@ -43,7 +41,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
 
   React.useEffect(() => {
     if (!selected) return;
-    analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, providedTemplateName);
+    Analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, providedTemplateName);
     (async () => {
       try {
         const meeting = await create(selected);
@@ -55,7 +53,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         setSelected(null);
       }
     })();
-  }, [analytics, create, history, selected, providedTemplateName]);
+  }, [create, history, selected, providedTemplateName]);
 
   // for the case where the template is specified in the URL,
   // show a fullscreen loader until the meeting is created or

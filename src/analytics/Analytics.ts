@@ -5,6 +5,7 @@ import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
 import api from '@api/client';
+import client from '@api/client';
 
 // Helper methods
 // WIP for more complex data calculation, not needed right now
@@ -55,8 +56,13 @@ const removeLocalAnalyticsData = (eventName: string) => {
 // trackEvent
 // wrapper around the main track event
 const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key: string]: any }) => {
+  const eventMetaData = {
+    roomId: client.roomId,
+    ...eventProperties,
+  };
+
   // call the api actor event tracker endpoint
-  api.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventProperties });
+  api.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventMetaData });
 };
 
 const trackUserEvent = (roomId: string | null, eventPayload: Partial<ActorShape>) => {

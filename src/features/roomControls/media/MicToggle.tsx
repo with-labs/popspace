@@ -11,9 +11,9 @@ import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import client from '@api/client';
 import { useAVSources } from '@hooks/useAVSources/useAVSources';
+import { Analytics } from '@analytics/Analytics';
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -38,7 +38,6 @@ export const MicToggle = (props: IMicToggleProps) => {
   const { isLocal, className, isMicOn, doMicToggle, handleMicOn, busy, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const toggleMicOn = React.useCallback(() => {
     if (handleMicOn && !isMicOn) {
@@ -46,7 +45,7 @@ export const MicToggle = (props: IMicToggleProps) => {
     }
 
     const timestamp = new Date().getTime();
-    trackEvent(EventNames.TOGGLE_MIC, {
+    Analytics.trackEvent(EventNames.TOGGLE_MIC, !isMicOn, {
       isOn: !isMicOn,
       timestamp: timestamp,
     });
@@ -60,7 +59,7 @@ export const MicToggle = (props: IMicToggleProps) => {
     });
 
     doMicToggle();
-  }, [doMicToggle, handleMicOn, isMicOn, trackEvent]);
+  }, [doMicToggle, handleMicOn, isMicOn]);
 
   useHotkeys(
     KeyShortcut.ToggleMute,

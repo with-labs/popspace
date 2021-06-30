@@ -9,7 +9,7 @@ import { useHistory } from 'react-router';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { Analytics } from '@analytics/Analytics';
 
 export interface ILeaveMeetingButtonProps {}
 
@@ -30,18 +30,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// TODO: addin in analytics
 export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const { room } = useTwilio();
   const { stopAll } = useLocalTracks();
-  const { trackEvent } = useAnalytics([IncludeData.roomId]);
-
-  // todo add analytics
   const history = useHistory();
+
   const leaveRoom = React.useCallback(() => {
-    trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
+    Analytics.trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
     stopAll();
     room?.disconnect();
     client.leaveMeeting();

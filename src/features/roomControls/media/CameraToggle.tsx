@@ -10,10 +10,11 @@ import { CameraDeviceMenu } from './CameraDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { makeStyles } from '@material-ui/core';
-import client from '@api/client';
 import { useAVSources } from '@hooks/useAVSources/useAVSources';
+import { Analytics } from '@analytics/Analytics';
+import client from '@api/client';
+
 export interface ICameraToggleProps {
   isLocal?: boolean;
   className?: string;
@@ -36,11 +37,10 @@ export const CameraToggle = (props: ICameraToggleProps) => {
   const { className, isLocal, isVideoOn, toggleVideoOn, busy, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const handleVideoToggle = React.useCallback(() => {
     const timestamp = new Date().getTime();
-    trackEvent(EventNames.TOGGLE_VIDEO, timestamp, {
+    Analytics.trackEvent(EventNames.TOGGLE_VIDEO, !isVideoOn, {
       isOn: !isVideoOn,
       timestamp,
     });
@@ -54,7 +54,7 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     });
 
     toggleVideoOn();
-  }, [toggleVideoOn, isVideoOn, trackEvent]);
+  }, [toggleVideoOn, isVideoOn]);
 
   useHotkeys(
     KeyShortcut.ToggleVideo,

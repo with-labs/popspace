@@ -4,7 +4,7 @@ import { makeStyles, Button, useTheme, Hidden, IconButton } from '@material-ui/c
 import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
+import { Analytics } from '@analytics/Analytics';
 
 export interface ICopyLinkButtonProps {}
 
@@ -25,14 +25,13 @@ export const CopyLinkButton: React.FC<ICopyLinkButtonProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
   const theme = useTheme();
-  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const [copied, setCopied] = React.useState(false);
 
   const onCopy = () => {
     navigator.clipboard.writeText(window.location.toString());
     setCopied(true);
-    trackEvent(EventNames.COPY_LINK_BUTTOIN_PRESSED);
+    Analytics.trackEvent(EventNames.COPY_LINK_BUTTON_PRESSED);
   };
 
   React.useEffect(() => {

@@ -5,7 +5,6 @@ import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton'
 import i18n from '@src/i18n';
 import { WidgetState, WidgetType } from '@api/roomState/types/widgets';
 import { useAddAccessory } from './quickActions/useAddAccessory';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import { EventNames } from '@analytics/constants';
 import { Bounds } from '@src/types/spatials';
 import { INITIAL_SIZE_EDIT as LINK_SIZE } from '@features/room/widgets/link/constants';
@@ -14,6 +13,7 @@ import { SIZE as WHITEBOARD_SIZE } from '@features/room/widgets/whiteboard/const
 import { SIZE_EDIT as YOUTUBE_SIZE } from '@features/room/widgets/youtube/constants';
 import { INITIAL_SIZE as HUDDLE_SIZE } from '@features/room/widgets/huddle/constants';
 import { INITIAL_SIZE as NOTEPAD_SIZE } from '@features/room/widgets/notepad/constants';
+import { Analytics } from '@analytics/Analytics';
 
 type SupportedTypes =
   | WidgetType.Link
@@ -71,8 +71,6 @@ const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
 };
 
 export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }) {
-  const { trackEvent } = useAnalytics([IncludeData.roomId], { type });
-
   const add = useAddAccessory();
 
   if (!DEFAULT_DATA[type]) {
@@ -83,7 +81,10 @@ export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }
     <ResponsiveTooltip title={TOOLTIPS[type]} offset={4}>
       <SquareIconButton
         onClick={() => {
-          trackEvent(EventNames.CREATE_WIDGET_BUTTON_PRESSED);
+          Analytics.trackEvent(EventNames.CREATE_WIDGET_BUTTON_PRESSED, '', {
+            type,
+          });
+
           add({
             type,
             initialData: DEFAULT_DATA[type] as any,

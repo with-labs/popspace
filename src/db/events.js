@@ -1,4 +1,18 @@
 const userAgentParser = require('ua-parser-js')
+const url = require('url')
+
+const reqToUrl = (expressRequest) => {
+  if(!expressRequest.get) {
+    return
+  }
+  const protocol = expressRequest.protocol
+  const host = expressRequest.get('host')
+  const pathname = expressRequest.originalUrl
+  if(!protocol || !host || !pathname) {
+    return
+  }
+  return url.format({ protocol, host, pathname, })
+}
 
 class Events {
   async actorCreateEvent(actorId, source, expressRequest, tx=null) {
@@ -31,6 +45,8 @@ class Events {
       os_version: ua.os.version,
       engine_version: ua.engine.version,
       browser_version: ua.browser.version,
+      req_url: reqToUrl(expressRequest),
+
       user_agent: expressRequest.headers['user-agent']
     })
   }

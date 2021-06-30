@@ -18,7 +18,7 @@ class AuthProcessor {
     const payload = hermesEvent.payload()
     const sender = hermesEvent.senderParticipant()
     // avoid using setter as it broadcasts a message
-    sender.isObserver = payload.isObserver || false
+    sender.isObserver = payload.is_observer || false
 
     if(!payload.room_route) {
       return sender.sendError(
@@ -72,7 +72,7 @@ class AuthProcessor {
 
   async setObserver(hermesEvent, participants) {
     const sender = hermesEvent.senderParticipant()
-    sender.setObserver(hermesEvent.payload().isObserver, hermesEvent)
+    sender.setObserver(hermesEvent.payload().is_observer, hermesEvent)
   }
 
   async getAuthData(hermesEvent) {

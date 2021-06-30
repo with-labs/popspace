@@ -199,7 +199,7 @@ class Client extends EventEmitter {
   }
 
   async authenticate(token, roomRoute) {
-    const response = await this.sendEventWithPromise("connect", { token, roomRoute })
+    const response = await this.sendEventWithPromise("auth", { token, roomRoute })
     if(response.kind == "error") {
       throw response
     } else {

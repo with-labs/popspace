@@ -11,7 +11,7 @@ const ACTION_BY_EVENT_KIND = {
   "deleteWidget": "delete",
   "getRoom": "get",
   "getWidget": "get",
-  "connect": "connection",
+  "auth": "connection",
   "setObserver": "connection",
   "ping": "passthrough",
   "echo": "passthrough",
@@ -22,7 +22,7 @@ const ACTION_BY_EVENT_KIND = {
 }
 
 const PUBLIC_EVENT_KINDS = {
-  "connect": true,
+  "auth": true,
   "ping": true
 }
 

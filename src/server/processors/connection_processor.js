@@ -1,8 +1,8 @@
 class AuthProcessor {
   async process(hermesEvent, participants) {
     switch(hermesEvent.kind()) {
-      case "connect":
-        return this.connect(hermesEvent, participants)
+      case "auth":
+        return this.auth(hermesEvent, participants)
       case "setObserver":
         return this.setObserver(hermesEvent, participants)
       default:
@@ -14,7 +14,7 @@ class AuthProcessor {
     }
   }
 
-  async connect(hermesEvent, participants) {
+  async auth(hermesEvent, participants) {
     const payload = hermesEvent.payload()
     const sender = hermesEvent.senderParticipant()
     // avoid using setter as it broadcasts a message

@@ -190,7 +190,8 @@
         }
       },
       "meetingSelect": {
-        "titleText": "What kind of meeting room do you need?"
+        "titleText": "What kind of meeting room do you need?",
+        "creatingTemplate": "Creating your meeting"
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",

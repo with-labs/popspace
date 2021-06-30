@@ -6,5 +6,18 @@
     "backgroundColor": "#EEF8FF"
   },
   "displayName": "All Hands",
-  "widgets": [["NOTEPAD", {}, { "size": { "width": 700, "height": 550 }, "position": { "x": 388, "y": -588 } }]]
+  "widgets": [
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Questions queue" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "Everybody can write down questions\n\n" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 720, "height": 570 }, "position": { "x": 388, "y": -588 } }
+    ]
+  ]
 }

@@ -28,6 +28,7 @@ class Participant {
     this.req = req
     this.socket = socket
     this.heartbeatTimeoutMillis = heartbeatTimeoutMillis
+    this.isObserver = false
 
     this.dieFromTimeout = () => {
       log.app.info(`${this.sessionName()} Participant dying from timeout`)
@@ -383,6 +384,12 @@ class Participant {
     return this.respondAndBroadcast(sourceEvent, "avatarNameUpdated")
   }
 
+  async setObserver(isObserver, sourceEvent) {
+    this.isObserver = isObserver
+    this.sendResponse(sourceEvent, this.serialize())
+    this.broadcastPeerEvent("participantUpdated", this.serialize())
+  }
+
   unauthenticate() {
     this.authenticated = false
     this.actor = {}
@@ -403,7 +410,8 @@ class Participant {
       sessionId: this.id,
       roomId: this.room.id,
       transform: this.transform,
-      participantState: this.participantState
+      participantState: this.participantState,
+      isObserver: this.isObserver
     }
   }
 }

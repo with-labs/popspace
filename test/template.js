@@ -85,9 +85,9 @@ class Template {
         roomActorClients.map(
           (rac) =>
             new Promise((resolve, reject) => {
-              // just to stay sane, set a timeout rejection for 30 seconds
-              const timeout = setTimeout(() => reject("Timed out waiting for peers to join"), 30000)
-              const check = () => {
+              // just to stay sane, set a timeout rejection for 15 seconds
+              const timeout = setTimeout(() => reject(`Timed out waiting for peers to join (${rac.actorId})`), 15000)
+              const check = (ev) => {
                 if (!rac.client.isAuthenticated()) return
                 const seenPeersCount = rac.client.peersIncludingSelf().length
                 if (seenPeersCount >= nActors) {
@@ -96,6 +96,7 @@ class Template {
                 }
               }
               rac.client.on("event.participantJoined", check)
+              rac.client.on("event.join.response", check)
               // the last client to join won't see any join events from peers, so
               // we also check for the success condition immediately
               rac.join().then(check)

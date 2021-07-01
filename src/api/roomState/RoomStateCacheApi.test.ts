@@ -7,7 +7,6 @@ import { cloneDeep } from 'lodash';
 
 jest.mock('./SocketConnection');
 jest.mock('@utils/logger');
-jest.mock('mixpanel-browser');
 
 describe('RoomStateCacheApi', () => {
   const set = jest.fn();

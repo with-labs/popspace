@@ -15,14 +15,6 @@
 }
 
 @font-face {
-    font-family: 'OldLetterhand';
-    src: url('/css/fonts/old_letterhand.otf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
     font-family: 'Lumios Marker';
     src: url('/css/fonts/Lumios-Marker.woff2') format('woff2'), url('/css/fonts/Lumios-Marker.woff') format('woff'), url('/css/fonts/Lumios-Marker.ttf') format('truetype');
     font-weight: 400;
@@ -81,11 +73,9 @@
 .scriptText {
     display: inline-block;
     font-family: "Lumios Marker", "Helvetica", sans-serif;
-    /* font-family: "OldLetterhand", "Helvetica", sans-serif; */
     color: var(--color-ink);
     font-weight: 400;
     z-index: 999;
-    /* outline: 1px solid red; */
     font-size: larger;
 }
 
@@ -211,7 +201,6 @@
 }
 
 .vertical_lines {
-    /* background-color: red; */
     background-image: url(/images/vertical_lines.png);
     background-position: left center;
     background-size: auto 100%;
@@ -219,7 +208,6 @@
 }
 
 .vertical_lines2 {
-    /* background-color: red; */
     background-image: url(/images/vertical_lines2.png);
     background-position: right center;
     background-size: auto 100%;
@@ -227,7 +215,6 @@
 }
 
 .vertical_lines3 {
-    /* background-color: red; */
     background-image: url(/images/vertical_lines.png), url(/images/vertical_lines2.png);
     background-position: left center, right center;
     background-size: auto 100%, auto 100%;
@@ -243,13 +230,11 @@
 }
 
 .video_feature {
-    /* margin-left: -24px; */
     border-radius: 8px;
     box-shadow: var(--box-shadow-bold);
 }
 
 * {
-    /* outline: 1px solid rgba(255, 0, 0, 0.2); */
     padding: 0;
     margin: 0;
     border: none;
@@ -275,14 +260,11 @@ header {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: var(--section-spacing);
-    /* background-color: var(--color-mandarin-regular); */
 }
 
 section {
     display: block;
     position: relative;
-    /* margin-bottom: var(--section-spacing); */
-    /* background-color: var(--color-mandarin-surface); */
 }
 
 h1 {
@@ -294,7 +276,6 @@ h1 {
     text-align: center;
     margin: 0px auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-oregano-bold); */
     padding-bottom: 24px;
     padding-top: 24px;
 }
@@ -308,7 +289,6 @@ h1 {
     text-align: center;
     margin: 0px auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-oregano-regular); */
     padding-bottom: 32px;
 }
 
@@ -321,7 +301,6 @@ h2 {
     text-align: center;
     margin: 0px auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-oregano-regular); */
     padding-bottom: 16px;
 }
 
@@ -334,7 +313,6 @@ h3 {
     margin: 0px auto;
     text-align: left;
     max-width: var(--main-width);
-    /* background-color: var(--color-oregano-light); */
     padding-bottom: 8px;
 }
 
@@ -353,7 +331,6 @@ p {
     font-weight: 400;
     margin: 0 auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-blueberry-regular); */
 }
 
 dt {
@@ -381,7 +358,6 @@ dd {
 ul {
     margin: 0 auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-blueberry-surface); */
 }
 
 li {
@@ -390,14 +366,11 @@ li {
     font-family: var(--font-silka);
     font-weight: 700;
     margin-top: 4px;
-    /* margin-left: 28px; */
     list-style-type: none;
-    /* background-color: var(--color-blueberry-light); */
 }
 
 figure {
     background: var(--color-lavender-wash);
-    /* box-shadow: var(--box-shadow-bold); */
     border-radius: 8px;
     overflow: hidden;
 }
@@ -407,12 +380,10 @@ figcaption {
     font-family: var(--font-silka);
     font-weight: 400;
     color: var(--color-ink);
-    /* text-align: center; */
     padding: 24px;
 }
 
 .card {
-    /* box-shadow: var(--box-shadow-bold); */
     border-radius: 8px;
     overflow: hidden;
     font-size: 18px;
@@ -496,7 +467,6 @@ a.textLink, a.textLink:link, a.textLink:visited {
     color: var(--color-lavender-ink);
     font-family: var(--font-silka);
     font-weight: 400;
-    /* text-decoration: underline wavy; */
     text-decoration: underline;
     text-decoration-color: var(--color-lavender-bold);
     text-decoration-skip-ink: edges;
@@ -518,7 +488,6 @@ a.textLink:active {
     grid-row-gap: 24px;
     margin: 0 auto;
     max-width: var(--wide-width);
-    /* background-color: var(--color-cherry-regular); */
 }
 
 .triptych {
@@ -528,7 +497,6 @@ a.textLink:active {
     grid-row-gap: 24px;
     margin: 0 auto;
     max-width: var(--main-width);
-    /* background-color: var(--color-cherry-regular); */
 }
 
 .diptych {
@@ -538,7 +506,6 @@ a.textLink:active {
     margin: 0 auto;
     max-width: 1280px;
     align-items: center;
-    /* background-color: var(--color-cherry-regular); */
 }
 
 .diptych-left {
@@ -550,8 +517,6 @@ a.textLink:active {
 }
 
 .faq {
-    /* column-count: 2; */
-    /* column-gap: 40px; */
     display: grid;
     grid-column-gap: 80px;
     grid-row-gap: 16px;
@@ -620,11 +585,9 @@ footer>div>p {
 nav {
     margin: 0 auto;
     padding: 80px 0px 16px 0px;
-    /* padding: 16px; */
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    /* position: sticky; */
     top: 0;
     z-index: 9999;
     background-color: rgba(255, 255, 255, 0.94);
@@ -679,7 +642,6 @@ nav {
         grid-template-columns: 1fr;
     }
     .vertical_lines3 {
-        /* background-color: red; */
         background-image: url(/images/vertical_lines2.png);
         background-position: right center;
         background-size: auto 100%;

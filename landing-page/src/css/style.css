@@ -45,6 +45,7 @@
     --color-lavender-regular: #D2CEF5;
     --color-lavender-light: #EAE8FC;
     --color-lavender-surface: #F3F2FE;
+    --color-lavender-wash: #F8F7FE;
     --color-cherry-ink: #9C2F08;
     --color-cherry-bold: #EE6659;
     --color-cherry-regular: #FCABA0;
@@ -395,8 +396,8 @@ li {
 }
 
 figure {
-    background: var(--color-snow);
-    box-shadow: var(--box-shadow-bold);
+    background: var(--color-lavender-wash);
+    /* box-shadow: var(--box-shadow-bold); */
     border-radius: 8px;
     overflow: hidden;
 }

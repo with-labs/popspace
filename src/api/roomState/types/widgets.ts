@@ -78,6 +78,7 @@ export interface FileWidgetState {
 
 export interface NotepadState {
   docId: string;
+  initialData?: null | any;
 }
 
 export interface WhiteboardWidgetState {

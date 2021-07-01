@@ -1,10 +1,29 @@
 {
   "displayName": "Weekly Sync-Up",
   "state": {
-    "isCustomWallpaper": true,
     "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_weekly.png",
+    "isCustomWallpaper": true,
     "wallpaperRepeats": true,
     "backgroundColor": "#fbab9f"
   },
-  "widgets": []
+  "widgets": [
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Sync-up notes" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "\nAttendees" },
+          { "attributes": { "header": 3 }, "insert": "\n" },
+          { "insert": " " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "\nLIghtning rounds" },
+          { "attributes": { "header": 3 }, "insert": "\n" },
+          { "insert": " " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 580, "height": 400 }, "position": { "x": -820, "y": -350 } }
+    ]
+  ]
 }

@@ -243,6 +243,6 @@ export class RoomStateCacheApi {
     });
   };
   exportTemplate = () => {
-    return exportRoomTemplate(this.get());
+    return JSON.stringify(exportRoomTemplate(this.get())).replaceAll('\\"', '"').replaceAll('\\\n', '\\n');
   };
 }

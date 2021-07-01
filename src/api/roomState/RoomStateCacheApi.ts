@@ -40,7 +40,7 @@ export class RoomStateCacheApi {
   initialize = (init: IncomingAuthResponseMessage) => {
     logger.debug(`Initialize`, init);
     const {
-      payload: { roomData: room, participants, displayName },
+      payload: { roomData: room, participants, displayName, self },
     } = init;
     this.set((draft) => {
       Object.assign(draft.state, room.state);
@@ -65,12 +65,22 @@ export class RoomStateCacheApi {
           sessionId: session.sessionId,
           actor: session.actor,
           participantState: session.participantState,
+          isObserver: session.isObserver,
         });
         draft.userPositions[session.actor.id] = {
           size: session.transform.size || SIZE_AVATAR,
           position: session.transform.position,
         };
       });
+      // add self, but don't include transform data - we wait for the
+      // user to actually enter the room for that.
+      this.addUserToState(draft, {
+        actor: self.actor,
+        participantState: self.participantState,
+        sessionId: self.sessionId,
+        isObserver: self.isObserver,
+      });
+
       draft.id = room.id.toString();
       // store our own sessionId, just so we know
       draft.sessionId = init.sender.sessionId;
@@ -89,6 +99,7 @@ export class RoomStateCacheApi {
       actor: ActorShape;
       sessionId: string;
       participantState: ParticipantState;
+      isObserver: boolean;
     }
   ) => {
     const actorId = data.actor.id;
@@ -103,11 +114,13 @@ export class RoomStateCacheApi {
           ...(data.participantState as any),
         },
         sessionIds: new Set<string>(),
+        isObserver: data.isObserver,
       };
     } else {
       Object.assign(state.users[actorId], {
         participantState: data.participantState,
         actor: data.actor,
+        isObserver: data.isObserver,
       });
     }
 
@@ -204,6 +217,7 @@ export class RoomStateCacheApi {
         actor: message.payload.actor,
         sessionId: message.sender.sessionId,
         participantState: message.payload.participantState,
+        isObserver: message.payload.isObserver,
       });
       this.mergeTransformToState(draft.userPositions, message.sender.actorId, message.payload.transform);
     });
@@ -225,7 +239,12 @@ export class RoomStateCacheApi {
     });
   };
   // ID is required, everything else is optional.
-  updateUser = (payload: { id: string; participantState?: Partial<ParticipantState>; actor?: Partial<ActorShape> }) => {
+  updateUser = (payload: {
+    id: string;
+    participantState?: Partial<ParticipantState>;
+    actor?: Partial<ActorShape>;
+    isObserver?: boolean;
+  }) => {
     this.set((draft) => {
       if (!draft.users[payload.id]) return;
       Object.assign(draft.users[payload.id].participantState, payload.participantState);
@@ -234,6 +253,9 @@ export class RoomStateCacheApi {
       }
       if (payload.actor) {
         Object.assign(draft.users[payload.id].actor, payload.actor);
+      }
+      if (payload.isObserver !== undefined) {
+        draft.users[payload.id].isObserver = payload.isObserver;
       }
     });
   };

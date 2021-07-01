@@ -2,7 +2,6 @@ import { WidgetShape, WidgetState } from '../widgets';
 import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
-import { Actor } from '@api/types';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -24,19 +23,19 @@ export interface IncomingPongMessage extends BaseIncomingSocketMessage {
   kind: 'pong';
 }
 
-// room initialize message
 export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
   kind: 'auth.response';
   payload: {
     participants: {
       authenticated: boolean;
-      actor: { id: string; displayName: string; avatarName: string };
+      actor: ActorShape;
       sessionId: string;
       participantState: ParticipantState;
       roomId: string;
       transform: RoomPositionState;
+      isObserver: boolean;
     }[];
-    self: ParticipantShape;
+    self: ParticipantShape & { actor: { id: string } };
     displayName: string;
     roomData: {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
@@ -129,6 +128,11 @@ export interface IncomingPassthroughMessage<T extends PassthroughPayload = Passt
   payload: T;
 }
 
+export interface IncomingSetObserverResponseMessage extends BaseIncomingSocketMessage {
+  kind: 'setObserver.response';
+  payload: ParticipantShape;
+}
+
 export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
@@ -143,7 +147,8 @@ export type IncomingSocketMessage =
   | IncomingParticipantUpdatedMessage
   | IncomingRoomStateUpdatedMessage
   | IncomingPassthroughMessage
-  | IncomingActorUpdatedMessage;
+  | IncomingActorUpdatedMessage
+  | IncomingSetObserverResponseMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

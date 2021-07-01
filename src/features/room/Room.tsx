@@ -33,7 +33,12 @@ export const Room: React.FC<IRoomProps> = () => {
 };
 
 const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgetPositions);
-const selectPeopleIds = (room: RoomStateShape) => Object.keys(room.userPositions);
+const selectPeopleIds = (room: RoomStateShape) =>
+  Object.entries(room.users)
+    .filter(([id, user]) => {
+      return !user.isObserver && !!room.userPositions[id];
+    })
+    .map(([id]) => id);
 
 export const RoomView = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change

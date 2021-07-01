@@ -32,8 +32,9 @@ describe('RoomStateCacheApi', () => {
           self: {
             sessionId: 'session-id',
             participantState: {},
+            isObserver: false,
             actor: {
-              id: 'someone',
+              id: 'cat-id',
               displayName: 'Cat',
               avatarName: 'cat',
             },
@@ -42,6 +43,7 @@ describe('RoomStateCacheApi', () => {
             {
               authenticated: true,
               sessionId: 'session-id',
+              isObserver: false,
               roomId: 'room-id',
               actor: {
                 id: 'cat-id',
@@ -108,6 +110,7 @@ describe('RoomStateCacheApi', () => {
           'cat-id': {
             id: 'cat-id',
             participantState: {},
+            isObserver: false,
             actor: {
               id: 'cat-id',
               displayName: 'Cat',
@@ -144,6 +147,7 @@ describe('RoomStateCacheApi', () => {
       users: {
         user1: {
           authenticated: true,
+          isObserver: false,
           sessionIds: new Set(['session-id']),
           participantState: {},
           actor: {
@@ -157,6 +161,7 @@ describe('RoomStateCacheApi', () => {
           authenticated: true,
           sessionIds: new Set(['other-session']),
           participantState: {},
+          isObserver: false,
           actor: {
             id: 'user2',
             displayName: 'Bunny',
@@ -207,6 +212,7 @@ describe('RoomStateCacheApi', () => {
         kind: 'participantJoined',
         payload: {
           participantState: {},
+          isObserver: false,
           actor: {
             id: 'new-user',
             displayName: 'New User',
@@ -229,6 +235,7 @@ describe('RoomStateCacheApi', () => {
       expect(result.users['new-user']).toEqual({
         id: 'new-user',
         participantState: {},
+        isObserver: false,
         actor: {
           id: 'new-user',
           displayName: 'New User',
@@ -249,6 +256,7 @@ describe('RoomStateCacheApi', () => {
         kind: 'participantJoined',
         payload: {
           participantState: {},
+          isObserver: false,
           actor: {
             id: 'user1',
             displayName: 'User 1',
@@ -270,6 +278,7 @@ describe('RoomStateCacheApi', () => {
 
       expect(result.users['user1']).toEqual({
         id: 'user1',
+        isObserver: false,
         actor: {
           id: 'user1',
           displayName: 'User 1',
@@ -310,6 +319,7 @@ describe('RoomStateCacheApi', () => {
       expect(result.users['user1']).toEqual({
         id: 'user1',
         participantState: {},
+        isObserver: false,
         actor: {
           id: 'user1',
           displayName: 'Cat',
@@ -332,6 +342,17 @@ describe('RoomStateCacheApi', () => {
       expect(result.users).not.toHaveProperty('user1');
       expect(result.userPositions).not.toHaveProperty('user1');
       expect(result.sessionLookup).not.toHaveProperty('session-id');
+    });
+
+    it('updates observer status', () => {
+      cache.updateUser({
+        id: 'user1',
+        isObserver: true,
+      });
+
+      const result = applyChanges(usersDefaultState);
+
+      expect(result.users.user1.isObserver).toBe(true);
     });
   });
 

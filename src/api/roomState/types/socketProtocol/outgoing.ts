@@ -22,6 +22,14 @@ export interface AuthMessage extends BaseOutgoingSocketMessage {
   payload: {
     roomRoute: string;
     token: string;
+    isObserver?: boolean;
+  };
+}
+
+export interface JoinMessage extends BaseOutgoingSocketMessage {
+  kind: 'setObserver';
+  payload: {
+    isObserver: boolean;
   };
 }
 
@@ -119,6 +127,7 @@ export interface OutgoingPassthroughMessage<T extends PassthroughPayload = Passt
 export type OutgoingSocketMessage =
   | PingMessage
   | AuthMessage
+  | JoinMessage
   | OutgoingAddWidgetMessage
   | OutgoingMoveWidgetMessage
   | OutgoingMoveParticipantMessage

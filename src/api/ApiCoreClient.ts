@@ -89,7 +89,7 @@ export class ApiCoreClient extends EventEmitter {
     if (this.connectedRoomRoute) {
       // we are connected to a room -- reset the room state
       // to get the latest updates and rejoin!
-      this.joinMeeting(this.connectedRoomRoute);
+      this.connectToMeeting(this.connectedRoomRoute, false);
     }
   };
 
@@ -185,7 +185,7 @@ export class ApiCoreClient extends EventEmitter {
    * 9 yards.
    * @returns the Twilio media token to join AV session
    */
-  joinMeeting = this.requireActor(async (roomRoute: string) => {
+  connectToMeeting = this.requireActor(async (roomRoute: string, isObserver = true) => {
     // retrieve a media token in parallel - don't await yet
     const mediaResponse = this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, this.SERVICES.api);
 
@@ -200,6 +200,7 @@ export class ApiCoreClient extends EventEmitter {
           roomRoute,
           // requireActor ensures this
           token: this.sessionToken!,
+          isObserver,
         },
       },
       // 10 second timeout; it can be a large payload

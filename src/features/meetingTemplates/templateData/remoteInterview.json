@@ -17,6 +17,16 @@
       },
       { "size": { "width": 628, "height": 743 }, "position": { "x": -730, "y": -16 } }
     ],
-    ["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }]
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Agenda" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "\n9:00am  Introduction\n9:15am  \n" }
+        ]
+      },
+      { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }
+    ]
   ]
 }

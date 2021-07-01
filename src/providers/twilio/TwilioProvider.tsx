@@ -1,19 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { LocalParticipant, RemoteParticipant, Room } from 'twilio-video';
-import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
+import { ReconnectingTwilioRoom, TwilioStatus } from './ReconnectingTwilioRoom';
 import { TWILIO_CONNECTION_OPTIONS } from '@constants/twilio';
 import { useAllParticipants } from './useAllParticipants';
 import { useLocalTrackPublications } from './useLocalTrackPublications';
 import { useMobileBackgroundDisconnect } from './useMobileBackgroundDisconnect';
 import { logger } from '@utils/logger';
 import ReconnectingNotification from './ReconnectingNotification';
-
-export enum TwilioStatus {
-  Initial = 'initial',
-  Reconnecting = 'reconnecting', // also, Connecting
-  Disconnected = 'disconnected',
-  Connected = 'connected',
-}
 
 export interface TwilioContextData {
   room: Room | null;
@@ -60,11 +53,11 @@ export const TwilioProvider: React.FC<{ roomRoute: string }> = ({ roomRoute, chi
   }, [roomRoute, connection]);
 
   // keep track of room connection state for context
-  const [status, setStatus] = useState<TwilioStatus>((room?.state as TwilioStatus) ?? TwilioStatus.Initial);
+  const [status, setStatus] = useState<TwilioStatus>(connection.status);
 
   useEffect(() => {
     function updateConnectionStatus() {
-      setStatus((connection.room?.state as TwilioStatus) ?? TwilioStatus.Disconnected);
+      setStatus(connection.status);
     }
 
     connection.on('reconnecting', updateConnectionStatus);

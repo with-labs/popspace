@@ -5,7 +5,7 @@ import { useViewport } from '../viewport/useViewport';
 
 export interface IViewportWallpaperProps {
   children?: React.ReactNode;
-  imageUrl?: string;
+  imageUrl?: string | null;
   color?: string;
   wallpaperRepeats?: boolean;
 }
@@ -36,7 +36,7 @@ export const CanvasWallpaper: React.FC<IViewportWallpaperProps> = ({ children, i
     const canvasRect = viewport.canvasRect;
     return {
       backgroundColor: color,
-      backgroundImage: imageUrl && `url(${imageUrl})`,
+      backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
       width: canvasRect.width,
       height: canvasRect.height,
       left: canvasRect.x,

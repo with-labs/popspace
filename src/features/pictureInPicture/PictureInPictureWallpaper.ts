@@ -22,7 +22,7 @@ export class PictureInPictureWallpaper extends PictureInPictureRenderable {
     this.image.style.objectFit = 'cover';
     this.image.src = this.getImgSrc(selectWallpaperUrl(client.roomStateStore.getState()));
 
-    this.unsubscribe = client.roomStateStore.subscribe<string>((src) => {
+    this.unsubscribe = client.roomStateStore.subscribe<string | null>((src) => {
       this.image.src = this.getImgSrc(src);
     }, selectWallpaperUrl);
   }

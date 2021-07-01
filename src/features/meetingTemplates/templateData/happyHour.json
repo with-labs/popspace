@@ -7,19 +7,42 @@
     "backgroundColor": "#8bab62"
   },
   "widgets": [
-    ["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }],
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Ice breaker questions" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "What animal would you choose to be?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "What is the strangest gift you have ever received?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "What was your favorite recent meal, and why?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "Heard any good tips lately?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "What emoji represents you today, and why?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "What simple thing still blows your mind?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "What are you reading right now?" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 580, "height": 375 }, "position": { "x": -730, "y": -490 } }
+    ],
     [
       "YOU_TUBE",
       {
         "videoId": "5qap5aO4i9A",
         "mediaState": { "timestamp": 0, "isPlaying": false, "playStartedTimestampUtc": null }
       },
-      { "size": { "width": 480, "height": 320 }, "position": { "x": -730, "y": 0 } }
+      { "size": { "width": 480, "height": 320 }, "position": { "x": -729.7002377717383, "y": -70.00233525815219 } }
     ],
     [
       "WHITEBOARD",
       { "whiteboardState": { "lines": [] } },
-      { "size": { "width": 720, "height": 528 }, "position": { "x": 300, "y": -490 } }
+      { "size": { "width": 720, "height": 528 }, "position": { "x": 256.3867187499998, "y": -503.0458135190213 } }
     ]
   ]
 }

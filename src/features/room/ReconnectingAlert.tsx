@@ -17,11 +17,11 @@ export const ReconnectingAlert = () => {
     };
 
     client.socket.on('connected', onConnected);
-    client.socket.on('closed', onDisconnected);
+    client.socket.on('disconnected', onDisconnected);
 
     return () => {
       client.socket.off('connected', onConnected);
-      client.socket.off('closed', onDisconnected);
+      client.socket.off('disconnected', onDisconnected);
     };
   }, []);
 

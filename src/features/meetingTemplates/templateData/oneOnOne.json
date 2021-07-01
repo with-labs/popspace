@@ -1,10 +1,30 @@
 {
   "displayName": "One on One",
   "state": {
-    "isCustomWallpaper": true,
     "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_one_on_one.png",
+    "isCustomWallpaper": true,
     "wallpaperRepeats": true,
     "backgroundColor": "#ffe9b3"
   },
-  "widgets": [["NOTEPAD", {}, { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }]]
+  "widgets": [
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "1-1 Notes" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "\nGoals" },
+          { "attributes": { "header": 3 }, "insert": "\n" },
+          { "insert": " " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "\nQuestions" },
+          { "attributes": { "header": 3 }, "insert": "\n" },
+          { "insert": " " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" },
+          { "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }
+    ]
+  ]
 }

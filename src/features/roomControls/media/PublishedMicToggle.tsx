@@ -6,7 +6,7 @@ import { MIC_TRACK_NAME } from '@constants/User';
 import { useRoomStore } from '@api/useRoomStore';
 import usePublishedAudioToggle from '@providers/media/hooks/usePublishedAudioToggle';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/TwilioProvider';
+import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 
 export const PublishedMicToggle = () => {
   const [isMicOn, doMicToggle, isAudioBusy] = usePublishedAudioToggle();

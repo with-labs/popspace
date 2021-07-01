@@ -8,22 +8,19 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
 ---
 <header class="padding-section-leftRight">
     <h1 style="display: none;">Make room for your team</h1>
-    <video poster="{{ '/images/title_desktop.png' | url  }}" class="videoWidth desktopOnly" playsinline autoplay muted loop width="100%">
-        <source src="{{ '/images/title_desktop.mp4' | url  }}" type="video/mp4"/>
+    <video poster="images/title_desktop.png" class="videoWidth desktopOnly" playsinline autoplay muted loop width="100%">
+        <source src="images/title_desktop.mp4" type="video/mp4"/>
     </video>
-    <video poster="{{ '/images/title_mobile.png' | url  }}"  class="videoWidth mobileOnly" playsinline autoplay muted loop width="100%">
-        <source src="{{ '/images/title_mobile.mp4' | url  }}" type="video/mp4"/>
+    <video poster="images/title_mobile.png"  class="videoWidth mobileOnly" playsinline autoplay muted loop width="100%">
+        <source src="images/title_mobile.mp4" type="video/mp4"/>
     </video>
 
     <div class="subtitle">Free, instant meeting rooms for all your collaborative needs</div>
-    {% include 'components/signup_block.njk' %}
-    {# CALL TO ACTION WHEN WE HAVE ROOM CREATION
-
     <div class="alignCenter margin_above">
-        <a class="bigCta" href="{{ '/create' | url  }}" onclick="window.fathom.trackGoal('UX3OHYIU', 1); _paq.push(['trackEvent', 'CTA', 'clicked']);">Create an instant meeting</a>
+        <a class="bigCta" href="/create" onclick="window.fathom.trackGoal('UX3OHYIU', 1); _paq.push(['trackEvent', 'CTA', 'clicked']);">Create an instant meeting</a>
     </div>
     <p class="alignCenter smallText margin_above_small">Free. No signup. Instant meeting.</p>
-    #}
+   
 </header>
 
 <main>
@@ -31,8 +28,8 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
     <section class="padding-section-leftRight">
         <div class="diptych diptych-left vertical_lines">
             <div class="padding_large">
-                <video poster="{{ '/images/instant.png' | url  }}" class="video_feature" playsinline autoplay muted loop width="100%">
-                    <source src="{{ '/images/instant.mp4' | url  }}" type="video/mp4"/>
+                <video poster="images/instant.png" class="video_feature" playsinline autoplay muted loop width="100%">
+                    <source src="images/instant.mp4" type="video/mp4"/>
                 </video>
             </div>
             <div class="padding_large">
@@ -68,8 +65,8 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
                 </ul>
             </div>
             <div class="padding_large reverse-row">
-                <video poster="{{ '/images/ideas.png' | url  }}"  class="video_feature" playsinline autoplay muted loop width="100%">
-                    <source src="{{ '/images/ideas.mp4' | url  }}" type="video/mp4"/>
+                <video poster="images/ideas.png"  class="video_feature" playsinline autoplay muted loop width="100%">
+                    <source src="images/ideas.mp4" type="video/mp4"/>
                 </video>
             </div>
         </div>
@@ -346,16 +343,18 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
     </div>
 </section>
 
+{% include 'components/create.njk' %}
+
 {# <section class="padding-section-leftRight spacing_below_large wideWidth">
     <div class="create_block">
         <div class="alignCenter">
-            <a class="bigCta" href="{{ '/create' | url  }}" onclick="window.fathom.trackGoal('UX3OHYIU', 1); _paq.push(['trackEvent', 'CTA', 'clicked']);">Create an instant meeting</a>
+            <a class="bigCta" href="/create" onclick="window.fathom.trackGoal('UX3OHYIU', 1); _paq.push(['trackEvent', 'CTA', 'clicked']);">Create an instant meeting</a>
         </div>
         <p class="alignCenter smallText margin_above_small">Free. No signup. Instant meeting.</p>
     </div>
 </section> #}
-<section class="padding-section-leftRight spacing_below_large wideWidth">
+{# <section class="padding-section-leftRight spacing_below_large wideWidth">
     {% include 'components/signup_block.njk' %}
-</section>
+</section> #}
 
 </main>

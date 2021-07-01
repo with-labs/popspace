@@ -54,13 +54,19 @@ export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) =>
           startIcon={<LeaveIcon />}
           onClick={leaveRoom}
           fullWidth={false}
+          data-test-id="leaveMeeting"
         >
           {t('features.roomControls.leaveMeetingButtonText')}
         </Button>
       </Hidden>
       <Hidden lgUp>
         <ResponsiveTooltip title={t('features.roomControls.leaveMeetingButtonText') as string}>
-          <IconButton className={classes.buttonColor} classes={{ root: classes.iconButton }} onClick={leaveRoom}>
+          <IconButton
+            className={classes.buttonColor}
+            classes={{ root: classes.iconButton }}
+            onClick={leaveRoom}
+            data-test-id="leaveMeeting"
+          >
             <LeaveIcon />
           </IconButton>
         </ResponsiveTooltip>

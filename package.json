@@ -165,7 +165,7 @@
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit --coverage",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser chrome",
-    "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8081 start-server-and-test server http://localhost:8081 cypress:run",
+    "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8888 start-server-and-test start http://localhost:8888 cypress:run",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json"

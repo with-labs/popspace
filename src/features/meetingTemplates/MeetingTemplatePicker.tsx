@@ -47,7 +47,13 @@ const MeetingTemplateCard: React.FC<{
 
   return (
     <Card elevation={0} style={{ position: 'relative' }}>
-      <CardActionArea disabled={disabled} onClick={onClick} disableRipple disableTouchRipple>
+      <CardActionArea
+        disabled={disabled}
+        onClick={onClick}
+        disableRipple
+        disableTouchRipple
+        data-test-id={`meetingTemplate-${templateName}`}
+      >
         <CardMedia>
           <img
             src={templateMetadata[templateName].image}

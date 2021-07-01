@@ -25,7 +25,8 @@ export class PictureInPictureRenderable {
    * Appends a query string to an image URL to
    * prevent bad cache behaviors with CORS with S3
    */
-  protected getImgSrc(baseSrcUrl: string) {
+  protected getImgSrc(baseSrcUrl: string | null) {
+    if (!baseSrcUrl) return '';
     if (baseSrcUrl.includes('amazonaws.com')) {
       return `${baseSrcUrl}?pip=true`;
     } else {

@@ -1,10 +1,7 @@
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
 jest.mock('twilio-video');
 jest.mock('@api/client', () => ({
-  joinMeeting: jest.fn().mockResolvedValue({
-    success: true,
-    token: 'token',
-  }),
+  connectToMeeting: jest.fn().mockResolvedValue('token'),
 }));
 
 describe('ReconnectingTwilioRoom wrapper', () => {

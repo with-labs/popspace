@@ -133,6 +133,16 @@ export interface IncomingSetObserverResponseMessage extends BaseIncomingSocketMe
   payload: ParticipantShape;
 }
 
+export interface IncomingDisplayNameUpdatedMessage extends BaseIncomingSocketMessage {
+  kind: 'displayNameUpdated';
+  payload: { displayName: string };
+}
+
+export interface IncomingAvatarNameUpdatedMessage extends BaseIncomingSocketMessage {
+  kind: 'avatarNameUpdated';
+  payload: { avatarName: string };
+}
+
 export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
@@ -148,7 +158,9 @@ export type IncomingSocketMessage =
   | IncomingRoomStateUpdatedMessage
   | IncomingPassthroughMessage
   | IncomingActorUpdatedMessage
-  | IncomingSetObserverResponseMessage;
+  | IncomingSetObserverResponseMessage
+  | IncomingDisplayNameUpdatedMessage
+  | IncomingAvatarNameUpdatedMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

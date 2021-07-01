@@ -1,8 +1,9 @@
 import { Analytics } from '@analytics/Analytics';
 import { ApiCoreClient } from '@api/ApiCoreClient';
-import { ActorShape } from '@api/roomState/types/participants';
 import {
   IncomingActorUpdatedMessage,
+  IncomingAvatarNameUpdatedMessage,
+  IncomingDisplayNameUpdatedMessage,
   IncomingParticipantJoinedMessage,
   IncomingParticipantLeftMessage,
   IncomingParticipantUpdatedMessage,
@@ -17,6 +18,8 @@ export class ParticipantClient extends ApiSubClient {
     core.socket.on('message:participantLeft', this.onParticipantLeft);
     core.socket.on('message:participantUpdated', this.onParticipantUpdated);
     core.socket.on('message:actorUpdated', this.onActorUpdated);
+    core.socket.on('message:displayNameUpdated', this.onDisplayNameUpdated);
+    core.socket.on('message:avatarNameUpdated', this.onAvatarNameUpdated);
   }
 
   private onParticipantJoined = (message: IncomingParticipantJoinedMessage) => {
@@ -39,6 +42,24 @@ export class ParticipantClient extends ApiSubClient {
     this.core.cacheApi.updateUser({
       id: message.sender.actorId,
       actor: message.payload.actor,
+    });
+  };
+
+  private onDisplayNameUpdated = (message: IncomingDisplayNameUpdatedMessage) => {
+    this.core.cacheApi.updateUser({
+      id: message.sender.actorId,
+      actor: {
+        displayName: message.payload.displayName,
+      },
+    });
+  };
+
+  private onAvatarNameUpdated = (message: IncomingAvatarNameUpdatedMessage) => {
+    this.core.cacheApi.updateUser({
+      id: message.sender.actorId,
+      actor: {
+        avatarName: message.payload.avatarName,
+      },
     });
   };
 
@@ -65,20 +86,35 @@ export class ParticipantClient extends ApiSubClient {
     });
   };
 
-  updateSelf = (payload: Partial<ActorShape>) => {
+  updateDisplayName = (displayName: string) => {
     if (!this.core.actor) {
-      throw new Error('Must be authenticated to update self');
+      throw new Error('Must be authenticated to update display name');
     }
 
-    this.core.cacheApi.updateUser({ actor: payload, id: this.core.actor.actorId });
+    this.core.cacheApi.updateUser({ actor: { displayName }, id: this.core.actor.actorId });
     this.core.socket.send({
-      kind: 'updateSelfActor',
-      payload: {
-        actor: payload,
-      },
+      kind: 'updateSelfDisplayName',
+      payload: { displayName },
     });
 
-    // track user events analytics
-    Analytics.trackUserEvent(this.core.roomId, payload);
+    Analytics.trackUserEvent(this.core.roomId, {
+      displayName,
+    });
+  };
+
+  updateAvatarName = (avatarName: string) => {
+    if (!this.core.actor) {
+      throw new Error('Must be authenticated to update avatar name');
+    }
+
+    this.core.cacheApi.updateUser({ actor: { avatarName }, id: this.core.actor.actorId });
+    this.core.socket.send({
+      kind: 'updateSelfAvatarName',
+      payload: { avatarName },
+    });
+
+    Analytics.trackUserEvent(this.core.roomId, {
+      avatarName,
+    });
   };
 }

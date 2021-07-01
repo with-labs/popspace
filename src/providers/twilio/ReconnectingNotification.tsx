@@ -3,7 +3,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useTranslation } from 'react-i18next';
 import { useRoomStatus } from './hooks/useRoomStatus';
-import { TwilioStatus } from './TwilioProvider';
+import { TwilioStatus } from './ReconnectingTwilioRoom';
 
 export default function ReconnectingNotification() {
   const { t } = useTranslation();

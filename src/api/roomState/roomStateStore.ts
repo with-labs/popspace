@@ -1,14 +1,10 @@
 import create from 'zustand/vanilla';
 import { Vector2 } from '@src/types/spatials';
 import { combineAndImmer } from './combineAndImmer';
-import { wallPaperOptions } from '@features/roomControls/roomSettings/WallpaperOptions';
 import { WidgetShape } from './types/widgets';
 import { ActorShape, ParticipantState } from './types/participants';
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { RoomStateCacheApi } from './RoomStateCacheApi';
-
-const defaultWallpaperCategory = 'todoBoards';
-const defaultWallpaper = 0;
 
 /**
  * Our client room state stores user information slightly differently than
@@ -50,7 +46,7 @@ export const emptyState: RoomStateShape = {
   sessionLookup: {},
   displayName: '',
   state: {
-    wallpaperUrl: wallPaperOptions[defaultWallpaperCategory][defaultWallpaper].url,
+    wallpaperUrl: null,
     isCustomWallpaper: false,
     zOrder: [],
     wallpaperRepeats: false,

@@ -42,6 +42,7 @@ const quillOptions = {
   @param {number} props.width
   @param {number} props.height
   @param {string} props.host
+  @param {Object} props.initialData
 */
 const CollaborativeQuill = (props) => {
   const [socketReady, setSocketReady] = useState(false);
@@ -113,9 +114,12 @@ const CollaborativeQuill = (props) => {
 
       // If doc.type is undefined, the document has not been created yet
       if (!doc.type) {
-        doc.create([{ insert: '' }], 'rich-text', (error) => {
-          if (error) {
-            /*
+        doc.create(
+          props.initialData || [{ insert: '' }],
+          'rich-text',
+          (error) => {
+            if (error) {
+              /*
               TODO: it's possible this would be triggered if multiple clients race to create the doc.
               I haven't tried to deliberately trigger and iron out that case, but so far things have worked.
               If it does happen, we could find a way to wait for document creation on non-owner clients.
@@ -124,9 +128,11 @@ const CollaborativeQuill = (props) => {
               the doc to be initialized. The dumb solution is an active poll, but ideally there would be some
               event that the component can react to.
             */
-            console.error(error);
+              console.error(error);
+            }
+            quill.setContents(doc.data);
           }
-        });
+        );
       } else {
         quill.setContents(doc.data);
         /*
@@ -152,7 +158,7 @@ const CollaborativeQuill = (props) => {
       connection.close();
       socket.close();
     };
-  }, [quill, doc]);
+  }, [quill, doc, props.initialData]);
 
   if (error) {
     console.error(error);

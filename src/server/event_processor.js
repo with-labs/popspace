@@ -18,7 +18,9 @@ const ACTION_BY_EVENT_KIND = {
   "passthrough": "passthrough",
   "updateMicState": "analytics",
   "updateVideoState": "analytics",
-  "updateSelfActor": "update"
+  "updateSelfActor": "update",
+  "updateSelfDisplayName": "update",
+  "updateSelfAvatarName": "update"
 }
 
 const PUBLIC_EVENT_KINDS = {

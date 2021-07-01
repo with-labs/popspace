@@ -62,7 +62,7 @@ export class WidgetClient extends ApiSubClient {
     });
 
     // track the widget creation event
-    Analytics.trackEvent(EventNames.CREATE_WIDGET, {
+    Analytics.trackEvent(EventNames.CREATE_WIDGET, response.payload.type, {
       type: response.payload.type,
       roomId: this.core.roomId,
       creationLocation: origin || Origin.NOT_SET,

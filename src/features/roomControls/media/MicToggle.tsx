@@ -11,9 +11,9 @@ import { MicDeviceMenu } from './MicDeviceMenu';
 import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
-import { useAnalytics, IncludeData } from '@hooks/useAnalytics/useAnalytics';
 import client from '@api/client';
 import { useAVSources } from '@hooks/useAVSources/useAVSources';
+import { Analytics } from '@analytics/Analytics';
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -38,28 +38,28 @@ export const MicToggle = (props: IMicToggleProps) => {
   const { isLocal, className, isMicOn, doMicToggle, handleMicOn, busy, ...otherProps } = props;
   const classes = useStyles();
   const { t } = useTranslation();
-  const { trackEvent } = useAnalytics([IncludeData.roomId]);
 
   const toggleMicOn = React.useCallback(() => {
     if (handleMicOn && !isMicOn) {
       handleMicOn();
     }
 
-    trackEvent(EventNames.TOGGLE_MIC, {
+    const timestamp = new Date().getTime();
+    Analytics.trackEvent(EventNames.TOGGLE_MIC, !isMicOn, {
       isOn: !isMicOn,
-      timestamp: new Date().getTime(),
+      timestamp: timestamp,
     });
 
     client.socket.send({
       kind: 'updateMicState',
       payload: {
         isOn: !isMicOn,
-        timestamp: new Date().getTime(),
+        timestamp: timestamp,
       },
     });
 
     doMicToggle();
-  }, [doMicToggle, handleMicOn, isMicOn, trackEvent]);
+  }, [doMicToggle, handleMicOn, isMicOn]);
 
   useHotkeys(
     KeyShortcut.ToggleMute,
@@ -84,9 +84,9 @@ export const MicToggle = (props: IMicToggleProps) => {
     <>
       <ResponsiveTooltip
         title={
-          <>
+          <span>
             {t('features.mediaControls.micToggle')} <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText>
-          </>
+          </span>
         }
       >
         <div>
@@ -96,6 +96,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             onChange={toggleMicOn}
             onContextMenu={handleContextMenu}
             disabled={busy}
+            data-test-id="toggleAudio"
             {...otherProps}
             className={className}
           >

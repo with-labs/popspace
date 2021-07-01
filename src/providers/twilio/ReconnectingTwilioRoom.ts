@@ -28,10 +28,19 @@ export declare interface ReconnectingTwilioRoom {
   off<U extends keyof ReconnectingTwilioRoomEvents>(event: U, listener: ReconnectingTwilioRoomEvents[U]): this;
 }
 
+export enum TwilioStatus {
+  Closed = 'closed',
+  Reconnecting = 'reconnecting', // also, connecting
+  Disconnected = 'disconnected',
+  Connected = 'connected',
+}
+
 export class ReconnectingTwilioRoom extends EventEmitter {
   private roomName: string | null = null;
   private _room: Room | null = null;
   private lastDisconnectErrorTime: Date | null = null;
+  /** A flag for whether any current disconnection state was intentional */
+  private closed = false;
 
   constructor(private options: ConnectOptions) {
     super();
@@ -44,6 +53,13 @@ export class ReconnectingTwilioRoom extends EventEmitter {
   private get peerConnection() {
     // @ts-ignore
     return this._room?._signaling?._peerConnectionManager?._peerConnections.values()?.next()?.value?._peerConnection;
+  }
+
+  get status() {
+    if (this.closed && (!this._room || this._room.state === 'disconnected')) {
+      return TwilioStatus.Closed;
+    }
+    return this._room ? (this._room.state as TwilioStatus) : TwilioStatus.Closed;
   }
 
   connect = async () => {

@@ -17,6 +17,7 @@ import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
 import { CircularProgress } from '@material-ui/core';
 import { useIsMe } from '@api/useIsMe';
 import { useLocalActor } from '@api/useLocalActor';
+import { notepadRegistry } from './nodepadRegistry';
 
 export interface INotepadWidgetProps {}
 
@@ -93,12 +94,17 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     For now, instead of pulling in Quill or type definitions,
     just using an any.
   */
-  const quillRef: any = React.useRef();
+  const quillRef = React.useRef<any>();
   const focusOnClick = () => {
     if (quillRef.current) {
       quillRef.current?.focus();
     }
   };
+
+  // sync instance with global registry for dev tool uses
+  React.useEffect(() => {
+    if (quillRef.current) return notepadRegistry.register(state.widgetId, quillRef.current);
+  }, [state.widgetId]);
 
   return (
     <WidgetFrame
@@ -126,7 +132,8 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
               docCollection="documents"
               userDisplayName={userDisplayName}
               height={size.height}
-              width={size.width}
+              width={size.width - 5}
+              initialData={state.widgetState.initialData}
             />
           </div>
         </WidgetScrollPane>

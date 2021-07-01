@@ -8,19 +8,24 @@ import { randomString } from '../util/randomString';
 context('An anonymous user', () => {
   const USERNAME = randomString('user');
 
-  describe('when joining a room they have access to, with another user already there', () => {
+  describe('when joining a room, with another user already there', () => {
     const OTHER_USERNAME = randomString('user');
+    let roomUrl: string;
 
     before(() => {
-      cy.task('addParticipant', { name: OTHER_USERNAME });
+      cy.createRoom().then((url) => {
+        roomUrl = url;
+      });
     });
 
     beforeEach(() => {
-      cy.joinRoom(USERNAME);
+      cy.joinRoom(USERNAME, roomUrl);
+      cy.task('addParticipant', { name: OTHER_USERNAME, roomUrl });
     });
 
     afterEach(() => {
       cy.leaveRoom();
+      cy.task('removeParticipant', OTHER_USERNAME);
     });
 
     it('should be able to see the other user', () => {

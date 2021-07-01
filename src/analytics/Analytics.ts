@@ -65,21 +65,6 @@ const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key
   api.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventMetaData });
 };
 
-const trackUserEvent = (roomId: string | null, eventPayload: Partial<ActorShape>) => {
-  // track the avatar change event
-  if (eventPayload.hasOwnProperty('avatarName')) {
-    trackEvent(EventNames.CHANGED_AVATAR, null, {
-      roomId: roomId,
-      avatarName: eventPayload.avatarName,
-    });
-  } else if (eventPayload.hasOwnProperty('displayName')) {
-    // track the display name changed event
-    Analytics.trackEvent(EventNames.CHANGED_DISPLAYNAME, null, {
-      roomId: roomId,
-    });
-  }
-};
-
 const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<WidgetState>) => {
   if (eventPayload.hasOwnProperty('showIframe')) {
     // TODO: Figure out how to properly
@@ -93,6 +78,5 @@ const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<Wid
 
 export const Analytics = {
   trackEvent: trackEvent,
-  trackUserEvent: trackUserEvent,
   trackWidgetUpdateEvent: trackWidgetUpdateEvent,
 };

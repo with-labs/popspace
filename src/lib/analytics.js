@@ -60,7 +60,7 @@ class Analytics {
   }
 
   async toggleVoice(event) {
-    const toggleEntry = await shared.db.pg.massive.analytics_voice_usage.insert({
+    const toggleEntry = await shared.db.pg.massive.analytics_mic_usage.insert({
       room_id: event.roomId(),
       actor_id: event.actorId(),
       participant_id: event.sessionId(),
@@ -78,7 +78,7 @@ class Analytics {
       return
     }
 
-    await shared.db.pg.massive.analytics_voice_usage.update(
+    await shared.db.pg.massive.analytics_mic_usage.update(
       {id: entryId},
       {last_heartbeat_at: shared.db.time.now()}
     )

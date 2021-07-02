@@ -3,7 +3,7 @@ const scenarios = require("./rooms_scenarios.js")
 
 shared.test.TestTemplate.describeWithLib("rooms", () => {
   test("can successfully generate a new meeting URL", async () => {
-    const result = await scenarios["meeting_url"]()
+    const result = await scenarios["meeting_url_create"]()
     const response = result.response
     expect(response.success).toEqual(true)
     expect(response.url).toBeTruthy()

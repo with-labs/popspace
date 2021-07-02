@@ -1,7 +1,7 @@
 const createActor = async (req, res, kind, source) => {
   const pgActor = await shared.db.accounts.createActor(kind, source, req)
   const session = await shared.db.accounts.createSession(pgActor.id, null, req)
-  const token = await shared.db.accounts.tokenFromSession(session)
+  const token = await shared.lib.auth.tokenFromSession(session)
   const actor = new shared.models.Actor(pgActor)
   return api.http.succeed(req, res, {
     actor: (await actor.serialize()),

@@ -75,7 +75,7 @@ class Accounts {
     return await shared.db.pg.massive.magic_codes.insert(loginRequest)
   }
 
-  async resolveLoginRequest(code) {
+  async resolveLoginRequest(code, req) {
     const request = await shared.db.pg.massive.magic_codes.findOne({
       code: code,
       action: "login"
@@ -85,17 +85,31 @@ class Accounts {
       return verification
     }
     // TODO: resolve the request
-    const session = await this.createSession(request.actor_id)
+    const session = await this.createSession(request.actor_id, null, req)
     return { session: session }
   }
 
-  async createSession(actorId, tx=null) {
-    const txOrMassive = tx || shared.db.pg.massive
-    return await txOrMassive.sessions.insert({
+  async createSession(actorId, tx=null, req=null) {
+    if(!tx) {
+      return await shared.db.pg.massive.withTransaction(async (tx) => {
+        return await this.createSession(actorId, tx, req)
+      })
+    }
+    const session = await tx.sessions.insert({
       actor_id: actorId,
       secret: shared.lib.otp.generate(),
       expires_at: null
     })
+
+    const meta = null
+    /*
+      Can't think of anything valuable to record for a session.
+      We already have its ID tracked as a column in the schema, and
+      there doesn't seem to be any extra info here.
+    */
+    const eventValue = null
+    await shared.db.events.recordEvent(actorId, session.id, "session", eventValue, req, meta, tx)
+    return session
   }
 
   tokenFromSession(session) {

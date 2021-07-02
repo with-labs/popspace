@@ -15,23 +15,24 @@ const reqToUrl = (expressRequest) => {
 }
 
 class Events {
-  async actorCreateEvent(actorId, source, expressRequest, tx=null) {
+  async actorCreateEvent(actorId, sessionId, source, expressRequest, tx=null) {
     const meta = null
     const key = "sourced"
-    return shared.db.events.recordEvent(actorId, key, source, expressRequest, meta, tx)
+    return shared.db.events.recordEvent(actorId, sessionId, key, source, expressRequest, meta, tx)
   }
 
-  async roomCreateEvent(actorId, templateName, expressRequest, tx=null) {
+  async roomCreateEvent(actorId, sessionId, templateName, expressRequest, tx=null) {
     const meta = null
     const key = "room_create"
-    return shared.db.events.recordEvent(actorId, key, templateName, expressRequest, meta, tx)
+    return shared.db.events.recordEvent(actorId, sessionId, key, templateName, expressRequest, meta, tx)
   }
 
-  async recordEvent(actorId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {
+  async recordEvent(actorId, sessionId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {
     const ua = userAgentParser(expressRequest.headers['user-agent'] || "")
     const txOrMassive = tx || shared.db.pg.massive
     return txOrMassive.actor_events.insert({
       actor_id: actorId,
+      session_id: sessionId,
       key: key,
       value: value,
       meta: meta,

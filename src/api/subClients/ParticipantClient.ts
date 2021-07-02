@@ -1,4 +1,3 @@
-import { Analytics } from '@analytics/Analytics';
 import { ApiCoreClient } from '@api/ApiCoreClient';
 import {
   IncomingActorUpdatedMessage,

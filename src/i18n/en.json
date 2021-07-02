@@ -170,6 +170,7 @@
         "copyLinkButton": "Copy link",
         "copied": "Copied",
         "joinRoomButton": "Join room now",
+        "copyErrorMsg": "Error copying public invite link",
         "extensions": {
           "slack": {
             "label": "Slack Extension",

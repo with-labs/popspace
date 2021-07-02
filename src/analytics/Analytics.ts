@@ -1,6 +1,5 @@
 // Abstraction around our analytics lib
 import { EventNames } from './constants';
-import { ActorShape } from '@api/roomState/types/participants';
 import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
@@ -55,7 +54,7 @@ const removeLocalAnalyticsData = (eventName: string) => {
 
 // trackEvent
 // wrapper around the main track event
-const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key: string]: any }) => {
+const trackEvent = (eventName: EventNames | string, value?: any, eventProperties?: { [key: string]: any }) => {
   const eventMetaData = {
     roomId: client.roomId,
     ...eventProperties,

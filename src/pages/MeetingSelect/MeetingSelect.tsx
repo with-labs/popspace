@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { EventNames } from '@analytics/constants';
 import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
@@ -10,6 +9,8 @@ import { RouteNames } from '@constants/RouteNames';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import toast from 'react-hot-toast';
 import { Analytics } from '@analytics/Analytics';
+
+const ANALYTICS_PAGE_ID = 'page_meetingSelect';
 
 export interface IMeetingSelectProps extends RouteComponentProps<{ meetingType?: string }> {}
 
@@ -32,6 +33,8 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
   const history = useHistory();
   const classes = useStyles();
 
+  const [hasInteracted, setHasInteracted] = React.useState(false);
+
   const [selected, setSelected] = React.useState<MeetingTemplateName | null>(() => {
     if (providedTemplateName && Object.values(MeetingTemplateName).includes(providedTemplateName as any)) {
       return providedTemplateName as MeetingTemplateName;
@@ -39,11 +42,29 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
     return null;
   });
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+  }, []);
+
+  React.useEffect(() => {
+    function trackClosing() {
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_closed`, hasInteracted);
+    }
+
+    window.addEventListener('beforeunload', trackClosing);
+
+    return () => {
+      window.removeEventListener('beforeunload', trackClosing);
+    };
+  }, [hasInteracted]);
 
   React.useEffect(() => {
     if (!selected) return;
-    Analytics.trackEvent(EventNames.CREATE_MEETING_FROM_TEMPLATE, providedTemplateName);
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_meeting_created`, providedTemplateName);
+
+    // user has selected something on the page so we set interacted to true
+    setHasInteracted(true);
+
     (async () => {
       try {
         const meeting = await create(selected);
@@ -55,7 +76,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         setSelected(null);
       }
     })();
-  }, [create, history, selected, providedTemplateName]);
+  }, [create, history, selected, providedTemplateName, setHasInteracted]);
 
   // for the case where the template is specified in the URL,
   // show a fullscreen loader until the meeting is created or

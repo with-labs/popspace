@@ -95,10 +95,6 @@ export class ParticipantClient extends ApiSubClient {
       kind: 'updateSelfDisplayName',
       payload: { displayName },
     });
-
-    Analytics.trackUserEvent(this.core.roomId, {
-      displayName,
-    });
   };
 
   updateAvatarName = (avatarName: string) => {

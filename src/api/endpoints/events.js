@@ -23,7 +23,7 @@ class Events {
         });
       }
       
-      const event = await shared.db.events.recordEvent(req.actor.id, params.key, params.value, req, req.body.meta)
+      const event = await shared.db.events.recordEvent(req.actor.id, req.session.id, params.key, params.value, req, req.body.meta)
       return api.http.succeed(req, res, { })
     }, ["key", "value"])
   }

@@ -51,10 +51,10 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const createRoom = async (template, actorId, templateName, req) => {
+const createRoom = async (template, actorId, sessionId, templateName, req) => {
   const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(templateName, template, actorId)
   const namedRoom = new shared.models.RoomWithState(room, roomData.state)
-  const event = await shared.db.events.roomCreateEvent(actorId, templateName, req)
+  const event = await shared.db.events.roomCreateEvent(actorId, sessionId, templateName, req)
   return namedRoom
 }
 
@@ -102,7 +102,7 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(params.template, req.actor.id, params.template_name, req)
+      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.template_name, req)
       return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
     }, ["template", "template_name"])
 
@@ -110,7 +110,7 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a URL to it
       */
-      const namedRoom = await createRoom(params.template, req.actor.id, params.template_name, req)
+      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.template_name, req)
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()
@@ -132,7 +132,7 @@ class Meetings {
         However, we may be in a context where all we can do is call a URL and parse the result.
       */
       log.error.warn("/anonymous_meeting called - shouldn't be used yet, we don't have use cases")
-      const namedRoom = await createRoom(params.template, null, params.template_name, req)
+      const namedRoom = await createRoom(params.template, null, null, params.template_name, req)
       return api.http.succeed(req, res, {
         warning: "don't use w/o making sure it's impossible otherwise",
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),

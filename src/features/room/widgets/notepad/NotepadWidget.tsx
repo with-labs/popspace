@@ -1,23 +1,19 @@
-import { makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
-import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
-import { useRoomStore } from '@api/useRoomStore';
 import CollaborativeQuill from '@withso/unicorn';
-import { useCanvas } from '../../../../providers/canvas/CanvasProvider';
 import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
-
 import { CircularProgress } from '@material-ui/core';
-import { useIsMe } from '@api/useIsMe';
 import { useLocalActor } from '@api/useLocalActor';
-import { notepadRegistry } from './nodepadRegistry';
+import { notepadRegistry } from './notepadRegistry';
+import clsx from 'clsx';
 
 export interface INotepadWidgetProps {}
 
@@ -46,6 +42,24 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.grey[900],
     fontStyle: 'italic',
   },
+  notepadContainer: {
+    height: '100%',
+    width: '100%',
+
+    '& .ql-toolbar': {
+      position: 'fixed',
+      top: TITLEBAR_HEIGHT - 1,
+      left: 0,
+      right: 0,
+      backgroundColor: theme.palette.common.white,
+      zIndex: 10,
+      fontFamily: theme.typography.fontFamily,
+    },
+    '& .ql-container': {
+      marginTop: 40,
+      fontFamily: theme.typography.fontFamily,
+    },
+  },
 }));
 
 export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
@@ -55,38 +69,6 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const userDisplayName = actor?.displayName;
 
   const { widget: state } = useWidgetContext<WidgetType.Notepad>();
-
-  const startSize = useRoomStore(
-    React.useCallback(
-      (room) =>
-        room.widgetPositions[state.widgetId]?.size ?? {
-          width: MIN_SIZE.width,
-          height: MIN_SIZE.height - TITLEBAR_HEIGHT,
-        },
-      [state.widgetId]
-    )
-  );
-
-  const isOwnedByLocalUser = useIsMe(state.creatorId);
-  const [size, setSize] = React.useState(startSize);
-
-  const spinner = (
-    <div style={{ padding: '32px', margin: 'auto' }}>
-      <CircularProgress size={32} />
-    </div>
-  );
-
-  const canvas = useCanvas();
-  React.useEffect(
-    () =>
-      canvas.observeSize(state.widgetId, 'widget', (newSize) => {
-        setSize({
-          width: newSize.width,
-          height: newSize.height - TITLEBAR_HEIGHT,
-        });
-      }),
-    [state.widgetId, canvas]
-  );
 
   /*
     quillRef is an instance of MutableObjectRef<Quill>...
@@ -116,29 +98,35 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     >
       <WidgetTitlebar title={t('widgets.notepad.title')}></WidgetTitlebar>
       <WidgetContent disablePadding className={classes.content}>
-        <WidgetScrollPane
-          className={classes.scrollContainer}
-          title={isOwnedByLocalUser ? (t('widgets.stickyNote.doubleClickEdit') as string) : undefined}
-          onClick={focusOnClick}
-          style={{ cursor: 'pointer' }}
-        >
-          <div className="notepad_selector">
+        <WidgetScrollPane className={classes.scrollContainer} onClick={focusOnClick} style={{ cursor: 'pointer' }}>
+          <div className={clsx('notepad_selector', classes.notepadContainer)}>
             <CollaborativeQuill
               quillRef={quillRef}
-              spinner={spinner}
+              spinner={
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  width="100%"
+                  height="100%"
+                  p={4}
+                  margin="auto"
+                >
+                  <CircularProgress size={32} />
+                </Box>
+              }
               id={`__notepad_${state.widgetId}`}
               host={process.env.REACT_APP_UNICORN_SOCKET_HOST}
               docId={state.widgetId}
               docCollection="documents"
               userDisplayName={userDisplayName}
-              height={size.height}
-              width={size.width - 5}
+              height="100%"
+              width="100%"
               initialData={state.widgetState.initialData}
             />
           </div>
         </WidgetScrollPane>
       </WidgetContent>
-      <WidgetResizeHandle />
     </WidgetFrame>
   );
 };

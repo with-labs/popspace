@@ -19,7 +19,7 @@ import happyHourImg from '@images/illustrations/meeting_templates/template_happy
 import brainstormImg from '@images/illustrations/meeting_templates/template_brainstorm.png';
 
 export enum MeetingTemplateName {
-  Blank = 'blank',
+  Blank = 'new',
   Daily = 'daily',
   Weekly = 'weekly',
   OneOnOne = 'one_on_one',

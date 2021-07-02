@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
+import React, { useEffect, useRef } from 'react';
 import { AudioTrack as IAudioTrack } from 'twilio-video';
-import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 import { SpatialAudio, SpatialAudioProps } from '../SpatialAudio/SpatialAudio';
 
 interface AudioTrackProps extends SpatialAudioProps {
@@ -11,7 +11,7 @@ interface AudioTrackProps extends SpatialAudioProps {
 export default function AudioTrack({ track, ...rest }: AudioTrackProps) {
   const ref = useRef<HTMLAudioElement>(null!);
 
-  const { isReady } = useContext(MediaReadinessContext);
+  const isReady = useMediaReadiness((s) => s.isReady);
 
   useEffect(() => {
     const el = ref.current;

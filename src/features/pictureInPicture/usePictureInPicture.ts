@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useMediaReady } from '@components/MediaReadinessProvider/useMediaReady';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { PictureInPictureCanvas } from './PictureInPictureCanvas';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 /**
  * This hook constructs an internal Picture In Picture screen
@@ -12,7 +12,7 @@ import { PictureInPictureCanvas } from './PictureInPictureCanvas';
  * is available.
  */
 export function usePictureInPicture() {
-  const isReady = useMediaReady();
+  const isReady = useMediaReadiness((s) => s.isReady);
 
   const canvasRef = useRef<PictureInPictureCanvas | null>(null);
   const [active, setActive] = useState(false);

@@ -1,8 +1,8 @@
 import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 import { CanvasObjectKind } from '@providers/canvas/Canvas';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 export interface SpatialAudioProps
   extends Omit<React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>, 'ref'> {
@@ -38,7 +38,7 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
 
     // for autoPlay elements, we wait until user has interacted so
     // that media playback is successful.
-    const { isReady } = React.useContext(MediaReadinessContext);
+    const isReady = useMediaReadiness((s) => s.isReady);
     const canMount = !rest.autoPlay || isReady;
 
     // because the element doesn't have a volume attribute, to ensure we get the right

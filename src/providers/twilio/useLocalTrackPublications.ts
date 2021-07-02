@@ -1,11 +1,11 @@
 import { LocalDataTrack, LocalAudioTrack, LocalVideoTrack, TwilioError } from 'twilio-video';
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { logger } from '@utils/logger';
 import { RoomState } from '@constants/twilio';
 import { ReconnectingTwilioRoom } from './ReconnectingTwilioRoom';
 import { useLocalTracks } from '../media/hooks/useLocalTracks';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 function useTrackPublication(
   track: LocalAudioTrack | LocalVideoTrack | LocalDataTrack | null,
@@ -15,7 +15,7 @@ function useTrackPublication(
   const { t } = useTranslation();
   const roomState = room.room?.state;
   const localParticipant = room.room?.localParticipant;
-  const { isReady } = useContext(MediaReadinessContext);
+  const isReady = useMediaReadiness((s) => s.isReady);
 
   useEffect(() => {
     if (roomState !== RoomState.Connected) return;

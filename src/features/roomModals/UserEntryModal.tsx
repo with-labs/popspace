@@ -10,10 +10,8 @@ import i18n from '@src/i18n';
 import { makeStyles, Box, Typography } from '@material-ui/core';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { MAX_NAME_LENGTH } from '@src/constants';
-import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
-import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
+import { useRoomStore } from '@api/useRoomStore';
 import client from '@api/client';
-import { useLocalActorId } from '@api/useLocalActorId';
 import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
 import { Link } from '@components/Link/Link';
 import { Links } from '@constants/Links';
@@ -62,22 +60,21 @@ const useStyles = makeStyles((theme) => ({
 export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { isReady, onReady } = React.useContext(MediaReadinessContext);
 
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
-  const localId = useLocalActorId();
-  const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.actor);
-  const isOpen = !isReady && !!self;
+  const self = useRoomStore((room) => room.cacheApi.getCurrentUser());
+  const selfActor = self?.actor;
+  // show the modal if the user is an observer (hasn't yet entered the room)
+  const isOpen = !!self && self.isObserver;
 
-  const avatarName = self?.avatarName || randomSectionAvatar('brandedPatterns', self?.id);
+  const avatarName = selfActor?.avatarName || randomSectionAvatar('brandedPatterns', selfActor?.id);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
     client.participants.updateDisplayName(values.displayName);
     client.participants.updateAvatarName(avatarName);
     client.participants.enterMeeting();
-    onReady();
   };
 
   // TODO:
@@ -87,7 +84,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   // the userId (maybe write a work around to leave support open for signed in users)
   return (
     <Formik
-      initialValues={{ displayName: self?.displayName || '' }}
+      initialValues={{ displayName: selfActor?.displayName || '' }}
       enableReinitialize
       onSubmit={onSubmitHandler}
       validationSchema={validationSchema}

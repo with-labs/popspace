@@ -5,10 +5,10 @@ import throttle from 'lodash.throttle';
 import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
 import { logger } from '@utils/logger';
 import { RoomEvent } from '@constants/twilio';
-import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useTwilio } from '@providers/twilio/TwilioProvider';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 const UPDATE_INTERVAL = 300;
 // arbitrary, based on experimentation...
@@ -27,7 +27,7 @@ export const SpeakingStateObserver: React.FC = () => {
 
   const { audioTrack, dataTrack } = useLocalTracks();
 
-  const { isReady } = React.useContext(MediaReadinessContext);
+  const isReady = useMediaReadiness((s) => s.isReady);
 
   // a single, stable instance of SoundMeter we can plug our
   // audio tracks into

@@ -6,7 +6,6 @@ import { Person } from './people/Person';
 import { Widget } from './widgets/Widget';
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
-import { ChangelogModal } from '../roomControls/changelog/ChangelogModal';
 import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
 import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
 import { PageTitle } from '@components/PageTitle/PageTitle';
@@ -16,21 +15,12 @@ import { PasteConfirmModal } from './pasting/PasteConfirmModal';
 import { useBindPaste } from './pasting/useBindPaste';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Box } from '@material-ui/core';
-import { useExitToPreRoom } from '@hooks/useExitToPreRoom/useExitToPreRoom';
 import { SignUpModal } from '../roomModals/SignUpModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
 import { ReconnectingAlert } from './ReconnectingAlert';
 
 interface IRoomProps {}
-
-/**
- * Renders either the active Huddle or the Room itself
- * TODO: extract huddle branch upward, maybe at the page level?
- */
-export const Room: React.FC<IRoomProps> = () => {
-  return <RoomView />;
-};
 
 const selectWidgetIds = (room: RoomStateShape) => Object.keys(room.widgetPositions);
 const selectPeopleIds = (room: RoomStateShape) =>
@@ -40,14 +30,12 @@ const selectPeopleIds = (room: RoomStateShape) =>
     })
     .map(([id]) => id);
 
-export const RoomView = React.memo<IRoomProps>(() => {
+export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
 
-  // TODO: Do we still need this?
-  useExitToPreRoom();
   useBindPaste();
 
   return (
@@ -70,7 +58,6 @@ export const RoomView = React.memo<IRoomProps>(() => {
       </Box>
       <RoomSettingsModal />
       <SpeakingStateObserver />
-      <ChangelogModal />
       <UnsavedModal />
       <SignUpModal />
       <UserEntryModal />

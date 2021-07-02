@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useMediaReady } from '../MediaReadinessProvider/useMediaReady';
 import { Howl } from 'howler';
 import soundsMp3 from '../../sounds/sounds.mp3';
 import soundsWebm from '../../sounds/sounds.webm';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 export type SoundEffectName = 'join';
 
@@ -20,7 +20,7 @@ const howl = new Howl({
 
 export const SoundEffectProvider: React.FC = ({ children }) => {
   // we'll track the media readiness state and only begin playing sounds when it's ready.
-  const isReady = useMediaReady();
+  const isReady = useMediaReadiness((s) => s.isReady);
   // to keep the `play` callback reference stable we copy it to a ref
   const isReadyRef = React.useRef(isReady);
   React.useLayoutEffect(() => {

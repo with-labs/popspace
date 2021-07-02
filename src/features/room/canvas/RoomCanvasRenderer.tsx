@@ -5,7 +5,6 @@ import { useKeyboardControls } from '../../roomControls/viewport/useKeyboardCont
 import useMergedRefs from '@react-hook/merged-ref';
 import { FileDropLayer } from '../files/FileDropLayer';
 import { useRoomStore } from '@api/useRoomStore';
-import { MediaReadinessContext } from '@components/MediaReadinessProvider/MediaReadinessProvider';
 import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 import { useViewport } from '@providers/viewport/useViewport';
 import { mandarin as theme } from '../../../theme/theme';
@@ -74,8 +73,8 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
 
   const viewport = useViewport();
 
-  const userId = useRoomStore((room) => (room.sessionId && room.sessionLookup[room.sessionId]) ?? null);
-  const { isReady } = React.useContext(MediaReadinessContext);
+  const currentUser = useRoomStore((room) => room.cacheApi.getCurrentUser());
+  const isReady = currentUser && !currentUser.isObserver;
 
   // these need to be cached in refs so they don't invalidate the effect
   // below when the window size changes.
@@ -86,17 +85,18 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
     if (!isReady) return;
 
     const timeout = setTimeout(async () => {
-      if (!userId) return;
-
       // find user's position
       const room = useRoomStore.getState();
+      const userId = room.sessionId && room.sessionLookup[room.sessionId];
+      if (!userId) return;
+
       const userPosition = room.userPositions[userId];
       const point = userPosition.position;
 
       viewport.doMove(point, savedZoomRef.current, { origin: 'animation' });
     }, 1000);
     return () => clearTimeout(timeout);
-  }, [userId, isReady, viewport]);
+  }, [isReady, viewport]);
 
   const viewportProps = useViewportGestureControls(viewport, viewportElementRef, { initialZoom: INITIAL_ZOOM });
 

@@ -1,6 +1,5 @@
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { useMediaReady } from '@components/MediaReadinessProvider/useMediaReady';
 import {
   Accordion,
   AccordionDetails,
@@ -25,6 +24,7 @@ import { OnboardingStateShape, useOnboarding } from './useOnboarding';
 import moveVideo from '@src/videos/onboarding/move.mp4';
 import contentVideo from '@src/videos/onboarding/content.mp4';
 import persistenceVideo from '@src/videos/onboarding/persistence.mp4';
+import { useRoomStore } from '@api/useRoomStore';
 
 export interface IOnboardingPopupProps {}
 
@@ -69,7 +69,8 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
     setTimeout(() => actionRef.current?.updatePosition(), 300);
   };
 
-  const isReady = useMediaReady();
+  // wait for user to enter room
+  const isReady = useRoomStore((room) => !room.cacheApi.getCurrentUser()?.isObserver);
 
   const isOpen = !done && isReady;
 

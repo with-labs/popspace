@@ -37,12 +37,7 @@
         "videoId": "5qap5aO4i9A",
         "mediaState": { "timestamp": 0, "isPlaying": false, "playStartedTimestampUtc": null }
       },
-      { "size": { "width": 480, "height": 320 }, "position": { "x": -729.7002377717383, "y": -70.00233525815219 } }
-    ],
-    [
-      "WHITEBOARD",
-      { "whiteboardState": { "lines": [] } },
-      { "size": { "width": 720, "height": 528 }, "position": { "x": 256.3867187499998, "y": -503.0458135190213 } }
+      { "size": { "width": 480, "height": 320 }, "position": { "x": -1000, "y": 219 } }
     ]
   ]
 }

@@ -17,7 +17,7 @@
           { "attributes": { "header": 3 }, "insert": "\n" },
           { "insert": " " },
           { "attributes": { "list": "bullet" }, "insert": "\n" },
-          { "insert": "\nLIghtning rounds" },
+          { "insert": "\nLightning rounds" },
           { "attributes": { "header": 3 }, "insert": "\n" },
           { "insert": " " },
           { "attributes": { "list": "bullet" }, "insert": "\n" }

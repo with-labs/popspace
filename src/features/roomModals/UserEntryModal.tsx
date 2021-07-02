@@ -17,6 +17,7 @@ import { useLocalActorId } from '@api/useLocalActorId';
 import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
 import { Link } from '@components/Link/Link';
 import { Links } from '@constants/Links';
+import { randomSectionAvatar } from '@constants/AvatarMetadata';
 
 interface IUserEntryModalProps {}
 
@@ -63,17 +64,18 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const classes = useStyles();
   const { isReady, onReady } = React.useContext(MediaReadinessContext);
 
-  const isOpen = !isReady;
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
   const localId = useLocalActorId();
   const self = useRoomStore((room: RoomStateShape) => room.users[localId ?? '']?.actor);
+  const isOpen = !isReady && !!self;
+
+  const avatarName = self?.avatarName || randomSectionAvatar('brandedPatterns', self?.id);
 
   const onSubmitHandler = (values: { displayName: string }) => {
     closeModal('userEntry');
-    client.participants.updateSelf({
-      displayName: values.displayName,
-    });
+    client.participants.updateDisplayName(values.displayName);
+    client.participants.updateAvatarName(avatarName);
     client.participants.enterMeeting();
     onReady();
   };
@@ -101,7 +103,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                 userData={{
                   userId: '',
                   displayName: values.displayName,
-                  avatarName: self?.avatarName,
+                  avatarName: avatarName,
                 }}
               />
             </Box>

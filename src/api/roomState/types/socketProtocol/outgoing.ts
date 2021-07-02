@@ -70,13 +70,17 @@ export interface OutgoingUpdateParticipantMessage extends BaseOutgoingSocketMess
   };
 }
 
-export interface OutgoingUpdateSelfActorMessage extends BaseOutgoingSocketMessage {
-  kind: 'updateSelfActor';
+export interface OutgoingUpdateSelfDisplayNameMessage extends BaseOutgoingSocketMessage {
+  kind: 'updateSelfDisplayName';
   payload: {
-    actor: {
-      displayName?: string;
-      avatarName?: string;
-    };
+    displayName: string;
+  };
+}
+
+export interface OutgoingUpdateSelfAvatarNameMessage extends BaseOutgoingSocketMessage {
+  kind: 'updateSelfAvatarName';
+  payload: {
+    avatarName: string;
   };
 }
 
@@ -139,4 +143,5 @@ export type OutgoingSocketMessage =
   | OutgoingPassthroughMessage
   | OutgoingUpdateMicState
   | OutgoingUpdateVideoState
-  | OutgoingUpdateSelfActorMessage;
+  | OutgoingUpdateSelfDisplayNameMessage
+  | OutgoingUpdateSelfAvatarNameMessage;

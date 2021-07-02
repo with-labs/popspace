@@ -20,11 +20,14 @@ import clsx from 'clsx';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { OnboardingStateShape, useOnboarding } from './useOnboarding';
+import { Analytics } from '@analytics/Analytics';
 
 import moveVideo from '@src/videos/onboarding/move.mp4';
 import contentVideo from '@src/videos/onboarding/content.mp4';
 import persistenceVideo from '@src/videos/onboarding/persistence.mp4';
 import { useRoomStore } from '@api/useRoomStore';
+
+const ANALYTICS_ID = 'gettingStarted';
 
 export interface IOnboardingPopupProps {}
 
@@ -74,6 +77,26 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
 
   const isOpen = !done && isReady;
 
+  // Analytic setup
+  React.useEffect(() => {
+    if (isOpen) {
+      Analytics.trackEvent(`${ANALYTICS_ID}_visted`, new Date().toUTCString());
+    }
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    function trackClosing() {
+      // the page was closed before interacting with it
+      Analytics.trackEvent(`${ANALYTICS_ID}_closed`, latestUndone);
+    }
+
+    window.addEventListener('beforeunload', trackClosing);
+
+    return () => {
+      window.removeEventListener('beforeunload', trackClosing);
+    };
+  }, [latestUndone]);
+
   return (
     <Grow in={isOpen}>
       <Box
@@ -90,7 +113,12 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
       >
         <Box display="flex" justifyContent="space-between" p={2}>
           <Typography variant="h2">{t('features.onboarding.title')}</Typography>
-          <IconButton onClick={api.markAll}>
+          <IconButton
+            onClick={() => {
+              Analytics.trackEvent(`${ANALYTICS_ID}_dismiss`, latestUndone);
+              api.markAll();
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
@@ -124,7 +152,13 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
             onChange={() => openSection('hasAcknowledgedPersistence')}
             videoSrc={persistenceVideo}
           >
-            <Button onClick={() => api.markComplete('hasAcknowledgedPersistence')} color="primary">
+            <Button
+              onClick={() => {
+                Analytics.trackEvent(`${ANALYTICS_ID}_completed`, new Date().toUTCString());
+                api.markComplete('hasAcknowledgedPersistence');
+              }}
+              color="primary"
+            >
               {t('common.confirm')}
             </Button>
           </OnboardingStep>

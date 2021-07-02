@@ -7,6 +7,7 @@ import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import toast from 'react-hot-toast';
+import { Analytics } from '@analytics/Analytics';
 
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import { logger } from '@utils/logger';
@@ -19,6 +20,8 @@ import outlook from './images/outlook.png';
 import chrome from './images/chrome.png';
 import slack from './images/slack.png';
 import { mandarin } from '@src/theme/theme';
+
+const ANALYTICS_PAGE_ID = 'page_meetingLink';
 
 export interface IMeetingLinkProps extends RouteComponentProps<{ meetingRoute: string }> {}
 
@@ -63,10 +66,27 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false, 3000);
+  const [hasInteracted, setHasInteracted] = React.useState(false);
 
   const meetingUrl = `${window.location.origin}/${meetingRoute}`;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+  }, []);
+
+  React.useEffect(() => {
+    function trackClosing() {
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_closed`, hasInteracted);
+    }
+
+    window.addEventListener('beforeunload', trackClosing);
+
+    return () => {
+      window.removeEventListener('beforeunload', trackClosing);
+    };
+  }, [hasInteracted]);
 
   React.useEffect(() => {
     if (inputRef.current) {
@@ -75,13 +95,16 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
   }, []);
 
   const onCopyLink = async () => {
+    if (!hasInteracted) {
+      setHasInteracted(true);
+    }
+
     try {
       setToggleCopyButton(true);
       await navigator.clipboard.writeText(meetingUrl);
-      // todo: add analytics
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'copyLink');
     } catch (err) {
-      // todo: i18n
-      toast.error(`Error copying public invite link`);
+      toast.error(t('pages.meetingLink.copyErrorMsg') as string);
       logger.error(err);
     }
   };
@@ -121,6 +144,12 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
                   to={`/${meetingRoute}`}
                   newTab={false}
                   style={{ flexBasis: 'auto', flexShrink: 0 }}
+                  onClick={() => {
+                    if (!hasInteracted) {
+                      setHasInteracted(true);
+                    }
+                    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'joinRoom');
+                  }}
                 >
                   <Button tabIndex={-1} fullWidth={false}>
                     {t('pages.meetingLink.joinRoomButton')}
@@ -139,21 +168,45 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           iconSrc={slack}
           iconAlt={t('pages.meetingLink.extensions.slack.iconAlt')}
           label={t('pages.meetingLink.extensions.slack.label')}
+          onClick={() => {
+            if (!hasInteracted) {
+              setHasInteracted(true);
+            }
+            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installSlack');
+          }}
         />
         <ExtensionCard
           iconSrc={chrome}
           iconAlt={t('pages.meetingLink.extensions.browser.chomeIconAlt')}
           label={t('pages.meetingLink.extensions.browser.label')}
+          onClick={() => {
+            if (!hasInteracted) {
+              setHasInteracted(true);
+            }
+            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installChrome');
+          }}
         />
         <ExtensionCard
           iconSrc={outlook}
           iconAlt={t('pages.meetingLink.extensions.outlook.iconAlt')}
           label={t('pages.meetingLink.extensions.outlook.label')}
+          onClick={() => {
+            if (!hasInteracted) {
+              setHasInteracted(true);
+            }
+            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'outlookInvite');
+          }}
         />
         <ExtensionCard
           iconSrc={gcal}
           iconAlt={t('pages.meetingLink.extensions.google.iconAlt')}
           label={t('pages.meetingLink.extensions.google.label')}
+          onClick={() => {
+            if (!hasInteracted) {
+              setHasInteracted(true);
+            }
+            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'gCalInvite');
+          }}
         />
       </Spacing>
     </CenterColumnPage>

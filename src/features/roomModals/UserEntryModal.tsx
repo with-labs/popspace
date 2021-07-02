@@ -16,6 +16,9 @@ import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
 import { Link } from '@components/Link/Link';
 import { Links } from '@constants/Links';
 import { randomSectionAvatar } from '@constants/AvatarMetadata';
+import { Analytics } from '@analytics/Analytics';
+
+const ANALYTICS_ID = 'entryModal';
 
 interface IUserEntryModalProps {}
 
@@ -70,7 +73,32 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
 
   const avatarName = selfActor?.avatarName || randomSectionAvatar('brandedPatterns', selfActor?.id);
 
+  React.useEffect(() => {
+    Analytics.trackEvent(`${ANALYTICS_ID}_visted`, new Date().toUTCString());
+  }, []);
+
+  React.useEffect(() => {
+    function trackClosing() {
+      // not much to interact with in this state, so we can just set it false
+      // since it will be unloaded
+      Analytics.trackEvent(`${ANALYTICS_ID}_closed`, false);
+    }
+
+    window.addEventListener('beforeunload', trackClosing);
+
+    return () => {
+      window.removeEventListener('beforeunload', trackClosing);
+    };
+  }, []);
+
   const onSubmitHandler = (values: { displayName: string }) => {
+    if (self?.displayName && values.displayName !== self.displayName) {
+      Analytics.trackEvent(`${ANALYTICS_ID}_displayName_channged`, true, {
+        oldName: self.displayName,
+        newName: values.displayName,
+      });
+    }
+
     closeModal('userEntry');
     client.participants.updateDisplayName(values.displayName);
     client.participants.updateAvatarName(avatarName);

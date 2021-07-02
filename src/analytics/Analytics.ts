@@ -1,6 +1,5 @@
 // Abstraction around our analytics lib
 import { EventNames } from './constants';
-import { ActorShape } from '@api/roomState/types/participants';
 import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
@@ -55,7 +54,7 @@ const removeLocalAnalyticsData = (eventName: string) => {
 
 // trackEvent
 // wrapper around the main track event
-const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key: string]: any }) => {
+const trackEvent = (eventName: EventNames | string, value?: any, eventProperties?: { [key: string]: any }) => {
   const eventMetaData = {
     roomId: client.roomId,
     ...eventProperties,
@@ -63,21 +62,6 @@ const trackEvent = (eventName: EventNames, value?: any, eventProperties?: { [key
 
   // call the api actor event tracker endpoint
   api.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventMetaData });
-};
-
-const trackUserEvent = (roomId: string | null, eventPayload: Partial<ActorShape>) => {
-  // track the avatar change event
-  if (eventPayload.hasOwnProperty('avatarName')) {
-    trackEvent(EventNames.CHANGED_AVATAR, null, {
-      roomId: roomId,
-      avatarName: eventPayload.avatarName,
-    });
-  } else if (eventPayload.hasOwnProperty('displayName')) {
-    // track the display name changed event
-    Analytics.trackEvent(EventNames.CHANGED_DISPLAYNAME, null, {
-      roomId: roomId,
-    });
-  }
 };
 
 const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<WidgetState>) => {
@@ -93,6 +77,5 @@ const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<Wid
 
 export const Analytics = {
   trackEvent: trackEvent,
-  trackUserEvent: trackUserEvent,
   trackWidgetUpdateEvent: trackWidgetUpdateEvent,
 };

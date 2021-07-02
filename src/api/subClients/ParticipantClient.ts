@@ -1,4 +1,3 @@
-import { Analytics } from '@analytics/Analytics';
 import { ApiCoreClient } from '@api/ApiCoreClient';
 import {
   IncomingActorUpdatedMessage,
@@ -96,10 +95,6 @@ export class ParticipantClient extends ApiSubClient {
       kind: 'updateSelfDisplayName',
       payload: { displayName },
     });
-
-    Analytics.trackUserEvent(this.core.roomId, {
-      displayName,
-    });
   };
 
   updateAvatarName = (avatarName: string) => {
@@ -111,10 +106,6 @@ export class ParticipantClient extends ApiSubClient {
     this.core.socket.send({
       kind: 'updateSelfAvatarName',
       payload: { avatarName },
-    });
-
-    Analytics.trackUserEvent(this.core.roomId, {
-      avatarName,
     });
   };
 }

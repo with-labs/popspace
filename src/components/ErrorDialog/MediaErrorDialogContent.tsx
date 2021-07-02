@@ -38,7 +38,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
               Something unexpected happened when requesting your device permissions. Please double check your
               <Link to={`${Links.HELP_PORTAL}/with-help-center/browser-permission`}>browser settings</Link> and try
               again. If this issue persists, please contact us directly at
-              <Link to={`mailto:${USER_SUPPORT_EMAIL}`}>support@with.so.</Link>.
+              <Link to={`mailto:${USER_SUPPORT_EMAIL}`}>support@tilde.so.</Link>.
             </Trans>
           </DialogContentText>
           {code && (

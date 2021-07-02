@@ -1,5 +1,8 @@
 import create from 'zustand';
 import { combine } from 'zustand/middleware';
+import { Analytics } from '@analytics/Analytics';
+
+const ANALYTICS_ID = 'gettingStarted';
 
 export type OnboardingStateShape = {
   hasMoved: boolean;
@@ -39,6 +42,7 @@ export const useOnboarding = create(
       markComplete: (step: keyof OnboardingStateShape) => {
         // bail early if the flag is already set, avoid writing state
         if (get()[step]) return;
+        Analytics.trackEvent(`${ANALYTICS_ID}_completedStep`, step);
         set({
           [step]: true,
         });

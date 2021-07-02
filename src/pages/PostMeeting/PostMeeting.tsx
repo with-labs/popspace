@@ -6,7 +6,7 @@ import { RouteNames } from '@constants/RouteNames';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import api from '@api/client';
 import { Form, Formik } from 'formik';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
@@ -15,6 +15,9 @@ import { Logo } from '@components/Logo/Logo';
 import { Spacing } from '@components/Spacing/Spacing';
 import * as Yup from 'yup';
 import i18n from '@src/i18n';
+import { Analytics } from '@analytics/Analytics';
+
+const ANALYTICS_PAGE_ID = 'page_postMeeting';
 
 export interface PostMeetingProps extends RouteComponentProps<{ roomRoute: string }> {}
 
@@ -50,8 +53,27 @@ export function PostMeeting({ match }: PostMeetingProps) {
     done: false,
   });
 
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  useEffect(() => {
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+  }, []);
+
+  useEffect(() => {
+    function trackClosing() {
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_closed`, hasInteracted);
+    }
+
+    window.addEventListener('beforeunload', trackClosing);
+
+    return () => {
+      window.removeEventListener('beforeunload', trackClosing);
+    };
+  }, [hasInteracted]);
+
   const submitRating = async (rating: number) => {
     try {
+      setHasInteracted(true);
       setState((cur) => ({ ...cur, rating }));
 
       let result: { success: boolean; message?: string; ratingId: number; rating: number };
@@ -61,6 +83,8 @@ export function PostMeeting({ match }: PostMeetingProps) {
       } else {
         result = await api.experienceRatings.submitExperienceRating({ rating, roomRoute: match.params.roomRoute });
       }
+
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_rating`, rating, { rating, roomRoute: match.params.roomRoute });
 
       setState({ ratingId: result.ratingId, rating: result.rating, done: false });
     } catch (err) {
@@ -116,7 +140,13 @@ export function PostMeeting({ match }: PostMeetingProps) {
             <Typography variant="h2" gutterBottom>
               {t('pages.postMeeting.surveyThanks')}
             </Typography>
-            <Link to={RouteNames.CREATE_MEETING} disableStyling>
+            <Link
+              to={RouteNames.CREATE_MEETING}
+              disableStyling
+              onClick={() => {
+                Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_createNewMeeting`, true);
+              }}
+            >
               <Button color="primary" tabIndex={-1}>
                 {t('pages.postMeeting.createAnother')}
               </Button>
@@ -124,7 +154,10 @@ export function PostMeeting({ match }: PostMeetingProps) {
           </Spacing>
         ) : collectFeedback ? (
           <Formik
-            onSubmit={(data) => submitFeedback(data.feedback)}
+            onSubmit={(data) => {
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, true);
+              submitFeedback(data.feedback);
+            }}
             initialValues={{ feedback: '' }}
             validateOnBlur
             validateOnMount
@@ -143,7 +176,14 @@ export function PostMeeting({ match }: PostMeetingProps) {
                 }
               />
               <Spacing justifyContent="flex-end" width="100%">
-                <Button onClick={onDone} color="default" fullWidth={false}>
+                <Button
+                  onClick={() => {
+                    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, false);
+                    onDone();
+                  }}
+                  color="default"
+                  fullWidth={false}
+                >
                   {t('pages.postMeeting.skipSurvey')}
                 </Button>
                 <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>

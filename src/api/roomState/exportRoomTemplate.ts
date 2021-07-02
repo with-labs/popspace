@@ -1,7 +1,7 @@
 import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { WidgetShape, WidgetState, WidgetType } from './types/widgets';
 import { RoomStateShape } from '@api/useRoomStore';
-import { notepadRegistry } from '@features/room/widgets/notepad/nodepadRegistry';
+import { notepadRegistry } from '@features/room/widgets/notepad/notepadRegistry';
 
 // we need to generate new widget IDs or owners when we create a new room,
 // hence the change in format - we don't store ID data or key on it, and

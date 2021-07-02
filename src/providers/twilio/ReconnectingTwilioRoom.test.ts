@@ -3,6 +3,7 @@ jest.mock('twilio-video');
 jest.mock('@api/client', () => ({
   connectToMeeting: jest.fn().mockResolvedValue('token'),
 }));
+jest.mock('@utils/logger');
 
 describe('ReconnectingTwilioRoom wrapper', () => {
   it('connects to Twilio, and reconnects on disconnect error', async () => {

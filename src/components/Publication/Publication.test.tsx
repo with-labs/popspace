@@ -3,7 +3,6 @@ import Publication from './Publication';
 import { render } from '@testing-library/react';
 import useTrack from '@providers/twilio/hooks/useTrack';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { MediaReadinessContext } from '../MediaReadinessProvider/MediaReadinessProvider';
 import { CAMERA_TRACK_NAME } from '@constants/User';
 
 jest.mock('@providers/twilio/hooks/useTrack');
@@ -17,6 +16,10 @@ mockUseSpatialAudioVolume.mockImplementation(() => {
 
 jest.mock('@providers/canvas/CanvasObject', () => ({
   useCanvasObject: jest.fn(() => ({ mediaGroup: null, objectId: 'mockParticipant', objectKind: 'widget' })),
+}));
+
+jest.mock('@providers/media/useMediaReadiness', () => ({
+  useMediaReadiness: jest.fn(() => true),
 }));
 
 describe('the Publication component', () => {
@@ -69,11 +72,7 @@ describe('the Publication component', () => {
         detach: jest.fn(),
         setPriority: jest.fn(),
       }));
-      const wrapper = render(
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-          <Publication isLocal publication={{ trackName: 'trackName' } as any} />
-        </MediaReadinessContext.Provider>
-      );
+      const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('audio').length).toBe(1);
     });
@@ -87,9 +86,7 @@ describe('the Publication component', () => {
         setPriority: jest.fn(),
       }));
       const wrapper = render(
-        <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-          <Publication isLocal publication={{ trackName: 'trackName' } as any} disableAudio={true} />
-        </MediaReadinessContext.Provider>
+        <Publication isLocal publication={{ trackName: 'trackName' } as any} disableAudio={true} />
       );
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
       expect(wrapper.container.querySelectorAll('audio').length).toBe(0);
@@ -98,11 +95,7 @@ describe('the Publication component', () => {
 
   it('should render null when there is no track', () => {
     mockUseTrack.mockImplementation(() => null);
-    const wrapper = render(
-      <MediaReadinessContext.Provider value={{ isReady: true, onReady: jest.fn(), resetReady: jest.fn() }}>
-        <Publication isLocal publication={{ trackName: 'trackName' } as any} />
-      </MediaReadinessContext.Provider>
-    );
+    const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
     expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
     expect(wrapper.container.querySelectorAll('*').length).toBe(0);
   });

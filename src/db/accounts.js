@@ -59,7 +59,8 @@ class Accounts {
       const actor = await tx.actors.insert({
         kind: kind
       })
-      const event = await shared.db.events.actorCreateEvent(actor.id, source, expressRequest, tx)
+      const sessionId = null
+      const event = await shared.db.events.actorCreateEvent(actor.id, sessionId, source, expressRequest, tx)
       return actor
     })
   }
@@ -73,20 +74,6 @@ class Accounts {
       action: "login"
     }
     return await shared.db.pg.massive.magic_codes.insert(loginRequest)
-  }
-
-  async resolveLoginRequest(code, req) {
-    const request = await shared.db.pg.massive.magic_codes.findOne({
-      code: code,
-      action: "login"
-    })
-    const verification = shared.lib.otp.verify(request, code)
-    if(verification.error != null) {
-      return verification
-    }
-    // TODO: resolve the request
-    const session = await this.createSession(request.actor_id, null, req)
-    return { session: session }
   }
 
   async createSession(actorId, tx=null, req=null) {
@@ -110,45 +97,6 @@ class Accounts {
     const eventValue = null
     await shared.db.events.recordEvent(actorId, session.id, "session", eventValue, req, meta, tx)
     return session
-  }
-
-  tokenFromSession(session) {
-    return JSON.stringify({
-      /*
-        At scale, we should use an O(1) store keyed on secrets,
-        since btrees on random strings are quite inefficient (i.e.
-        postgres is inefficient for session tokens).
-
-        I thought about adding the actor or session ID to the token
-        to speed up the query search.
-
-        It'd work! But I think we don't want to leak our internal
-        primary (enumerable) IDs. When we're at scale, we should be in
-        an O(1) store for sessions anyway, so performance doesn't matter.
-      */
-      secret: session.secret
-    })
-  }
-
-  async sessionFromToken(sessionToken) {
-    const sessionObject = JSON.parse(sessionToken)
-    const session = await shared.db.pg.massive.sessions.findOne({secret: sessionObject.secret})
-    if(!session || shared.lib.otp.isExpired(session)) {
-      return null
-    } else {
-      return session
-    }
-  }
-
-  async needsNewSessionToken(sessionToken, actor) {
-    if(!sessionToken) {
-      return true
-    }
-    const session = await this.sessionFromToken(sessionToken)
-    if(!session) {
-      return true
-    }
-    return parseInt(session.actor_id) != parseInt(actor.id)
   }
 
   async newsletterSubscribe(actorId) {

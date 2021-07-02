@@ -46,20 +46,25 @@ class HttpClient {
     })
   }
 
-  async logIn(actor) {
+  async forceLogIn(actor) {
     this.actor = actor
-    this.session = await shared.db.pg.massive.sessions.findOne({
+    let session = await shared.db.pg.massive.sessions.findOne({
       actor_id: this.actor.id,
       revoked_at: null
     })
 
-    if(!this.session) {
-      this.session = await shared.db.pg.massive.sessions.insert({
+    if(!session) {
+      session = await shared.db.pg.massive.sessions.insert({
         actor_id: actor.id,
         secret: shared.lib.otp.generate()
       })
     }
-    this.token = await shared.lib.auth.tokenFromSession(this.session)
+    return await this.setSession(session)
+  }
+
+  async setSession(session) {
+    this.session = session
+    this.token = await shared.lib.auth.tokenFromSession(session)
     return { session: this.session, token: this.token }
   }
 }

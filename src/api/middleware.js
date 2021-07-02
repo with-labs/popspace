@@ -11,7 +11,7 @@ const middleware = {
     if (!token) {
       return next()
     }
-    const session = await shared.db.accounts.sessionFromToken(token)
+    const session = await shared.lib.auth.sessionFromToken(token)
     if (!session) {
       return next()
     }

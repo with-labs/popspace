@@ -15,7 +15,7 @@ HttpClient.create = async (host, certificate, port) => {
 
 HttpClient.forActor = async (actor, host, certificate, port) => {
   const client = new shared.net.HttpClient(host, certificate, port)
-  await client.logIn(actor)
+  await client.forceLogIn(actor)
   return client
 }
 

@@ -92,9 +92,9 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   }, []);
 
   const onSubmitHandler = (values: { displayName: string }) => {
-    if (self?.displayName && values.displayName !== self.displayName) {
+    if (self?.actor.displayName && values.displayName !== self?.actor.displayName) {
       Analytics.trackEvent(`${ANALYTICS_ID}_displayName_channged`, true, {
-        oldName: self.displayName,
+        oldName: self.actor.displayName,
         newName: values.displayName,
       });
     }

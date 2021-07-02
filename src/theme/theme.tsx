@@ -35,6 +35,11 @@ const silkaFonts = [
     fontWeight: 'bold',
     src: webfontCollection('bold'),
   },
+  {
+    fontFamily: 'Silka',
+    fontWeight: 900,
+    src: webfontCollection('black'),
+  },
 ];
 
 declare module '@material-ui/core/styles/createMuiTheme' {

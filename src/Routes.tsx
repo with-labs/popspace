@@ -39,7 +39,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
       <Route
         path="/:roomRoute"
         render={(renderProps) => {
-          return <RoomPage roomRoute={renderProps.match.params.roomRoute || null} />;
+          return <RoomPage roomRoute={renderProps.match.params.roomRoute} />;
         }}
       />
     </Switch>

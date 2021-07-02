@@ -2,6 +2,14 @@ require("../../test/_test.js")
 const scenarios = require("./rooms_scenarios.js")
 
 shared.test.TestTemplate.describeWithLib("rooms", () => {
+  test("can successfully generate a new meeting URL", async () => {
+    const result = await scenarios["meeting_url"]()
+    const response = result.response
+    expect(response.success).toEqual(true)
+    expect(response.url).toBeTruthy()
+    expect(response.urlId).toBeTruthy()
+  })
+
   test("should successfully get opengraph data", async () => {
     const result = await scenarios["opengraph"]()
     const response = result.response

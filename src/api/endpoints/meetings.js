@@ -111,6 +111,7 @@ class Meetings {
         Creates a meeting from a template and returns a URL to it
       */
       const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.template_name, req)
+
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()

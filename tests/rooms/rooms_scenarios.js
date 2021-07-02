@@ -3,7 +3,7 @@ module.exports = {
     const response = await client.post('/meeting_url', {
       template_name: "slack_room",
       template: {
-        state: { display_name: "new room" },
+        display_name: "new room",
         widgets: []
       }
     });

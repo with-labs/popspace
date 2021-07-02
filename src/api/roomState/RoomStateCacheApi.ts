@@ -267,4 +267,11 @@ export class RoomStateCacheApi {
   exportTemplate = () => {
     return JSON.stringify(exportRoomTemplate(this.get())).replaceAll('\\"', '"').replaceAll('\\\n', '\\n');
   };
+  getCurrentUser = () => {
+    const { sessionLookup, users, sessionId } = this.get();
+    if (!sessionId) return null;
+    const userId = sessionLookup[sessionId];
+    if (!userId) return null;
+    return users[userId] || null;
+  };
 }

@@ -4,6 +4,8 @@ import { EventEmitter } from 'events';
 import { createLocalVideoTrack, createLocalAudioTrack } from 'twilio-video';
 import { MediaTrackEvent } from '@constants/twilio';
 
+jest.mock('@utils/logger');
+
 jest.mock('twilio-video', () => ({
   createLocalAudioTrack: jest.fn(),
   createLocalVideoTrack: jest.fn(),

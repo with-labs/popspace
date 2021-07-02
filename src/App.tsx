@@ -7,7 +7,6 @@ import { Routes } from './Routes';
 import { FlaggProvider } from 'flagg/dist/react';
 import { featureFlags } from './featureFlags';
 import history from './history';
-import { MediaReadinessProvider } from './components/MediaReadinessProvider/MediaReadinessProvider';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
 // import { useCrisp } from './hooks/useCrisp/useCrisp';
@@ -34,11 +33,9 @@ export const App: React.FC<IAppProps> = () => {
               <NotSupported />
             ) : (
               <AppStateProvider>
-                <MediaReadinessProvider>
-                  <SoundEffectProvider>
-                    <Routes />
-                  </SoundEffectProvider>
-                </MediaReadinessProvider>
+                <SoundEffectProvider>
+                  <Routes />
+                </SoundEffectProvider>
               </AppStateProvider>
             )}
           </Router>

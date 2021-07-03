@@ -80,7 +80,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   // Analytic setup
   React.useEffect(() => {
     if (isOpen) {
-      Analytics.trackEvent(`${ANALYTICS_ID}_visted`, new Date().toUTCString());
+      Analytics.trackEvent(`${ANALYTICS_ID}_visited`, new Date().toUTCString());
     }
   }, [isOpen]);
 

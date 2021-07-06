@@ -592,10 +592,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@1.1.15":
-  version "1.1.15"
-  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.1.15.tgz#56553160ce94efde417663019969ef32f88bd13b"
-  integrity sha512-vVjbvG9SstydTXOPCgLuYfNu+zCw23Q4IHrj2sKSIaPwsr0E7uN8Y5YFS7UhYdWxDtumYQ/GoRZskq1XGuv8XA==
+"@withso/noodle-shared@1.1.16":
+  version "1.1.16"
+  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.1.16.tgz#207aa38134028edd9506ac2c8b3e850f42ab4e46"
+  integrity sha512-suWtiRjnZwAqdCirhZKsPCOzVXyaMAMERseqx21WmKaGnHln8ZpiIh4F79D5R5A27RwBdgaQJ4Ou8DZZKPsJNA==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"

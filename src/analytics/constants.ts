@@ -33,6 +33,7 @@ export enum EventNames {
   CREATE_MEETING_FROM_TEMPLATE = 'create_meeting_from_template',
   LEAVE_ROOM_BUTTON_PRESSED = 'leave_room_button_pressed',
   COPY_LINK_BUTTON_PRESSED = 'copy_link_button_pressed',
+  TOGGLE_SCREENSHARE = 'toggle_screenshare',
 }
 
 export enum Origin {
@@ -44,6 +45,7 @@ export enum Origin {
   ONBOARDING = 'onboarding',
   DASHBOARD = 'dashboard',
   INVITE = 'invite',
+  DRAG_N_DROP = 'drag_n_drop',
 }
 
 export enum StatusUpdate {

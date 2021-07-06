@@ -43,7 +43,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
   });
 
   React.useEffect(() => {
-    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visited`, new Date().toUTCString());
   }, []);
 
   React.useEffect(() => {

@@ -1,10 +1,6 @@
 import { EventEmitter } from 'events';
 import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
-import { ErrorCodes } from '@constants/ErrorCodes';
 import { RoomEvent, RoomState } from '@constants/twilio';
-import { FatalError } from '../../errors/FatalError';
-import i18n from '../../i18n';
-import client from '@api/client';
 import { logger } from '@utils/logger';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
@@ -36,7 +32,7 @@ export enum TwilioStatus {
 }
 
 export class ReconnectingTwilioRoom extends EventEmitter {
-  private roomName: string | null = null;
+  private token: string | null = null;
   private _room: Room | null = null;
   private lastDisconnectErrorTime: Date | null = null;
   /** A flag for whether any current disconnection state was intentional */
@@ -62,15 +58,11 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     return this._room ? (this._room.state as TwilioStatus) : TwilioStatus.Closed;
   }
 
-  connect = async () => {
-    if (!this.roomName) {
-      logger.critical(`ReconnectingTwilioRoom: tried to connect with no room name supplied`);
-      throw new FatalError(i18n.t('error.messages.unknownRoom'), ErrorCodes.ROOM_NOT_FOUND);
-    }
+  connect = async (token: string) => {
     this.emit('connecting');
+    this.token = token;
     try {
-      const tokenResult = await client.connectToMeeting(this.roomName);
-      this._room = await Video.connect(tokenResult, this.options);
+      this._room = await Video.connect(token, this.options);
       this.emit('connected', this._room);
       this.emit('roomChanged', this._room);
       this._room.setMaxListeners(40);
@@ -116,7 +108,12 @@ export class ReconnectingTwilioRoom extends EventEmitter {
       this.lastDisconnectErrorTime = new Date();
       this.emit('reconnecting');
       try {
-        await this.connect();
+        if (!this.token) {
+          logger.error('Cannot reconnect Twilio room if we did not connect already');
+          this.emit('disconnected');
+        } else {
+          await this.connect(this.token);
+        }
       } catch (err) {
         logger.error(err);
         this.emit('disconnected');
@@ -141,13 +138,13 @@ export class ReconnectingTwilioRoom extends EventEmitter {
 
   reconnect = () => {
     this.room?.disconnect();
-    return this.connect();
-  };
-
-  setRoom = (roomName: string) => {
-    if (roomName === this.roomName) return Promise.resolve(this._room);
-    this.roomName = roomName;
-    return this.reconnect();
+    if (!this.token) {
+      logger.error('Cannot reconnect Twilio room if we did not connect already');
+      this.emit('disconnected');
+      return Promise.resolve();
+    } else {
+      return this.connect(this.token);
+    }
   };
 
   get room() {
@@ -166,7 +163,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     logger.info(`Reconnected to the internet (Twilio status: ${this._room ? this._room.state : 'Idle'})`);
     // if the browser was offline and has returned, check Twilio connection state -
     // if Twilio is already reconnecting we're good, otherwise force a reconnect
-    if (this.roomName && (!this._room || this._room?.state === RoomState.Disconnected)) {
+    if (!this._room || this._room?.state === RoomState.Disconnected) {
       logger.info(`Reconnecting to Twilio room manually after offline`);
       this.reconnect().catch((err) => {
         logger.error(`Error reconnecting Twilio after offline`, err);

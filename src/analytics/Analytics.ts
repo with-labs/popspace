@@ -5,6 +5,7 @@ import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
 import api from '@api/client';
 import client from '@api/client';
+import { getRef } from '@analytics/analyticsRef';
 
 // Helper methods
 // WIP for more complex data calculation, not needed right now
@@ -57,6 +58,7 @@ const removeLocalAnalyticsData = (eventName: string) => {
 const trackEvent = (eventName: EventNames | string, value?: any, eventProperties?: { [key: string]: any }) => {
   const eventMetaData = {
     roomId: client.roomId,
+    ref: getRef(),
     ...eventProperties,
   };
 

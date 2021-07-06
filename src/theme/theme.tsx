@@ -1145,6 +1145,9 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           backgroundColor: brandPalette.lavender.wash,
           border: 'none',
           margin: `${spacing(1)}px 0`,
+          '&$disabled': {
+            backgroundColor: brandPalette.lavender.wash,
+          },
         },
       },
       MuiAccordionDetails: {
@@ -1156,6 +1159,10 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         root: {
           '&$expanded': {
             minHeight: 24,
+          },
+          '&$disabled': {
+            color: palette.common.black,
+            opacity: 1,
           },
         },
         content: {

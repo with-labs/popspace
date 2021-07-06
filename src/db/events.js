@@ -27,7 +27,10 @@ class Events {
     return shared.db.events.recordEvent(actorId, sessionId, key, templateName, expressRequest, meta, tx)
   }
 
-  async recordEvent(actorId, sessionId, key, value, expressRequest={headers:{}, socket: {}}, meta=null, tx=null) {
+  async recordEvent(actorId, sessionId, key, value, expressRequest=null, meta=null, tx=null) {
+    if(!expressRequest) {
+      expressRequest = {headers:{}, socket: {}}
+    }
     const ua = userAgentParser(expressRequest.headers ? expressRequest.headers['user-agent'] : "")
     const txOrMassive = tx || shared.db.pg.massive
     return txOrMassive.actor_events.insert({

@@ -25,7 +25,7 @@ export function useTwilio() {
   return ctx;
 }
 
-export const TwilioProvider: React.FC<{ roomRoute: string }> = ({ roomRoute, children, ...rest }) => {
+export const TwilioProvider: React.FC<{ token: string }> = ({ token, children, ...rest }) => {
   const [connection] = useState<ReconnectingTwilioRoom>(() => new ReconnectingTwilioRoom(TWILIO_CONNECTION_OPTIONS));
 
   // disconnect and cleanup when this component is unmounted
@@ -47,10 +47,10 @@ export const TwilioProvider: React.FC<{ roomRoute: string }> = ({ roomRoute, chi
   }, [connection]);
 
   useEffect(() => {
-    connection.setRoom(roomRoute).catch((err) => {
-      logger.critical(`Failed to connect to Twilio room ${roomRoute}`, err);
+    connection.connect(token).catch((err) => {
+      logger.critical(`Failed to connect to Twilio room`, err);
     });
-  }, [roomRoute, connection]);
+  }, [token, connection]);
 
   // keep track of room connection state for context
   const [status, setStatus] = useState<TwilioStatus>(connection.status);

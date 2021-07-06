@@ -17,10 +17,14 @@
 		<!-- Scripts -->
 		<script type="text/javascript">
 			window.addEventListener('load', function () {
-				var refEl = document.getElementById("refInput");
-				var ref = /ref=(.*)/gi.exec(window.location.href);
+				var links = document.getElementsByTagName('a');
+				var ref = /[?&]ref=(\w+)&?/gm.exec(window.location.href);
+
+				// Pass the ref to all the links and fill all the inputs
 				if (ref !== null) {
-					refEl.value = ref[1];
+					for (var i = 0; i < links.length; i++) {
+						links[i].href = links[i].href + "?ref=" + ref[1];
+					}
 				}
 			}, false);
 		</script>

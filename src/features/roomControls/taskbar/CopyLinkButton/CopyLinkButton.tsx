@@ -10,6 +10,7 @@ export interface ICopyLinkButtonProps {}
 
 const useStyles = makeStyles((theme) => ({
   button: {
+    minWidth: 175,
     color: theme.palette.brandColors.ink.regular,
     '&:hover': {
       backgroundColor: theme.palette.grey[300],

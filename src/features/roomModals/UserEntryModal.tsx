@@ -74,7 +74,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   const avatarName = selfActor?.avatarName || randomSectionAvatar('brandedPatterns', selfActor?.id);
 
   React.useEffect(() => {
-    Analytics.trackEvent(`${ANALYTICS_ID}_visted`, new Date().toUTCString());
+    Analytics.trackEvent(`${ANALYTICS_ID}_visited`, new Date().toUTCString());
   }, []);
 
   React.useEffect(() => {
@@ -93,11 +93,13 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
 
   const onSubmitHandler = (values: { displayName: string }) => {
     if (selfActor?.displayName && values.displayName !== selfActor.displayName) {
-      Analytics.trackEvent(`${ANALYTICS_ID}_displayName_channged`, true, {
+      Analytics.trackEvent(`${ANALYTICS_ID}_displayName_changed`, true, {
         oldName: selfActor.displayName,
         newName: values.displayName,
       });
     }
+
+    Analytics.trackEvent(`${ANALYTICS_ID}_enterRoom`, new Date().toUTCString());
 
     closeModal('userEntry');
     client.participants.updateDisplayName(values.displayName);

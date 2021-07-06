@@ -1,4 +1,4 @@
-import { Hidden, makeStyles, Paper } from '@material-ui/core';
+import { Hidden, makeStyles, Paper, Box } from '@material-ui/core';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
@@ -51,8 +51,9 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
-          <Logo width={75} style={{ marginLeft: 8 }} link newTab />
-
+          <Box style={{ marginLeft: 8 }}>
+            <Logo width={75} link newTab />
+          </Box>
           <MediaFailedWrapper>
             <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">
               <PublishedCameraToggle />

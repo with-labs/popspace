@@ -2,7 +2,7 @@ import detectSound from './detectSound';
 
 Cypress.Commands.add('createRoom', () => {
   cy.visit('/create');
-  cy.get('[data-test-id="meetingTemplate-blank"]').click();
+  cy.get('[data-test-id="meetingTemplate-new"]').click();
   cy.contains('Join room now').click();
   return cy.url();
 });

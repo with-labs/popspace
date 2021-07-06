@@ -151,10 +151,10 @@ export class ApiCoreClient extends EventEmitter {
 
   /** Request method wrapper for mandating an actor before making a request. */
   requireActor = <Args extends any[], Ret extends any>(handler: (...args: Args) => Ret): AsyncMiddleware<Args, Ret> => {
-    return async (...args: Args): Promise<Ret> => {
+    return (async (...args: Args) => {
       await this.ensureActor();
       return handler(...args);
-    };
+    }) as unknown as AsyncMiddleware<Args, Ret>;
   };
 
   // Authentication
@@ -186,8 +186,8 @@ export class ApiCoreClient extends EventEmitter {
    * @returns the Twilio media token to join AV session
    */
   connectToMeeting = this.requireActor(async (roomRoute: string, isObserver = true) => {
-    // retrieve a media token in parallel - don't await yet
-    const mediaResponse = this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, this.SERVICES.api);
+    // retrieve a media token first - this tells us the room exists
+    const { token } = await this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, this.SERVICES.api);
 
     // wait for the socket to be connected ... this could be smoother
     await this.socketReadyPromise;
@@ -212,7 +212,6 @@ export class ApiCoreClient extends EventEmitter {
 
     this.connectedRoomRoute = roomRoute;
 
-    const { token } = await mediaResponse;
     return token;
   });
 
@@ -273,6 +272,8 @@ export class ApiCoreClient extends EventEmitter {
 
       return body;
     } catch (err) {
+      if (err instanceof ApiError) throw err;
+
       logger.error(err);
       throw new ApiError({
         errorCode: ErrorCodes.UNEXPECTED,
@@ -291,4 +292,6 @@ export class ApiCoreClient extends EventEmitter {
   }
 }
 
-type AsyncMiddleware<Args extends any[], Ret extends any> = (...args: Args) => Promise<Ret>;
+type AsyncMiddleware<Args extends any[], Ret extends any> = Ret extends Promise<infer T>
+  ? (...args: Args) => Promise<T>
+  : (...args: Args) => Promise<Ret>;

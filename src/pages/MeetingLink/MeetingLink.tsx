@@ -1,6 +1,16 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { makeStyles, Typography, Box, TextField, Button, ThemeProvider } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Box,
+  TextField,
+  Button,
+  ThemeProvider,
+  useMediaQuery,
+  Theme,
+  Grid,
+} from '@material-ui/core';
 import { RouteComponentProps } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
@@ -38,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     borderRadius: 8,
     marginBottom: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      height: '100%',
+      padding: theme.spacing(2),
+    },
   },
   input: {
     textOverflow: 'ellipsis',
@@ -57,6 +72,20 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.brandColors.oregano.regular,
     },
   },
+  toggleCopyButton: {
+    [theme.breakpoints.up('sm')]: {
+      minWidth: 146,
+    },
+  },
+  inputButtons: {
+    display: 'flex',
+    flexDirection: 'row',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      height: '100%',
+      width: '100%',
+    },
+  },
 }));
 
 export const MeetingLink: React.FC<IMeetingLinkProps> = ({
@@ -68,13 +97,14 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
   const classes = useStyles();
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false, 3000);
   const [hasInteracted, setHasInteracted] = React.useState(false);
+  const isSmall = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
 
   const meetingUrl = `${window.location.origin}/${meetingRoute}`;
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visited`, new Date().toUTCString());
   }, []);
 
   React.useEffect(() => {
@@ -127,12 +157,17 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           InputProps={{
             classes: { root: classes.inputRoot, input: classes.input, notchedOutline: classes.notchedOutline },
             endAdornment: (
-              <Spacing flexShrink={0} flexBasis="auto">
+              <Spacing
+                className={classes.inputButtons}
+                flexShrink={0}
+                flexBasis="auto"
+                flexDirection={isSmall ? 'column' : 'row'}
+              >
                 <ThemeProvider theme={mandarin}>
                   <Button
-                    fullWidth={false}
+                    fullWidth={isSmall}
                     startIcon={toggleCopyButton ? <DoneIcon /> : <CopyIcon />}
-                    className={clsx(toggleCopyButton && classes.copied)}
+                    className={clsx(classes.toggleCopyButton, toggleCopyButton && classes.copied)}
                     onClick={onCopyLink}
                     color="primary"
                     style={{ flexBasis: 'auto', flexShrink: 0 }}
@@ -152,7 +187,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
                     Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'joinRoom');
                   }}
                 >
-                  <Button tabIndex={-1} fullWidth={false}>
+                  <Button tabIndex={-1} fullWidth={isSmall}>
                     {t('pages.meetingLink.joinRoomButton')}
                   </Button>
                 </Link>
@@ -164,56 +199,61 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           {t('pages.meetingLink.explanationText')}
         </Typography>
       </Box>
-      <Spacing>
-        <ExtensionCard
-          iconSrc={slack}
-          iconAlt={t('pages.meetingLink.extensions.slack.iconAlt')}
-          label={t('pages.meetingLink.extensions.slack.label')}
-          onClick={() => {
-            if (!hasInteracted) {
-              setHasInteracted(true);
-            }
-            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installSlack');
-            window.open(Links.SLACK_INSTALL, '_blank');
-          }}
-        />
-        <ExtensionCard
-          iconSrc={chrome}
-          iconAlt={t('pages.meetingLink.extensions.browser.chomeIconAlt')}
-          label={t('pages.meetingLink.extensions.browser.label')}
-          onClick={() => {
-            if (!hasInteracted) {
-              setHasInteracted(true);
-            }
-            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installChrome');
-          }}
-          disabled={true}
-        />
-        <ExtensionCard
-          iconSrc={outlook}
-          iconAlt={t('pages.meetingLink.extensions.outlook.iconAlt')}
-          label={t('pages.meetingLink.extensions.outlook.label')}
-          onClick={() => {
-            if (!hasInteracted) {
-              setHasInteracted(true);
-            }
-            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'outlookInvite');
-          }}
-          disabled={true}
-        />
-        <ExtensionCard
-          iconSrc={gcal}
-          iconAlt={t('pages.meetingLink.extensions.google.iconAlt')}
-          label={t('pages.meetingLink.extensions.google.label')}
-          onClick={() => {
-            if (!hasInteracted) {
-              setHasInteracted(true);
-            }
-            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'gCalInvite');
-          }}
-          disabled={true}
-        />
-      </Spacing>
+      <Grid container spacing={2} style={{ width: '100%' }}>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
+          <ExtensionCard
+            iconSrc={slack}
+            iconAlt={t('pages.meetingLink.extensions.slack.iconAlt')}
+            label={t('pages.meetingLink.extensions.slack.label')}
+            onClick={() => {
+              if (!hasInteracted) {
+                setHasInteracted(true);
+              }
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installSlack');
+              window.open(Links.SLACK_INSTALL, '_blank');
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
+          <ExtensionCard
+            iconSrc={chrome}
+            iconAlt={t('pages.meetingLink.extensions.browser.chomeIconAlt')}
+            label={t('pages.meetingLink.extensions.browser.label')}
+            onClick={() => {
+              if (!hasInteracted) {
+                setHasInteracted(true);
+              }
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installChrome');
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
+          <ExtensionCard
+            iconSrc={outlook}
+            iconAlt={t('pages.meetingLink.extensions.outlook.iconAlt')}
+            label={t('pages.meetingLink.extensions.outlook.label')}
+            onClick={() => {
+              if (!hasInteracted) {
+                setHasInteracted(true);
+              }
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'outlookInvite');
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
+          <ExtensionCard
+            iconSrc={gcal}
+            iconAlt={t('pages.meetingLink.extensions.google.iconAlt')}
+            label={t('pages.meetingLink.extensions.google.label')}
+            onClick={() => {
+              if (!hasInteracted) {
+                setHasInteracted(true);
+              }
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'gCalInvite');
+            }}
+          />
+        </Grid>
+      </Grid>
     </CenterColumnPage>
   );
 };

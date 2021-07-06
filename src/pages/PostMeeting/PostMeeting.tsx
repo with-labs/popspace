@@ -56,7 +56,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visted`, new Date().toUTCString());
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_visited`, new Date().toUTCString());
   }, []);
 
   useEffect(() => {

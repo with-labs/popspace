@@ -191,8 +191,10 @@ class Participant {
       an authentication request after the connection is established.
       https://stackoverflow.com/questions/4361173/http-headers-in-websockets-client-api
     */
-    this.actor = await shared.lib.auth.actorFromToken(token)
+    const { actor, session } = await shared.lib.auth.actorAndSessionFromToken(token)
     this.room = await shared.db.room.core.roomByRoute(roomRoute)
+    this.actor = actor
+    this.session = session
     if(!this.actor || !this.room) {
       this.unauthenticate()
       return false
@@ -371,16 +373,30 @@ class Participant {
   }
 
   async updateDisplayName(newDisplayName, sourceEvent) {
-    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), {
-      display_name: newDisplayName
-    });
+    this.actor = await shared.db.pg.massive.withTransaction(async (tx) => {
+      /*
+        TODO: we'll want to record these on the backend eventually
+      */
+      // recordEvent(this.actor.id, this.session.id, "changed_display_name", newDisplayName, this.req, {old_display_name: this.actor.display_name, new_display_name: newDisplayName}, tx)
+      return await shared.db.pg.massive.actors.update(this.actorId(), {
+        display_name: newDisplayName
+      });
+    })
+
     return this.respondAndBroadcast(sourceEvent, "displayNameUpdated")
   }
 
   async updateAvatarName(newAvatarName, sourceEvent) {
-    this.actor = await shared.db.pg.massive.actors.update(this.actorId(), {
-      avatar_name: newAvatarName
-    });
+    this.actor = await shared.db.pg.massive.withTransaction(async (tx) => {
+      /*
+        TODO: we'll want to record these on the backend eventually
+      */
+      // recordEvent(this.actor.id, this.session.id, "changed_avatar_name", newDisplayName, this.req, {old_display_name: this.actor.display_name, new_display_name: newDisplayName}, tx)
+      return await shared.db.pg.massive.actors.update(this.actorId(), {
+        avatar_name: newAvatarName
+      });
+    })
+
     return this.respondAndBroadcast(sourceEvent, "avatarNameUpdated")
   }
 
@@ -394,6 +410,7 @@ class Participant {
     this.authenticated = false
     this.actor = {}
     this.room = {}
+    this.session = {}
     this.transform = null
     this.participantState = null
     this.dieUnlessAuthenticate()

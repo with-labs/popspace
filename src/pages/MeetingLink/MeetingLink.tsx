@@ -199,7 +199,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
         </Typography>
       </Box>
       <Grid container spacing={2} style={{ width: '100%' }}>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard
             iconSrc={slack}
             iconAlt={t('pages.meetingLink.extensions.slack.iconAlt')}
@@ -212,7 +212,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard
             iconSrc={chrome}
             iconAlt={t('pages.meetingLink.extensions.browser.chomeIconAlt')}
@@ -225,7 +225,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard
             iconSrc={outlook}
             iconAlt={t('pages.meetingLink.extensions.outlook.iconAlt')}
@@ -238,7 +238,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
             }}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={6} lg={4}>
+        <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard
             iconSrc={gcal}
             iconAlt={t('pages.meetingLink.extensions.google.iconAlt')}

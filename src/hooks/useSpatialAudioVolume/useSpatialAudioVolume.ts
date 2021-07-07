@@ -24,6 +24,8 @@ export function useSpatialAudioVolume(callback: (volume: number) => any) {
   // within a media group or in the 'global' space.
   const isInAMediaGroup = !!mediaGroup;
 
+  const isAudioGlobal = useRoomStore((room) => room.state.isAudioGlobal);
+
   // storing in a ref to keep a stable reference
   const callbackRef = useRef(callback);
   useLayoutEffect(() => {
@@ -43,6 +45,11 @@ export function useSpatialAudioVolume(callback: (volume: number) => any) {
       // condition), disable spatial audio and go full volume. We don't use spatial audio inside
       // media groups (i.e. "huddles")
       if (isInAMediaGroup) return 1;
+
+      // after dealing with media groups, we address global audio rooms
+      if (isAudioGlobal) return 1;
+
+      // finally, determine the volume based on the object's position relative to the user
 
       const objTransform =
         objectKind === 'widget' ? room.widgetPositions[objectId ?? ''] : room.userPositions[objectId ?? ''];
@@ -76,7 +83,7 @@ export function useSpatialAudioVolume(callback: (volume: number) => any) {
         logger.warn(`NaN volume for ${objectId}!`);
       }
     }, selectVolume);
-  }, [objectId, objectKind, callbackRef, isInLocalMediaGroup, isInAMediaGroup]);
+  }, [objectId, objectKind, callbackRef, isInLocalMediaGroup, isInAMediaGroup, isAudioGlobal]);
 
   return lastValue;
 }

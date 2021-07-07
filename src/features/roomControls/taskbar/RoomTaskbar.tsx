@@ -1,21 +1,22 @@
-import { Hidden, makeStyles, Paper, Box } from '@material-ui/core';
+import { Logo } from '@components/Logo/Logo';
+import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
+import { Spacing } from '@components/Spacing/Spacing';
+import { Box, Hidden, makeStyles, Paper } from '@material-ui/core';
+import { MediaFailedWrapper } from '@providers/media/MediaFailedWrapper';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
-import { Spacing } from '@components/Spacing/Spacing';
-import { MediaFailedWrapper } from '@providers/media/MediaFailedWrapper';
-import { isPIPAvailable } from '../../pictureInPicture/pictureInPictureFeatureDetection';
+
 import { ACTION_BAR_ID } from '../addContent/ActionBar';
 import { FloatingActionBarButton } from '../addContent/FloatingActionBarButton';
+import { GlobalAudioToggle } from '../audio/GlobalAudioToggle';
 import { PublishedCameraToggle } from '../media/PublishedCameraToggle';
 import { PublishedMicToggle } from '../media/PublishedMicToggle';
-import { PictureInPictureToggle } from '../media/PictureInPictureToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
-import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
 import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
-import { Logo } from '@components/Logo/Logo';
+import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
+
 export interface IRoomTaskbarProps {
   className?: string;
 }
@@ -60,7 +61,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <PublishedMicToggle />
               <Hidden xsDown>
                 <ScreenShareToggle />
-                {isPIPAvailable && hasPip && <PictureInPictureToggle />}
+                <GlobalAudioToggle />
               </Hidden>
             </Spacing>
           </MediaFailedWrapper>

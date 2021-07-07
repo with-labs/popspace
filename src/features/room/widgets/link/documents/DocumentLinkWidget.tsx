@@ -22,7 +22,7 @@ export function DocumentLinkWidget() {
       getUrl('https://api.embedly.com/1/oembed?url=' + widgetState.url + '&key=ba3b50015d8245539b3ca12286d8970a').then(
         (response) => {
           //fetching data from embedly API
-          let res = JSON.parse(response);
+          const res = JSON.parse(response);
           save({
             embedly: res,
           });

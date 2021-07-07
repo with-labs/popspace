@@ -41,6 +41,7 @@ export class PictureInPictureCanvas extends EventEmitter {
   private unsubscribe: () => void;
 
   private get ctx() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.canvas.getContext('2d')!;
   }
 

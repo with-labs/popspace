@@ -58,7 +58,7 @@ a:hover {
 `;
 
 const animatePage = (canvas: HTMLCanvasElement) => {
-  let backgroundImage = new Image();
+  const backgroundImage = new Image();
   backgroundImage.src = '/404/images/background.jpg';
 
   let bgOffsetX = 0;
@@ -94,7 +94,8 @@ const animatePage = (canvas: HTMLCanvasElement) => {
 
   let w = 0;
   let h = 0;
-  let ctx = canvas.getContext('2d')!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const ctx = canvas.getContext('2d')!;
   canvas.style.position = 'absolute';
   canvas.style.top = '0px';
   canvas.style.left = '0px';
@@ -151,15 +152,16 @@ const animatePage = (canvas: HTMLCanvasElement) => {
     bgCosY = Math.sin(bgOffsetY) * 200;
 
     ctx.setTransform(1, 0, 0, 1, bgCosX, bgCosY);
-    var ptrn = ctx.createPattern(backgroundImage, 'repeat')!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ptrn = ctx.createPattern(backgroundImage, 'repeat')!;
     ctx.fillStyle = ptrn;
     ctx.fillRect(-bgCosX, -bgCosY, canvas.width, canvas.height);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     for (let i = 0; i < sprites.length; i++) {
-      let spr = sprites[i];
-      var iw = spr.image.width;
-      var ih = spr.image.height;
+      const spr = sprites[i];
+      const iw = spr.image.width;
+      const ih = spr.image.height;
       spr.x += spr.dx;
       spr.y += spr.dy;
       spr.r += spr.dr;

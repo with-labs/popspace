@@ -9,7 +9,7 @@ import { MediaError } from '../../errors/MediaError';
 import GenericErrorDialogContent from './GenericErrorDialogContent';
 import MediaErrorDialogContent from './MediaErrorDialogContent';
 interface ErrorDialogProps {
-  dismissError: Function;
+  dismissError: () => void;
   error: Error | null;
 }
 

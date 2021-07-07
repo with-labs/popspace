@@ -50,8 +50,9 @@ export const SpeakingStateObserver: React.FC = () => {
       // we need to react to restart events, since the underlying
       // mediaStreamTrack changes
       function handleTrackRestart() {
+        if (!audioTrack) return;
         soundMeter.stop();
-        soundMeter.connectToTrack(audioTrack!.mediaStreamTrack);
+        soundMeter.connectToTrack(audioTrack.mediaStreamTrack);
       }
       audioTrack.on('restarted', handleTrackRestart);
 

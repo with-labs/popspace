@@ -205,7 +205,6 @@ export function useSyncYoutube({
   // to do this that I know of...
   React.useEffect(() => {
     let animFrame: number | null = null;
-    let timeout: NodeJS.Timeout | null = null;
     function loop() {
       const rounded = Math.round(ytPlayerRef.current?.getCurrentTime() ?? 0);
       setRealtimeTimestamp(rounded);
@@ -216,9 +215,6 @@ export function useSyncYoutube({
     return () => {
       if (animFrame) {
         cancelAnimationFrame(animFrame);
-      }
-      if (timeout) {
-        clearTimeout(timeout);
       }
     };
   }, []);

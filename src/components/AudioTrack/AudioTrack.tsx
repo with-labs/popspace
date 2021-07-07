@@ -9,7 +9,7 @@ interface AudioTrackProps extends SpatialAudioProps {
 }
 
 export default function AudioTrack({ track, ...rest }: AudioTrackProps) {
-  const ref = useRef<HTMLAudioElement>(null!);
+  const ref = useRef<HTMLAudioElement>(null);
 
   const isReady = useMediaReadiness((s) => s.isReady);
 

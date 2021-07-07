@@ -258,7 +258,7 @@
         "collapse": "Collapse",
         "quickActionAddEmbed": "Add embed",
         "embedTitle": "Embed",
-        "quickActionAddFile": "Upload file",
+        "quickActionAddFile": "Upload File",
         "confirmCloseTabDuringUpload": "A file upload is in progress and may not complete. Are you sure you want to leave?"
       },
       "whiteboard": {
@@ -273,7 +273,7 @@
       "notepad": {
         "name": "Notepad",
         "title": "Notepad",
-        "quickActionTitle": "Add a collaborative notepad"
+        "quickActionTitle": "Add a Collaborative Notepad"
       },
       "youtube": {
         "name": "YouTube",
@@ -311,7 +311,7 @@
         "mutedForYou": "Muted for you"
       },
       "huddle": {
-        "quickActionTitle": "Start a huddle",
+        "quickActionTitle": "Start a Huddle",
         "name": "Huddle",
         "explainer": "Move inside to have a private conversation",
         "welcome": "Welcome to the huddle!"

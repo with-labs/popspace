@@ -130,7 +130,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
       pt={6}
       pb={4}
     >
-      <Logo className={classes.logo} />
+      <Logo className={classes.logo} link newTab />
       <Typography variant="h1" className={classes.title}>
         <Trans i18nKey={titleKey} />
       </Typography>

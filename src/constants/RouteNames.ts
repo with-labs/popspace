@@ -6,5 +6,6 @@ export enum RouteNames {
   FEATURE_FLAGS = '/internal/featureflags',
   LICENSES = '/licenses',
   MEETING_LINK = '/:meetingRoute/meetinglink',
-  CREATE_MEETING = '/create/:meetingType?',
+  CREATE_MEETING = '/create',
+  CREATE_MEETING_ROUTE = '/create/:meetingType?',
 }

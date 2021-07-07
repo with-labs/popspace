@@ -40,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const ORDERED_STEPS: readonly (keyof OnboardingStateShape)[] = ['hasMoved', 'hasCreated', 'hasAcknowledgedPersistence'];
+
 export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -51,20 +53,20 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
 
   const done = hasMoved && (isSmall || hasCreated) && hasAcknowledgedPersistence; /* && hasAcknowledgedMakeYourOwn*/
   const latestUndone = React.useMemo(() => {
-    if (!hasMoved) return 'hasMoved';
-    if (!hasCreated && !isSmall) return 'hasCreated';
+    if (!hasMoved) return 0;
+    if (!hasCreated && !isSmall) return 1;
     // TODO: re-enable this step
-    // if (!hasAcknowledgedPersistence) return 'hasAcknowledgedPersistence';
-    // return 'hasAcknowledgedMakeYourOwn';
-    return 'hasAcknowledgedPersistence';
+    // if (!hasAcknowledgedPersistence) return 2;
+    // return 3;
+    return 2;
   }, [hasMoved, hasCreated, isSmall]);
 
   const actionRef = React.useRef<PopoverActions>(null);
 
-  const [expanded, setExpanded] = React.useState<keyof OnboardingStateShape>(latestUndone);
+  const [expanded, setExpanded] = React.useState<keyof OnboardingStateShape>(ORDERED_STEPS[latestUndone]);
   // expand new sections as user completes old ones
   React.useEffect(() => {
-    setExpanded(latestUndone);
+    setExpanded(ORDERED_STEPS[latestUndone]);
   }, [latestUndone]);
 
   const openSection = (sectionName: keyof OnboardingStateShape) => {
@@ -87,7 +89,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
   React.useEffect(() => {
     function trackClosing() {
       // the page was closed before interacting with it
-      Analytics.trackEvent(`${ANALYTICS_ID}_closed`, latestUndone);
+      Analytics.trackEvent(`${ANALYTICS_ID}_closed`, ORDERED_STEPS[latestUndone]);
     }
 
     window.addEventListener('beforeunload', trackClosing);
@@ -141,6 +143,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
               done={hasCreated}
               onChange={() => openSection('hasCreated')}
               videoSrc={contentVideo}
+              disabled={latestUndone < 1}
             />
           )}
           <OnboardingStep
@@ -151,6 +154,7 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
             done={hasAcknowledgedPersistence}
             onChange={() => openSection('hasAcknowledgedPersistence')}
             videoSrc={persistenceVideo}
+            disabled={latestUndone < 2}
           >
             <Button
               onClick={() => {
@@ -219,7 +223,8 @@ const OnboardingStep: React.FC<{
   expanded: boolean;
   videoSrc?: string;
   onChange: (event: any, isExpanded: boolean) => void;
-}> = ({ id, title, details, done, expanded, onChange, videoSrc, children }) => {
+  disabled?: boolean;
+}> = ({ id, title, details, done, expanded, onChange, videoSrc, children, disabled }) => {
   const classes = useStepStyles();
   const ref = React.useRef<HTMLElement>(null);
 
@@ -233,7 +238,13 @@ const OnboardingStep: React.FC<{
   }, [ref, expanded]);
 
   return (
-    <Accordion expanded={expanded} onChange={onChange} className={clsx(done && classes.done)} ref={ref}>
+    <Accordion
+      expanded={expanded}
+      onChange={onChange}
+      className={clsx(done && classes.done)}
+      disabled={disabled}
+      ref={ref}
+    >
       <AccordionSummary aria-controls={`${id}-details`} id={`${id}-summary`}>
         <Typography variant="h3">
           {done && <DoneIcon className={classes.icon} />} {title}

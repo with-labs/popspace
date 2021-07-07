@@ -129,7 +129,7 @@ export const FileWidgetMedia = React.forwardRef<
         <MediaControls {...mediaControlsProps} className={classes.audioControls} />
       </div>
     );
-  } else if (contentType === 'application/pdf') {
+  } else if (contentType === 'application/pdf' || contentType.startsWith('text')) {
     return <iframe src={url} title={fileName} allow="encrypted-media" allowFullScreen className={classes.iframe} />;
   } else {
     // TODO: support more?

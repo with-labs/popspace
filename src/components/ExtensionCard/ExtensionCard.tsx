@@ -1,4 +1,4 @@
-import { Button, Card, ThemeProvider, Typography } from '@material-ui/core';
+import { Button, Card, ThemeProvider, Typography, makeStyles } from '@material-ui/core';
 import { Spacing } from '@components/Spacing/Spacing';
 import * as React from 'react';
 import { snow } from '@src/theme/theme';
@@ -13,6 +13,13 @@ export interface IExtensionCardProps {
   buttonText?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  disabledButton: {
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+}));
+
 export const ExtensionCard: React.FC<IExtensionCardProps> = ({
   iconSrc,
   iconAlt,
@@ -22,12 +29,20 @@ export const ExtensionCard: React.FC<IExtensionCardProps> = ({
   buttonStartIcon,
   buttonText,
 }) => {
+  const classes = useStyles();
+
   return (
     <Spacing component={Card} p={2} flexDirection="column" alignItems="center">
       <img width={48} height={48} src={iconSrc} alt={iconAlt} />
       <Typography variant="body2">{label}</Typography>
       <ThemeProvider theme={snow}>
-        <Button color="default" disabled={disabled} onClick={onClick} startIcon={buttonStartIcon}>
+        <Button
+          color="default"
+          disabled={disabled}
+          onClick={onClick}
+          startIcon={buttonStartIcon}
+          className={disabled ? classes.disabledButton : ''}
+        >
           {buttonText}
         </Button>
       </ThemeProvider>

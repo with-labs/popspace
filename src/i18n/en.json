@@ -26,7 +26,9 @@
       "oops": "Oops!",
       "refresh": "Refresh",
       "back": "Back",
-      "required": "Required"
+      "required": "Required",
+      "comingSoon": "Coming Soon",
+      "install": "Install"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -172,8 +174,6 @@
         "joinRoomButton": "Join room now",
         "copyErrorMsg": "Error copying public invite link",
         "extensions": {
-          "comingSoon": "Coming Soon",
-          "install": "Install",
           "slack": {
             "label": "Slack Extension",
             "iconAlt": "The Slack logo"

@@ -6,7 +6,7 @@ import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton'
 import { browseForFile } from '@utils/browseForFile';
 import { useAddFile } from '../../room/files/useAddFile';
 
-export function QuickFileButton(props: {}) {
+export function QuickFileButton(props: Record<string, unknown>) {
   const { t } = useTranslation();
 
   const addFile = useAddFile();

@@ -6,7 +6,7 @@ import { LinkMenuItem } from '@components/LinkMenuItem/LinkMenuItem';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { useWidgetContext } from '../../useWidgetContext';
 
-export const OpenInNewTabOption = React.forwardRef<HTMLLIElement, {}>((props, ref) => {
+export const OpenInNewTabOption = React.forwardRef<HTMLLIElement, Record<string, unknown>>((props, ref) => {
   const { t } = useTranslation();
   const {
     widget: {

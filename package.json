@@ -49,6 +49,8 @@
     "@types/uuid": "^8.3.0",
     "@types/youtube": "0.0.39",
     "@types/yup": "^0.29.11",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
     "@withso/unicorn": "^1.0.1",
     "camelcase-keys": "^6.2.2",
     "change-case": "^4.1.1",
@@ -64,6 +66,9 @@
     "cypress-multi-reporters": "^1.5.0",
     "dotenv": "^8.2.0",
     "emoji-mart": "^3.0.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-unused-imports": "^1.1.2",
     "express": "^4.17.1",
     "firebase": "^7.8.0",
     "flagg": "^1.1.2",
@@ -146,6 +151,7 @@
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write",
+      "eslint --fix",
       "git add"
     ]
   },
@@ -171,10 +177,28 @@
     "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json"
   },
   "eslintConfig": {
-    "extends": "react-app",
+    "extends": [
+      "react-app",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "unused-imports"
+    ],
     "rules": {
       "no-shadow": "off",
-      "no-console": "warn"
+      "no-console": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "unused-imports/no-unused-imports": "warn",
+      "unused-imports/no-unused-vars": "off",
+      "@typescript-eslint/no-empty-interface": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-empty-function": "off"
     }
   },
   "browserslist": {

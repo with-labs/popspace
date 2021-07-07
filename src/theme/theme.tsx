@@ -7,7 +7,7 @@ import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
 import { generateShadows } from './shadows';
 
 // adds theme values for lab components
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line unused-imports/no-unused-imports
 import type _aug from '@material-ui/lab/themeAugmentation';
 import { DropdownIcon } from '@components/icons/DropdownIcon';
 

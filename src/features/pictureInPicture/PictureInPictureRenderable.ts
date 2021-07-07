@@ -2,6 +2,7 @@ export class PictureInPictureRenderable {
   constructor(protected canvas: HTMLCanvasElement) {}
 
   protected get ctx() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.canvas.getContext('2d')!;
   }
 

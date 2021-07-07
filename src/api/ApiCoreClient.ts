@@ -76,6 +76,7 @@ export class ApiCoreClient extends EventEmitter {
       this._sessionToken = storedSessionToken;
     }
     this.roomStateStore = roomStateStore;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.socket = new SocketConnection(process.env.REACT_APP_SOCKET_HOST!);
     this.socketReadyPromise = new Promise((resolve) => {
       this.socket.on('connected', resolve);
@@ -199,6 +200,7 @@ export class ApiCoreClient extends EventEmitter {
         payload: {
           roomRoute,
           // requireActor ensures this
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           token: this.sessionToken!,
           isObserver,
         },
@@ -223,7 +225,7 @@ export class ApiCoreClient extends EventEmitter {
 
   // Generic HTTP methods
 
-  async post<Response = {}>(endpoint: string, data: any = {}, service: Service) {
+  async post<Response = Record<string, unknown>>(endpoint: string, data: any = {}, service: Service) {
     return this.request<Response>({
       method: 'POST',
       endpoint,
@@ -232,7 +234,7 @@ export class ApiCoreClient extends EventEmitter {
     });
   }
 
-  async get<Response = {}>(endpoint: string, service: Service) {
+  async get<Response = Record<string, unknown>>(endpoint: string, service: Service) {
     return this.request<Response>({
       method: 'GET',
       endpoint,
@@ -283,7 +285,7 @@ export class ApiCoreClient extends EventEmitter {
     }
   }
 
-  private getAuthHeaders(): { Authorization: string } | {} {
+  private getAuthHeaders(): { Authorization: string } | Record<string, unknown> {
     return this._sessionToken
       ? {
           Authorization: `Bearer ${btoa(this._sessionToken)}`,

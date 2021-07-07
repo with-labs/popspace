@@ -24,10 +24,12 @@ interface VideoTrackProps {
 }
 
 export default function VideoTrack({ track, isLocal, priority, classNames, id }: VideoTrackProps) {
-  const ref = useRef<HTMLVideoElement>(null!);
+  const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const el = ref.current;
+    if (!el) return;
+
     el.muted = true;
     if (track.setPriority && priority) {
       track.setPriority(priority);

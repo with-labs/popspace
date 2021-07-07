@@ -6,6 +6,7 @@ import { MediaTrackEvent } from '@constants/twilio';
 import { createTrackName } from '@utils/trackNames';
 import { MEDIA_TYPES } from '../../errors/MediaError';
 import { logger } from '@utils/logger';
+import { useTranslation } from 'react-i18next';
 
 function getTrackDeviceId(track: LocalAudioTrack | LocalVideoTrack) {
   const constraints = track.mediaStreamTrack.getConstraints();
@@ -38,6 +39,7 @@ export function useLocalMediaTrack(
   constraints: MediaTrackConstraints,
   { onError, permissionDeniedMessage, permissionDismissedMessage }: LocalMediaOptions
 ) {
+  const { t } = useTranslation();
   // capture this to avoid re-rendering on changes.
   const constraintsRef = useRef(constraints);
   const [track, setTrack] = useState<LocalAudioTrack | LocalVideoTrack | null>(null);
@@ -75,9 +77,17 @@ export function useLocalMediaTrack(
       }
     } catch (err) {
       const mediaType = kind === 'audio' ? MEDIA_TYPES.AUDIO : MEDIA_TYPES.VIDEO;
-      onError?.(convertMediaError(err, mediaType, permissionDeniedMessage, permissionDismissedMessage));
+      onError?.(
+        convertMediaError(
+          err,
+          mediaType,
+          t('error.media.noSystemPermissionsError'),
+          permissionDeniedMessage,
+          permissionDismissedMessage
+        )
+      );
     }
-  }, [onError, kind, permissionDeniedMessage, permissionDismissedMessage, deviceId, track, name]);
+  }, [onError, kind, permissionDeniedMessage, permissionDismissedMessage, deviceId, track, name, t]);
 
   const stop = useCallback(() => {
     track?.stop();

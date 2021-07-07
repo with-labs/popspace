@@ -3,7 +3,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { useTranslation, Trans } from 'react-i18next';
-import { MediaError, MEDIA_TYPES } from '../../errors/MediaError';
+import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../errors/MediaError';
 import { makeStyles } from '@material-ui/core';
 import { Links } from '@constants/Links';
 import { Link } from '@components/Link/Link';
@@ -28,7 +28,21 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
   const code = (error as any)?.code;
   const { t } = useTranslation();
 
-  if (mediaType === MEDIA_TYPES.UNEXPECTED_MEDIA) {
+  if (error?.status === MEDIA_STATUS.NO_SYSTEM_PERMISSIONS) {
+    return (
+      <>
+        <DialogTitle className={classes.title}>{t('error.media.permissionsTitle')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{error.message}</DialogContentText>
+          {code && (
+            <pre>
+              <code>{t('common.errorCode', { code })}</code>
+            </pre>
+          )}
+        </DialogContent>
+      </>
+    );
+  } else if (mediaType === MEDIA_TYPES.UNEXPECTED_MEDIA) {
     return (
       <>
         <DialogTitle className={classes.title}>{t('common.oops')}</DialogTitle>

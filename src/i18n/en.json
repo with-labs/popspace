@@ -419,6 +419,7 @@
       },
       "media": {
         "title": "{{device}} access has been denied.",
+        "permissionsTitle": "Oops, it seems Tilde doesn't have permission to do that.",
         "supportText": "Please allow Tilde to access your {{device}} and try again.",
         "video": "camera",
         "audio": "microphone",
@@ -429,7 +430,8 @@
         "videoPermissionDenied": "You've told your browser not to allow camera access for Tilde. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
         "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Tilde. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>."
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>.",
+        "noSystemPermissionsError": "Please check your privacy and security settings, and try again."
       },
       "roomMangement": {
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",

@@ -14,6 +14,7 @@ const DISMISSED_MESSAGES = ['Permission dismissed'];
 export function convertMediaError(
   error: Error,
   mediaType: MEDIA_TYPES,
+  noSystemPermissionsMessage: string,
   deniedMessage?: string,
   dismissedMessage?: string
 ) {
@@ -21,6 +22,11 @@ export function convertMediaError(
     return new MediaError(deniedMessage, mediaType, MEDIA_STATUS.DENIED);
   } else if (dismissedMessage && DISMISSED_MESSAGES.includes(error.message)) {
     return new MediaError(dismissedMessage, mediaType, MEDIA_STATUS.DISMISSED);
+  } else if (error.name === 'NotFoundError' || error.name === 'NotAllowedError') {
+    // NotFoundError is for firefox
+    // NotAllowedError is for chrome
+    // this will interept this as not having system permissions
+    return new MediaError(noSystemPermissionsMessage, mediaType, MEDIA_STATUS.NO_SYSTEM_PERMISSIONS);
   }
   return error;
 }

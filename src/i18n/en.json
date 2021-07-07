@@ -198,7 +198,7 @@
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",
-        "body": "We're sorry, Tilde is currently not optimized for {{device}}. <br/><br/>Please use one of the recommended browsers on your computer instead.",
+        "body": "We're sorry, Tilde is currently not optimized for {{device}}. <br/>Please use one of the recommended browsers on your computer instead.",
         "mobile": "mobile devices",
         "browser": "your browser",
         "chrome": {

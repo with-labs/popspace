@@ -18,6 +18,7 @@ import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import toast from 'react-hot-toast';
 import { Analytics } from '@analytics/Analytics';
+import { Links } from '@constants/Links';
 
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import { logger } from '@utils/logger';
@@ -209,6 +210,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
                 setHasInteracted(true);
               }
               Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installSlack');
+              window.open(Links.SLACK_INSTALL, '_blank');
             }}
           />
         </Grid>

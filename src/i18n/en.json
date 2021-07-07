@@ -198,8 +198,22 @@
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",
-        "body": "We're sorry, Tilde is currently not optimized for mobile devices. <br/><br/>Please use one of the recommended browsers on your computer instead: Mozilla Firefox, Google Chrome, or Microsoft Edge.",
-        "buttonText": "Go back home"
+        "body": "We're sorry, Tilde is currently not optimized for {{device}}. <br/><br/>Please use one of the recommended browsers on your computer instead.",
+        "mobile": "mobile devices",
+        "browser": "your browser",
+        "chrome": {
+          "label": "Google Chrome",
+          "iconAlt": "Google Chrome logo"
+        },
+        "firefox": {
+          "label": "Mozilla FireFox",
+          "iconAlt": "Mozilla FireFox logo"
+        },
+        "edge": {
+          "label": "Microsoft Edge",
+          "iconAlt": "Microsoft Edge logo"
+        },
+        "learnMoreBtn": "Learn More"
       },
       "postMeeting": {
         "surveyThanks": "Thanks for your feedback!",

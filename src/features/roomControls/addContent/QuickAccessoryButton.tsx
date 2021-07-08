@@ -81,7 +81,7 @@ export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }
     <ResponsiveTooltip title={TOOLTIPS[type]} offset={4}>
       <SquareIconButton
         onClick={() => {
-          Analytics.trackEvent(EventNames.CREATE_WIDGET_BUTTON_PRESSED, '', {
+          Analytics.trackEvent(EventNames.CREATE_WIDGET_BUTTON_PRESSED, type, {
             type,
           });
 

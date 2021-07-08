@@ -4,6 +4,7 @@ import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
 import { MediaTrackEvent } from '@constants/twilio';
 import { createTrackName } from '@utils/trackNames';
 import { MEDIA_TYPES } from '../../errors/MediaError';
+import { useTranslation } from 'react-i18next';
 
 export function useScreenShareTracks({
   onError,
@@ -18,6 +19,7 @@ export function useScreenShareTracks({
   videoName: string;
   audioName: string;
 }) {
+  const { t } = useTranslation();
   const [{ screenShareVideoTrack, screenShareAudioTrack }, setTracks] = useState<{
     screenShareVideoTrack: LocalVideoTrack | null;
     screenShareAudioTrack: LocalAudioTrack | null;
@@ -81,7 +83,15 @@ export function useScreenShareTracks({
         screenShareAudioTrack: twilioAudioTrack,
       });
     } catch (err) {
-      onError?.(convertMediaError(err, MEDIA_TYPES.SCREEN_SHARE, permissionDeniedMessage, permissionDismissedMessage));
+      onError?.(
+        convertMediaError(
+          err,
+          MEDIA_TYPES.SCREEN_SHARE,
+          t('error.media.noSystemPermissionsError'),
+          permissionDeniedMessage,
+          permissionDismissedMessage
+        )
+      );
     }
   }, [
     onError,
@@ -91,6 +101,7 @@ export function useScreenShareTracks({
     screenShareVideoTrack,
     audioName,
     videoName,
+    t,
   ]);
 
   const stop = useCallback(() => {

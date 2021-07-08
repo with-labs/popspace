@@ -24,7 +24,8 @@ import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPag
 import { logger } from '@utils/logger';
 import { Link } from '@components/Link/Link';
 import { Spacing } from '@components/Spacing/Spacing';
-import { ExtensionCard } from './ExtensionCard';
+import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';
+import { SaveIcon } from '@components/icons/SaveIcon';
 
 import gcal from './images/calendar.png';
 import outlook from './images/outlook.png';
@@ -212,6 +213,8 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
               Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installSlack');
               window.open(Links.SLACK_INSTALL, '_blank');
             }}
+            buttonStartIcon={<SaveIcon />}
+            buttonText={t('common.install')}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
@@ -225,6 +228,8 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
               }
               Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installChrome');
             }}
+            buttonText={t('common.comingSoon')}
+            disabled
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
@@ -238,6 +243,8 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
               }
               Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'outlookInvite');
             }}
+            buttonText={t('common.comingSoon')}
+            disabled
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
@@ -251,6 +258,8 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
               }
               Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'gCalInvite');
             }}
+            buttonText={t('common.comingSoon')}
+            disabled
           />
         </Grid>
       </Grid>

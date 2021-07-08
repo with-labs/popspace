@@ -3,6 +3,7 @@ import { ErrorTypes } from '@constants/ErrorTypes';
 export enum MEDIA_STATUS {
   DENIED = 'DENIED',
   DISMISSED = 'DISMISSED',
+  NO_SYSTEM_PERMISSIONS = 'NO_SYSTEM_PERMISSIONS',
 }
 
 export enum MEDIA_TYPES {

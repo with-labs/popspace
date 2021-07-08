@@ -52,7 +52,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
           <Box style={{ marginLeft: 8 }}>
-            <Logo width={75} link newTab />
+            <Logo width={75} link newTab inRoom />
           </Box>
           <MediaFailedWrapper>
             <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">

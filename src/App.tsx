@@ -10,7 +10,7 @@ import history from './history';
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
 // import { useCrisp } from './hooks/useCrisp/useCrisp';
-import { isMobileOnly } from 'react-device-detect';
+import { isMobileOnly, isSafari } from 'react-device-detect';
 
 import { NotSupported } from '@src/pages/NotSupported/NotSupported';
 
@@ -29,8 +29,8 @@ export const App: React.FC<IAppProps> = () => {
           <Toaster />
           <CssBaseline />
           <Router history={history}>
-            {isMobileOnly ? (
-              <NotSupported />
+            {isSafari || isMobileOnly ? (
+              <NotSupported isMobile={isMobileOnly} />
             ) : (
               <AppStateProvider>
                 <SoundEffectProvider>

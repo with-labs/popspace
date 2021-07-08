@@ -26,7 +26,9 @@
       "oops": "Oops!",
       "refresh": "Refresh",
       "back": "Back",
-      "required": "Required"
+      "required": "Required",
+      "comingSoon": "Coming Soon",
+      "install": "Install"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -172,8 +174,6 @@
         "joinRoomButton": "Join room now",
         "copyErrorMsg": "Error copying public invite link",
         "extensions": {
-          "comingSoon": "Coming Soon",
-          "install": "Install",
           "slack": {
             "label": "Slack Extension",
             "iconAlt": "The Slack logo"
@@ -198,8 +198,22 @@
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",
-        "body": "We're sorry, Tilde is currently not optimized for mobile devices. <br/><br/>Please use one of the recommended browsers on your computer instead: Mozilla Firefox, Google Chrome, or Microsoft Edge.",
-        "buttonText": "Go back home"
+        "body": "We're sorry, Tilde is currently not optimized for {{device}}. <br/>Please use one of the recommended browsers on your computer instead.",
+        "mobile": "mobile devices",
+        "browser": "your browser",
+        "chrome": {
+          "label": "Google Chrome",
+          "iconAlt": "Google Chrome logo"
+        },
+        "firefox": {
+          "label": "Mozilla FireFox",
+          "iconAlt": "Mozilla FireFox logo"
+        },
+        "edge": {
+          "label": "Microsoft Edge",
+          "iconAlt": "Microsoft Edge logo"
+        },
+        "learnMoreBtn": "Learn More"
       },
       "postMeeting": {
         "surveyThanks": "Thanks for your feedback!",
@@ -244,7 +258,7 @@
         "collapse": "Collapse",
         "quickActionAddEmbed": "Add embed",
         "embedTitle": "Embed",
-        "quickActionAddFile": "Upload file",
+        "quickActionAddFile": "Upload File",
         "confirmCloseTabDuringUpload": "A file upload is in progress and may not complete. Are you sure you want to leave?"
       },
       "whiteboard": {
@@ -259,7 +273,7 @@
       "notepad": {
         "name": "Notepad",
         "title": "Notepad",
-        "quickActionTitle": "Add a collaborative notepad"
+        "quickActionTitle": "Add a Collaborative Notepad"
       },
       "youtube": {
         "name": "YouTube",
@@ -297,7 +311,7 @@
         "mutedForYou": "Muted for you"
       },
       "huddle": {
-        "quickActionTitle": "Start a huddle",
+        "quickActionTitle": "Start a Huddle",
         "name": "Huddle",
         "explainer": "Move inside to have a private conversation",
         "welcome": "Welcome to the huddle!"
@@ -405,6 +419,7 @@
       },
       "media": {
         "title": "{{device}} access has been denied.",
+        "permissionsTitle": "Oops, it seems Tilde doesn't have permission to do that.",
         "supportText": "Please allow Tilde to access your {{device}} and try again.",
         "video": "camera",
         "audio": "microphone",
@@ -415,7 +430,8 @@
         "videoPermissionDenied": "You've told your browser not to allow camera access for Tilde. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
         "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Tilde. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>."
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>.",
+        "noSystemPermissionsError": "Please check your privacy and security settings, and try again."
       },
       "roomMangement": {
         "createRoomErrorTitle": "Oops! There was an error while creating the room.",

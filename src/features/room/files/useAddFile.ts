@@ -96,7 +96,7 @@ export function useAddFile(origin?: Origin) {
         window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
-    [addWidget, t]
+    [addWidget, t, origin]
   );
 
   return createWidget;

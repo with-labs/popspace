@@ -20,7 +20,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
       <Route exact path={RouteNames.ROOT}>
         <LandingPage />
       </Route>
-      <Route exact path={RouteNames.CREATE_MEETING_ROUTE} component={MeetingSelect} />
+      <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
 
       <Route exact path={RouteNames.MEETING_LINK} component={MeetingLink} />
 

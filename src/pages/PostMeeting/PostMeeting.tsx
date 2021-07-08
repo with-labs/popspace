@@ -2,7 +2,7 @@ import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { Link } from '@components/Link/Link';
 import { StarRating } from '@components/StarRating/StarRating';
-import { RouteNames } from '@constants/RouteNames';
+import { Links } from '@constants/Links';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import api from '@api/client';
 import { Form, Formik } from 'formik';
@@ -141,7 +141,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
               {t('pages.postMeeting.surveyThanks')}
             </Typography>
             <Link
-              to={RouteNames.CREATE_MEETING}
+              to={Links.CREATE_MEETING}
               disableStyling
               onClick={() => {
                 Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_createNewMeeting`, true);

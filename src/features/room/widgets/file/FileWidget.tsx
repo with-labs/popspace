@@ -1,6 +1,7 @@
 import { WidgetType } from '@api/roomState/types/widgets';
 import * as React from 'react';
 import { useWidgetContext } from '../useWidgetContext';
+import { AudioFileWidget } from './AudioFileWidget';
 import { FramedFileWidget } from './FramedFileWidget';
 import { FullSizeFileWidget } from './FullSizeFileWidget';
 import { StubFileWidget } from './StubFileWidget';
@@ -17,10 +18,6 @@ function isFullSizeMedia(contentType: string) {
   );
 }
 
-function isFramedMedia(contentType: string) {
-  return contentType.startsWith('audio') || contentType === 'application/pdf';
-}
-
 export const FileWidget: React.FC<IFileWidgetProps> = () => {
   const { widget } = useWidgetContext<WidgetType.File>();
 
@@ -28,11 +25,17 @@ export const FileWidget: React.FC<IFileWidgetProps> = () => {
     return <UploadingWidget />;
   }
 
-  if (isFullSizeMedia(widget.widgetState.contentType)) {
+  const contentType = widget.widgetState.contentType;
+
+  if (isFullSizeMedia(contentType)) {
     return <FullSizeFileWidget />;
   }
 
-  if (isFramedMedia(widget.widgetState.contentType)) {
+  if (contentType.startsWith('audio')) {
+    return <AudioFileWidget />;
+  }
+
+  if (contentType === 'application/pdf' || contentType.startsWith('text')) {
     return <FramedFileWidget />;
   }
 

@@ -19,6 +19,10 @@ function getFirstQuickActionMatch(prompt: string, t: TFunction) {
   return matchQuickActions(prompt, pasteMatchers, t)[0] ?? null;
 }
 
+const autoFocus = (el: HTMLButtonElement | null) => {
+  if (el) el.focus();
+};
+
 export function PasteConfirmModal() {
   const { t } = useTranslation();
 
@@ -57,7 +61,7 @@ export function PasteConfirmModal() {
         <Button variant="text" color="inherit" fullWidth={false} onClick={api.clear}>
           {t('common.cancel')}
         </Button>
-        <Button onClick={confirm} fullWidth={false}>
+        <Button onClick={confirm} fullWidth={false} ref={autoFocus}>
           {t('features.paste.confirm')}
         </Button>
       </DialogActions>

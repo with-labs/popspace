@@ -34,7 +34,7 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
   return (
     <>
       <RoomTaskbar />
-      <Spacing gap={0.5} flexDirection="column" className={styles.viewportControls}>
+      <Spacing gap={1} flexDirection="column" className={styles.viewportControls}>
         <Box component={Paper} padding={0.25}>
           <CenterButton />
         </Box>

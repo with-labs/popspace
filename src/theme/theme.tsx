@@ -14,7 +14,7 @@ import { DropdownIcon } from '@components/icons/DropdownIcon';
 const SEMIBOLD_WEIGHT = 600;
 
 function webfontCollection(weight: string) {
-  return ['eot', 'ttf', 'woff', 'woff2']
+  return ['eot', 'ttf', 'woff2', 'woff']
     .map((format) => `url("/fonts/silka-${weight}-webfont.${format}") format("${format}")`)
     .join(',\n');
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Typography, makeStyles, Button, Box, Grid } from '@material-ui/core';
+import { Typography, makeStyles, Box, Grid } from '@material-ui/core';
 import { useTranslation, Trans } from 'react-i18next';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
 import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';

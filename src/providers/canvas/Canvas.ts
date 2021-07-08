@@ -1,15 +1,17 @@
-import { EventEmitter } from 'events';
-import throttle from 'lodash.throttle';
-import create from 'zustand/vanilla';
-import { Viewport } from '../viewport/Viewport';
+import client from '@api/client';
+import { RoomPositionState } from '@api/roomState/types/common';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
-import { Bounds, Vector2 } from '../../types/spatials';
+import { SMALL_SIZE } from '@features/room/people/constants';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
 import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '@utils/math';
-import { SMALL_SIZE } from '@features/room/people/constants';
-import { CanvasObjectIntersections, IntersectionData } from './CanvasObjectIntersections';
+import { EventEmitter } from 'events';
+import throttle from 'lodash.throttle';
 import shallow from 'zustand/shallow';
-import client from '@api/client';
+import create from 'zustand/vanilla';
+
+import { Bounds, Vector2 } from '../../types/spatials';
+import { Viewport } from '../viewport/Viewport';
+import { CanvasObjectIntersections, IntersectionData } from './CanvasObjectIntersections';
 
 const MOVE_THROTTLE_PERIOD = 100;
 
@@ -68,15 +70,11 @@ const objectSizeSelector = (objectId: string, objectType: CanvasObjectKind) => (
   }
   return { width: 140, height: 80 };
 };
-const selectAllPositions = (room: RoomStateShape) => {
-  const positions: Record<string, Vector2> = {};
-  Object.entries(room.widgetPositions).forEach(([id, transform]) => {
-    positions[id] = transform.position;
-  });
-  Object.entries(room.userPositions).forEach(([id, transform]) => {
-    positions[id] = transform.position;
-  });
-  return positions;
+const selectAllTransforms = (room: RoomStateShape) => {
+  return {
+    widgets: room.widgetPositions,
+    people: room.userPositions,
+  };
 };
 
 export declare interface Canvas {
@@ -103,8 +101,6 @@ export class Canvas extends EventEmitter {
       } as ActiveGestureState)
   );
 
-  private measurementsStore = create(() => ({} as Record<string, Bounds>));
-
   private intersections: CanvasObjectIntersections;
 
   private positionObservers: Record<CanvasObjectKind, Record<string, Set<(position: Vector2) => void>>> = {
@@ -117,11 +113,17 @@ export class Canvas extends EventEmitter {
     person: {},
     other: {},
   };
-  private intersectionObservers: Record<string, Set<(intersections: IntersectionData) => void>> = {};
+  private intersectionObservers: Record<
+    CanvasObjectKind,
+    Record<string, Set<(intersections: IntersectionData) => void>>
+  > = {
+    widget: {},
+    person: {},
+    other: {},
+  };
 
   private unsubscribeActiveGesture: () => void;
   private unsubscribePositionChanges: () => void;
-  private unsubscribeMeasurementChanges: () => void;
 
   private _positionSnapIncrement = 1;
   private _sizeSnapIncrement = 1;
@@ -139,16 +141,32 @@ export class Canvas extends EventEmitter {
     this._sizeSnapIncrement = options?.sizeSnapIncrement ?? 1;
     this.intersections = new CanvasObjectIntersections(viewport.canvasRect);
     this.intersections.on('intersectionsChanged', this.handleIntersectionsChanged);
-    this.unsubscribePositionChanges = useRoomStore.subscribe(
+    this.unsubscribePositionChanges = useRoomStore.subscribe<
+      Array<RoomPositionState & { kind: CanvasObjectKind; id: string }>
+    >(
       (positions) => {
-        this.intersections.rebuild(positions, this.measurementsStore.getState());
+        this.intersections.rebuild(positions);
       },
-      selectAllPositions,
+      (room) => {
+        const transforms: Array<RoomPositionState & { kind: CanvasObjectKind; id: string }> = [];
+        Object.keys(room.widgetPositions).forEach((widgetId) => {
+          transforms.push({
+            ...room.widgetPositions[widgetId],
+            id: widgetId,
+            kind: 'widget',
+          });
+        });
+        Object.keys(room.userPositions).forEach((userId) => {
+          transforms.push({
+            ...room.userPositions[userId],
+            kind: 'person',
+            id: userId,
+          });
+        });
+        return transforms;
+      },
       shallow
     );
-    this.unsubscribeMeasurementChanges = this.measurementsStore.subscribe((measurements) => {
-      this.intersections.rebuild(selectAllPositions(useRoomStore.getState()), measurements);
-    });
   }
 
   onGestureStart() {
@@ -224,7 +242,7 @@ export class Canvas extends EventEmitter {
   };
 
   private handleIntersectionsChanged = (data: IntersectionData) => {
-    this.intersectionObservers[data.id]?.forEach((callback) => callback(data));
+    this.intersectionObservers[data.self.kind][data.id]?.forEach((callback) => callback(data));
   };
 
   private snapPosition = (position: Vector2) => ({
@@ -466,34 +484,20 @@ export class Canvas extends EventEmitter {
     return objectSizeSelector(objectId, objectKind)(useRoomStore.getState());
   };
 
-  onMeasure = (size: Bounds, objectId: string) => {
-    this.measurementsStore.setState({
-      [objectId]: size,
-    });
-  };
-
-  observeMeasurements = (objectId: string, objectKind: CanvasObjectKind, observer: (size: Bounds) => void) => {
-    return this.measurementsStore.subscribe<Bounds | undefined>(
-      (size) => observer(size ?? { width: 0, height: 0 }),
-      (sizes) => sizes[objectId]
-    );
-  };
-
-  getMeasurements = (objectId: string) => this.measurementsStore.getState()[objectId] ?? { width: 0, height: 0 };
-
-  observeIntersections = (objectId: string, observer: (intersections: IntersectionData) => void) => {
-    if (!this.intersectionObservers[objectId]) {
-      this.intersectionObservers[objectId] = new Set();
-    }
-    this.intersectionObservers[objectId].add(observer);
+  observeIntersections = (
+    objectId: string,
+    objectKind: CanvasObjectKind,
+    observer: (intersections: IntersectionData) => void
+  ) => {
+    this.intersectionObservers[objectKind][objectId] = this.intersectionObservers[objectKind][objectId] ?? new Set();
+    this.intersectionObservers[objectKind][objectId].add(observer);
     return () => {
-      this.intersectionObservers[objectId].delete(observer);
+      this.intersectionObservers[objectKind][objectId]?.delete(observer);
     };
   };
 
   dispose = () => {
     this.unsubscribeActiveGesture();
-    this.unsubscribeMeasurementChanges();
     this.unsubscribePositionChanges();
   };
 }

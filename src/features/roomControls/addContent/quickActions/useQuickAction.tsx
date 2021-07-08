@@ -10,7 +10,7 @@ import { Origin } from '@analytics/constants';
  */
 export function useQuickAction() {
   const addAccessory = useAddAccessory();
-  const addFile = useAddFile();
+  const addFile = useAddFile(Origin.OMNIBAR);
   const uploadFile = React.useCallback(async () => {
     const files = await browseForFile(true);
     files?.forEach((file) => addFile(file));

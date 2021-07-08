@@ -15,7 +15,7 @@ export function useMediaGroup(objectId: string, objectKind: CanvasObjectKind) {
       canvas.observeIntersections(objectId, objectKind, (data) => {
         let foundGroup: string | null = null;
         data.intersections.forEach((bound) => {
-          if (bound.kind === 'person' && useRoomStore.getState().widgets[bound.id]?.type === WidgetType.Huddle) {
+          if (bound.kind === 'widget' && useRoomStore.getState().widgets[bound.id]?.type === WidgetType.Huddle) {
             foundGroup = bound.id;
           }
         });

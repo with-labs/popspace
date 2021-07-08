@@ -79,6 +79,22 @@
     font-size: larger;
 }
 
+a.template_card, a.template_card:link, a.template_card:visited {
+    display: inline-block;
+    box-shadow: 0px 0px 0px 0px transparent;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: box-shadow 300ms ease-out;
+}
+
+a.template_card:hover {
+    box-shadow: 0px 0px 0px 4px var(--color-lavender-bold);
+}
+
+a.template_card:active {
+    box-shadow: 0px 0px 0px 4px var(--color-lavender-ink);
+}
+
 .uppercase {
     text-transform: uppercase;
 }
@@ -268,16 +284,15 @@ section {
 }
 
 h1 {
-    line-height: 64px;
-    font-size: 64px;
+    line-height: 48px;
+    font-size: 42px;
     color: var(--color-ink);
     font-family: var(--font-silka);
     font-weight: 900;
     text-align: center;
     margin: 0px auto;
     max-width: var(--main-width);
-    padding-bottom: 24px;
-    padding-top: 24px;
+    padding: 24px 24px 32px 24px;
 }
 
 .subtitle {
@@ -493,8 +508,8 @@ a.textLink:active {
 .triptych {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-column-gap: 24px;
-    grid-row-gap: 24px;
+    grid-column-gap: 16px;
+    grid-row-gap: 16px;
     margin: 0 auto;
     max-width: var(--main-width);
 }
@@ -564,22 +579,37 @@ details[open] summary~* {
 }
 
 footer {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    grid-column-gap: 16px;
-    grid-row-gap: 32px;
-    margin: 0px auto 40px auto;
-    max-width: var(--main-width);
+    padding: 48px 0px 64px 0px;
+    background-color: var(--color-slate-ink);
+    color: var(--color-snow);
 }
 
-footer>div>p {
+footer>div>div>p {
     line-height: 22px;
     margin: 0px 0px 8px 0px;
     font-size: 14px;
-    color: var(--color-ink);
+    color: var(--color-slate-surface);
     font-size: 14px;
     font-family: var(--font-silka);
     font-weight: 400;
+}
+
+a.footerLink, a.footerLink:link, a.footerLink:visited {
+    color: var(--color-snow);
+    font-family: var(--font-silka);
+    font-weight: 400;
+    text-decoration: none;
+}
+
+a.footerLink:hover {
+    color: var(--color-snow);
+    text-decoration: underline;
+    text-decoration-color: var(--color-lavender-light);
+    text-decoration-skip-ink: edges;
+}
+
+a.footerLink:active {
+    color: var(--color-lavender-ink);
 }
 
 nav {

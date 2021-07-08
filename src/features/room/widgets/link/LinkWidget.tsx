@@ -5,7 +5,7 @@ import { EditLinkWidgetForm } from './EditLinkWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetType } from '@api/roomState/types/widgets';
-import { DocumentLinkWidget } from './documents/DocumentLinkWidget';
+import { DocumentLinkWidget } from './DocumentLinkWidget';
 import { useWidgetContext } from '../useWidgetContext';
 import { ThemeName } from '../../../../theme/theme';
 import { MAX_SIZE_EDIT, MIN_SIZE_EDIT } from './constants';

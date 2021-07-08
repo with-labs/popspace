@@ -1,7 +1,9 @@
+import { RoomPositionState } from '@api/roomState/types/common';
 import { EventEmitter } from 'events';
 import throttle from 'lodash.throttle';
 import QuadTree from 'simple-quadtree';
-import { Bounds, Vector2 } from '../../types/spatials';
+
+import { CanvasObjectKind } from './Canvas';
 
 interface Boundary {
   x: number;
@@ -9,6 +11,7 @@ interface Boundary {
   w: number;
   h: number;
   id: string;
+  kind: CanvasObjectKind;
 }
 
 export interface IntersectionData {
@@ -31,7 +34,7 @@ export declare interface CanvasObjectIntersections {
 }
 
 export class CanvasObjectIntersections extends EventEmitter {
-  private quadTree: QuadTree<{ x: number; y: number; w: number; h: number; id: string }>;
+  private quadTree: QuadTree<Boundary>;
 
   constructor(bounds: { x: number; y: number; width: number; height: number }) {
     super();
@@ -41,18 +44,19 @@ export class CanvasObjectIntersections extends EventEmitter {
   }
 
   rebuild = throttle(
-    (positions: Record<string, Vector2>, measurements: Record<string, Bounds>) => {
+    (positions: Array<RoomPositionState & { kind: CanvasObjectKind; id: string }>) => {
       // combine spatial data into single datastructures
-      const bounds: { id: string; x: number; y: number; w: number; h: number }[] = [];
-      for (const [id, position] of Object.entries(positions)) {
+      const bounds: Boundary[] = [];
+      for (const position of positions) {
         if (!position) continue;
 
         bounds.push({
-          id,
-          x: position.x,
-          y: position.y,
-          w: measurements[id]?.width ?? 0,
-          h: measurements[id]?.height ?? 0,
+          id: position.id,
+          kind: position.kind,
+          x: position.position.x,
+          y: position.position.y,
+          w: position.size.width,
+          h: position.size.height,
         });
       }
 
@@ -62,7 +66,8 @@ export class CanvasObjectIntersections extends EventEmitter {
       }
       // update all intersection groups and emit events for new or expired intersections
       for (const bound of bounds) {
-        const intersections = this.quadTree.get(bound);
+        // filter out self-intersection
+        const intersections = this.quadTree.get(bound).filter((i) => !(i.id === bound.id && i.kind === bound.kind));
         this.emit('intersectionsChanged', {
           id: bound.id,
           self: bound,

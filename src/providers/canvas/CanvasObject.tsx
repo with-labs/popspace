@@ -1,18 +1,17 @@
 import { makeStyles } from '@material-ui/core';
-import useMergedRef from '@react-hook/merged-ref';
 import { animated, SpringValue, to } from '@react-spring/web';
+import { isMiddleClick, isNoClick } from '@utils/mouseButtons';
 import clsx from 'clsx';
 import * as React from 'react';
 import { ReactEventHandlers } from 'react-use-gesture/dist/types';
+
 import { Bounds, Vector2 } from '../../types/spatials';
-import { isMiddleClick, isNoClick } from '@utils/mouseButtons';
 import { CanvasObjectKind } from './Canvas';
 import { useCanvas } from './CanvasProvider';
 import { useCanvasObjectDrag } from './useCanvasObjectDrag';
-import { useCanvasObjectMeasurement } from './useCanvasObjectMeasurement';
 import { useCanvasObjectResize } from './useCanvasObjectResize';
-import { useSyncLocalMediaGroup } from './useSyncLocalMediaGroup';
 import { useMediaGroup } from './useMediaGroup';
+import { useSyncLocalMediaGroup } from './useSyncLocalMediaGroup';
 
 export interface ICanvasObjectProps {
   objectId: string;
@@ -139,9 +138,12 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
 
   const dragRef = React.useRef<HTMLDivElement>(null);
 
-  const measureRef = useCanvasObjectMeasurement(objectId, objectKind);
-
-  const { style: dragStyle, bindDragHandle, pickupSpring, isGrabbing } = useCanvasObjectDrag({
+  const {
+    style: dragStyle,
+    bindDragHandle,
+    pickupSpring,
+    isGrabbing,
+  } = useCanvasObjectDrag({
     ref: dragRef,
     objectId,
     objectKind,
@@ -177,8 +179,8 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
     [canvas, objectId, objectKind, resizeInfo]
   );
 
-  const mediaGroup = useMediaGroup(objectId);
-  useSyncLocalMediaGroup(objectId, mediaGroup);
+  const mediaGroup = useMediaGroup(objectId, objectKind);
+  useSyncLocalMediaGroup(objectId, objectKind, mediaGroup);
 
   const ctx = React.useMemo(
     () => ({
@@ -208,7 +210,7 @@ export const CanvasObject: React.FC<ICanvasObjectProps> = ({
     ]
   );
 
-  const ref = useMergedRef(dragRef, measureRef);
+  const ref = dragRef;
 
   return (
     <CanvasObjectContext.Provider value={ctx}>

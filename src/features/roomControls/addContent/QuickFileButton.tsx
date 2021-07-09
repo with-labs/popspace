@@ -5,11 +5,12 @@ import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveToolt
 import { SquareIconButton } from '@components/SquareIconButton/SquareIconButton';
 import { browseForFile } from '@utils/browseForFile';
 import { useAddFile } from '../../room/files/useAddFile';
+import { Origin } from '@analytics/constants';
 
 export function QuickFileButton(props: Record<string, unknown>) {
   const { t } = useTranslation();
 
-  const addFile = useAddFile();
+  const addFile = useAddFile(Origin.WIDGET_MENU);
   const uploadFile = React.useCallback(async () => {
     const files = await browseForFile(true);
     files?.forEach((file) => addFile(file));

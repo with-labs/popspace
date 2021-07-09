@@ -12,6 +12,7 @@ import { usePasteStore } from './usePasteStore';
 import * as matchers from '../../quickActions/matchers';
 import { matchQuickActions } from '../../quickActions/matchQuickActions';
 import { logger } from '@utils/logger';
+import { Origin } from '@analytics/constants';
 
 // only a subset of matchers are used for paste operations
 const pasteMatchers = [matchers.link, matchers.stickyNote, matchers.youtube];
@@ -32,7 +33,7 @@ export function PasteConfirmModal() {
 
   const isOpen = !!(files || text);
 
-  const addFile = useAddFile();
+  const addFile = useAddFile(Origin.PASTE);
   const applyQuickAction = useQuickAction();
 
   const confirm = React.useCallback(() => {

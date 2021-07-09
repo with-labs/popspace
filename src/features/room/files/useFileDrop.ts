@@ -3,6 +3,7 @@ import { useCallback, DragEvent, useState, useRef, useMemo } from 'react';
 import { debounce } from '@material-ui/core';
 import { logger } from '@utils/logger';
 import { useAddFile } from './useAddFile';
+import { Origin } from '@analytics/constants';
 
 function getFileDropItems(ev: DragEvent) {
   const items: File[] = [];
@@ -35,7 +36,7 @@ export function useFileDrop() {
   // https://stackoverflow.com/questions/3144881/how-do-i-detect-a-html5-drag-event-entering-and-leaving-the-window-like-gmail-d
   const isDraggingRef = useRef<boolean | null>(false);
 
-  const addFile = useAddFile();
+  const addFile = useAddFile(Origin.DRAG_N_DROP);
 
   const onDrop = useCallback(
     (ev: DragEvent) => {

@@ -6,12 +6,13 @@ import { Vector2 } from '../../../types/spatials';
 import api from '@api/client';
 import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { SIZE_STUB } from '../widgets/link/constants';
+import { Origin } from '@analytics/constants';
 
 const MAX_MEGABYTES = 30;
 const ONE_MEGABYTE_IN_BYTES = 1024 * 1024;
 const MAX_FILE_BYTE_LENGTH = MAX_MEGABYTES * ONE_MEGABYTE_IN_BYTES;
 
-export function useAddFile() {
+export function useAddFile(origin?: Origin) {
   const { t } = useTranslation();
 
   const addWidget = useAddAccessory();
@@ -33,17 +34,20 @@ export function useAddFile() {
         toast.error(t('error.messages.fileDropUnknownFailure') as string);
       } else {
         // immediately add a pending widget, but don't block on it yet
-        const widgetAddedPromise = addWidget({
-          type: WidgetType.File,
-          initialData: {
-            url: downloadUrl,
-            fileName: file.name,
-            contentType: file.type,
-            uploadProgress: 0,
+        const widgetAddedPromise = addWidget(
+          {
+            type: WidgetType.File,
+            initialData: {
+              url: downloadUrl,
+              fileName: file.name,
+              contentType: file.type,
+              uploadProgress: 0,
+            },
+            screenCoordinate: position,
+            size: SIZE_STUB,
           },
-          screenCoordinate: position,
-          size: SIZE_STUB,
-        });
+          origin
+        );
 
         const abort = async () => {
           window.removeEventListener('beforeunload', confirmClose, true);
@@ -63,6 +67,7 @@ export function useAddFile() {
             }
             resolve(loadedFile);
           });
+
           reader.addEventListener('error', async () => {
             await abort();
             reject(reader.error);
@@ -91,7 +96,7 @@ export function useAddFile() {
         window.removeEventListener('beforeunload', confirmClose, true);
       }
     },
-    [addWidget, t]
+    [addWidget, t, origin]
   );
 
   return createWidget;

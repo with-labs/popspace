@@ -1,5 +1,4 @@
-import { Link } from '@components/Link/Link';
-import { Links } from '@constants/Links';
+import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { isSafari } from 'react-device-detect';
@@ -17,10 +16,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     padding: theme.spacing(0.5),
     width: '100%',
-  },
-  link: {
-    display: 'inline',
-    color: 'inherit',
   },
   inlineButton: {
     padding: 0,
@@ -54,10 +49,7 @@ export function SafariBanner() {
     <div className={classes.root}>
       <Trans i18nKey="pages.room.safariBanner">
         Safari support is in preview. Help us improve by&nbsp;
-        <Link className={classes.link} to={Links.FEEDBACK}>
-          reporting bugs
-        </Link>
-        , or switch to a&nbsp;
+        <FeedbackButton className={classes.inlineButton}>reporting bugs</FeedbackButton>, or switch to a&nbsp;
         <button className={classes.inlineButton} onClick={openBrowsersModal}>
           supported browser
         </button>

@@ -52,7 +52,7 @@ export function SafariBanner() {
 
   return (
     <div className={classes.root}>
-      <Trans>
+      <Trans i18nKey="pages.room.safariBanner">
         Safari support is in preview. Help us improve by&nbsp;
         <Link className={classes.link} to={Links.FEEDBACK}>
           reporting bugs

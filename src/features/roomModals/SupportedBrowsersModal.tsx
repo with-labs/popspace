@@ -5,23 +5,26 @@ import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { useRoomModalStore } from '@features/roomControls/useRoomModalStore';
 import { Box, Button, Typography } from '@material-ui/core';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export function SupportedBrowsersModal() {
+  const { t } = useTranslation();
+
   const isOpen = useRoomModalStore((modals) => modals.supportedBrowsers);
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
   const close = () => closeModal('supportedBrowsers');
 
   return (
     <Modal isOpen={isOpen} onClose={close} fullWidth maxWidth="lg">
-      <ModalTitleBar title="Supported browsers" />
+      <ModalTitleBar title={t('modals.supportedBrowsers.title')} />
       <Box p={4} pt={0}>
         <Typography variant="body1" paragraph>
-          To ensure a stable experience you can use one of our supported browsers.
+          {t('modals.supportedBrowsers.description')}
         </Typography>
         <BrowserInstallers analyticsEvent="safariModal_browser_install" />
       </Box>
       <ModalActions>
-        <Button onClick={close}>Got it</Button>
+        <Button onClick={close}>{t('common.confirm')}</Button>
       </ModalActions>
     </Modal>
   );

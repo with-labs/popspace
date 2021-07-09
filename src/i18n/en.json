@@ -87,6 +87,11 @@
       }
     },
     "pages": {
+      "404": {
+        "title": "Lost in Space?",
+        "cta": "Take me home",
+        "logoAlt": "The Tilde logo"
+      },
       "signin": {
         "title": "Sign In",
         "email": {
@@ -150,7 +155,8 @@
         "analyticsDisclaimer": "We use analytics software to improve Tilde. Please feel free to come back later, when we've made it optional.",
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
-        "noVideo": "No video"
+        "noVideo": "No video",
+        "safariBanner": "Safari support is in preview. Help us improve by\u00A0<1>reporting bugs</1>, or switch to a\u00A0<3>supported browser</3>."
       },
       "subscribe": {
         "quoteText": "",
@@ -233,11 +239,6 @@
       "licenses": {
         "title": "Open Source Software Licenses",
         "intro": "Tilde utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
-      },
-      "404": {
-        "title": "Lost in Space?",
-        "cta": "Take me home",
-        "logoAlt": "The Tilde logo"
       }
     },
     "widgets": {
@@ -649,6 +650,10 @@
         "submitButtonText": "Enter room",
         "maxSize": "Display name must be less than {{maxNameLength}} characters",
         "tosDisclaimer": "By clicking \"Enter room\", you agree to our <1>Terms of Service</1> and that you have read our <3>Privacy Policy</3>."
+      },
+      "supportedBrowsers": {
+        "description": "To ensure a stable experience you can use one of our supported browsers.",
+        "title": "Supported browsers"
       }
     },
     "meetingTemplates": {

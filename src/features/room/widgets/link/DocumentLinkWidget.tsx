@@ -1,54 +1,66 @@
-import * as React from 'react';
 import { WidgetType } from '@api/roomState/types/widgets';
-import { useWidgetContext } from '../useWidgetContext';
+import { Box, CircularProgress } from '@material-ui/core';
+import * as React from 'react';
 
-import { StubLinkWidget } from './StubLinkWidget';
-import { SummaryLinkWidget } from './SummaryLinkWidget';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetFrame } from '../WidgetFrame';
 import { EmbedlyHtmlLinkWidget } from './EmbedlyHtmlLinkWidget';
 import { IFrameLinkWidget } from './IFrameLinkWidget';
+import { StubLinkWidget } from './StubLinkWidget';
+import { SummaryLinkWidget } from './SummaryLinkWidget';
+import { EmbedlyResponse } from './types';
 
 export function DocumentLinkWidget() {
   const {
-    widget: { widgetState, widgetId },
-    save,
+    widget: { widgetState },
   } = useWidgetContext<WidgetType.Link>();
 
-  const getUrl = async (url: string) => {
-    return await fetch(url).then((response) => response.text());
-  };
-
   //calling fetch here to set the value of resizeDisabled
+  const [{ data: embedlyResponse, isLoading }, setEmbedlyResponse] = React.useState<{
+    isLoading: boolean;
+    data: EmbedlyResponse | null;
+  }>({ isLoading: true, data: null });
   React.useEffect(() => {
-    if (!widgetState.embedly) {
-      getUrl('https://api.embedly.com/1/oembed?url=' + widgetState.url + '&key=ba3b50015d8245539b3ca12286d8970a').then(
-        (response) => {
-          //fetching data from embedly API
-          const res = JSON.parse(response);
-          save({
-            embedly: res,
-          });
-        }
-      );
-    }
-  }, [save, widgetState.embedly, widgetState.iframeUrl, widgetState.url]);
+    const controller = new AbortController();
+    fetch('https://api.embedly.com/1/oembed?url=' + widgetState.url + '&key=ba3b50015d8245539b3ca12286d8970a', {
+      signal: controller.signal,
+    })
+      .then((res) => res.json())
+      .then((body) => {
+        setEmbedlyResponse({ isLoading: false, data: body });
+      });
 
-  const noPreview = !widgetState.iframeUrl && (widgetState.embedly?.type === 'error' || !widgetState.embedly?.type);
+    return () => {
+      controller.abort();
+    };
+  }, [widgetState.url]);
 
-  if (noPreview) {
-    return <StubLinkWidget />;
+  if (isLoading) {
+    return <DocumentWidgetSpinner />;
   }
 
-  if (widgetState.embedly && !widgetState.embedly.html && !widgetState.iframeUrl) {
-    return <SummaryLinkWidget />;
+  if (embedlyResponse && !embedlyResponse.html && !widgetState.showIframe) {
+    return <SummaryLinkWidget embedlyResponse={embedlyResponse} />;
   }
 
-  if (widgetState.embedly?.html) {
-    return <EmbedlyHtmlLinkWidget />;
+  if (embedlyResponse?.html) {
+    return <EmbedlyHtmlLinkWidget embedlyResponse={embedlyResponse} />;
   }
 
-  if (widgetState.iframeUrl) {
+  if (widgetState.iframeUrl && widgetState.showIframe) {
     return <IFrameLinkWidget />;
   }
 
-  return null;
+  return <StubLinkWidget />;
 }
+
+const DocumentWidgetSpinner = () => (
+  <WidgetFrame resizeDisabled>
+    <WidgetContent disablePadding>
+      <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    </WidgetContent>
+  </WidgetFrame>
+);

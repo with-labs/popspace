@@ -51,21 +51,6 @@ export interface LinkWidgetState {
    * be the URL to provide to the iframe.
    */
   iframeUrl?: string | null;
-  /**
-   * Embedly Data
-   */
-  embedly?: {
-    providerName: string;
-    title: string;
-    html: string;
-    url: string;
-    description: string;
-    providerUrl: string;
-    thumbnailUrl: string;
-    thumbnailWidth: number;
-    thumbnailHeight: number;
-    type: string;
-  };
 }
 
 export interface FileWidgetState {

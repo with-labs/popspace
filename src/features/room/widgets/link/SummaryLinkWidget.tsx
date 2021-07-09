@@ -4,12 +4,14 @@ import { Box, makeStyles, Typography } from '@material-ui/core';
 import { ThemeName } from '@src/theme/theme';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { SUMMARY_SIZE, SUMMARY_WITH_IMAGE_SIZE } from './constants';
 import { LinkMenu } from './menu/LinkMenu';
+import { EmbedlyResponse } from './types';
 
 const useStyles = makeStyles((theme) => ({
   linkWrapper: {
@@ -36,20 +38,16 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Shows a preview image and details for a URL with opengraph data.
  */
-export function SummaryLinkWidget() {
+export function SummaryLinkWidget({ embedlyResponse }: { embedlyResponse: EmbedlyResponse }) {
   const { t } = useTranslation();
   const classes = useStyles();
   const {
     widget: { widgetState },
   } = useWidgetContext<WidgetType.Link>();
 
-  if (!widgetState.embedly) {
-    return null;
-  }
+  const { title, provider_name, provider_url, url, description, thumbnail_url } = embedlyResponse;
 
-  const { providerName, providerUrl, url, description, thumbnailUrl } = widgetState.embedly;
-
-  const size = thumbnailUrl ? SUMMARY_WITH_IMAGE_SIZE : SUMMARY_SIZE;
+  const size = thumbnail_url ? SUMMARY_WITH_IMAGE_SIZE : SUMMARY_SIZE;
 
   return (
     <WidgetFrame
@@ -60,7 +58,7 @@ export function SummaryLinkWidget() {
       resizeDisabled
       color={ThemeName.Snow}
     >
-      <WidgetTitlebar title={widgetState.embedly.title ?? t('widgets.link.embedTitle')} disableRemove>
+      <WidgetTitlebar title={title ?? t('widgets.link.embedTitle')} disableRemove>
         <LinkMenu />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
@@ -74,15 +72,15 @@ export function SummaryLinkWidget() {
           {...({ to: url, newTab: true, disableStyling: true } as any)}
         >
           <Box p={2} flex={1} display="flex" flexDirection="column">
-            <Typography variant="h2">{providerName}</Typography>
+            <Typography variant="h2">{provider_name}</Typography>
             <Typography id="url" variant="body1">
-              {providerUrl}
+              {provider_url}
             </Typography>
             <Typography className={classes.description} variant="body2">
               {description}
             </Typography>
           </Box>
-          {thumbnailUrl && <img className={classes.image} alt="" src={thumbnailUrl} />}
+          {thumbnail_url && <img className={classes.image} alt="" src={thumbnail_url} />}
         </Box>
       </WidgetContent>
     </WidgetFrame>

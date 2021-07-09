@@ -1,19 +1,22 @@
-import { Box, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core';
-import * as React from 'react';
-import { useTranslation } from 'react-i18next';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { OptionsIcon } from '@components/icons/OptionsIcon';
 import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
-import { WidgetType } from '@api/roomState/types/widgets';
+import { Box, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { useWidgetContext } from '../../useWidgetContext';
+import { IFrameOption } from './IFrameOption';
 import { OpenInNewTabOption } from './OpenInNewTabOption';
 
 export type LinkMenuProps = {
   className?: string;
   size?: 'small' | 'medium';
+  disableIframe?: boolean;
 };
 
-export function LinkMenu(props: LinkMenuProps) {
+export function LinkMenu({ disableIframe, ...props }: LinkMenuProps) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -36,6 +39,7 @@ export function LinkMenu(props: LinkMenuProps) {
         onClose={() => setAnchorEl(null)}
         onClick={() => setAnchorEl(null)}
       >
+        {!disableIframe && widget.widgetState.iframeUrl && <IFrameOption />}
         <OpenInNewTabOption />
         <Divider />
         <MenuItem button onClick={remove}>

@@ -1,14 +1,14 @@
-import { WidgetType } from '@api/roomState/types/widgets';
 import { makeStyles } from '@material-ui/core';
 import { ThemeName } from '@src/theme/theme';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useWidgetContext } from '../useWidgetContext';
+
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import { MAX_SIZE_FRAME, MIN_SIZE_FRAME } from './constants';
 import { LinkMenu } from './menu/LinkMenu';
+import { EmbedlyResponse } from './types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,16 +18,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function EmbedlyHtmlLinkWidget() {
+export function EmbedlyHtmlLinkWidget({ embedlyResponse }: { embedlyResponse: EmbedlyResponse }) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const {
-    widget: { widgetState },
-  } = useWidgetContext<WidgetType.Link>();
 
-  if (!widgetState.embedly?.html) return null;
+  if (!embedlyResponse.html) return null;
 
-  const srcDoc = `<html><body>${widgetState.embedly.html}</body></html>`;
+  const srcDoc = `<html><body>${embedlyResponse.html}</body></html>`;
 
   return (
     <WidgetFrame
@@ -37,11 +34,11 @@ export function EmbedlyHtmlLinkWidget() {
       maxWidth={MAX_SIZE_FRAME.width}
       maxHeight={MAX_SIZE_FRAME.height}
     >
-      <WidgetTitlebar title={widgetState.embedly.title ?? t('widgets.link.embedTitle')} disableRemove>
-        <LinkMenu />
+      <WidgetTitlebar title={embedlyResponse.title ?? t('widgets.link.embedTitle')} disableRemove>
+        <LinkMenu disableIframe />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
-        <iframe srcDoc={srcDoc} title={widgetState.embedly.title} className={classes.root} />
+        <iframe srcDoc={srcDoc} title={embedlyResponse.title} className={classes.root} />
       </WidgetContent>
     </WidgetFrame>
   );

@@ -1,24 +1,27 @@
-import React from 'react';
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
-import { WidgetsFallback } from './WidgetsFallback';
-import { RoomCanvasRenderer } from './canvas/RoomCanvasRenderer';
-import { Person } from './people/Person';
-import { Widget } from './widgets/Widget';
+import { PageTitle } from '@components/PageTitle/PageTitle';
+import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
+import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
+import { SupportedBrowsersModal } from '@features/roomModals/SupportedBrowsersModal';
+import { Box } from '@material-ui/core';
+import React from 'react';
+import shallow from 'zustand/shallow';
+
 import { RoomControls } from '../roomControls/RoomControls';
 import { RoomSettingsModal } from '../roomControls/roomSettings/RoomSettingsModal';
-import { useRoomStore, RoomStateShape } from '@api/useRoomStore';
-import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
-import { PageTitle } from '@components/PageTitle/PageTitle';
-import shallow from 'zustand/shallow';
-import { CursorLayer } from './cursors/CursorLayer';
-import { PasteConfirmModal } from './pasting/PasteConfirmModal';
-import { useBindPaste } from './pasting/useBindPaste';
-import { RoomViewportProvider } from './RoomViewportProvider';
-import { Box } from '@material-ui/core';
 import { SignUpModal } from '../roomModals/SignUpModal';
 import { UnsavedModal } from '../roomModals/UnsavedModal';
 import { UserEntryModal } from '../roomModals/UserEntryModal';
+import { RoomCanvasRenderer } from './canvas/RoomCanvasRenderer';
+import { CursorLayer } from './cursors/CursorLayer';
+import { PasteConfirmModal } from './pasting/PasteConfirmModal';
+import { useBindPaste } from './pasting/useBindPaste';
+import { Person } from './people/Person';
 import { ReconnectingAlert } from './ReconnectingAlert';
+import { RoomViewportProvider } from './RoomViewportProvider';
+import { Widget } from './widgets/Widget';
+import { WidgetsFallback } from './WidgetsFallback';
 
 interface IRoomProps {}
 
@@ -41,6 +44,7 @@ export const Room = React.memo<IRoomProps>(() => {
   return (
     <RoomViewportProvider>
       <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>
+        <SafariBanner />
         <RoomControls />
         <RoomCanvasRenderer data-test-room>
           <PageTitle title={roomName} />
@@ -62,6 +66,7 @@ export const Room = React.memo<IRoomProps>(() => {
       <SignUpModal />
       <UserEntryModal />
       <ReconnectingAlert />
+      <SupportedBrowsersModal />
     </RoomViewportProvider>
   );
 });

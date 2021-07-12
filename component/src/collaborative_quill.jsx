@@ -48,6 +48,7 @@ const CollaborativeQuill = (props) => {
   const [socketReady, setSocketReady] = useState(false);
   const [error, setError] = useState(null);
   const [subscribed, setSubscribed] = useState(false);
+  const [createAttempts, setCreateAttempts] = useState(0);
 
   const ready = socketReady && subscribed;
 
@@ -105,34 +106,42 @@ const CollaborativeQuill = (props) => {
   useEffect(() => {
     if (!quill) return;
 
+    const handleDocNotExists = () => {
+      if(createAttempts > 5) {
+        const tooManyAttempts = new Error("Too many attempts to subscribe to document")
+        return setError(tooManyAttempts)
+      }
+      if(props.waitForCreate) {
+        /*
+          Only 1 person should be creating the document so there's no race condition.
+          Perhaps a more elegant way - instead of retries - would be to receive
+          an event when the document is ready.
+        */
+        doc.unsubscribe(onDocUnsubscribe);
+        setTimeout((createAttempts + 1) ** 2 * 500, () => {
+          setCreateAttempts(createAttempts + 1)
+          doc.subscribe(onDocSubscribe);
+        })
+      } else {
+        doc.create(props.initialData || [{ insert: '' }], 'rich-text', (error) => {
+          if (error) {
+            console.error(error);
+          }
+          quill.setContents(doc.data);
+          quill.history.clear();
+        });
+      }
+    }
+
     const onDocSubscribe = (error) => {
       if (error) {
         setError(error);
         return console.error('Error subscribing', error);
       }
-      setSubscribed(true);
 
       // If doc.type is undefined, the document has not been created yet
       if (!doc.type) {
-        doc.create(
-          props.initialData || [{ insert: '' }],
-          'rich-text',
-          (error) => {
-            if (error) {
-              /*
-              TODO: it's possible this would be triggered if multiple clients race to create the doc.
-              I haven't tried to deliberately trigger and iron out that case, but so far things have worked.
-              If it does happen, we could find a way to wait for document creation on non-owner clients.
-              One way is to just avoid even notifying them the widget is added until it's been fully initialized.
-              Another way is to be smart in this create somehow - but when we don't create, we need to wait for
-              the doc to be initialized. The dumb solution is an active poll, but ideally there would be some
-              event that the component can react to.
-            */
-              console.error(error);
-            }
-            quill.setContents(doc.data);
-          }
-        );
+        handleDocNotExists()
       } else {
         quill.setContents(doc.data);
         /*
@@ -140,6 +149,7 @@ const CollaborativeQuill = (props) => {
           https://stackoverflow.com/questions/59653962/stop-undo-from-clearing-everything-in-the-editor-quill-quilljs
         */
         quill.history.clear();
+        setSubscribed(true);
       }
 
       quill.on('text-change', (delta, oldDelta, source) => {
@@ -153,8 +163,12 @@ const CollaborativeQuill = (props) => {
     };
     doc.subscribe(onDocSubscribe);
 
+    const onDocUnsubscribe = () => {
+      setSubscribed(false)
+    }
+
     return () => {
-      doc.unsubscribe(onDocSubscribe);
+      doc.unsubscribe(onDocUnsubscribe);
       connection.close();
       socket.close();
     };

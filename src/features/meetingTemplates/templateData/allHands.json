@@ -18,6 +18,14 @@
         ]
       },
       { "size": { "width": 720, "height": 570 }, "position": { "x": 388, "y": -588 } }
+    ],
+    [
+      "STICKY_NOTE",
+      {
+        "text": "## 🚀 We're on Product Hunt! 🚀\nHelp us reach the top spot by [Upvoting us!](https://www.producthunt.com/posts/obsidian-for-mobile)",
+        "color": "cherry"
+      },
+      { "size": { "width": 402, "height": 198 }, "position": { "x": 80, "y": 270 } }
     ]
   ]
 }

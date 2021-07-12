@@ -6,5 +6,14 @@
     "wallpaperRepeats": true,
     "backgroundColor": "#F4F5F8"
   },
-  "widgets": []
+  "widgets": [
+    [
+      "STICKY_NOTE",
+      {
+        "text": "## 🚀 We're on Product Hunt! 🚀\nHelp us reach the top spot by [Upvoting us!](https://www.producthunt.com/posts/obsidian-for-mobile)",
+        "color": "cherry"
+      },
+      { "size": { "width": 402, "height": 198 }, "position": { "x": 80, "y": 270 } }
+    ]
+  ]
 }

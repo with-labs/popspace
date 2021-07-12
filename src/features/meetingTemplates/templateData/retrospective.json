@@ -56,6 +56,14 @@
         "text": "### [The Prime Directive](https://retrospectivewiki.org/index.php?title=The_Prime_Directive)\n\n*\"Regardless of what we discover, we understand and truly believe that everyone did the best job they could, given what they knew at the time, their skills and abilities, the resources available, and the situation at hand.\"*\n\n- Norm Kerth, Project Retrospectives: A Handbook for Team Review"
       },
       { "size": { "width": 424, "height": 311 }, "position": { "x": -835, "y": 130 } }
+    ],
+    [
+      "STICKY_NOTE",
+      {
+        "text": "## 🚀 We're on Product Hunt! 🚀\nHelp us reach the top spot by [Upvoting us!](https://www.producthunt.com/posts/obsidian-for-mobile)",
+        "color": "cherry"
+      },
+      { "size": { "width": 402, "height": 198 }, "position": { "x": 80, "y": 270 } }
     ]
   ]
 }

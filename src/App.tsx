@@ -1,19 +1,19 @@
-import * as React from 'react';
-import { StylesProvider, MuiThemeProvider, CssBaseline } from '@material-ui/core';
-import { lavender as theme } from './theme/theme';
-import { Router } from 'react-router';
-import AppStateProvider from './state';
-import { Routes } from './Routes';
+import { CssBaseline, MuiThemeProvider, StylesProvider } from '@material-ui/core';
+import { NotSupported } from '@src/pages/NotSupported/NotSupported';
 import { FlaggProvider } from 'flagg/dist/react';
-import { featureFlags } from './featureFlags';
-import history from './history';
+import * as React from 'react';
+import { isMobileOnly } from 'react-device-detect';
+import { Router } from 'react-router';
+
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
 import { Toaster } from './components/Toaster/Toaster';
+import { featureFlags } from './featureFlags';
+import history from './history';
+import { Routes } from './Routes';
+import AppStateProvider from './state';
+import { lavender as theme } from './theme/theme';
+
 // import { useCrisp } from './hooks/useCrisp/useCrisp';
-import { isMobileOnly, isSafari } from 'react-device-detect';
-
-import { NotSupported } from '@src/pages/NotSupported/NotSupported';
-
 export interface IAppProps {}
 
 export const App: React.FC<IAppProps> = () => {
@@ -29,7 +29,7 @@ export const App: React.FC<IAppProps> = () => {
           <Toaster />
           <CssBaseline />
           <Router history={history}>
-            {isSafari || isMobileOnly ? (
+            {isMobileOnly ? (
               <NotSupported isMobile={isMobileOnly} />
             ) : (
               <AppStateProvider>

@@ -11,6 +11,7 @@ type RoomModalsState = {
   confirmCode: boolean;
   unsavedMeeeting: boolean;
   userEntry: boolean;
+  supportedBrowsers: boolean;
 };
 
 export const useRoomModalStore = create(
@@ -25,6 +26,7 @@ export const useRoomModalStore = create(
       confirmCode: false,
       unsavedMeeeting: false,
       userEntry: false,
+      supportedBrowsers: false,
     } as RoomModalsState,
     (set, get) => ({
       api: {

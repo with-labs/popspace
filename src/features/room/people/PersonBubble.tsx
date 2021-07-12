@@ -1,22 +1,24 @@
-import * as React from 'react';
-import { makeStyles, Typography, useTheme } from '@material-ui/core';
+import { RoomUserStateShape } from '@api/roomState/roomStateStore';
+import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
+import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import Publication from '@components/Publication/Publication';
 import { useAvatar } from '@hooks/useAvatar/useAvatar';
-import { SidecarStreamPreview } from './SidecarStreamPreview';
-import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
-import { MuteIconSmall } from '@components/icons/MuteIconSmall';
-import { RoomUserStateShape } from '@api/roomState/roomStateStore';
-import { Stream } from '../../../types/streams';
-import { PersonBubbleFrame } from './PersonBubbleFrame';
-import { PersonBubbleContent } from './PersonBubbleContent';
-import { PersonBubbleBackground } from './PersonBubbleBackground';
-import { PersonBubbleLabel } from './PersonBubbleLabel';
-import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
-import { PersonBubbleAvatar } from './PersonBubbleAvatar';
+import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import * as React from 'react';
+
+import { Stream } from '../../../types/streams';
 import { WidgetResizeHandle } from '../widgets/WidgetResizeHandle';
 import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
+import { PersonBubbleAvatar } from './PersonBubbleAvatar';
+import { PersonBubbleBackground } from './PersonBubbleBackground';
+import { PersonBubbleContent } from './PersonBubbleContent';
+import { PersonBubbleFrame } from './PersonBubbleFrame';
+import { PersonBubbleLabel } from './PersonBubbleLabel';
+import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
+import { SidecarStreamPreview } from './SidecarStreamPreview';
+
 export interface IPersonBubbleProps extends React.HTMLAttributes<HTMLDivElement> {
   isMe: boolean;
   person: RoomUserStateShape;
@@ -30,6 +32,8 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     objectFit: 'cover',
     borderRadius: theme.shape.borderRadius,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
   },
   audio: {
     display: 'none',

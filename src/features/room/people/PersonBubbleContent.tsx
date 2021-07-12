@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { animated, useSpring } from '@react-spring/web';
 import clsx from 'clsx';
 import * as React from 'react';
+
 import { SMALL_SIZE } from './constants';
 
 export interface IPersonBubbleContentProps extends React.HTMLAttributes<HTMLDivElement> {

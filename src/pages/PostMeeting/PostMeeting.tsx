@@ -1,21 +1,22 @@
+import { Analytics } from '@analytics/Analytics';
+import api from '@api/client';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { Link } from '@components/Link/Link';
+import { Logo } from '@components/Logo/Logo';
+import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
+import { Spacing } from '@components/Spacing/Spacing';
 import { StarRating } from '@components/StarRating/StarRating';
 import { Links } from '@constants/Links';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
-import api from '@api/client';
+import i18n from '@src/i18n';
+import { logger } from '@utils/logger';
 import { Form, Formik } from 'formik';
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
-import { logger } from '@utils/logger';
-import { Logo } from '@components/Logo/Logo';
-import { Spacing } from '@components/Spacing/Spacing';
 import * as Yup from 'yup';
-import i18n from '@src/i18n';
-import { Analytics } from '@analytics/Analytics';
 
 const ANALYTICS_PAGE_ID = 'page_postMeeting';
 
@@ -201,6 +202,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
         )}
       </Box>
       <SaveLinkSection />
+      <ProductHuntButton />
     </Box>
   );
 }

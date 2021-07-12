@@ -1,37 +1,37 @@
-import * as React from 'react';
-import clsx from 'clsx';
-import {
-  makeStyles,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  ThemeProvider,
-  useMediaQuery,
-  Theme,
-  Grid,
-} from '@material-ui/core';
-import { RouteComponentProps } from 'react-router';
-import { useTranslation } from 'react-i18next';
-import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
+import { Analytics } from '@analytics/Analytics';
+import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import toast from 'react-hot-toast';
-import { Analytics } from '@analytics/Analytics';
+import { SaveIcon } from '@components/icons/SaveIcon';
+import { Link } from '@components/Link/Link';
+import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
+import { Spacing } from '@components/Spacing/Spacing';
 import { Links } from '@constants/Links';
+import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
+import {
+  Box,
+  Button,
+  Grid,
+  makeStyles,
+  TextField,
+  Theme,
+  ThemeProvider,
+  Typography,
+  useMediaQuery,
+} from '@material-ui/core';
+import { mandarin } from '@src/theme/theme';
+import { logger } from '@utils/logger';
+import clsx from 'clsx';
+import * as React from 'react';
+import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router';
 
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
-import { logger } from '@utils/logger';
-import { Link } from '@components/Link/Link';
-import { Spacing } from '@components/Spacing/Spacing';
-import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';
-import { SaveIcon } from '@components/icons/SaveIcon';
-
 import gcal from './images/calendar.png';
-import outlook from './images/outlook.png';
 import chrome from './images/chrome.png';
+import outlook from './images/outlook.png';
 import slack from './images/slack.png';
-import { mandarin } from '@src/theme/theme';
 
 const ANALYTICS_PAGE_ID = 'page_meetingLink';
 
@@ -263,6 +263,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           />
         </Grid>
       </Grid>
+      <ProductHuntButton />
     </CenterColumnPage>
   );
 };

@@ -1,14 +1,16 @@
-import * as React from 'react';
-import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
+import { Analytics } from '@analytics/Analytics';
+import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
+import { RouteNames } from '@constants/RouteNames';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
+import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
-import { Typography, makeStyles, Box, CircularProgress } from '@material-ui/core';
+import { Box, CircularProgress, makeStyles, Typography } from '@material-ui/core';
+import * as React from 'react';
+import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, useHistory } from 'react-router';
-import { RouteNames } from '@constants/RouteNames';
+
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
-import toast from 'react-hot-toast';
-import { Analytics } from '@analytics/Analytics';
 
 const ANALYTICS_PAGE_ID = 'page_meetingSelect';
 
@@ -107,6 +109,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         {t('pages.meetingSelect.titleText')}
       </Typography>
       <MeetingTemplatePicker onSelect={setSelected} selected={selected} />
+      <ProductHuntButton />
     </CenterColumnPage>
   );
 };

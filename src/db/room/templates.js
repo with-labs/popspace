@@ -40,19 +40,17 @@ module.exports = {
   setUpRoomFromTemplate: async (roomId, templateData) => {
     const creator = await getMockCreator()
     /*
-      Sample room state as of 2021/01/27
+      Sample room template as of 2021/07/12
       {
-        wallpaper_url: 'https://s3-us-west-2.amazonaws.com/with.playground/negativespave_wallpaper.png',
-        is_custom_wallpaper: true,
-        bounds: { width: 2400, height: 2400 },
         display_name: 'Room',
-        z_order: [
-          '26',   '105',  '230', '117',
-          '620',  '565',  '501', '597',
-          '662',  '749',  '904', '944',
-          '926',  '27',   '997', '938',
-          '1000', '1001', '996', '947',
-          '776',  '775',  '777', '1002'
+        state: {
+          wallpaper_url: 'https://s3-us-west-2.amazonaws.com/with.playground/negativespave_wallpaper.png',
+          is_custom_wallpaper: true,
+          wallpaper_repeats: true,
+          background_color: '#000000',
+        },
+        widgets: [
+          ["STICKY_NOTE", { text: "Hello world" }, { size: { width: 200, height: 200 }, position: { x: 0, y: 0 } }]
         ]
       }
     */
@@ -84,4 +82,17 @@ module.exports = {
     }
   },
 
+  /**
+   * Creates a new template under the default System user.
+   * TODO: create templates under other users
+   * @param {string} templateName
+   * @param {TemplateData} data
+   */
+  createTemplate: async (templateName, data) => {
+    await shared.db.pg.massive.room_templates.insert({
+      name: templateName,
+      data: data,
+      creator_id: MOCK_USER_ID
+    })
+  }
 }

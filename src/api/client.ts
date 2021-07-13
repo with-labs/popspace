@@ -8,8 +8,10 @@ import { PassthroughClient } from '@api/subClients/PassthroughClient';
 import { RoomStateClient } from '@api/subClients/RoomStateClient';
 import { TransformClient } from '@api/subClients/TransformClient';
 import { WidgetClient } from '@api/subClients/WidgetClient';
-import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
+
 import { EventsClient } from './subClients/EventsClient';
+import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
+import { TemplateClient } from './subClients/TemplateClient';
 
 type SubClientImplementation = {
   new (core: ApiCoreClient): ApiSubClient;
@@ -54,6 +56,7 @@ const client = createApiClient({
   magicLinks: MagicLinkClient,
   experienceRatings: ExperienceRatingClient,
   event: EventsClient,
+  templates: TemplateClient,
 });
 
 export default client;

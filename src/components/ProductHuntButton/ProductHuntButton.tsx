@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 
 const URL = 'https://www.producthunt.com/posts/tilde';
 const POST_ID = '304185';
-const DESCRIPTION = 'Tilde - Free, instant meeting rooms for all your collaborative needs | Product Hunt';
+const DESCRIPTION = 'Join us on Product Hunt';
 
 export function ProductHuntButton() {
   const classes = useStyles();

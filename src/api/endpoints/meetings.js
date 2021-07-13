@@ -102,9 +102,9 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.template_name, req)
+      const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.template_name, req)
       return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
-    }, ["template", "template_name"])
+    }, ["template_name"])
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res, params) => {
       /*

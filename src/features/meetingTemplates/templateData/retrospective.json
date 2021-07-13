@@ -53,9 +53,10 @@
     [
       "STICKY_NOTE",
       {
-        "text": "### [The Prime Directive](https://retrospectivewiki.org/index.php?title=The_Prime_Directive)\n\n*\"Regardless of what we discover, we understand and truly believe that everyone did the best job they could, given what they knew at the time, their skills and abilities, the resources available, and the situation at hand.\"*\n\n- Norm Kerth, Project Retrospectives: A Handbook for Team Review"
+        "text": "## 🚀 We're on Product Hunt! 🚀\nWe are grateful to have you along on this journey!\n\n\nWe would love if you'd come [join Chris, Laurent, and the rest of the team on Product Hunt](https://www.producthunt.com/posts/tilde) and show Tilde some love in the comments!",
+        "color": "cherry"
       },
-      { "size": { "width": 424, "height": 311 }, "position": { "x": -835, "y": 130 } }
+      { "size": { "width": 460, "height": 258 }, "position": { "x": -730, "y": 270 } }
     ]
   ]
 }

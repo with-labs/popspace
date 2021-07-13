@@ -669,7 +669,7 @@
       },
       "weekly": {
         "title": "Weekly Sync-Up",
-        "description": "Check in on how is the team doing.",
+        "description": "Check in on the team's progress.",
         "imgAlt": "A calendar with colorful meeting blocks"
       },
       "allHands": {
@@ -679,7 +679,7 @@
       },
       "oneOnOne": {
         "title": "One-on-One",
-        "description": "A cozy place to build a relationship.",
+        "description": "Build a relationship in a cozy place.",
         "imgAlt": "Two comfy chairs facing one another"
       },
       "retrospective": {
@@ -689,7 +689,7 @@
       },
       "happyHour": {
         "title": "Happy Hour",
-        "description": "Team bonding and trust building.",
+        "description": "Build trust and bond with the team.",
         "imgAlt": "A striped party hat"
       },
       "brainstorm": {
@@ -699,7 +699,7 @@
       },
       "interview": {
         "title": "Remote Interview",
-        "description": "Personal and fluid for both sides.",
+        "description": "Find great people for your team.",
         "imgAlt": "A silhouette of someone speaking"
       }
     }

@@ -10,10 +10,10 @@
     [
       "STICKY_NOTE",
       {
-        "text": "## 🚀 We're on Product Hunt! 🚀\nWe are grateful to have you along on this journey!\n\n\nWe would love if you'd come [join Chris and Laurent on Product Hunt](https://www.producthunt.com/posts/obsidian-for-mobile) and show Tilde some love in the comments!",
+        "text": "## 🚀 We're on Product Hunt! 🚀\nWe are grateful to have you along on this journey!\n\n\nWe would love if you'd come [join Chris, Laurent, and the rest of the team on Product Hunt](https://www.producthunt.com/posts/obsidian-for-mobile) and show Tilde some love in the comments!",
         "color": "cherry"
       },
-      { "size": { "width": 496, "height": 245 }, "position": { "x": -730, "y": 270 } }
+      { "size": { "width": 460, "height": 258 }, "position": { "x": -730, "y": 270 } }
     ]
   ]
 }

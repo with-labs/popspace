@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const URL = ''; // TODO: change to post URL
-const POST_ID = '137879'; // TODO: change
-const DESCRIPTION = 'TODO'; // TODO: change
+const URL = 'https://www.producthunt.com/posts/tilde';
+const POST_ID = '304185';
+const DESCRIPTION = 'Tilde - Free, instant meeting rooms for all your collaborative needs | Product Hunt';
 
 export function ProductHuntButton() {
   const classes = useStyles();

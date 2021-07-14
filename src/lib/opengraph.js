@@ -104,8 +104,8 @@ class OpenGraph {
       if (icons && icons[0]) return icons[0].href
     } catch (err) {
       // ignore any errors
-      return null;
     }
+    return null;
   }
 }
 

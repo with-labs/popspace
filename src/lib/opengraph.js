@@ -102,8 +102,9 @@ class OpenGraph {
     try {
       const icons = await getFavicons.byHtml(html, url)
       if (icons && icons[0]) return icons[0].href
-    } finally {
-      return null
+    } catch (err) {
+      // ignore any errors
+      return null;
     }
   }
 }

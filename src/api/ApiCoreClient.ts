@@ -1,6 +1,7 @@
 import { getRef } from '@analytics/analyticsRef';
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { MeetingTemplateName } from '@features/meetingTemplates/templateData';
+import * as Sentry from '@sentry/react';
 import { ApiError } from '@src/errors/ApiError';
 import i18n from '@src/i18n';
 import { logger } from '@utils/logger';
@@ -115,6 +116,11 @@ export class ApiCoreClient extends EventEmitter {
 
     localStorage.setItem(SESSION_TOKEN_KEY, sessionToken);
 
+    Sentry.setUser({
+      id: actor.actorId,
+      username: actor.displayName,
+    });
+
     return actor;
   };
 
@@ -136,6 +142,10 @@ export class ApiCoreClient extends EventEmitter {
       try {
         const actorResponse = await this.get<{ actor: Actor }>('/actor', this.SERVICES.api);
         this.actor = actorResponse.actor;
+        Sentry.setUser({
+          id: this.actor.actorId,
+          username: this.actor.displayName,
+        });
         return this.actor;
       } catch (err) {
         // keep going, create a new session.

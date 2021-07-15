@@ -1,11 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import * as Sentry from '@sentry/react';
-import { App } from './App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './i18n';
 import './with.css';
+
+import * as Sentry from '@sentry/react';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import { App } from './App';
 import { useUpdateStore } from './features/updates/useUpdatesStore';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 let version: string;
 try {
@@ -22,6 +24,9 @@ if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') 
     release: version,
     normalizeDepth: 10, // Bump this up so we can get the most out of the Redux integration.
     environment: process.env.NODE_ENV,
+  });
+  Sentry.setContext('app-details', {
+    version,
   });
 }
 

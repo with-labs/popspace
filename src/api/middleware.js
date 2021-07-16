@@ -78,6 +78,12 @@ const middleware = {
     next()
   },
 
+  requireAdmin: async (req, res, next) => {
+    if (!req.actor || !req.actor.admin) {
+      return next({ errorCode: shared.error.code.PERMISSION_DENIED, message: "Insufficient permission", httpCode: shared.api.http.code.UNAUTHORIZED })
+    }
+    next()
+  },
 }
 
 module.exports = middleware

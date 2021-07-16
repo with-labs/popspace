@@ -74,10 +74,18 @@ class Core {
    * @param {number} creatorId - may be deprecated as we move to anon actors
    */
   async createRoomFromTemplate(templateName, template, creatorId, isPublic=true) {
-    const room = await this.createRoom(creatorId, template.display_name, templateName, isPublic)
+    let templateData = template;
+    if (!templateData) {
+      const templateRow = await shared.db.pg.massive.room_templates.findOne({ name: templateName })
+      if (!templateRow) {
+        throw new Error(`No template found for name ${templateName}`)
+      }
+      templateData = templateRow.data
+    }
+    const room = await this.createRoom(creatorId, templateData.display_name || 'New Meeting', templateName, isPublic)
     const roomData = await shared.db.room.templates.setUpRoomFromTemplate(
       room.id,
-      template
+      templateData
     )
     return { room, roomData }
   }

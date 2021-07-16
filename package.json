@@ -4,9 +4,17 @@
   "description": "API for noodle.so",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "//": [
+      "this style of comments:",
+      "https://stackoverflow.com/questions/14221579/how-do-i-add-comments-to-package-json-for-npm-install",
+      "the wait-ready flag for pm2 assumes some matching application code",
+      "https://pm2.keymetrics.io/docs/usage/signals-clean-restart/"
+    ],
+    "start": "pm2 start index.js --name noodle_api -i 4 --wait-ready --kill-timeout 3000",
+    "stop": "pm2 stop noodle_api",
+    "reload": "pm2 reload noodle_api",
+    "dev": "NODE_ENV=development pm2 start index.js --name noodle_api -i 2 --wait-ready --watch",
     "console": "node --experimental-repl-await ./scripts/console.js",
-    "dev": "NODE_ENV=development node index.js",
     "test:all": "NODE_ENV=test jest --runInBand",
     "test:one": "NODE_ENV=test node scripts/run_scenario.js"
   },

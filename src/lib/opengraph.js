@@ -98,9 +98,14 @@ class OpenGraph {
   }
 
   async getDefaultFavicon(html, url) {
-    const icons = await getFavicons.byHtml(html, url)
-    if (icons && icons[0]) return icons[0].href
-    return null
+    // this lib threw an error once, so wrapping it for safety.
+    try {
+      const icons = await getFavicons.byHtml(html, url)
+      if (icons && icons[0]) return icons[0].href
+    } catch (err) {
+      // ignore any errors
+    }
+    return null;
   }
 }
 

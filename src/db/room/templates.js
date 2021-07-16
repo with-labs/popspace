@@ -1,15 +1,15 @@
-const MOCK_USER_ID = -5000
+const SYSTEM_USER_ID = -5000
 let mockCreator
 
 const getMockCreator = async () => {
   if(mockCreator) {
     return mockCreator
   }
-  mockCreator = await shared.db.accounts.actorById(MOCK_USER_ID)
+  mockCreator = await shared.db.accounts.actorById(SYSTEM_USER_ID)
   if(!mockCreator) {
-    log.app.info(`Creating mock actor with id ${MOCK_USER_ID} for creating widgets in room templates.`)
+    log.app.info(`Creating mock actor with id ${SYSTEM_USER_ID} for creating widgets in room templates.`)
     mockCreator = await shared.db.pg.massive.actors.insert({
-      id: MOCK_USER_ID,
+      id: SYSTEM_USER_ID,
       kind: "system",
       display_name: "Tilde"
     })
@@ -87,12 +87,13 @@ module.exports = {
    * TODO: create templates under other users
    * @param {string} templateName
    * @param {TemplateData} data
+   * @param {string} creatorId
    */
-  createTemplate: async (templateName, data) => {
+  createTemplate: async (templateName, data, creatorId = SYSTEM_USER_ID) => {
     await shared.db.pg.massive.room_templates.insert({
       name: templateName,
       data: data,
-      creator_id: MOCK_USER_ID
+      creator_id: creatorId
     })
   }
 }

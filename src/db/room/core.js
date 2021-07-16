@@ -75,7 +75,7 @@ class Core {
    */
   async createRoomFromTemplate(templateName, template, creatorId, isPublic=true) {
     let templateData = template;
-    if (templateData === null) {
+    if (!templateData) {
       const templateRow = await shared.db.pg.massive.room_templates.findOne({ name: templateName })
       if (!templateRow) {
         throw new Error(`No template found for name ${templateName}`)

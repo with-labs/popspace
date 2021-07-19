@@ -5,5 +5,6 @@ module.exports = {
   Opengraph: require("./opengraph.js"),
   ExperienceRatings: require("./experience_ratings.js"),
   Events: require("./events.js"),
+  Templates: require("./templates.js"),
   Internal: require("./internal.js"),
 }

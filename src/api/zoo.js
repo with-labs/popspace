@@ -57,7 +57,7 @@ const safePostHandler = (endpoint, handler, requiredParams) => {
 
 const safeGetHandler = (endpoint, handler, requiredParams) => {
   return safeHandleRequest(async (req, res) => {
-    const params = parseUriParams(req.params)
+    const params = parseUriParams(req.query, requiredParams)
     return await handler(req, res, params)
   })
 }

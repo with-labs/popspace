@@ -244,13 +244,13 @@
     "widgets": {
       "link": {
         "name": "Link",
-        "addWidgetTitle": "Add a Link",
+        "addWidgetTitle": "Share a Link",
         "publishedTitle": "Link",
         "titleLabel": "Title",
         "urlLabel": "Url",
         "addBtn": "Add a link",
         "errorInvalidUrl": "Not a URL",
-        "quickActionTitle": "Add a Link",
+        "quickActionTitle": "Share a Link",
         "openInNewTab": "Open in new tab",
         "uploading": "Uploading",
         "uploadCancel": "Cancel",
@@ -267,26 +267,26 @@
         "title": "Whiteboard",
         "doubleTapEraserToClear": "Double tap Eraser to clear",
         "export": "Save whiteboard as an image",
-        "quickActionTitle": "Add a Whiteboard",
+        "quickActionTitle": "Collaborate on a Whiteboard",
         "quickActionPrompt": "/whiteboard",
         "exportFailed": "That didn't work - try again?"
       },
       "notepad": {
         "name": "Notepad",
         "title": "Notepad",
-        "quickActionTitle": "Add a Collaborative Notepad"
+        "quickActionTitle": "Collaborate on a Notepad"
       },
       "youtube": {
         "name": "YouTube",
         "title": "YouTube",
         "urlLabel": "YouTube Url",
-        "addBtn": "Add a video",
-        "quickActionTitle": "Add a Video"
+        "addBtn": "Watch YouTube together",
+        "quickActionTitle": "Watch YouTube together"
       },
       "stickyNote": {
         "name": "Sticky Note",
         "textPlaceholder": "Type something...",
-        "addBtn": "Add note",
+        "addBtn": "Add a Sticky Note",
         "saveBtn": "Save note",
         "edit": "Edit",
         "save": "Save",
@@ -312,7 +312,7 @@
         "mutedForYou": "Muted for you"
       },
       "huddle": {
-        "quickActionTitle": "Start a Huddle",
+        "quickActionTitle": "Start a private Huddle",
         "name": "Huddle",
         "explainer": "Move inside to have a private conversation",
         "welcome": "Welcome to the huddle!"

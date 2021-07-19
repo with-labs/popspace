@@ -61,3 +61,51 @@ TWILIO_API_KEY_SECRET_DEV=<ask for them>
 TWILIO_API_KEY_SID_PROD=<ask for them>
 TWILIO_API_KEY_SECRET_PROD=<ask for them>
 ```
+
+
+# Running
+We're using pm2 to run the app - which does many important things for us:
+- Restarts the process when it dies
+- Reloads w/o downtime during a deploy
+- Speeds up development via hot-reload/watch-mode
+- Runs multiple threads - which means that if a thread dies, another is available to process requests
+
+A wrinkle is that we're also using log4js, and we write logs to files. So each of the subthreads
+needs to deliver its logs to the same file.
+
+Luckily, log4js has deeply integrated with pm2's cluster mode (i.e. the multi-threaded mode),
+but to get it to work we rely on pm2-intercom.
+
+One caveat is that we also try to gracefully start pm2 - have it wait for us to establish database connections, etc.
+pm2 explicitly supports this via --wait-ready; it expects a "ready" process signal.
+Unfortunately, pm2-intercom's IPC is not compatible with that, and throws an error:
+```
+4|pm2-intercom  | Error: ID, DATA or TOPIC field is missing
+```
+
+So we rely on a fork of pm2-intercom called `pm2-graceful-intercom`. It special-cases the "ready" signal (otherwise,
+pm2-intercom expects a JSON format for signals).
+Long story short:
+
+```bash
+# First time only - installs the pm2-graceful-intercom module
+yarn run prepare_logs
+
+# Starting - in production, only do this once
+yarn start
+
+# Deploying - zero downtime
+git pull origin main
+yarn install
+yarn reload
+
+# Utilize hot reload in dev
+yarn dev
+
+# Stopping - this does not clear pm2's processes
+yarn stop
+
+# Hard stop - clear out the pm2 processes
+pm2 delete noodle_api
+
+```

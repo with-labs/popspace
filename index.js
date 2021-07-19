@@ -2,6 +2,7 @@ require("dotenv").config()
 
 require("./src/globals")
 const Server = require("./src/server")
+const cluster = require("cluster")
 
 const begin = async () => {
   process.on('SIGINT', async () => {
@@ -22,7 +23,16 @@ const begin = async () => {
   })
 
   await lib.init()
-  log.app.info(`${process.env.NODE_ENV} Noodle API started`)
+  if(cluster.isMaster) {
+    log.app.info(`(master thread) ${process.env.NODE_ENV} Noodle API started`)
+  } else {
+    if(cluster.isWorker && cluster.worker) {
+      log.app.info(`(worker ${cluster.worker.id}) ${process.env.NODE_ENV} Noodle API started`)
+    } else {
+      log.app.warn(`(unknown thread) ${process.env.NODE_ENV} Noodle API started`)
+    }
+  }
+
   const server = new Server(process.env.EXPRESS_PORT)
 
   /*
@@ -35,6 +45,7 @@ const begin = async () => {
 
   /*
     Let pm2 know the app is ready
+    https://pm2.keymetrics.io/docs/usage/signals-clean-restart/
   */
   process.send('ready')
 }

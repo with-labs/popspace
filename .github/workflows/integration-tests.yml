@@ -23,6 +23,7 @@ jobs:
         with:
           node-version: 16.x
       - run: yarn install --frozen-lockfile
+      - run: yarn run prestart
       - run: yarn cypress:ci
         env:
           CI: true

@@ -1,16 +1,17 @@
-import { MeetingTemplateName, templateMetadata } from '@features/meetingTemplates/templateData/templateData';
+import { MeetingTemplateName, templateMetadata } from '@features/meetingTemplates/templateData';
 import {
+  Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
+  CircularProgress,
   Grid,
   Typography,
-  Box,
-  CircularProgress,
 } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
 export interface IMeetingTemplatePickerProps {
   onSelect: (templateName: MeetingTemplateName) => void;
   selected?: MeetingTemplateName | null;

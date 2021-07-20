@@ -2,7 +2,7 @@ import { Analytics } from '@analytics/Analytics';
 import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
 import { RouteNames } from '@constants/RouteNames';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
-import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
+import { MeetingTemplateName } from '@features/meetingTemplates/templateData';
 import { useCreateMeeting } from '@hooks/useCreateMeeting/useCreateMeeting';
 import { Box, CircularProgress, makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';

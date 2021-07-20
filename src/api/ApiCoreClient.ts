@@ -1,7 +1,6 @@
 import { getRef } from '@analytics/analyticsRef';
-import { RoomTemplate } from '@api/roomState/exportRoomTemplate';
 import { ErrorCodes } from '@constants/ErrorCodes';
-import { MeetingTemplateName } from '@features/meetingTemplates/templateData/templateData';
+import { MeetingTemplateName } from '@features/meetingTemplates/templateData';
 import * as Sentry from '@sentry/react';
 import { ApiError } from '@src/errors/ApiError';
 import i18n from '@src/i18n';
@@ -184,12 +183,8 @@ export class ApiCoreClient extends EventEmitter {
 
   // Core Meeting Functionality
 
-  createMeeting = this.requireActor((template: RoomTemplate, templateName: MeetingTemplateName) => {
-    return this.post<{ newMeeting: any }>(
-      '/create_meeting',
-      { template, templateName, source: getRef() },
-      this.SERVICES.api
-    );
+  createMeeting = this.requireActor((templateName: MeetingTemplateName) => {
+    return this.post<{ newMeeting: any }>('/create_meeting', { templateName, source: getRef() }, this.SERVICES.api);
   });
 
   /**
@@ -280,7 +275,7 @@ export class ApiCoreClient extends EventEmitter {
       const body = (await response.json()) as (BaseResponse & Response) | ErrorResponse;
 
       if (!body.success) {
-        throw new ApiError(body);
+        throw new ApiError(body, response.status);
       }
 
       return body;

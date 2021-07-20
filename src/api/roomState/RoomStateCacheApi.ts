@@ -2,6 +2,7 @@ import { randomSectionAvatar } from '@constants/AvatarMetadata';
 import { SIZE_AVATAR } from '@features/room/people/constants';
 import { logger } from '@utils/logger';
 import { WritableDraft } from 'immer/dist/internal';
+
 import { exportRoomTemplate } from './exportRoomTemplate';
 import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';
 import { sanityCheckWidget } from './sanityCheckWidget';
@@ -40,11 +41,11 @@ export class RoomStateCacheApi {
   initialize = (init: IncomingAuthResponseMessage) => {
     logger.debug(`Initialize`, init);
     const {
-      payload: { roomData: room, participants, displayName, self },
+      payload: { roomData: room, participants, self },
     } = init;
     this.set((draft) => {
       Object.assign(draft.state, room.state);
-      draft.displayName = displayName;
+      draft.displayName = room.displayName;
       // reset widgets
       draft.widgets = {};
       for (const widget of room.widgets) {
@@ -265,7 +266,7 @@ export class RoomStateCacheApi {
     });
   };
   exportTemplate = () => {
-    return JSON.stringify(exportRoomTemplate(this.get())).replaceAll('\\"', '"').replaceAll('\\\n', '\\n');
+    return exportRoomTemplate(this.get());
   };
   getCurrentUser = () => {
     const { sessionLookup, users, sessionId } = this.get();

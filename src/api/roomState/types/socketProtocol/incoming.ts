@@ -1,7 +1,7 @@
-import { WidgetShape, WidgetState } from '../widgets';
-import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
+import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { PassthroughPayload } from '../passthrough';
+import { WidgetShape, WidgetState } from '../widgets';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -36,8 +36,8 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
       isObserver: boolean;
     }[];
     self: ParticipantShape & { actor: { id: string } };
-    displayName: string;
     roomData: {
+      displayName: string;
       widgets: (WidgetShape & { transform: RoomPositionState })[];
       id: string | number; // TODO: clarify
       state: RoomDetailsStateShape;

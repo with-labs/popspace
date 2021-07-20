@@ -1,9 +1,9 @@
+import { cloneDeep, omit } from 'lodash';
+
 import { RoomStateCacheApi } from './RoomStateCacheApi';
-import { WidgetType } from './types/widgets';
-import { omit } from 'lodash';
-import { IncomingAuthResponseMessage } from './types/socketProtocol';
 import { emptyState } from './roomStateStore';
-import { cloneDeep } from 'lodash';
+import { IncomingAuthResponseMessage } from './types/socketProtocol';
+import { WidgetType } from './types/widgets';
 
 jest.mock('./SocketConnection');
 jest.mock('@utils/logger');
@@ -57,9 +57,9 @@ describe('RoomStateCacheApi', () => {
               },
             },
           ],
-          displayName: 'room',
           roomData: {
             id: 'room-id',
+            displayName: 'room',
             state: {
               backgroundColor: '#ffffff',
               wallpaperRepeats: false,

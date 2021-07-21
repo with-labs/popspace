@@ -61,6 +61,8 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <PublishedMicToggle />
               <Hidden xsDown>
                 <ScreenShareToggle />
+              </Hidden>
+              <Hidden xsDown>
                 <GlobalAudioToggle />
               </Hidden>
             </Spacing>

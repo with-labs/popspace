@@ -34,13 +34,12 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
   const isGlobalAudioOn = useRoomStore((room) => room.state.isAudioGlobal);
   const toggleGlobalAudio = () => {
     client.roomState.setIsAudioGlobal(!isGlobalAudioOn);
-    // close the modal
-    setTargetEl(null);
   };
 
   return (
     <>
       <Button
+        fullWidth={false}
         onClick={(ev) => setTargetEl(ev.currentTarget)}
         className={clsx(classes.button, className)}
         variant="text"
@@ -53,7 +52,7 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
         </span>
       </Button>
       <ResponsivePopover open={!!targetEl} anchorEl={targetEl} onClose={() => setTargetEl(null)}>
-        <Spacing flexDirection="column" minWidth={328}>
+        <Spacing flexDirection="column" minWidth={328} p={0.5}>
           <Typography variant="h2" gutterBottom>
             {t(
               isGlobalAudioOn

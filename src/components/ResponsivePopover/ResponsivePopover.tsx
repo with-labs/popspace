@@ -1,16 +1,16 @@
-import * as React from 'react';
 import {
-  useMediaQuery,
-  Theme,
-  SwipeableDrawer,
-  Popover,
   Box,
+  makeStyles,
+  ModalProps,
+  Popover,
   PopoverOrigin,
   PopoverPosition,
-  ModalProps,
-  makeStyles,
   PopoverProps,
+  SwipeableDrawer,
+  Theme,
+  useMediaQuery,
 } from '@material-ui/core';
+import * as React from 'react';
 
 export interface IResponsivePopoverProps extends Omit<ModalProps, 'children'> {
   anchorEl?: HTMLElement | null;
@@ -131,7 +131,9 @@ export const ResponsivePopover: React.FC<IResponsivePopoverProps> = ({
       {...additionalProps}
       {...rest}
     >
-      <Box p={2}>{children}</Box>
+      <Box p={2} data-no-drag>
+        {children}
+      </Box>
     </Popover>
   );
 };

@@ -495,11 +495,11 @@
         "globalAudioOn": "Everyone",
         "globalAudioOff": "Nearby",
         "globalAudioOnTitle": "Hear everybody",
-        "globalAudioOnDescription": "TODO",
-        "globalAudioOnCta": "Switch to global audio",
+        "globalAudioOnDescription": "Anybody in the room can hear everyone else, no matter the distance.",
+        "globalAudioOnCta": "Hear everybody",
         "globalAudioOffTitle": "Only hear nearby",
-        "globalAudioOffDescription": "TODO",
-        "globalAudioOffCta": "Switch to spatial audio"
+        "globalAudioOffDescription": "Only people near you can hear you.",
+        "globalAudioOffCta": "Hear nearby"
       },
       "updates": {
         "title": "Update available!",

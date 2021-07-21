@@ -4,7 +4,7 @@ import { DropdownIcon } from '@components/icons/DropdownIcon';
 import { HearingIcon } from '@components/icons/HearingIcon';
 import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
 import { Spacing } from '@components/Spacing/Spacing';
-import { Box, Button, ButtonProps, makeStyles, Typography } from '@material-ui/core';
+import { Button, ButtonProps, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +54,6 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
       </Button>
       <ResponsivePopover open={!!targetEl} anchorEl={targetEl} onClose={() => setTargetEl(null)}>
         <Spacing flexDirection="column" minWidth={328}>
-          <Box bgcolor="grey.100" width="100%" height={178} />
           <Typography variant="h2" gutterBottom>
             {t(
               isGlobalAudioOn

@@ -52,7 +52,7 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
         </span>
       </Button>
       <ResponsivePopover open={!!targetEl} anchorEl={targetEl} onClose={() => setTargetEl(null)}>
-        <Spacing flexDirection="column" minWidth={328} p={2}>
+        <Spacing flexDirection="column" width={328} p={2}>
           <Typography variant="h2" gutterBottom>
             {t(
               isGlobalAudioOn

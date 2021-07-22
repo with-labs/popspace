@@ -34,6 +34,7 @@ export enum EventNames {
   LEAVE_ROOM_BUTTON_PRESSED = 'leave_room_button_pressed',
   COPY_LINK_BUTTON_PRESSED = 'copy_link_button_pressed',
   TOGGLE_SCREENSHARE = 'toggle_screenshare',
+  PROMO_SLUG = 'promo_slug',
 }
 
 export enum Origin {

@@ -4,7 +4,18 @@ import { DropdownIcon } from '@components/icons/DropdownIcon';
 import { HearingIcon } from '@components/icons/HearingIcon';
 import { ResponsivePopover } from '@components/ResponsivePopover/ResponsivePopover';
 import { Spacing } from '@components/Spacing/Spacing';
-import { Button, ButtonProps, makeStyles, Typography } from '@material-ui/core';
+import {
+  Button,
+  ButtonProps,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  makeStyles,
+  Typography,
+} from '@material-ui/core';
+import globalAudioOffVideo from '@src/videos/global_audio/global-off.mp4';
+import globalAudioOnVideo from '@src/videos/global_audio/global-on.mp4';
 import clsx from 'clsx';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       width: 380,
-      padding: theme.spacing(2),
     },
   },
 }));
@@ -47,6 +57,7 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
   const isGlobalAudioOn = useRoomStore((room) => room.state.isAudioGlobal);
   const toggleGlobalAudio = () => {
     client.roomState.setIsAudioGlobal(!isGlobalAudioOn);
+    setTargetEl(null); // close popout
   };
 
   return (
@@ -66,27 +77,63 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
       </Button>
       <ResponsivePopover open={!!targetEl} anchorEl={targetEl} onClose={() => setTargetEl(null)}>
         <Spacing flexDirection="column" className={classes.container}>
-          <Typography variant="h2" gutterBottom>
-            {t(
-              isGlobalAudioOn
-                ? 'features.mediaControls.globalAudioOnTitle'
-                : 'features.mediaControls.globalAudioOffTitle'
-            )}
-          </Typography>
-          <Typography>
-            {t(
-              isGlobalAudioOn
-                ? 'features.mediaControls.globalAudioOnDescription'
-                : 'features.mediaControls.globalAudioOffDescription'
-            )}
-          </Typography>
-          <Button onClick={toggleGlobalAudio}>
-            {t(
-              isGlobalAudioOn ? 'features.mediaControls.globalAudioOffCta' : 'features.mediaControls.globalAudioOnCta'
-            )}
-          </Button>
+          <Typography variant="h2">{t('features.mediaControls.globalAudioTitle')}</Typography>
+          <AudioToggleCard
+            title={t('features.mediaControls.globalAudioOnTitle')}
+            description={t('features.mediaControls.globalAudioOnDescription')}
+            videoSrc={globalAudioOnVideo}
+            selected={isGlobalAudioOn}
+            onClick={toggleGlobalAudio}
+          />
+          <AudioToggleCard
+            title={t('features.mediaControls.globalAudioOffTitle')}
+            description={t('features.mediaControls.globalAudioOffDescription')}
+            videoSrc={globalAudioOffVideo}
+            selected={!isGlobalAudioOn}
+            onClick={toggleGlobalAudio}
+          />
         </Spacing>
       </ResponsivePopover>
     </>
+  );
+}
+
+const useCardStyles = makeStyles((theme) => ({
+  card: {
+    overflow: 'visible',
+  },
+  selected: {
+    boxShadow: theme.focusRings.create(theme.palette.brandColors.lavender.bold, true),
+  },
+}));
+
+function AudioToggleCard({
+  selected,
+  description,
+  videoSrc,
+  title,
+  onClick,
+  ...props
+}: {
+  selected: boolean;
+  title: string;
+  description: string;
+  videoSrc: string;
+  onClick: () => void;
+}) {
+  const classes = useCardStyles();
+
+  return (
+    <Card className={clsx(classes.card, selected && classes.selected)} {...props}>
+      <CardActionArea disabled={selected} onClick={onClick}>
+        <CardMedia>
+          <video src={videoSrc} autoPlay loop muted />
+        </CardMedia>
+        <CardContent>
+          <Typography variant="h3">{title}</Typography>
+          <Typography>{description}</Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 }

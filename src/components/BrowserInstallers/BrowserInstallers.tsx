@@ -5,9 +5,9 @@ import { Grid } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import chrome from './images/chrome.png';
-import edge from './images/edge.png';
-import firefox from './images/firefox.png';
+import chrome from '@images/browsers/chrome.png';
+import edge from '@images/browsers/edge.png';
+import firefox from '@images/browsers/firefox.png';
 
 export function BrowserInstallers({
   analyticsEvent,

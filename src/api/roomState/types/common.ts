@@ -11,4 +11,5 @@ export interface RoomDetailsStateShape {
   zOrder: string[];
   wallpaperRepeats: boolean;
   backgroundColor: string;
+  isAudioGlobal: boolean;
 }

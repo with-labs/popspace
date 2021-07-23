@@ -31,6 +31,8 @@ export interface WidgetMediaState {
   playStartedTimestampUtc: string | null;
   isPlaying?: boolean;
   isRepeatOn?: boolean;
+  /** 0-1 */
+  volume?: number;
 }
 
 export interface StickyNoteWidgetState {

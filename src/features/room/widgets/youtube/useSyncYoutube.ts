@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { PlayState } from '../common/MediaControls';
+import { YoutubeWidgetShape, YoutubeWidgetState } from '@api/roomState/types/widgets';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { YoutubeWidgetState, YoutubeWidgetShape } from '@api/roomState/types/widgets';
+import * as React from 'react';
+
+import { PlayState } from '../common/MediaControls';
 
 function addTimeSinceLastPlayToTimestamp(timestamp: number, lastPlayedUTC: string | null) {
   if (lastPlayedUTC) {
@@ -36,10 +37,12 @@ export function useSyncYoutube({
     isPlaying = false,
     timestamp = 0,
     playStartedTimestampUtc = null,
+    volume = 0.5,
   } = state.widgetState.mediaState || {
     isPlaying: false,
     timestamp: 0,
     playStartedTimestampUtc: null,
+    volume: 0.5,
   };
 
   const playState = isPlaying ? PlayState.Playing : PlayState.Paused;
@@ -142,9 +145,9 @@ export function useSyncYoutube({
 
   // handle muting
   React.useEffect(() => {
-    const vol = isMuted ? 0 : lastSpatialVolumeRef.current * 100;
+    const vol = isMuted ? 0 : lastSpatialVolumeRef.current * volume * 100;
     ytPlayerRef.current?.setVolume(vol);
-  }, [isMuted, ytPlayerRef, lastSpatialVolumeRef]);
+  }, [isMuted, ytPlayerRef, lastSpatialVolumeRef, volume]);
 
   // when the YT player is in a ready state, immediately synchronize it to the latest
   // redux data
@@ -158,7 +161,7 @@ export function useSyncYoutube({
       if (isMuted) {
         p.setVolume(0);
       } else {
-        p.setVolume(lastSpatialVolumeRef.current * 100);
+        p.setVolume(lastSpatialVolumeRef.current * volume * 100);
       }
 
       // immediately sync to current timestamp and play state, utilizing
@@ -178,7 +181,7 @@ export function useSyncYoutube({
       // finally, invoke the load handler if provided
       onLoad?.();
     },
-    [timestamp, isPlaying, playStartedTimestampUtc, isMuted, lastSpatialVolumeRef, onLoad]
+    [timestamp, isPlaying, playStartedTimestampUtc, isMuted, lastSpatialVolumeRef, onLoad, volume]
   );
 
   // when the Redux timestamp changes, seek in the YT player too

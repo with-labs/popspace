@@ -52,6 +52,7 @@ export const emptyState: RoomStateShape = {
     zOrder: [],
     wallpaperRepeats: false,
     backgroundColor: '#ffffff',
+    isAudioGlobal: false,
   },
   widgetPositions: {},
   userPositions: {},

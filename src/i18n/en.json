@@ -490,7 +490,16 @@
         "mediaSettings": "Media settings",
         "videoTitle": "Video",
         "audioTitle": "Audio",
-        "shareTitle": "Share"
+        "shareTitle": "Share",
+        "globalAudioToggle": "Conversation settings",
+        "globalAudioOn": "Everyone",
+        "globalAudioOff": "Nearby",
+        "globalAudioOnTitle": "Hear everybody",
+        "globalAudioOnDescription": "Anybody in the room can hear everyone else, no matter the distance.",
+        "globalAudioOnCta": "Hear everybody",
+        "globalAudioOffTitle": "Only hear nearby",
+        "globalAudioOffDescription": "Only people near you can hear you.",
+        "globalAudioOffCta": "Hear nearby"
       },
       "updates": {
         "title": "Update available!",

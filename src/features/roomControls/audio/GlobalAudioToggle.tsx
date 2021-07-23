@@ -28,6 +28,14 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
+  container: {
+    width: '100%',
+    padding: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      width: 380,
+      padding: theme.spacing(2),
+    },
+  },
 }));
 
 export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
@@ -57,7 +65,7 @@ export function GlobalAudioToggle({ className, ...props }: ButtonProps) {
         </span>
       </Button>
       <ResponsivePopover open={!!targetEl} anchorEl={targetEl} onClose={() => setTargetEl(null)}>
-        <Spacing flexDirection="column" width="100%" minWidth={380} p={2}>
+        <Spacing flexDirection="column" className={classes.container}>
           <Typography variant="h2" gutterBottom>
             {t(
               isGlobalAudioOn

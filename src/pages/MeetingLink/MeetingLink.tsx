@@ -27,14 +27,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
-
-import { isEdge, isChrome, isFirefox, isSafari } from 'react-device-detect';
-
-import chrome from '@images/browsers/chrome.png';
-import edge from '@images/browsers/edge.png';
-import firefox from '@images/browsers/firefox.png';
-import safari from '@images/browsers/safari.png';
-import generic from '@images/browsers/generic.png';
+import { BrowserExtensionCard } from '@components/BrowserExtensionCard/BrowserExtensionCard';
 
 import gcal from './images/calendar.png';
 import outlook from './images/outlook.png';
@@ -148,73 +141,6 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
     }
   };
 
-  const getBrowserExtensionCard = () => {
-    let browserInfo: {
-      eventName: string;
-      imgSrc: string;
-      altTextKey: string;
-      url: null | string;
-    } = {
-      eventName: 'installGenericExt',
-      imgSrc: generic,
-      altTextKey: 'pages.meetingLink.extensions.browser.genericIconAlt',
-      url: null,
-    };
-
-    if (isChrome) {
-      browserInfo = {
-        eventName: 'installChromeExt',
-        imgSrc: chrome,
-        altTextKey: 'pages.meetingLink.extensions.browser.chomeIconAlt',
-        url: 'https://chrome.google.com/webstore/detail/tilde/fdleebpnfhkglofibmclaffikndcmnjd?hl=en&authuser=0',
-      };
-    } else if (isFirefox) {
-      browserInfo = {
-        eventName: 'installFireFoxExt',
-        imgSrc: firefox,
-        altTextKey: 'pages.meetingLink.extensions.browser.fireFoxIconAlt',
-        url: null,
-      };
-    } else if (isEdge) {
-      browserInfo = {
-        eventName: 'installEdgeExt',
-        imgSrc: edge,
-        altTextKey: 'pages.meetingLink.extensions.browser.edgeIconAlt',
-        url: null,
-      };
-    } else if (isSafari) {
-      browserInfo = {
-        eventName: 'installSafariExt',
-        imgSrc: safari,
-        altTextKey: 'pages.meetingLink.extensions.browser.safariIconAlt',
-        url: null,
-      };
-    }
-
-    console.log('isNull', browserInfo.url === null);
-
-    return (
-      <ExtensionCard
-        iconSrc={browserInfo.imgSrc}
-        iconAlt={t(browserInfo.altTextKey)}
-        label={t('pages.meetingLink.extensions.browser.label')}
-        onClick={() => {
-          if (browserInfo.url) {
-            if (!hasInteracted) {
-              setHasInteracted(true);
-            }
-            Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, browserInfo.eventName);
-
-            window.open(browserInfo.url || '', '_blank');
-          }
-        }}
-        buttonText={t(browserInfo.url ? 'common.install' : 'common.comingSoon')}
-        buttonStartIcon={browserInfo.url ? <SaveIcon /> : null}
-        disabled={browserInfo.url === null}
-      />
-    );
-  };
-
   return (
     <CenterColumnPage>
       <Typography variant="h1" className={classes.explanationText}>
@@ -292,7 +218,14 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
-          {getBrowserExtensionCard()}
+          <BrowserExtensionCard
+            onClick={(eventName: string) => {
+              if (!hasInteracted) {
+                setHasInteracted(true);
+              }
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, eventName);
+            }}
+          />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard

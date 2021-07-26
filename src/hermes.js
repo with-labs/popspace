@@ -31,6 +31,10 @@ class Hermes {
     this.ws.on('close', () => {
       log.app.warn("socket server shut down")
     })
+
+    this.ws.on('error', (error) => {
+      log.app.error("ws encountered an error", error)
+    })
   }
 
   getExpress() {

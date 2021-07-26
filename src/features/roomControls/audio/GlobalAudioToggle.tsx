@@ -105,6 +105,10 @@ const useCardStyles = makeStyles((theme) => ({
   selected: {
     boxShadow: theme.focusRings.create(theme.palette.brandColors.lavender.bold, true),
   },
+  video: {
+    height: 'auto',
+    width: '100%',
+  },
 }));
 
 function AudioToggleCard({
@@ -127,7 +131,7 @@ function AudioToggleCard({
     <Card className={clsx(classes.card, selected && classes.selected)} {...props}>
       <CardActionArea disabled={selected} onClick={onClick}>
         <CardMedia>
-          <video src={videoSrc} autoPlay loop muted />
+          <video src={videoSrc} className={classes.video} autoPlay loop muted />
         </CardMedia>
         <CardContent>
           <Typography variant="h3">{title}</Typography>

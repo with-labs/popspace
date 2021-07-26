@@ -499,7 +499,8 @@
         "globalAudioOnCta": "Hear everybody",
         "globalAudioOffTitle": "Only hear nearby",
         "globalAudioOffDescription": "Only people near you can hear you.",
-        "globalAudioOffCta": "Hear nearby"
+        "globalAudioOffCta": "Hear nearby",
+        "globalAudioTitle": "Conversation mode"
       },
       "updates": {
         "title": "Update available!",

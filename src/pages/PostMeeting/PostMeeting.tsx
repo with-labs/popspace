@@ -18,6 +18,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import * as Yup from 'yup';
 
+import { Survey } from './Survey';
+
 const ANALYTICS_PAGE_ID = 'page_postMeeting';
 
 export interface PostMeetingProps extends RouteComponentProps<{ roomRoute: string }> {}
@@ -101,12 +103,20 @@ export function PostMeeting({ match }: PostMeetingProps) {
       if (!state.ratingId) {
         throw new Error("Can't submit feedback, no rating provided");
       }
+      if (!feedback) return;
+
+      Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, true);
       await api.experienceRatings.updateExperienceRating({ ratingId: state.ratingId, feedback });
       onDone();
     } catch (err) {
       logger.error(err);
       toast.error(t('error.messages.genericUnexpected') as string);
     }
+  };
+
+  const onSkipFeedback = () => {
+    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, false);
+    onDone();
   };
 
   const collectFeedback = !!state.ratingId;
@@ -154,43 +164,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
             </Link>
           </Spacing>
         ) : collectFeedback ? (
-          <Formik
-            onSubmit={(data) => {
-              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, true);
-              submitFeedback(data.feedback);
-            }}
-            initialValues={{ feedback: '' }}
-            validateOnBlur
-            validateOnMount
-            validationSchema={validationSchema}
-          >
-            <Spacing component={Form} flexDirection="column" alignItems="center" gap={2} textAlign="center">
-              <FormikTextField
-                multiline
-                rows={4}
-                name="feedback"
-                margin="normal"
-                placeholder={
-                  wasPositive
-                    ? t('pages.postMeeting.positiveFeedbackPlaceholder')
-                    : t('pages.postMeeting.negativeFeedbackPlaceholder')
-                }
-              />
-              <Spacing justifyContent="flex-end" width="100%">
-                <Button
-                  onClick={() => {
-                    Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_collectedFeedback`, false);
-                    onDone();
-                  }}
-                  color="default"
-                  fullWidth={false}
-                >
-                  {t('pages.postMeeting.skipSurvey')}
-                </Button>
-                <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>
-              </Spacing>
-            </Spacing>
-          </Formik>
+          <FeedbackForm onSkip={onDone} onSubmit={submitFeedback} wasPositive={wasPositive} />
         ) : (
           <Spacing flexDirection="column" gap={2} alignItems="center" textAlign="center">
             <Typography variant="h2">
@@ -235,4 +209,52 @@ function SaveLinkSection() {
       </Typography>
     </Box>
   );
+}
+
+function FeedbackForm({
+  onSubmit,
+  onSkip,
+  wasPositive,
+}: {
+  onSkip: () => void;
+  onSubmit: (feedback: string) => any;
+  wasPositive: boolean;
+}) {
+  const { t } = useTranslation();
+
+  if (!wasPositive) {
+    return <Survey onSubmit={onSubmit} onSkip={onSkip} />;
+  } else {
+    return (
+      <Formik
+        onSubmit={(data) => {
+          onSubmit(data.feedback);
+        }}
+        initialValues={{ feedback: '' }}
+        validateOnBlur
+        validateOnMount
+        validationSchema={validationSchema}
+      >
+        <Spacing component={Form} flexDirection="column" alignItems="center" gap={2} textAlign="center">
+          <FormikTextField
+            multiline
+            rows={4}
+            name="feedback"
+            margin="normal"
+            placeholder={
+              wasPositive
+                ? t('pages.postMeeting.positiveFeedbackPlaceholder')
+                : t('pages.postMeeting.negativeFeedbackPlaceholder')
+            }
+          />
+          <Spacing justifyContent="flex-end" width="100%">
+            <Button onClick={onSkip} color="default" fullWidth={false}>
+              {t('pages.postMeeting.skipSurvey')}
+            </Button>
+            <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>
+          </Spacing>
+        </Spacing>
+      </Formik>
+    );
+  }
 }

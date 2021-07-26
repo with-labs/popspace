@@ -156,7 +156,7 @@
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
         "noVideo": "No video",
-        "safariBanner": "Safari support is in preview. Help us improve by\u00A0<1>reporting bugs</1>, or switch to a\u00A0<3>supported browser</3>."
+        "safariBanner": "Safari support is in preview. Help us improve by <1>reporting bugs</1>, or switch to a <3>supported browser</3>."
       },
       "subscribe": {
         "quoteText": "",
@@ -234,7 +234,19 @@
         "howWasIt": "How was your meeting?",
         "tooLong": "Sorry, this is a bit too long. Max is {{maxChars}} characters.",
         "saveThisLink": "Bookmark this page if you want to come back to the meeting content at any time.",
-        "createAnother": "Create another meeting"
+        "createAnother": "Create another meeting",
+        "surveyOptions": {
+          "choppy": "Choppy or robotic voice",
+          "oneCantHear": "One person can hear everybody, but can't be heard",
+          "cantHearOne": "One person can't hear or be heard",
+          "delay": "Audio is delayed",
+          "echo": "I can hear my own echo",
+          "volume": "Volume issues (too loud or too quiet)",
+          "static": "Random static noises",
+          "screenshareBlank": "Screen sharing is blank",
+          "cantUnmute": "I can't turn on video or unmute",
+          "other": "Other"
+        }
       },
       "licenses": {
         "title": "Open Source Software Licenses",

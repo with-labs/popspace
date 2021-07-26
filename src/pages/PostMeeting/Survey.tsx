@@ -39,10 +39,15 @@ export function Survey({ onSubmit, onSkip }: SurveyProps) {
       validateOnBlur
       validateOnMount
       onSubmit={({ feedback, other }) => {
-        if (feedback === 'Other') {
+        if (feedback === OPTIONS[OPTIONS.length - 1]) {
           return onSubmit(other);
         } else {
-          return onSubmit(feedback);
+          // submit localized English text
+          return onSubmit(
+            t(feedback, {
+              lng: 'en',
+            })
+          );
         }
       }}
     >
@@ -56,7 +61,7 @@ export function Survey({ onSubmit, onSkip }: SurveyProps) {
               ))}
             </Spacing>
           </RadioGroup>
-          {values.feedback === 'Other' && (
+          {values.feedback === OPTIONS[OPTIONS.length - 1] && (
             <FormikTextField
               margin="normal"
               multiline

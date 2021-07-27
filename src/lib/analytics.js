@@ -85,7 +85,7 @@ class Analytics {
   }
 
   async toggleVideo(event) {
-    const toggleEntry = await shared.db.pg.massive.analytics_video_usage.insert({
+    const toggleEntry = await shared.db.pg.massive.analytics_camera_usage.insert({
       room_id: event.roomId(),
       actor_id: event.actorId(),
       participant_id: event.sessionId(),
@@ -103,7 +103,7 @@ class Analytics {
       return
     }
 
-    await shared.db.pg.massive.analytics_video_usage.update(
+    await shared.db.pg.massive.analytics_camera_usage.update(
       {id: entryId},
       {last_heartbeat_at: shared.db.time.now()}
     )

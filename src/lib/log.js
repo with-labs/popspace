@@ -28,7 +28,8 @@ const log4jsConfig = {
     received: { appenders: ["received", "all"], level: "trace" },
     sent: { appenders: ["sent", "all"], level: "trace" },
     error: { appenders: ["error", "all"], level: "trace" }
-  }
+  },
+  pm2: true
 }
 log4js.configure(log4jsConfig)
 const logging = {

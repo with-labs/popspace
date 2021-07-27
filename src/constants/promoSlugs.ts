@@ -5,4 +5,4 @@
  * we record a tracking event
  */
 
-export const PROMO_SLUGS = ['colors'];
+export const PROMO_SLUGS = ['thegreendeveloper'];

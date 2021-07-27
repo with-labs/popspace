@@ -1,11 +1,9 @@
 import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import { isSafari, isMobile } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 import { Trans } from 'react-i18next';
 import { Banner } from '@components/Banner/Banner';
-
-import { useRoomModalStore } from '../useRoomModalStore';
 
 const useStyles = makeStyles((theme) => ({
   inlineButton: {
@@ -26,25 +24,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function SafariBanner() {
+export function MobileBetaBanner() {
   const classes = useStyles();
 
-  const openModal = useRoomModalStore((store) => store.api.openModal);
-  const openBrowsersModal = () => openModal('supportedBrowsers');
-
-  if (!isSafari || isMobile) {
+  if (!isMobile) {
     return null;
   }
 
   return (
     <Banner>
-      <Trans i18nKey="pages.room.safariBanner">
-        Safari support is in preview. Help us improve by&nbsp;
-        <FeedbackButton className={classes.inlineButton}>reporting bugs</FeedbackButton>, or switch to a&nbsp;
-        <button className={classes.inlineButton} onClick={openBrowsersModal}>
-          supported browser
-        </button>
-        .
+      <Trans i18nKey="pages.room.mobileBetaBanner">
+        Mobile support is in beta&nbsp;
+        <FeedbackButton className={classes.inlineButton}>report a bug</FeedbackButton>
       </Trans>
     </Banner>
   );

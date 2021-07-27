@@ -9,6 +9,8 @@ import { CenterButton } from './viewport/CenterButton';
 import { ZoomInButton } from './viewport/ZoomInButton';
 import { ZoomOutButton } from './viewport/ZoomOutButton';
 
+import { isMobileOnly } from 'react-device-detect';
+
 export interface IRoomControlsProps {}
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +33,22 @@ const useStyles = makeStyles((theme) => ({
 export const RoomControls = React.memo<IRoomControlsProps>(() => {
   const styles = useStyles();
 
-  return (
+  return isMobileOnly ? (
+    <>
+      <Spacing gap={1} flexDirection="column" className={styles.viewportControls}>
+        <Box component={Paper} padding={0.25}>
+          <CenterButton />
+        </Box>
+        <Spacing component={Paper} padding={0.25} gap={0.25} flexDirection="column" className={styles.zoomButtons}>
+          <ZoomInButton />
+          <ZoomOutButton />
+        </Spacing>
+      </Spacing>
+      <Box position="absolute" bottom="0" width="100%">
+        <RoomTaskbar />
+      </Box>
+    </>
+  ) : (
     <>
       <RoomTaskbar />
       <Spacing gap={1} flexDirection="column" className={styles.viewportControls}>

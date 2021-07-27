@@ -3,6 +3,8 @@ import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import { PageTitle } from '@components/PageTitle/PageTitle';
 import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
 import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
+import { MobileBetaBanner } from '@features/roomControls/compatibility/MobileBetaBanner';
+
 import { SupportedBrowsersModal } from '@features/roomModals/SupportedBrowsersModal';
 import { Box } from '@material-ui/core';
 import React from 'react';
@@ -45,6 +47,7 @@ export const Room = React.memo<IRoomProps>(() => {
     <RoomViewportProvider>
       <Box display="flex" flexDirection="column" width="100%" height="100%" flex={1}>
         <SafariBanner />
+        <MobileBetaBanner />
         <RoomControls />
         <RoomCanvasRenderer data-test-room>
           <PageTitle title={roomName} />

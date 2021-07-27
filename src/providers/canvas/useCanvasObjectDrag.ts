@@ -1,10 +1,11 @@
+import { SPRINGS } from '@constants/springs';
 import { useSpring } from '@react-spring/web';
+import { addVectors, roundVector, subtractVectors } from '@utils/math';
+import { isMiddleClick, isRightClick } from '@utils/mouseButtons';
 import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useGesture } from 'react-use-gesture';
-import { SPRINGS } from '@constants/springs';
+
 import { Vector2 } from '../../types/spatials';
-import { isMiddleClick, isRightClick } from '@utils/mouseButtons';
-import { addVectors, roundVector, subtractVectors } from '@utils/math';
 import { useViewport } from '../viewport/useViewport';
 import { AutoPan } from './AutoPan';
 import { CanvasObjectKind } from './Canvas';
@@ -131,11 +132,18 @@ export function useCanvasObjectDrag({
       }
 
       if (state.event?.target) {
+        const element = state.event?.target as HTMLElement;
+        // look up the element tree for a hidden or no-drag element to see if dragging is allowed
+        // here.
+        const dragPrevented =
+          element.getAttribute('aria-hidden') === 'true' ||
+          element.getAttribute('data-no-drag') === 'true' ||
+          !!element.closest('[data-no-drag="true"], [aria-hidden="true"]');
         // BUGFIX: a patch which is intended to prevent a bug where opening a menu
         // or other popover from within a draggable allows dragging by clicking anywhere
         // on the screen, since the whole screen is covered by a click-blocker element
         // ignore drag events which target an aria-hidden element
-        if ((state.event.target as HTMLElement).getAttribute('aria-hidden')) {
+        if (dragPrevented) {
           state.cancel();
           return;
         }

@@ -66,6 +66,7 @@ describe('RoomStateCacheApi', () => {
               wallpaperUrl: 'https://with.so/wallpapers/board.png',
               isCustomWallpaper: true,
               zOrder: [],
+              isAudioGlobal: false,
             },
             widgets: [
               {

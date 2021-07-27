@@ -35,6 +35,8 @@ export enum EventNames {
   COPY_LINK_BUTTON_PRESSED = 'copy_link_button_pressed',
   TOGGLE_SCREENSHARE = 'toggle_screenshare',
   PROMO_SLUG = 'promo_slug',
+  ENABLED_GLOBAL_AUDIO = 'enabled_global_audio',
+  DISABLED_GLOBAL_AUDIO = 'disabled_global_audio',
 }
 
 export enum Origin {

@@ -1,11 +1,13 @@
-import * as React from 'react';
-import { makeStyles, Tooltip, Box, IconButton, Slider, Typography } from '@material-ui/core';
-import clsx from 'clsx';
+import { WidgetMediaState } from '@api/roomState/types/widgets';
+import { LoopIcon } from '@components/icons/LoopIcon';
 import { PauseIcon } from '@components/icons/PauseIcon';
 import { PlayIcon } from '@components/icons/PlayIcon';
-import { WidgetMediaState } from '@api/roomState/types/widgets';
+import { Box, IconButton, makeStyles, Slider, Tooltip, Typography } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
-import { LoopIcon } from '@components/icons/LoopIcon';
+import clsx from 'clsx';
+import * as React from 'react';
+
+import { VolumeControl } from './VolumeControl';
 
 export enum PlayState {
   Playing,
@@ -133,6 +135,7 @@ export const MediaControls: React.FC<IMediaControlsProps> = ({
           <LoopIcon />
         </IconButton>
       )}
+      <VolumeControl />
       {onFullscreen && (
         <IconButton size="small" onClick={onFullscreen}>
           <Fullscreen />
@@ -180,6 +183,7 @@ const defaultMediaState = {
   timestamp: 0,
   playStartedTimestampUtc: null,
   isRepeatOn: false,
+  volume: 0.5,
 };
 
 /**
@@ -197,7 +201,7 @@ export function useBindMediaControls(
   // this hook can be called without a current mediaState - we sub in defaults. This
   // seamlessly adds a mediaState when media playback begins
   const defaultedMediaState = mediaState || defaultMediaState;
-  const { isPlaying, timestamp = 0, playStartedTimestampUtc, isRepeatOn = false } = defaultedMediaState;
+  const { isPlaying, timestamp = 0, playStartedTimestampUtc, isRepeatOn = false, volume } = defaultedMediaState;
 
   const saveState = React.useCallback(
     (state: Partial<WidgetMediaState>) => {
@@ -321,6 +325,12 @@ export function useBindMediaControls(
     if (!mediaRef.current) return;
     mediaRef.current.loop = isRepeatOn;
   }, [isRepeatOn]);
+
+  // when volume state changes, update media
+  React.useEffect(() => {
+    if (!mediaRef.current) return;
+    mediaRef.current.volume = volume || 0.5;
+  }, [volume]);
 
   const controlsProps = {
     duration,

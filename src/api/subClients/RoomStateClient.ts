@@ -38,4 +38,16 @@ export class RoomStateClient extends ApiSubClient {
       payload: this.core.roomStateStore.getState().state,
     });
   };
+
+  setIsAudioGlobal = (isAudioGlobal: boolean) => {
+    this.core.cacheApi.updateRoomState({ isAudioGlobal });
+    this.core.socket.send({
+      kind: 'updateRoomState',
+      // retrieve the full state for sending to the socket
+      payload: this.core.roomStateStore.getState().state,
+    });
+    Analytics.trackEvent(isAudioGlobal ? EventNames.ENABLED_GLOBAL_AUDIO : EventNames.DISABLED_GLOBAL_AUDIO, null, {
+      roomId: this.core.roomStateStore.getState().id,
+    });
+  };
 }

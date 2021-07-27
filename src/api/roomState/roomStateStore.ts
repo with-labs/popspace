@@ -1,10 +1,11 @@
-import create from 'zustand/vanilla';
 import { Vector2 } from '@src/types/spatials';
+import create from 'zustand/vanilla';
+
 import { combineAndImmer } from './combineAndImmer';
-import { WidgetShape } from './types/widgets';
-import { ActorShape, ParticipantState } from './types/participants';
-import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { RoomStateCacheApi } from './RoomStateCacheApi';
+import { RoomDetailsStateShape, RoomPositionState } from './types/common';
+import { ActorShape, ParticipantState } from './types/participants';
+import { WidgetShape } from './types/widgets';
 
 /**
  * Our client room state stores user information slightly differently than
@@ -52,6 +53,8 @@ export const emptyState: RoomStateShape = {
     zOrder: [],
     wallpaperRepeats: false,
     backgroundColor: '#ffffff',
+    // defaults to global audio, users can enable spatial
+    isAudioGlobal: true,
   },
   widgetPositions: {},
   userPositions: {},

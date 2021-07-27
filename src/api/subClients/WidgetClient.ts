@@ -9,6 +9,7 @@ import {
 } from '@api/roomState/types/socketProtocol';
 import { WidgetState, WidgetStateByType, WidgetType } from '@api/roomState/types/widgets';
 import { useOnboarding } from '@features/onboarding/useOnboarding';
+
 import { ApiSubClient } from './ApiSubClient';
 
 export class WidgetClient extends ApiSubClient {
@@ -81,6 +82,18 @@ export class WidgetClient extends ApiSubClient {
     });
 
     Analytics.trackWidgetUpdateEvent(this.core.roomId, payload.widgetState);
+  };
+
+  /**
+   * WARNING: be careful about using this; always commit
+   * local changes using updateWidget or revert them, never
+   * leave clients out of sync with peers!
+   *
+   * Update widget state only on this client, don't sync
+   * to peers.
+   */
+  localOnlyUpdateWidget = (payload: { widgetId: string; widgetState: Partial<WidgetState> }) => {
+    this.core.cacheApi.updateWidget(payload);
   };
 
   deleteWidget = (payload: { widgetId: string }) => {

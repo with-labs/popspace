@@ -1,11 +1,11 @@
 // Abstraction around our analytics lib
-import { EventNames } from './constants';
+import { getRef } from '@analytics/analyticsRef';
+import client from '@api/client';
 import { WidgetState } from '@api/roomState/types/widgets';
 import { LOCAL_ANALYTICS_DATA } from '@constants/User';
 import { logger } from '@utils/logger';
-import api from '@api/client';
-import client from '@api/client';
-import { getRef } from '@analytics/analyticsRef';
+
+import { EventNames } from './constants';
 
 // Helper methods
 // WIP for more complex data calculation, not needed right now
@@ -63,7 +63,7 @@ const trackEvent = (eventName: EventNames | string, value?: any, eventProperties
   };
 
   // call the api actor event tracker endpoint
-  api.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventMetaData });
+  return client.event.trackActorEvent({ key: eventName, value: value ?? '', meta: eventMetaData });
 };
 
 const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<WidgetState>) => {

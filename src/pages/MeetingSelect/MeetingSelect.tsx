@@ -18,7 +18,9 @@ export interface IMeetingSelectProps extends RouteComponentProps<{ meetingType?:
 
 const useStyles = makeStyles((theme) => ({
   explanationText: {
-    width: 500,
+    [theme.breakpoints.up('md')]: {
+      width: 500,
+    },
     textAlign: 'center',
     color: theme.palette.brandColors.vintageInk.regular,
     paddingBottom: theme.spacing(4),

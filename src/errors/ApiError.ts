@@ -20,7 +20,6 @@ export class ApiError extends Error {
   }
 
   constructor(response: ErrorResponse, httpCode = 500) {
-    console.log(response);
     super(response.message || 'Unexpected error');
     this._code = (response.errorCode?.toString() as ErrorCodes) || ErrorCodes.UNEXPECTED;
     this._type = ErrorTypes.API;

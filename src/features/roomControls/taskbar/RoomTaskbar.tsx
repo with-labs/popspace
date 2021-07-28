@@ -68,7 +68,9 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
             </Spacing>
           </MediaFailedWrapper>
           <Spacing gap={0.5} alignItems="center" justifyContent="flex-end" color="grey.900" flexDirection={'row'}>
-            <CopyLinkButton />
+            <Hidden xsDown>
+              <CopyLinkButton />
+            </Hidden>
             <LeaveMeetingButton />
           </Spacing>
         </Paper>

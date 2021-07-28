@@ -1,5 +1,4 @@
 import { Analytics } from '@analytics/Analytics';
-import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
 import { RouteNames } from '@constants/RouteNames';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { MeetingTemplateName } from '@features/meetingTemplates/templateData';
@@ -111,7 +110,6 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         {t('pages.meetingSelect.titleText')}
       </Typography>
       <MeetingTemplatePicker onSelect={setSelected} selected={selected} />
-      <ProductHuntButton />
     </CenterColumnPage>
   );
 };

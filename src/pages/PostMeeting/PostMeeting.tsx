@@ -4,7 +4,6 @@ import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { Link } from '@components/Link/Link';
 import { Logo } from '@components/Logo/Logo';
-import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
 import { Spacing } from '@components/Spacing/Spacing';
 import { StarRating } from '@components/StarRating/StarRating';
 import { Links } from '@constants/Links';
@@ -176,7 +175,6 @@ export function PostMeeting({ match }: PostMeetingProps) {
         )}
       </Box>
       <SaveLinkSection />
-      <ProductHuntButton />
     </Box>
   );
 }

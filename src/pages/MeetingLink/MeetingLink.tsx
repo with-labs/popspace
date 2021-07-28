@@ -26,10 +26,10 @@ import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
-
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
+import { BrowserExtensionCard } from '@components/BrowserExtensionCard/BrowserExtensionCard';
+
 import gcal from './images/calendar.png';
-import chrome from './images/chrome.png';
 import outlook from './images/outlook.png';
 import slack from './images/slack.png';
 
@@ -218,18 +218,13 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>
-          <ExtensionCard
-            iconSrc={chrome}
-            iconAlt={t('pages.meetingLink.extensions.browser.chomeIconAlt')}
-            label={t('pages.meetingLink.extensions.browser.label')}
-            onClick={() => {
+          <BrowserExtensionCard
+            onClick={(eventName: string) => {
               if (!hasInteracted) {
                 setHasInteracted(true);
               }
-              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, 'installChrome');
+              Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_buttonPressed`, eventName);
             }}
-            buttonText={t('common.comingSoon')}
-            disabled
           />
         </Grid>
         <Grid item xs={12} sm={12} md={3} lg={3}>

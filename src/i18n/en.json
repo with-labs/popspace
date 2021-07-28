@@ -186,6 +186,10 @@
           },
           "browser": {
             "chomeIconAlt": "The Google Chrome logo",
+            "fireFoxIconAlt": "The Mozilla FireFox logo",
+            "edgeIconAlt": "The Microsoft Edge logo",
+            "safariIconAlt": "The Apple Safari logo",
+            "genericIconAlt": "A generic web browser logo",
             "label": "Browser Extension"
           },
           "outlook": {

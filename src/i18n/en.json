@@ -156,7 +156,8 @@
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
         "noVideo": "No video",
-        "safariBanner": "Safari support is in preview. Help us improve by <1>reporting bugs</1>, or switch to a <3>supported browser</3>."
+        "safariBanner": "Safari support is in preview. Help us improve by <1>reporting bugs</1>, or switch to a <3>supported browser</3>.",
+        "mobileBetaBanner": "Mobile support is in beta. <1>Report a bug</1>"
       },
       "subscribe": {
         "quoteText": "",

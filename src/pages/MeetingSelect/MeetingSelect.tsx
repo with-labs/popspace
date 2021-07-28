@@ -1,5 +1,4 @@
 import { Analytics } from '@analytics/Analytics';
-import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
 import { RouteNames } from '@constants/RouteNames';
 import { MeetingTemplatePicker } from '@features/meetingTemplates/MeetingTemplatePicker';
 import { MeetingTemplateName } from '@features/meetingTemplates/templateData';
@@ -18,7 +17,9 @@ export interface IMeetingSelectProps extends RouteComponentProps<{ meetingType?:
 
 const useStyles = makeStyles((theme) => ({
   explanationText: {
-    width: 500,
+    [theme.breakpoints.up('md')]: {
+      width: 500,
+    },
     textAlign: 'center',
     color: theme.palette.brandColors.vintageInk.regular,
     paddingBottom: theme.spacing(4),
@@ -109,7 +110,6 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         {t('pages.meetingSelect.titleText')}
       </Typography>
       <MeetingTemplatePicker onSelect={setSelected} selected={selected} />
-      <ProductHuntButton />
     </CenterColumnPage>
   );
 };

@@ -131,7 +131,7 @@ function AudioToggleCard({
     <Card className={clsx(classes.card, selected && classes.selected)} {...props}>
       <CardActionArea disabled={selected} onClick={onClick}>
         <CardMedia>
-          <video src={videoSrc} className={classes.video} autoPlay loop muted />
+          <video src={videoSrc} className={classes.video} autoPlay loop muted playsInline />
         </CardMedia>
         <CardContent>
           <Typography variant="h3">{title}</Typography>

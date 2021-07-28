@@ -38,8 +38,8 @@ export const Routes: React.FC<IRoutesProps> = () => {
         </React.Suspense>
       </Route>
 
-      {PROMO_SLUGS.map((slug) => (
-        <Route path={`/${slug}`} component={PromoSlugPage} />
+      {PROMO_SLUGS.map((slug, index) => (
+        <Route key={`${slug}_${index}`} path={`/${slug}`} component={PromoSlugPage} />
       ))}
 
       <Route path="/:roomRoute/post_meeting" component={PostMeeting} />

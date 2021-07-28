@@ -1,8 +1,6 @@
 import { CssBaseline, MuiThemeProvider, StylesProvider } from '@material-ui/core';
-import { NotSupported } from '@src/pages/NotSupported/NotSupported';
 import { FlaggProvider } from 'flagg/dist/react';
 import * as React from 'react';
-import { isMobileOnly } from 'react-device-detect';
 import { Router } from 'react-router';
 
 import { SoundEffectProvider } from './components/SoundEffectProvider/SoundEffectProvider';
@@ -29,15 +27,11 @@ export const App: React.FC<IAppProps> = () => {
           <Toaster />
           <CssBaseline />
           <Router history={history}>
-            {isMobileOnly ? (
-              <NotSupported isMobile={isMobileOnly} />
-            ) : (
-              <AppStateProvider>
-                <SoundEffectProvider>
-                  <Routes />
-                </SoundEffectProvider>
-              </AppStateProvider>
-            )}
+            <AppStateProvider>
+              <SoundEffectProvider>
+                <Routes />
+              </SoundEffectProvider>
+            </AppStateProvider>
           </Router>
         </MuiThemeProvider>
       </StylesProvider>

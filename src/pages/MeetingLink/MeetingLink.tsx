@@ -4,7 +4,6 @@ import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import { SaveIcon } from '@components/icons/SaveIcon';
 import { Link } from '@components/Link/Link';
-import { ProductHuntButton } from '@components/ProductHuntButton/ProductHuntButton';
 import { Spacing } from '@components/Spacing/Spacing';
 import { Links } from '@constants/Links';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
@@ -258,7 +257,6 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           />
         </Grid>
       </Grid>
-      <ProductHuntButton />
     </CenterColumnPage>
   );
 };

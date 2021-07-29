@@ -44,13 +44,22 @@ It's not recommended that we use a public bucket - we should create a CloudFront
 
 ## Using with Express
 
-The library includes a helper to extend an existing Express app with endpoints for file management. Call `extendExpress`, passing in an Express app and an instance of `FileManager`.
+The library exports standard Express middleware handlers you can attach directly to endpoints.
 
 ```ts
-extendExpress(app, manager, {
-  pathPrefix: 'userfiles',
-});
+import { createFileHandler, deleteFileHandler, FileManager } from '@withso/file-upload';
+
+const manager = new FileManager(...);
+
+expressApp.post('/files', createFileHandler(manager));
+expressApp.del('/files/:id', deleteFileHandler(manager));
 ```
+
+The create handler requires that a file be attached to `req.file`. We recommend the `multer` Express middleware to make this easy.
+
+The create handler requires that a file be passed to the `file` parameter. The parameter name can be configured with the second argument.
+
+The delete handler requires that the path have an `:id` parameter token. The name of this token can be configured with the second argument.
 
 `pathPrefix` is optional and lets you specify a prefix for the HTTP method paths used for managing files. Don't include leading or trailing slashes.
 
@@ -93,50 +102,7 @@ Provide the `id` value returned from creating a file to delete it, along with al
 
 ## Metadata Storage
 
-### Usage with `with-shared`
-
-The library has an out-of-the-box metadata storage layer implementation using `@withso/with-shared`.
-
-```ts
-import { WithSharedMetadataStorage } from '@withso/with-files/dist/interop/WithSharedMetadataStorage';
-
-const metadataStorage = new WithSharedMetadataStorage();
-
-const manager = new FileManager({
-  metadataStorage,
-  s3BucketName: 'user-files',
-});
-```
-
-To use `WithSharedMetadataStorage`, you must migrate your Postgres database to include the following tables:
-
-```
-files:
-  id: int, primary key
-  name: string
-  url: string
-  mimetype: string
-
-file_image_data:
-  file_id: int, primary key
-  thumbnail_url: string
-  dominant_color: string
-```
-
-#### Customizing table names
-
-You can pass a config parameter into `WithSharedMetadataStorage`'s constructor to change the table names for file and image metadata. By doing so, you could construct multiple different metadata storage classes (and multiple FileManagers) to handle different kinds of files and keep them separated in data persistence and S3.
-
-```ts
-const customStorage = new WithSharedMetadataStorage({
-  filesTable: 'wallpaper_files',
-  imageDataTable: 'wallpaper_image_data',
-});
-```
-
-### Usage with other persistence
-
-To use a different metadata storage solution, you should provide an interface implementation of `MetadataStorage` which reads and writes the appropriate data from a persistent storage.
+To provide a metadata storage solution, you should implement the interface `MetadataStorage` which reads and writes the appropriate data from a persistent storage.
 
 The required operations are:
 

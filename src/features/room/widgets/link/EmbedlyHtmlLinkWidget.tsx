@@ -18,13 +18,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const processHTML = (html: string) => {
+  const replacedExplicitSizes = html.replace(/(width|height)="\d+"/g, '$1="100%"');
+  return `
+    <html>
+      <head>
+        <style>
+          body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+          }
+          iframe {
+            width: 100%;
+            height: 100%;
+          }
+        </style>
+      </head>
+      <body>${replacedExplicitSizes}</body>
+    </html>`;
+};
+
 export function EmbedlyHtmlLinkWidget({ embedlyResponse }: { embedlyResponse: EmbedlyResponse }) {
   const { t } = useTranslation();
   const classes = useStyles();
 
   if (!embedlyResponse.html) return null;
 
-  const srcDoc = `<html><body>${embedlyResponse.html}</body></html>`;
+  const srcDoc = processHTML(embedlyResponse.html);
 
   return (
     <WidgetFrame

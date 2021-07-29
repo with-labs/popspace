@@ -135,7 +135,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
               <Publication classNames={classes.video} publication={mainStream.videoPublication} isLocal={isLocal} />
             )}
           </PersonBubbleBackground>
-          {!mainStream?.videoPublication && <PersonBubbleAvatar userId={userId} />}
+          {!mainStream?.videoPublication && <PersonBubbleAvatar isSpeaking={isSpeaking} userId={userId} />}
           {mainStream?.audioPublication && (
             <Publication
               classNames={classes.audio}

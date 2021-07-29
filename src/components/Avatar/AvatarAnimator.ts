@@ -1,8 +1,8 @@
 import { CanvasImage } from '@utils/CanvasImage';
 
 export enum AvatarAnimationState {
-  Idle = 'idle',
-  Talking = 'talking',
+  Idle = 'Idle',
+  Talking = 'Talking',
 }
 
 export interface SpriteSheetFrameData {
@@ -41,7 +41,7 @@ export interface SpriteSheetData {
   };
 }
 
-export interface AvatarAnimationSet {
+export interface AvatarSpriteSheetSet {
   spritesheetSrc: string;
   spritesheetData: SpriteSheetData;
   animations: Record<AvatarAnimationState, AvatarAnimation>;
@@ -50,6 +50,7 @@ export interface AvatarAnimationSet {
 export interface AvatarAnimation {
   frames: string[];
   timings: ([number, number] | number)[];
+  type: 'sequential' | 'random';
 }
 
 export class AvatarAnimator {
@@ -67,11 +68,12 @@ export class AvatarAnimator {
   // animation frame.
   private dirty = true;
 
-  constructor(private canvas: HTMLCanvasElement, private data: AvatarAnimationSet) {
-    this.ctx = canvas.getContext('2d')!;
-    if (!this.ctx) {
-      throw new Error('Could not get 2d rendering context for canvas element');
+  constructor(private canvas: HTMLCanvasElement, private data: AvatarSpriteSheetSet) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error(`Could not get 2d context for canvas element`);
     }
+    this.ctx = ctx;
     this.spritesheet = new CanvasImage({}, data.spritesheetSrc);
   }
 
@@ -86,11 +88,11 @@ export class AvatarAnimator {
     this.advanceFrame();
   };
 
-  private get activeAnimation() {
+  get activeAnimation() {
     return this.data.animations[this.activeState];
   }
 
-  private get activeFrame() {
+  get activeFrame() {
     return this.data.spritesheetData.frames[this.activeAnimation.frames[this.frameNumber]];
   }
 
@@ -99,8 +101,12 @@ export class AvatarAnimator {
   }
 
   private advanceFrame = () => {
-    // advance frame number, wrapping to total frame count
-    this.frameNumber = (this.frameNumber + 1) % this.activeAnimation.frames.length;
+    if (this.activeAnimation.type === 'sequential') {
+      // advance frame number, wrapping to total frame count
+      this.frameNumber = (this.frameNumber + 1) % this.activeAnimation.frames.length;
+    } else {
+      this.frameNumber = Math.floor(Math.random() * this.activeAnimation.frames.length);
+    }
     // compute next frame time
     if (Array.isArray(this.activeFrameTiming)) {
       this.nextFrameDuration =
@@ -126,6 +132,7 @@ export class AvatarAnimator {
     }
 
     if (this.dirty) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       // draw the sprite for the current frame
       const frame = this.activeFrame;
       this.ctx.drawImage(

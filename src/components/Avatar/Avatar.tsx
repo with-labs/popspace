@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { CircularProgress, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useAvatar } from '@hooks/useAvatar/useAvatar';
-import { makeStyles } from '@material-ui/core';
+import { AvatarAnimationState, AvatarAnimator, AvatarSpriteSheetSet } from './AvatarAnimator';
+import { avatarSpriteSheetCache } from './avatarSpriteSheetCache';
 
 export interface IAvatarProps {
   name: string;
   className?: string;
   size?: number | string;
-  baseImageClassName?: string;
-  useFallback?: boolean;
-  /** Stop animation and show the avatar in the specified state */
-  freeze?: 'eyesOpen' | 'eyesClosed' | false;
+  animation?: AvatarAnimationState;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -21,80 +19,75 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  baseImage: {
-    width: '100%',
-    marginTop: 'auto',
-  },
-  image: {
+  canvas: {
     position: 'absolute',
+    top: 0,
     left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  canvasAspectContainer: {
     bottom: 0,
     width: '100%',
   },
+  loader: {
+    margin: 'auto',
+  },
 }));
 
-export const Avatar: React.FC<IAvatarProps> = ({
-  name,
-  className,
-  baseImageClassName,
-  size,
-  useFallback = false,
-  freeze = false,
-}) => {
+export const Avatar: React.FC<IAvatarProps> = ({ name, className, size, animation = AvatarAnimationState.Idle }) => {
   const classes = useStyles();
 
-  const avatar = useAvatar(name);
-
-  // State dictating whether the avatar is in a blinking state.
-  const [isBlinking, setIsBlinking] = useState(false);
-
-  // Effect to set the blinking state in a somewhat random manner.
+  const [spritesheet, setSpritesheet] = useState<AvatarSpriteSheetSet | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
-    if (freeze) {
-      setIsBlinking(freeze === 'eyesClosed');
-    } else if (avatar) {
-      // Timeout up to 5000ms for non-blinking state. 100ms for blinking state.
-      const timeoutMillis = isBlinking ? 100 : Math.floor(Math.random() * 5000);
-      const blinkTimeout = setTimeout(() => {
-        // Toggle the blinking state.
-        setIsBlinking(!isBlinking);
-      }, timeoutMillis);
-      return () => {
-        clearTimeout(blinkTimeout);
-      };
+    const abortController = new AbortController();
+    avatarSpriteSheetCache.get(name, abortController.signal).then(setSpritesheet).catch(setError);
+    return () => {
+      abortController.abort();
+    };
+  }, [name]);
+
+  const ref = useRef<HTMLCanvasElement>(null);
+  const [animator, setAnimator] = useState<AvatarAnimator | null>(null);
+
+  useEffect(() => {
+    if (!ref.current || !spritesheet) return;
+
+    const animator = new AvatarAnimator(ref.current, spritesheet);
+
+    animator.start();
+    setAnimator(animator);
+
+    return () => {
+      animator.stop();
+    };
+  }, [spritesheet]);
+
+  useEffect(() => {
+    animator?.setState(animation);
+  }, [animation, animator]);
+
+  const canvasAspectPadding = useMemo(() => {
+    const rect = animator?.activeFrame.frame;
+    if (!rect) {
+      return '100%';
     }
-  }, [isBlinking, avatar, freeze]);
+    const aspect = rect.w / rect.h;
+    return `${(1 / aspect) * 100}%`;
+  }, [animator]);
 
-  if (avatar) {
-    // Use two img tags and toggle visibility on them so that both images are fetched and cached by the browser
-    // Using visibility:hidden on avatar images will cause the browser to fetch the blink image before it's needed,
-    // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
-    // browsers will still not fetch an image until it is rendered (Firefox, at least.)
-    return (
-      <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>
-        <img
-          className={clsx(classes.baseImage, baseImageClassName)}
-          style={{ visibility: isBlinking ? 'hidden' : 'visible' }}
-          src={avatar.image}
-          alt="avatar"
-        />
-        <img
-          className={classes.image}
-          style={{ visibility: isBlinking ? 'visible' : 'hidden' }}
-          src={avatar.blink}
-          alt="avatar-blink"
-        />
+  // Use two img tags and toggle visibility on them so that both images are fetched and cached by the browser
+  // Using visibility:hidden on avatar images will cause the browser to fetch the blink image before it's needed,
+  // thus preventing a flash during asset fetching. Attempting to use display:none was tempting, however some
+  // browsers will still not fetch an image until it is rendered (Firefox, at least.)
+  return (
+    <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>
+      <div className={classes.canvasAspectContainer} style={{ paddingBottom: canvasAspectPadding }}>
+        <canvas ref={ref} className={classes.canvas} />
       </div>
-    );
-  } else if (useFallback && name) {
-    // this allows us to pass in an avatar that isn't part of the avatar list while
-    // also keeping the same behavior
-    return (
-      <div className={clsx(classes.root, className)} style={size ? { width: size } : undefined}>
-        <img className={clsx(classes.baseImage, baseImageClassName)} src={name} alt="avatar" />
-      </div>
-    );
-  }
-
-  return <div></div>;
+      {!spritesheet && !error && <CircularProgress />}
+      {/* TODO: fallback when sprite fails to load */}
+    </div>
+  );
 };

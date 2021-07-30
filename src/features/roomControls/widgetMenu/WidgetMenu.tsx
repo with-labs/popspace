@@ -6,6 +6,8 @@ import { WidgetType } from '@api/roomState/types/widgets';
 import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
 import clsx from 'clsx';
 import { Spacing } from '@components/Spacing/Spacing';
+import { RoomSettingsButton } from '@features/roomControls/roomSettings/RoomSettingsButton';
+import { useFeatureFlag } from 'flagg';
 
 export interface IWidgetMenuProps {
   className?: string;
@@ -27,12 +29,14 @@ const useStyles = makeStyles((theme) => ({
 
 export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [hasSettings] = useFeatureFlag('settings');
 
   return (
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
           <Spacing gap={1.5} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
+            {hasSettings && <RoomSettingsButton />}
             <QuickAccessoryButton type={WidgetType.Link} />
             <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Whiteboard} />

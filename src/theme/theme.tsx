@@ -1217,6 +1217,46 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           backgroundColor: 'rgba(58%, 61.2%, 72.9%, 0.4) !important',
         },
       },
+      MuiTab: {
+        root: {
+          marginBottom: spacing(1),
+          textTransform: 'initial',
+          width: '100%',
+          display: 'block',
+          '&:hover': {
+            background: brandPalette.slate.light,
+            opacity: 1,
+            textTransform: 'initial',
+          },
+          '&$selected': {
+            background: brandPalette.slate.light,
+            borderRadius: shape.contentBorderRadius,
+          },
+        },
+        labelIcon: {
+          minHeight: 48,
+          '& svg': {
+            [breakpoints.up('md')]: {
+              height: spacing(3),
+              width: spacing(3),
+              marginRight: 12,
+              // couldnt really figure out how to override this
+              // the nice way, so I broke out the hammer :V
+              marginBottom: `0 !important`,
+            },
+          },
+        },
+        wrapper: {
+          [breakpoints.up('md')]: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'left',
+          },
+        },
+        textColorInherit: {
+          opacity: 1,
+        },
+      },
     },
   });
 };

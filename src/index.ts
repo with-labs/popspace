@@ -1,4 +1,3 @@
-export { extendExpress, ExtendOptions } from './extendExpress';
 export {
   FileManager,
   MetadataFile,

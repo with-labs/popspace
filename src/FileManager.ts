@@ -1,8 +1,9 @@
-import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
-import { S3 } from './S3';
-import { extractDominantColor, generateThumbnail } from './imageProcessing';
+import { v4 as uuid } from 'uuid';
+
 import { HttpError } from './HttpError';
+import { extractDominantColor, generateThumbnail } from './imageProcessing';
+import { S3 } from './S3';
 
 /**
  * Data for a file upload
@@ -11,13 +12,13 @@ export interface WithFile {
   name: string;
   mimetype: string;
   url: string;
+  imageData?: WithImageData;
 }
 
 /**
  * Additional data processed for image file uploads
  */
 export interface WithImageData {
-  fileId: string;
   thumbnailUrl: string;
   dominantColor: string;
 }
@@ -35,30 +36,14 @@ export interface MetadataStorage<Ctx extends any[] = []> {
    */
   createFile: (file: WithFile, ...ctx: Ctx) => Promise<string>;
   /**
-   * Writes image metadata to storage, returning an ID.
-   */
-  createImageData: (imageData: WithImageData, ...ctx: Ctx) => Promise<string>;
-  /**
    * Deletes file metadata from storage by ID.
    */
   deleteFile: (fileId: string, ...ctx: Ctx) => Promise<void>;
-  /**
-   * Deletes image metadata from storage by it's associated file ID.
-   */
-  deleteImageData: (fileId: string, ...ctx: Ctx) => Promise<void>;
   /**
    * Retrieves file metadata from storage by ID, resolving `null` if the
    * file is not in storage.
    */
   getFile: (fileId: string, ...ctx: Ctx) => Promise<MetadataFile | null>;
-  /**
-   * Retrieves image data from storage by its associated file ID, resolving
-   * `null` if there is no image metadata associated with the file ID.
-   */
-  getImageData: (
-    fileId: string,
-    ...ctx: Ctx
-  ) => Promise<MetadataImageData | null>;
 }
 
 export interface FileManagerOptions<Ctx extends any[]> {
@@ -108,13 +93,6 @@ export class FileManager<Ctx extends any[] = []> {
       url: baseUpload.Location,
     };
 
-    const baseFileId = await this.storage.createFile(baseFile, ...ctx);
-
-    const result: FileCreateResult = {
-      ...baseFile,
-      id: baseFileId,
-    };
-
     if (file.mimetype.startsWith('image/')) {
       // do additional image processing and add metadata record
       const extension = extname(file.originalname);
@@ -130,16 +108,18 @@ export class FileManager<Ctx extends any[] = []> {
         thumbnail,
         file.mimetype,
       );
-      const imageData: WithImageData = {
-        fileId: baseFileId,
+      baseFile.imageData = {
         dominantColor,
         thumbnailUrl: thumbnailUpload.Location,
       };
-      await this.storage.createImageData(imageData, ...ctx);
-      result.imageData = imageData;
     }
 
-    return result;
+    const baseFileId = await this.storage.createFile(baseFile, ...ctx);
+
+    return {
+      id: baseFileId,
+      ...baseFile,
+    };
   };
 
   deleteFile = async (fileId: string, ...ctx: Ctx) => {
@@ -147,10 +127,8 @@ export class FileManager<Ctx extends any[] = []> {
     if (!file) {
       throw new HttpError('The file does not exist', 404);
     }
-    const imageData = await this.storage.getImageData(fileId, ...ctx);
-    if (imageData) {
-      await this.s3.deleteFile(imageData.thumbnailUrl);
-      await this.storage.deleteImageData(fileId, ...ctx);
+    if (file.imageData) {
+      await this.s3.deleteFile(file.imageData.thumbnailUrl);
     }
     await this.s3.deleteFile(file.url);
     await this.storage.deleteFile(fileId, ...ctx);

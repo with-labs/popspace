@@ -5,7 +5,6 @@ jest.mock('@api/useRoomStore');
 const TEST_CATEGORY = 'todoBoards';
 
 // TODO: new tests for the new ui
-
 describe('RoomSettingsModal placeholder', () => {
   it('passes test until we can fix this file', async () => {
     expect(true);

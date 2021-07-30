@@ -4,17 +4,17 @@ jest.mock('@api/useRoomStore');
 
 const TEST_CATEGORY = 'todoBoards';
 
+jest.mock('@material-ui/core', () => ({
+  ...(jest.requireActual('@material-ui/core') as any),
+  useMediaQuery: () => false,
+}));
+
 // TODO: new tests for the new ui
 describe('RoomSettingsModal placeholder', () => {
   it('passes test until we can fix this file', async () => {
     expect(true);
   });
 });
-
-// jest.mock('@material-ui/core', () => ({
-//   ...(jest.requireActual('@material-ui/core') as any),
-//   useMediaQuery: () => false,
-// }));
 
 // const Wrapper = (p: any) => <MuiThemeProvider theme={theme} {...p} />;
 // describe('RoomSettingsModal component', () => {

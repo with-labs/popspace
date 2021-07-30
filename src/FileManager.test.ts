@@ -14,19 +14,13 @@ const mockS3 = {
 
 const mockMetadata = {
   createFile: jest.fn().mockResolvedValue('mock-file-id'),
-  createImageData: jest.fn().mockResolvedValue('mock-image-data-id'),
   deleteFile: jest.fn().mockResolvedValue(undefined),
-  deleteImageData: jest.fn().mockResolvedValue(undefined),
   getFile: jest.fn().mockResolvedValue({
     id: 'mock-file-id',
     url: 'https://mock-s3.com/mock-uuid/file.png',
     mimetype: 'image/png',
     name: 'file.png',
-  }),
-  getImageData: jest.fn().mockResolvedValue({
-    fileId: 'mock-file-id',
-    thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
-    dominantColor: 'rgba(0, 0, 0)',
+    imageData: undefined,
   }),
 };
 
@@ -79,7 +73,6 @@ describe('FileManager', () => {
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(2);
     expect(mockMetadata.createFile).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.createImageData).toHaveBeenCalledTimes(1);
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.png',
@@ -96,27 +89,22 @@ describe('FileManager', () => {
       name: 'file.png',
       mimetype: 'image/png',
       url: 'https://mock-s3.com/mock-uuid/file.png',
-    });
-    expect(mockMetadata.createImageData).toHaveBeenCalledWith({
-      fileId: 'mock-file-id',
-      thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
-      dominantColor: 'rgb(0, 0, 0)',
+      imageData: {
+        thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
+        dominantColor: 'rgb(0, 0, 0)',
+      },
     });
 
     expect(result.id).toBe('mock-file-id');
     expect(result.mimetype).toBe('image/png');
     expect(result.url).toBe('https://mock-s3.com/mock-uuid/file.png');
     expect(result.imageData).toEqual({
-      fileId: 'mock-file-id',
       thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
       dominantColor: 'rgb(0, 0, 0)',
     });
   });
 
   it('should delete a file and its metadata', async () => {
-    // mock that there's no image data for this file
-    mockMetadata.getImageData.mockResolvedValue(null);
-
     await manager.deleteFile('mock-file-id');
 
     expect(mockMetadata.getFile).toHaveBeenCalledTimes(1);
@@ -127,19 +115,20 @@ describe('FileManager', () => {
       'https://mock-s3.com/mock-uuid/file.png',
     );
 
-    expect(mockMetadata.getImageData).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.getImageData).toHaveBeenCalledWith('mock-file-id');
-
     expect(mockMetadata.deleteFile).toHaveBeenCalledTimes(1);
     expect(mockMetadata.deleteFile).toHaveBeenCalledWith('mock-file-id');
   });
 
   it('should delete an image file, thumbnail, and all of its metadata', async () => {
-    mockMetadata.getImageData.mockResolvedValue({
-      id: 'mock-image-data-id',
-      fileId: 'mock-file-id',
-      thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
-      dominantColor: 'rgba(0, 0, 0)',
+    mockMetadata.getFile.mockResolvedValue({
+      id: 'mock-file-id',
+      mimetype: 'image/png',
+      name: 'file.png',
+      url: 'https://mock-s3.com/mock-uuid/file.png',
+      imageData: {
+        thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
+        dominantColor: 'rgba(0, 0, 0)',
+      },
     });
 
     await manager.deleteFile('mock-file-id');
@@ -155,13 +144,7 @@ describe('FileManager', () => {
       'https://mock-s3.com/mock-uuid/file.thumb.png',
     );
 
-    expect(mockMetadata.getImageData).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.getImageData).toHaveBeenCalledWith('mock-file-id');
-
     expect(mockMetadata.deleteFile).toHaveBeenCalledTimes(1);
     expect(mockMetadata.deleteFile).toHaveBeenCalledWith('mock-file-id');
-
-    expect(mockMetadata.deleteImageData).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.deleteImageData).toHaveBeenCalledWith('mock-file-id');
   });
 });

@@ -42,32 +42,11 @@ const manager = new FileManager({
 
 It's not recommended that we use a public bucket - we should create a CloudFront instance which points to the bucket instead, and point a custom subdomain to it.
 
-## Using with Express
+### `fileManager.createFile(file, ...context)`
 
-The library exports standard Express middleware handlers you can attach directly to endpoints.
+Provide a `File` object to upload to S3. If the file is an image, it will be processed and additional metadata is returned. Additional context parameters can be provided and they will be passed to your MetadatStorage create method.
 
-```ts
-import { createFileHandler, deleteFileHandler, FileManager } from '@withso/file-upload';
-
-const manager = new FileManager(...);
-
-expressApp.post('/files', createFileHandler(manager));
-expressApp.del('/files/:id', deleteFileHandler(manager));
-```
-
-The create handler requires that a file be attached to `req.file`. We recommend the `multer` Express middleware to make this easy.
-
-The create handler requires that a file be passed to the `file` parameter. The parameter name can be configured with the second argument.
-
-The delete handler requires that the path have an `:id` parameter token. The name of this token can be configured with the second argument.
-
-`pathPrefix` is optional and lets you specify a prefix for the HTTP method paths used for managing files. Don't include leading or trailing slashes.
-
-When the app has been extended, two endpoints are made available:
-
-### `POST /{prefix}/files`
-
-Provide a form-encoded payload with a `file` field that contains a File. If the file is an image, it will be processed and additional metadata is returned. Responses:
+Return values:
 
 **Non-image file**
 
@@ -75,7 +54,8 @@ Provide a form-encoded payload with a `file` field that contains a File. If the 
 {
   name: 'original-filename.ext',
   mimetype: 'original/mimetype',
-  url: 'https://s3.url/of/file.ext'
+  url: 'https://s3.url/of/file.ext',
+  imageData: undefined
 }
 ```
 
@@ -96,9 +76,9 @@ Provide a form-encoded payload with a `file` field that contains a File. If the 
 
 Image data includes a thumbnail image path (always adjacent to the original file) and an extracted dominant image color, expressed as a CSS `rgb()` string.
 
-### `DELETE /{prefix}/files/:id`
+### `deleteFile(fileId, ...context)`
 
-Provide the `id` value returned from creating a file to delete it, along with all associated metadata. Image file thumbnails will also be deleted. No payload is required for this endpoint.
+Provide the `id` value returned from creating a file to delete it, along with all associated metadata. Image file thumbnails will also be deleted. Provide additional context parameters and they will be supplied to your MetadataStorage delete method.
 
 ## Metadata Storage
 
@@ -113,27 +93,14 @@ interface MetadataStorage {
    */
   createFile: (file: WithFile) => Promise<string>;
   /**
-   * Writes image metadata to storage, returning an ID.
-   */
-  createImageData: (imageData: WithImageData) => Promise<string>;
-  /**
    * Deletes file metadata from storage by ID.
    */
   deleteFile: (fileId: string) => Promise<void>;
-  /**
-   * Deletes image metadata from storage by it's associated file ID.
-   */
-  deleteImageData: (fileId: string) => Promise<void>;
   /**
    * Retrieves file metadata from storage by ID, resolving `null` if the
    * file is not in storage.
    */
   getFile: (fileId: string) => Promise<MetadataFile | null>;
-  /**
-   * Retrieves image data from storage by its associated file ID, resolving
-   * `null` if there is no image metadata associated with the file ID.
-   */
-  getImageData: (fileId: string) => Promise<MetadataImageData | null>;
 }
 ```
 
@@ -153,11 +120,3 @@ class MyMetadata implements MetadataStorage<[{ userId: string }]> {
   };
 }
 ```
-
-## Running the test server
-
-To test the system as an independent Express server, run `yarn dev`. The following prerequisites must first be met:
-
-1. Define the `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION` environment vars. You can use a `.env` file (copy `.env.template` and fill it out).
-
-The server will create a bucket (if it doesn't exist) called `with-files-test` in your S3 region under the specified account.

@@ -37,6 +37,7 @@ export enum EventNames {
   PROMO_SLUG = 'promo_slug',
   ENABLED_GLOBAL_AUDIO = 'enabled_global_audio',
   DISABLED_GLOBAL_AUDIO = 'disabled_global_audio',
+  SETTINGS_BUTTON_PRESSED = 'settings_button_pressed',
 }
 
 export enum Origin {

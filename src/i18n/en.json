@@ -543,6 +543,15 @@
         "linkCopied": "Link copied!",
         "leaveMeetingButtonText": "Leave Meeting"
       },
+      "roomSettings": {
+        "roomSettingsButton": "Settings",
+        "title": "Settings",
+        "profileTitle": "Profile",
+        "profileIconAlt": "Profile Icon",
+        "wallpaperTitle": "Wallpaper",
+        "wallpaperIconAlt": "Wallpaper Icon",
+        "soundTitle": "Sound FPO"
+      },
       "onboarding": {
         "title": "Getting started",
         "move": {

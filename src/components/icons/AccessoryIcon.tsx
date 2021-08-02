@@ -8,6 +8,7 @@ import whiteboardSrc from './png/whiteboard.png';
 import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
 import huddleSrc from './png/huddle.png';
+import settingsSrc from './png/settings.png';
 import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
 import { WidgetType } from '@api/roomState/types/widgets';
 
@@ -21,6 +22,7 @@ const icons = {
   [WidgetType.Huddle]: huddleSrc,
   file: fileUploadSrc,
   embed: embedSrc,
+  settings: settingsSrc,
 };
 
 export type AccessoryIconType = keyof typeof icons;

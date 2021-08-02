@@ -1,5 +1,5 @@
+import { Dialog, DialogProps, SwipeableDrawer, Theme, useMediaQuery } from '@material-ui/core';
 import React from 'react';
-import { Dialog, useMediaQuery, Theme, SwipeableDrawer, DialogProps } from '@material-ui/core';
 
 export interface IModalProps extends Omit<DialogProps, 'open' | 'onClose'> {
   isOpen: boolean;

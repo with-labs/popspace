@@ -1,9 +1,10 @@
+import { lavender } from '@src/theme/theme';
 import { Vector2 } from '@src/types/spatials';
 import create from 'zustand/vanilla';
 
 import { combineAndImmer } from './combineAndImmer';
 import { RoomStateCacheApi } from './RoomStateCacheApi';
-import { RoomDetailsStateShape, RoomPositionState } from './types/common';
+import { RoomDetailsStateShape, RoomPositionState, RoomWallpaper } from './types/common';
 import { ActorShape, ParticipantState } from './types/participants';
 import { WidgetShape } from './types/widgets';
 
@@ -33,6 +34,7 @@ export type RoomStateShape = {
   users: Record<string, RoomUserStateShape>;
   /** Allows finding users based on session IDs */
   sessionLookup: Record<string, string>;
+  wallpaper: RoomWallpaper | null;
   state: RoomDetailsStateShape;
   widgetPositions: Record<string, RoomPositionState>;
   userPositions: Record<string, RoomPositionState>;
@@ -47,9 +49,11 @@ export const emptyState: RoomStateShape = {
   users: {},
   sessionLookup: {},
   displayName: '',
+  wallpaper: null,
   state: {
     wallpaperUrl: null,
-    isCustomWallpaper: false,
+    wallpaperId: null,
+    accentColor: lavender.palette.primary.main,
     zOrder: [],
     wallpaperRepeats: false,
     backgroundColor: '#ffffff',

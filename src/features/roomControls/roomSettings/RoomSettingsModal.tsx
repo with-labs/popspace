@@ -2,6 +2,7 @@ import { useRoomStore } from '@api/useRoomStore';
 import { CloseIcon } from '@components/icons/CloseIcon';
 import { HearingIcon } from '@components/icons/HearingIcon';
 import { UserIcon } from '@components/icons/UserIcon';
+import { WallpaperIcon } from '@components/icons/WallpaperIcon';
 import { Modal } from '@components/Modal/Modal';
 import { Box, BoxProps, IconButton, makeStyles, Tab, Tabs, Theme, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
@@ -10,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { AudioSettings } from './AudioSettings';
 import { ProfileSettings } from './ProfileSettings';
+import { WallpaperRoomSettings } from './wallpapers/WallpaperRoomSettings';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -19,11 +21,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     margin: 0,
     padding: 0,
-  },
-  formWrapper: {
-    flexShrink: 0,
-    width: '100%',
-    marginBottom: theme.spacing(3),
   },
   tabs: {
     flex: '1 0 0',
@@ -45,8 +42,6 @@ export const RoomSettingsModal = () => {
   const isOpen = useRoomModalStore((modals) => modals.settings);
   const closeModal = useRoomModalStore((modals) => modals.api.closeModal);
 
-  const wallpaperUrl = useRoomStore((room) => room.state.wallpaperUrl);
-  const isCustomWallpaper = useRoomStore((room) => room.state.isCustomWallpaper);
   const isGlobalAudioOn = useRoomStore((room) => room.state.isAudioGlobal);
 
   const onClose = () => closeModal('settings');
@@ -54,9 +49,6 @@ export const RoomSettingsModal = () => {
   const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
     setActiveTab(newValue);
   };
-
-  // separate built-in from custom values
-  const customWallpaperUrl = isCustomWallpaper ? wallpaperUrl : null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
@@ -84,12 +76,12 @@ export const RoomSettingsModal = () => {
                 id="profile-tab"
                 aria-controls="profile-tabpanel"
               />
-              {/* <Tab
+              <Tab
                 icon={<WallpaperIcon />}
                 label={t('features.roomSettings.wallpaperTitle')}
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
-              /> */}
+              />
               <Tab
                 icon={<HearingIcon />}
                 label={t(isGlobalAudioOn ? 'features.roomSettings.audioGlobal' : 'features.roomSettings.audioNearby')}
@@ -102,16 +94,10 @@ export const RoomSettingsModal = () => {
             <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
               <ProfileSettings />
             </TabPanel>
-            {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
-            <Box display="flex" flexDirection="column" className={classes.formWrapper}>
-              <CustomWallpaperForm value={customWallpaperUrl} onChange={client.roomState.setWallpaperUrl} />
-            </Box>
-            <Box>
-              <WallpaperCategory onChange={client.roomState.setWallpaperUrl} />
-            </Box>
-          </TabPanel> */}
-            {/* TODO: VVV CHANGE INDEX WHEN MERGED VVV */}
-            <TabPanel activeTabValue={activeTab} index={1} tabName="sound">
+            <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
+              <WallpaperRoomSettings />
+            </TabPanel>
+            <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
               <AudioSettings />
             </TabPanel>
           </Box>
@@ -133,6 +119,7 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <Box
+      flex="1"
       overflow="auto"
       height="75vh"
       maxHeight="488px"

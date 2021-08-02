@@ -23,6 +23,11 @@ class RoomData {
     return entry.state
   }
 
+  async wallpaper() {
+    const entry = await shared.db.room.data.getRoomWallpaperData(this.roomId)
+    return entry
+  }
+
   async serialize() {
     const room = {
       id: this.roomId,
@@ -34,6 +39,7 @@ class RoomData {
     )
     room.state = await this.state() || {}
     room.widgets = room.widgets || []
+    room.wallpaper = await this.wallpaper()
     return room
   }
 }

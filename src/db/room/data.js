@@ -56,6 +56,12 @@ class Data {
   async getRoomState(roomId) {
     return await shared.db.pg.massive.room_states.findOne({room_id: roomId})
   }
+
+  async getRoomWallpaperData(roomId) {
+    const state = await this.getRoomState(roomId)
+    return shared.db.pg.massive.wallpapers.findOne(state.wallpaper_id)
+  }
+
   /************************************************/
   /****************** PARTICIPANTS   **************/
   /************************************************/

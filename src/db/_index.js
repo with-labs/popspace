@@ -9,4 +9,5 @@ module.exports = {
   redis: require("./redis/_redis.js"),
   magic: require("./magic.js"),
   experienceRatings: require("./experience_ratings"),
+  wallpapers: require('./wallpapers'),
 }

@@ -20,7 +20,8 @@ const ACTION_BY_EVENT_KIND = {
   "updateVideoState": "analytics",
   "updateSelfActor": "update",
   "updateSelfDisplayName": "update",
-  "updateSelfAvatarName": "update"
+  "updateSelfAvatarName": "update",
+  "updateWallpaper": "update"
 }
 
 const PUBLIC_EVENT_KINDS = {

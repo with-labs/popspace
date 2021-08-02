@@ -23,7 +23,10 @@ export class S3 {
         })
         .promise();
     } catch (error) {
-      if (error.statusCode === 404) {
+      if (
+        error.message === 'The specified bucket does not exist' ||
+        error.statusCode === 404
+      ) {
         await this.s3
           .createBucket({
             Bucket: this.bucketName,

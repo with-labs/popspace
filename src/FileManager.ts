@@ -49,6 +49,12 @@ export interface MetadataStorage<Ctx extends any[] = []> {
 export interface FileManagerOptions<Ctx extends any[]> {
   s3BucketName: string;
   metadataStorage: MetadataStorage<Ctx>;
+  /** Provide an alternate origin for the URLs created for files. Use this for CloudFront.
+   * Defaults to `null` which means the URLs will be created using the origin of the bucket.
+   * Do not include a trailing slash.
+   * @example `'https://abcdef123456.cloudfront.net'`
+   */
+  hostOrigin?: string | null;
   /** Override the internal S3 client implementation. Useful for unit tests. */
   s3?: S3;
 }
@@ -66,10 +72,12 @@ export interface FileCreateResult extends MetadataFile {
 export class FileManager<Ctx extends any[] = []> {
   private storage: MetadataStorage<Ctx>;
   private s3: S3;
+  private hostOrigin: string | null;
 
   constructor(options: FileManagerOptions<Ctx>) {
     this.s3 = options.s3 || new S3(options.s3BucketName);
     this.storage = options.metadataStorage;
+    this.hostOrigin = options.hostOrigin || null;
   }
 
   configure = () => {
@@ -87,10 +95,14 @@ export class FileManager<Ctx extends any[] = []> {
       file.mimetype,
     );
 
+    const uploadUrl = this.hostOrigin
+      ? `${this.hostOrigin}/${baseFileKey}`
+      : baseUpload.Location;
+
     const baseFile: WithFile = {
       name: file.originalname,
       mimetype: file.mimetype,
-      url: baseUpload.Location,
+      url: uploadUrl,
     };
 
     if (file.mimetype.startsWith('image/')) {
@@ -108,9 +120,12 @@ export class FileManager<Ctx extends any[] = []> {
         thumbnail,
         file.mimetype,
       );
+      const thumbnailUrl = this.hostOrigin
+        ? `${this.hostOrigin}/${thumbnailKey}`
+        : thumbnailUpload.Location;
       baseFile.imageData = {
         dominantColor,
-        thumbnailUrl: thumbnailUpload.Location,
+        thumbnailUrl,
       };
     }
 

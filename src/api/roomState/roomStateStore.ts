@@ -1,4 +1,3 @@
-import { lavender } from '@src/theme/theme';
 import { Vector2 } from '@src/types/spatials';
 import create from 'zustand/vanilla';
 
@@ -52,8 +51,6 @@ export const emptyState: RoomStateShape = {
   wallpaper: null,
   state: {
     wallpaperUrl: null,
-    wallpaperId: null,
-    accentColor: lavender.palette.primary.main,
     zOrder: [],
     wallpaperRepeats: false,
     backgroundColor: '#ffffff',

@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     gridTemplateColumns: 'repeat(auto-fit, 120px)',
     gridAutoRows: '120px',
+    justifyContent: 'center',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
   },

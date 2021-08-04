@@ -1,6 +1,5 @@
 import { useRoomStore } from '@api/useRoomStore';
 import { UserIcon } from '@components/icons/UserIcon';
-import { WallpaperIcon } from '@components/icons/WallpaperIcon';
 import { Modal } from '@components/Modal/Modal';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
@@ -70,12 +69,12 @@ export const RoomSettingsModal = () => {
                 id="profile-tab"
                 aria-controls="profile-tabpanel"
               />
-              <Tab
+              {/* <Tab
                 icon={<WallpaperIcon />}
                 label={t('features.roomSettings.wallpaperTitle')}
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
-              />
+              /> */}
               {/* <Tab
                 icon={<HearingIcon />}
                 label={t('features.roomSettings.soundTitle')}

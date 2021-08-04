@@ -1,16 +1,15 @@
 import { UploadIcon } from '@components/icons/UploadIcon';
-import { Button, makeStyles, useTheme } from '@material-ui/core';
-import { animated, useSpring } from '@react-spring/web';
+import { Button, CircularProgress, makeStyles, useTheme } from '@material-ui/core';
 import { getFileDropItems } from '@utils/getFileDropItems';
 import clsx from 'clsx';
 import * as React from 'react';
 
 export interface FileUploadButtonProps {
-  onChange: (files: File[]) => void;
+  value: File | null;
+  onChange: (file: File) => void;
   accept?: string;
+  loading?: boolean;
 }
-
-const AnimatedButton = animated(Button);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     borderRadius: theme.shape.contentBorderRadius,
     cursor: 'pointer',
+    marginBottom: theme.spacing(1),
+    position: 'relative',
+    backgroundColor: theme.palette.brandColors.slate.light,
+    backgroundSize: 'cover',
   },
   label: {},
-  hasBackground: {
-    color: theme.palette.common.white,
-  },
   hiddenInput: {
     display: 'none',
   },
@@ -37,18 +37,21 @@ const useStyles = makeStyles((theme) => ({
     width: 64,
     height: 64,
   },
+  spinner: {
+    position: 'absolute',
+    left: '50%',
+    top: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  dropping: {
+    backgroundColor: theme.palette.brandColors.lavender.light,
+  },
 }));
 
-export function FileUploadButton({ onChange, accept }: FileUploadButtonProps) {
+export function FileUploadButton({ value, onChange, accept, loading }: FileUploadButtonProps) {
   const classes = useStyles();
   const theme = useTheme();
   const [isDropping, setIsDropping] = React.useState(false);
-
-  const [file, setFile] = React.useState<File | null>(null);
-
-  const styles = useSpring({
-    backgroundColor: isDropping ? theme.palette.brandColors.lavender.light : 'transparent',
-  });
 
   const onDrop = React.useCallback(
     (event: React.DragEvent) => {
@@ -68,8 +71,7 @@ export function FileUploadButton({ onChange, accept }: FileUploadButtonProps) {
 
       if (!filteredFiles.length) return;
 
-      setFile(filteredFiles[0]);
-      onChange(filteredFiles);
+      onChange(filteredFiles[0]);
     },
     [onChange, accept]
   );
@@ -88,22 +90,18 @@ export function FileUploadButton({ onChange, accept }: FileUploadButtonProps) {
 
   const onDirectUpload = React.useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
-      if (!ev.target.files) return;
-      const files = [];
-      for (const file of ev.target.files) {
-        files.push(file);
-      }
-      setFile(files[0]);
-      onChange(files);
+      const file = ev.target.files?.item(0);
+      if (!file) return;
+      onChange(file);
     },
     [onChange]
   );
 
   const imageUrl = React.useMemo(() => {
-    if (file?.type.startsWith('image')) {
-      return URL.createObjectURL(file);
+    if (value?.type.startsWith('image')) {
+      return URL.createObjectURL(value);
     }
-  }, [file]);
+  }, [value]);
 
   React.useEffect(() => {
     if (imageUrl) {
@@ -113,31 +111,43 @@ export function FileUploadButton({ onChange, accept }: FileUploadButtonProps) {
     }
   }, [imageUrl]);
 
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
   return (
-    <label
-      htmlFor="wallpaperUpload"
-      className={clsx(imageUrl && classes.hasBackground, classes.root)}
-      style={{ backgroundImage: imageUrl ? `url(${imageUrl})` : undefined }}
-    >
+    <label htmlFor="wallpaperUpload" className={classes.root}>
       <input
         accept={accept}
         type="file"
         id="wallpaperUpload"
         onChange={onDirectUpload}
         className={classes.hiddenInput}
+        ref={inputRef}
       />
-      <animated.div
-        style={styles}
+      <div
         onDragEnter={onDragEnter}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         color="inherit"
-        className={classes.button}
+        style={{
+          backgroundImage: imageUrl ? `url(${imageUrl})` : 'none',
+        }}
+        className={clsx(classes.button, isDropping && classes.dropping)}
       >
-        <UploadIcon fontSize="large" className={classes.icon} />
-        <span className={classes.label}>{getAcceptsLabel(accept)}</span>
-      </animated.div>
+        {loading ? (
+          <div className={classes.spinner}>
+            <CircularProgress />
+          </div>
+        ) : (
+          <>
+            <UploadIcon fontSize="large" className={classes.icon} />
+            <span className={classes.label}>{getAcceptsLabel(accept)}</span>
+          </>
+        )}
+      </div>
+      <Button disabled={loading} onClick={() => inputRef.current?.click()}>
+        Upload
+      </Button>
     </label>
   );
 }

@@ -59,6 +59,7 @@ class Data {
 
   async getRoomWallpaperData(roomId) {
     const state = await this.getRoomState(roomId)
+    if (!state.wallpaper_id) return null
     return shared.db.pg.massive.wallpapers.findOne(state.wallpaper_id)
   }
 

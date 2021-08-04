@@ -1,16 +1,16 @@
-import React from 'react';
+import { DropdownIcon } from '@components/icons/DropdownIcon';
 import { createMuiTheme } from '@material-ui/core';
 import { PaletteOptions as MuiPaletteOptions } from '@material-ui/core/styles/createPalette';
-import brandPalette, { WithColorPalette } from './palette';
+import React from 'react';
+
 import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
 import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
+import brandPalette, { WithColorPalette } from './palette';
 import { generateShadows } from './shadows';
 
 // adds theme values for lab components
 // eslint-disable-next-line unused-imports/no-unused-imports
 import type _aug from '@material-ui/lab/themeAugmentation';
-import { DropdownIcon } from '@components/icons/DropdownIcon';
-
 const SEMIBOLD_WEIGHT = 600;
 
 function webfontCollection(weight: string) {
@@ -1221,7 +1221,6 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         root: {
           marginBottom: spacing(1),
           textTransform: 'initial',
-          width: '100%',
           display: 'block',
           '&:hover': {
             background: brandPalette.slate.light,

@@ -1,8 +1,9 @@
 import { useRoomStore } from '@api/useRoomStore';
 import { UserIcon } from '@components/icons/UserIcon';
+import { WallpaperIcon } from '@components/icons/WallpaperIcon';
 import { Modal } from '@components/Modal/Modal';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { Box, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -46,9 +47,9 @@ export const RoomSettingsModal = () => {
   const customWallpaperUrl = isCustomWallpaper ? wallpaperUrl : null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
       <ModalContentWrapper className={classes.contentWrapper}>
-        <Box display="flex" flexDirection="row">
+        <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
           <Box display="flex" flexDirection="column">
             <Box mt={2} ml={2} mr={2} mb={1}>
               <Typography variant="h2">{t('features.roomSettings.title')}</Typography>
@@ -69,12 +70,12 @@ export const RoomSettingsModal = () => {
                 id="profile-tab"
                 aria-controls="profile-tabpanel"
               />
-              {/* <Tab
+              <Tab
                 icon={<WallpaperIcon />}
                 label={t('features.roomSettings.wallpaperTitle')}
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
-              /> */}
+              />
               {/* <Tab
                 icon={<HearingIcon />}
                 label={t('features.roomSettings.soundTitle')}
@@ -83,7 +84,7 @@ export const RoomSettingsModal = () => {
               /> */}
             </Tabs>
           </Box>
-          <TabPanel activeTabValue={activeTab} index={0} tabName="profile">
+          <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
             <ProfileSettings />
           </TabPanel>
           {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
@@ -103,7 +104,7 @@ export const RoomSettingsModal = () => {
   );
 };
 
-interface TabPanelProps {
+interface TabPanelProps extends BoxProps {
   children?: React.ReactNode;
   index: any;
   activeTabValue: any;
@@ -115,9 +116,11 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <Box
+      flex="1"
       overflow="auto"
-      maxHeight="500px"
+      maxHeight="75vh"
       role="tabpanel"
+      display="flex"
       hidden={activeTabValue !== index}
       id={`${tabName}-tabpanel`}
       aria-labelledby={`vertical-tab-${tabName}`}

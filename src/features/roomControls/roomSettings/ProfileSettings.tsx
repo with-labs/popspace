@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     width: '100%',
     paddingTop: '80%',
-    borderRadius: theme.shape.contentBorderRadius,
+    borderRadius: theme.shape.borderRadius,
   },
   avatarPreview: {
     position: 'absolute',
@@ -56,14 +56,10 @@ export function ProfileSettings() {
   const avatarName = localActor.actor.avatarName || getAvatarFromUserId('brandedPatterns', localActor.actor.id);
 
   return (
-    <Spacing>
+    <Spacing maxHeight="100%" width="100%">
       <AvatarSelector value={avatarName} onChange={updateAvatar} className={classes.avatarGrid} />
       <Spacing flexDirection="column">
-        <Box
-          marginBottom="auto"
-          className={classes.avatarBox}
-          style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}
-        >
+        <Box className={classes.avatarBox} style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}>
           <Avatar className={classes.avatarPreview} name={avatarName} size={120} />
         </Box>
         <DisplayNameField onChange={trackDisplayNameAnalytics} />

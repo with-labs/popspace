@@ -54,7 +54,7 @@ export function DisplayNameField({ onChange }: { onChange?: (value: string) => v
 
   return (
     <TextField
-      label={t('modals.userSettingsModal.displayNameInput.placeholder')}
+      label={t('modals.userSettingsModal.displayNameInput.label')}
       value={value}
       onChange={(event) => {
         setValidationError(null);

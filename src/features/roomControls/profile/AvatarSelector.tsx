@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'auto',
     maxWidth: '100%',
     maxHeight: '100%',
-    height: 340,
     [theme.breakpoints.down('sm')]: {
       height: '100%',
     },

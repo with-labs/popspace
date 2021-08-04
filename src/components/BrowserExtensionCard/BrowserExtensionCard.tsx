@@ -3,7 +3,7 @@ import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';
 import { isEdge, isChrome, isFirefox, isSafari } from 'react-device-detect';
 import { useTranslation } from 'react-i18next';
 import { SaveIcon } from '@components/icons/SaveIcon';
-import { CHROME_APP_URL, FIRE_FOX_APP_URL } from './constants';
+import { CHROME_APP_URL, FIRE_FOX_APP_URL, EDGE_APP_URL } from './constants';
 
 import chrome from '@images/browsers/chrome.png';
 import edge from '@images/browsers/edge.png';
@@ -49,7 +49,7 @@ export const BrowserExtensionCard: React.FC<IBrowserExtensionCardProps> = ({ onC
       eventName: 'installEdgeExt',
       imgSrc: edge,
       altTextKey: 'pages.meetingLink.extensions.browser.edgeIconAlt',
-      url: null,
+      url: EDGE_APP_URL,
     };
   } else if (isSafari) {
     browserInfo = {

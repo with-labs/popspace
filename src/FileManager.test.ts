@@ -13,7 +13,7 @@ const mockS3 = {
 };
 
 const mockMetadata = {
-  createFileMetadata: jest.fn().mockResolvedValue('mock-file-id'),
+  createFileMetadata: jest.fn((input) => ({ ...input, id: 'mock-file-id' })),
   deleteFileMetadata: jest.fn().mockResolvedValue(undefined),
   getFileMetadata: jest.fn().mockResolvedValue({
     id: 'mock-file-id',

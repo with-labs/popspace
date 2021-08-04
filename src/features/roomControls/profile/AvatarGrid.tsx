@@ -7,6 +7,7 @@ export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
   avatarList: AvatarOption[];
+  className?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     width: '100%',
     gridTemplateColumns: 'repeat(auto-fit, 120px)',
-    gridAutoRows: '120px',
+    gridAutoRows: '100px',
     justifyContent: 'center',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
@@ -65,11 +66,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList, className }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       {avatarList.map((avatar) => (
         <ButtonBase
           key={avatar.name}

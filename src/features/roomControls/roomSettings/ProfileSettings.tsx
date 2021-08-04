@@ -4,14 +4,17 @@ import { useRoomStore } from '@api/useRoomStore';
 import { Avatar } from '@components/Avatar/Avatar';
 import { Spacing } from '@components/Spacing/Spacing';
 import { avatarOptions, getAvatarFromUserId } from '@constants/AvatarMetadata';
-import { AvatarSelector } from '@features/roomControls/profile/AvatarSelector';
 import { Box, CircularProgress, makeStyles } from '@material-ui/core';
 
+import { AvatarGrid } from '../profile/AvatarGrid';
 import { DisplayNameField } from '../profile/DisplayNameField';
 
 const useStyles = makeStyles((theme) => ({
-  avatarGrid: {
-    flex: 1,
+  avatarWrapper: {
+    '&::-webkit-scrollbar-track': {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
+    },
   },
   avatarBox: {
     position: 'relative',
@@ -57,8 +60,10 @@ export function ProfileSettings() {
 
   return (
     <Spacing maxHeight="100%" width="100%">
-      <AvatarSelector value={avatarName} onChange={updateAvatar} className={classes.avatarGrid} />
-      <Spacing flexDirection="column">
+      <Box flex={1} overflow="auto" py={4} className={classes.avatarWrapper}>
+        <AvatarGrid avatarList={Object.values(avatarOptions)} value={avatarName} onChange={updateAvatar} />
+      </Box>
+      <Spacing flexDirection="column" p={4} pl={3}>
         <Box
           className={classes.avatarBox}
           style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}

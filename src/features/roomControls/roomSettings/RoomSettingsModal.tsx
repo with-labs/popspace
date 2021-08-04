@@ -1,7 +1,6 @@
 import { useRoomStore } from '@api/useRoomStore';
 import { UserIcon } from '@components/icons/UserIcon';
 import { Modal } from '@components/Modal/Modal';
-import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +14,8 @@ const useStyles = makeStyles((theme) => ({
   },
   contentWrapper: {
     flexDirection: 'column',
+    margin: 0,
+    padding: 0,
   },
   formWrapper: {
     flexShrink: 0,
@@ -47,9 +48,9 @@ export const RoomSettingsModal = () => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
-      <ModalContentWrapper className={classes.contentWrapper}>
+      <Box display="flex" flexDirection="column" className={classes.contentWrapper}>
         <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
-          <Box display="flex" flexDirection="column">
+          <Box display="flex" flexDirection="column" p={4} pr={3}>
             <Box mt={2} ml={2} mr={2} mb={1}>
               <Typography variant="h2">{t('features.roomSettings.title')}</Typography>
             </Box>
@@ -98,7 +99,7 @@ export const RoomSettingsModal = () => {
             Item Three
           </TabPanel> */}
         </Box>
-      </ModalContentWrapper>
+      </Box>
     </Modal>
   );
 };
@@ -123,7 +124,6 @@ function TabPanel(props: TabPanelProps) {
       hidden={activeTabValue !== index}
       id={`${tabName}-tabpanel`}
       aria-labelledby={`vertical-tab-${tabName}`}
-      p={3}
       {...other}
     >
       {activeTabValue === index && children}

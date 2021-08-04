@@ -1,5 +1,5 @@
 import { avatarOptions } from '@constants/AvatarMetadata';
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import { groupBy } from 'lodash';
 import * as React from 'react';
@@ -49,9 +49,6 @@ export const AvatarSelector: React.FC<IAvatarSelectorProps> = ({ onChange, value
       {Object.keys(categorizedAvatars).map((category) => {
         return (
           <div key={category} className={classes.category}>
-            <Typography variant="h3" className={classes.title}>
-              {t(`modals.userSettingsModal.category.${category}`)}
-            </Typography>
             <AvatarGrid avatarList={categorizedAvatars[category]} onChange={onChange} value={value} />
           </div>
         );

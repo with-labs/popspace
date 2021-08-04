@@ -7,4 +7,5 @@ module.exports = {
   Events: require("./events.js"),
   Templates: require("./templates.js"),
   Internal: require("./internal.js"),
+  Wallpapers: require("./wallpapers.js"),
 }

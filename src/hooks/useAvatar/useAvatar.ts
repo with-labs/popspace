@@ -1,5 +1,5 @@
-import { options } from '@utils/AvatarOptions';
+import { avatarOptions } from '@constants/AvatarMetadata';
 
 export function useAvatar(avatarName: string) {
-  return options[avatarName] ?? null;
+  return avatarOptions[avatarName] ?? null;
 }

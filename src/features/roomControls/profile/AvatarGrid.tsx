@@ -1,18 +1,19 @@
-import * as React from 'react';
-import { makeStyles, ButtonBase } from '@material-ui/core';
-import { IAvatar } from '@utils/AvatarOptions';
+import { AvatarOption } from '@constants/AvatarMetadata';
+import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import * as React from 'react';
+
 export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
-  avatarList: IAvatar[];
+  avatarList: AvatarOption[];
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'grid',
     width: '100%',
-    gridTemplateColumns: 'repeat(5, 1fr)',
+    gridTemplateColumns: 'repeat(4, 1fr)',
     gridAutoRows: '1fr',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),

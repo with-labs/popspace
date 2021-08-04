@@ -1,22 +1,23 @@
-import React from 'react';
-import { Modal } from '@components/Modal/Modal';
-import { Trans, useTranslation } from 'react-i18next';
-import { useRoomModalStore } from '../roomControls/useRoomModalStore';
-import * as Yup from 'yup';
-import { Form, Formik } from 'formik';
-import { FormikTextField } from '@components/fieldBindings/FormikTextField';
-import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
-import i18n from '@src/i18n';
-import { makeStyles, Box, Typography } from '@material-ui/core';
-import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
-import { MAX_NAME_LENGTH } from '@src/constants';
-import { useRoomStore } from '@api/useRoomStore';
-import client from '@api/client';
-import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
-import { Link } from '@components/Link/Link';
-import { Links } from '@constants/Links';
-import { randomSectionAvatar } from '@constants/AvatarMetadata';
 import { Analytics } from '@analytics/Analytics';
+import client from '@api/client';
+import { useRoomStore } from '@api/useRoomStore';
+import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { Link } from '@components/Link/Link';
+import { Modal } from '@components/Modal/Modal';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
+import { Links } from '@constants/Links';
+import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
+import { Box, makeStyles, Typography } from '@material-ui/core';
+import { MAX_NAME_LENGTH } from '@src/constants';
+import i18n from '@src/i18n';
+import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
+import { Form, Formik } from 'formik';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import * as Yup from 'yup';
+
+import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 
 const ANALYTICS_ID = 'entryModal';
 
@@ -71,7 +72,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   // show the modal if the user is an observer (hasn't yet entered the room)
   const isOpen = !!self && self.isObserver;
 
-  const avatarName = selfActor?.avatarName || randomSectionAvatar('brandedPatterns', selfActor?.id);
+  const avatarName = selfActor?.avatarName || getAvatarFromUserId('brandedPatterns', selfActor?.id ?? '0');
 
   React.useEffect(() => {
     Analytics.trackEvent(`${ANALYTICS_ID}_visited`, new Date().toUTCString());

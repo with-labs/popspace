@@ -1,13 +1,13 @@
 import client from '@api/client';
-import { Vector2 } from '../../types/spatials';
-import { options as avatarMetadata } from '@utils/AvatarOptions';
-import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '@utils/math';
-import { PictureInPictureRenderable } from './PictureInPictureRenderable';
-import { snow } from '../../theme/theme';
-import { MAX_AUDIO_RANGE } from '@constants/room';
 import { ActorShape } from '@api/roomState/types/participants';
-import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { RoomStateShape } from '@api/useRoomStore';
+import { avatarOptions, getAvatarFromUserId } from '@constants/AvatarMetadata';
+import { MAX_AUDIO_RANGE } from '@constants/room';
+import { multiplyVector, normalizeVector, subtractVectors, vectorLength } from '@utils/math';
+
+import { snow } from '../../theme/theme';
+import { Vector2 } from '../../types/spatials';
+import { PictureInPictureRenderable } from './PictureInPictureRenderable';
 
 const SIZE = 60;
 const PROXIMITY_RANGE = 400;
@@ -56,10 +56,10 @@ export class PictureInPictureUser extends PictureInPictureRenderable {
     const avatarName = state?.avatarName;
 
     // avoid repeated sets of src as it loads the image from network
-    if (this.avatarImage.src !== this.getImgSrc(avatarMetadata[avatarName].image)) {
-      this.avatarImage.src = this.getImgSrc(avatarMetadata[avatarName].image);
+    if (this.avatarImage.src !== this.getImgSrc(avatarOptions[avatarName].image)) {
+      this.avatarImage.src = this.getImgSrc(avatarOptions[avatarName].image);
     }
-    this.color = avatarMetadata[avatarName].backgroundColor;
+    this.color = avatarOptions[avatarName].backgroundColor;
     this.name = state.displayName ?? '';
   };
 

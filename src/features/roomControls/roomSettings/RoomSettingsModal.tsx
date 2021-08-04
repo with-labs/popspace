@@ -1,17 +1,13 @@
-import * as React from 'react';
-import { WallpaperCategory } from './WallpaperCategory';
-import { CustomWallpaperForm } from './CustomWallpaperForm';
-import { useTranslation } from 'react-i18next';
+import { useRoomStore } from '@api/useRoomStore';
+import { UserIcon } from '@components/icons/UserIcon';
 import { Modal } from '@components/Modal/Modal';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { makeStyles, Box, Tabs, Tab, Typography, useMediaQuery, Theme } from '@material-ui/core';
-import { useRoomModalStore } from '../useRoomModalStore';
-import { useRoomStore } from '@api/useRoomStore';
-import client from '@api/client';
+import { Box, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { UserIcon } from '@components/icons/UserIcon';
-import { HearingIcon } from '@components/icons/HearingIcon';
-import { WallpaperIcon } from '@components/icons/WallpaperIcon';
+import { useRoomModalStore } from '../useRoomModalStore';
+import { ProfileSettings } from './ProfileSettings';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -73,34 +69,34 @@ export const RoomSettingsModal = () => {
                 id="profile-tab"
                 aria-controls="profile-tabpanel"
               />
-              <Tab
+              {/* <Tab
                 icon={<WallpaperIcon />}
                 label={t('features.roomSettings.wallpaperTitle')}
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
-              />
-              <Tab
+              /> */}
+              {/* <Tab
                 icon={<HearingIcon />}
                 label={t('features.roomSettings.soundTitle')}
                 id="sound-tab"
                 aria-controls="sound-tabpanel"
-              />
+              /> */}
             </Tabs>
           </Box>
           <TabPanel activeTabValue={activeTab} index={0} tabName="profile">
-            Item One
+            <ProfileSettings />
           </TabPanel>
-          <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
+          {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
             <Box display="flex" flexDirection="column" className={classes.formWrapper}>
               <CustomWallpaperForm value={customWallpaperUrl} onChange={client.roomState.setWallpaperUrl} />
             </Box>
             <Box>
               <WallpaperCategory onChange={client.roomState.setWallpaperUrl} />
             </Box>
-          </TabPanel>
-          <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
+          </TabPanel> */}
+          {/* <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
             Item Three
-          </TabPanel>
+          </TabPanel> */}
         </Box>
       </ModalContentWrapper>
     </Modal>
@@ -125,13 +121,10 @@ function TabPanel(props: TabPanelProps) {
       hidden={activeTabValue !== index}
       id={`${tabName}-tabpanel`}
       aria-labelledby={`vertical-tab-${tabName}`}
+      p={3}
       {...other}
     >
-      {activeTabValue === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {activeTabValue === index && children}
     </Box>
   );
 }

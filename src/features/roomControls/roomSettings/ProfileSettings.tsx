@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   avatarBox: {
     position: 'relative',
     width: '100%',
-    paddingTop: '80%',
+    paddingTop: '70%',
     borderRadius: theme.shape.borderRadius,
   },
   avatarPreview: {

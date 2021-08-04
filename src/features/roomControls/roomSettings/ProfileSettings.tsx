@@ -59,11 +59,11 @@ export function ProfileSettings() {
   const avatarName = localActor.actor.avatarName || getAvatarFromUserId('brandedPatterns', localActor.actor.id);
 
   return (
-    <Spacing maxHeight="100%" width="100%">
-      <Box flex={1} overflow="auto" py={4} className={classes.avatarWrapper}>
+    <Box display="flex" maxHeight="100%" width="100%">
+      <Box flex="3 0 0" overflow="auto" py={4} className={classes.avatarWrapper}>
         <AvatarGrid avatarList={Object.values(avatarOptions)} value={avatarName} onChange={updateAvatar} />
       </Box>
-      <Spacing flexDirection="column" p={4} pl={3}>
+      <Spacing flexDirection="column" p={4} pl={3} flex="1 0 0">
         <Box
           className={classes.avatarBox}
           style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}
@@ -73,6 +73,6 @@ export function ProfileSettings() {
         </Box>
         <DisplayNameField onChange={trackDisplayNameAnalytics} />
       </Spacing>
-    </Spacing>
+    </Box>
   );
 }

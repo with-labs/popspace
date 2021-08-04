@@ -22,6 +22,14 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginBottom: theme.spacing(3),
   },
+  tabs: {
+    flex: '1 0 0',
+    padding: theme.spacing(4),
+    paddingRight: theme.spacing(3),
+  },
+  tabPanelWrapper: {
+    flex: '4 0 0',
+  },
 }));
 
 export const RoomSettingsModal = () => {
@@ -50,7 +58,7 @@ export const RoomSettingsModal = () => {
     <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
       <Box display="flex" flexDirection="column" className={classes.contentWrapper}>
         <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
-          <Box display="flex" flexDirection="column" p={4} pr={3}>
+          <Box className={classes.tabs} display="flex" flexDirection="column">
             <Box mt={2} ml={2} mr={2} mb={1}>
               <Typography variant="h2">{t('features.roomSettings.title')}</Typography>
             </Box>
@@ -84,10 +92,11 @@ export const RoomSettingsModal = () => {
               /> */}
             </Tabs>
           </Box>
-          <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
-            <ProfileSettings />
-          </TabPanel>
-          {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
+          <Box className={classes.tabPanelWrapper}>
+            <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
+              <ProfileSettings />
+            </TabPanel>
+            {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
             <Box display="flex" flexDirection="column" className={classes.formWrapper}>
               <CustomWallpaperForm value={customWallpaperUrl} onChange={client.roomState.setWallpaperUrl} />
             </Box>
@@ -95,9 +104,10 @@ export const RoomSettingsModal = () => {
               <WallpaperCategory onChange={client.roomState.setWallpaperUrl} />
             </Box>
           </TabPanel> */}
-          {/* <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
+            {/* <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
             Item Three
           </TabPanel> */}
+          </Box>
         </Box>
       </Box>
     </Modal>
@@ -116,7 +126,6 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <Box
-      flex="1"
       overflow="auto"
       maxHeight="75vh"
       role="tabpanel"

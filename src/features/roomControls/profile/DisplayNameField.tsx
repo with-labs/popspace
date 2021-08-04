@@ -1,6 +1,7 @@
 import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
-import { debounce, TextField } from '@material-ui/core';
+import { DoneIcon } from '@components/icons/DoneIcon';
+import { IconButton, TextField } from '@material-ui/core';
 import { MAX_DISPLAY_NAME_LENGTH } from '@src/constants';
 import * as React from 'react';
 import { TFunction, useTranslation } from 'react-i18next';
@@ -16,9 +17,7 @@ const validate = (value: string, t: TFunction) => {
 
 /**
  * A simple text field for setting the display name.
- * Automatically syncs value with the current actor. It will update
- * the name as the user types with a debounced effect or immediately
- * on field blur. Validation is also included.
+ * Automatically syncs value with the current actor. Validation is also included.
  *
  * Not meant to be used in a form! Use this on its own.
  */
@@ -50,8 +49,6 @@ export function DisplayNameField({ onChange }: { onChange?: (value: string) => v
     [t]
   );
 
-  const debouncedCommitChange = React.useMemo(() => debounce(commitChange, 500), [commitChange]);
-
   return (
     <TextField
       label={t('modals.userSettingsModal.displayNameInput.label')}
@@ -59,12 +56,17 @@ export function DisplayNameField({ onChange }: { onChange?: (value: string) => v
       onChange={(event) => {
         setValidationError(null);
         setValue(event.target.value);
-        debouncedCommitChange(event.target.value);
       }}
       placeholder={t('modals.userSettingsModal.displayNameInput.placeholder')}
-      onBlur={(ev) => commitChange(ev.target.value)}
       helperText={validationError}
       error={!!validationError}
+      InputProps={{
+        endAdornment: (
+          <IconButton color="secondary" onClick={() => commitChange(value)}>
+            <DoneIcon />
+          </IconButton>
+        ),
+      }}
     />
   );
 }

@@ -1,5 +1,4 @@
 const { createFileHandler, deleteFileHandler } = require('@withso/file-upload');
-const wallpapers = require('../../lib/wallpapers');
 const multer = require('multer');
 
 const uploadMiddleware = multer();
@@ -23,12 +22,12 @@ class Wallpapers {
         errorCode: shared.error.code.INVALID_REQUEST_PARAMETERS
       }, shared.api.http.code.BAD_REQUEST);
     }
-    const file = await wallpapers.createFile(req.file, req.actor, { category: "userUploads" });
+    const file = await lib.wallpapers.create(req.file, req.actor, { category: "userUploads" });
     return api.http.succeed(req, res, { wallpaper: file });
   };
   handleDelete = async (req, res, params) => {
     try {
-      await wallpapers.deleteFile(params.wallpaper_id, req.actor);
+      await lib.wallpapers.delete(params.wallpaper_id, req.actor);
       return api.http.succeed(req, res, {});
     } catch (err) {
       return api.http.fail(req, res, { message: err.message }, err.status || shared.api.http.code.INTERNAL_ERROR);

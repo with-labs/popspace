@@ -592,20 +592,19 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/file-upload@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.1.0.tgz#85d998df8be312ba668ec8f638f0b068b06ef0e2"
-  integrity sha512-5bWiZX5jvIzo7h8Ujzj89PoxxIdAZWZ7Xpf5lChfh3SLyfjAX/yBhz9TCGrKA07W6Sb1ITDYVkKZXGMbDb4oaA==
+"@withso/file-upload@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.5.0.tgz#80c28fcd407db7d10638ef37d93bdd20ea3cbdf8"
+  integrity sha512-OACI7lSIOoAR6aNGMYjHqI7EELKvnatOspLx0Jn4CVQjTnVaUJE5061qT2T6U6EmbVemeuCWkYorlLXZLqsKCw==
   dependencies:
     aws-sdk "^2.906.0"
-    multer "^1.4.2"
     sharp "^0.28.2"
     uuid "^8.3.2"
 
-"@withso/noodle-shared@1.1.17":
-  version "1.1.17"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-1.1.17.tgz#c4603b354a4c2e5c3cdd456e28b530659e8d4914"
-  integrity sha512-8l+w6+oamsGUKqD033h8BCS3F0zmHuJMYet4hiWxMcxFjDYfUL8+q1KZXYJLbQX6gaBgSqXSkMBnmQ9l0nhrBg==
+"@withso/noodle-shared@1.1.19":
+  version "1.1.19"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-1.1.19.tgz#9f0c86582599738aca3d011715b4bfbf4b67f81c"
+  integrity sha512-DjOS7TlGLNLjt/Rv/RFS/P+EoE25LJDHTAyMo94E7s0Ca031rYdu5YaIikkmBmx63h0c1+1U271/nfy4LwygbA==
   dependencies:
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"

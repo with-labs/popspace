@@ -26,21 +26,21 @@ const metadataStorage = {
   /**
    * @param {string} wallpaperId
    */
-  deleteFileMetadata: async (wallpaperId) => {
+  deleteFileMetadata: async (wallpaperId, actor) => {
     const file = await shared.db.pg.massive.wallpapers.findOne(wallpaperId)
     if (file.creator_id !== actor.id) {
       const err = new Error('Only the creator of a wallpaper can delete it');
       err.status = 403;
       throw err;
     }
-    return shared.db.pg.massive.wallpapers.delete(fileId)
+    return shared.db.pg.massive.wallpapers.destroy(wallpaperId)
   },
 
   /**
-   * @param {string} fileId
+   * @param {string} wallpaperId
    */
-  getFileMetadata: (fileId) => {
-    return shared.db.pg.massive.wallpapers.findOne(fileId)
+  getFileMetadata: (wallpaperId) => {
+    return shared.db.pg.massive.wallpapers.findOne(wallpaperId)
   }
 }
 

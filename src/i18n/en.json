@@ -560,7 +560,7 @@
         },
         "addWidgets": {
           "title": "Add content to the room",
-          "details": "You can add many kinds of content to the room. Try it now!"
+          "details": "You can add many kinds of content to the room."
         },
         "persistence": {
           "title": "Rooms are persistent",

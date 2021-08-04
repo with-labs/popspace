@@ -144,7 +144,16 @@ export const OnboardingPopup: React.FC<IOnboardingPopupProps> = () => {
               onChange={() => openSection('hasCreated')}
               videoSrc={contentVideo}
               disabled={latestUndone < 1}
-            />
+            >
+              <Button
+                onClick={() => {
+                  api.markComplete('hasCreated');
+                }}
+                color="primary"
+              >
+                {t('common.confirm')}
+              </Button>
+            </OnboardingStep>
           )}
           <OnboardingStep
             id="persistence"

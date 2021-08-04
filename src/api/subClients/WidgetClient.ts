@@ -8,7 +8,6 @@ import {
   IncomingWidgetUpdatedMessage,
 } from '@api/roomState/types/socketProtocol';
 import { WidgetState, WidgetStateByType, WidgetType } from '@api/roomState/types/widgets';
-import { useOnboarding } from '@features/onboarding/useOnboarding';
 
 import { ApiSubClient } from './ApiSubClient';
 
@@ -68,8 +67,6 @@ export class WidgetClient extends ApiSubClient {
       roomId: this.core.roomId,
       creationLocation: origin || Origin.NOT_SET,
     });
-    // update onboarding
-    useOnboarding.getState().api.markComplete('hasCreated');
     // the incoming created message will be handled by the main incoming message
     return response.payload;
   };

@@ -8,7 +8,7 @@ export function PromoSlugPage() {
 
   React.useEffect(() => {
     Analytics.trackEvent(EventNames.PROMO_SLUG, slug).then(() => {
-      window.location.href = `/?ref=${slug}`;
+      window.location.href = `/create?ref=${slug}`;
     });
   }, [slug]);
 

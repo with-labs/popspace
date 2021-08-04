@@ -1,7 +1,7 @@
 import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { IconButton, TextField } from '@material-ui/core';
+import { IconButton, makeStyles, TextField } from '@material-ui/core';
 import { MAX_DISPLAY_NAME_LENGTH } from '@src/constants';
 import * as React from 'react';
 import { TFunction, useTranslation } from 'react-i18next';
@@ -15,6 +15,12 @@ const validate = (value: string, t: TFunction) => {
   }
 };
 
+const useStyles = makeStyles((theme) => ({
+  iconButton: {
+    color: theme.palette.success.dark,
+  },
+}));
+
 /**
  * A simple text field for setting the display name.
  * Automatically syncs value with the current actor. Validation is also included.
@@ -22,6 +28,7 @@ const validate = (value: string, t: TFunction) => {
  * Not meant to be used in a form! Use this on its own.
  */
 export function DisplayNameField({ onChange }: { onChange?: (value: string) => void }) {
+  const classes = useStyles();
   const { t } = useTranslation();
 
   const currentUser = useRoomStore((room) => room.cacheApi.getCurrentUser());
@@ -62,7 +69,7 @@ export function DisplayNameField({ onChange }: { onChange?: (value: string) => v
       error={!!validationError}
       InputProps={{
         endAdornment: (
-          <IconButton color="secondary" onClick={() => commitChange(value)}>
+          <IconButton className={classes.iconButton} color="secondary" onClick={() => commitChange(value)}>
             <DoneIcon />
           </IconButton>
         ),

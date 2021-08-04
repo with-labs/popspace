@@ -8,42 +8,42 @@ import { S3 } from './S3';
 /**
  * Data for a file upload
  */
-export interface WithFile {
+export interface UploadedFile {
   name: string;
   mimetype: string;
   url: string;
-  imageData?: WithImageData;
+  imageData?: FileImageData;
 }
 
 /**
  * Additional data processed for image file uploads
  */
-export interface WithImageData {
+export interface FileImageData {
   thumbnailUrl: string;
   dominantColor: string;
 }
 
-export interface MetadataFile extends WithFile {
+export interface MetadataFile extends UploadedFile {
   id: string;
 }
-
-// tslint:disable-next-line:no-empty-interface
-export interface MetadataImageData extends WithImageData {}
 
 export interface MetadataStorage<Ctx extends any[] = []> {
   /**
    * Writes file metadata to storage, returning an ID.
    */
-  createFile: (file: WithFile, ...ctx: Ctx) => Promise<string>;
+  createFileMetadata: (file: UploadedFile, ...ctx: Ctx) => Promise<string>;
   /**
    * Deletes file metadata from storage by ID.
    */
-  deleteFile: (fileId: string, ...ctx: Ctx) => Promise<void>;
+  deleteFileMetadata: (fileId: string, ...ctx: Ctx) => Promise<void>;
   /**
    * Retrieves file metadata from storage by ID, resolving `null` if the
    * file is not in storage.
    */
-  getFile: (fileId: string, ...ctx: Ctx) => Promise<MetadataFile | null>;
+  getFileMetadata: (
+    fileId: string,
+    ...ctx: Ctx
+  ) => Promise<MetadataFile | null>;
 }
 
 export interface FileManagerOptions<Ctx extends any[]> {
@@ -65,10 +65,6 @@ export interface FileData {
   buffer: Buffer;
 }
 
-export interface FileCreateResult extends MetadataFile {
-  imageData?: WithImageData;
-}
-
 export class FileManager<Ctx extends any[] = []> {
   private storage: MetadataStorage<Ctx>;
   private s3: S3;
@@ -80,11 +76,11 @@ export class FileManager<Ctx extends any[] = []> {
     this.hostOrigin = options.hostOrigin || null;
   }
 
-  configure = () => {
+  initialize = () => {
     return this.s3.configureBucket();
   };
 
-  createFile = async (file: FileData, ...ctx: Ctx) => {
+  create = async (file: FileData, ...ctx: Ctx) => {
     const prefix = uuid();
     const baseFileKey = `${prefix}/${file.originalname}`;
 
@@ -99,7 +95,7 @@ export class FileManager<Ctx extends any[] = []> {
       ? `${this.hostOrigin}/${baseFileKey}`
       : baseUpload.Location;
 
-    const baseFile: WithFile = {
+    const baseFile: UploadedFile = {
       name: file.originalname,
       mimetype: file.mimetype,
       url: uploadUrl,
@@ -129,7 +125,7 @@ export class FileManager<Ctx extends any[] = []> {
       };
     }
 
-    const baseFileId = await this.storage.createFile(baseFile, ...ctx);
+    const baseFileId = await this.storage.createFileMetadata(baseFile, ...ctx);
 
     return {
       id: baseFileId,
@@ -137,8 +133,8 @@ export class FileManager<Ctx extends any[] = []> {
     };
   };
 
-  deleteFile = async (fileId: string, ...ctx: Ctx) => {
-    const file = await this.storage.getFile(fileId, ...ctx);
+  delete = async (fileId: string, ...ctx: Ctx) => {
+    const file = await this.storage.getFileMetadata(fileId, ...ctx);
     if (!file) {
       throw new HttpError('The file does not exist', 404);
     }
@@ -146,6 +142,6 @@ export class FileManager<Ctx extends any[] = []> {
       await this.s3.deleteFile(file.imageData.thumbnailUrl);
     }
     await this.s3.deleteFile(file.url);
-    await this.storage.deleteFile(fileId, ...ctx);
+    await this.storage.deleteFileMetadata(fileId, ...ctx);
   };
 }

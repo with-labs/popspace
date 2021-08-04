@@ -25,7 +25,7 @@ The two config options shown are required. For more information on metadata stor
 
 ## Setting up the S3 bucket
 
-The `FileManager` can configure everything for you, just supply a bucket name and call `.configure()`. It returns a promise which resolves when the setup is complete.
+The `FileManager` can configure everything for you, just supply a bucket name and call `.initialize()`. It returns a promise which resolves when the setup is complete.
 
 By default buckets are configured with CORS open to everyone, but uploaded objects do not have public access.
 
@@ -42,7 +42,7 @@ const manager = new FileManager({
 
 It's not recommended that we use a public bucket - we should create a CloudFront instance which points to the bucket instead, and point a custom subdomain to it.
 
-### `fileManager.createFile(file, ...context)`
+### `fileManager.create(file, ...context)`
 
 Provide a `File` object to upload to S3. If the file is an image, it will be processed and additional metadata is returned. Additional context parameters can be provided and they will be passed to your MetadatStorage create method.
 
@@ -76,7 +76,7 @@ Return values:
 
 Image data includes a thumbnail image path (always adjacent to the original file) and an extracted dominant image color, expressed as a CSS `rgb()` string.
 
-### `deleteFile(fileId, ...context)`
+### `delete(fileId, ...context)`
 
 Provide the `id` value returned from creating a file to delete it, along with all associated metadata. Image file thumbnails will also be deleted. Provide additional context parameters and they will be supplied to your MetadataStorage delete method.
 
@@ -91,16 +91,16 @@ interface MetadataStorage {
   /**
    * Writes file metadata to storage, returning an ID.
    */
-  createFile: (file: WithFile) => Promise<string>;
+  createFileMetadata: (file: WithFile) => Promise<string>;
   /**
    * Deletes file metadata from storage by ID.
    */
-  deleteFile: (fileId: string) => Promise<void>;
+  deleteFileMetadata: (fileId: string) => Promise<void>;
   /**
    * Retrieves file metadata from storage by ID, resolving `null` if the
    * file is not in storage.
    */
-  getFile: (fileId: string) => Promise<MetadataFile | null>;
+  getFileMetadata: (fileId: string) => Promise<MetadataFile | null>;
 }
 ```
 
@@ -114,7 +114,7 @@ For TypeScript, you should provide a generic type to your `MetadataStorage` clas
 
 ```ts
 class MyMetadata implements MetadataStorage<[{ userId: string }]> {
-  createFile = (file: WithFile, { userId }: { userId: string }) => {
+  createFileMetadata = (file: WithFile, { userId }: { userId: string }) => {
     // use the context to change how you store file metadata or even
     // authorize storage, etc.
   };

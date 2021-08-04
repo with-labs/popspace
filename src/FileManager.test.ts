@@ -13,9 +13,9 @@ const mockS3 = {
 };
 
 const mockMetadata = {
-  createFile: jest.fn().mockResolvedValue('mock-file-id'),
-  deleteFile: jest.fn().mockResolvedValue(undefined),
-  getFile: jest.fn().mockResolvedValue({
+  createFileMetadata: jest.fn().mockResolvedValue('mock-file-id'),
+  deleteFileMetadata: jest.fn().mockResolvedValue(undefined),
+  getFileMetadata: jest.fn().mockResolvedValue({
     id: 'mock-file-id',
     url: 'https://mock-s3.com/mock-uuid/file.png',
     mimetype: 'image/png',
@@ -38,21 +38,21 @@ describe('FileManager', () => {
   });
 
   it('should create a plain file', async () => {
-    const result = await manager.createFile({
+    const result = await manager.create({
       originalname: 'file.txt',
       buffer: mockFile,
       mimetype: 'text/plain',
     });
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.createFile).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.txt',
       mockFile,
       'text/plain',
     );
-    expect(mockMetadata.createFile).toHaveBeenCalledWith({
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledWith({
       name: 'file.txt',
       mimetype: 'text/plain',
       url: 'https://mock-s3.com/mock-uuid/file.txt',
@@ -65,14 +65,14 @@ describe('FileManager', () => {
   });
 
   it('should create and process an image file', async () => {
-    const result = await manager.createFile({
+    const result = await manager.create({
       originalname: 'file.png',
       buffer: mockFile,
       mimetype: 'image/png',
     });
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(2);
-    expect(mockMetadata.createFile).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.png',
@@ -85,7 +85,7 @@ describe('FileManager', () => {
       mockFile,
       'image/png',
     );
-    expect(mockMetadata.createFile).toHaveBeenCalledWith({
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledWith({
       name: 'file.png',
       mimetype: 'image/png',
       url: 'https://mock-s3.com/mock-uuid/file.png',
@@ -105,22 +105,24 @@ describe('FileManager', () => {
   });
 
   it('should delete a file and its metadata', async () => {
-    await manager.deleteFile('mock-file-id');
+    await manager.delete('mock-file-id');
 
-    expect(mockMetadata.getFile).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.getFile).toHaveBeenCalledWith('mock-file-id');
+    expect(mockMetadata.getFileMetadata).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.getFileMetadata).toHaveBeenCalledWith('mock-file-id');
 
     expect(mockS3.deleteFile).toHaveBeenCalledTimes(1);
     expect(mockS3.deleteFile).toHaveBeenCalledWith(
       'https://mock-s3.com/mock-uuid/file.png',
     );
 
-    expect(mockMetadata.deleteFile).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.deleteFile).toHaveBeenCalledWith('mock-file-id');
+    expect(mockMetadata.deleteFileMetadata).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.deleteFileMetadata).toHaveBeenCalledWith(
+      'mock-file-id',
+    );
   });
 
   it('should delete an image file, thumbnail, and all of its metadata', async () => {
-    mockMetadata.getFile.mockResolvedValue({
+    mockMetadata.getFileMetadata.mockResolvedValue({
       id: 'mock-file-id',
       mimetype: 'image/png',
       name: 'file.png',
@@ -131,10 +133,10 @@ describe('FileManager', () => {
       },
     });
 
-    await manager.deleteFile('mock-file-id');
+    await manager.delete('mock-file-id');
 
-    expect(mockMetadata.getFile).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.getFile).toHaveBeenCalledWith('mock-file-id');
+    expect(mockMetadata.getFileMetadata).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.getFileMetadata).toHaveBeenCalledWith('mock-file-id');
 
     expect(mockS3.deleteFile).toHaveBeenCalledTimes(2);
     expect(mockS3.deleteFile).toHaveBeenCalledWith(
@@ -144,7 +146,9 @@ describe('FileManager', () => {
       'https://mock-s3.com/mock-uuid/file.thumb.png',
     );
 
-    expect(mockMetadata.deleteFile).toHaveBeenCalledTimes(1);
-    expect(mockMetadata.deleteFile).toHaveBeenCalledWith('mock-file-id');
+    expect(mockMetadata.deleteFileMetadata).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.deleteFileMetadata).toHaveBeenCalledWith(
+      'mock-file-id',
+    );
   });
 });

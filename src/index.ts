@@ -1,11 +1,9 @@
 export {
   FileManager,
   MetadataFile,
-  MetadataImageData,
-  FileCreateResult,
   FileManagerOptions,
   MetadataStorage,
-  WithFile,
-  WithImageData,
+  UploadedFile as WithFile,
+  FileImageData as WithImageData,
 } from './FileManager';
 export { S3 } from './S3';

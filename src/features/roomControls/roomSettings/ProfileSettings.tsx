@@ -1,3 +1,4 @@
+import { Analytics } from '@analytics/Analytics';
 import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
 import { Avatar } from '@components/Avatar/Avatar';
@@ -26,10 +27,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const trackDisplayNameAnalytics = (value: string) => {
+  Analytics.trackEvent('profileSettings_displayName_changed', value);
+};
+
+const trackAvatarAnalytics = (value: string) => {
+  Analytics.trackEvent('profileSettings_avatar_changed', value);
+};
+
 export function ProfileSettings() {
   const classes = useStyles();
 
   const localActor = useRoomStore((room) => room.cacheApi.getCurrentUser());
+
+  const updateAvatar = (avatarName: string) => {
+    client.participants.updateAvatarName(avatarName);
+    trackAvatarAnalytics(avatarName);
+  };
 
   if (!localActor) {
     return (
@@ -43,11 +57,7 @@ export function ProfileSettings() {
 
   return (
     <Spacing>
-      <AvatarSelector
-        value={avatarName}
-        onChange={client.participants.updateAvatarName}
-        className={classes.avatarGrid}
-      />
+      <AvatarSelector value={avatarName} onChange={updateAvatar} className={classes.avatarGrid} />
       <Spacing flexDirection="column">
         <Box
           marginBottom="auto"
@@ -56,7 +66,7 @@ export function ProfileSettings() {
         >
           <Avatar className={classes.avatarPreview} name={avatarName} size={120} />
         </Box>
-        <DisplayNameField />
+        <DisplayNameField onChange={trackDisplayNameAnalytics} />
       </Spacing>
     </Spacing>
   );

@@ -59,7 +59,11 @@ export function ProfileSettings() {
     <Spacing maxHeight="100%" width="100%">
       <AvatarSelector value={avatarName} onChange={updateAvatar} className={classes.avatarGrid} />
       <Spacing flexDirection="column">
-        <Box className={classes.avatarBox} style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}>
+        <Box
+          className={classes.avatarBox}
+          style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}
+          mb={1}
+        >
           <Avatar className={classes.avatarPreview} name={avatarName} size={120} />
         </Box>
         <DisplayNameField onChange={trackDisplayNameAnalytics} />

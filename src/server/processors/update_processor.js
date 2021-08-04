@@ -18,6 +18,8 @@ class UpdateProcessor {
         return await this.tempUpdateDisplayAndAvatarName(hermesEvent)
       case "updateRoomState":
         return await this.updateRoomState(hermesEvent)
+      case "updateWallpaper":
+        return await this.updateWallpaper(hermesEvent)
       default:
         return await hermesEvent.senderParticipant().sendError(
           hermesEvent,
@@ -77,6 +79,24 @@ class UpdateProcessor {
   async updateActorAvatarName(event) {
     const sender = event.senderParticipant()
     return sender.updateAvatarName(event.payload().avatar_name, event)
+  }
+
+  async updateWallpaper(event) {
+    const sender = event.senderParticipant()
+    const wallpaperId = event.payload().wallpaper_id
+    const userCanAccess = await shared.db.wallpapers.canUserAccessWallpaper(sender.actorId(), wallpaperId)
+    if (!userCanAccess) {
+      return sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, "You do not have permission to access this wallpaper")
+    }
+    const updatedRooms = await shared.db.pg.massive.room_states.update({ room_id: event.roomId() }, {
+      wallpaper_id: wallpaperId
+    })
+    if (updatedRooms.length === 0) {
+      return sender.sendError(event, lib.ErrorCodes.ROOM_NOT_FOUND, "No such room", { roomId: event.roomId() })
+    }
+    const wallpaperData = await shared.db.pg.massive.wallpapers.findOne(wallpaperId)
+    sender.sendResponse(event, { wallpaper: wallpaperData })
+    sender.broadcastPeerEvent("wallpaperUpdated", { wallpaper: wallpaperData })
   }
 }
 

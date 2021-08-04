@@ -89,9 +89,9 @@ The required operations are:
 ```ts
 interface MetadataStorage {
   /**
-   * Writes file metadata to storage, returning an ID.
+   * Writes file metadata to storage, returning a copy of the metadata with an ID.
    */
-  createFileMetadata: (file: WithFile) => Promise<string>;
+  createFileMetadata: (file: UploadedFile) => Promise<MetadataFile>;
   /**
    * Deletes file metadata from storage by ID.
    */

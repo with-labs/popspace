@@ -29,9 +29,12 @@ export interface MetadataFile extends UploadedFile {
 
 export interface MetadataStorage<Ctx extends any[] = []> {
   /**
-   * Writes file metadata to storage, returning an ID.
+   * Writes file metadata to storage, returning a copy of the metadata with an ID.
    */
-  createFileMetadata: (file: UploadedFile, ...ctx: Ctx) => Promise<string>;
+  createFileMetadata: (
+    file: UploadedFile,
+    ...ctx: Ctx
+  ) => Promise<MetadataFile>;
   /**
    * Deletes file metadata from storage by ID.
    */
@@ -125,12 +128,7 @@ export class FileManager<Ctx extends any[] = []> {
       };
     }
 
-    const baseFileId = await this.storage.createFileMetadata(baseFile, ...ctx);
-
-    return {
-      id: baseFileId,
-      ...baseFile,
-    };
+    return this.storage.createFileMetadata(baseFile, ...ctx);
   };
 
   delete = async (fileId: string, ...ctx: Ctx) => {

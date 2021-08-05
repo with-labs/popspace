@@ -1,8 +1,8 @@
 import { RoomUserStateShape } from '@api/roomState/roomStateStore';
 import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import Publication from '@components/Publication/Publication';
-import { useAvatar } from '@hooks/useAvatar/useAvatar';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
@@ -115,7 +115,7 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const avatarName = person?.actor.avatarName;
 
     // determine background color based on avatar
-    const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
+    const backgroundColor = useAvatarBackgroundColor(avatarName);
 
     // enforce widget sizing based on video status
     React.useEffect(() => {

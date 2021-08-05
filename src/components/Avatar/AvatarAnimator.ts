@@ -45,6 +45,7 @@ export interface AvatarSpriteSheetSet {
   spritesheetSrc: string;
   spritesheetData: SpriteSheetData;
   animations: Record<AvatarAnimationState, AvatarAnimation>;
+  backgroundColor: string;
 }
 
 export interface AvatarAnimation {
@@ -88,6 +89,10 @@ export class AvatarAnimator {
     this.advanceFrame();
   };
 
+  get backgroundColor() {
+    return this.data.backgroundColor || '#fff0df';
+  }
+
   get activeAnimation() {
     return this.data.animations[this.activeState];
   }
@@ -130,6 +135,10 @@ export class AvatarAnimator {
     if (this.elapsedFrameTime >= this.nextFrameDuration) {
       this.advanceFrame();
     }
+    this.lastFrameTime = time;
+
+    if (!this.spritesheet.loaded) return;
+    if (this.spritesheet.broken) return;
 
     if (this.dirty) {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -148,8 +157,6 @@ export class AvatarAnimator {
       );
       this.dirty = false;
     }
-
-    this.lastFrameTime = time;
   };
 
   stop = () => {

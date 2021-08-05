@@ -12,7 +12,7 @@ export interface IPersonAvatarProps extends Omit<IAvatarProps, 'name' | 'useFall
 /** Shows the avatar for a person based on their ID */
 export const PersonAvatar = React.memo<IPersonAvatarProps>(({ personId, avatarName, ...rest }) => {
   const avatar = useRoomStore((room) => {
-    let ret: string = getAvatarFromUserId('brandedPatterns', personId);
+    let ret: string = getAvatarFromUserId(personId);
     if (room.users[personId]?.actor.avatarName) {
       ret = room.users[personId]?.actor.avatarName;
     } else if (avatarName) {

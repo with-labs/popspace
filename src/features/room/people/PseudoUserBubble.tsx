@@ -1,6 +1,6 @@
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
-import { useAvatar } from '@hooks/useAvatar/useAvatar';
-import { Box, makeStyles, Typography, useTheme } from '@material-ui/core';
+import { Box, makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -99,11 +99,10 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
   userData,
   ...rest
 }) => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const { avatarName, displayName, userId } = userData;
-  const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
+  const backgroundColor = useAvatarBackgroundColor(avatarName);
 
   return (
     <PersonBubbleFrame

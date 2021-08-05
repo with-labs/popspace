@@ -72,7 +72,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
   // show the modal if the user is an observer (hasn't yet entered the room)
   const isOpen = !!self && self.isObserver;
 
-  const avatarName = selfActor?.avatarName || getAvatarFromUserId('brandedPatterns', selfActor?.id ?? '0');
+  const avatarName = selfActor?.avatarName || getAvatarFromUserId(selfActor?.id ?? '0');
 
   React.useEffect(() => {
     Analytics.trackEvent(`${ANALYTICS_ID}_visited`, new Date().toUTCString());

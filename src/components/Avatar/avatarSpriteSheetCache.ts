@@ -1,13 +1,18 @@
 import { AvatarSpriteSheetSet } from './AvatarAnimator';
 
-const SPRITE_SHEET_BASE_PATH = '/spritesheets/avatars';
+// TODO: get custom domain working
+const SPRITE_SHEET_ORIGIN = 'https://d16rp9v6j7bm9f.cloudfront.net/spritesheets';
 
 export class AvatarSpriteSheetCache {
+  private _promises: { [key: string]: Promise<AvatarSpriteSheetSet> } = {};
   private _spritesheets: { [key: string]: AvatarSpriteSheetSet } = {};
 
   get = async (name: string, cancelSignal?: AbortSignal): Promise<AvatarSpriteSheetSet | null> => {
     if (!this._spritesheets[name]) {
-      const loaded = await this.load(name, cancelSignal);
+      if (!this._promises[name]) {
+        this._promises[name] = this.load(name, cancelSignal);
+      }
+      const loaded = await this._promises[name];
       this._spritesheets[name] = loaded;
     }
 
@@ -15,7 +20,7 @@ export class AvatarSpriteSheetCache {
   };
 
   private load = async (name: string, cancelSignal?: AbortSignal): Promise<AvatarSpriteSheetSet> => {
-    const dataPath = `${SPRITE_SHEET_BASE_PATH}/${name}/spritesheet.json`;
+    const dataPath = `${SPRITE_SHEET_ORIGIN}/${name}/spritesheet.json`;
     const response = await fetch(dataPath, {
       signal: cancelSignal,
     });
@@ -24,7 +29,7 @@ export class AvatarSpriteSheetCache {
     }
     const data = (await response.json()) as AvatarSpriteSheetSet;
     // normalize spritesheet image src to the base path
-    data.spritesheetSrc = `${SPRITE_SHEET_BASE_PATH}/${name}${data.spritesheetSrc}`;
+    data.spritesheetSrc = `${SPRITE_SHEET_ORIGIN}/${name}${data.spritesheetSrc}`;
     return data;
   };
 }

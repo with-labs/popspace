@@ -5,7 +5,8 @@
  */
 export class CanvasImage {
   private img: HTMLImageElement;
-  private loaded = false;
+  private _loaded = false;
+  private _broken = false;
 
   constructor({ width, height }: { width?: number; height?: number } = {}, src?: string) {
     this.img = new Image(width, height);
@@ -25,11 +26,7 @@ export class CanvasImage {
    */
   private normalizeSrc(baseSrcUrl: string | null) {
     if (!baseSrcUrl) return '';
-    if (baseSrcUrl.includes('amazonaws.com')) {
-      return `${baseSrcUrl}?pip=true`;
-    } else {
-      return baseSrcUrl;
-    }
+    return `${baseSrcUrl}?cacheBust=true`;
   }
 
   setSrc = (src: string) => {
@@ -37,10 +34,11 @@ export class CanvasImage {
     if (this.img.src === normalized) {
       return;
     }
-    this.loaded = false;
+    this._loaded = false;
     return new Promise<void>((resolve, reject) => {
       const handleError = () => {
         this.img.removeEventListener('error', handleError);
+        this._broken = true;
         reject();
       };
       const handleLoad = () => {
@@ -58,7 +56,15 @@ export class CanvasImage {
     return this.img;
   }
 
+  get broken() {
+    return this._broken;
+  }
+
+  get loaded() {
+    return this._loaded;
+  }
+
   private handleLoad = () => {
-    this.loaded = true;
+    this._loaded = true;
   };
 }

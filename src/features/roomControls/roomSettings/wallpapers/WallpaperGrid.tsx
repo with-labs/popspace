@@ -15,12 +15,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     gridTemplateColumns: 'repeat(auto-fill, 120px)',
     gridAutoRows: '120px',
+    justifyContent: 'center',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
-
-    [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(3, 1fr)',
-    },
   },
   item: {
     borderRadius: theme.shape.contentBorderRadius,

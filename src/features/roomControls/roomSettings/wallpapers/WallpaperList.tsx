@@ -13,9 +13,13 @@ export interface WallpaperListProps extends SpacingProps {}
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    height: '100%',
+    overflow: 'auto',
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+    '&::-webkit-scrollbar-track': {
+      marginTop: theme.spacing(4),
+      marginBottom: theme.spacing(4),
+    },
   },
   title: {
     marginBottom: theme.spacing(1),

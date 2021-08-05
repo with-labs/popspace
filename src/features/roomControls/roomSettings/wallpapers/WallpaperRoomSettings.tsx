@@ -1,5 +1,5 @@
 import { Spacing } from '@components/Spacing/Spacing';
-import { makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import * as React from 'react';
 
 import { CustomWallpaperForm } from './CustomWallpaperForm';
@@ -8,7 +8,10 @@ import { WallpaperList } from './WallpaperList';
 
 const useStyles = makeStyles((theme) => ({
   wallpaperList: {
-    flex: 1,
+    flex: '3 0 0',
+  },
+  sidebar: {
+    flex: '1 0 0',
   },
 }));
 
@@ -16,12 +19,12 @@ export function WallpaperRoomSettings() {
   const classes = useStyles();
 
   return (
-    <Spacing flex="1" flexDirection="row" width="100%" height="100%">
+    <Box display="flex" width="100%">
       <WallpaperList className={classes.wallpaperList} />
-      <Spacing flexDirection="column">
+      <Spacing flexDirection="column" p={4} pl={3} className={classes.sidebar}>
         <CustomWallpaperForm />
         <WallpaperAppearanceSettings style={{ marginTop: 'auto' }} />
       </Spacing>
-    </Spacing>
+    </Box>
   );
 }

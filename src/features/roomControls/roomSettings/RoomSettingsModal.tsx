@@ -14,21 +14,24 @@ import { ProfileSettings } from './ProfileSettings';
 import { WallpaperRoomSettings } from './wallpapers/WallpaperRoomSettings';
 
 const useStyles = makeStyles((theme) => ({
+  modalContent: {
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+  },
   button: {
     marginTop: theme.spacing(1),
   },
-  contentWrapper: {
-    flexDirection: 'column',
-    margin: 0,
-    padding: 0,
-  },
   tabs: {
-    flex: '1 0 0',
+    flex: '1',
     padding: theme.spacing(4),
     paddingRight: theme.spacing(3),
   },
   tabPanelWrapper: {
-    flex: '4 0 0',
+    flex: '4',
+    minHeight: 0,
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -51,56 +54,54 @@ export const RoomSettingsModal = () => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
-      <Box display="flex" flexDirection="column" className={classes.contentWrapper}>
-        <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
-          <Box className={classes.tabs} display="flex" flexDirection="column">
-            <Box mx={0.5} mb={2}>
-              <IconButton onClick={onClose} aria-label={t('common.closeModal')}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-            <Tabs
-              orientation={isSmall ? 'horizontal' : 'vertical'}
-              value={activeTab}
-              onChange={handleTabChange}
-              TabIndicatorProps={{
-                style: {
-                  display: 'none',
-                },
-              }}
-            >
-              <Tab
-                icon={<UserIcon />}
-                label={t('features.roomSettings.profileTitle')}
-                id="profile-tab"
-                aria-controls="profile-tabpanel"
-              />
-              <Tab
-                icon={<WallpaperIcon />}
-                label={t('features.roomSettings.wallpaperTitle')}
-                id="wallpaper-tab"
-                aria-controls="wallpaper-tabpanel"
-              />
-              <Tab
-                icon={<HearingIcon />}
-                label={t(isGlobalAudioOn ? 'features.roomSettings.audioGlobal' : 'features.roomSettings.audioNearby')}
-                id="sound-tab"
-                aria-controls="sound-tabpanel"
-              />
-            </Tabs>
+    <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg" contentClassName={classes.modalContent}>
+      <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
+        <Box className={classes.tabs} display="flex" flexDirection="column">
+          <Box mx={0.5} mb={2}>
+            <IconButton onClick={onClose} aria-label={t('common.closeModal')}>
+              <CloseIcon />
+            </IconButton>
           </Box>
-          <Box className={classes.tabPanelWrapper}>
-            <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
-              <ProfileSettings />
-            </TabPanel>
-            <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
-              <WallpaperRoomSettings />
-            </TabPanel>
-            <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
-              <AudioSettings />
-            </TabPanel>
-          </Box>
+          <Tabs
+            orientation={isSmall ? 'horizontal' : 'vertical'}
+            value={activeTab}
+            onChange={handleTabChange}
+            TabIndicatorProps={{
+              style: {
+                display: 'none',
+              },
+            }}
+          >
+            <Tab
+              icon={<UserIcon />}
+              label={t('features.roomSettings.profileTitle')}
+              id="profile-tab"
+              aria-controls="profile-tabpanel"
+            />
+            <Tab
+              icon={<WallpaperIcon />}
+              label={t('features.roomSettings.wallpaperTitle')}
+              id="wallpaper-tab"
+              aria-controls="wallpaper-tabpanel"
+            />
+            <Tab
+              icon={<HearingIcon />}
+              label={t(isGlobalAudioOn ? 'features.roomSettings.audioGlobal' : 'features.roomSettings.audioNearby')}
+              id="sound-tab"
+              aria-controls="sound-tabpanel"
+            />
+          </Tabs>
+        </Box>
+        <Box className={classes.tabPanelWrapper}>
+          <TabPanel activeTabValue={activeTab} index={0} tabName="profile">
+            <ProfileSettings />
+          </TabPanel>
+          <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
+            <WallpaperRoomSettings />
+          </TabPanel>
+          <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
+            <AudioSettings />
+          </TabPanel>
         </Box>
       </Box>
     </Modal>
@@ -119,10 +120,8 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <Box
-      flex="1"
-      overflow="auto"
-      height="75vh"
-      maxHeight="488px"
+      width="100%"
+      overflow="hidden"
       role="tabpanel"
       display={activeTabValue === index ? 'flex' : 'none'}
       hidden={activeTabValue !== index}

@@ -1,15 +1,13 @@
 import { useRoomStore } from '@api/useRoomStore';
 import { HearingIcon } from '@components/icons/HearingIcon';
 import { UserIcon } from '@components/icons/UserIcon';
-import { Link } from '@components/Link/Link';
 import { Modal } from '@components/Modal/Modal';
-import { Links } from '@constants/Links';
 import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { GlobalAudioToggle } from '../audio/GlobalAudioToggle';
 import { useRoomModalStore } from '../useRoomModalStore';
+import { AudioSettings } from './AudioSettings';
 import { ProfileSettings } from './ProfileSettings';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,10 +31,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tabPanelWrapper: {
     flex: '4 0 0',
-  },
-  textBorder: {
-    border: '1px solid ' + theme.palette.grey[500],
-    borderRadius: theme.shape.borderRadius,
   },
 }));
 
@@ -115,19 +109,7 @@ export const RoomSettingsModal = () => {
           </TabPanel> */}
             {/* TODO: VVV CHANGE INDEX WHEN MERGED VVV */}
             <TabPanel activeTabValue={activeTab} index={1} tabName="sound">
-              <Box display="flex" p={4} pl={0}>
-                <GlobalAudioToggle flex="3 0 0" height="50vh" px={1} />
-                <Box px={2} py={3} ml={3} flex="1 0 0" className={classes.textBorder}>
-                  <Typography variant="body1" paragraph>
-                    {t('features.roomSettings.audioHeading')}
-                  </Typography>
-                  <Typography variant="body2" paragraph>
-                    <Trans i18nKey="features.roomSettings.audioExplanation">
-                      Read more about proximal audio in our <Link to={Links.HELP_PORTAL}>Support Portal</Link>
-                    </Trans>
-                  </Typography>
-                </Box>
-              </Box>
+              <AudioSettings />
             </TabPanel>
           </Box>
         </Box>
@@ -149,9 +131,10 @@ function TabPanel(props: TabPanelProps) {
   return (
     <Box
       overflow="auto"
-      maxHeight="75vh"
+      height="75vh"
+      maxHeight="600px"
       role="tabpanel"
-      display="flex"
+      display={activeTabValue === index ? 'flex' : 'none'}
       hidden={activeTabValue !== index}
       id={`${tabName}-tabpanel`}
       aria-labelledby={`vertical-tab-${tabName}`}

@@ -65,13 +65,13 @@ describe('FileManager', () => {
   });
 
   it('should handle a file with a space in the name using custom origin', async () => {
-    const manager = new FileManager({
+    const customManager = new FileManager({
       metadataStorage: mockMetadata,
       s3: mockS3 as any,
       s3BucketName: 'mock-bucket',
       hostOrigin: 'https://custom-origin',
     });
-    const result = await manager.create({
+    const result = await customManager.create({
       originalname: 'file test.txt',
       buffer: mockFile,
       mimetype: 'text/plain',

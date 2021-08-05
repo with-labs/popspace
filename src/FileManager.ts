@@ -95,7 +95,7 @@ export class FileManager<Ctx extends any[] = []> {
     );
 
     const uploadUrl = this.hostOrigin
-      ? `${this.hostOrigin}/${baseFileKey}`
+      ? new URL(`${this.hostOrigin}/${baseFileKey}`).href
       : baseUpload.Location;
 
     const baseFile: UploadedFile = {
@@ -120,7 +120,7 @@ export class FileManager<Ctx extends any[] = []> {
         file.mimetype,
       );
       const thumbnailUrl = this.hostOrigin
-        ? `${this.hostOrigin}/${thumbnailKey}`
+        ? new URL(`${this.hostOrigin}/${thumbnailKey}`).href
         : thumbnailUpload.Location;
       baseFile.imageData = {
         dominantColor,

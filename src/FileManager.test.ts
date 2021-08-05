@@ -64,6 +64,39 @@ describe('FileManager', () => {
     expect(result.url).toBe('https://mock-s3.com/mock-uuid/file.txt');
   });
 
+  it('should handle a file with a space in the name using custom origin', async () => {
+    const manager = new FileManager({
+      metadataStorage: mockMetadata,
+      s3: mockS3 as any,
+      s3BucketName: 'mock-bucket',
+      hostOrigin: 'https://custom-origin',
+    });
+    const result = await manager.create({
+      originalname: 'file test.txt',
+      buffer: mockFile,
+      mimetype: 'text/plain',
+    });
+
+    expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
+
+    expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
+      'mock-uuid/file test.txt',
+      mockFile,
+      'text/plain',
+    );
+    expect(mockMetadata.createFileMetadata).toHaveBeenCalledWith({
+      name: 'file test.txt',
+      mimetype: 'text/plain',
+      url: 'https://custom-origin/mock-uuid/file%20test.txt',
+    });
+
+    expect(result.imageData).toBe(undefined);
+    expect(result.id).toBe('mock-file-id');
+    expect(result.mimetype).toBe('text/plain');
+    expect(result.url).toBe('https://custom-origin/mock-uuid/file%20test.txt');
+  });
+
   it('should create and process an image file', async () => {
     const result = await manager.create({
       originalname: 'file.png',

@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { makeStyles, Paper } from '@material-ui/core';
-import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
-import { QuickFileButton } from '../addContent/QuickFileButton';
 import { WidgetType } from '@api/roomState/types/widgets';
 import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
-import clsx from 'clsx';
 import { Spacing } from '@components/Spacing/Spacing';
 import { RoomSettingsButton } from '@features/roomControls/roomSettings/RoomSettingsButton';
-import { useFeatureFlag } from 'flagg';
+import { makeStyles, Paper } from '@material-ui/core';
+import clsx from 'clsx';
+import * as React from 'react';
+
+import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
+import { QuickFileButton } from '../addContent/QuickFileButton';
 
 export interface IWidgetMenuProps {
   className?: string;
@@ -29,14 +29,13 @@ const useStyles = makeStyles((theme) => ({
 
 export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [hasSettings] = useFeatureFlag('settings');
 
   return (
     <>
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
           <Spacing gap={1.5} flexDirection={'row'} alignItems="center" justifyContent="center" flex={1} height="100%">
-            {hasSettings && <RoomSettingsButton />}
+            <RoomSettingsButton />
             <QuickAccessoryButton type={WidgetType.Link} />
             <QuickAccessoryButton type={WidgetType.StickyNote} />
             <QuickAccessoryButton type={WidgetType.Whiteboard} />

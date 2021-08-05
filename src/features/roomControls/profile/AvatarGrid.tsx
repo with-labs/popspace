@@ -1,30 +1,31 @@
-import * as React from 'react';
-import { makeStyles, ButtonBase } from '@material-ui/core';
-import { IAvatar } from '@utils/AvatarOptions';
+import { AvatarOption } from '@constants/AvatarMetadata';
+import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import * as React from 'react';
+
 export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
-  avatarList: IAvatar[];
+  avatarList: AvatarOption[];
+  className?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'grid',
     width: '100%',
-    gridTemplateColumns: 'repeat(5, 1fr)',
-    gridAutoRows: '1fr',
+    gridTemplateColumns: 'repeat(auto-fit, 120px)',
+    gridAutoRows: '100px',
+    justifyContent: 'center',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
-
-    [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: 'repeat(3, 1fr)',
-    },
   },
   item: {
-    borderRadius: theme.shape.contentBorderRadius,
+    borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     transition: theme.transitions.create(['box-shadow', 'transform']),
+    width: '100%',
+    height: '100%',
 
     '&:focus:not($itemSelected), &:hover:not($itemSelected)': {
       boxShadow: `0 0 0 4px ${theme.palette.grey[500]}`,
@@ -44,22 +45,20 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: '90%',
+    height: 'auto',
     borderRadius: theme.shape.contentBorderRadius,
-    position: 'relative',
+    position: 'absolute',
+    left: '50%',
+    bottom: 0,
+    transform: 'translateX(-50%)',
     display: 'block',
   },
   imageContainer: {
+    width: '100%',
+    height: '100%',
     position: 'relative',
     transition: theme.transitions.create(['transform']),
-  },
-  imageBackground: {
-    width: '100%',
-    height: '75%',
-    position: 'absolute',
-    bottom: 0,
-    borderRadius: theme.shape.contentBorderRadius,
   },
   buttonTest: {
     display: 'flex',
@@ -67,11 +66,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList, className }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <div className={clsx(classes.root, className)}>
       {avatarList.map((avatar) => (
         <ButtonBase
           key={avatar.name}
@@ -79,8 +78,7 @@ export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatar
           className={clsx(classes.item, avatar.name === value && classes.itemSelected)}
           aria-label={`Avatar ${avatar.name}`}
         >
-          <div className={classes.imageContainer}>
-            <div className={classes.imageBackground} style={{ backgroundColor: avatar.backgroundColor }} />
+          <div className={classes.imageContainer} style={{ backgroundColor: avatar.backgroundColor }}>
             <img className={classes.image} src={avatar.image} alt={`Avatar ${avatar.name}`} />
           </div>
         </ButtonBase>

@@ -1,4 +1,4 @@
-import { randomSectionAvatar } from '@constants/AvatarMetadata';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { SIZE_AVATAR } from '@features/room/people/constants';
 import { logger } from '@utils/logger';
 import { WritableDraft } from 'immer/dist/internal';
@@ -16,7 +16,7 @@ const createEmptyParticipantState = () => ({});
 const initializeActor = (actor: ActorShape) => ({
   id: actor.id,
   displayName: actor.displayName ?? '',
-  avatarName: actor.avatarName || randomSectionAvatar('brandedPatterns', actor.id),
+  avatarName: actor.avatarName || getAvatarFromUserId('brandedPatterns', actor.id),
 });
 
 export class RoomStateCacheApi {

@@ -1,17 +1,12 @@
-import * as React from 'react';
-import { WallpaperCategory } from './WallpaperCategory';
-import { CustomWallpaperForm } from './CustomWallpaperForm';
-import { useTranslation } from 'react-i18next';
-import { Modal } from '@components/Modal/Modal';
-import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { makeStyles, Box, Tabs, Tab, Typography, useMediaQuery, Theme } from '@material-ui/core';
-import { useRoomModalStore } from '../useRoomModalStore';
 import { useRoomStore } from '@api/useRoomStore';
-import client from '@api/client';
-
 import { UserIcon } from '@components/icons/UserIcon';
-import { HearingIcon } from '@components/icons/HearingIcon';
-import { WallpaperIcon } from '@components/icons/WallpaperIcon';
+import { Modal } from '@components/Modal/Modal';
+import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { useRoomModalStore } from '../useRoomModalStore';
+import { ProfileSettings } from './ProfileSettings';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -19,11 +14,21 @@ const useStyles = makeStyles((theme) => ({
   },
   contentWrapper: {
     flexDirection: 'column',
+    margin: 0,
+    padding: 0,
   },
   formWrapper: {
     flexShrink: 0,
     width: '100%',
     marginBottom: theme.spacing(3),
+  },
+  tabs: {
+    flex: '1 0 0',
+    padding: theme.spacing(4),
+    paddingRight: theme.spacing(3),
+  },
+  tabPanelWrapper: {
+    flex: '4 0 0',
   },
 }));
 
@@ -50,10 +55,10 @@ export const RoomSettingsModal = () => {
   const customWallpaperUrl = isCustomWallpaper ? wallpaperUrl : null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalContentWrapper className={classes.contentWrapper}>
-        <Box display="flex" flexDirection="row">
-          <Box display="flex" flexDirection="column">
+    <Modal isOpen={isOpen} onClose={onClose} fullWidth maxWidth="lg">
+      <Box display="flex" flexDirection="column" className={classes.contentWrapper}>
+        <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
+          <Box className={classes.tabs} display="flex" flexDirection="column">
             <Box mt={2} ml={2} mr={2} mb={1}>
               <Typography variant="h2">{t('features.roomSettings.title')}</Typography>
             </Box>
@@ -73,41 +78,43 @@ export const RoomSettingsModal = () => {
                 id="profile-tab"
                 aria-controls="profile-tabpanel"
               />
-              <Tab
+              {/* <Tab
                 icon={<WallpaperIcon />}
                 label={t('features.roomSettings.wallpaperTitle')}
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
-              />
-              <Tab
+              /> */}
+              {/* <Tab
                 icon={<HearingIcon />}
                 label={t('features.roomSettings.soundTitle')}
                 id="sound-tab"
                 aria-controls="sound-tabpanel"
-              />
+              /> */}
             </Tabs>
           </Box>
-          <TabPanel activeTabValue={activeTab} index={0} tabName="profile">
-            Item One
-          </TabPanel>
-          <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
+          <Box className={classes.tabPanelWrapper}>
+            <TabPanel activeTabValue={activeTab} index={0} overflow="hidden" tabName="profile">
+              <ProfileSettings />
+            </TabPanel>
+            {/* <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
             <Box display="flex" flexDirection="column" className={classes.formWrapper}>
               <CustomWallpaperForm value={customWallpaperUrl} onChange={client.roomState.setWallpaperUrl} />
             </Box>
             <Box>
               <WallpaperCategory onChange={client.roomState.setWallpaperUrl} />
             </Box>
-          </TabPanel>
-          <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
+          </TabPanel> */}
+            {/* <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
             Item Three
-          </TabPanel>
+          </TabPanel> */}
+          </Box>
         </Box>
-      </ModalContentWrapper>
+      </Box>
     </Modal>
   );
 };
 
-interface TabPanelProps {
+interface TabPanelProps extends BoxProps {
   children?: React.ReactNode;
   index: any;
   activeTabValue: any;
@@ -120,18 +127,15 @@ function TabPanel(props: TabPanelProps) {
   return (
     <Box
       overflow="auto"
-      maxHeight="500px"
+      maxHeight="75vh"
       role="tabpanel"
+      display="flex"
       hidden={activeTabValue !== index}
       id={`${tabName}-tabpanel`}
       aria-labelledby={`vertical-tab-${tabName}`}
       {...other}
     >
-      {activeTabValue === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {activeTabValue === index && children}
     </Box>
   );
 }

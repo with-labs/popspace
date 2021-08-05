@@ -10,9 +10,6 @@ const flagDefinitions = {
   inviteLink: {
     description: 'Displays the invite link ui',
   },
-  settings: {
-    description: 'settings modal',
-  },
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

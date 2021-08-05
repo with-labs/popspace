@@ -593,9 +593,9 @@
     "@types/yargs-parser" "*"
 
 "@withso/file-upload@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.5.0.tgz#80c28fcd407db7d10638ef37d93bdd20ea3cbdf8"
-  integrity sha512-OACI7lSIOoAR6aNGMYjHqI7EELKvnatOspLx0Jn4CVQjTnVaUJE5061qT2T6U6EmbVemeuCWkYorlLXZLqsKCw==
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.5.1.tgz#7ce7896fd8d8938874bb2af5fbd2c2d9bf07324c"
+  integrity sha512-NDmn1/OeXxvsTQxubDHuI+7C2M0kLlKyxhltepDAjvn0NNH9dGCAjPSl6R2S/VNkrv6yXaBrK3iGTqaOv/TWJw==
   dependencies:
     aws-sdk "^2.906.0"
     sharp "^0.28.2"
@@ -832,9 +832,9 @@ aws-sdk@^2.834.0:
     xml2js "0.4.19"
 
 aws-sdk@^2.906.0:
-  version "2.957.0"
-  resolved "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.957.0.tgz#579fbb5310f918ebcba6b968e0c43903180bad35"
-  integrity sha512-TtRv/ebZL7gWgAW8XGlRizs5xhyzlDt2KbrxoPcHcxPTH8KHlbEyOmAXafyB7K/Jf3En5TDdJN1daJ4idSKWSg==
+  version "2.962.0"
+  resolved "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.962.0.tgz#cb9c5a4e52b7bb31c2906f91e280b39c6a1538b2"
+  integrity sha512-uY87X0bQ0tFjxt/AxJM9gZDxNzz8hD7uJG4azw7fgZibBqG2eYMAw2ythkQB/B8kLPenm/jr5+FsIG28qaC63Q==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"

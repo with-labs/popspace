@@ -1,10 +1,14 @@
 import { useRoomStore } from '@api/useRoomStore';
+import { HearingIcon } from '@components/icons/HearingIcon';
 import { UserIcon } from '@components/icons/UserIcon';
+import { Link } from '@components/Link/Link';
 import { Modal } from '@components/Modal/Modal';
+import { Links } from '@constants/Links';
 import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
+import { GlobalAudioToggle } from '../audio/GlobalAudioToggle';
 import { useRoomModalStore } from '../useRoomModalStore';
 import { ProfileSettings } from './ProfileSettings';
 
@@ -30,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   tabPanelWrapper: {
     flex: '4 0 0',
   },
+  textBorder: {
+    border: '1px solid ' + theme.palette.grey[500],
+    borderRadius: theme.shape.borderRadius,
+  },
 }));
 
 export const RoomSettingsModal = () => {
@@ -44,6 +52,7 @@ export const RoomSettingsModal = () => {
 
   const wallpaperUrl = useRoomStore((room) => room.state.wallpaperUrl);
   const isCustomWallpaper = useRoomStore((room) => room.state.isCustomWallpaper);
+  const isGlobalAudioOn = useRoomStore((room) => room.state.isAudioGlobal);
 
   const onClose = () => closeModal('settings');
 
@@ -84,12 +93,12 @@ export const RoomSettingsModal = () => {
                 id="wallpaper-tab"
                 aria-controls="wallpaper-tabpanel"
               /> */}
-              {/* <Tab
+              <Tab
                 icon={<HearingIcon />}
-                label={t('features.roomSettings.soundTitle')}
+                label={t(isGlobalAudioOn ? 'features.roomSettings.audioGlobal' : 'features.roomSettings.audioNearby')}
                 id="sound-tab"
                 aria-controls="sound-tabpanel"
-              /> */}
+              />
             </Tabs>
           </Box>
           <Box className={classes.tabPanelWrapper}>
@@ -104,9 +113,22 @@ export const RoomSettingsModal = () => {
               <WallpaperCategory onChange={client.roomState.setWallpaperUrl} />
             </Box>
           </TabPanel> */}
-            {/* <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
-            Item Three
-          </TabPanel> */}
+            {/* TODO: VVV CHANGE INDEX WHEN MERGED VVV */}
+            <TabPanel activeTabValue={activeTab} index={1} tabName="sound">
+              <Box display="flex" p={4} pl={0}>
+                <GlobalAudioToggle flex="3 0 0" height="50vh" px={1} />
+                <Box px={2} py={3} ml={3} flex="1 0 0" className={classes.textBorder}>
+                  <Typography variant="body1" paragraph>
+                    {t('features.roomSettings.audioHeading')}
+                  </Typography>
+                  <Typography variant="body2" paragraph>
+                    <Trans i18nKey="features.roomSettings.audioExplanation">
+                      Read more about proximal audio in our <Link to={Links.HELP_PORTAL}>Support Portal</Link>
+                    </Trans>
+                  </Typography>
+                </Box>
+              </Box>
+            </TabPanel>
           </Box>
         </Box>
       </Box>

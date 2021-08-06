@@ -1,6 +1,6 @@
 {
   "name": "@withso/file-upload",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "User file management for With",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

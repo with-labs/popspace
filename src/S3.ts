@@ -2,17 +2,35 @@ import Aws from 'aws-sdk';
 
 const CORS_ORIGINS = (process.env.S3_CORS_ORIGINS || '').split(',');
 
-export class S3 {
-  private s3 = new Aws.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-  });
+export interface S3Options {
+  s3Sdk?: Aws.S3;
+  bucketName: string;
+  publicBucket?: boolean;
+  corsOrigins?: string[];
+  region?: string;
+  accessKeyId?: string;
+  secretAccessKey?: string;
+}
 
-  constructor(
-    private bucketName: string,
-    private publicBucket: boolean = false,
-  ) {}
+export class S3 {
+  private bucketName: string;
+  private publicBucket: boolean;
+  private corsOrigins: string[];
+  private s3: Aws.S3;
+
+  constructor(options: S3Options) {
+    this.bucketName = options.bucketName;
+    this.publicBucket = options.publicBucket || false;
+    this.corsOrigins = options.corsOrigins || CORS_ORIGINS;
+    this.s3 =
+      options.s3Sdk ||
+      new Aws.S3({
+        accessKeyId: options.accessKeyId || process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey:
+          options.secretAccessKey || process.env.AWS_SECRET_ACCESS_KEY,
+        region: options.region || process.env.AWS_REGION,
+      });
+  }
 
   configureBucket = async () => {
     // upsert the bucket
@@ -45,7 +63,7 @@ export class S3 {
             {
               AllowedHeaders: ['Authorization'],
               AllowedMethods: ['GET', 'HEAD'],
-              AllowedOrigins: CORS_ORIGINS,
+              AllowedOrigins: this.corsOrigins,
               ExposeHeaders: [],
               MaxAgeSeconds: 3000,
             },

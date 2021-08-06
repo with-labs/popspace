@@ -74,7 +74,11 @@ export class FileManager<Ctx extends any[] = []> {
   private hostOrigin: string | null;
 
   constructor(options: FileManagerOptions<Ctx>) {
-    this.s3 = options.s3 || new S3(options.s3BucketName);
+    this.s3 =
+      options.s3 ||
+      new S3({
+        bucketName: options.s3BucketName,
+      });
     this.storage = options.metadataStorage;
     this.hostOrigin = options.hostOrigin || null;
   }

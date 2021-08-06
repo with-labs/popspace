@@ -132,7 +132,7 @@ function TabPanel(props: TabPanelProps) {
     <Box
       overflow="auto"
       height="75vh"
-      maxHeight="600px"
+      maxHeight="488px"
       role="tabpanel"
       display={activeTabValue === index ? 'flex' : 'none'}
       hidden={activeTabValue !== index}

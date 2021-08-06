@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(3),
 
+    margin: theme.spacing(1),
     marginLeft: theme.spacing(3),
 
     [theme.breakpoints.down('sm')]: {
@@ -30,11 +31,11 @@ const useStyles = makeStyles((theme) => ({
   audioPanel: {
     display: 'flex',
     flexDirection: 'row',
-    padding: theme.spacing(4),
+    padding: theme.spacing(3),
     paddingLeft: 0,
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column-reverse',
-      paddingLeft: theme.spacing(4),
+      paddingLeft: theme.spacing(3),
     },
   },
 }));

@@ -50,6 +50,11 @@ const useCardStyles = makeStyles((theme) => ({
   textContent: {
     padding: theme.spacing(4),
     backgroundColor: theme.palette.common.white,
+    flex: '1 0 auto',
+  },
+  videoContent: {
+    flex: '1 1 auto',
+    minHeight: 0,
   },
 }));
 
@@ -73,7 +78,7 @@ function AudioToggleCard({
     <Card className={clsx(classes.card, selected && classes.selected)} {...props}>
       <CardActionArea disabled={selected} onClick={onClick} style={{ height: '100%' }}>
         <Box display="flex" flexDirection="column" height="100%">
-          <CardMedia style={{ flex: 1 }}>
+          <CardMedia className={classes.videoContent}>
             <video src={videoSrc} className={classes.video} autoPlay loop muted playsInline />
           </CardMedia>
           <CardContent className={classes.textContent}>

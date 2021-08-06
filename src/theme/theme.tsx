@@ -971,7 +971,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
       MuiDialog: {
         paper: {
           boxShadow: mainShadows.surface,
-          borderRadius: shape.borderRadius,
+          borderRadius: shape.surfaceBorderRadius,
         },
         paperFullWidth: {
           [breakpoints.down('sm')]: {

@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   content: {
-    flex: '3 0 0',
-    height: '50vh',
+    flex: '3 1 0',
+    minHeight: 0,
     padding: theme.spacing(1),
   },
   audioPanel: {

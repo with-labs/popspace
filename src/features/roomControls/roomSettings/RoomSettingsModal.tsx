@@ -1,8 +1,9 @@
 import { useRoomStore } from '@api/useRoomStore';
+import { CloseIcon } from '@components/icons/CloseIcon';
 import { HearingIcon } from '@components/icons/HearingIcon';
 import { UserIcon } from '@components/icons/UserIcon';
 import { Modal } from '@components/Modal/Modal';
-import { Box, BoxProps, makeStyles, Tab, Tabs, Theme, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, BoxProps, IconButton, makeStyles, Tab, Tabs, Theme, useMediaQuery } from '@material-ui/core';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -62,8 +63,10 @@ export const RoomSettingsModal = () => {
       <Box display="flex" flexDirection="column" className={classes.contentWrapper}>
         <Box display="flex" flexDirection={isSmall ? 'column' : 'row'} width="100%" height="100%" minHeight="0">
           <Box className={classes.tabs} display="flex" flexDirection="column">
-            <Box mt={2} ml={2} mr={2} mb={1}>
-              <Typography variant="h2">{t('features.roomSettings.title')}</Typography>
+            <Box mx={0.5} mb={2}>
+              <IconButton onClick={onClose} aria-label={t('common.closeModal')}>
+                <CloseIcon />
+              </IconButton>
             </Box>
             <Tabs
               orientation={isSmall ? 'horizontal' : 'vertical'}

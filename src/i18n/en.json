@@ -28,7 +28,8 @@
       "back": "Back",
       "required": "Required",
       "comingSoon": "Coming Soon",
-      "install": "Install"
+      "install": "Install",
+      "closeModal": "Close modal"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",

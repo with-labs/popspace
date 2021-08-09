@@ -24,9 +24,10 @@ export class WallpaperClient extends ApiSubClient {
         wallpaperId: wallpaper.id,
       },
     });
-    Analytics.trackEvent(EventNames.CHANGED_WALLPAPER, null, {
+    Analytics.trackEvent(EventNames.CHANGED_WALLPAPER, wallpaper.id, {
       roomId: this.core.roomStateStore.getState().id,
-      wallpaperId: wallpaper.id,
+      isBuiltIn: wallpaper.category !== 'userUploads',
+      category: wallpaper.category,
     });
   };
 

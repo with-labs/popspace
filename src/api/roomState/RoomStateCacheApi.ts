@@ -6,7 +6,7 @@ import { WritableDraft } from 'immer/dist/internal';
 import { exportRoomTemplate } from './exportRoomTemplate';
 import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';
 import { sanityCheckWidget } from './sanityCheckWidget';
-import { RoomDetailsStateShape, RoomPositionState, RoomWallpaper } from './types/common';
+import { RoomDetailsStateShape, RoomPositionState } from './types/common';
 import { ActorShape, ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
 import { WidgetShape, WidgetState } from './types/widgets';
@@ -81,8 +81,6 @@ export class RoomStateCacheApi {
         sessionId: self.sessionId,
         isObserver: self.isObserver,
       });
-
-      draft.wallpaper = room.wallpaper;
 
       draft.id = room.id.toString();
       // store our own sessionId, just so we know
@@ -276,10 +274,5 @@ export class RoomStateCacheApi {
     const userId = sessionLookup[sessionId];
     if (!userId) return null;
     return users[userId] || null;
-  };
-  updateRoomWallpaper = (wallpaper: RoomWallpaper | null) => {
-    this.set((draft) => {
-      draft.wallpaper = wallpaper;
-    });
   };
 }

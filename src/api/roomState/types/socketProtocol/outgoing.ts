@@ -1,6 +1,6 @@
+import { WidgetShape, WidgetShapeForType } from '../widgets';
 import { RoomDetailsStateShape, RoomPositionState } from '../common';
 import { PassthroughPayload } from '../passthrough';
-import { WidgetShape, WidgetShapeForType } from '../widgets';
 
 /**
  * Outgoing socket message protocol type definitions.
@@ -98,7 +98,7 @@ export interface OutgoingUpdateWidgetMessage extends BaseOutgoingSocketMessage {
 
 export interface OutgoingLeaveMessage extends BaseOutgoingSocketMessage {
   kind: 'leave';
-  payload: Record<string, never>;
+  payload: {};
 }
 
 export interface OutgoingUpdateRoomStateMessage extends BaseOutgoingSocketMessage {
@@ -128,13 +128,6 @@ export interface OutgoingPassthroughMessage<T extends PassthroughPayload = Passt
   payload: T;
 }
 
-export interface OutgoingUpdateWallpaperMessage extends BaseOutgoingSocketMessage {
-  kind: 'updateWallpaper';
-  payload: {
-    wallpaperId: string;
-  };
-}
-
 export type OutgoingSocketMessage =
   | PingMessage
   | AuthMessage
@@ -151,5 +144,4 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateMicState
   | OutgoingUpdateVideoState
   | OutgoingUpdateSelfDisplayNameMessage
-  | OutgoingUpdateSelfAvatarNameMessage
-  | OutgoingUpdateWallpaperMessage;
+  | OutgoingUpdateSelfAvatarNameMessage;

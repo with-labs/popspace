@@ -1,4 +1,4 @@
-import { RoomDetailsStateShape, RoomPositionState } from '../common';
+import { RoomDetailsStateShape, RoomPositionState, RoomWallpaper } from '../common';
 import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { PassthroughPayload } from '../passthrough';
 import { WidgetShape, WidgetState } from '../widgets';
@@ -41,6 +41,7 @@ export interface IncomingAuthResponseMessage extends BaseIncomingSocketMessage {
       widgets: (WidgetShape & { transform: RoomPositionState })[];
       id: string | number; // TODO: clarify
       state: RoomDetailsStateShape;
+      wallpaper: RoomWallpaper | null;
     };
   };
 }
@@ -143,6 +144,11 @@ export interface IncomingAvatarNameUpdatedMessage extends BaseIncomingSocketMess
   payload: { avatarName: string };
 }
 
+export interface IncomingWallpaperUpdatedMessage extends BaseIncomingSocketMessage {
+  kind: 'wallpaperUpdated';
+  payload: { wallpaper: RoomWallpaper };
+}
+
 export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
@@ -160,7 +166,8 @@ export type IncomingSocketMessage =
   | IncomingActorUpdatedMessage
   | IncomingSetObserverResponseMessage
   | IncomingDisplayNameUpdatedMessage
-  | IncomingAvatarNameUpdatedMessage;
+  | IncomingAvatarNameUpdatedMessage
+  | IncomingWallpaperUpdatedMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

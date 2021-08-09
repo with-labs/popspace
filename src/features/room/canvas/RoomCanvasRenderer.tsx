@@ -1,18 +1,20 @@
-import * as React from 'react';
-import { animated } from '@react-spring/web';
-import { makeStyles, Theme } from '@material-ui/core';
-import { useKeyboardControls } from '../../roomControls/viewport/useKeyboardControls';
-import useMergedRefs from '@react-hook/merged-ref';
-import { FileDropLayer } from '../files/FileDropLayer';
 import { useRoomStore } from '@api/useRoomStore';
 import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
-import { useViewport } from '@providers/viewport/useViewport';
-import { mandarin as theme } from '../../../theme/theme';
-import { RoomCanvasProvider } from './RoomCanvasProvider';
+import { makeStyles, Theme } from '@material-ui/core';
 import { CanvasRenderer } from '@providers/canvas/CanvasRenderer';
 import { CanvasWallpaper } from '@providers/canvas/CanvasWallpaper';
+import { useViewport } from '@providers/viewport/useViewport';
 import { useViewportGestureControls } from '@providers/viewport/useViewportGestureControls';
+import useMergedRefs from '@react-hook/merged-ref';
+import { animated } from '@react-spring/web';
+import * as React from 'react';
 import shallow from 'zustand/shallow';
+
+import { mandarin as theme } from '../../../theme/theme';
+import { useKeyboardControls } from '../../roomControls/viewport/useKeyboardControls';
+import { FileDropLayer } from '../files/FileDropLayer';
+import { RoomCanvasProvider } from './RoomCanvasProvider';
+
 export interface IRoomCanvasRendererProps {
   children: React.ReactNode;
 }
@@ -64,8 +66,14 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
 
   const [savedZoom, setSavedZoom] = useLocalStorage('with_savedZoom', INITIAL_ZOOM);
 
-  const [backgroundUrl, backgroundColor, wallpaperRepeats] = useRoomStore(
-    (room) => [room.state.wallpaperUrl, room.state.backgroundColor, room.state.wallpaperRepeats],
+  const [wallpaperUrl, accentColor, wallpaperFallbackUrl, fallbackColor, wallpaperRepeats] = useRoomStore(
+    (room) => [
+      room.wallpaper?.url,
+      room.wallpaper?.dominantColor,
+      room.state.wallpaperUrl,
+      room.state.backgroundColor,
+      room.state.wallpaperRepeats,
+    ],
     shallow
   );
 
@@ -119,7 +127,11 @@ export const RoomCanvasRenderer: React.FC<IRoomCanvasRendererProps> = (props) =>
       <animated.div className={styles.viewport} {...keyControlProps} ref={viewportRef} {...viewportProps} {...rest}>
         <FileDropLayer className={styles.fileDropLayer}>
           <CanvasRenderer onZoomChange={setSavedZoom}>
-            <CanvasWallpaper imageUrl={backgroundUrl} color={backgroundColor} wallpaperRepeats={wallpaperRepeats} />
+            <CanvasWallpaper
+              imageUrl={wallpaperUrl || wallpaperFallbackUrl}
+              color={accentColor || fallbackColor}
+              wallpaperRepeats={wallpaperRepeats}
+            />
             {children}
           </CanvasRenderer>
         </FileDropLayer>

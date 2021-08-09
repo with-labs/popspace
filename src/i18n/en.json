@@ -554,7 +554,7 @@
         "audioGlobal": "Global",
         "audioNearby": "Nearby",
         "audioHeading": "Define how far sound travels in a room",
-        "audioExplanation": "Read more about proximal audio in our <1>Support Portal</1>",
+        "audioExplanation": "This setting affects all participants and media sources in the meeting, and it's remembered between sessions.",
         "wallpapers": {
           "positionLabel": "Wallpaper position",
           "centered": "Centered",

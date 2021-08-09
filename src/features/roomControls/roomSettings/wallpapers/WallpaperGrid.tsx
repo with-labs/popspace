@@ -1,7 +1,7 @@
 import client from '@api/client';
 import { RoomWallpaper } from '@api/roomState/types/common';
 import { useRoomStore } from '@api/useRoomStore';
-import { Box, ButtonBase, makeStyles, Tooltip, Typography } from '@material-ui/core';
+import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
 
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     gridTemplateColumns: 'repeat(auto-fill, 120px)',
     gridAutoRows: '120px',
-    justifyContent: 'center',
     gridGap: theme.spacing(2),
     padding: theme.spacing(0.5),
   },
@@ -64,32 +63,16 @@ export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ wallpaperList }) 
 
   return (
     <div className={classes.root}>
-      {wallpaperList.map((wallpaper, idx) => (
-        <Tooltip
+      {wallpaperList.map((wallpaper) => (
+        <ButtonBase
           key={wallpaper.id}
-          classes={{ tooltip: classes.toolTip }}
-          enterDelay={100}
-          interactive={true}
-          title={
-            <Box display="flex" flexDirection="column">
-              <Typography variant="body1">{wallpaper.name}</Typography>
-              <Typography variant="body2">
-                <Box component="span" fontWeight="fontWeightBold">
-                  {wallpaper.artistName}
-                </Box>
-              </Typography>
-            </Box>
-          }
-        >
-          <ButtonBase
-            onClick={() => onChange(wallpaper)}
-            className={clsx(classes.item, wallpaper.id === currentWallpaperId && classes.itemSelected)}
-            aria-label={wallpaper.name}
-            style={{
-              backgroundImage: `url(${wallpaper.thumbnailUrl || wallpaper.url})`,
-            }}
-          ></ButtonBase>
-        </Tooltip>
+          onClick={() => onChange(wallpaper)}
+          className={clsx(classes.item, wallpaper.id === currentWallpaperId && classes.itemSelected)}
+          aria-label={wallpaper.name}
+          style={{
+            backgroundImage: `url(${wallpaper.thumbnailUrl || wallpaper.url})`,
+          }}
+        ></ButtonBase>
       ))}
     </div>
   );

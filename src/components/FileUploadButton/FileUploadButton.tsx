@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     padding: theme.spacing(2),
     borderRadius: theme.shape.contentBorderRadius,
     cursor: 'pointer',
@@ -28,14 +29,20 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     backgroundColor: theme.palette.brandColors.slate.light,
     backgroundSize: 'cover',
+    color: theme.palette.brandColors.slate.ink,
   },
-  label: {},
+  label: {
+    color: 'inherit',
+    fontWeight: theme.typography.button.fontWeight,
+  },
   hiddenInput: {
     display: 'none',
   },
   icon: {
-    width: 64,
-    height: 64,
+    color: 'inherit',
+    width: 32,
+    height: 32,
+    marginBottom: theme.spacing(0.5),
   },
   spinner: {
     position: 'absolute',
@@ -155,8 +162,12 @@ export function FileUploadButton({ value, onChange, accept, loading }: FileUploa
 function getAcceptsLabel(accepts?: string) {
   if (!accepts) return 'Upload file';
 
-  return accepts
-    .split(',')
-    .map((type) => type.trim())
-    .join(', ');
+  return (
+    accepts
+      .split(',')
+      // omit .jpeg, it's paired with .jpg which is fine by itself
+      .filter((fileType) => fileType.trim().toLowerCase() !== '.jpeg')
+      .map((type) => type.trim().replace('.', ''))
+      .join(', ')
+  );
 }

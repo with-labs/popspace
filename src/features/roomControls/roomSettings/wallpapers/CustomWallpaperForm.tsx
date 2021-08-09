@@ -30,7 +30,7 @@ export const CustomWallpaperForm: React.FC<ICustomWallpaperFormProps> = () => {
 
   return (
     <Spacing flexDirection="column">
-      <FileUploadButton loading={!!file} value={file} onChange={onSubmit} accept=".PNG, .JPG, .JPEG, .WebP" />
+      <FileUploadButton loading={!!file} value={file} onChange={onSubmit} accept=".JPG, .JPEG, .PNG, .WebP" />
     </Spacing>
   );
 };

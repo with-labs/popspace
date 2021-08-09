@@ -28,7 +28,8 @@
       "back": "Back",
       "required": "Required",
       "comingSoon": "Coming Soon",
-      "install": "Install"
+      "install": "Install",
+      "closeModal": "Close modal"
     },
     "errorPages": {
       "takeMeHomeBtn": "Take me Home",
@@ -512,10 +513,10 @@
         "globalAudioOn": "Everyone",
         "globalAudioOff": "Nearby",
         "globalAudioOnTitle": "Hear everybody",
-        "globalAudioOnDescription": "Anybody in the room can hear everyone else, no matter the distance.",
+        "globalAudioOnDescription": "Everybody can hear, no matter the distance",
         "globalAudioOnCta": "Hear everybody",
         "globalAudioOffTitle": "Only hear nearby",
-        "globalAudioOffDescription": "Only people near you can hear you.",
+        "globalAudioOffDescription": "Only people nearby can hear conversations",
         "globalAudioOffCta": "Hear nearby",
         "globalAudioTitle": "Conversation mode"
       },
@@ -550,7 +551,10 @@
         "profileIconAlt": "Profile Icon",
         "wallpaperTitle": "Wallpaper",
         "wallpaperIconAlt": "Wallpaper Icon",
-        "soundTitle": "Sound FPO"
+        "audioGlobal": "Global",
+        "audioNearby": "Nearby",
+        "audioHeading": "Define how far sound travels in a room",
+        "audioExplanation": "Read more about proximal audio in our <1>Support Portal</1>"
       },
       "onboarding": {
         "title": "Getting started",

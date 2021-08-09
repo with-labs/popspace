@@ -12,7 +12,6 @@ import { WidgetClient } from '@api/subClients/WidgetClient';
 import { EventsClient } from './subClients/EventsClient';
 import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
 import { TemplateClient } from './subClients/TemplateClient';
-import { WallpaperClient } from './subClients/WallpaperClient';
 
 type SubClientImplementation = {
   new (core: ApiCoreClient): ApiSubClient;
@@ -58,7 +57,6 @@ const client = createApiClient({
   experienceRatings: ExperienceRatingClient,
   event: EventsClient,
   templates: TemplateClient,
-  wallpapers: WallpaperClient,
 });
 
 export default client;

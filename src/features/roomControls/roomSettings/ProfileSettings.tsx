@@ -66,7 +66,7 @@ export function ProfileSettings() {
       <Spacing flexDirection="column" p={4} pl={3} flex="1 0 0">
         <Box
           className={classes.avatarBox}
-          style={{ backgroundColor: avatarOptions[avatarName]?.backgroundColor }}
+          style={{ backgroundColor: avatarOptions[avatarName].backgroundColor }}
           mb={1}
         >
           <Avatar className={classes.avatarPreview} name={avatarName} size={120} />

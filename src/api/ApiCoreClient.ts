@@ -251,13 +251,7 @@ export class ApiCoreClient extends EventEmitter {
   /**
    * Makes an API request and throws an ApiError if it fails
    */
-  async request<Response>(opts: {
-    method: string;
-    endpoint: string;
-    data?: any;
-    service: Service;
-    contentType?: string;
-  }) {
+  private async request<Response>(opts: { method: string; endpoint: string; data?: any; service: Service }) {
     const { service, method, endpoint, data } = opts;
 
     // timeout requests after 15s
@@ -269,15 +263,11 @@ export class ApiCoreClient extends EventEmitter {
       const response = await fetch(`${service.url}${endpoint}`, {
         method,
         headers: {
-          ...(opts.contentType === 'multipart/form-data'
-            ? {}
-            : {
-                'Content-Type': opts.contentType || 'application/json',
-              }),
+          'Content-Type': 'application/json',
           ...(analyticsRef ? { 'X-Analytics-Ref': analyticsRef } : {}),
           ...this.getAuthHeaders(),
         },
-        body: this.prepareBody(data, opts.contentType || 'application/json'),
+        body: data ? JSON.stringify(data) : undefined,
         signal: abortController.signal,
       });
       clearTimeout(timeout);
@@ -300,20 +290,6 @@ export class ApiCoreClient extends EventEmitter {
       });
     }
   }
-
-  private prepareBody = (data: any, contentType: string) => {
-    if (contentType === 'application/json') {
-      return JSON.stringify(data);
-    }
-    if (contentType === 'multipart/form-data') {
-      const formData = new FormData();
-      Object.keys(data).forEach((key) => {
-        formData.append(key, data[key]);
-      });
-      return formData;
-    }
-    return data;
-  };
 
   private getAuthHeaders(): { Authorization: string } | Record<string, unknown> {
     return this._sessionToken

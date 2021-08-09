@@ -1,4 +1,4 @@
-const SYSTEM_USER_ID = -5000;
+const SYSTEM_USER_ID = '-5000';
 
 class Wallpapers {
   getWallpapersForActor = (actorId) => {

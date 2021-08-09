@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    height: '75vh',
+    maxHeight: '500px',
+    [theme.breakpoints.down('sm')]: {
+      height: '90vh',
+      maxHeight: 'initial',
+    },
   },
   button: {
     marginTop: theme.spacing(1),
@@ -99,7 +105,7 @@ export const RoomSettingsModal = () => {
           <TabPanel activeTabValue={activeTab} index={1} tabName="wallpaper">
             <WallpaperRoomSettings />
           </TabPanel>
-          <TabPanel activeTabValue={activeTab} index={2} tabName="sound">
+          <TabPanel activeTabValue={activeTab} index={2} tabName="sound" height="100%">
             <AudioSettings />
           </TabPanel>
         </Box>

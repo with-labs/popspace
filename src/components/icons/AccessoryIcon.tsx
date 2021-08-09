@@ -9,6 +9,7 @@ import fileUploadSrc from './png/upload.png';
 import embedSrc from './png/embed.png';
 import huddleSrc from './png/huddle.png';
 import settingsSrc from './png/settings.png';
+import chatSrc from './png/chat.png';
 import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
 import { WidgetType } from '@api/roomState/types/widgets';
 
@@ -20,6 +21,7 @@ const icons = {
   [WidgetType.YouTube]: videoSrc,
   [WidgetType.SidecarStream]: ScreenShareIcon,
   [WidgetType.Huddle]: huddleSrc,
+  [WidgetType.Chat]: chatSrc,
   file: fileUploadSrc,
   embed: embedSrc,
   settings: settingsSrc,

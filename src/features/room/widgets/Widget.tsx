@@ -12,6 +12,7 @@ import { WidgetProvider } from './WidgetProvider';
 import { useWidgetContext } from './useWidgetContext';
 import { HuddleWidget } from './huddle/HuddleWidget';
 import { FileWidget } from './file/FileWidget';
+import { ChatWidget } from './chat/ChatWidget';
 
 export interface IWidgetProps {
   id: string;
@@ -55,6 +56,8 @@ const WidgetContent = React.memo(() => {
       return <HuddleWidget />;
     case WidgetType.File:
       return <FileWidget />;
+    case WidgetType.Chat:
+      return <ChatWidget />;
     default:
       logger.debug(`Rendered unknown widget type: ${(widget as any).type}`);
       return null;

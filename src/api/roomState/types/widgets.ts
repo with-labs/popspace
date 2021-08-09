@@ -11,6 +11,7 @@ export enum WidgetType {
   SidecarStream = 'SIDECAR_STREAM',
   Huddle = 'HUDDLE',
   File = 'FILE',
+  Chat = 'CHAT',
   // not used by end-users - this is just for demos
   MockUser = 'MOCK_USER',
 }
@@ -63,6 +64,8 @@ export interface FileWidgetState {
   mediaState?: WidgetMediaState;
 }
 
+export interface ChatWidgetState {}
+
 export interface NotepadState {
   docId: string;
   initialData?: null | any;
@@ -109,6 +112,7 @@ export type WidgetStateByType = {
   [WidgetType.MockUser]: MockUserWidgetState;
   [WidgetType.Huddle]: HuddleWidgetState;
   [WidgetType.File]: FileWidgetState;
+  [WidgetType.Chat]: ChatWidgetShape;
 };
 export type WidgetShapeByType = {
   [WidgetType.StickyNote]: BaseWidgetShape & {
@@ -138,6 +142,9 @@ export type WidgetShapeByType = {
   [WidgetType.File]: BaseWidgetShape & {
     widgetState: FileWidgetState;
   };
+  [WidgetType.Chat]: BaseWidgetShape & {
+    widgetState: ChatWidgetState;
+  };
 };
 export type WidgetShapeForType<T extends WidgetType> = WidgetShapeTable[T];
 
@@ -157,6 +164,7 @@ export type ScreenShareWidgetShape = WidgetShapeTable[WidgetType.SidecarStream];
 export type MockUserWidgetShape = WidgetShapeTable[WidgetType.MockUser];
 export type HuddleWidgetShape = WidgetShapeTable[WidgetType.Huddle];
 export type FileWidgetShape = WidgetShapeTable[WidgetType.File];
+export type ChatWidgetShape = WidgetShapeTable[WidgetType.Chat];
 
 export type WidgetShape = Unionize<WidgetShapeTable>;
 

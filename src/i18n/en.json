@@ -336,6 +336,11 @@
         "name": "Huddle",
         "explainer": "Move inside to have a private conversation",
         "welcome": "Welcome to the huddle!"
+      },
+      "chat": {
+        "quickActionTitle": "Start a chat",
+        "name": "Chat",
+        "placeholder": "Say something"
       }
     },
     "error": {

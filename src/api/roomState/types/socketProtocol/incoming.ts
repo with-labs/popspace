@@ -149,6 +149,13 @@ export interface IncomingWallpaperUpdatedMessage extends BaseIncomingSocketMessa
   payload: { wallpaper: RoomWallpaper };
 }
 
+export interface IncomingChatUpdatedMessage extends BaseIncomingSocketMessage {
+  kind: 'updateChatMessage';
+  payload: {
+    placeholder: string;
+  };
+}
+
 export type IncomingSocketMessage =
   | IncomingPongMessage
   | IncomingErrorMessage
@@ -167,7 +174,8 @@ export type IncomingSocketMessage =
   | IncomingSetObserverResponseMessage
   | IncomingDisplayNameUpdatedMessage
   | IncomingAvatarNameUpdatedMessage
-  | IncomingWallpaperUpdatedMessage;
+  | IncomingWallpaperUpdatedMessage
+  | IncomingChatUpdatedMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

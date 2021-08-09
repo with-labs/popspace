@@ -8,6 +8,7 @@ import { PassthroughClient } from '@api/subClients/PassthroughClient';
 import { RoomStateClient } from '@api/subClients/RoomStateClient';
 import { TransformClient } from '@api/subClients/TransformClient';
 import { WidgetClient } from '@api/subClients/WidgetClient';
+import { MessagingClient } from '@api/subClients/MessagingClient';
 
 import { EventsClient } from './subClients/EventsClient';
 import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
@@ -59,6 +60,7 @@ const client = createApiClient({
   event: EventsClient,
   templates: TemplateClient,
   wallpapers: WallpaperClient,
+  messages: MessagingClient,
 });
 
 export default client;

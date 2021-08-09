@@ -1,29 +1,11 @@
-import { Vector2 } from '../../../types/spatials';
-import { useCallback, DragEvent, useState, useRef, useMemo } from 'react';
-import { debounce } from '@material-ui/core';
-import { logger } from '@utils/logger';
-import { useAddFile } from './useAddFile';
 import { Origin } from '@analytics/constants';
+import { debounce } from '@material-ui/core';
+import { getFileDropItems } from '@utils/getFileDropItems';
+import { logger } from '@utils/logger';
+import { DragEvent, useCallback, useMemo, useRef, useState } from 'react';
 
-function getFileDropItems(ev: DragEvent) {
-  const items: File[] = [];
-  if (ev.dataTransfer.items) {
-    for (const item of ev.dataTransfer.items) {
-      if (item.kind === 'file') {
-        const file = item.getAsFile();
-        if (file) {
-          items.push(file);
-        }
-      }
-    }
-  } else {
-    // alternate usage - .files
-    for (const file of ev.dataTransfer.files) {
-      items.push(file);
-    }
-  }
-  return items;
-}
+import { Vector2 } from '../../../types/spatials';
+import { useAddFile } from './useAddFile';
 
 /**
  * Returns a set of props to pass to the element you want to process

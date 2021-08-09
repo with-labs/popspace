@@ -64,10 +64,10 @@ describe('RoomStateCacheApi', () => {
               backgroundColor: '#ffffff',
               wallpaperRepeats: false,
               wallpaperUrl: 'https://with.so/wallpapers/board.png',
-              isCustomWallpaper: true,
               zOrder: [],
               isAudioGlobal: false,
             },
+            wallpaper: null,
             widgets: [
               {
                 type: WidgetType.StickyNote,
@@ -123,6 +123,7 @@ describe('RoomStateCacheApi', () => {
         state: {
           ...init.payload.roomData.state,
         },
+        wallpaper: null,
         widgetPositions: {
           'widget-1': {
             position: { x: 0, y: 0 },

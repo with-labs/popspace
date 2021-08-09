@@ -2,6 +2,7 @@ import { Analytics } from '@analytics/Analytics';
 import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
 import { Avatar } from '@components/Avatar/Avatar';
+import { AvatarAnimationState } from '@components/Avatar/AvatarAnimator';
 import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { Spacing } from '@components/Spacing/Spacing';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
@@ -67,7 +68,12 @@ export function ProfileSettings() {
       </Box>
       <Spacing flexDirection="column" p={4} pl={3} flex="1 0 0">
         <Box className={classes.avatarBox} style={{ backgroundColor }} mb={1}>
-          <Avatar className={classes.avatarPreview} name={avatarName} size={120} />
+          <Avatar
+            className={classes.avatarPreview}
+            name={avatarName}
+            size={120}
+            animation={AvatarAnimationState.Talking}
+          />
         </Box>
         <DisplayNameField onChange={trackDisplayNameAnalytics} />
       </Spacing>

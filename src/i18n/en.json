@@ -473,7 +473,7 @@
         "wallpaperSupportedFileTypes": "JPG, PNG, WEBP, and GIF",
         "export": "Save room to file",
         "import": "Load room from file",
-        "submitButtonText": "Apply",
+        "submitButtonText": "Upload",
         "sendFeedbackBtn": "Feedback"
       },
       "status": {
@@ -554,7 +554,27 @@
         "audioGlobal": "Global",
         "audioNearby": "Nearby",
         "audioHeading": "Define how far sound travels in a room",
-        "audioExplanation": "Read more about proximal audio in our <1>Support Portal</1>"
+        "audioExplanation": "This setting affects all participants and media sources in the meeting, and it's remembered between sessions.",
+        "wallpapers": {
+          "positionLabel": "Wallpaper position",
+          "centered": "Centered",
+          "tiled": "Tiled",
+          "categories": {
+            "todoBoards": "To-do Boards",
+            "calendars": "Calendars",
+            "workshops": "Workshops",
+            "nature": "Nature",
+            "fruits": "Fruits",
+            "abstract": "Abstract",
+            "patterns": "Patterns",
+            "abstractPaintings": "Abstract Paintings",
+            "figurativePaintings": "Figurative Paintings",
+            "flat": "Flat",
+            "places": "Places",
+            "userUploads": "Your Files",
+            "basic": "Basics"
+          }
+        }
       },
       "onboarding": {
         "title": "Getting started",
@@ -580,24 +600,6 @@
       }
     },
     "modals": {
-      "wallpaperModal": {
-        "title": "Room wallpaper",
-        "customWallpaperTitle": "Link to an image ({{fileTypes}} are supported)",
-        "submitButton": "Apply wallpaper",
-        "category": {
-          "todoBoards": "To-do Boards",
-          "calendars": "Calendars",
-          "workshops": "Workshops",
-          "nature": "Nature",
-          "fruits": "Fruits",
-          "abstract": "Abstract",
-          "patterns": "Patterns",
-          "abstractPaintings": "Abstract Paintings",
-          "figurativePaintings": "Figurative Paintings",
-          "flat": "Flat",
-          "places": "Places"
-        }
-      },
       "avModal": {
         "title": "Audio & Video"
       },

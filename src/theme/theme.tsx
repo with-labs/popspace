@@ -1256,6 +1256,13 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           opacity: 1,
         },
       },
+      MuiRadio: {
+        colorPrimary: {
+          '&$checked': {
+            color: palette.primary.dark,
+          },
+        },
+      },
     },
   });
 };

@@ -1,8 +1,6 @@
-import { Link } from '@components/Link/Link';
-import { Links } from '@constants/Links';
 import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { GlobalAudioToggle } from '../audio/GlobalAudioToggle';
 
@@ -52,9 +50,7 @@ export function AudioSettings() {
           {t('features.roomSettings.audioHeading')}
         </Typography>
         <Typography variant="body2" paragraph>
-          <Trans i18nKey="features.roomSettings.audioExplanation">
-            Read more about proximal audio in our <Link to={Links.HELP_PORTAL}>Support Portal</Link>
-          </Trans>
+          {t('features.roomSettings.audioExplanation')}
         </Typography>
       </div>
     </div>

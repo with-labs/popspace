@@ -1,6 +1,3 @@
-yarn-error.log
-.env
-.DS_Store
 node_modules
-local
-logs
+# Keep environment variables out of version control
+.env

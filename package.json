@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/with-labs/noodle-shared#readme",
   "dependencies": {
+    "@prisma/client": "^2.28.0",
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.834.0",
     "btoa": "^1.2.1",
@@ -35,5 +36,8 @@
     "pg-monitor": "^1.4.1",
     "redis": "^3.0.2",
     "ua-parser-js": "^0.7.28"
+  },
+  "devDependencies": {
+    "prisma": "^2.28.0"
   }
 }

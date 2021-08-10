@@ -57,14 +57,14 @@ const http = {
     /* The message field does not serialize, not exposed as own property from Error */
     result.message = error.message
     const report = await shared.error.report(error, `noodle_api:${req.originalUrl}`, req.actor ? req.actor.id : null, httpCode, error.errorCode)
-    result.error_id = report.id
+    result.errorId = report.id
     delete result.stack
-    return res.send(lib.util.snakeToCamelCase(result))
+    return res.send(shared.db.serialization.serialize(lib.util.snakeToCamelCase(result)))
   },
 
   succeed: async (req, res, data={}, httpCode=shared.api.http.code.OK) => {
     log.response.info(`Success (${getRequestSignature(req)})`)
-    res.send(Object.assign(lib.util.snakeToCamelCase(data), {success: true}))
+    res.send(shared.db.serialization.serialize(Object.assign(lib.util.snakeToCamelCase(data), {success: true})))
   },
 
   authFail: async (req, res, errorCode) => {

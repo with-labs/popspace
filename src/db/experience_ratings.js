@@ -1,3 +1,5 @@
+const prisma = require('./prisma');
+
 /**
  * @typedef {Object} ExperienceRating
  * @property {number} rating
@@ -21,13 +23,15 @@ class ExperienceRatings {
    * @returns {Promise<ExperienceRating>}
    */
   async createRating(actorId, roomId, rating, submittedAt, feedback) {
-    return shared.db.pg.massive.experience_ratings.insert({
-      actor_id: actorId,
-      room_id: roomId,
-      submitted_at: submittedAt.toUTCString(),
-      rating,
-      feedback
-    })
+    return prisma.experienceRating.create({
+      data: {
+        actorId,
+        roomId,
+        submittedAt: submittedAt.toUTCString(),
+        rating,
+        feedback,
+      },
+    });
   }
 
   /**
@@ -39,7 +43,10 @@ class ExperienceRatings {
    * @returns {Promise<ExperienceRating>}
    */
   async updateRating(ratingId, updates) {
-    return shared.db.pg.massive.experience_ratings.update(ratingId, updates)
+    return prisma.experienceRating.update({
+      where: { ratingId },
+      data: updates,
+    });
   }
 
   /**
@@ -48,10 +55,12 @@ class ExperienceRatings {
    * @returns {Promise<ExperienceRating | null>}
    */
   async getRating(ratingId) {
-    return shared.db.pg.massive.experience_ratings.findOne({
-      id: ratingId
-    })
+    return prisma.experienceRating.findUnique({
+      where: {
+        id: ratingId,
+      },
+    });
   }
 }
 
-module.exports = new ExperienceRatings()
+module.exports = new ExperienceRatings();

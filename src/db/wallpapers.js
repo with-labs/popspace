@@ -1,13 +1,27 @@
+const prisma = require('./prisma');
+
 const SYSTEM_USER_ID = '-5000';
 
 class Wallpapers {
   getWallpapersForActor(actorId) {
-    return shared.db.pg.massive.wallpapers.where('creator_id IN ($1, $2)', [actorId, SYSTEM_USER_ID]);
+    return prisma.wallpaper.findMany({
+      where: {
+        creatorId: {
+          in: [actorId, SYSTEM_USER_ID],
+        },
+      },
+    });
   }
 
   async canUserAccessWallpaper(actorId, wallpaperId) {
-    const wallpaper = await shared.db.pg.massive.wallpapers.findOne(wallpaperId);
-    return (wallpaper && (wallpaper.creator_id === actorId || wallpaper.creator_id === SYSTEM_USER_ID));
+    return !!(await prisma.wallpaper.findFirst({
+      where: {
+        id: wallpaperId,
+        creatorId: {
+          in: [actorId, SYSTEM_USER_ID],
+        },
+      },
+    }));
   }
 }
 

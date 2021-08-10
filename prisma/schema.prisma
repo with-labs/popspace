@@ -72,6 +72,7 @@ model Actor {
   slackActions          SlackAction[]
   slackInstalls         SlackInstall[]
   wallpapers            Wallpaper[]
+  participantState      ParticipantState?
 
   @@index([deletedAt], name: "actors_deleted_at_index")
   @@index([kind], name: "actors_kind_index")
@@ -247,6 +248,8 @@ model ParticipantState {
   state     Json?
   createdAt DateTime @default(dbgenerated("timezone('utc'::text, now())")) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(dbgenerated("timezone('utc'::text, now())")) @map("updated_at") @db.Timestamptz(6)
+
+  actor Actor @relation(fields: [actorId], references: [id])
 
   @@map("participant_states")
 }

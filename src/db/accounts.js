@@ -1,111 +1,160 @@
-const LOGIN_REQUEST_EXPIRY_DAYS = 30
-const SIGNUP_REQUEST_EXPIRY_DAYS = 30
+const prisma = require('./prisma');
+
+const LOGIN_REQUEST_EXPIRY_DAYS = 30;
+const SIGNUP_REQUEST_EXPIRY_DAYS = 30;
 
 class Accounts {
-  constructor() {
-  }
+  constructor() {}
 
   async delete(actorId) {
-    return await shared.db.pg.massive.actors.update({id: actorId}, {deleted_at: shared.db.time.now()})
+    return await prisma.actor.update({
+      where: { id: actorId },
+      data: { deletedAt: shared.db.time.now() },
+    });
   }
 
   async hardDelete(actorId) {
     // support hard-deleting soft-deleted actors
-    actorId = parseInt(actorId)
-    const actor = await shared.db.pg.massive.actors.findOne({id: actorId, "deleted_at IS NOT NULL": null})
-    if(!actor) {
-      throw "No such actor - can only hard delete soft deleted actors."
+    actorId = parseInt(actorId);
+    const actor = await prisma.actor.findUnique({ where: { id: actorId } });
+    if (!actor || !actor.deletedAt) {
+      throw 'No such actor - can only hard delete soft deleted actors.';
     }
-    const createdRooms = await shared.db.room.core.getCreatedRooms(actorId)
-    const roomIds = createdRooms.map((r) => (r.id))
-    const membershipsToOwnedRooms = await shared.db.pg.massive.room_memberships.find({room_id: roomIds})
-    const membershipsToOwnedRoomsIds = membershipsToOwnedRooms.map((m) => (m.id))
-    const widgets = await shared.db.pg.massive.widgets.find({creator_id: actorId})
-    const widgetIds = widgets.map((w) => (w.id))
+    const createdRooms = await shared.db.room.core.getCreatedRooms(actorId);
+    const roomIds = createdRooms.map((r) => r.id);
+    const membershipsToOwnedRooms = await prisma.roomMembership.findMany({
+      where: {
+        roomId: {
+          in: roomIds,
+        },
+      },
+    });
+    const membershipsToOwnedRoomsIds = membershipsToOwnedRooms.map((m) => m.id);
+    const widgets = await prisma.widget.findMany({
+      where: { creatorId: actorId },
+    });
+    const widgetIds = widgets.map((w) => w.id);
 
-    await shared.db.pg.massive.withTransaction(async (tx) => {
-      await tx.actors.destroy({id: actorId})
-      await tx.sessions.destroy({actor_id: actorId})
-      await tx.magic_codes.destroy({actor_id: actorId})
+    await prisma.$transaction([
+      prisma.actor.delete({ where: { id: actorId } }),
+      prisma.session.deleteMany({ where: { actorId } }),
+      prisma.magicCode.deleteMany({ where: { actorId } }),
       // All room membership info
-      await tx.room_memberships.destroy({actor_id: actorId})
+      prisma.roomMembership.deleteMany({ where: { actorId } }),
       // All actors rooms, their members and metainfo
-      await tx.room_memberships.destroy({id: membershipsToOwnedRoomsIds})
-      await tx.rooms.destroy({creator_id: actorId})
-      await tx.widgets.destroy({creator_id: actorId})
-      await tx.room_widgets.destroy({widget_id: widgetIds})
-    })
+      prisma.roomMembership.deleteMany({
+        where: { id: { in: membershipsToOwnedRoomsIds } },
+      }),
+      prisma.room.deleteMany({ where: { creatorId: actorId } }),
+      prisma.widget.deleteMany({ where: { creatorId: actorId } }),
+      prisma.widgetTransform.deleteMany({
+        where: { widgetId: { in: widgetIds } },
+      }),
+      prisma.widgetState.deleteMany({ where: { widgetId: { in: widgetIds } } }),
+      prisma.participant.deleteMany({ where: { actorId } }),
+      prisma.participantState.delete({ where: { actorId } }),
+      prisma.participantTransform.deleteMany({ where: { actorId } }),
+    ]);
   }
 
   async actorByEmail(email) {
-    return shared.db.pg.massive.actors.findOne({
-      email: shared.lib.args.consolidateEmailString(email),
-      deleted_at: null
-    })
+    const actor = await prisma.actor.findUnique({
+      where: {
+        email: shared.lib.args.consolidateEmailString(email),
+      },
+    });
+    if (actor.deletedAt) return null;
+    return actor;
   }
 
-  async actorsByEmails(emails) {
-    const consolidatedEmails = emails.map((e) => (shared.lib.args.consolidateEmailString(e)))
-    return shared.db.pg.massive.actors.find({email: consolidatedEmails, deleted_at: null})
+  actorsByEmails(emails) {
+    const consolidatedEmails = emails.map((e) =>
+      shared.lib.args.consolidateEmailString(e),
+    );
+    return prisma.actor.findMany({
+      where: {
+        email: { in: consolidatedEmails },
+        deletedAt: null,
+      },
+    });
   }
 
   async actorById(id) {
-    return shared.db.pg.massive.actors.findOne({id: id, deleted_at: null})
+    const actor = await prisma.actor.findUnique({ where: { id } });
+    if (actor.deletedAt) return null;
+    return actor;
   }
 
-  async createActor(kind, source, expressRequest) {
-    return shared.db.pg.massive.withTransaction(async (tx) => {
-      const actor = await tx.actors.insert({
-        kind: kind
-      })
-      const sessionId = null
-      const event = await shared.db.events.actorCreateEvent(actor.id, sessionId, source, expressRequest, tx)
-      return actor
-    })
+  createActor(kind, source, expressRequest) {
+    return prisma.actor.create({
+      data: {
+        kind,
+        events: {
+          create: shared.db.events.eventFromRequest(
+            actor.id,
+            null,
+            'sourced',
+            source,
+            expressRequest,
+          ),
+        },
+      },
+    });
   }
 
   async createLoginRequest(actor) {
     const loginRequest = {
       code: shared.lib.otp.generate(),
-      issued_at: shared.db.time.now(),
-      expires_at: shared.lib.otp.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
-      actor_id: actor.id,
-      action: "login"
-    }
-    return await shared.db.pg.massive.magic_codes.insert(loginRequest)
+      issuedAt: shared.db.time.now(),
+      expiresAt: shared.lib.otp.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
+      actorId: actor.id,
+      action: 'login',
+    };
+    return await prisma.magicCode.create({ data: loginRequest });
   }
 
-  async createSession(actorId, tx=null, req=null) {
-    if(!tx) {
-      return await shared.db.pg.massive.withTransaction(async (tx) => {
-        return await this.createSession(actorId, tx, req)
-      })
-    }
-    const session = await tx.sessions.insert({
-      actor_id: actorId,
-      secret: shared.lib.otp.generate(),
-      expires_at: null
-    })
+  async createSession(actorId, tx = null, req = null) {
+    const session = await prisma.session.create({
+      data: {
+        actorId,
+        secret: shared.lib.otp.generate(),
+        expiresAt: null,
+      },
+    });
 
-    const meta = null
+    const meta = null;
     /*
       Can't think of anything valuable to record for a session.
       We already have its ID tracked as a column in the schema, and
       there doesn't seem to be any extra info here.
     */
-    const eventValue = null
-    await shared.db.events.recordEvent(actorId, session.id, "session", eventValue, req, meta, tx)
-    return session
+    const eventValue = null;
+    await shared.db.events.recordEvent(
+      actorId,
+      session.id,
+      'session',
+      eventValue,
+      req,
+      meta,
+    );
+    return session;
   }
 
+  // TODO: email subscriptions, again.
+
   async newsletterSubscribe(actorId) {
-    return await shared.db.pg.massive.actors.update({id: actorId}, {newsletter_opt_in: true})
+    // return await prisma.actor.update(
+    //   {where: { id: actorId },
+    //   data: { newsletterOptIn: true },
+    //   });
   }
 
   async newsletterUnsubscribe(actorId) {
-    return await shared.db.pg.massive.actors.update({id: actorId}, {newsletter_opt_in: false})
+    // return await prisma.actor.update({
+    //   where: { id: actorId },
+    //   data: { newsletterOptIn: false },
+    // );
   }
-
 }
 
-module.exports = new Accounts()
+module.exports = new Accounts();

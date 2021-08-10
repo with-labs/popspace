@@ -12,4 +12,5 @@ module.exports = {
   experienceRatings: require('./experience_ratings'),
   wallpapers: require('./wallpapers'),
   messages: require('./messages/messages'),
+  serialization: require('./serialization.js'),
 };

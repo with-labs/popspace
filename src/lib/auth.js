@@ -15,7 +15,7 @@ class Auth {
       return {};
     }
     let actor = await prisma.actor.findUnique({
-      where: { id: session.actor_id },
+      where: { id: session.actorId },
     });
     if (actor.deletedAt) {
       actor = null;
@@ -56,8 +56,8 @@ class Auth {
   }
 
   isExpired(entity) {
-    if (!entity.expires_at) return false;
-    return moment(entity.expires_at).valueOf() < moment.utc().valueOf();
+    if (!entity.expiresAt) return false;
+    return moment(entity.expiresAt).valueOf() < moment.utc().valueOf();
   }
 
   async needsNewSessionToken(sessionToken, actor) {
@@ -68,7 +68,7 @@ class Auth {
     if (!session) {
       return true;
     }
-    return parseInt(session.actor_id) != parseInt(actor.id);
+    return parseInt(session.actorId) != parseInt(actor.id);
   }
 }
 

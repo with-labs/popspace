@@ -29,7 +29,7 @@ class NamesAndRoutes {
   constructor() {}
 
   roomToRoute(room) {
-    return this.route(room.display_name, room.url_id);
+    return this.route(room.displayName, room.urlId);
   }
 
   /*

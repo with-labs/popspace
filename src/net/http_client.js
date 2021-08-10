@@ -52,7 +52,7 @@ class HttpClient {
     let session = await prisma.session.findFirst({
       where: {
         actorId: this.actor.id,
-        revoked_at: null,
+        revokedAt: null,
       },
     });
 

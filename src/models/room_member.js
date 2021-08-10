@@ -27,11 +27,11 @@ class RoomMember {
 RoomMember.allInRoom = async (roomId) => {
   const memberships = await prisma.roomMembership.findFirst({
     where: {
-      room_id: roomId,
-      revoked_at: null,
+      roomId,
+      revokedAt: null,
     },
   });
-  const actorIds = memberships.map((m) => m.actor_id);
+  const actorIds = memberships.map((m) => m.actorId);
   const actors = await prisma.actor.findMany({
     where: { id: { in: actorIds } },
   });
@@ -49,7 +49,7 @@ RoomMember.allInRoom = async (roomId) => {
     actorById[actor.id] = actor;
   }
   for (const ps of participantStates) {
-    participantStatesByActorId[ps.actor_id] = ps;
+    participantStatesByActorId[ps.actorId] = ps;
   }
 
   const room = await shared.db.room.core.roomById(roomId);

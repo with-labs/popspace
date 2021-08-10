@@ -32,7 +32,7 @@ class RoomWidget {
   }
 
   creatorId() {
-    return this._pgWidget.creator_id;
+    return this._pgWidget.creatorId;
   }
 
   setCreator(creator) {
@@ -60,14 +60,14 @@ class RoomWidget {
 
   async creatorDisplayName() {
     return (this._creatorDisplayName =
-      this._creatorDisplayName || (await this.creator()).display_name);
+      this._creatorDisplayName || (await this.creator()).displayName);
   }
 
   async serialize() {
     let baseWidgetData = {
       widget_id: this._pgWidget.id,
       creator_id: this._pgWidget.creator_id,
-      type: this._pgWidget._type,
+      type: this._pgWidget.type,
       widget_state: this.widgetState(),
       creator_display_name: await this.creatorDisplayName(),
       transform: this.roomWidgetState(),
@@ -92,7 +92,7 @@ RoomWidget.fromWidgetId = async (widgetId, roomId) => {
     where: { widgetId },
   });
   const roomWidgetState = await prisma.widgetTransform.findUnique({
-    where: { widgetId, roomId },
+    where: { roomId_widgetId: { widgetId, roomId } },
   });
 
   return new RoomWidget(roomId, pgWidget, widgetState, roomWidgetState);
@@ -117,8 +117,8 @@ RoomWidget.allInRoom = async (roomId) => {
 
   const result = [];
   for (const widget of widgets) {
-    const widgetState = widget.widgetState;
-    const roomWidgetState = widget.transform;
+    const widgetState = widget.widgetState || {};
+    const roomWidgetState = widget.transform || {};
     const roomWidget = new shared.models.RoomWidget(
       roomId,
       widget,

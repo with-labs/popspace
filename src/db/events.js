@@ -50,12 +50,6 @@ class Events {
     expressRequest = null,
     meta = null,
   ) {
-    if (!expressRequest) {
-      expressRequest = { headers: {}, socket: {} };
-    }
-    const ua = userAgentParser(
-      expressRequest.headers ? expressRequest.headers['user-agent'] : '',
-    );
     return prisma.actorEvent.create({
       data: this.eventFromRequest(
         actorId,
@@ -76,6 +70,12 @@ class Events {
     expressRequest,
     meta = null,
   ) {
+    if (!expressRequest) {
+      expressRequest = { headers: {}, socket: {} };
+    }
+    const ua = userAgentParser(
+      expressRequest.headers ? expressRequest.headers['user-agent'] : '',
+    );
     return {
       actorId,
       sessionId,
@@ -90,11 +90,11 @@ class Events {
       vendor: ua.device.vendor,
       engine: ua.engine.name,
       os: ua.os.name,
-      os_version: ua.os.version,
-      engine_version: ua.engine.version,
-      browser_version: ua.browser.version,
-      req_url: reqToUrl(expressRequest),
-      user_agent: expressRequest.headers['user-agent'],
+      osVersion: ua.os.version,
+      engineVersion: ua.engine.version,
+      browserVersion: ua.browser.version,
+      reqUrl: reqToUrl(expressRequest),
+      userAgent: expressRequest.headers['user-agent'],
     };
   }
 }

@@ -106,7 +106,7 @@ class Core {
     }
     const room = await this.createRoom(
       creatorId,
-      templateData.display_name || 'New Meeting',
+      templateData.displayName || 'New Meeting',
       templateName,
       isPublic,
     );

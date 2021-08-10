@@ -4,12 +4,12 @@ const prisma = require('./prisma');
  * @typedef {Object} ExperienceRating
  * @property {number} rating
  * @property {string | null} feedback
- * @property {string} submitted_at
- * @property {string} created_at
- * @property {string} updated_at
+ * @property {string} submittedAt
+ * @property {string} createdAt
+ * @property {string} updatedAt
  * @property {number} id
- * @property {number} actor_id
- * @property {number} room_id
+ * @property {number} actorId
+ * @property {number} roomId
  */
 
 class ExperienceRatings {

@@ -91,7 +91,7 @@ class Accounts {
         kind,
         events: {
           create: shared.db.events.eventFromRequest(
-            actor.id,
+            undefined,
             null,
             'sourced',
             source,

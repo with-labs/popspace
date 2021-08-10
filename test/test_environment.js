@@ -16,7 +16,7 @@ module.exports = class {
           shared.test.chance.name() + ' ' + shared.test.chance.last(),
       },
     });
-    if (room && room.creator_id != actor.id) {
+    if (room && room.creatorId != actor.id) {
       const alreadyHasAccess = await shared.db.roomMemberships.hasAccess(
         actor.id,
         room.id,

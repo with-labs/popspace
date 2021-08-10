@@ -135,6 +135,11 @@ export interface OutgoingUpdateWallpaperMessage extends BaseOutgoingSocketMessag
   };
 }
 
+export interface OutgoingUndoLastWidgetDeleteMessage extends BaseOutgoingSocketMessage {
+  kind: 'undoLastWidgetDelete';
+  payload: Record<string, never>;
+}
+
 export type OutgoingSocketMessage =
   | PingMessage
   | AuthMessage
@@ -152,4 +157,5 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateVideoState
   | OutgoingUpdateSelfDisplayNameMessage
   | OutgoingUpdateSelfAvatarNameMessage
-  | OutgoingUpdateWallpaperMessage;
+  | OutgoingUpdateWallpaperMessage
+  | OutgoingUndoLastWidgetDeleteMessage;

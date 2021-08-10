@@ -5,4 +5,5 @@ export enum KeyShortcut {
   ToggleStatus = 's',
   ToggleAway = 'q',
   ActionBar = 'ctrl+k,command+k',
+  Undo = 'ctrl+z,command+z',
 }

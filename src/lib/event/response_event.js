@@ -7,7 +7,7 @@ module.exports = class ResponseEvent {
     this._data = {
       payload: payload,
       kind: kind || `${sourceHermesEvent.kind()}.response`,
-      request_id: sourceHermesEvent.requestId()
+      requestId: sourceHermesEvent.requestId()
     }
   }
 
@@ -30,8 +30,8 @@ module.exports = class ResponseEvent {
   serialize() {
     const serialized = Object.assign({}, this._data)
     serialized.sender = {
-      actor_id: this._sourceHermesEvent.actorId(),
-      session_id: this._sourceHermesEvent.sessionId()
+      actorId: this._sourceHermesEvent.actorId(),
+      sessionId: this._sourceHermesEvent.sessionId()
     }
     return serialized
   }

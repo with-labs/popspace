@@ -34,14 +34,14 @@ class UpdateProcessor {
   async updateWidgetRoomState(event) {
     const widget = event.payload()
     const sender = event.senderParticipant()
-    const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), widget.widget_id, widget.transform)
+    const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), widget.widgetId, widget.transform)
     sender.respondAndBroadcast(event, "widgetTransformed")
   }
 
   async updateWidgetState(event) {
     const widget = event.payload()
     const sender = event.senderParticipant()
-    const result = await shared.db.room.data.updateWidgetState(widget.widget_id, widget.widget_state)
+    const result = await shared.db.room.data.updateWidgetState(widget.widgetId, widget.widgetState)
     sender.respondAndBroadcast(event, "widgetUpdated")
   }
 
@@ -52,7 +52,7 @@ class UpdateProcessor {
 
   async updateParticipantState(event) {
     const sender = event.senderParticipant()
-    return sender.updateState(event.payload().participant_state, event)
+    return sender.updateState(event.payload().participantState, event)
   }
 
   async updateRoomState(event) {
@@ -65,38 +65,41 @@ class UpdateProcessor {
   async tempUpdateDisplayAndAvatarName(event) {
     log.error.warn("Deprecated use of tempUpdateDisplayAndAvatarName")
     const payload = event.payload()
-    if(payload.display_name) {
+    if(payload.displayName) {
       this.updateActorDisplayName(event)
     }
-    if(payload.avatar_name) {
+    if(payload.avatarName) {
       this.updateActorAvatarName(event)
     }
   }
 
   async updateActorDisplayName(event) {
     const sender = event.senderParticipant()
-    return sender.updateDisplayName(event.payload().display_name, event)
+    return sender.updateDisplayName(event.payload().displayName, event)
   }
 
   async updateActorAvatarName(event) {
     const sender = event.senderParticipant()
-    return sender.updateAvatarName(event.payload().avatar_name, event)
+    return sender.updateAvatarName(event.payload().avatarName, event)
   }
 
   async updateWallpaper(event) {
     const sender = event.senderParticipant()
-    const wallpaperId = event.payload().wallpaper_id
+    const wallpaperId = event.payload().wallpaperId
     const userCanAccess = await shared.db.wallpapers.canUserAccessWallpaper(sender.actorId(), wallpaperId)
     if (!userCanAccess) {
       return sender.sendError(event, lib.ErrorCodes.UNAUTHORIZED, "You do not have permission to access this wallpaper")
     }
-    const updatedRooms = await shared.db.pg.massive.room_states.update({ room_id: event.roomId() }, {
-      wallpaper_id: wallpaperId
+    const updatedRooms = await shared.db.prisma.roomState.update({
+      where: { roomId: event.roomId() },
+      data: {
+        wallpaperId
+      }
     })
     if (updatedRooms.length === 0) {
       return sender.sendError(event, lib.ErrorCodes.ROOM_NOT_FOUND, "No such room", { roomId: event.roomId() })
     }
-    const wallpaperData = await shared.db.pg.massive.wallpapers.findOne(wallpaperId)
+    const wallpaperData = await shared.db.prisma.wallpapers.findUnique({ where: { id: wallpaperId } })
     sender.sendResponse(event, { wallpaper: wallpaperData })
     sender.broadcastPeerEvent("wallpaperUpdated", { wallpaper: wallpaperData })
   }

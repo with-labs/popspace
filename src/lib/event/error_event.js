@@ -12,7 +12,7 @@ module.exports = class ErrorEvent {
 
   serialize() {
     return {
-      request_id: this.sourceHermesEvent ? this.sourceHermesEvent.requestId() : null,
+      requestId: this.sourceHermesEvent ? this.sourceHermesEvent.requestId() : null,
       code: this.errorCode,
       message: this.errorMessage,
       kind: this.kind,

@@ -6,35 +6,43 @@ class Analytics {
   }
 
   async participantCountChanged(newCount) {
-    await shared.db.pg.massive.analytics_total_participant_counts.insert({
-      measured_at: shared.db.time.now(),
-      count: newCount
+    await shared.db.prisma.analyticsTotalParticipantCount.create({
+      data: {
+        measuredAt: shared.db.time.now(),
+        count: newCount
+      }
     })
   }
 
   async participantJoinedSocketGroup(socketGroup) {
-    await shared.db.pg.massive.analytics_room_participant_count.insert({
-      measured_at: shared.db.time.now(),
-      room_id: socketGroup.getRoom().id,
-      participant_count: socketGroup.authenticatedParticipants().length
+    await shared.db.prisma.analyticsRoomParticipantCount.create({
+      data: {
+        measuredAt: shared.db.time.now(),
+        roomId: socketGroup.getRoom().id,
+        participantCount: socketGroup.authenticatedParticipants().length
+      }
     })
   }
 
   async participantLeft(socketGroup) {
-    await shared.db.pg.massive.analytics_room_participant_count.insert({
-      measured_at: shared.db.time.now(),
-      room_id: socketGroup.getRoom().id,
-      participant_count: socketGroup.authenticatedParticipants().length
+    await shared.db.prisma.analyticsRoomParticipantCount.create({
+      data: {
+        measuredAt: shared.db.time.now(),
+        roomId: socketGroup.getRoom().id,
+        participantCount: socketGroup.authenticatedParticipants().length
+      }
     })
   }
 
   async beginSession(participant, socketGroup) {
-    const roomUsageEntry = await shared.db.pg.massive.analytics_room_usage.insert({
-      room_id: participant.roomId(),
-      actor_id: participant.actorId(),
-      participant_id: participant.sessionId(),
-      began_at: shared.db.time.now(),
-      last_heartbeat_at: shared.db.time.now()
+    const roomUsageEntry = await shared.db.prisma.analyticsRoomUsage.create({
+      data: {
+        roomId: participant.roomId(),
+        actorId: participant.actorId(),
+        participantId: participant.sessionId(),
+        beganAt: shared.db.time.now(),
+        lastHeartbeatAt: shared.db.time.now()
+      }
     })
     /*
       Since participant_ids reset between hermes run, we can't rely on them
@@ -53,20 +61,22 @@ class Analytics {
     if(!entryId) {
       return
     }
-    await shared.db.pg.massive.analytics_room_usage.update(
-      {id: entryId},
-      {last_heartbeat_at: shared.db.time.now()}
-    )
+    await shared.db.prisma.analyticsRoomUsage.update({
+      where: {id: entryId},
+      data: {lastHeartbeatAt: shared.db.time.now()}
+    })
   }
 
   async toggleVoice(event) {
-    const toggleEntry = await shared.db.pg.massive.analytics_mic_usage.insert({
-      room_id: event.roomId(),
-      actor_id: event.actorId(),
-      participant_id: event.sessionId(),
-      is_toggled_on: event.payload().is_on,
-      toggled_at: shared.db.time.now(),
-      last_heartbeat_at: shared.db.time.now()
+    const toggleEntry = await shared.db.prisma.analyticsMicUsage.create({
+      data: {
+        roomId: event.roomId(),
+        actorId: event.actorId(),
+        participantId: event.sessionId(),
+        isToggledOn: event.payload().isOn,
+        toggledAt: shared.db.time.now(),
+        lastHeartbeatAt: shared.db.time.now()
+      }
     })
 
     this.voiceUsageIdByParticipantId[event.sessionId()] = toggleEntry.id
@@ -75,23 +85,26 @@ class Analytics {
   async updateVoiceDuration(participant) {
     const entryId = this.voiceUsageIdByParticipantId[participant.sessionId()]
     if(!entryId){
+
       return
     }
 
-    await shared.db.pg.massive.analytics_mic_usage.update(
-      {id: entryId},
-      {last_heartbeat_at: shared.db.time.now()}
-    )
+    await shared.db.prisma.analyticsMicUsage.update({
+      where: {id: entryId},
+      data: {lastHeartbeatAt: shared.db.time.now()}
+    })
   }
 
   async toggleVideo(event) {
-    const toggleEntry = await shared.db.pg.massive.analytics_camera_usage.insert({
-      room_id: event.roomId(),
-      actor_id: event.actorId(),
-      participant_id: event.sessionId(),
-      is_toggled_on: event.payload().is_on,
-      toggled_at: shared.db.time.now(),
-      last_heartbeat_at: shared.db.time.now()
+    const toggleEntry = await shared.db.prisma.analyticsCameraUsage.create({
+      data:{
+        roomId: event.roomId(),
+        actorId: event.actorId(),
+        participantId: event.sessionId(),
+        isToggledOn: event.payload().isOn,
+        toggledAt: shared.db.time.now(),
+        lastHeartbeatAt: shared.db.time.now()
+      }
     })
 
     this.videoUsageIdByParticipantId[event.sessionId()] = toggleEntry.id
@@ -103,10 +116,10 @@ class Analytics {
       return
     }
 
-    await shared.db.pg.massive.analytics_camera_usage.update(
-      {id: entryId},
-      {last_heartbeat_at: shared.db.time.now()}
-    )
+    await shared.db.prisma.analyticsCameraUsage.update({
+      where: {id: entryId},
+      data: {lastHeartbeatAt: shared.db.time.now()}
+    })
   }
 }
 

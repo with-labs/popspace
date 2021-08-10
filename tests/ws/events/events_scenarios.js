@@ -45,7 +45,7 @@ module.exports = {
     let response = null
     try {
       await client.connect()
-      response = (await client.authenticate("{}", host.room.url_id)).data()
+      response = (await client.authenticate("{}", host.room.urlId)).data()
     } catch(e) {
       response = e
     }

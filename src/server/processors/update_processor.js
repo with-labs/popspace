@@ -111,9 +111,7 @@ class UpdateProcessor {
       `
         WITH deleted_widgets AS (
           SELECT
-            widgets.deleted_at as deleted_at,
-            widgets.id as id,
-            widgets.creator_id as creator_id
+            widgets.id as id
           FROM
             widgets
           INNER JOIN room_widgets
@@ -122,7 +120,7 @@ class UpdateProcessor {
             room_widgets.room_id = $1 AND
             widgets.deleted_at IS NOT NULL AND
             widgets.deleted_at > NOW() - '8 minutes'::interval AND
-            widgets.creator_id = $2
+            widgets.deleted_by = $2
           ORDER BY widgets.deleted_at DESC
           LIMIT 1
         )

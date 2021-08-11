@@ -327,7 +327,9 @@
       },
       "common": {
         "close": "Remove accessory",
-        "mutedForYou": "Muted for you"
+        "mutedForYou": "Muted for you",
+        "deleted": "Accessory removed",
+        "undoDelete": "Restore"
       },
       "huddle": {
         "quickActionTitle": "Start a private Huddle",

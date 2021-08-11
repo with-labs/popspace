@@ -1,6 +1,6 @@
 import { Snackbar } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { useToaster, toast } from 'react-hot-toast';
+import { toast, useToaster } from 'react-hot-toast';
 import { ToastType } from 'react-hot-toast/dist/core/types';
 
 // @ts-ignore
@@ -11,7 +11,11 @@ const toastTypeMap: Record<ToastType, 'error' | 'success' | 'info' | 'warning'> 
   error: 'error',
   loading: 'info',
   blank: 'info',
+  custom: 'info',
 };
+
+// offset the height of the bottom bar to avoid collision
+const globalOffset = 80;
 
 export const Toaster: React.FC = () => {
   const {
@@ -21,9 +25,9 @@ export const Toaster: React.FC = () => {
 
   return (
     <>
-      {toasts.slice(0, 4).map((toast) => {
-        const offset = calculateOffset(toast.id, {
-          margin: 32,
+      {toasts.slice(0, 2).map((toast) => {
+        const offset = calculateOffset(toast, {
+          gutter: 32,
           reverseOrder: false,
         });
 
@@ -34,13 +38,15 @@ export const Toaster: React.FC = () => {
           }
         };
 
+        const children = typeof toast.message === 'function' ? toast.message(toast) : toast.message;
+
         return (
           <Snackbar
             open={toast.visible}
             onMouseEnter={startPause}
             onMouseLeave={endPause}
             style={{
-              transform: `translate(-50%, -${offset}px)`,
+              transform: `translate(-50%, -${offset + globalOffset}px)`,
               transition: 'transform 0.12s ease-out',
             }}
             anchorOrigin={{
@@ -49,8 +55,8 @@ export const Toaster: React.FC = () => {
             }}
             key={toast.id}
           >
-            <Alert severity={toastTypeMap[toast.type]} aria-live={toast.ariaLive} ref={ref}>
-              {toast.message}
+            <Alert severity={toastTypeMap[toast.type]} {...toast.ariaProps} ref={ref}>
+              {children}
             </Alert>
           </Snackbar>
         );

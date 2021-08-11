@@ -290,7 +290,7 @@ class Participant {
     this.sendEvent(new lib.event.ResponseEvent(requestEvent, payload, kind))
   }
 
-  respondAndBroadcast(hermesEvent, kind) {
+  respondAndBroadcast(hermesEvent, kind, payload=null) {
     if(hermesEvent.senderParticipant() != this) {
       log.error.error(`Can only respond to sender ${hermesEvent.senderParticipant().actorId()} vs ${this.actorId()}`)
       /*
@@ -303,8 +303,9 @@ class Participant {
       */
       return
     }
-    this.broadcastPeerEvent(kind, hermesEvent.payload())
-    this.sendResponse(hermesEvent, hermesEvent.payload(), kind)
+    const returnPayload = payload || hermesEvent.payload()
+    this.broadcastPeerEvent(kind, returnPayload)
+    this.sendResponse(hermesEvent,returnPayload, kind)
   }
 
   sendPeerEvent(sender, kind, payload, eventId=null) {

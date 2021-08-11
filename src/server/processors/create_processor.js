@@ -3,11 +3,13 @@ class CreateProcessor {
     switch(hermesEvent.kind()) {
       case "createWidget":
         return this.createWidget(hermesEvent)
+      case "sumbitChatMessage": 
+        return this.createMessage(hermesEvent)
       default:
         return hermesEvent._sender.sendError(
           hermesEvent,
           lib.ErrorCodes.EVENT_TYPE_INVALID,
-          `Unrecognized event type: ${hermesEvents.kind()}`
+          `Unrecognized event type: ${hermesEvent.kind()}`
         )
     }
   }
@@ -45,6 +47,25 @@ class CreateProcessor {
     const result = await roomWidget.serialize()
     sender.sendResponse(event, result, "widgetCreated")
     sender.broadcastPeerEvent("widgetCreated", result)
+  }
+
+  async createMessage(hermesEvent) {
+    const sender = hermesEvent.senderParticipant()
+    const payload = hermesEvent.payload()
+
+    const result = await shared.db.pg.massive.messages.insert({
+      chat_id: payload.widget_id,
+      content: payload.content,
+      sender_id: sender.actorId()
+    })
+
+    // error handle here
+    sender.respondAndBroadcast(hermesEvent, "updatedChatMessage", {
+      ...payload,
+      senderId:result.sender_id,
+      senderDisplayName: sender.actor.display_name,
+      createdAt: result.created_at
+    })
   }
 }
 

@@ -22,7 +22,8 @@ const ACTION_BY_EVENT_KIND = {
   "updateSelfDisplayName": "update",
   "updateSelfAvatarName": "update",
   "updateWallpaper": "update",
-  "undoLastWidgetDelete": "update"
+  "undoLastWidgetDelete": "update",
+  "sumbitChatMessage": "create"
 }
 
 const PUBLIC_EVENT_KINDS = {

@@ -1,20 +1,20 @@
-import * as React from 'react';
+import { RoomEvent } from '@constants/twilio';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
+import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
+import { useMediaReadiness } from '@providers/media/useMediaReadiness';
+import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
+import { useTwilio } from '@providers/twilio/TwilioProvider';
+import { logger } from '@utils/logger';
 import { SoundMeter } from '@utils/SoundMeter';
 import throttle from 'lodash.throttle';
+import * as React from 'react';
 import { RemoteParticipant, RemoteTrackPublication } from 'twilio-video';
-import { logger } from '@utils/logger';
-import { RoomEvent } from '@constants/twilio';
-import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
-import { useTwilio } from '@providers/twilio/TwilioProvider';
-import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
-import { useMediaReadiness } from '@providers/media/useMediaReadiness';
 
 const UPDATE_INTERVAL = 300;
 // arbitrary, based on experimentation...
 // ostensibly it's a value from 0..1 representing percent
 // volume input of the maximum volume possible from the device.
-const SPEAKING_THRESHOLD = 0.001;
+const SPEAKING_THRESHOLD = 0.002;
 
 /**
  * A simple component that hooks into Twilio room state and

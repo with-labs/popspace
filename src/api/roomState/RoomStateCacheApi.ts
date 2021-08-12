@@ -16,7 +16,7 @@ const createEmptyParticipantState = () => ({});
 const initializeActor = (actor: ActorShape) => ({
   id: actor.id,
   displayName: actor.displayName ?? '',
-  avatarName: actor.avatarName || getAvatarFromUserId('brandedPatterns', actor.id),
+  avatarName: actor.avatarName || getAvatarFromUserId(actor.id),
 });
 
 export class RoomStateCacheApi {

@@ -1,4 +1,6 @@
-import { AvatarOption } from '@constants/AvatarMetadata';
+import { Avatar } from '@components/Avatar/Avatar';
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
+import { avatarNames } from '@constants/AvatarMetadata';
 import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
@@ -6,7 +8,6 @@ import * as React from 'react';
 export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
-  avatarList: AvatarOption[];
   className?: string;
 }
 
@@ -65,23 +66,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, avatarList, className }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, className }) => {
   const classes = useStyles();
 
   return (
     <div className={clsx(classes.root, className)}>
-      {avatarList.map((avatar) => (
+      {avatarNames.map((avatarName) => (
         <ButtonBase
-          key={avatar.name}
-          onClick={() => onChange(avatar.name)}
-          className={clsx(classes.item, avatar.name === value && classes.itemSelected)}
-          aria-label={`Avatar ${avatar.name}`}
+          key={avatarName}
+          onClick={() => onChange(avatarName)}
+          className={clsx(classes.item, avatarName === value && classes.itemSelected)}
+          aria-label={`Avatar ${avatarName}`}
         >
-          <div className={classes.imageContainer} style={{ backgroundColor: avatar.backgroundColor }}>
-            <img className={classes.image} src={avatar.image} alt={`Avatar ${avatar.name}`} />
-          </div>
+          <AvatarPreview className={classes.imageContainer} name={avatarName} />
         </ButtonBase>
       ))}
+    </div>
+  );
+};
+
+const AvatarPreview = ({ name, className }: { name: string; className?: string }) => {
+  const backgroundColor = useAvatarBackgroundColor(name);
+
+  return (
+    <div className={className} style={{ backgroundColor: backgroundColor }}>
+      <Avatar name={name} />
     </div>
   );
 };

@@ -1,13 +1,16 @@
+import { AvatarAnimationState } from '@components/Avatar/AvatarAnimator';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
-import { PersonAvatar, IPersonAvatarProps } from './PersonAvatar';
+
+import { IPersonAvatarProps, PersonAvatar } from './PersonAvatar';
 
 export interface IPersonBubbleAvatarProps extends Omit<IPersonAvatarProps, 'personId'> {
   children?: React.ReactNode;
   userId: string;
   grayscale?: boolean;
   avatarName?: string;
+  isSpeaking: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -16,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     left: '50%',
     transform: 'translateX(-50%)',
-    bottom: 41,
+    bottom: 40,
     borderBottomLeftRadius: theme.shape.borderRadius,
     borderBottomRightRadius: theme.shape.borderRadius,
     overflow: 'hidden',
@@ -33,6 +36,7 @@ export const PersonBubbleAvatar: React.FC<IPersonBubbleAvatarProps> = ({
   grayscale,
   className,
   avatarName,
+  isSpeaking: isTalking,
   ...rest
 }) => {
   const classes = useStyles();
@@ -42,6 +46,7 @@ export const PersonBubbleAvatar: React.FC<IPersonBubbleAvatarProps> = ({
       className={clsx(classes.root, grayscale && classes.grayscale, className)}
       personId={userId}
       avatarName={avatarName}
+      animation={isTalking ? AvatarAnimationState.Talking : AvatarAnimationState.Idle}
       {...rest}
     />
   );

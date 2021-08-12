@@ -1,12 +1,13 @@
+import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { makeStyles, useTheme } from '@material-ui/core';
+import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
 import { animated, useSpring } from '@react-spring/web';
 import * as React from 'react';
-import { useAvatar } from '@hooks/useAvatar/useAvatar';
-import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
+
 import { Vector2 } from '../../../types/spatials';
 import { ReactComponent as CursorSvg } from './cursor.svg';
-import { getContrastRatio } from '@material-ui/core/styles/colorManipulator';
-import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 
 export interface ICursorProps {
   userId: string;
@@ -43,11 +44,8 @@ export const Cursor = React.memo<ICursorProps>(({ userId }) => {
   const selectActive = React.useCallback((room: RoomStateShape) => room.cursors[userId]?.active ?? false, [userId]);
 
   const name = useRoomStore((room) => room.users[userId]?.actor.displayName ?? '???');
-  const avatarName = useRoomStore(
-    (room) => room.users[userId]?.actor.avatarName ?? getAvatarFromUserId('brandedPatterns', userId)
-  );
-  const avatar = useAvatar(avatarName);
-  const color = avatar?.backgroundColor ?? theme.palette.primary.dark;
+  const avatarName = useRoomStore((room) => room.users[userId]?.actor.avatarName ?? getAvatarFromUserId(userId));
+  const color = useAvatarBackgroundColor(avatarName);
 
   const [styles, spring] = useSpring(() => ({
     // populate initial state from store

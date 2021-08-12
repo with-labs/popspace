@@ -2,8 +2,10 @@ import { Analytics } from '@analytics/Analytics';
 import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
 import { Avatar } from '@components/Avatar/Avatar';
+import { AvatarAnimationState } from '@components/Avatar/AvatarAnimator';
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { Spacing } from '@components/Spacing/Spacing';
-import { avatarOptions, getAvatarFromUserId } from '@constants/AvatarMetadata';
+import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { Box, CircularProgress, makeStyles } from '@material-ui/core';
 
 import { AvatarGrid } from '../profile/AvatarGrid';
@@ -48,6 +50,9 @@ export function ProfileSettings() {
     trackAvatarAnalytics(avatarName);
   };
 
+  const avatarName = localActor?.actor.avatarName || getAvatarFromUserId(localActor?.actor.id ?? '0');
+  const backgroundColor = useAvatarBackgroundColor(avatarName);
+
   if (!localActor) {
     return (
       <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
@@ -56,20 +61,19 @@ export function ProfileSettings() {
     );
   }
 
-  const avatarName = localActor.actor.avatarName || getAvatarFromUserId('brandedPatterns', localActor.actor.id);
-
   return (
     <Box display="flex" maxHeight="100%" width="100%">
       <Box flex="3 0 0" overflow="auto" py={4} className={classes.avatarWrapper}>
-        <AvatarGrid avatarList={Object.values(avatarOptions)} value={avatarName} onChange={updateAvatar} />
+        <AvatarGrid value={avatarName} onChange={updateAvatar} />
       </Box>
       <Spacing flexDirection="column" p={4} pl={3} flex="1 0 0">
-        <Box
-          className={classes.avatarBox}
-          style={{ backgroundColor: avatarOptions[avatarName]?.backgroundColor }}
-          mb={1}
-        >
-          <Avatar className={classes.avatarPreview} name={avatarName} size={120} />
+        <Box className={classes.avatarBox} style={{ backgroundColor }} mb={1}>
+          <Avatar
+            className={classes.avatarPreview}
+            name={avatarName}
+            size={120}
+            animation={AvatarAnimationState.Talking}
+          />
         </Box>
         <DisplayNameField onChange={trackDisplayNameAnalytics} />
       </Spacing>

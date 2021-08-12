@@ -1,15 +1,16 @@
-import React from 'react';
-import { Box, makeStyles, Typography, useTheme } from '@material-ui/core';
-import { useAvatar } from '@hooks/useAvatar/useAvatar';
+import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
-import { PersonBubbleFrame } from './PersonBubbleFrame';
-import { PersonBubbleContent } from './PersonBubbleContent';
+import { Box, makeStyles, Typography } from '@material-ui/core';
+import clsx from 'clsx';
+import React from 'react';
+
+import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
+import { PersonBubbleAvatar } from './PersonBubbleAvatar';
 import { PersonBubbleBackground } from './PersonBubbleBackground';
+import { PersonBubbleContent } from './PersonBubbleContent';
+import { PersonBubbleFrame } from './PersonBubbleFrame';
 import { PersonBubbleLabel } from './PersonBubbleLabel';
 import { PersonBubbleVoiceIndicator } from './PersonBubbleVoiceIndicator';
-import { PersonBubbleAvatar } from './PersonBubbleAvatar';
-import clsx from 'clsx';
-import { INITIAL_SIZE_VIDEO, SIZE_AVATAR } from './constants';
 
 interface IPseudoUserBubbleProps {
   isVideoOn?: boolean;
@@ -98,11 +99,10 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
   userData,
   ...rest
 }) => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const { avatarName, displayName, userId } = userData;
-  const { backgroundColor } = useAvatar(avatarName) ?? { backgroundColor: theme.palette.grey[50] };
+  const backgroundColor = useAvatarBackgroundColor(avatarName);
 
   return (
     <PersonBubbleFrame
@@ -114,7 +114,7 @@ export const PseudoUserBubble: React.FC<IPseudoUserBubbleProps> = ({
         <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor}>
           {isVideoOn && <Box className={classes.video}>{children}</Box>}
         </PersonBubbleBackground>
-        {!isVideoOn && <PersonBubbleAvatar userId={userId} avatarName={avatarName} />}
+        {!isVideoOn && <PersonBubbleAvatar isSpeaking={false} userId={userId} avatarName={avatarName} />}
         <PersonBubbleLabel isVideoOn={isVideoOn}>
           <Typography className={classes.name}>{displayName}</Typography>
         </PersonBubbleLabel>

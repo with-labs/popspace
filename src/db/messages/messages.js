@@ -45,10 +45,24 @@ class Messages {
   async getWholeChat(chatId) {
     // get the whole chat log
     return await shared.db.pg.massive.query(`
-      SELECT chat_id, content, sender_id, created_at
-      FROM messages
-      WHERE chat_id = $1
-      ORDER BY created_at
+      SELECT *
+      FROM
+        (
+          SELECT
+            messages.id as id,
+            chat_id,
+            content,
+            sender_id,
+            actors.display_name as sender_display_name,
+            messages.created_at as created_at
+          FROM 
+            messages
+            JOIN actors ON messages.sender_id = actors.id
+          WHERE chat_id = $1
+          ORDER BY messages.created_at
+          DESC
+        ) as latest_messages
+      ORDER BY latest_messages.created_at
       ASC;
   `,[chatId])
   }

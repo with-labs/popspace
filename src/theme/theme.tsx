@@ -971,7 +971,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
       MuiDialog: {
         paper: {
           boxShadow: mainShadows.surface,
-          borderRadius: shape.borderRadius,
+          borderRadius: shape.surfaceBorderRadius,
         },
         paperFullWidth: {
           [breakpoints.down('sm')]: {
@@ -1254,6 +1254,13 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         },
         textColorInherit: {
           opacity: 1,
+        },
+      },
+      MuiRadio: {
+        colorPrimary: {
+          '&$checked': {
+            color: palette.primary.dark,
+          },
         },
       },
     },

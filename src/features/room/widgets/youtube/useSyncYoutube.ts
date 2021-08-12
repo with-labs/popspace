@@ -57,13 +57,14 @@ export function useSyncYoutube({
     (s: PlayState, time: number) => {
       onChange({
         mediaState: {
+          volume,
           isPlaying: s === PlayState.Playing,
           playStartedTimestampUtc: s === PlayState.Playing ? new Date().toUTCString() : null,
           timestamp: time,
         },
       });
     },
-    [onChange]
+    [onChange, volume]
   );
 
   // when the user moves the scrubber on the custom video controls,
@@ -78,6 +79,7 @@ export function useSyncYoutube({
       if (!scrubbing) {
         onChange({
           mediaState: {
+            volume,
             isPlaying,
             timestamp: time,
             playStartedTimestampUtc: playState === PlayState.Playing ? new Date().toUTCString() : null,
@@ -85,7 +87,7 @@ export function useSyncYoutube({
         });
       }
     },
-    [onChange, playState, isPlaying]
+    [onChange, playState, isPlaying, volume]
   );
 
   // when the YT player is playing, update Redux to play too and
@@ -101,13 +103,14 @@ export function useSyncYoutube({
 
       onChange({
         mediaState: {
+          volume,
           isPlaying: true,
           timestamp: player.getCurrentTime(),
           playStartedTimestampUtc: new Date().toUTCString(),
         },
       });
     },
-    [isPlaying, onChange]
+    [isPlaying, onChange, volume]
   );
 
   // when the YT player is paused, update Redux to be paused too and record
@@ -123,13 +126,14 @@ export function useSyncYoutube({
 
       onChange({
         mediaState: {
+          volume,
           isPlaying: false,
           timestamp: player.getCurrentTime(),
           playStartedTimestampUtc: null,
         },
       });
     },
-    [isPlaying, onChange]
+    [isPlaying, onChange, volume]
   );
 
   const handleSpatialVolumeChange = React.useCallback(

@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 
 import { ACTION_BAR_ID } from '../addContent/ActionBar';
 import { FloatingActionBarButton } from '../addContent/FloatingActionBarButton';
-import { GlobalAudioToggle } from '../audio/GlobalAudioToggle';
 import { PublishedCameraToggle } from '../media/PublishedCameraToggle';
 import { PublishedMicToggle } from '../media/PublishedMicToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
@@ -53,7 +52,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
       <ResponsivePopoverProvider value={'top'}>
         <Paper square elevation={5} className={clsx(classes.root, className)} {...rest}>
           <Box style={{ marginLeft: 8 }}>
-            <Logo width={75} link newTab inRoom />
+            <Logo width={75} beamerTrigger />
           </Box>
           <MediaFailedWrapper>
             <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">
@@ -61,9 +60,6 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
               <PublishedMicToggle />
               <Hidden xsDown>
                 <ScreenShareToggle />
-              </Hidden>
-              <Hidden xsDown>
-                <GlobalAudioToggle />
               </Hidden>
             </Spacing>
           </MediaFailedWrapper>

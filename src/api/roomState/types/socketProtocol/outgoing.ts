@@ -123,14 +123,14 @@ export interface OutgoingUpdateVideoState extends BaseOutgoingSocketMessage {
 }
 
 export interface OutgoingChatMessage extends BaseOutgoingSocketMessage {
-  kind: 'sumbitChatMessage';
+  kind: 'createChatMessage';
   payload: {
     content: string;
   };
 }
 
 export interface OutgoingGetMoreChatMessage extends BaseOutgoingSocketMessage {
-  kind: 'sumbitGetMoreChatMessage';
+  kind: 'getMoreChatMessages';
   payload: {
     lastMessageId: string;
   };

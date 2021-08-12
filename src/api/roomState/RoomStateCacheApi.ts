@@ -292,14 +292,15 @@ export class RoomStateCacheApi {
       if (!draft.widgets[widgetId]) return;
 
       const currentChat = draft.widgets[widgetId] as ChatWidgetShape;
-      if (currentChat.messages) {
-        currentChat.messages.push(message);
+      debugger;
+      if (currentChat.messages.messageList) {
+        currentChat.messages.messageList.push(message);
       } else {
-        currentChat.messages = [message];
+        currentChat.messages.messageList = [message];
       }
     });
   };
-  updateChatHistory = (widgetId: string, messages: ChatMessageShape[]) => {
+  updateChatHistory = (widgetId: string, messages: { hasMoreToLoad: boolean; messageList: ChatMessageShape[] }) => {
     this.set((draft) => {
       if (!widgetId) {
         logger.error(`Invalid widget data from server updateChatHistory: no widget ID`);
@@ -310,12 +311,8 @@ export class RoomStateCacheApi {
 
       const currentChat = draft.widgets[widgetId] as ChatWidgetShape;
 
-      if (messages.length > 0) {
-        currentChat.messages.unshift(...messages);
-      } else {
-        // we have no more messages to load, so we are at the top of the chat
-        currentChat.widgetState.isMoreToLoad = false;
-      }
+      currentChat.messages.hasMoreToLoad = messages.hasMoreToLoad;
+      currentChat.messages.messageList.unshift(...messages.messageList);
     });
   };
 }

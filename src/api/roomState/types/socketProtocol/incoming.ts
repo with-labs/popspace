@@ -150,7 +150,7 @@ export interface IncomingWallpaperUpdatedMessage extends BaseIncomingSocketMessa
 }
 
 export interface IncomingChatUpdatedMessage extends BaseIncomingSocketMessage {
-  kind: 'updatedChatMessage';
+  kind: 'chatMessageCreated';
   payload: {
     widgetId: string;
     message: ChatMessageShape;
@@ -161,7 +161,10 @@ export interface IncomingGetMoreChatMessage extends BaseIncomingSocketMessage {
   kind: 'updatedGetMoreChatMessage';
   payload: {
     widgetId: string;
-    messages: ChatMessageShape[];
+    messages: {
+      hasMoreToLoad: boolean;
+      messageList: ChatMessageShape[];
+    };
   };
 }
 

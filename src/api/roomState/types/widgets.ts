@@ -153,7 +153,10 @@ export type WidgetShapeByType = {
   };
   [WidgetType.Chat]: BaseWidgetShape & {
     widgetState: ChatWidgetState;
-    messages: ChatMessageShape[];
+    messages: {
+      hasMoreToLoad: boolean;
+      messageList: ChatMessageShape[];
+    };
   };
 };
 export type WidgetShapeForType<T extends WidgetType> = WidgetShapeTable[T];

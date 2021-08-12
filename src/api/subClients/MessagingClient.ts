@@ -5,11 +5,11 @@ import client from '@api/client';
 export class MessagingClient extends ApiSubClient {
   constructor(core: ApiCoreClient) {
     super(core);
-    core.socket.on('message:updatedChatMessage', this.onUpdateChatMessage);
+    core.socket.on('message:chatMessageCreated', this.onChatMessageCreated);
     core.socket.on('message:updatedGetMoreChatMessage', this.onGetMoreChatMessage);
   }
 
-  private onUpdateChatMessage = (data: IncomingChatUpdatedMessage) => {
+  private onChatMessageCreated = (data: IncomingChatUpdatedMessage) => {
     client.cacheApi.addMessage(data.payload.widgetId, data.payload.message);
   };
 
@@ -19,14 +19,14 @@ export class MessagingClient extends ApiSubClient {
 
   sendMessage = (payload: { widgetId: string; content: string }) => {
     this.core.socket.send({
-      kind: 'sumbitChatMessage',
+      kind: 'createChatMessage',
       payload,
     });
   };
 
   getMoreMessages = (payload: { widgetId: string; lastMessageId: string }) => {
     this.core.socket.send({
-      kind: 'sumbitGetMoreChatMessage',
+      kind: 'getMoreChatMessages',
       payload,
     });
   };

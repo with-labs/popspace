@@ -64,7 +64,6 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
 
   // if true, chat will auto advance to the next incoming message
   const [autoScrollChat, setAutoScrollChat] = React.useState(true);
-  const [displayLoadMore, setDisplayLoadMore] = React.useState(false);
 
   React.useEffect(() => {
     // if the user has the scroll bar at the bottom, we will update it
@@ -86,14 +85,6 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
         } else {
           setAutoScrollChat(false);
         }
-
-        if (currChatRef.scrollTop === 0) {
-          // the user has scrolled to the top of the chat, show load more button if
-          // there is more chat to load
-          setDisplayLoadMore(true);
-        } else {
-          setDisplayLoadMore(false);
-        }
       }
     }
 
@@ -102,7 +93,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
     return () => {
       currChatRef?.removeEventListener('scroll', checkScrollPosition);
     };
-  }, [setAutoScrollChat, setDisplayLoadMore]);
+  }, [setAutoScrollChat]);
 
   const onMessageSubmit = async (values: ChatFormData, actions: FormikHelpers<ChatFormData>) => {
     client.messages.sendMessage({
@@ -117,7 +108,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
   const onLoadMoreMessages = () => {
     client.messages.getMoreMessages({
       widgetId: state.widgetId,
-      lastMessageId: state.messages[0].id,
+      lastMessageId: state.messages.messageList[0].id,
     });
   };
 
@@ -134,7 +125,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
       </WidgetTitlebar>
       <WidgetContent enableTextSelection>
         <WidgetScrollPane ref={chatRef} className={classes.chatArea}>
-          {displayLoadMore && state.widgetState.isMoreToLoad && (
+          {state.messages.hasMoreToLoad && (
             <Box display="flex" alignItems="center" justifyContent="center">
               <Link
                 style={{ textDecoration: 'none' }}
@@ -146,7 +137,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
               </Link>
             </Box>
           )}
-          {state?.messages.length === 0 && (
+          {state?.messages.messageList.length === 0 && (
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100%">
               <img className={classes.bubbleImg} src={ChatBubbleImg} alt={t('widgets.chat.chatImgAltText')} />
               <Typography variant="body1" className={classes.instructionsText}>
@@ -154,7 +145,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
               </Typography>
             </Box>
           )}
-          {state?.messages?.map((data, index) => {
+          {state?.messages.messageList.map((data, index) => {
             return (
               <Message
                 key={`${index}_${data.createdAt}`}
@@ -175,6 +166,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
                   required
                   inputProps={{
                     maxLength: MAX_MSG_SIZE,
+                    autocomplete: 'off',
                   }}
                 />
                 <Box textAlign="right" mt={1}>

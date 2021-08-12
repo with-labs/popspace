@@ -92,7 +92,6 @@
     "lodash.throttle": "^4.1.1",
     "mocha": "^6.2.2",
     "mocha-junit-reporter": "^1.23.3",
-    "moment": "^2.29.1",
     "pixelmatch": "^5.1.0",
     "prettier": "^2.0.5",
     "puppeteer": "^2.1.1",

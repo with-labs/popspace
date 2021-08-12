@@ -50,6 +50,24 @@ class RoomWidget {
   }
 
   async serialize() {
+    if (this._pgWidget._type === 'CHAT') {
+      // Chat is a specialized widget where the bulk of its content
+      // is coming directly from the Hermes instead of from the save widget state
+      // this is reflected in the top level 'messages' array
+      const isMoreToLoad =  await shared.db.messages.moreMessagesToLoad(this._pgWidget.id)
+      const chatWidgetState = this.widgetState()
+      
+      return {
+        widget_id: this._pgWidget.id,
+        creator_id: this._pgWidget.creator_id,
+        type: this._pgWidget._type,
+        widget_state: {...chatWidgetState, isMoreToLoad},
+        messages: await shared.db.messages.messagesByChatId(this._pgWidget.id),
+        creator_display_name: (await this.creatorDisplayName()),
+        transform: this.roomWidgetState()
+      } 
+    } 
+
     return {
       widget_id: this._pgWidget.id,
       creator_id: this._pgWidget.creator_id,

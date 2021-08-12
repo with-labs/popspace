@@ -10,4 +10,5 @@ module.exports = {
   magic: require("./magic.js"),
   experienceRatings: require("./experience_ratings"),
   wallpapers: require('./wallpapers'),
+  messages: require('./messages/messages'),
 }

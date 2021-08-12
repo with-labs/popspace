@@ -1,6 +1,6 @@
 import seedRandom from 'seed-random';
 
-export const avatarNames = [
+const brandedAvatars = [
   'brand_pattern_01',
   'brand_pattern_02',
   'brand_pattern_03',
@@ -21,6 +21,9 @@ export const avatarNames = [
   'brand_pattern_18',
   'brand_pattern_19',
   'brand_pattern_20',
+];
+
+export const avatarNames = [
   'abstract_frog',
   'abstract_lion',
   'abstract_pig',
@@ -57,6 +60,7 @@ export const avatarNames = [
   'taco',
   'tennisball',
   'unicorn',
+  ...brandedAvatars,
 ];
 
 export interface AvatarOption {
@@ -72,6 +76,6 @@ export interface AvatarOption {
 export const getAvatarFromUserId = (userId: string) => {
   const pos = seedRandom(userId)();
   // select from the brand_pattern avatars only
-  const randomAvatar = avatarNames.slice(0, 20)[Math.floor(pos * 20)];
+  const randomAvatar = brandedAvatars[Math.floor(pos * 20)];
   return randomAvatar;
 };

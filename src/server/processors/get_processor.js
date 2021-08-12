@@ -5,7 +5,7 @@ class GetProcessor {
         return await this.respondRoomData(hermesEvent)
       case "getWidget":
         return await this.respondWidgetData(hermesEvent)
-      case "sumbitGetMoreChatMessage": 
+      case "getMoreChatMessages": 
         return await this.respondChatWidgetData(hermesEvent)
       default:
         return hermesEvent.senderParticipant().sendError(
@@ -35,9 +35,9 @@ class GetProcessor {
     const payload = event.payload()
 
     const messages = await shared.db.messages.getNextPageMessages(payload.widget_id, payload.last_message_id);
-
+ 
     return await sender.sendResponse(event, {
-      ...payload,
+      widget_id: payload.widget_id,
       messages
     }, "updatedGetMoreChatMessage")
   }

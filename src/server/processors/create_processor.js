@@ -3,7 +3,7 @@ class CreateProcessor {
     switch(hermesEvent.kind()) {
       case "createWidget":
         return this.createWidget(hermesEvent)
-      case "sumbitChatMessage": 
+      case "createChatMessage": 
         return this.createMessage(hermesEvent)
       default:
         return hermesEvent._sender.sendError(
@@ -58,11 +58,9 @@ class CreateProcessor {
       content: payload.content,
       sender_id: sender.actorId()
     })
-
-    console.log(payload)
     const {widget_id, ...messageInfo} = payload;
-    // error handle here
-    sender.respondAndBroadcast(hermesEvent, "updatedChatMessage", {
+    
+    sender.respondAndBroadcast(hermesEvent, "chatMessageCreated", {
       widget_id: payload.widget_id,
       message: {
         ...messageInfo,

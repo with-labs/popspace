@@ -125,7 +125,14 @@ export interface OutgoingUpdateVideoState extends BaseOutgoingSocketMessage {
 export interface OutgoingChatMessage extends BaseOutgoingSocketMessage {
   kind: 'sumbitChatMessage';
   payload: {
-    message: string;
+    content: string;
+  };
+}
+
+export interface OutgoingGetMoreChatMessage extends BaseOutgoingSocketMessage {
+  kind: 'sumbitGetMoreChatMessage';
+  payload: {
+    lastMessageId: string;
   };
 }
 
@@ -166,4 +173,5 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateSelfAvatarNameMessage
   | OutgoingUpdateWallpaperMessage
   | OutgoingUndoLastWidgetDeleteMessage
-  | OutgoingChatMessage;
+  | OutgoingChatMessage
+  | OutgoingGetMoreChatMessage;

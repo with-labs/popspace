@@ -242,7 +242,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
       },
       h4: {
         fontSize: typography.pxToRem(13),
-        lineHeight: 13 / 13,
+        lineHeight: 16 / 13,
         fontWeight: typography.fontWeightMedium,
       },
       button: {

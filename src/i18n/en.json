@@ -340,7 +340,10 @@
       "chat": {
         "quickActionTitle": "Start a chat",
         "name": "Chat",
-        "placeholder": "Say something"
+        "placeholder": "Say something",
+        "loadMoreButton": "Load more...",
+        "instuctions": "Type your message and press enter to chat",
+        "chatImgAltText": "An image of a chat bubble"
       }
     },
     "error": {

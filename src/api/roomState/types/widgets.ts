@@ -64,7 +64,16 @@ export interface FileWidgetState {
   mediaState?: WidgetMediaState;
 }
 
-export interface ChatWidgetState {}
+export interface ChatWidgetState {
+  isMoreToLoad: boolean;
+}
+export interface ChatMessageShape {
+  id: string;
+  content: string;
+  senderId: string;
+  senderDisplayName: string;
+  createdAt: string;
+}
 
 export interface NotepadState {
   docId: string;
@@ -144,6 +153,7 @@ export type WidgetShapeByType = {
   };
   [WidgetType.Chat]: BaseWidgetShape & {
     widgetState: ChatWidgetState;
+    messages: ChatMessageShape[];
   };
 };
 export type WidgetShapeForType<T extends WidgetType> = WidgetShapeTable[T];

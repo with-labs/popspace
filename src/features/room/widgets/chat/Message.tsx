@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Typography, Box, makeStyles } from '@material-ui/core';
 import TimeAgo from 'react-timeago';
+import { Markdown } from '@components/Markdown/Markdown';
 
 export interface IMessageProps {
   name: string;
@@ -10,24 +10,29 @@ export interface IMessageProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    borderTop: `1px solid ${theme.palette.brandColors.slate.light}`,
+    paddingTop: theme.spacing(1),
+    marginRight: theme.spacing(1),
+  },
   info: {
     color: theme.palette.brandColors.slate.ink,
   },
 }));
 
 export const Message: React.FC<IMessageProps> = ({ name, timestamp, message }) => {
-  const { t } = useTranslation();
   const classes = useStyles();
 
+  const localTimestamp = new Date(timestamp);
   return (
-    <Box>
+    <Box className={classes.root}>
       <Box className={classes.info}>
-        <Typography variant="body2">
-          {name} - <TimeAgo date="Aug 29, 2014" />
+        <Typography variant="h4">
+          {name} - <TimeAgo date={localTimestamp} />
         </Typography>
       </Box>
-      <Box>
-        <Typography variant="body1">{message}</Typography>
+      <Box mt={1} mb={1}>
+        <Markdown>{message}</Markdown>
       </Box>
     </Box>
   );

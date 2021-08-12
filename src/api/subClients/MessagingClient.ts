@@ -1,17 +1,32 @@
 import { ApiCoreClient } from '@api/ApiCoreClient';
 import { ApiSubClient } from './ApiSubClient';
-
+import { IncomingChatUpdatedMessage, IncomingGetMoreChatMessage } from '@api/roomState/types/socketProtocol';
+import client from '@api/client';
 export class MessagingClient extends ApiSubClient {
   constructor(core: ApiCoreClient) {
     super(core);
-    core.socket.on('message:updateChatMessage', this.onUpdateChateMessage);
+    core.socket.on('message:updatedChatMessage', this.onUpdateChatMessage);
+    core.socket.on('message:updatedGetMoreChatMessage', this.onGetMoreChatMessage);
   }
 
-  private onUpdateChateMessage = (data: any) => {};
+  private onUpdateChatMessage = (data: IncomingChatUpdatedMessage) => {
+    client.cacheApi.addMessage(data.payload.widgetId, data.payload.message);
+  };
 
-  sendMessage = (payload: { widgetId: string; message: any }) => {
+  private onGetMoreChatMessage = (data: IncomingGetMoreChatMessage) => {
+    client.cacheApi.updateChatHistory(data.payload.widgetId, data.payload.messages);
+  };
+
+  sendMessage = (payload: { widgetId: string; content: string }) => {
     this.core.socket.send({
       kind: 'sumbitChatMessage',
+      payload,
+    });
+  };
+
+  getMoreMessages = (payload: { widgetId: string; lastMessageId: string }) => {
+    this.core.socket.send({
+      kind: 'sumbitGetMoreChatMessage',
       payload,
     });
   };

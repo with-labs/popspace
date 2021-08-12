@@ -1,7 +1,7 @@
 import { RoomDetailsStateShape, RoomPositionState, RoomWallpaper } from '../common';
 import { ActorShape, ParticipantShape, ParticipantState } from '../participants';
 import { PassthroughPayload } from '../passthrough';
-import { WidgetShape, WidgetState } from '../widgets';
+import { WidgetShape, WidgetState, ChatMessageShape } from '../widgets';
 
 /**
  * Incoming socket message protocol type definitions.
@@ -150,9 +150,18 @@ export interface IncomingWallpaperUpdatedMessage extends BaseIncomingSocketMessa
 }
 
 export interface IncomingChatUpdatedMessage extends BaseIncomingSocketMessage {
-  kind: 'updateChatMessage';
+  kind: 'updatedChatMessage';
   payload: {
-    placeholder: string;
+    widgetId: string;
+    message: ChatMessageShape;
+  };
+}
+
+export interface IncomingGetMoreChatMessage extends BaseIncomingSocketMessage {
+  kind: 'updatedGetMoreChatMessage';
+  payload: {
+    widgetId: string;
+    messages: ChatMessageShape[];
   };
 }
 
@@ -175,7 +184,8 @@ export type IncomingSocketMessage =
   | IncomingDisplayNameUpdatedMessage
   | IncomingAvatarNameUpdatedMessage
   | IncomingWallpaperUpdatedMessage
-  | IncomingChatUpdatedMessage;
+  | IncomingChatUpdatedMessage
+  | IncomingGetMoreChatMessage;
 
 // util types for mapping discriminated union by keys
 type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends Record<K, V> ? T : never;

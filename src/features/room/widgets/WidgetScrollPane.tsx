@@ -16,11 +16,12 @@ const useStyles = makeStyles(() => ({
  * Renders a vertically scrollable div which intercepts wheel events and
  * prevents them from reaching the viewport for a more native experience.
  */
-export const WidgetScrollPane: React.FC<IWidgetScrollPaneProps> = (props) => {
+export const WidgetScrollPane = React.forwardRef<HTMLDivElement, IWidgetScrollPaneProps>((props, forwardedRef) => {
   const classes = useStyles();
 
   // we need to use a ref to bind the scroll element to enable active event interception
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = React.useRef<any>(null);
+  React.useImperativeHandle(forwardedRef, () => ref.current);
 
   const isViewportGestureActive = useViewportGestureState((s) => s.isGesturing);
 
@@ -56,4 +57,4 @@ export const WidgetScrollPane: React.FC<IWidgetScrollPaneProps> = (props) => {
   );
 
   return <div ref={ref} {...props} className={clsx(classes.root, props.className)} />;
-};
+});

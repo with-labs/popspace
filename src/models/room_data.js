@@ -10,6 +10,14 @@ class RoomData {
     return this.room.id
   }
 
+  get urlId() {
+    return this.room.url_id
+  }
+
+  get route() {
+    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId())
+  }
+
   get displayName() {
     return this.room.display_name
   }
@@ -32,6 +40,8 @@ class RoomData {
     const room = {
       id: this.roomId,
       display_name: this.displayName
+      route: this.route,
+      url_id: this.urlId
     }
     const widgetsInRoom = await this.widgets()
     room.widgets = await Promise.all(

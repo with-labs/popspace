@@ -68,8 +68,7 @@ class Messages {
   }
 
   async getNextPageMessages(chatId, lastChatMessageId) {
-    // SELECT * FROM messages WHERE chat_id = 11 AND id < 68 ORDER BY ID DESC LIMIT 10;
-    return await shared.db.pg.massive.query(`
+    const messages = await shared.db.pg.massive.query(`
       SELECT *
       FROM 
         (
@@ -91,6 +90,13 @@ class Messages {
       ORDER BY prev_messages.created_at
       ASC;
     `, [chatId, lastChatMessageId, MESSAGE_LIMIT])
+
+    // id the query returns no messages, or if it returns less then the MESSAGE_LIMIT
+    // there are no messages left to get, so set hasMoreToLoad to false
+    return {
+      hasMoreToLoad: !(messages.length < MESSAGE_LIMIT || messages.length === 0),
+      messageList: messages
+    }
   }
 
   async deleteChatMessage(chatId, messageId) {

@@ -141,11 +141,10 @@ class Data {
     return model
   }
 
-  async softDeleteWidget(widgetId) {
-    widgetId = parseInt(widgetId)
+  async softDeleteWidget(widgetId, deletingActorId = null) {
     return shared.db.pg.massive.query(`
-      UPDATE widgets SET deleted_at = now() WHERE id = $1
-    `, widgetId)
+      UPDATE widgets SET deleted_at = now(), deleted_by = $1 WHERE id = $2
+    `, [deletingActorId, widgetId])
   }
 
   async eraseWidget(widgetId) {

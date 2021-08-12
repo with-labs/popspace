@@ -59,12 +59,17 @@ class CreateProcessor {
       sender_id: sender.actorId()
     })
 
+    console.log(payload)
+    const {widget_id, ...messageInfo} = payload;
     // error handle here
     sender.respondAndBroadcast(hermesEvent, "updatedChatMessage", {
-      ...payload,
-      senderId:result.sender_id,
-      senderDisplayName: sender.actor.display_name,
-      createdAt: result.created_at
+      widget_id: payload.widget_id,
+      message: {
+        ...messageInfo,
+        senderId:result.sender_id,
+        senderDisplayName: sender.actor.display_name,
+        createdAt: result.created_at
+      }
     })
   }
 }

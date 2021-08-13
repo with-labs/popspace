@@ -3,7 +3,6 @@ const SIGNUP_REQUEST_EXPIRY_DAYS = 30
 
 class Accounts {
   constructor() {
-
   }
 
   async delete(actorId) {

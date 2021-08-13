@@ -50,7 +50,7 @@ class RoomWidget {
   }
 
   async serialize() {
-    return {
+    let baseWidgetData = {
       widget_id: this._pgWidget.id,
       creator_id: this._pgWidget.creator_id,
       type: this._pgWidget._type,
@@ -58,6 +58,14 @@ class RoomWidget {
       creator_display_name: (await this.creatorDisplayName()),
       transform: this.roomWidgetState()
     }
+
+    if (this._pgWidget._type === 'CHAT') {
+      // if we are chat widget, get the messsages and them to the baseWidgetData
+      const messages = await shared.db.messages.getNextPageMessages(this._pgWidget.id, null)
+      baseWidgetData = {...baseWidgetData, messages}
+    } 
+
+    return baseWidgetData
   }
 }
 

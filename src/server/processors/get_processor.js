@@ -5,6 +5,8 @@ class GetProcessor {
         return await this.respondRoomData(hermesEvent)
       case "getWidget":
         return await this.respondWidgetData(hermesEvent)
+      case "getMoreChatMessages": 
+        return await this.respondChatWidgetData(hermesEvent)
       default:
         return hermesEvent.senderParticipant().sendError(
           hermesEvent,
@@ -28,6 +30,17 @@ class GetProcessor {
     return await event.senderParticipant().sendResponse(event, result)
   }
 
+  async respondChatWidgetData(event) {
+    const sender = event.senderParticipant()
+    const payload = event.payload()
+
+    const messages = await shared.db.messages.getNextPageMessages(payload.widget_id, payload.last_message_id);
+ 
+    return await sender.sendResponse(event, {
+      widget_id: payload.widget_id,
+      messages
+    })
+  }
 }
 
 module.exports = GetProcessor

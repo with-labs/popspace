@@ -59,10 +59,7 @@ class RoomWidget {
         creator_id: this._pgWidget.creator_id,
         type: this._pgWidget._type,
         widget_state: this.widgetState(),
-        messages: { 
-          hasMoreToLoad: await shared.db.messages.moreMessagesToLoad(this._pgWidget.id),
-          messageList: await shared.db.messages.messagesByChatId(this._pgWidget.id),
-        },
+        messages: await shared.db.messages.getNextPageMessages(this._pgWidget.id, null),
         creator_display_name: (await this.creatorDisplayName()),
         transform: this.roomWidgetState()
       } 

@@ -6,7 +6,7 @@ export class MessagingClient extends ApiSubClient {
   constructor(core: ApiCoreClient) {
     super(core);
     core.socket.on('message:chatMessageCreated', this.onChatMessageCreated);
-    core.socket.on('message:updatedGetMoreChatMessage', this.onGetMoreChatMessage);
+    core.socket.on('message:getMoreChatMessages.response', this.onGetMoreChatMessage);
   }
 
   private onChatMessageCreated = (data: IncomingChatUpdatedMessage) => {

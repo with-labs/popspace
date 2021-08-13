@@ -158,7 +158,7 @@ export interface IncomingChatUpdatedMessage extends BaseIncomingSocketMessage {
 }
 
 export interface IncomingGetMoreChatMessage extends BaseIncomingSocketMessage {
-  kind: 'updatedGetMoreChatMessage';
+  kind: 'getMoreChatMessages.response';
   payload: {
     widgetId: string;
     messages: {

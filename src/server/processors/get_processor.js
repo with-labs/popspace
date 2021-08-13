@@ -39,7 +39,7 @@ class GetProcessor {
     return await sender.sendResponse(event, {
       widget_id: payload.widget_id,
       messages
-    }, "updatedGetMoreChatMessage")
+    })
   }
 }
 

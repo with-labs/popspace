@@ -45,7 +45,7 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
             <QuickAccessoryButton type={WidgetType.Notepad} />
             <QuickFileButton />
             <QuickAccessoryButton type={WidgetType.Huddle} />
-            {hasChatWidget && <QuickAccessoryButton type={WidgetType.Chat} />}
+            <QuickAccessoryButton type={WidgetType.Chat} />
           </Spacing>
         </Paper>
       </ResponsivePopoverProvider>

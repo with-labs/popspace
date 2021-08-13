@@ -20,6 +20,8 @@ class UpdateProcessor {
         return await this.updateRoomState(hermesEvent)
       case "updateWallpaper":
         return await this.updateWallpaper(hermesEvent)
+      case "undoLastWidgetDelete":
+        return await this.undoLastWidgetDelete(hermesEvent)
       default:
         return await hermesEvent.senderParticipant().sendError(
           hermesEvent,
@@ -97,6 +99,49 @@ class UpdateProcessor {
     const wallpaperData = await shared.db.pg.massive.wallpapers.findOne(wallpaperId)
     sender.sendResponse(event, { wallpaper: wallpaperData })
     sender.broadcastPeerEvent("wallpaperUpdated", { wallpaper: wallpaperData })
+  }
+
+  async undoLastWidgetDelete(event) {
+    const sender = event.senderParticipant()
+    const roomId = event.roomId()
+
+    // update the last deleted widget by this user in this room within the last 8 minutes
+    // to set deleted_at to null
+    const updatedIds = await shared.db.pg.massive.query(
+      `
+        WITH deleted_widgets AS (
+          SELECT
+            widgets.id as id
+          FROM
+            widgets
+          INNER JOIN room_widgets
+          ON (widgets.id = room_widgets.widget_id)
+          WHERE
+            room_widgets.room_id = $1 AND
+            widgets.deleted_at IS NOT NULL AND
+            widgets.deleted_at > NOW() - '8 minutes'::interval AND
+            widgets.deleted_by = $2
+          ORDER BY widgets.deleted_at DESC
+          LIMIT 1
+        )
+        UPDATE widgets w
+        SET deleted_at = NULL
+        FROM deleted_widgets
+        WHERE
+          w.id = deleted_widgets.id
+        RETURNING w.id
+      `,
+      [roomId, sender.actorId()]
+    )
+
+    if (updatedIds.length) {
+      // assemble the full model
+      const roomWidget = await shared.models.RoomWidget.fromWidgetId(updatedIds[0].id, roomId)
+      const serialized = await roomWidget.serialize()
+
+      sender.sendResponse(event, serialized, "widgetCreated")
+      sender.broadcastPeerEvent("widgetCreated", serialized)
+    }
   }
 }
 

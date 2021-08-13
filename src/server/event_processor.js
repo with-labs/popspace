@@ -21,7 +21,8 @@ const ACTION_BY_EVENT_KIND = {
   "updateSelfActor": "update",
   "updateSelfDisplayName": "update",
   "updateSelfAvatarName": "update",
-  "updateWallpaper": "update"
+  "updateWallpaper": "update",
+  "undoLastWidgetDelete": "update"
 }
 
 const PUBLIC_EVENT_KINDS = {

@@ -6,6 +6,8 @@ import { ResponsiveMenu } from '@components/ResponsiveMenu/ResponsiveMenu';
 import { Box, Divider, IconButton, ListItemIcon, ListItemText, MenuItem, Typography } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from '../../useWidgetContext';
+import { LinkMenuItem } from '@components/LinkMenuItem/LinkMenuItem';
+import { OpenIcon } from '@components/icons/OpenIcon';
 
 export interface IChatMenuProps {}
 
@@ -31,6 +33,13 @@ export const ChatMenu: React.FC<IChatMenuProps> = (props) => {
         onClose={() => setAnchorEl(null)}
         onClick={() => setAnchorEl(null)}
       >
+        <LinkMenuItem to={'https://www.markdownguide.org/cheat-sheet'} newTab disableStyling>
+          <ListItemIcon>
+            <OpenIcon />
+          </ListItemIcon>
+          <ListItemText>{t('widgets.chat.MarkdownMenuItem')}</ListItemText>
+        </LinkMenuItem>
+        <Divider />
         <MenuItem button onClick={remove}>
           <ListItemIcon>
             <DeleteIcon />
@@ -39,7 +48,7 @@ export const ChatMenu: React.FC<IChatMenuProps> = (props) => {
         </MenuItem>
         <Divider />
         <Box p={1}>
-          <Typography variant="caption">{`${t('widgets.link.uploadedBy')}${widget.creatorDisplayName}`}</Typography>
+          <Typography variant="caption">{`${t('widgets.chat.uploadedBy')}${widget.creatorDisplayName}`}</Typography>
         </Box>
       </ResponsiveMenu>
     </>

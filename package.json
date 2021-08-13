@@ -74,7 +74,7 @@
     "express": "^4.17.1",
     "firebase": "^7.8.0",
     "flagg": "^1.1.2",
-    "formik": "^2.1.6",
+    "formik": "^2.2.9",
     "framer-motion": "^2.6.2",
     "fscreen": "^1.0.2",
     "git-rev-sync": "3.0.1",

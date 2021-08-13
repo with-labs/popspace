@@ -19,12 +19,14 @@ import { ChatMenu } from './menu/ChatMenu';
 
 import ChatBubbleImg from './images/chat_placeholder.png';
 
-const MAX_MSG_SIZE = 280;
+// const MAX_MSG_SIZE = 1000;
+const MAX_MSG_SIZE = 100;
+const MIN_SHOW_WARINING = MAX_MSG_SIZE * 0.1;
 
 export interface IChatWidgetProps {}
 
 const validationSchema = Yup.object().shape({
-  message: Yup.string().min(1).max(MAX_MSG_SIZE),
+  message: Yup.string().required('').min(1).max(MAX_MSG_SIZE),
 });
 
 export type ChatFormData = {
@@ -158,9 +160,18 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
         </WidgetScrollPane>
         <Box mt={2}>
           <Formik initialValues={EMPTY_VALUES} onSubmit={onMessageSubmit} validationSchema={validationSchema}>
-            {({ values }) => (
+            {({ values, submitForm }) => (
               <Form>
                 <FormikTextField
+                  onKeyDown={(event: any) => {
+                    const keyCode = event.which || event.keyCode;
+                    if (keyCode === 13 && !event.shiftKey) {
+                      event.preventDefault();
+                      submitForm();
+                    }
+                  }}
+                  multiline
+                  rowsMax="4"
                   name="message"
                   placeholder={t('widgets.chat.placeholder')}
                   required
@@ -168,12 +179,16 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
                     maxLength: MAX_MSG_SIZE,
                     autocomplete: 'off',
                   }}
+                  InputProps={{
+                    endAdornment: MAX_MSG_SIZE - values.message.length <= MIN_SHOW_WARINING && (
+                      <Box textAlign="right" pl={1} alignSelf="flex-end">
+                        <Typography variant="body2">
+                          {MAX_MSG_SIZE - values.message.length}/{MAX_MSG_SIZE}
+                        </Typography>
+                      </Box>
+                    ),
+                  }}
                 />
-                <Box textAlign="right" mt={1}>
-                  <Typography variant="body2">
-                    {MAX_MSG_SIZE - values.message.length}/{MAX_MSG_SIZE}
-                  </Typography>
-                </Box>
               </Form>
             )}
           </Formik>

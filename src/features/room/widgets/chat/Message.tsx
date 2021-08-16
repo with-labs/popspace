@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function timeFormatter(value: number, unit: TimeAgo.Unit, suffix: TimeAgo.Suffix) {
+  if (unit === 'second') return 'just now';
+  const plural: string = value !== 1 ? 's' : '';
+  return `${value} ${unit}${plural} ${suffix}`;
+}
+
 export const Message: React.FC<IMessageProps> = ({ name, timestamp, message }) => {
   const classes = useStyles();
 
@@ -28,7 +34,7 @@ export const Message: React.FC<IMessageProps> = ({ name, timestamp, message }) =
     <Box className={classes.root}>
       <Box className={classes.info}>
         <Typography variant="h4">
-          {name} - <TimeAgo date={localTimestamp} minPeriod={60} />
+          {name} - <TimeAgo date={localTimestamp} minPeriod={60} formatter={timeFormatter} />
         </Typography>
       </Box>
       <Box mt={1} mb={1}>

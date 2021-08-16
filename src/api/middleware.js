@@ -48,7 +48,8 @@ const middleware = {
   },
 
   roomFromRoute: async (req, res, next) => {
-    if (!req.body.room_route) {
+    const roomRoute = req.body.room_route || req.body.roomRoute;
+    if (!roomRoute) {
       return next(
         {
           errorCode: shared.error.code.INVALID_API_PARAMS,
@@ -57,7 +58,7 @@ const middleware = {
         shared.api.http.code.BAD_REQUEST,
       );
     }
-    req.room = await shared.db.room.core.roomByRoute(req.body.room_route);
+    req.room = await shared.db.room.core.roomByRoute(roomRoute);
     next();
   },
 
@@ -72,7 +73,7 @@ const middleware = {
   },
 
   requireRoomCreator: async (req, res, next) => {
-    if (req.actor.id != req.room.creator_id) {
+    if (req.actor.id != req.room.creatorId) {
       return next({
         errorCode: shared.error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',

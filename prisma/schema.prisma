@@ -518,6 +518,7 @@ model Widget {
   creatorId  BigInt?   @map("creator_id")
   type       String?   @map("_type")
   deletedAt  DateTime? @map("deleted_at") @db.Timestamptz(6)
+  deletedBy  BigInt?   @map("deleted_by")
   archivedAt DateTime? @map("archived_at") @db.Timestamptz(6)
   createdAt  DateTime  @default(dbgenerated("timezone('utc'::text, now())")) @map("created_at") @db.Timestamptz(6)
   updatedAt  DateTime  @default(dbgenerated("timezone('utc'::text, now())")) @map("updated_at") @db.Timestamptz(6)

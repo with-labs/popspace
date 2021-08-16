@@ -7,7 +7,6 @@ const testLib = {
     if (process.env.NODE_ENV != 'test') {
       throw 'NODE_ENV must be test';
     }
-    testLib.factories();
     return testLib;
   },
 };

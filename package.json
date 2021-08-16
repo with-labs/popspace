@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "console": "node --experimental-repl-await ./scripts/console.js",
-    "test:all": "NODE_ENV=test jest --runInBand"
+    "test:all": "NODE_ENV=test jest --runInBand",
+    "db:migrate": "prisma migrate dev"
   },
   "repository": {
     "type": "git",

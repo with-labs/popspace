@@ -799,8 +799,11 @@ CREATE TRIGGER set_updated_at
 -- UNICORN: models are stored in a separate schema, which Prisma doesn't support.
 -- To access unicorn models we currently have to use raw DB queries, which is fine since
 -- we were going to have to do that anyway.
-CREATE SCHEMA unicorn;
-CREATE TABLE unicorn.ops (
+-- These operations are all IF NOT EXISTS because Prisma can't manage this schema
+-- for us during db resets, so this keeps things running smoothly - unicorn data
+-- doesn't really change... so far.
+CREATE SCHEMA IF NOT EXISTS unicorn;
+CREATE TABLE IF NOT EXISTS unicorn.ops (
     collection character varying(255) not null,
     doc_id bigint not null,
     version integer not null,
@@ -808,7 +811,7 @@ CREATE TABLE unicorn.ops (
     created_at timestamptz DEFAULT (now() at time zone 'utc') NOT NULL,
     PRIMARY KEY (collection, doc_id, version)
 );
-CREATE TABLE unicorn.snapshots (
+CREATE TABLE IF NOT EXISTS unicorn.snapshots (
     collection character varying(255) not null,
     doc_id bigint not null,
     doc_type character varying(255) not null,

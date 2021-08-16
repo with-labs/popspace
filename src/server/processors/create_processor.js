@@ -3,7 +3,7 @@ class CreateProcessor {
     switch(hermesEvent.kind()) {
       case "createWidget":
         return this.createWidget(hermesEvent)
-      case "createChatMessage": 
+      case "createChatMessage":
         return this.createMessage(hermesEvent)
       default:
         return hermesEvent._sender.sendError(
@@ -53,20 +53,22 @@ class CreateProcessor {
     const sender = hermesEvent.senderParticipant()
     const payload = hermesEvent.payload()
 
-    const result = await shared.db.pg.massive.messages.insert({
-      chat_id: payload.widget_id,
-      content: payload.content,
-      sender_id: sender.actorId()
+    const result = await shared.db.prisma.message.create({
+      data: {
+        chatId: payload.widget_id,
+        content: payload.content,
+        senderId: sender.actorId()
+      }
     })
-    const {widget_id, ...messageInfo} = payload;
-    
+    const { widgetId, ...messageInfo } = payload;
+
     sender.respondAndBroadcast(hermesEvent, "chatMessageCreated", {
       widget_id: payload.widget_id,
       message: {
         ...messageInfo,
-        senderId:result.sender_id,
-        senderDisplayName: sender.actor.display_name,
-        createdAt: result.created_at
+        senderId: result.senderId,
+        senderDisplayName: sender.actor.displayName,
+        createdAt: result.createdAt
       }
     })
   }

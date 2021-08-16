@@ -2,6 +2,7 @@ import { Avatar } from '@components/Avatar/Avatar';
 import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { avatarNames } from '@constants/AvatarMetadata';
 import { ButtonBase, makeStyles } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import * as React from 'react';
 
@@ -9,6 +10,7 @@ export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
   className?: string;
+  loading?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -66,21 +68,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, className }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, className, loading }) => {
   const classes = useStyles();
 
   return (
     <div className={clsx(classes.root, className)}>
-      {avatarNames.map((avatarName) => (
-        <ButtonBase
-          key={avatarName}
-          onClick={() => onChange(avatarName)}
-          className={clsx(classes.item, avatarName === value && classes.itemSelected)}
-          aria-label={`Avatar ${avatarName}`}
-        >
-          <AvatarPreview className={classes.imageContainer} name={avatarName} />
-        </ButtonBase>
-      ))}
+      {loading ? (
+        <SkeletonItems />
+      ) : (
+        avatarNames.map((avatarName) => (
+          <ButtonBase
+            key={avatarName}
+            onClick={() => onChange(avatarName)}
+            className={clsx(classes.item, avatarName === value && classes.itemSelected)}
+            aria-label={`Avatar ${avatarName}`}
+          >
+            <AvatarPreview className={classes.imageContainer} name={avatarName} />
+          </ButtonBase>
+        ))
+      )}
     </div>
   );
 };
@@ -94,3 +100,15 @@ const AvatarPreview = ({ name, className }: { name: string; className?: string }
     </div>
   );
 };
+
+function SkeletonItems() {
+  return (
+    <>
+      {Array(20)
+        .fill(0)
+        .map((_, i) => (
+          <Skeleton width="100%" height="100%" key={i} variant="rect" />
+        ))}
+    </>
+  );
+}

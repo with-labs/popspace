@@ -1,6 +1,6 @@
 import { RoomWallpaper } from '@api/roomState/types/common';
 import { Spacing, SpacingProps } from '@components/Spacing/Spacing';
-import { Box, CircularProgress, makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import groupBy from 'lodash/groupBy';
 import * as React from 'react';
@@ -36,14 +36,6 @@ export const WallpaperList: React.FC<WallpaperListProps> = ({ className, ...prop
     return groupBy(wallpapers, (wp: RoomWallpaper) => wp.category);
   }, [wallpapers]);
 
-  if (!wallpapers) {
-    return (
-      <Box display="flex" alignItems="center" justifyContent="center">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
     <Spacing flexDirection="column" className={clsx(classes.root, className)} {...props}>
       {Object.keys(groupedWallpapers).map((category) => {
@@ -52,7 +44,7 @@ export const WallpaperList: React.FC<WallpaperListProps> = ({ className, ...prop
             <Typography variant="h3" className={classes.title}>
               {t(`features.roomSettings.wallpapers.categories.${category}`)}
             </Typography>
-            <WallpaperGrid wallpaperList={groupedWallpapers[category]} />
+            <WallpaperGrid wallpaperList={groupedWallpapers[category]} loading={!wallpapers} />
           </div>
         );
       })}

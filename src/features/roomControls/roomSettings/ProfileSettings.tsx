@@ -6,7 +6,7 @@ import { AvatarAnimationState } from '@components/Avatar/AvatarAnimator';
 import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
 import { Spacing } from '@components/Spacing/Spacing';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
-import { Box, CircularProgress, makeStyles } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 
 import { AvatarGrid } from '../profile/AvatarGrid';
 import { DisplayNameField } from '../profile/DisplayNameField';
@@ -53,18 +53,10 @@ export function ProfileSettings() {
   const avatarName = localActor?.actor.avatarName || getAvatarFromUserId(localActor?.actor.id ?? '0');
   const backgroundColor = useAvatarBackgroundColor(avatarName);
 
-  if (!localActor) {
-    return (
-      <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   return (
     <Box display="flex" maxHeight="100%" width="100%">
       <Box flex="3 0 0" overflow="auto" py={4} className={classes.avatarWrapper}>
-        <AvatarGrid value={avatarName} onChange={updateAvatar} />
+        <AvatarGrid value={avatarName} onChange={updateAvatar} loading={!localActor} />
       </Box>
       <Spacing flexDirection="column" p={4} pl={3} flex="1 0 0">
         <Box className={classes.avatarBox} style={{ backgroundColor }} mb={1}>

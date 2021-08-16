@@ -10,7 +10,7 @@ const metadataStorage = {
    */
   createFileMetadata: async (file, actor, options = {}) => {
     const category = options.category || 'userUploads';
-    const authorName = options.authorName || null;
+    const artistName = options.artistName || null;
     const record = await shared.db.prisma.wallpaper.create({
       data: {
         name: file.name,
@@ -18,7 +18,7 @@ const metadataStorage = {
         mimetype: file.mimetype,
         creatorId: actor.id,
         category,
-        authorName,
+        artistName,
         thumbnailUrl: file.imageData.thumbnailUrl,
         dominantColor: file.imageData.dominantColor
       }
@@ -30,20 +30,20 @@ const metadataStorage = {
    * @param {string} wallpaperId
    */
   deleteFileMetadata: async (wallpaperId, actor) => {
-    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: wallpaperId } })
+    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: BigInt(wallpaperId) } })
     if (file.creatorId !== actor.id) {
       const err = new Error('Only the creator of a wallpaper can delete it');
       err.status = 403;
       throw err;
     }
-    return shared.db.prisma.wallpaper.delete({ where: { id: wallpaperId } })
+    return shared.db.prisma.wallpaper.delete({ where: { id: BigInt(wallpaperId) } })
   },
 
   /**
    * @param {string} wallpaperId
    */
   getFileMetadata: (wallpaperId) => {
-    return shared.db.prisma.wallpapers.findUnique({ where: { id: wallpaperId } })
+    return shared.db.prisma.wallpapers.findUnique({ where: { id: BigInt(wallpaperId) } })
   }
 }
 

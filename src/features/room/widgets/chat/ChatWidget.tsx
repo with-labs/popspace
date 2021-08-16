@@ -19,8 +19,7 @@ import { ChatMenu } from './menu/ChatMenu';
 
 import ChatBubbleImg from './images/chat_placeholder.png';
 
-// const MAX_MSG_SIZE = 1000;
-const MAX_MSG_SIZE = 100;
+const MAX_MSG_SIZE = 1000;
 const MIN_SHOW_WARINING = MAX_MSG_SIZE * 0.1;
 
 export interface IChatWidgetProps {}
@@ -148,12 +147,19 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
             </Box>
           )}
           {state?.messages.messageList.map((data, index) => {
+            let isSameAuthor = false;
+
+            if (index > 0) {
+              isSameAuthor = state?.messages.messageList[index - 1].senderId === data.senderId;
+            }
+
             return (
               <Message
                 key={`${index}_${data.createdAt}`}
                 name={data.senderDisplayName}
                 timestamp={data.createdAt}
                 message={data.content}
+                isSameAuthor={isSameAuthor}
               />
             );
           })}

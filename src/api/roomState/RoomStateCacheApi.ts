@@ -292,7 +292,6 @@ export class RoomStateCacheApi {
       if (!draft.widgets[widgetId]) return;
 
       const currentChat = draft.widgets[widgetId] as ChatWidgetShape;
-      debugger;
       if (currentChat.messages.messageList) {
         currentChat.messages.messageList.push(message);
       } else {

@@ -100,4 +100,11 @@ export class WidgetClient extends ApiSubClient {
       payload,
     });
   };
+
+  undoLastDelete = () => {
+    this.core.socket.send({
+      kind: 'undoLastWidgetDelete',
+      payload: {},
+    });
+  };
 }

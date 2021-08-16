@@ -1,13 +1,15 @@
+import client from '@api/client';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import { PageTitle } from '@components/PageTitle/PageTitle';
 import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
-import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
+import { KeyShortcut } from '@constants/keyShortcuts';
 import { MobileBetaBanner } from '@features/roomControls/compatibility/MobileBetaBanner';
-
+import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
 import { SupportedBrowsersModal } from '@features/roomModals/SupportedBrowsersModal';
 import { Box } from '@material-ui/core';
 import React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import shallow from 'zustand/shallow';
 
 import { RoomControls } from '../roomControls/RoomControls';
@@ -42,6 +44,11 @@ export const Room = React.memo<IRoomProps>(() => {
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
 
   useBindPaste();
+
+  // idk where else to put this right now?
+  useHotkeys(KeyShortcut.Undo, () => {
+    client.widgets.undoLastDelete();
+  });
 
   return (
     <RoomViewportProvider>

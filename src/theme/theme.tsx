@@ -870,6 +870,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           padding: `${spacing(2)}px ${spacing(3)}px`,
           fontSize: typography.pxToRem(16),
           lineHeight: 22 / 16,
+          alignItems: 'center',
         },
         standardInfo: {
           backgroundColor: palette.background.paper,

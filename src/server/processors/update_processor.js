@@ -110,32 +110,29 @@ class UpdateProcessor {
 
     // update the last deleted widget by this user in this room within the last 8 minutes
     // to set deleted_at to null
-    const updatedIds = await shared.db.pg.massive.query(
-      `
-        WITH deleted_widgets AS (
-          SELECT
-            widgets.id as id
-          FROM
-            widgets
-          INNER JOIN room_widgets
-          ON (widgets.id = room_widgets.widget_id)
-          WHERE
-            room_widgets.room_id = $1 AND
-            widgets.deleted_at IS NOT NULL AND
-            widgets.deleted_at > NOW() - '8 minutes'::interval AND
-            widgets.deleted_by = $2
-          ORDER BY widgets.deleted_at DESC
-          LIMIT 1
-        )
-        UPDATE widgets w
-        SET deleted_at = NULL
-        FROM deleted_widgets
+    const updatedIds = await shared.db.prisma.$queryRaw`
+      WITH deleted_widgets AS (
+        SELECT
+          widgets.id as id
+        FROM
+          widgets
+        INNER JOIN room_widgets
+        ON (widgets.id = room_widgets.widget_id)
         WHERE
-          w.id = deleted_widgets.id
-        RETURNING w.id
-      `,
-      [roomId, sender.actorId()]
-    )
+          room_widgets.room_id = ${roomId} AND
+          widgets.deleted_at IS NOT NULL AND
+          widgets.deleted_at > NOW() - '8 minutes'::interval AND
+          widgets.deleted_by = ${sender.actorId()}
+        ORDER BY widgets.deleted_at DESC
+        LIMIT 1
+      )
+      UPDATE widgets w
+      SET deleted_at = NULL
+      FROM deleted_widgets
+      WHERE
+        w.id = deleted_widgets.id
+      RETURNING w.id
+    `;
 
     if (updatedIds.length) {
       // assemble the full model

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Typography, Box, makeStyles } from '@material-ui/core';
 import TimeAgo from 'react-timeago';
 import { Markdown } from '@components/Markdown/Markdown';
+import i18n from '@src/i18n';
 
 export interface IMessageProps {
   name: string;
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function timeFormatter(value: number, unit: TimeAgo.Unit, suffix: TimeAgo.Suffix) {
-  if (unit === 'second') return 'just now';
+  if (unit === 'second') return i18n.t('widgets.chat.justNow');
   const plural: string = value !== 1 ? 's' : '';
   return `${value} ${unit}${plural} ${suffix}`;
 }

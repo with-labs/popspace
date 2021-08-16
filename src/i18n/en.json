@@ -345,7 +345,8 @@
         "instuctions": "Type your message and press enter to chat",
         "chatImgAltText": "An image of a chat bubble",
         "MarkdownMenuItem": "Markdown cheat sheet",
-        "uploadedBy": "Uploaded by "
+        "uploadedBy": "Uploaded by ",
+        "justNow": "just now"
       }
     },
     "error": {

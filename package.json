@@ -7,7 +7,10 @@
   "scripts": {
     "console": "node --experimental-repl-await ./scripts/console.js",
     "test:all": "NODE_ENV=test jest --runInBand",
-    "db:migrate": "prisma migrate dev"
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
+    "db:deploy": "prisma migrate deploy",
+    "prisma:generate": "prisma generate"
   },
   "repository": {
     "type": "git",

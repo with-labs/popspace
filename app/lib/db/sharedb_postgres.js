@@ -40,9 +40,36 @@ function rollback(client, done) {
   })
 }
 
+/**
+ * normalizes an id to an integer, allowing compatibility
+ * with our current usage which involves passing bigint widget ids
+ * as primary keys for documents - this unintentionally enforces that
+ * ids are always integers
+ */
+function idToInt(id) {
+  if (typeof id === 'number') return id;
+  if (shared.db.serialization.detectBigInt(id)) {
+    return shared.db.serialization.parseBigInt(id);
+  }
+  // fallback to hashing algorithm
+  if (typeof id === 'string') {
+    var hash = 0, i, chr;
+    if (id.length === 0) return hash;
+    for (i = 0; i < id.length; i++) {
+      chr = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+  }
+
+  throw new Error('Invalid ID: Cannot parse ' + id + ' to integer');
+}
+
 // Persists an op and snapshot if it is for the next version. Calls back with
 // callback(err, succeeded)
 PostgresDB.prototype.commit = function(collection, id, op, snapshot, options, callback) {
+  let intId = idToInt(id);
   /*
    * op: CreateOp {
    *   src: '24545654654646',
@@ -106,7 +133,7 @@ WHERE (
   )
 ) AND EXISTS (SELECT 1 FROM snapshot_id)
 RETURNING version`,
-    values: [collection, id, snapshot.v, snapshot.type, snapshot.data, op]
+    values: [collection, intId, snapshot.v, snapshot.type, snapshot.data, op]
    };
    client.query(query, (err, res) => {
      if (err) {
@@ -126,6 +153,7 @@ RETURNING version`,
 // snapshot). A snapshot with a version of zero is returned if the docuemnt
 // has never been created in the database.
 PostgresDB.prototype.getSnapshot = function(collection, id, fields, options, callback) {
+  let intId = idToInt(id);
   this.pool.connect(function(err, client, done) {
     if (err) {
       done(client);
@@ -134,7 +162,7 @@ PostgresDB.prototype.getSnapshot = function(collection, id, fields, options, cal
     }
     client.query(
       `SELECT version, data, doc_type FROM unicorn.snapshots WHERE collection = $1 AND doc_id = $2 LIMIT 1`,
-      [collection, id],
+      [collection, intId],
       function(err, res) {
         done();
         if (err) {
@@ -144,7 +172,7 @@ PostgresDB.prototype.getSnapshot = function(collection, id, fields, options, cal
         if (res.rows.length) {
           var row = res.rows[0]
           var snapshot = new PostgresSnapshot(
-            id,
+            intId,
             row.version,
             row.doc_type,
             row.data,
@@ -153,7 +181,7 @@ PostgresDB.prototype.getSnapshot = function(collection, id, fields, options, cal
           callback(null, snapshot);
         } else {
           var snapshot = new PostgresSnapshot(
-            id,
+            intId,
             0,
             null,
             undefined,
@@ -176,6 +204,7 @@ PostgresDB.prototype.getSnapshot = function(collection, id, fields, options, cal
 //
 // Callback should be called as callback(error, [list of ops]);
 PostgresDB.prototype.getOps = function(collection, id, from, to, options, callback) {
+  let intId = idToInt(id);
   this.pool.connect(function(err, client, done) {
     if (err) {
       done(client);
@@ -183,7 +212,7 @@ PostgresDB.prototype.getOps = function(collection, id, from, to, options, callba
       return;
     }
     let cmd = `SELECT version, operation FROM unicorn.ops WHERE collection = $1 AND doc_id = $2 AND version > $3`
-    let params = [collection, id, from];
+    let params = [collection, intId, from];
     if (to || to === 0) {
       cmd += ' AND version <= $4';
       params.push(to);

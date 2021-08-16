@@ -9,7 +9,7 @@ import { sanityCheckWidget } from './sanityCheckWidget';
 import { RoomDetailsStateShape, RoomPositionState, RoomWallpaper } from './types/common';
 import { ActorShape, ParticipantState } from './types/participants';
 import { IncomingAuthResponseMessage, IncomingParticipantJoinedMessage } from './types/socketProtocol';
-import { WidgetShape, WidgetState } from './types/widgets';
+import { WidgetShape, WidgetState, ChatMessageShape, ChatWidgetShape } from './types/widgets';
 
 const createEmptyParticipantState = () => ({});
 
@@ -280,6 +280,39 @@ export class RoomStateCacheApi {
   updateRoomWallpaper = (wallpaper: RoomWallpaper | null) => {
     this.set((draft) => {
       draft.wallpaper = wallpaper;
+    });
+  };
+  addMessage = (widgetId: string, message: ChatMessageShape) => {
+    this.set((draft) => {
+      if (!widgetId) {
+        logger.error(`Invalid widget data from server addMessage: no widget ID`);
+        return;
+      }
+
+      if (!draft.widgets[widgetId]) return;
+
+      const currentChat = draft.widgets[widgetId] as ChatWidgetShape;
+      debugger;
+      if (currentChat.messages.messageList) {
+        currentChat.messages.messageList.push(message);
+      } else {
+        currentChat.messages.messageList = [message];
+      }
+    });
+  };
+  updateChatHistory = (widgetId: string, messages: { hasMoreToLoad: boolean; messageList: ChatMessageShape[] }) => {
+    this.set((draft) => {
+      if (!widgetId) {
+        logger.error(`Invalid widget data from server updateChatHistory: no widget ID`);
+        return;
+      }
+
+      if (!draft.widgets[widgetId]) return;
+
+      const currentChat = draft.widgets[widgetId] as ChatWidgetShape;
+
+      currentChat.messages.hasMoreToLoad = messages.hasMoreToLoad;
+      currentChat.messages.messageList.unshift(...messages.messageList);
     });
   };
 }

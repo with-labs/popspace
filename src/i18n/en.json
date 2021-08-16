@@ -336,6 +336,17 @@
         "name": "Huddle",
         "explainer": "Move inside to have a private conversation",
         "welcome": "Welcome to the huddle!"
+      },
+      "chat": {
+        "quickActionTitle": "Start a chat",
+        "name": "Chat",
+        "placeholder": "Say something",
+        "loadMoreButton": "Load more...",
+        "instuctions": "Type your message and press enter to chat",
+        "chatImgAltText": "An image of a chat bubble",
+        "MarkdownMenuItem": "Markdown cheat sheet",
+        "uploadedBy": "Uploaded by ",
+        "justNow": "just now"
       }
     },
     "error": {

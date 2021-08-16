@@ -13,6 +13,8 @@ import { SIZE as WHITEBOARD_SIZE } from '@features/room/widgets/whiteboard/const
 import { SIZE_EDIT as YOUTUBE_SIZE } from '@features/room/widgets/youtube/constants';
 import { INITIAL_SIZE as HUDDLE_SIZE } from '@features/room/widgets/huddle/constants';
 import { INITIAL_SIZE as NOTEPAD_SIZE } from '@features/room/widgets/notepad/constants';
+import { INITIAL_SIZE as CHAT_SIZE } from '@features/room/widgets/chat/constants';
+
 import { Analytics } from '@analytics/Analytics';
 
 type SupportedTypes =
@@ -21,7 +23,8 @@ type SupportedTypes =
   | WidgetType.YouTube
   | WidgetType.Whiteboard
   | WidgetType.Notepad
-  | WidgetType.Huddle;
+  | WidgetType.Huddle
+  | WidgetType.Chat;
 
 const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
   [WidgetType.Link]: {
@@ -50,6 +53,9 @@ const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
     },
   },
   [WidgetType.Huddle]: {},
+  [WidgetType.Chat]: {
+    isMoreToLoad: false,
+  },
 };
 
 const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
@@ -59,6 +65,7 @@ const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {
   [WidgetType.YouTube]: YOUTUBE_SIZE,
   [WidgetType.Notepad]: NOTEPAD_SIZE,
   [WidgetType.Huddle]: HUDDLE_SIZE,
+  [WidgetType.Chat]: CHAT_SIZE,
 };
 
 const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
@@ -68,6 +75,7 @@ const TOOLTIPS: Record<SupportedTypes, React.ReactElement> = {
   [WidgetType.Notepad]: i18n.t('widgets.notepad.quickActionTitle'),
   [WidgetType.Whiteboard]: i18n.t('widgets.whiteboard.quickActionTitle'),
   [WidgetType.Huddle]: i18n.t('widgets.huddle.quickActionTitle'),
+  [WidgetType.Chat]: i18n.t('widgets.chat.quickActionTitle'),
 };
 
 export function QuickAccessoryButton({ type, ...rest }: { type: SupportedTypes }) {

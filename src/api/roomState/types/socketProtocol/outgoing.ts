@@ -122,6 +122,20 @@ export interface OutgoingUpdateVideoState extends BaseOutgoingSocketMessage {
   };
 }
 
+export interface OutgoingChatMessage extends BaseOutgoingSocketMessage {
+  kind: 'createChatMessage';
+  payload: {
+    content: string;
+  };
+}
+
+export interface OutgoingGetMoreChatMessage extends BaseOutgoingSocketMessage {
+  kind: 'getMoreChatMessages';
+  payload: {
+    lastMessageId: string;
+  };
+}
+
 export interface OutgoingPassthroughMessage<T extends PassthroughPayload = PassthroughPayload>
   extends BaseOutgoingSocketMessage {
   kind: 'passthrough';
@@ -158,4 +172,6 @@ export type OutgoingSocketMessage =
   | OutgoingUpdateSelfDisplayNameMessage
   | OutgoingUpdateSelfAvatarNameMessage
   | OutgoingUpdateWallpaperMessage
-  | OutgoingUndoLastWidgetDeleteMessage;
+  | OutgoingUndoLastWidgetDeleteMessage
+  | OutgoingChatMessage
+  | OutgoingGetMoreChatMessage;

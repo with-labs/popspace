@@ -10,6 +10,9 @@ const flagDefinitions = {
   inviteLink: {
     description: 'Displays the invite link ui',
   },
+  chatWidget: {
+    description: 'Lets you use the chat widget',
+  },
 };
 
 export type FeatureFlagName = keyof typeof flagDefinitions;

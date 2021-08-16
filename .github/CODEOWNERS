@@ -5,8 +5,8 @@
 # the repo. Unless a later match takes precedence,
 # they will be requested for review when someone opens a
 # pull request.
-#           Jesse       Grant   Alexey
-*           @jesse-with @a-type @alexey-dc
+#           Jesse       Grant
+*           @jesse-with @a-type
 
 /landing-page/ @lobau
 

@@ -55,7 +55,7 @@ class CreateProcessor {
 
     const result = await shared.db.prisma.message.create({
       data: {
-        chatId: payload.widget_id,
+        chatId: payload.widgetId,
         content: payload.content,
         senderId: sender.actorId()
       }
@@ -63,7 +63,7 @@ class CreateProcessor {
     const { widgetId, ...messageInfo } = payload;
 
     sender.respondAndBroadcast(hermesEvent, "chatMessageCreated", {
-      widget_id: payload.widget_id,
+      widgetId: payload.widgetId,
       message: {
         ...messageInfo,
         senderId: result.senderId,

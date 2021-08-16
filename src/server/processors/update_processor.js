@@ -99,7 +99,7 @@ class UpdateProcessor {
     if (updatedRooms.length === 0) {
       return sender.sendError(event, lib.ErrorCodes.ROOM_NOT_FOUND, "No such room", { roomId: event.roomId() })
     }
-    const wallpaperData = await shared.db.prisma.wallpapers.findUnique({ where: { id: wallpaperId } })
+    const wallpaperData = await shared.db.prisma.wallpaper.findUnique({ where: { id: wallpaperId } })
     sender.sendResponse(event, { wallpaper: wallpaperData })
     sender.broadcastPeerEvent("wallpaperUpdated", { wallpaper: wallpaperData })
   }

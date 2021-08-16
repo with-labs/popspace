@@ -64,7 +64,7 @@ class Data {
     const state = await this.getRoomState(roomId);
     if (!state.wallpaperId) return null;
     return prisma.wallpaper.findUnique({
-      where: { wallpaperId: state.wallpaperId },
+      where: { id: BigInt(state.wallpaperId) },
     });
   }
 

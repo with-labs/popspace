@@ -80,7 +80,7 @@ class Events {
       actorId,
       sessionId,
       key,
-      value,
+      value: value !== undefined && value !== null ? value.toString() : value,
       meta,
       ip:
         expressRequest.headers['x-forwarded-for'] ||

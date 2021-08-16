@@ -6,6 +6,10 @@ const configToDbUrl = (config) => {
 };
 
 const prisma = new PrismaClient({
+  // @see https://github.com/prisma/prisma/issues/5533
+  __internal: {
+    useUds: true,
+  },
   datasources: {
     db: {
       // connect the client to the database specified in the config for

@@ -6,13 +6,13 @@ class Core {
   /********************* GETTERS *******************/
   async roomById(id) {
     const room = await prisma.room.findUnique({ where: { id } });
-    if (room.deletedAt) return null;
+    if (!room || room.deletedAt) return null;
     return room;
   }
 
   async roomByUrlId(urlId) {
     const room = await prisma.room.findUnique({ where: { urlId } });
-    if (room.deletedAt) return null;
+    if (!room || room.deletedAt) return null;
     return room;
   }
 

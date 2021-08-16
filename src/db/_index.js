@@ -13,4 +13,5 @@ module.exports = {
   wallpapers: require('./wallpapers'),
   messages: require('./messages/messages'),
   serialization: require('./serialization.js'),
+  constants: require('./constants.js'),
 };

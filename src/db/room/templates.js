@@ -1,6 +1,5 @@
 const prisma = require('../prisma');
-
-const SYSTEM_USER_ID = -5000;
+const { SYSTEM_USER_ID } = require('../constants.js');
 let mockCreator;
 
 const getMockCreator = async () => {
@@ -62,7 +61,7 @@ module.exports = {
     */
     const state = {
       ...templateData.state,
-      z_order: [],
+      zOrder: [],
     };
     await shared.db.room.data.setRoomState(roomId, state);
 

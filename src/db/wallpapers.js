@@ -1,6 +1,5 @@
 const prisma = require('./prisma');
-
-const SYSTEM_USER_ID = '-5000';
+const { SYSTEM_USER_ID } = require('./constants');
 
 class Wallpapers {
   getWallpapersForActor(actorId) {

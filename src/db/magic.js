@@ -105,7 +105,9 @@ class Magic {
     // Usually we'd want to mark the magic link as expired in a transaction,
     // but there is no reason to invalidate unsubscribe links.
     // https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
-    await shared.db.accounts.newsletterUnsubscribe(request.actor_id);
+    await shared.db.accounts.newsletterUnsubscribe(
+      request.actorId || request.actor_id,
+    );
     return {};
   }
 
@@ -114,12 +116,14 @@ class Magic {
     if (validation.error) {
       return validation;
     }
-    await shared.db.accounts.newsletterSubscribe(request.actor_id);
+    await shared.db.accounts.newsletterSubscribe(
+      request.actorId || request.actor_id,
+    );
     return {};
   }
 
   async requireActor(request) {
-    const actorId = request.actor_id;
+    const actorId = request.actorId || request.actor_id;
     const actor = await prisma.actor.findUnique({ where: { actorId } });
     if (!actor) {
       return { error: shared.error.code.NO_SUCH_ACTOR };

@@ -28,15 +28,24 @@ const serialization = {
 
   // private
   formatBigInt: (value) => {
-    return 'bi-' + value.toString();
+    return value.toString();
   },
 
   detectBigInt: (value) => {
-    return typeof value === 'string' && value.startsWith('bi-');
+    if (typeof value !== 'string') {
+      return false;
+    }
+    if (value === '') return false;
+    try {
+      const bigInt = BigInt(value);
+      return true;
+    } catch (_) {
+      return false;
+    }
   },
 
   parseBigInt: (value) => {
-    return BigInt(value.substring(3));
+    return BigInt(value);
   },
 };
 

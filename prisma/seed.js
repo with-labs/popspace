@@ -88,7 +88,7 @@ const TEMPLATE_WALLPAPERS = [
   },
 ];
 
-const SYSTEM_USER_ID = -5000;
+const SYSTEM_USER_ID = BigInt(-5000);
 
 async function seed() {
   // create system templates

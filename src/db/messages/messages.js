@@ -12,8 +12,10 @@ class Messages {
       },
       select: {
         sender: {
-          id: true,
-          displayName: true,
+          select: {
+            id: true,
+            displayName: true,
+          },
         },
         id: true,
         senderId: true,
@@ -49,8 +51,10 @@ class Messages {
         createdAt: true,
         chatId: true,
         sender: {
-          id: true,
-          displayName: true,
+          select: {
+            id: true,
+            displayName: true,
+          },
         },
       },
       take: MESSAGE_LIMIT,

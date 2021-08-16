@@ -27,7 +27,7 @@ class ExperienceRatings {
       data: {
         actorId,
         roomId,
-        submittedAt: submittedAt.toUTCString(),
+        submittedAt,
         rating,
         feedback,
       },
@@ -44,7 +44,7 @@ class ExperienceRatings {
    */
   async updateRating(ratingId, updates) {
     return prisma.experienceRating.update({
-      where: { ratingId },
+      where: { id: ratingId },
       data: updates,
     });
   }

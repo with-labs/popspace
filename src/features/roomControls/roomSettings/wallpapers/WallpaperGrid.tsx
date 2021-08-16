@@ -1,8 +1,8 @@
 import client from '@api/client';
 import { RoomWallpaper } from '@api/roomState/types/common';
 import { useRoomStore } from '@api/useRoomStore';
+import { SkeletonList } from '@components/SkeletonList/SkeletonList';
 import { ButtonBase, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import * as React from 'react';
 
@@ -66,7 +66,7 @@ export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ wallpaperList, lo
   return (
     <div className={classes.root}>
       {loading ? (
-        <SkeletonItems />
+        <SkeletonList />
       ) : (
         wallpaperList.map((wallpaper) => (
           <ButtonBase
@@ -83,15 +83,3 @@ export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ wallpaperList, lo
     </div>
   );
 };
-
-function SkeletonItems() {
-  return (
-    <>
-      {Array(20)
-        .fill(0)
-        .map((_, i) => (
-          <Skeleton width="100%" height="100%" key={i} variant="rect" />
-        ))}
-    </>
-  );
-}

@@ -1,8 +1,8 @@
 import { Avatar } from '@components/Avatar/Avatar';
 import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
+import { SkeletonList } from '@components/SkeletonList/SkeletonList';
 import { avatarNames } from '@constants/AvatarMetadata';
 import { ButtonBase, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import * as React from 'react';
 
@@ -74,7 +74,7 @@ export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, classN
   return (
     <div className={clsx(classes.root, className)}>
       {loading ? (
-        <SkeletonItems />
+        <SkeletonList />
       ) : (
         avatarNames.map((avatarName) => (
           <ButtonBase
@@ -100,15 +100,3 @@ const AvatarPreview = ({ name, className }: { name: string; className?: string }
     </div>
   );
 };
-
-function SkeletonItems() {
-  return (
-    <>
-      {Array(20)
-        .fill(0)
-        .map((_, i) => (
-          <Skeleton width="100%" height="100%" key={i} variant="rect" />
-        ))}
-    </>
-  );
-}

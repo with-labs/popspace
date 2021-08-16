@@ -60,6 +60,7 @@
 
 :root {
     --font-silka: "Silka", "Helvetica", sans-serif;
+    --title-width: 720px;
     --narrow-width: 720px;
     --main-width: 840px;
     --wide-width: 1280px;
@@ -289,10 +290,11 @@ h1 {
     color: var(--color-ink);
     font-family: var(--font-silka);
     font-weight: 900;
-    text-align: center;
+    text-align: left;
     margin: 0px auto;
     max-width: var(--main-width);
     padding: 24px 24px 32px 24px;
+    /* background-color: red; */
 }
 
 .subtitle {
@@ -313,10 +315,12 @@ h2 {
     color: var(--color-ink);
     font-family: var(--font-silka);
     font-weight: 700;
-    text-align: center;
+    text-align: left;
     margin: 0px auto;
     max-width: var(--main-width);
-    padding-bottom: 16px;
+    /* padding-bottom: 16px; */
+    padding: 24px 24px 32px 24px;
+    /* background-color: blue; */
 }
 
 h3 {
@@ -483,7 +487,7 @@ a.textLink, a.textLink:link, a.textLink:visited {
     font-family: var(--font-silka);
     font-weight: 400;
     text-decoration: underline;
-    text-decoration-color: var(--color-lavender-bold);
+    text-decoration-color: var(--color-slate-bold);
     text-decoration-skip-ink: edges;
 }
 
@@ -531,18 +535,16 @@ a.textLink:active {
     grid-template-columns: 40% auto;
 }
 
-.faq {
-    display: grid;
-    grid-column-gap: 80px;
-    grid-row-gap: 16px;
-    margin: 0 auto;
-    max-width: var(--main-width);
-    align-items: top;
-    grid-template-columns: 1fr 1fr;
-}
-
 .card_height {
     min-height: 140px;
+}
+
+.faq {
+    /* background-color: var(--color-blueberry-surface); */
+    border-radius: 8px;
+    max-width: var(--main-width);
+    padding: 24px 24px;
+    margin: 0 auto;
 }
 
 details {
@@ -666,10 +668,6 @@ nav {
     }
     footer {
         grid-template-columns: 1fr 1fr 1fr;
-    }
-    .faq {
-        max-width: var(--main-width);
-        grid-template-columns: 1fr;
     }
     .vertical_lines3 {
         background-image: url(/images/vertical_lines2.png);

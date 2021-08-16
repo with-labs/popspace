@@ -1,10 +1,9 @@
-const prisma = require("../prisma");
+const prisma = require('../prisma');
 
 const MESSAGE_LIMIT = 30;
 
 class Messages {
-  constructor() {
-  }
+  constructor() {}
 
   async getWholeChat(chatId) {
     const results = await prisma.message.findMany({
@@ -23,12 +22,12 @@ class Messages {
         createdAt: true,
       },
       orderBy: {
-        createdAt: "asc"
-      }
-    })
+        createdAt: 'asc',
+      },
+    });
     // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
-    return results.map(result => {
-      result.senderDisplayName = result.sender.displayName
+    return results.map((result) => {
+      result.senderDisplayName = result.sender.displayName;
       return result;
     });
   }
@@ -49,26 +48,28 @@ class Messages {
         content: true,
         createdAt: true,
         chatId: true,
-        sender: {i
+        sender: {
           id: true,
           displayName: true,
         },
       },
       take: MESSAGE_LIMIT,
-    })
+    });
 
     // id the query returns no messages, or if it returns less than the MESSAGE_LIMIT
     // there are no messages left to get, so set hasMoreToLoad to false
     return {
-      hasMoreToLoad: !(messages.length < MESSAGE_LIMIT || messages.length === 0),
+      hasMoreToLoad: !(
+        messages.length < MESSAGE_LIMIT || messages.length === 0
+      ),
       // reverse the order of the messages so that the most recent messages are first
-      messageList: messages.reverse().map(message => {
+      messageList: messages.reverse().map((message) => {
         // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
-        message.senderDisplayName = message.sender.displayName
+        message.senderDisplayName = message.sender.displayName;
         return message;
       }),
-    }
+    };
   }
 }
 
-module.exports = new Messages()
+module.exports = new Messages();

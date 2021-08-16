@@ -28,7 +28,7 @@ export const Message: React.FC<IMessageProps> = ({ name, timestamp, message }) =
     <Box className={classes.root}>
       <Box className={classes.info}>
         <Typography variant="h4">
-          {name} - <TimeAgo date={localTimestamp} />
+          {name} - <TimeAgo date={localTimestamp} minPeriod={60} />
         </Typography>
       </Box>
       <Box mt={1} mb={1}>

@@ -17,11 +17,7 @@ const renderers = {
       {children}
     </Typography>
   ),
-  paragraph: ({ children }: any) => (
-    <Typography paragraph variant="body1">
-      {children}
-    </Typography>
-  ),
+  paragraph: ({ children }: any) => <Typography variant="body1">{children}</Typography>,
   link: ({ href, children }: any) => (
     <Link to={href} newTab>
       {children}

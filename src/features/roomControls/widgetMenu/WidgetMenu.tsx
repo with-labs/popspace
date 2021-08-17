@@ -8,7 +8,6 @@ import * as React from 'react';
 
 import { QuickAccessoryButton } from '../addContent/QuickAccessoryButton';
 import { QuickFileButton } from '../addContent/QuickFileButton';
-import { useFeatureFlag } from 'flagg';
 
 export interface IWidgetMenuProps {
   className?: string;
@@ -30,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) => {
   const classes = useStyles();
-  const [hasChatWidget] = useFeatureFlag('chatWidget');
 
   return (
     <>
@@ -45,7 +43,7 @@ export const WidgetMenu: React.FC<IWidgetMenuProps> = ({ className, ...rest }) =
             <QuickAccessoryButton type={WidgetType.Notepad} />
             <QuickFileButton />
             <QuickAccessoryButton type={WidgetType.Huddle} />
-            {hasChatWidget && <QuickAccessoryButton type={WidgetType.Chat} />}
+            <QuickAccessoryButton type={WidgetType.Chat} />
           </Spacing>
         </Paper>
       </ResponsivePopoverProvider>

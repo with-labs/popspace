@@ -1,5 +1,6 @@
 import { Avatar } from '@components/Avatar/Avatar';
 import { useAvatarBackgroundColor } from '@components/Avatar/useAvatarBackgroundColor';
+import { SkeletonList } from '@components/SkeletonList/SkeletonList';
 import { avatarNames } from '@constants/AvatarMetadata';
 import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -9,6 +10,7 @@ export interface IAvatarGridProps {
   onChange: (avatarName: string) => void;
   value: string | null;
   className?: string;
+  loading?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -66,21 +68,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, className }) => {
+export const AvatarGrid: React.FC<IAvatarGridProps> = ({ onChange, value, className, loading }) => {
   const classes = useStyles();
 
   return (
     <div className={clsx(classes.root, className)}>
-      {avatarNames.map((avatarName) => (
-        <ButtonBase
-          key={avatarName}
-          onClick={() => onChange(avatarName)}
-          className={clsx(classes.item, avatarName === value && classes.itemSelected)}
-          aria-label={`Avatar ${avatarName}`}
-        >
-          <AvatarPreview className={classes.imageContainer} name={avatarName} />
-        </ButtonBase>
-      ))}
+      {loading ? (
+        <SkeletonList />
+      ) : (
+        avatarNames.map((avatarName) => (
+          <ButtonBase
+            key={avatarName}
+            onClick={() => onChange(avatarName)}
+            className={clsx(classes.item, avatarName === value && classes.itemSelected)}
+            aria-label={`Avatar ${avatarName}`}
+          >
+            <AvatarPreview className={classes.imageContainer} name={avatarName} />
+          </ButtonBase>
+        ))
+      )}
     </div>
   );
 };

@@ -1,12 +1,14 @@
 import client from '@api/client';
 import { RoomWallpaper } from '@api/roomState/types/common';
 import { useRoomStore } from '@api/useRoomStore';
+import { SkeletonList } from '@components/SkeletonList/SkeletonList';
 import { ButtonBase, makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import * as React from 'react';
 
 export interface IWallpaperGridProps {
   wallpaperList: RoomWallpaper[];
+  loading?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -56,24 +58,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ wallpaperList }) => {
+export const WallpaperGrid: React.FC<IWallpaperGridProps> = ({ wallpaperList, loading }) => {
   const classes = useStyles();
   const currentWallpaperId = useRoomStore((room) => room.wallpaper?.id || null);
   const onChange = client.wallpapers.setWallpaper;
 
   return (
     <div className={classes.root}>
-      {wallpaperList.map((wallpaper) => (
-        <ButtonBase
-          key={wallpaper.id}
-          onClick={() => onChange(wallpaper)}
-          className={clsx(classes.item, wallpaper.id === currentWallpaperId && classes.itemSelected)}
-          aria-label={wallpaper.name}
-          style={{
-            backgroundImage: `url(${wallpaper.thumbnailUrl || wallpaper.url})`,
-          }}
-        ></ButtonBase>
-      ))}
+      {loading ? (
+        <SkeletonList />
+      ) : (
+        wallpaperList.map((wallpaper) => (
+          <ButtonBase
+            key={wallpaper.id}
+            onClick={() => onChange(wallpaper)}
+            className={clsx(classes.item, wallpaper.id === currentWallpaperId && classes.itemSelected)}
+            aria-label={wallpaper.name}
+            style={{
+              backgroundImage: `url(${wallpaper.thumbnailUrl || wallpaper.url})`,
+            }}
+          ></ButtonBase>
+        ))
+      )}
     </div>
   );
 };

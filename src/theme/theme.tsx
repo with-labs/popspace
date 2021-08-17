@@ -1264,6 +1264,11 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           },
         },
       },
+      MuiSkeleton: {
+        rect: {
+          borderRadius: shape.contentBorderRadius,
+        },
+      },
     },
   });
 };

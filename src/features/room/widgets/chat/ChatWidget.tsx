@@ -183,7 +183,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
                   required
                   inputProps={{
                     maxLength: MAX_MSG_SIZE,
-                    autocomplete: 'off',
+                    autoComplete: 'off',
                   }}
                   InputProps={{
                     endAdornment: MAX_MSG_SIZE - values.message.length <= MIN_SHOW_WARINING && (

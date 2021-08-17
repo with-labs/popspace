@@ -14,6 +14,7 @@ export interface IMessageProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     wordWrap: 'break-word',
+    width: 'calc(100% - 8px)',
     '& img': {
       width: '100%',
     },

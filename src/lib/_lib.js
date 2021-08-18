@@ -1,9 +1,10 @@
 const Analytics = require("./analytics")
+const shared = require('@withso/noodle-shared')
 
 const lib = {
   ws: require("ws"),
   log: require("./log"),
-  shared: require("@withso/noodle-shared"),
+  shared: shared.default,
   Client: require("../client/client"),
   ErrorCodes: require("./error_codes"),
   event: require("./event/_events"),
@@ -12,13 +13,13 @@ const lib = {
   SocketGroup: require("./socket_group"),
   analytics: new Analytics(),
   init: async () => {
-    await shared.db.pg.init()
+    await shared.default.db.pg.init()
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")
     }
   },
   cleanup: async () => {
-    await shared.db.pg.tearDown()
+    await shared.default.db.pg.tearDown()
   },
   error: async (code, message, data = {}) => {
     return Object.assign({

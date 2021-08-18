@@ -3,14 +3,14 @@
 declare const _default: {
     middleware: {
         getActor: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
-        getIp: (req: any, res: any, next: any) => Promise<void>;
+        getIp: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
         requireActor: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
-        roomFromRoute: (req: any, res: any, next: any) => Promise<any>;
-        requireRoom: (req: any, res: any, next: any) => Promise<any>;
-        requireRoomCreator: (req: any, res: any, next: any) => Promise<any>;
-        requireRoomMember: (req: any, res: any, next: any) => Promise<any>;
-        requireRoomMemberOrCreator: (req: any, res: any, next: any) => Promise<any>;
-        requireAdmin: (req: any, res: any, next: any) => Promise<any>;
+        roomFromRoute: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: any) => Promise<any>;
+        requireRoom: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: any) => Promise<any>;
+        requireRoomCreator: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
+        requireRoomMember: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
+        requireRoomMemberOrCreator: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
+        requireAdmin: (req: import("express").Request<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>, res: import("express").Response<any, Record<string, any>>, next: import("express").NextFunction) => Promise<void>;
     };
     http: {
         code: {

@@ -1,4 +1,4 @@
-import { Prisma, Room, RoomState } from '@prisma/client';
+import { Room } from '@prisma/client';
 
 import db from '../db/_index';
 import _room from '../db/room/_room';
@@ -7,16 +7,14 @@ const DEFAULT_WALLPAPER_URL =
   'https://s3-us-west-2.amazonaws.com/with.wallpapers/farrah_yoo_1609883525.jpg';
 const getDefaultRoomState = (room: Room) => {
   return {
-    state: {
-      /*
-        Not all rooms were created with a default state in dynamo.
-        We can later backfill these, and make sure new ones are created with a state.
-        Until then, we can just have a default state set in code.
-      */
-      wallpaperUrl: DEFAULT_WALLPAPER_URL,
-      displayName: room && room.displayName ? room.displayName : 'room',
-      zOrder: [],
-    },
+    /*
+      Not all rooms were created with a default state in dynamo.
+      We can later backfill these, and make sure new ones are created with a state.
+      Until then, we can just have a default state set in code.
+    */
+    wallpaperUrl: DEFAULT_WALLPAPER_URL,
+    displayName: room && room.displayName ? room.displayName : 'room',
+    zOrder: [],
   };
 };
 
@@ -43,14 +41,15 @@ class RoomWithState {
     }
 
     const roomState = await db.room.data.getRoomState(roomId);
-    return new RoomWithState(pgRoom, roomState);
+    const state = roomState ? roomState.state : getDefaultRoomState(pgRoom);
+    return new RoomWithState(pgRoom, state);
   };
 
   static fromRooms = async (rooms: Room[]) => {
     const result = [];
     const promises = rooms.map(async (room, index) => {
-      let state = await db.room.data.getRoomState(room.id);
-      state = state || (getDefaultRoomState(room) as any);
+      const roomState = await db.room.data.getRoomState(room.id);
+      const state = roomState ? roomState.state : getDefaultRoomState(room);
       result[index] = new RoomWithState(room, state);
     });
     await Promise.all(promises);
@@ -58,9 +57,9 @@ class RoomWithState {
   };
 
   _pgRoom: Room;
-  _roomState: RoomState;
+  _roomState: any;
 
-  constructor(pgRoom: Room, roomState: RoomState) {
+  constructor(pgRoom: Room, roomState: any) {
     this._pgRoom = pgRoom;
     this._roomState = roomState;
   }
@@ -86,7 +85,7 @@ class RoomWithState {
   }
 
   roomState() {
-    return this._roomState.state as Prisma.JsonObject;
+    return this._roomState;
   }
 
   previewImageUrl() {

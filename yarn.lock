@@ -515,6 +515,11 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
+"@types/async-lock@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.npmjs.org/@types/async-lock/-/async-lock-1.1.3.tgz#0d86017cf87abbcb941c55360e533d37a3f23b3d"
+  integrity sha512-UpeDcjGKsYEQMeqEbfESm8OWJI305I7b9KE4ji3aBjoKWyN5CTdn8izcA1FM1DVDne30R5fNEnIy89vZw5LXJQ==
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.14"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.14.tgz#faaeefc4185ec71c389f4501ee5ec84b170cc402"
@@ -608,6 +613,13 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
+"@types/massive@^5.4.4":
+  version "5.4.4"
+  resolved "https://registry.npmjs.org/@types/massive/-/massive-5.4.4.tgz#bfedf7f94ec7d5f465c4aa30b4402d9b5a781301"
+  integrity sha512-jdqSdvQ1outoIKe/ZZ6Di/01nLUEwipcZwxiTa+0bk8r0em0TI9FhjLtuZlk8bazg2FAOFS59tANI+92n7w4gQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/mime@^1":
   version "1.3.2"
   resolved "https://registry.npmjs.org/@types/mime/-/mime-1.3.2.tgz#93e25bf9ee75fe0fd80b594bc4feb0e862111b5a"
@@ -622,6 +634,15 @@
   version "16.6.1"
   resolved "https://registry.npmjs.org/@types/node/-/node-16.6.1.tgz#aee62c7b966f55fc66c7b6dfa1d58db2a616da61"
   integrity sha512-Sr7BhXEAer9xyGuCN3Ek9eg9xPviCF2gfu9kTfuU2HkTVAMYSDeX40fvpmo72n5nansg3nsBjuQBrsS28r+NUw==
+
+"@types/pg@^8.6.1":
+  version "8.6.1"
+  resolved "https://registry.npmjs.org/@types/pg/-/pg-8.6.1.tgz#099450b8dc977e8197a44f5229cedef95c8747f9"
+  integrity sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==
+  dependencies:
+    "@types/node" "*"
+    pg-protocol "*"
+    pg-types "^2.2.0"
 
 "@types/prettier@^2.1.5":
   version "2.2.3"
@@ -2424,6 +2445,11 @@ pg-promise@10.7.0:
     pg-minify "1.6.1"
     spex "3.0.2"
 
+pg-protocol@*:
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.5.0.tgz#b5dd452257314565e2d54ab3c132adc46565a6a0"
+  integrity sha512-muRttij7H8TqRNu/DxrAJQITO4Ac7RmX3Klyr/9mJEOBeIpgnF8f9jAfRz5d3XwQZl5qBjF9gLsUtMPJE0vezQ==
+
 pg-protocol@^1.3.0, pg-protocol@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/pg-protocol/-/pg-protocol-1.4.0.tgz#43a71a92f6fe3ac559952555aa3335c8cb4908be"
@@ -2436,7 +2462,7 @@ pg-query-stream@3.3.1:
   dependencies:
     pg-cursor "^2.4.1"
 
-pg-types@^2.1.0:
+pg-types@^2.1.0, pg-types@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/pg-types/-/pg-types-2.2.0.tgz#2d0250d636454f7cfa3b6ae0382fdfa8063254a3"
   integrity sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==

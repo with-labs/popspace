@@ -1,4 +1,4 @@
-import { Prisma, Room, RoomState } from '@prisma/client';
+import { Room } from '@prisma/client';
 declare class RoomWithState {
     static allVisitableForActorId: (actorId: bigint) => Promise<{
         created: RoomWithState[];
@@ -7,14 +7,14 @@ declare class RoomWithState {
     static fromRoomId: (roomId: bigint) => Promise<RoomWithState>;
     static fromRooms: (rooms: Room[]) => Promise<any[]>;
     _pgRoom: Room;
-    _roomState: RoomState;
-    constructor(pgRoom: Room, roomState: RoomState);
+    _roomState: any;
+    constructor(pgRoom: Room, roomState: any);
     roomId(): bigint;
     urlId(): string;
     creatorId(): bigint;
     displayName(): string;
     route(): string;
-    roomState(): Prisma.JsonObject;
+    roomState(): any;
     previewImageUrl(): string;
     serialize(): Promise<{
         roomId: bigint;

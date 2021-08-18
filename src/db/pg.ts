@@ -1,7 +1,9 @@
 import AsyncLock from 'async-lock';
 import massive from 'massive';
-import types from 'pg';
+import pg from 'pg';
 import monitor from 'pg-monitor';
+
+import config from './config';
 
 /*
   Class for managing sessions with postgres.
@@ -52,7 +54,7 @@ const overridePgTimestampConversion = () => {
   // this screws everything up if you store dates in UTC
   // what we want is to return the raw date.
   const timestampOID = 1114;
-  types.setTypeParser(1114, function (stringValue) {
+  pg.types.setTypeParser(1114, function (stringValue) {
     return stringValue;
   });
 };
@@ -73,8 +75,7 @@ export class Pg {
       // but after module dependencies are loaded
       // so unless we access process.env after dependencies are loaded,
       // we won't have the credentials.
-      const config = require('./config');
-      __db = await massive(config);
+      __db = await massive(config as any);
       this.massive = __db;
       try {
         monitor.attach(__db.driverConfig);

@@ -1,3 +1,4 @@
+import { Actor, Room, Session } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 
 import db from '../db/_index';
@@ -11,8 +12,10 @@ const base64Decode = (str: string) =>
 // extend the Express request to support our custom properties
 declare module 'express' {
   interface Request {
-    actor: any;
-    session: any;
+    actor?: Actor;
+    session?: Session;
+    room?: Room;
+    realIp?: string;
   }
 }
 
@@ -47,12 +50,13 @@ const middleware = {
     next();
   },
 
-  getIp: async (req, res, next) => {
+  getIp: async (req: Request, res: Response, next: NextFunction) => {
     /*
       https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
     */
-    req.ip =
-      req.headers['x-forwarded-for'] ||
+    const forwardedFor = req.headers['x-forwarded-for'];
+    req.realIp =
+      (Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor) ||
       (req.connection ? req.connection.remoteAddress : null);
     next();
   },
@@ -68,7 +72,7 @@ const middleware = {
     next();
   },
 
-  roomFromRoute: async (req, res, next) => {
+  roomFromRoute: async (req: Request, res: Response, next: any) => {
     const roomRoute = req.body.room_route || req.body.roomRoute;
     if (!roomRoute) {
       return next(
@@ -83,7 +87,7 @@ const middleware = {
     next();
   },
 
-  requireRoom: async (req, res, next) => {
+  requireRoom: async (req: Request, res: Response, next: any) => {
     if (!req.room) {
       return next(
         { errorCode: error.code.UNKNOWN_ROOM, message: 'Unknown room' },
@@ -93,7 +97,11 @@ const middleware = {
     next();
   },
 
-  requireRoomCreator: async (req, res, next) => {
+  requireRoomCreator: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     if (req.actor.id != req.room.creatorId) {
       return next({
         errorCode: error.code.PERMISSION_DENIED,
@@ -104,8 +112,12 @@ const middleware = {
     next();
   },
 
-  requireRoomMember: async (req, res, next) => {
-    const isMember = await db.room.permissions.isMember(req.user, req.room);
+  requireRoomMember: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    const isMember = await db.room.permissions.isMember(req.actor, req.room);
     if (!isMember) {
       return next({
         errorCode: error.code.PERMISSION_DENIED,
@@ -116,7 +128,11 @@ const middleware = {
     next();
   },
 
-  requireRoomMemberOrCreator: async (req, res, next) => {
+  requireRoomMemberOrCreator: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     const isMemberOrCreator = await db.room.permissions.isMemberOrCreator(
       req.actor,
       req.room,
@@ -131,7 +147,7 @@ const middleware = {
     next();
   },
 
-  requireAdmin: async (req, res, next) => {
+  requireAdmin: async (req: Request, res: Response, next: NextFunction) => {
     if (!req.actor || !req.actor.admin) {
       return next({
         errorCode: error.code.PERMISSION_DENIED,

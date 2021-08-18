@@ -44,16 +44,14 @@ var _room_1 = __importDefault(require("../db/room/_room"));
 var DEFAULT_WALLPAPER_URL = 'https://s3-us-west-2.amazonaws.com/with.wallpapers/farrah_yoo_1609883525.jpg';
 var getDefaultRoomState = function (room) {
     return {
-        state: {
-            /*
-              Not all rooms were created with a default state in dynamo.
-              We can later backfill these, and make sure new ones are created with a state.
-              Until then, we can just have a default state set in code.
-            */
-            wallpaperUrl: DEFAULT_WALLPAPER_URL,
-            displayName: room && room.displayName ? room.displayName : 'room',
-            zOrder: [],
-        },
+        /*
+          Not all rooms were created with a default state in dynamo.
+          We can later backfill these, and make sure new ones are created with a state.
+          Until then, we can just have a default state set in code.
+        */
+        wallpaperUrl: DEFAULT_WALLPAPER_URL,
+        displayName: room && room.displayName ? room.displayName : 'room',
+        zOrder: [],
     };
 };
 var RoomWithState = /** @class */ (function () {
@@ -77,7 +75,7 @@ var RoomWithState = /** @class */ (function () {
         return _room_1.default.namesAndRoutes.route(this.displayName(), this.urlId());
     };
     RoomWithState.prototype.roomState = function () {
-        return this._roomState.state;
+        return this._roomState;
     };
     RoomWithState.prototype.previewImageUrl = function () {
         var wallpaperUrl = this.roomState().wallpaperUrl || DEFAULT_WALLPAPER_URL;
@@ -132,7 +130,7 @@ var RoomWithState = /** @class */ (function () {
         });
     }); };
     RoomWithState.fromRoomId = function (roomId) { return __awaiter(void 0, void 0, void 0, function () {
-        var pgRoom, roomState;
+        var pgRoom, roomState, state;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, _index_1.default.room.core.roomById(roomId)];
@@ -144,7 +142,8 @@ var RoomWithState = /** @class */ (function () {
                     return [4 /*yield*/, _index_1.default.room.data.getRoomState(roomId)];
                 case 2:
                     roomState = _a.sent();
-                    return [2 /*return*/, new RoomWithState(pgRoom, roomState)];
+                    state = roomState ? roomState.state : getDefaultRoomState(pgRoom);
+                    return [2 /*return*/, new RoomWithState(pgRoom, state)];
             }
         });
     }); };
@@ -155,13 +154,13 @@ var RoomWithState = /** @class */ (function () {
                 case 0:
                     result = [];
                     promises = rooms.map(function (room, index) { return __awaiter(void 0, void 0, void 0, function () {
-                        var state;
+                        var roomState, state;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0: return [4 /*yield*/, _index_1.default.room.data.getRoomState(room.id)];
                                 case 1:
-                                    state = _a.sent();
-                                    state = state || getDefaultRoomState(room);
+                                    roomState = _a.sent();
+                                    state = roomState ? roomState.state : getDefaultRoomState(room);
                                     result[index] = new RoomWithState(room, state);
                                     return [2 /*return*/];
                             }

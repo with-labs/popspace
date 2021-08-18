@@ -85,12 +85,11 @@ var middleware = {
         });
     }); },
     getIp: function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+        var forwardedFor;
         return __generator(this, function (_a) {
-            /*
-              https://stackoverflow.com/questions/10849687/express-js-how-to-get-remote-client-address
-            */
-            req.ip =
-                req.headers['x-forwarded-for'] ||
+            forwardedFor = req.headers['x-forwarded-for'];
+            req.realIp =
+                (Array.isArray(forwardedFor) ? forwardedFor[0] : forwardedFor) ||
                     (req.connection ? req.connection.remoteAddress : null);
             next();
             return [2 /*return*/];
@@ -156,7 +155,7 @@ var middleware = {
         var isMember;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, _index_1.default.room.permissions.isMember(req.user, req.room)];
+                case 0: return [4 /*yield*/, _index_1.default.room.permissions.isMember(req.actor, req.room)];
                 case 1:
                     isMember = _a.sent();
                     if (!isMember) {

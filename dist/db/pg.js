@@ -44,6 +44,7 @@ var async_lock_1 = __importDefault(require("async-lock"));
 var massive_1 = __importDefault(require("massive"));
 var pg_1 = __importDefault(require("pg"));
 var pg_monitor_1 = __importDefault(require("pg-monitor"));
+var config_1 = __importDefault(require("./config"));
 /*
   Class for managing sessions with postgres.
 
@@ -90,7 +91,7 @@ var overridePgTimestampConversion = function () {
     // this screws everything up if you store dates in UTC
     // what we want is to return the raw date.
     var timestampOID = 1114;
-    pg_1.default.setTypeParser(1114, function (stringValue) {
+    pg_1.default.types.setTypeParser(1114, function (stringValue) {
         return stringValue;
     });
 };
@@ -104,7 +105,6 @@ var Pg = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, lock.acquire('with_init_pg', function () { return __awaiter(_this, void 0, void 0, function () {
-                            var config;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
@@ -113,9 +113,13 @@ var Pg = /** @class */ (function () {
                                             return [2 /*return*/, __db];
                                         }
                                         overridePgTimestampConversion();
-                                        config = require('./config');
-                                        return [4 /*yield*/, massive_1.default(config)];
+                                        return [4 /*yield*/, massive_1.default(config_1.default)];
                                     case 1:
+                                        // Require it here to make sure environment is set up with Netlify.
+                                        // We inject env vars manually after the function starts,
+                                        // but after module dependencies are loaded
+                                        // so unless we access process.env after dependencies are loaded,
+                                        // we won't have the credentials.
                                         __db = _a.sent();
                                         this.massive = __db;
                                         try {

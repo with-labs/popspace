@@ -1,4 +1,4 @@
-const { FileManager } = require('@withso/file-upload');
+const { FileManager, S3 } = require('@withso/file-upload');
 
 /**
  * @type {import('@withso/file-upload').MetadataStorage}
@@ -44,21 +44,18 @@ const metadataStorage = {
   }
 }
 
-class NoodleWallpaperManager extends FileManager {
-  constructor() {
-    super({
-      metadataStorage: new NoodleWallpapersMetadataStorage(),
-      s3BucketName: 'noodle-wallpapers',
-      hostOrigin: 'https://wallpapers.tilde.so'
-    });
-    this.configure();
-  }
-}
-
+const BUCKET_NAME = 'noodle-wallpapers';
 const wallpaperManager = new FileManager({
   metadataStorage,
-  s3BucketName: 'noodle-wallpapers',
-  hostOrigin: 'https://wallpapers.tilde.so'
+  s3BucketName: BUCKET_NAME,
+  hostOrigin: 'https://wallpapers.tilde.so',
+  s3: new S3({
+    // using the same env vars as ./s3.js
+    accessKeyId: process.env.AWS_APP_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_APP_SECRET_KEY,
+    region: process.env.AWS_S3_REGION,
+    bucketName: BUCKET_NAME,
+  }),
 });
 
 module.exports = wallpaperManager;

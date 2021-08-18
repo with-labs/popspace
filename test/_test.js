@@ -13,4 +13,4 @@ const testLib = {
 
 testLib.chance = require('chance')();
 
-export defaulttestLib;
+module.exports = testLib;

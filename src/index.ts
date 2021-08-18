@@ -22,7 +22,7 @@ const shared = {
     if (process.env.NODE_ENV != 'test') {
       throw 'NODE_ENV must be test';
     }
-    (shared as any).test = require('./test/_test');
+    (shared as any).test = require('../test/_test');
     /*
       can be more explicit/verbose:
       shared.test = shared.initTesting()

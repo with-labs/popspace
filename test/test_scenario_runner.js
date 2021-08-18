@@ -1,6 +1,6 @@
-import chalk from 'chalk';
-import commander from 'commander';
-import util from 'util';
+const chalk = require('chalk');
+const commander = require('commander');
+const util = require('util');
 
 const runScenario = (testPath = '../tests') => {
   require('dotenv').config();
@@ -51,6 +51,6 @@ const runScenario = (testPath = '../tests') => {
   return doRun();
 };
 
-export default {
+module.exports = {
   runScenario,
 };

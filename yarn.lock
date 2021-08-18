@@ -673,6 +673,18 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@prisma/client@^2.28.0":
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/@prisma/client/-/client-2.29.1.tgz#a7b91c9644800de4e00b2f7c3789ff4bae42b3d6"
+  integrity sha512-GhieSvHGPIV5IwRYIkJ4FrGSNfX18lPhFtlyVWxhvX0ocdy8oTnjNZVTFgGxB6qVmJIUpH1HsckAzIoAX689IA==
+  dependencies:
+    "@prisma/engines-version" "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+
+"@prisma/engines-version@2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a":
+  version "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+  resolved "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a.tgz#96db92f09714d4dd2a5e21054c28bd1c0820fa77"
+  integrity sha512-BU1DNNDhdzqjHtycpUzDrU8+jf6ZY+fbXvCV/rbqG+0JifljlIo4vbkHDMg97gBi1Do8pTLZGlTH16FlniKgAg==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.npmjs.org/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -813,11 +825,12 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@1.1.24":
-  version "1.1.24"
-  resolved "https://registry.yarnpkg.com/@withso/noodle-shared/-/noodle-shared-1.1.24.tgz#49d79fd21aecfbc4b249b243a6c2c0f68268bf0a"
-  integrity sha512-lF/LFsSUxFqETx6pWFUDxlCDHf46QKz86FHQGq7bGhTvC5EYCfkMvklcCqW5bYcAAHB6PduqxBq5pgtSrkRy9A==
+"@withso/noodle-shared@2.0.0-beta.2":
+  version "2.0.0-beta.2"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0-beta.2.tgz#95192a4dfd2cfc21660709406383ef5fdfe6f1b7"
+  integrity sha512-TOJgOziijAG7bCi3KCZ5gzdO/FMkQiWDaLxZUyFo9wD1b9zmjzRP7sgGktRVx6Dk8w1/LlRF2+M/6679EcDK6w==
   dependencies:
+    "@prisma/client" "^2.28.0"
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
     btoa "^1.2.1"

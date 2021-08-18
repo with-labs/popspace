@@ -119,10 +119,10 @@ class UpdateProcessor {
         INNER JOIN room_widgets
         ON (widgets.id = room_widgets.widget_id)
         WHERE
-          room_widgets.room_id = ${roomId} AND
+          room_widgets.room_id = ${parseInt(roomId)} AND
           widgets.deleted_at IS NOT NULL AND
-          widgets.deleted_at > NOW() - '8 minutes'::interval AND
-          widgets.deleted_by = ${sender.actorId()}
+          widgets.deleted_at > NOW() - '8 minutes'::TEXT::INTERVAL AND
+          widgets.deleted_by = ${parseInt(sender.actorId())}
         ORDER BY widgets.deleted_at DESC
         LIMIT 1
       )
@@ -131,7 +131,7 @@ class UpdateProcessor {
       FROM deleted_widgets
       WHERE
         w.id = deleted_widgets.id
-      RETURNING w.id
+      RETURNING w.id;
     `;
 
     if (updatedIds.length) {

@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/with-labs/hermes#readme",
   "dependencies": {
-    "@withso/noodle-shared": "1.1.24",
+    "@withso/noodle-shared": "2.0.0-beta.2",
     "aws-sdk": "^2.797.0",
     "btoa": "^1.2.1",
     "camelcase-keys": "^6.2.2",

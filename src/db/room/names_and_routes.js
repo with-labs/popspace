@@ -1,7 +1,9 @@
 const cryptoRandomString = require('crypto-random-string');
-const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz'
-const NUMBERS = '0123456789'
-const LOWERCASE_AND_NUMBERS = LOWERCASE + NUMBERS
+const prisma = require('../prisma');
+
+const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
+const NUMBERS = '0123456789';
+const LOWERCASE_AND_NUMBERS = LOWERCASE + NUMBERS;
 
 /*
 There are several "names" of a room:
@@ -24,12 +26,10 @@ URL IDs don't reveal information about how many rooms we have,
 are harder to brute force, and re-oxygenate the internet at night.
 */
 class NamesAndRoutes {
-  constructor() {
-
-  }
+  constructor() {}
 
   roomToRoute(room) {
-    return this.route(room.display_name, room.url_id)
+    return this.route(room.displayName, room.urlId);
   }
 
   /*
@@ -47,11 +47,11 @@ class NamesAndRoutes {
       If we extract urlRoomIds to their own data store,
       we can have empty-named routes with just Ids.
     */
-    const urlName = this.getUrlName(displayName)
-    if(urlName.length > 0) {
-      return `${urlName}-${urlRoomId}`
+    const urlName = this.getUrlName(displayName);
+    if (urlName.length > 0) {
+      return `${urlName}-${urlRoomId}`;
     } else {
-      return`room-${urlRoomId}`
+      return `room-${urlRoomId}`;
     }
   }
 
@@ -60,7 +60,7 @@ class NamesAndRoutes {
       If a route is like display-name-hey-id12345,
       we can get the last element after a dash.
     */
-    return route.split("-").pop()
+    return route.split('-').pop();
   }
 
   async generateUniqueRoomUrlId() {
@@ -71,25 +71,25 @@ class NamesAndRoutes {
     // if we want to maintain a <1% collision rate, we can have 6 * 10^5 entries
     // i.e. 600k rooms
     // At that point we want to bump the length, e.g. 36^6 is 2*10^9 uniques
-    let idString = this.generateRoomId()
-    let isUnique = await this.isUniqueIdString(idString)
-    let iterations = 0
-    while(!isUnique) {
-      idString = this.generateRoomId()
-      isUnique = await this.isUniqueIdString(idString)
-      iterations++
-      if(iterations == 101) {
-        log.error.warn("Over 100 iterations genereating unique room ID...")
+    let idString = this.generateRoomId();
+    let isUnique = await this.isUniqueIdString(idString);
+    let iterations = 0;
+    while (!isUnique) {
+      idString = this.generateRoomId();
+      isUnique = await this.isUniqueIdString(idString);
+      iterations++;
+      if (iterations == 101) {
+        log.error.warn('Over 100 iterations genereating unique room ID...');
       }
-      if(iterations == 1001) {
-        log.error.error("Over 1000 iterations genereating unique room ID...")
+      if (iterations == 1001) {
+        log.error.error('Over 1000 iterations genereating unique room ID...');
       }
     }
-    return idString
+    return idString;
   }
 
   getNormalizedDisplayName(displayName) {
-    return shared.lib.args.multiSpaceToSingleSpace(displayName.trim())
+    return shared.lib.args.multiSpaceToSingleSpace(displayName.trim());
   }
 
   /*
@@ -98,15 +98,16 @@ class NamesAndRoutes {
     and special characters removed
   */
   getUrlName(displayName) {
-    const normalized = this.getNormalizedDisplayName(displayName).toLowerCase()
+    const normalized = this.getNormalizedDisplayName(displayName).toLowerCase();
     // Don't need to replace the A-Z range since we're already normalized.
     // Also we're allowing dashes so that names that look like our routes
     // remain stable, e.g. "room-123" -> "room-123", not "room123"
-    const noSpecialCharacters = normalized.replace(/[^a-z0-9 -]/g, "")
-    const spacesAsDashes = noSpecialCharacters.trim().replace(/ /g, "-")
+    const noSpecialCharacters = normalized.replace(/[^a-z0-9 -]/g, '');
+    const spacesAsDashes = noSpecialCharacters.trim().replace(/ /g, '-');
     // Clean up double-dashes AFTER spaces have been replaced with dashes
-    const noDoubleDashes = shared.lib.args.multiDashToSingleDash(spacesAsDashes)
-    return noDoubleDashes
+    const noDoubleDashes =
+      shared.lib.args.multiDashToSingleDash(spacesAsDashes);
+    return noDoubleDashes;
   }
 
   // Private
@@ -143,36 +144,41 @@ class NamesAndRoutes {
     */
     // If we have 24 digits, we have 10^24 names, so 1/1000 collision up to 10^21 names
     // should be enough!
-    const length = 24
-    let schema = "c"
-    while(schema.length < length) {
-      schema += Math.random() < 0.5 ? "c" : "d"
+    const length = 24;
+    let schema = 'c';
+    while (schema.length < length) {
+      schema += Math.random() < 0.5 ? 'c' : 'd';
     }
-    return this.roomIdFromSchema(schema)
+    return this.roomIdFromSchema(schema);
   }
 
   roomIdFromSchema(schema) {
-    let result = ""
-    for(const char of schema) {
-      switch(char) {
-        case "c":
-          result += cryptoRandomString({length: 1, characters: LOWERCASE});
-          break
-        case "d":
-          result += cryptoRandomString({length: 1, characters: NUMBERS})
-          break
-        case "a":
-          result += cryptoRandomString({length: 1, characters: LOWERCASE_AND_NUMBERS})
-          break
+    let result = '';
+    for (const char of schema) {
+      switch (char) {
+        case 'c':
+          result += cryptoRandomString({ length: 1, characters: LOWERCASE });
+          break;
+        case 'd':
+          result += cryptoRandomString({ length: 1, characters: NUMBERS });
+          break;
+        case 'a':
+          result += cryptoRandomString({
+            length: 1,
+            characters: LOWERCASE_AND_NUMBERS,
+          });
+          break;
       }
     }
-    return result
+    return result;
   }
 
   async isUniqueIdString(idString) {
-    const existingEntry = await shared.db.pg.massive.rooms.findOne({url_id: idString})
-    return !existingEntry
+    const existingEntry = await prisma.room.findUnique({
+      where: { urlId: idString },
+    });
+    return !existingEntry;
   }
 }
 
-module.exports = new NamesAndRoutes()
+module.exports = new NamesAndRoutes();

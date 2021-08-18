@@ -1,59 +1,79 @@
+const prisma = require('../prisma');
+
 const MESSAGE_LIMIT = 30;
 
 class Messages {
-  constructor() {
-  }
+  constructor() {}
 
   async getWholeChat(chatId) {
-    // get the whole chat log
-    return await shared.db.pg.massive.query(`
-      SELECT
-        messages.id as id,
-        chat_id,
-        content,
-        sender_id,
-        actors.display_name as sender_display_name,
-        messages.created_at as created_at
-      FROM 
-        messages
-        JOIN actors ON messages.sender_id = actors.id
-      WHERE chat_id = $1
-      ORDER BY messages.created_at
-      ASC
-  `,[chatId])
+    const results = await prisma.message.findMany({
+      where: {
+        chatId,
+      },
+      select: {
+        sender: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+        id: true,
+        senderId: true,
+        chatId: true,
+        content: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+    // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
+    return results.map((result) => {
+      result.senderDisplayName = result.sender.displayName;
+      return result;
+    });
   }
 
   async getNextPageMessages(chatId, lastChatMessageId) {
-    const messages = await shared.db.pg.massive.query(`
-      SELECT *
-      FROM 
-        (
-        SELECT
-            messages.id,
-            chat_id,
-            content,
-            sender_id,
-            actors.display_name as sender_display_name,
-            messages.created_at as created_at
-          FROM 
-            messages
-            JOIN actors ON messages.sender_id = actors.id
-        WHERE messages.chat_id = $1 AND messages.id < COALESCE($2, 9223372036854775807)
-        ORDER BY messages.ID 
-        DESC 
-        LIMIT $3
-      ) as prev_messages
-      ORDER BY prev_messages.created_at
-      ASC;
-    `, [chatId, lastChatMessageId, MESSAGE_LIMIT])
+    const filter = { chatId };
+    // for pages starting at a cursor, get ids less than the cursor id
+    if (lastChatMessageId) {
+      filter.id = { $lt: lastChatMessageId };
+    }
+    const messages = await prisma.message.findMany({
+      where: filter,
+      orderBy: {
+        id: 'desc',
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        chatId: true,
+        sender: {
+          select: {
+            id: true,
+            displayName: true,
+          },
+        },
+      },
+      take: MESSAGE_LIMIT,
+    });
 
     // id the query returns no messages, or if it returns less than the MESSAGE_LIMIT
     // there are no messages left to get, so set hasMoreToLoad to false
     return {
-      hasMoreToLoad: !(messages.length < MESSAGE_LIMIT || messages.length === 0),
-      messageList: messages
-    }
+      hasMoreToLoad: !(
+        messages.length < MESSAGE_LIMIT || messages.length === 0
+      ),
+      // reverse the order of the messages so that the most recent messages are first
+      messageList: messages.reverse().map((message) => {
+        // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
+        message.senderDisplayName = message.sender.displayName;
+        return message;
+      }),
+    };
   }
 }
 
-module.exports = new Messages()
+module.exports = new Messages();

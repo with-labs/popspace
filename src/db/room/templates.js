@@ -1,33 +1,38 @@
-const SYSTEM_USER_ID = -5000
-let mockCreator
+const prisma = require('../prisma');
+const { SYSTEM_USER_ID } = require('../constants.js');
+let mockCreator;
 
 const getMockCreator = async () => {
-  if(mockCreator) {
-    return mockCreator
+  if (mockCreator) {
+    return mockCreator;
   }
-  mockCreator = await shared.db.accounts.actorById(SYSTEM_USER_ID)
-  if(!mockCreator) {
-    log.app.info(`Creating mock actor with id ${SYSTEM_USER_ID} for creating widgets in room templates.`)
-    mockCreator = await shared.db.pg.massive.actors.insert({
-      id: SYSTEM_USER_ID,
-      kind: "system",
-      display_name: "Tilde"
-    })
-    log.app.info("Successfully created mock widget creator!", mockCreator)
+  mockCreator = await shared.db.accounts.actorById(SYSTEM_USER_ID);
+  if (!mockCreator) {
+    log.app.info(
+      `Creating mock actor with id ${SYSTEM_USER_ID} for creating widgets in room templates.`,
+    );
+    mockCreator = await prisma.actor.create({
+      data: {
+        id: SYSTEM_USER_ID,
+        kind: 'system',
+        displayName: 'Tilde',
+        admin: true,
+      },
+    });
+    log.app.info('Successfully created mock widget creator!', mockCreator);
   }
-  return mockCreator
-}
+  return mockCreator;
+};
 
 /**
  * @typedef {Object} RoomState
- * @property {string} wallpaper_url
- * @property {boolean} is_custom_wallpaper
+ * @property {string} wallpaperUrl
  * @property {number} width
  * @property {number} height
  *
  * @typedef {Object} TemplateData
  * @property {RoomState} state
- * @property {string} display_name
+ * @property {string} displayName
  * @property {Array} widgets - A tuple of [WidgetType, WidgetState, Transform]
  */
 
@@ -38,7 +43,7 @@ module.exports = {
    * @param {TemplateData} templateData
    */
   setUpRoomFromTemplate: async (roomId, templateData) => {
-    const creator = await getMockCreator()
+    const creator = await getMockCreator();
     /*
       Sample room template as of 2021/07/12
       {
@@ -56,30 +61,37 @@ module.exports = {
     */
     const state = {
       ...templateData.state,
-      z_order: [],
-    }
-    await shared.db.room.data.setRoomState(roomId, state)
+      zOrder: [],
+    };
+    await shared.db.room.data.setRoomState(roomId, state);
 
     // add widgets
-    const widgets = []
+    const widgets = [];
     for (const [type, widgetState, transform] of templateData.widgets) {
-      const roomWidget = await shared.db.room.data.addWidgetInRoom(creator.id, roomId, type, widgetState, transform, creator)
-      widgets.push(roomWidget)
+      const roomWidget = await shared.db.room.data.addWidgetInRoom(
+        creator.id,
+        roomId,
+        type,
+        widgetState,
+        transform,
+        creator,
+      );
+      widgets.push(roomWidget);
     }
 
     return {
       state,
-      widgets: (await Promise.all(widgets.map((w) => w.serialize()))),
+      widgets: await Promise.all(widgets.map((w) => w.serialize())),
       id: roomId,
-    }
+    };
   },
 
-  empty: (displayName="generated") => {
+  empty: (displayName = 'generated') => {
     return {
-      display_name: displayName,
+      displayName,
       state: {},
-      widgets: []
-    }
+      widgets: [],
+    };
   },
 
   /**
@@ -89,11 +101,13 @@ module.exports = {
    * @param {TemplateData} data
    * @param {string} creatorId
    */
-  createTemplate: async (templateName, data, creatorId = SYSTEM_USER_ID) => {
-    await shared.db.pg.massive.room_templates.insert({
-      name: templateName,
-      data: data,
-      creator_id: creatorId
-    })
-  }
-}
+  createTemplate: (templateName, data, creatorId = SYSTEM_USER_ID) => {
+    return prisma.roomTemplate.create({
+      data: {
+        name: templateName,
+        data: data,
+        creatorId,
+      },
+    });
+  },
+};

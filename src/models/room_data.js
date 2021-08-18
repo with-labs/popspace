@@ -3,15 +3,15 @@
 */
 class RoomData {
   constructor(room) {
-    this.room = room
+    this.room = room;
   }
 
   get roomId() {
-    return this.room.id
+    return this.room.id;
   }
 
   get urlId() {
-    return this.room.url_id
+    return this.room.urlId
   }
 
   get route() {
@@ -19,39 +19,39 @@ class RoomData {
   }
 
   get displayName() {
-    return this.room.display_name
+    return this.room.displayName;
   }
 
   async widgets() {
-    return shared.models.RoomWidget.allInRoom(this.roomId)
+    return shared.models.RoomWidget.allInRoom(this.roomId);
   }
 
   async state() {
-    const entry = await shared.db.room.data.getRoomState(this.roomId)
-    return entry.state
+    const entry = await shared.db.room.data.getRoomState(this.roomId);
+    return entry.state;
   }
 
   async wallpaper() {
-    const entry = await shared.db.room.data.getRoomWallpaperData(this.roomId)
-    return entry
+    const entry = await shared.db.room.data.getRoomWallpaperData(this.roomId);
+    return entry;
   }
 
   async serialize() {
     const room = {
       id: this.roomId,
-      display_name: this.displayName
+      displayName: this.displayName,
       route: this.route,
-      url_id: this.urlId
-    }
-    const widgetsInRoom = await this.widgets()
+      urlId: this.urlId,
+    };
+    const widgetsInRoom = await this.widgets();
     room.widgets = await Promise.all(
-      widgetsInRoom.map(async (w) => (w.serialize()))
-    )
-    room.state = await this.state() || {}
-    room.widgets = room.widgets || []
-    room.wallpaper = await this.wallpaper()
-    return room
+      widgetsInRoom.map(async (w) => w.serialize()),
+    );
+    room.state = (await this.state()) || {};
+    room.widgets = room.widgets || [];
+    room.wallpaper = await this.wallpaper();
+    return room;
   }
 }
 
-module.exports = RoomData
+module.exports = RoomData;

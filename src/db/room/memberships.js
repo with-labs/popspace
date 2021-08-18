@@ -1,20 +1,27 @@
+const prisma = require('../prisma');
+
 class Memberships {
   async isMember(actorId, roomId) {
-    const membership = await this.getMembership(actorId, roomId)
-    if(!membership) {
-      return false
+    const membership = await this.getMembership(actorId, roomId);
+    if (!membership) {
+      return false;
     }
-    const current = shared.db.time.timestamptzStillCurrent(membership.expires_at)
-    return current
+    const current = shared.db.time.timestamptzStillCurrent(
+      membership.expires_at,
+    );
+    return current;
   }
 
-  async getMembership(actorId, roomId) {
-    return await shared.db.pg.massive.room_memberships.findOne({
-      actor_id: actorId,
-      room_id: roomId,
-      revoked_at: null,
-      "began_at <>": null
-    }, {
+  getMembership(actorId, roomId) {
+    return prisma.roomMembership.findFirst({
+      where: {
+        actorId,
+        roomId,
+        revokedAt: null,
+        beganAt: {
+          not: null,
+        },
+      },
       /*
         There's some optionality here.
         E.g. we could choose the membership that will
@@ -27,27 +34,25 @@ class Memberships {
         In practice, we should only have 1 active membership
         per person anyway.
       */
-      order: [{
-        field: "began_at",
-        direction: "desc"
-      }],
-      limit: 1
-    })
-  }
-
-  async getRoomMembers(roomId) {
-    return await shared.models.RoomMember.allInRoom(roomId)
-  }
-
-  async revokeMembership(roomId, actorId) {
-    return await shared.db.pg.massive.room_memberships.update(
-      {
-        actor_id: actorId,
-        room_id: roomId,
-        revoked_at: null
+      orderBy: {
+        beganAt: 'desc',
       },
-      { revoked_at: shared.db.time.now() }
-    )
+    });
+  }
+
+  getRoomMembers(roomId) {
+    return shared.models.RoomMember.allInRoom(roomId);
+  }
+
+  revokeMembership(roomId, actorId) {
+    return prisma.roomMembership.update({
+      where: {
+        actorId: actorId,
+        roomId: roomId,
+        revokedAt: null,
+      },
+      data: { revokedAt: shared.db.time.now() },
+    });
   }
 
   async forceMembership(room, actor) {
@@ -62,27 +67,29 @@ class Memberships {
       where creators should be treated differently, they can explicitly be
       treated differently.
     */
-    const existingMembership = await shared.db.room.memberships.getMembership(actor.id, room.id)
-    if(existingMembership) {
-      return existingMembership
+    const existingMembership = await shared.db.room.memberships.getMembership(
+      actor.id,
+      room.id,
+    );
+    if (existingMembership) {
+      return existingMembership;
     }
     try {
-      let expires_at = null // non-expiring memberships by default
-      let resolved_at = null
-      const membership = await shared.db.pg.massive.withTransaction(async (tx) => {
-        return await tx.room_memberships.insert({
-          room_id: room.id,
-          actor_id: actor.id,
-          began_at: shared.db.time.now(),
-          expires_at: expires_at
-        })
-      })
-      return { membership }
-    } catch(e) {
+      let expiresAt = null; // non-expiring memberships by default
+      const membership = await prisma.roomMembership.create({
+        data: {
+          roomId: room.id,
+          actorId: actor.id,
+          beganAt: shared.db.time.now(),
+          expiresAt,
+        },
+      });
+      return { membership };
+    } catch (e) {
       // TODO: ERROR_LOGGING
-      return { error: shared.error.code.UNEXPECTED_ERROR }
+      return { error: shared.error.code.UNEXPECTED_ERROR };
     }
   }
 }
 
-module.exports = new Memberships()
+module.exports = new Memberships();

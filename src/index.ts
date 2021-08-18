@@ -18,17 +18,6 @@ const shared = {
   cleanup: async () => {
     await db.pg.tearDown();
   },
-  requireTesting: () => {
-    if (process.env.NODE_ENV != 'test') {
-      throw 'NODE_ENV must be test';
-    }
-    (shared as any).test = require('../test/_test');
-    /*
-      can be more explicit/verbose:
-      shared.test = shared.initTesting()
-    */
-    return (shared as any).test;
-  },
   initDynamo: async () => {
     /*
       Avoiding puting this into the general init -

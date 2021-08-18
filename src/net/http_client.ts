@@ -4,8 +4,6 @@ import prisma from '../db/prisma';
 import auth from '../lib/auth';
 import otplib from '../lib/otp';
 
-const base64Decode = (str) => Buffer.from(str, 'base64').toString('utf-8');
-
 class HttpClient {
   actor: any;
   certificate: any;
@@ -27,7 +25,9 @@ class HttpClient {
   }
 
   async post(endpoint, data) {
-    const authHeader = this.token ? `Bearer ${base64Decode(this.token)}` : '';
+    const authHeader = this.token
+      ? `Bearer ${Buffer.from(this.token).toString('base64')}`
+      : '';
     const options = {
       host: this.host,
       port: this.port,

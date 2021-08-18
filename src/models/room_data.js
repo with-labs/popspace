@@ -11,11 +11,11 @@ class RoomData {
   }
 
   get urlId() {
-    return this.room.urlId
+    return this.room.urlId;
   }
 
   get route() {
-    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId())
+    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId);
   }
 
   get displayName() {

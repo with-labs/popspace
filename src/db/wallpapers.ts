@@ -1,10 +1,8 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('./prisma');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'SYSTEM_USE... Remove this comment to see the full error message
-const { SYSTEM_USER_ID } = require('./constants');
+import { SYSTEM_USER_ID } from './constants';
+import prisma from './prisma';
 
-class Wallpapers {
-  getWallpapersForActor(actorId) {
+export class Wallpapers {
+  getWallpapersForActor(actorId: bigint) {
     return prisma.wallpaper.findMany({
       where: {
         creatorId: {
@@ -14,7 +12,7 @@ class Wallpapers {
     });
   }
 
-  async canUserAccessWallpaper(actorId, wallpaperId) {
+  async canUserAccessWallpaper(actorId: bigint, wallpaperId: bigint) {
     return !!(await prisma.wallpaper.findFirst({
       where: {
         id: wallpaperId,
@@ -26,4 +24,4 @@ class Wallpapers {
   }
 }
 
-module.exports = new Wallpapers();
+export default new Wallpapers();

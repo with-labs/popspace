@@ -1,29 +1,66 @@
+import { Prisma, Room, RoomState } from '@prisma/client';
+
+import db from '../db/_index';
+import _room from '../db/room/_room';
+
 const DEFAULT_WALLPAPER_URL =
   'https://s3-us-west-2.amazonaws.com/with.wallpapers/farrah_yoo_1609883525.jpg';
-const getDefaultRoomState = (room) => {
+const getDefaultRoomState = (room: Room) => {
   return {
-    /*
-      Not all rooms were created with a default state in dynamo.
-      We can later backfill these, and make sure new ones are created with a state.
-      Until then, we can just have a default state set in code.
-    */
-    wallpaperUrl: DEFAULT_WALLPAPER_URL,
-    displayName: room && room.displayName ? room.displayName : 'room',
-    zOrder: [],
+    state: {
+      /*
+        Not all rooms were created with a default state in dynamo.
+        We can later backfill these, and make sure new ones are created with a state.
+        Until then, we can just have a default state set in code.
+      */
+      wallpaperUrl: DEFAULT_WALLPAPER_URL,
+      displayName: room && room.displayName ? room.displayName : 'room',
+      zOrder: [],
+    },
   };
 };
 
 class RoomWithState {
-  static fromRoomId: any;
+  // FIXME: this looks horribly inefficient with n+1 queries
+  static allVisitableForActorId = async (actorId: bigint) => {
+    const created = await db.room.core.getCreatedRoutableRooms(actorId);
 
-  static allVisitableForActorId: any;
+    const member = await db.room.core.getMemberRoutableRooms(actorId);
+    return {
+      created: await Promise.all(
+        created.map((r) => RoomWithState.fromRoomId(r.id)),
+      ),
+      member: await Promise.all(
+        member.map((r) => RoomWithState.fromRoomId(r.roomId)),
+      ),
+    };
+  };
 
-  static fromRooms: any;
+  static fromRoomId = async (roomId: bigint) => {
+    const pgRoom = await db.room.core.roomById(roomId);
+    if (!pgRoom) {
+      return null;
+    }
 
-  _pgRoom: any;
-  _roomState: any;
+    const roomState = await db.room.data.getRoomState(roomId);
+    return new RoomWithState(pgRoom, roomState);
+  };
 
-  constructor(pgRoom, roomState) {
+  static fromRooms = async (rooms: Room[]) => {
+    const result = [];
+    const promises = rooms.map(async (room, index) => {
+      let state = await db.room.data.getRoomState(room.id);
+      state = state || (getDefaultRoomState(room) as any);
+      result[index] = new RoomWithState(room, state);
+    });
+    await Promise.all(promises);
+    return result;
+  };
+
+  _pgRoom: Room;
+  _roomState: RoomState;
+
+  constructor(pgRoom: Room, roomState: RoomState) {
     this._pgRoom = pgRoom;
     this._roomState = roomState;
   }
@@ -45,17 +82,18 @@ class RoomWithState {
   }
 
   route() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.db.room.namesAndRoutes.route(
-      this.displayName(),
-      this.urlId(),
-    );
+    return _room.namesAndRoutes.route(this.displayName(), this.urlId());
+  }
+
+  roomState() {
+    return this._roomState.state as Prisma.JsonObject;
   }
 
   previewImageUrl() {
-    const wallpaperUrl = this._roomState.wallpaperUrl || DEFAULT_WALLPAPER_URL;
+    const wallpaperUrl =
+      (this.roomState().wallpaperUrl as string) || DEFAULT_WALLPAPER_URL;
     /* Only accept true - must explicitly specify custom */
-    if (this._roomState.isCustomWallpaper == true) {
+    if (this.roomState().isCustomWallpaper == true) {
       // For actor-submitted wallpapers, have to render their wallpaper
       return wallpaperUrl;
     } else {
@@ -83,47 +121,4 @@ class RoomWithState {
   }
 }
 
-RoomWithState.fromRoomId = async (roomId) => {
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const pgRoom = await shared.db.room.core.roomById(roomId);
-  if (!pgRoom) {
-    return null;
-  }
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const routeEntry = await shared.db.room.core.latestMostPreferredRouteEntry(
-    roomId,
-  );
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const roomState = await shared.db.room.core.getRoomState(roomId);
-  const idRouteEntry =
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    await shared.db.room.namesAndRoutes.getOrCreateUrlIdEntry(roomId);
-  // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 4.
-  return new RoomWithState(pgRoom, routeEntry, roomState, idRouteEntry);
-};
-
-RoomWithState.allVisitableForActorId = async (actorId) => {
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const created = await shared.db.room.core.getCreatedRoutableRooms(actorId);
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const member = await shared.db.room.core.getMemberRoutableRooms(actorId);
-  return {
-    created,
-    member,
-  };
-};
-
-RoomWithState.fromRooms = async (rooms) => {
-  const statesById = {};
-  const result = [];
-  const promises = rooms.map(async (room, index) => {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    let state = await shared.db.room.core.getRoomState(room.id);
-    state = state || getDefaultRoomState(room);
-    result[index] = new RoomWithState(room, state);
-  });
-  await Promise.all(promises);
-  return result;
-};
-
-module.exports = RoomWithState;
+export default RoomWithState;

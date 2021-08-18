@@ -1,29 +1,13 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('./prisma');
+import prisma from './prisma';
 
-/**
- * @typedef {Object} ExperienceRating
- * @property {number} rating
- * @property {string | null} feedback
- * @property {string} submittedAt
- * @property {string} createdAt
- * @property {string} updatedAt
- * @property {number} id
- * @property {number} actorId
- * @property {number} roomId
- */
-
-class ExperienceRatings {
-  /**
-   * Creates a new experience rating entry
-   * @param {number} actorId
-   * @param {number} roomId
-   * @param {number} rating 1-5
-   * @param {Date} submittedAt
-   * @param {string | null} feedback
-   * @returns {Promise<ExperienceRating>}
-   */
-  async createRating(actorId, roomId, rating, submittedAt, feedback) {
+export class ExperienceRatings {
+  createRating(
+    actorId: bigint,
+    roomId: bigint,
+    rating: number,
+    submittedAt: Date,
+    feedback: string | null,
+  ) {
     return prisma.experienceRating.create({
       data: {
         actorId,
@@ -35,27 +19,17 @@ class ExperienceRatings {
     });
   }
 
-  /**
-   *
-   * @param {number} ratingId
-   * @param {Object} updates
-   * @param {number | undefined} updates.rating
-   * @param {string | undefined} updates.feedback
-   * @returns {Promise<ExperienceRating>}
-   */
-  async updateRating(ratingId, updates) {
+  updateRating(
+    ratingId: bigint,
+    updates: { rating?: number; feedback?: string },
+  ) {
     return prisma.experienceRating.update({
       where: { id: ratingId },
       data: updates,
     });
   }
 
-  /**
-   * Gets a single rating by ID
-   * @param {number} ratingId
-   * @returns {Promise<ExperienceRating | null>}
-   */
-  async getRating(ratingId) {
+  getRating(ratingId: bigint) {
     return prisma.experienceRating.findUnique({
       where: {
         id: ratingId,
@@ -64,4 +38,4 @@ class ExperienceRatings {
   }
 }
 
-module.exports = new ExperienceRatings();
+export default new ExperienceRatings();

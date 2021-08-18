@@ -1,20 +1,21 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
+import { Room } from '@prisma/client';
 
-class Memberships {
-  async isMember(actorId, roomId) {
+import _error from '../../error/_error';
+import _models from '../../models/_models';
+import prisma from '../prisma';
+import time from '../time';
+
+export class Memberships {
+  async isMember(actorId: bigint, roomId: bigint) {
     const membership = await this.getMembership(actorId, roomId);
     if (!membership) {
       return false;
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const current = shared.db.time.timestamptzStillCurrent(
-      membership.expires_at,
-    );
+    const current = time.timestamptzStillCurrent(membership.expiresAt);
     return current;
   }
 
-  getMembership(actorId, roomId) {
+  getMembership(actorId: bigint, roomId: bigint) {
     return prisma.roomMembership.findFirst({
       where: {
         actorId,
@@ -42,24 +43,23 @@ class Memberships {
     });
   }
 
-  getRoomMembers(roomId) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.models.RoomMember.allInRoom(roomId);
+  getRoomMembers(roomId: bigint) {
+    return _models.RoomMember.allInRoom(roomId);
   }
 
-  revokeMembership(roomId, actorId) {
-    return prisma.roomMembership.update({
+  async revokeMembership(roomId: bigint, actorId: bigint) {
+    return prisma.roomMembership.updateMany({
       where: {
-        actorId: actorId,
-        roomId: roomId,
+        actorId,
+        roomId,
         revokedAt: null,
       },
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      data: { revokedAt: shared.db.time.now() },
+      data: { revokedAt: time.now() },
     });
   }
 
-  async forceMembership(room, actor) {
+  // TODO: typing of actor based on existing usage
+  forceMembership = async (room: Room, actor: any) => {
     /*
       NOTE: we're currently allowing room creators to be members.
 
@@ -71,11 +71,7 @@ class Memberships {
       where creators should be treated differently, they can explicitly be
       treated differently.
     */
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const existingMembership = await shared.db.room.memberships.getMembership(
-      actor.id,
-      room.id,
-    );
+    const existingMembership = await this.getMembership(actor.id, room.id);
     if (existingMembership) {
       return existingMembership;
     }
@@ -85,18 +81,16 @@ class Memberships {
         data: {
           roomId: room.id,
           actorId: actor.id,
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-          beganAt: shared.db.time.now(),
+          beganAt: time.now(),
           expiresAt,
         },
       });
       return { membership };
     } catch (e) {
       // TODO: ERROR_LOGGING
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      return { error: shared.error.code.UNEXPECTED_ERROR };
+      return { error: _error.code.UNEXPECTED_ERROR };
     }
-  }
+  };
 }
 
-module.exports = new Memberships();
+export default new Memberships();

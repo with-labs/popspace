@@ -1,5 +1,8 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('./prisma');
+import { MagicCode } from '@prisma/client';
+
+import _error from '../error/_error';
+import accounts from './accounts';
+import prisma from './prisma';
 
 /**
 Manages life cycle of magic links.
@@ -7,19 +10,20 @@ Manages life cycle of magic links.
 Magic links permit executing various restricted access for
 a given actor: e.g. unsubscribing from a mailing list.
 */
-class Magic {
-static actions = {
+export class Magic {
+  static actions = {
     UNSUBSCRIBE: 'unsubscribe',
     SUBSCRIBE: 'subscribe',
-};
+  };
 
   constructor() {}
 
-  async unsubscribeUrl(appUrl, magicLink) {
+  // TODO: remove async (unnecessary promise)
+  async unsubscribeUrl(appUrl: string, magicLink: { code: string }) {
     return `${appUrl}/unsubscribe?code=${magicLink.code}`;
   }
 
-  async createUnsubscribe(actorId) {
+  async createUnsubscribe(actorId: bigint) {
     const existingLink = await prisma.magicCode.findFirst({
       where: {
         actorId,
@@ -52,7 +56,7 @@ static actions = {
     });
   }
 
-  async createSubscribe(actorId) {
+  async createSubscribe(actorId: bigint) {
     const existingLink = await prisma.magicCode.findFirst({
       where: {
         actorId,
@@ -74,20 +78,19 @@ static actions = {
         /*
           It's ok to never expire these - as long as they don't log you in.
         */
-        expiresAT: null,
+        expiresAt: null,
         action: Magic.actions.SUBSCRIBE,
       },
     });
   }
 
-  magicLinkByCode(code) {
+  magicLinkByCode(code: string) {
     return prisma.magicCode.findUnique({ where: { code } });
   }
 
-  async tryToResolveMagicLink(request, expectedAction) {
+  async tryToResolveMagicLink(request: MagicCode, expectedAction: string) {
     if (request.action != expectedAction) {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION };
+      return { error: _error.code.MAGIC_CODE_INVALID_ACTION };
     }
     switch (request.action) {
       case Magic.actions.UNSUBSCRIBE:
@@ -95,21 +98,20 @@ static actions = {
       case Magic.actions.SUBSCRIBE:
         return await this.subscribe(request);
       default:
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        return { error: shared.error.code.MAGIC_LINK_INVALID_ACTION };
+        return { error: _error.code.MAGIC_CODE_INVALID_ACTION };
     }
   }
 
-  tryToUnsubscribe(request) {
+  tryToUnsubscribe(request: MagicCode) {
     return this.tryToResolveMagicLink(request, Magic.actions.UNSUBSCRIBE);
   }
 
-  tryToSubscribe(request) {
+  tryToSubscribe(request: MagicCode) {
     return this.tryToResolveMagicLink(request, Magic.actions.SUBSCRIBE);
   }
 
   // Private
-  async unsubscribe(request) {
+  async unsubscribe(request: MagicCode) {
     const validation = await this.requireActor(request);
     if (validation.error) {
       return validation;
@@ -117,34 +119,27 @@ static actions = {
     // Usually we'd want to mark the magic link as expired in a transaction,
     // but there is no reason to invalidate unsubscribe links.
     // https://security.stackexchange.com/questions/115964/email-unsubscribe-handling-security
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    await shared.db.accounts.newsletterUnsubscribe(
-      request.actorId || request.actor_id,
-    );
+    await accounts.newsletterUnsubscribe(request.actorId);
     return {};
   }
 
-  async subscribe(request) {
+  async subscribe(request: MagicCode) {
     const validation = await this.requireActor(request);
     if (validation.error) {
       return validation;
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    await shared.db.accounts.newsletterSubscribe(
-      request.actorId || request.actor_id,
-    );
+    await accounts.newsletterSubscribe(request.actorId);
     return {};
   }
 
-  async requireActor(request) {
-    const actorId = request.actorId || request.actor_id;
-    const actor = await prisma.actor.findUnique({ where: { actorId } });
+  async requireActor(request: MagicCode) {
+    const actorId = request.actorId;
+    const actor = await prisma.actor.findUnique({ where: { id: actorId } });
     if (!actor) {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      return { error: shared.error.code.NO_SUCH_ACTOR };
+      return { error: _error.code.NO_SUCH_ACTOR };
     }
     return {};
   }
 }
 
-module.exports = new Magic();
+export default new Magic();

@@ -1,6 +1,7 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../db/prisma');
+import _db from '../db/_index';
+import prisma from '../db/prisma';
 
+// FIXME: confusing, maybe broken typings
 class RoomMember {
   static allInRoom: any;
 
@@ -32,7 +33,7 @@ class RoomMember {
 }
 
 RoomMember.allInRoom = async (roomId) => {
-  const memberships = await prisma.roomMembership.findFirst({
+  const memberships = await prisma.roomMembership.findMany({
     where: {
       roomId,
       revokedAt: null,
@@ -53,25 +54,24 @@ RoomMember.allInRoom = async (roomId) => {
   const actorById = {};
   const participantStatesByActorId = {};
   for (const actor of actors) {
-    actorById[actor.id] = actor;
+    actorById[actor.id.toString()] = actor;
   }
   for (const ps of participantStates) {
-    participantStatesByActorId[ps.actorId] = ps;
+    participantStatesByActorId[ps.actorId.toString()] = ps;
   }
 
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const room = await shared.db.room.core.roomById(roomId);
+  const room = await _db.room.core.roomById(roomId);
 
   const result = [];
   for (const actorId of actorIds) {
     const roomMember = new RoomMember(
       room,
-      actorById[actorId],
-      participantStatesByActorId[actorId],
+      actorById[actorId.toString()],
+      participantStatesByActorId[actorId.toString()],
     );
     result.push(roomMember);
   }
   return result;
 };
 
-module.exports = RoomMember;
+export default RoomMember;

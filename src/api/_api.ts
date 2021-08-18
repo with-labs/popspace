@@ -1,4 +1,7 @@
-module.exports = {
-  middleware: require("./middleware.js"),
-  http: require("./http.js"),
-}
+import http from './http';
+import middleware from './middleware';
+
+export default {
+  middleware,
+  http,
+};

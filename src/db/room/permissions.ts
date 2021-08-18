@@ -1,6 +1,10 @@
-// @ts-expect-error ts-migrate(2300) FIXME: Duplicate identifier 'Permissions'.
-class Permissions {
-  async canEnter(actor, room) {
+import { Room } from '@prisma/client';
+
+import memberships from './memberships';
+
+export class Permissions {
+  // TODO: actor typing based on existing usage
+  async canEnter(actor: any, room: Room) {
     if (!room || !actor) {
       return false;
     }
@@ -13,17 +17,15 @@ class Permissions {
     return await this.isMember(actor, room);
   }
 
-  async isMemberOrCreator(actor, room) {
+  async isMemberOrCreator(actor: any, room: Room) {
     if (room.creatorId == actor.id) {
       return true;
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return await shared.db.room.memberships.isMember(actor.id, room.id);
+    return await memberships.isMember(actor.id, room.id);
   }
 
-  async isMember(actor, room) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return await shared.db.room.memberships.isMember(actor.id, room.id);
+  async isMember(actor: any, room: Room) {
+    return await memberships.isMember(actor.id, room.id);
   }
 
   async isCreator(actor, room) {
@@ -31,4 +33,4 @@ class Permissions {
   }
 }
 
-module.exports = new Permissions();
+export default new Permissions();

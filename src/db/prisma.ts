@@ -1,14 +1,15 @@
-const { PrismaClient } = require('@prisma/client');
-const config = require('./config.js');
+import { PrismaClient } from '@prisma/client';
+
+import config from './config';
 
 const configToDbUrl = (config) => {
   return `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
 };
 
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = new PrismaClient({
   // @see https://github.com/prisma/prisma/issues/5533
   __internal: {
+    // @ts-ignore
     useUds: true,
   },
   datasources: {
@@ -20,4 +21,4 @@ const prisma = new PrismaClient({
   },
 });
 
-module.exports = prisma;
+export default prisma;

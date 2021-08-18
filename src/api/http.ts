@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   code: {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
     OK: 200,
@@ -36,5 +36,5 @@ module.exports = {
     UNAVAILABLE_FOR_LEGAL_REASONS: 451,
 
     INTERNAL_SERVER_ERROR: 500,
-  }
-}
+  },
+};

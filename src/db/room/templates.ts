@@ -1,15 +1,17 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'SYSTEM_USE... Remove this comment to see the full error message
-const { SYSTEM_USER_ID } = require('../constants.js');
-let mockCreator;
+import { Actor } from '@prisma/client';
+
+import accounts from '../accounts';
+import { SYSTEM_USER_ID } from '../constants';
+import prisma from '../prisma';
+import data from './data';
+
+let mockCreator: Actor;
 
 const getMockCreator = async () => {
   if (mockCreator) {
     return mockCreator;
   }
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  mockCreator = await shared.db.accounts.actorById(SYSTEM_USER_ID);
+  mockCreator = await accounts.actorById(SYSTEM_USER_ID);
   if (!mockCreator) {
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
     log.app.info(
@@ -41,13 +43,8 @@ const getMockCreator = async () => {
  * @property {Array} widgets - A tuple of [WidgetType, WidgetState, Transform]
  */
 
-module.exports = {
-  /**
-   *
-   * @param {number} roomId
-   * @param {TemplateData} templateData
-   */
-  setUpRoomFromTemplate: async (roomId, templateData) => {
+export default {
+  setUpRoomFromTemplate: async (roomId: bigint, templateData: any) => {
     const creator = await getMockCreator();
     /*
       Sample room template as of 2021/07/12
@@ -68,14 +65,12 @@ module.exports = {
       ...templateData.state,
       zOrder: [],
     };
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    await shared.db.room.data.setRoomState(roomId, state);
+    await data.setRoomState(roomId, state);
 
     // add widgets
     const widgets = [];
     for (const [type, widgetState, transform] of templateData.widgets) {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      const roomWidget = await shared.db.room.data.addWidgetInRoom(
+      const roomWidget = await data.addWidgetInRoom(
         creator.id,
         roomId,
         type,
@@ -101,14 +96,11 @@ module.exports = {
     };
   },
 
-  /**
-   * Creates a new template under the default System user.
-   * TODO: create templates under other users
-   * @param {string} templateName
-   * @param {TemplateData} data
-   * @param {string} creatorId
-   */
-  createTemplate: (templateName, data, creatorId = SYSTEM_USER_ID) => {
+  createTemplate: (
+    templateName: string,
+    data: any,
+    creatorId = SYSTEM_USER_ID,
+  ) => {
     return prisma.roomTemplate.create({
       data: {
         name: templateName,

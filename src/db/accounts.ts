@@ -1,29 +1,34 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('./prisma');
+import { Request } from 'express';
+
+import otplib from '../lib/otp';
+import events from './events';
+import prisma from './prisma';
+import time from './time';
 
 const LOGIN_REQUEST_EXPIRY_DAYS = 30;
 const SIGNUP_REQUEST_EXPIRY_DAYS = 30;
 
-class Accounts {
+export class Accounts {
   constructor() {}
 
-  async delete(actorId) {
+  async delete(actorId: bigint) {
     return await prisma.actor.update({
       where: { id: actorId },
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      data: { deletedAt: shared.db.time.now() },
+      data: { deletedAt: time.now() },
     });
   }
 
-  async hardDelete(actorId) {
+  async hardDelete(actorId: bigint) {
     // support hard-deleting soft-deleted actors
-    actorId = parseInt(actorId);
     const actor = await prisma.actor.findUnique({ where: { id: actorId } });
     if (!actor || !actor.deletedAt) {
       throw 'No such actor - can only hard delete soft deleted actors.';
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const createdRooms = await shared.db.room.core.getCreatedRooms(actorId);
+    const createdRooms = await prisma.room.findMany({
+      where: {
+        creatorId: actorId,
+      },
+    });
     const roomIds = createdRooms.map((r) => r.id);
     const membershipsToOwnedRooms = await prisma.roomMembership.findMany({
       where: {
@@ -60,43 +65,43 @@ class Accounts {
     ]);
   }
 
-  async actorByEmail(email) {
-    const actor = await prisma.actor.findUnique({
-      where: {
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        email: shared.lib.args.consolidateEmailString(email),
-      },
-    });
-    if (actor.deletedAt) return null;
-    return actor;
-  }
+  // TODO: delete? Actors don't have emails.
 
-  actorsByEmails(emails) {
-    const consolidatedEmails = emails.map((e) =>
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      shared.lib.args.consolidateEmailString(e),
-    );
-    return prisma.actor.findMany({
-      where: {
-        email: { in: consolidatedEmails },
-        deletedAt: null,
-      },
-    });
-  }
+  // async actorByEmail(email: string) {
+  //   const actor = await prisma.actor.findFirst({
+  //     where: {
+  //       email: args.consolidateEmailString(email),
+  //     },
+  //   });
+  //   if (actor.deletedAt) return null;
+  //   return actor;
+  // }
 
-  async actorById(id) {
+  // actorsByEmails(emails) {
+  //   const consolidatedEmails = emails.map((e) =>
+  //     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
+  //     shared.lib.args.consolidateEmailString(e),
+  //   );
+  //   return prisma.actor.findMany({
+  //     where: {
+  //       email: { in: consolidatedEmails },
+  //       deletedAt: null,
+  //     },
+  //   });
+  // }
+
+  async actorById(id: bigint) {
     const actor = await prisma.actor.findUnique({ where: { id } });
     if (actor.deletedAt) return null;
     return actor;
   }
 
-  createActor(kind, source, expressRequest) {
+  createActor(kind: string, source: string, expressRequest: Request) {
     return prisma.actor.create({
       data: {
         kind,
         events: {
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-          create: shared.db.events.eventFromRequest(
+          create: events.eventFromRequest(
             undefined,
             null,
             'sourced',
@@ -108,21 +113,19 @@ class Accounts {
     });
   }
 
-  async createLoginRequest(actor) {
+  // TODO: typing for actor based on existing usage
+  async createLoginRequest(actor: any) {
     const loginRequest = {
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      code: shared.lib.otp.generate(),
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      issuedAt: shared.db.time.now(),
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      expiresAt: shared.lib.otp.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
+      code: otplib.generate(),
+      issuedAt: time.now(),
+      expiresAt: otplib.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
       actorId: actor.id,
       action: 'login',
     };
     return await prisma.magicCode.create({ data: loginRequest });
   }
 
-  async createSession(actorId, tx = null, req = null) {
+  async createSession(actorId: bigint, tx = null, req: Request | null = null) {
     const session = await prisma.session.create({
       data: {
         actorId,
@@ -139,8 +142,7 @@ class Accounts {
       there doesn't seem to be any extra info here.
     */
     const eventValue = null;
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    await shared.db.events.recordEvent(
+    await events.recordEvent(
       actorId,
       session.id,
       'session',
@@ -153,14 +155,14 @@ class Accounts {
 
   // TODO: email subscriptions, again.
 
-  async newsletterSubscribe(actorId) {
+  async newsletterSubscribe(actorId: bigint) {
     // return await prisma.actor.update(
     //   {where: { id: actorId },
     //   data: { newsletterOptIn: true },
     //   });
   }
 
-  async newsletterUnsubscribe(actorId) {
+  async newsletterUnsubscribe(actorId: bigint) {
     // return await prisma.actor.update({
     //   where: { id: actorId },
     //   data: { newsletterOptIn: false },
@@ -168,4 +170,4 @@ class Accounts {
   }
 }
 
-module.exports = new Accounts();
+export default new Accounts();

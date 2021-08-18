@@ -1,9 +1,14 @@
+import { Room } from '@prisma/client';
+
+import _room from '../db/room/_room';
+import _models from './_models';
+
 /*
   All the data stored in a room (widgets, participants, wallpaper...)
 */
 class RoomData {
-  room: any;
-  constructor(room) {
+  room: Room;
+  constructor(room: Room) {
     this.room = room;
   }
 
@@ -16,8 +21,7 @@ class RoomData {
   }
 
   get route() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId());
+    return _room.namesAndRoutes.route(this.displayName, this.urlId);
   }
 
   get displayName() {
@@ -25,38 +29,32 @@ class RoomData {
   }
 
   async widgets() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.models.RoomWidget.allInRoom(this.roomId);
+    return _models.RoomWidget.allInRoom(this.roomId);
   }
 
   async state() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const entry = await shared.db.room.data.getRoomState(this.roomId);
+    const entry = await _room.data.getRoomState(this.roomId);
     return entry.state;
   }
 
   async wallpaper() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const entry = await shared.db.room.data.getRoomWallpaperData(this.roomId);
+    const entry = await _room.data.getRoomWallpaperData(this.roomId);
     return entry;
   }
 
   async serialize() {
-    const room = {
+    return {
       id: this.roomId,
       displayName: this.displayName,
       route: this.route,
       urlId: this.urlId,
+      widgets:
+        (await Promise.all((await this.widgets()).map((w) => w.serialize()))) ||
+        [],
+      state: (await this.state()) || {},
+      wallpaper: await this.wallpaper(),
     };
-    const widgetsInRoom = await this.widgets();
-    (room as any).widgets = await Promise.all(
-      widgetsInRoom.map(async (w) => w.serialize()),
-    );
-    (room as any).state = (await this.state()) || {};
-    (room as any).widgets = (room as any).widgets || [];
-    (room as any).wallpaper = await this.wallpaper();
-    return room;
   }
 }
 
-module.exports = RoomData;
+export default RoomData;

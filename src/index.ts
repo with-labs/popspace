@@ -1,26 +1,33 @@
+import api from './api/_api';
+import db from './db/_index';
+import error from './error/_error';
+import lib from './lib/_index';
+import models from './models/_models';
+import net from './net/_net';
+
 const shared = {
-  db: require("./src/db/_index.js"),
-  lib: require("./src/lib/_index.js"),
-  error: require("./src/error/_error.js"),
-  models: require("./src/models/_models.js"),
-  api: require("./src/api/_api.js"),
-  net: require("./src/net/_net.js"),
+  db,
+  lib,
+  error,
+  models,
+  api,
+  net,
   init: async () => {
-    await shared.db.pg.init()
+    await db.pg.init();
   },
   cleanup: async () => {
-    await shared.db.pg.tearDown()
+    await db.pg.tearDown();
   },
   requireTesting: () => {
-    if(process.env.NODE_ENV != 'test') {
-      throw "NODE_ENV must be test"
+    if (process.env.NODE_ENV != 'test') {
+      throw 'NODE_ENV must be test';
     }
-    shared.test = require("./test/_test.js")
+    (shared as any).test = require('./test/_test');
     /*
       can be more explicit/verbose:
       shared.test = shared.initTesting()
     */
-    return shared.test
+    return (shared as any).test;
   },
   initDynamo: async () => {
     /*
@@ -28,12 +35,12 @@ const shared = {
       at least until I set up readonly credentials,
       so auxiliary microservices can safely init
     */
-    await shared.db.dynamo.init()
+    await db.dynamo.init();
     /*
       No cleanup necessary in general,
       it's just individual API calls that have credentials
     */
   },
-}
+};
 
-module.exports = shared
+export default shared;

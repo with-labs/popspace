@@ -1,0 +1,32 @@
+export default class RedisBase {
+    client: any;
+    constructor(credentials: any);
+    enqueue(key: any, data: any): Promise<unknown>;
+    dequeue(key: any): Promise<unknown>;
+    enqueueUnique(key: any, value: any): Promise<unknown>;
+    dequeueUnique(key: any): Promise<unknown>;
+    carefulDequeueUnique(key: any): Promise<unknown>;
+    finishCarefulDequeue(key: any, value: any): Promise<unknown>;
+    moveAndFetch(fromKey: any, toKey: any, value?: any): Promise<unknown>;
+    zpeek(key: any): Promise<unknown>;
+    zcard(key: any): Promise<unknown>;
+    zscore(key: any, value: any): Promise<unknown>;
+    zmembers(key: any, withScores: any): Promise<unknown>;
+    zcount(key: any, min?: string, max?: string): Promise<unknown>;
+    zadd(key: any, score: any, value: any): Promise<unknown>;
+    zrem(key: any, value: any): Promise<unknown>;
+    zismember(key: any, value: any): Promise<unknown>;
+    hset(key: any, hKey: any, hValue: any): Promise<unknown>;
+    hget(key: any, hKey: any): Promise<unknown>;
+    hdel(key: any, hKey: any): Promise<unknown>;
+    del(key: any): Promise<unknown>;
+    sadd(key: any, value: any): Promise<unknown>;
+    srem(key: any, value: any): Promise<unknown>;
+    spop(key: any, count?: number): Promise<unknown>;
+    smembers(key: any): Promise<unknown>;
+    set(key: any, value: any): Promise<unknown>;
+    get(key: any): Promise<unknown>;
+    onComplete(resolve: any, reject: any): (err: any, result: any) => any;
+    intermediateStoreKey(key: any): string;
+    finishedStoreKey(key: any): string;
+}

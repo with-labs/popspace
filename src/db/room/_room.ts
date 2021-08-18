@@ -1,8 +1,15 @@
-module.exports = {
-  memberships: require("./memberships.js"),
-  permissions: require("./permissions.js"),
-  namesAndRoutes: require("./names_and_routes.js"),
-  data: require("./data.js"),
-  core: require("./core.js"),
-  templates: require("./templates.js"),
-}
+import core from './core';
+import data from './data';
+import memberships from './memberships';
+import namesAndRoutes from './names_and_routes';
+import permissions from './permissions';
+import templates from './templates';
+
+export default {
+  memberships,
+  permissions,
+  namesAndRoutes,
+  data,
+  core,
+  templates,
+};

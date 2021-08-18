@@ -4,34 +4,34 @@
  * send bigints as simple strings.
  */
 const serialization = {
-  replacer: (key, value) => {
+  replacer: (key: string, value: any) => {
     if (typeof value === 'bigint' || value instanceof BigInt) {
       return serialization.formatBigInt(value);
     }
     return value;
   },
 
-  serialize: (value) => {
+  serialize: (value: any) => {
     return JSON.stringify(value, serialization.replacer);
   },
 
-  reviver: (key, value) => {
+  reviver: (key: string, value: any) => {
     if (serialization.detectBigInt(value)) {
       return serialization.parseBigInt(value);
     }
     return value;
   },
 
-  deserialize: (value) => {
+  deserialize: (value: string) => {
     return JSON.parse(value, serialization.reviver);
   },
 
   // private
-  formatBigInt: (value) => {
+  formatBigInt: (value: bigint | BigInt) => {
     return value.toString();
   },
 
-  detectBigInt: (value) => {
+  detectBigInt: (value: any) => {
     if (typeof value !== 'string') {
       return false;
     }
@@ -44,14 +44,14 @@ const serialization = {
     }
   },
 
-  parseBigInt: (value) => {
+  parseBigInt: (value: string | number) => {
     return BigInt(value);
   },
 };
 
-module.exports = serialization;
+export default serialization;
 
 // also setup bigint default serialization...
 (BigInt.prototype as any).toJSON = function () {
-    return serialization.formatBigInt(this);
+  return serialization.formatBigInt(this);
 };

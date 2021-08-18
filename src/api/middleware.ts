@@ -1,10 +1,31 @@
-const base64Decode = (str) => Buffer.from(str, 'base64').toString('utf-8');
+import { NextFunction, Request, Response } from 'express';
+
+import db from '../db/_index';
+import error from '../error/_error';
+import auth from '../lib/auth';
+import api from './_api';
+
+const base64Decode = (str: string) =>
+  Buffer.from(str, 'base64').toString('utf-8');
+
+// extend the Express request to support our custom properties
+declare module 'express' {
+  interface Request {
+    actor: any;
+    session: any;
+  }
+}
 
 const middleware = {
-  getActor: async (req, res, next) => {
+  getActor: async (req: Request, res: Response, next: NextFunction) => {
     // support Authorization header with a bearer token,
     // fallback to a `token` field on a POST body
-    const authHeader = req.headers.authorization || req.headers.Authorization;
+    let authHeader = req.headers.authorization;
+    if (!authHeader && req.headers.Authorization) {
+      authHeader = Array.isArray(req.headers.Authorization)
+        ? req.headers.Authorization[0]
+        : req.headers.Authorization;
+    }
     const token =
       authHeader && authHeader.startsWith('Bearer')
         ? base64Decode(authHeader.replace('Bearer ', ''))
@@ -12,14 +33,12 @@ const middleware = {
     if (!token) {
       return next();
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const session = await shared.lib.auth.sessionFromToken(token);
+    const session = await auth.sessionFromToken(token);
     if (!session) {
       return next();
     }
-    const actorId = parseInt(session.actorId);
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const actor = await shared.db.accounts.actorById(actorId);
+    const actorId = session.actorId;
+    const actor = await db.accounts.actorById(actorId);
     if (!actor) {
       return next();
     }
@@ -38,14 +57,12 @@ const middleware = {
     next();
   },
 
-  requireActor: async (req, res, next) => {
+  requireActor: async (req: Request, res: Response, next: NextFunction) => {
     if (!req.actor) {
       return next({
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        errorCode: shared.error.code.SESSION_REQUIRED,
+        errorCode: error.code.SESSION_REQUIRED,
         message: 'Must have a valid session',
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        httpCode: shared.api.http.code.UNAUTHORIZED,
+        httpCode: api.http.code.UNAUTHORIZED,
       });
     }
     next();
@@ -56,26 +73,21 @@ const middleware = {
     if (!roomRoute) {
       return next(
         {
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-          errorCode: shared.error.code.INVALID_API_PARAMS,
+          errorCode: error.code.INVALID_API_PARAMS,
           message: 'Must provide room_route',
         },
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        shared.api.http.code.BAD_REQUEST,
+        api.http.code.BAD_REQUEST,
       );
     }
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    req.room = await shared.db.room.core.roomByRoute(roomRoute);
+    req.room = await db.room.core.roomByRoute(roomRoute);
     next();
   },
 
   requireRoom: async (req, res, next) => {
     if (!req.room) {
       return next(
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        { errorCode: shared.error.code.UNKNOWN_ROOM, message: 'Unknown room' },
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        shared.api.http.code.BAD_REQUEST,
+        { errorCode: error.code.UNKNOWN_ROOM, message: 'Unknown room' },
+        api.http.code.BAD_REQUEST,
       );
     }
     next();
@@ -84,45 +96,36 @@ const middleware = {
   requireRoomCreator: async (req, res, next) => {
     if (req.actor.id != req.room.creatorId) {
       return next({
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        errorCode: shared.error.code.PERMISSION_DENIED,
+        errorCode: error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        httpCode: shared.api.http.code.UNAUTHORIZED,
+        httpCode: api.http.code.UNAUTHORIZED,
       });
     }
     next();
   },
 
   requireRoomMember: async (req, res, next) => {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const isMember = await shared.db.room.permissions.isMember(
-      req.user,
-      req.room,
-    );
+    const isMember = await db.room.permissions.isMember(req.user, req.room);
     if (!isMember) {
       return next({
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        errorCode: shared.error.code.PERMISSION_DENIED,
+        errorCode: error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        httpCode: shared.api.http.code.UNAUTHORIZED,
+        httpCode: api.http.code.UNAUTHORIZED,
       });
     }
     next();
   },
 
   requireRoomMemberOrCreator: async (req, res, next) => {
-    const isMemberOrCreator =
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      await shared.db.room.permissions.isMemberOrCreator(req.actor, req.room);
+    const isMemberOrCreator = await db.room.permissions.isMemberOrCreator(
+      req.actor,
+      req.room,
+    );
     if (!isMemberOrCreator) {
       return next({
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        errorCode: shared.error.code.PERMISSION_DENIED,
+        errorCode: error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        httpCode: shared.api.http.code.UNAUTHORIZED,
+        httpCode: api.http.code.UNAUTHORIZED,
       });
     }
     next();
@@ -131,15 +134,13 @@ const middleware = {
   requireAdmin: async (req, res, next) => {
     if (!req.actor || !req.actor.admin) {
       return next({
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        errorCode: shared.error.code.PERMISSION_DENIED,
+        errorCode: error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        httpCode: shared.api.http.code.UNAUTHORIZED,
+        httpCode: api.http.code.UNAUTHORIZED,
       });
     }
     next();
   },
 };
 
-module.exports = middleware;
+export default middleware;

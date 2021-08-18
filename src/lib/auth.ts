@@ -1,17 +1,15 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'moment'.
-const moment = require('moment');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../db/prisma');
+import { Session } from '@prisma/client';
+import moment from 'moment';
 
-const auth = {};
+import prisma from '../db/prisma';
 
-class Auth {
-  async actorFromToken(token) {
+export class Auth {
+  async actorFromToken(token: string) {
     const { actor } = await this.actorAndSessionFromToken(token);
     return actor;
   }
 
-  async actorAndSessionFromToken(token) {
+  async actorAndSessionFromToken(token: string) {
     const session = await this.sessionFromToken(token);
     if (!session) {
       return {};
@@ -25,7 +23,7 @@ class Auth {
     return { actor, session };
   }
 
-  tokenFromSession(session) {
+  tokenFromSession(session: Session) {
     /*
       At scale, we should use an O(1) store keyed on secrets,
       since btrees on random strings are quite inefficient (i.e.
@@ -43,7 +41,7 @@ class Auth {
     }
   }
 
-  async sessionFromToken(sessionToken) {
+  async sessionFromToken(sessionToken: string) {
     if (!sessionToken) {
       return null;
     }
@@ -57,12 +55,13 @@ class Auth {
     }
   }
 
-  isExpired(entity) {
+  isExpired(entity: { expiresAt?: string | Date }) {
     if (!entity.expiresAt) return false;
     return moment(entity.expiresAt).valueOf() < moment.utc().valueOf();
   }
 
-  async needsNewSessionToken(sessionToken, actor) {
+  // TODO: actor typings based on existing usage
+  async needsNewSessionToken(sessionToken: string, actor: any) {
     if (!sessionToken) {
       return true;
     }
@@ -70,8 +69,8 @@ class Auth {
     if (!session) {
       return true;
     }
-    return parseInt(session.actorId) != parseInt(actor.id);
+    return session.actorId != BigInt(actor.id);
   }
 }
 
-module.exports = new Auth();
+export default new Auth();

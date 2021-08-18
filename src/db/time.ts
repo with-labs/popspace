@@ -1,33 +1,38 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'moment'.
-const moment = require("moment")
+import moment from 'moment';
 
-class Time {
+export class Time {
   now() {
     // We prefer to use timestamptz and keep everything in utc
-    return moment.utc().format()
+    return moment.utc().format();
   }
 
-  timestamptzPlusMillis(timestamptz, millis) {
-    const startMoment = moment(timestamptz).utc()
-    millis = parseInt(millis)
-    return moment(startMoment.valueOf() + millis).utc().format()
+  timestamptzPlusMillis(timestamptz: string | Date, millis: number | string) {
+    const startMoment = moment(timestamptz).utc();
+    millis = typeof millis === 'number' ? millis : parseInt(millis);
+    return moment(startMoment.valueOf() + millis)
+      .utc()
+      .format();
   }
 
-  timestamptzStillCurrent(timestamptz) {
+  timestamptzStillCurrent(timestamptz: Date | string) {
     // timestamptz = A moment in the future that should
     // be ahead of the present => greater comparison
-    return !timestamptz || (moment(timestamptz).valueOf() > moment.utc().valueOf())
+    return (
+      !timestamptz || moment(timestamptz).valueOf() > moment.utc().valueOf()
+    );
   }
 
-  timestamptzHasPassed(timestamptz) {
+  timestamptzHasPassed(timestamptz: Date | string) {
     // timestamptz = A moment in time in the past that is
     // before now => less comparison
-    return timestamptz && (moment(timestamptz).valueOf() < moment.utc().valueOf())
+    return (
+      timestamptz && moment(timestamptz).valueOf() < moment.utc().valueOf()
+    );
   }
 
-  isTimestamptzAfter(timestamptz1, timestamptz2) {
-    return moment(timestamptz1).valueOf() > moment(timestamptz2).valueOf()
+  isTimestamptzAfter(timestamptz1: Date | string, timestamptz2: Date | string) {
+    return moment(timestamptz1).valueOf() > moment(timestamptz2).valueOf();
   }
 }
 
-module.exports = new Time()
+export default new Time();

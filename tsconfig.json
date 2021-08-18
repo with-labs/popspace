@@ -3,7 +3,10 @@
     "target": "es5",
     "module": "commonjs",
     "allowJs": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true
   },
   "include": ["./src"]
 }

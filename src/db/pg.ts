@@ -1,13 +1,13 @@
+import AsyncLock from 'async-lock';
+import massive from 'massive';
+import types from 'pg';
+import monitor from 'pg-monitor';
+
 /*
   Class for managing sessions with postgres.
 
   If we have replica-choosing logic, this is the logical place to put it.
 */
-const massive = require('massive');
-const monitor = require('pg-monitor');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'moment'.
-const moment = require("moment")
-const AsyncLock = require('async-lock')
 const lock = new AsyncLock();
 
 /*
@@ -27,21 +27,23 @@ const lock = new AsyncLock();
   in noodle-api - and used to work previously in mercury and others.
 */
 // @ts-expect-error ts-migrate(2322) FIXME: Type '(((callback: (...args: any[]) => void, ...ar... Remove this comment to see the full error message
-global.setImmediate = global.setImmediate || ((x) => {
-  // https://stackoverflow.com/questions/15349733/setimmediate-vs-nexttick/15349865#15349865
-  return process.nextTick(x)
-})
+global.setImmediate =
+  global.setImmediate ||
+  ((x) => {
+    // https://stackoverflow.com/questions/15349733/setimmediate-vs-nexttick/15349865#15349865
+    return process.nextTick(x);
+  });
 
-if(!(global as any).log) {
+if (!(global as any).log) {
   // Perhaps the shared repo can have a standard log defined at the top level
-(global as any).log = {
+  (global as any).log = {
     app: {
-        debug: (message) => (console.log(message)),
-        info: (message) => (console.log(message)),
-        warn: (message) => (console.log(message)),
-        error: (message) => (console.log(message))
-    }
-};
+      debug: (message) => console.log(message),
+      info: (message) => console.log(message),
+      warn: (message) => console.log(message),
+      error: (message) => console.log(message),
+    },
+  };
 }
 
 const overridePgTimestampConversion = () => {
@@ -49,88 +51,86 @@ const overridePgTimestampConversion = () => {
   // performs time zone conversion.
   // this screws everything up if you store dates in UTC
   // what we want is to return the raw date.
-  const types = require('pg').types;
   const timestampOID = 1114;
-  types.setTypeParser(1114, function(stringValue) {
+  types.setTypeParser(1114, function (stringValue) {
     return stringValue;
-  })
-}
+  });
+};
 
-let __db = null
+let __db = null;
 
-class Pg {
+export class Pg {
   massive: any;
   async init() {
     await lock.acquire('with_init_pg', async () => {
-      if(__db) {
-        this.massive = __db
-        return __db
+      if (__db) {
+        this.massive = __db;
+        return __db;
       }
-      overridePgTimestampConversion()
+      overridePgTimestampConversion();
       // Require it here to make sure environment is set up with Netlify.
       // We inject env vars manually after the function starts,
       // but after module dependencies are loaded
       // so unless we access process.env after dependencies are loaded,
       // we won't have the credentials.
-      const config = require('./config.js')
-      __db = await massive(config)
-      this.massive = __db
+      const config = require('./config');
+      __db = await massive(config);
+      this.massive = __db;
       try {
         monitor.attach(__db.driverConfig);
-        monitor.setTheme('matrix')
-      } catch(e) {
+        monitor.setTheme('matrix');
+      } catch (e) {
         // With lambdas it seems sometimes the monitor fails to detach between runs
         // keep logs to understand frequency
         // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-        log.app.warn("monitor.attach failed, rertying", e)
+        log.app.warn('monitor.attach failed, rertying', e);
         try {
-          monitor.detach()
-          monitor.attach(__db.driverConfig)
-          monitor.setTheme('matrix')
+          monitor.detach();
+          monitor.attach(__db.driverConfig);
+          monitor.setTheme('matrix');
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-          log.app.warn("Having to detach and re-attach monitor")
+          log.app.warn('Having to detach and re-attach monitor');
         } catch (weirdException) {
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-          log.app.warn("Failed to attach monitor", weirdException)
+          log.app.warn('Failed to attach monitor', weirdException);
         }
       }
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-      log.app.debug("Initialized postgres")
-      return __db
-    })
-    return __db
+      log.app.debug('Initialized postgres');
+      return __db;
+    });
+    return __db;
   }
 
   async tearDown() {
     await lock.acquire('with_teardown_pg', async () => {
-      if(__db) {
+      if (__db) {
         // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-        log.app.info("Acquired tear down lock")
+        log.app.info('Acquired tear down lock');
         try {
-          monitor.detach()
-        } catch(e) {
+          monitor.detach();
+        } catch (e) {
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-          log.app.warn("Detaching unattached monitor")
+          log.app.warn('Detaching unattached monitor');
           // Nothing to do...
         }
         try {
-          await __db.instance.$pool.end()
-        } catch(e) {
+          await __db.instance.$pool.end();
+        } catch (e) {
           // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
-          log.app.warn("Ending pool multiple times")
+          log.app.warn('Ending pool multiple times');
         }
-        __db = null
-        this.massive = null
+        __db = null;
+        this.massive = null;
       }
-      return true
-    })
-    return
+      return true;
+    });
+    return;
   }
 
   async silenceLogs() {
-    monitor.detach()
+    monitor.detach();
   }
 }
 
-
-module.exports = new Pg()
+export default new Pg();

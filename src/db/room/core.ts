@@ -1,29 +1,30 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
+import prisma from '../prisma';
+import time from '../time';
+import names_and_routes from './names_and_routes';
+import templates from './templates';
 
-class Core {
+export class Core {
   constructor() {}
 
   /********************* GETTERS *******************/
-  async roomById(id) {
+  async roomById(id: bigint) {
     const room = await prisma.room.findUnique({ where: { id } });
     if (!room || room.deletedAt) return null;
     return room;
   }
 
-  async roomByUrlId(urlId) {
+  async roomByUrlId(urlId: string) {
     const room = await prisma.room.findUnique({ where: { urlId } });
     if (!room || room.deletedAt) return null;
     return room;
   }
 
-  async roomByRoute(route) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const urlId = shared.db.room.namesAndRoutes.urlIdFromRoute(route);
+  async roomByRoute(route: string) {
+    const urlId = names_and_routes.urlIdFromRoute(route);
     return await this.roomByUrlId(urlId);
   }
 
-  async routableRoomById(id) {
+  async routableRoomById(id: bigint) {
     /*
       TODO: At this point, this should return a model,
       or be deleted altogether - perhaps a model constructor
@@ -32,7 +33,7 @@ class Core {
     return this.roomById(id);
   }
 
-  getCreatedRoutableRooms(actorId) {
+  getCreatedRoutableRooms(actorId: bigint) {
     return prisma.room.findMany({
       select: {
         id: true,
@@ -50,7 +51,7 @@ class Core {
     });
   }
 
-  async getMemberRoutableRooms(actorId) {
+  async getMemberRoutableRooms(actorId: bigint) {
     const records = await prisma.roomMembership.findMany({
       where: {
         actorId,
@@ -63,8 +64,10 @@ class Core {
         roomId: true,
         createdAt: true,
         room: {
-          displayName: true,
-          creatorId: true,
+          select: {
+            displayName: true,
+            creatorId: true,
+          },
         },
       },
       orderBy: {
@@ -91,9 +94,9 @@ class Core {
    * @param {number} creatorId - may be deprecated as we move to anon actors
    */
   async createRoomFromTemplate(
-    templateName,
-    template,
-    creatorId,
+    templateName: string,
+    template: any,
+    creatorId: bigint,
     isPublic = true,
   ) {
     let templateData = template;
@@ -112,17 +115,20 @@ class Core {
       templateName,
       isPublic,
     );
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const roomData = await shared.db.room.templates.setUpRoomFromTemplate(
+    const roomData = await templates.setUpRoomFromTemplate(
       room.id,
       templateData,
     );
     return { room, roomData };
   }
 
-  async createRoom(creatorId, displayName, templateName, isPublic = true) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const urlId = await shared.db.room.namesAndRoutes.generateUniqueRoomUrlId();
+  async createRoom(
+    creatorId: bigint,
+    displayName: string,
+    templateName: string,
+    isPublic = true,
+  ) {
+    const urlId = await names_and_routes.generateUniqueRoomUrlId();
     const room = await prisma.room.create({
       data: {
         creatorId,
@@ -135,17 +141,20 @@ class Core {
     return room;
   }
 
-  async createEmptyRoom(creatorId, isPublic, displayName) {
+  async createEmptyRoom(
+    creatorId: bigint,
+    isPublic: boolean,
+    displayName: string,
+  ) {
     return this.createRoomFromTemplate(
       'empty',
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      shared.db.room.templates.empty(),
+      templates.empty(),
       creatorId,
       isPublic,
     );
   }
 
-  async setDisplayName(roomId, newDisplayName) {
+  async setDisplayName(roomId: bigint, newDisplayName: string) {
     return await prisma.room.update({
       where: { id: roomId },
       data: {
@@ -154,15 +163,14 @@ class Core {
     });
   }
 
-  async deleteRoom(roomId) {
+  async deleteRoom(roomId: bigint) {
     await prisma.room.update({
       where: { id: roomId },
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      data: { deletedAt: shared.db.time.now() },
+      data: { deletedAt: time.now() },
     });
   }
 
-  async restoreRoom(roomId) {
+  async restoreRoom(roomId: bigint) {
     await prisma.room.update({
       where: { id: roomId },
       data: { deletedAt: null },
@@ -170,4 +178,4 @@ class Core {
   }
 }
 
-module.exports = new Core();
+export default new Core();

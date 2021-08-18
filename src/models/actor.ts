@@ -1,9 +1,19 @@
+import { Actor as DbActor } from '@prisma/client';
+
+import accounts from '../db/accounts';
+
 class Actor {
-  static fromActorId: any;
+  static fromActorId = async (actorId: bigint) => {
+    const pgActor = await accounts.actorById(actorId);
+    if (!pgActor) {
+      return null;
+    }
+    return new Actor(pgActor);
+  };
 
-  _pgActor: any;
+  _pgActor: DbActor;
 
-  constructor(pgActor) {
+  constructor(pgActor: DbActor) {
     this._pgActor = pgActor;
   }
 
@@ -28,13 +38,4 @@ class Actor {
   }
 }
 
-Actor.fromActorId = async (actorId) => {
-  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-  const pgActor = await shared.db.accounts.actorById(actorId);
-  if (!pgActor) {
-    return null;
-  }
-  return new Actor(pgActor);
-};
-
-module.exports = Actor;
+export default Actor;

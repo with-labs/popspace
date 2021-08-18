@@ -1,8 +1,10 @@
-const https = require('https');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'btoa'.
-const btoa = require('btoa');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../db/prisma');
+import * as https from 'https';
+
+import prisma from '../db/prisma';
+import auth from '../lib/auth';
+import otplib from '../lib/otp';
+
+const base64Decode = (str) => Buffer.from(str, 'base64').toString('utf-8');
 
 class HttpClient {
   actor: any;
@@ -25,7 +27,7 @@ class HttpClient {
   }
 
   async post(endpoint, data) {
-    const authHeader = this.token ? `Bearer ${btoa(this.token)}` : '';
+    const authHeader = this.token ? `Bearer ${base64Decode(this.token)}` : '';
     const options = {
       host: this.host,
       port: this.port,
@@ -69,8 +71,7 @@ class HttpClient {
       session = await prisma.session.create({
         data: {
           actorId: actor.id,
-          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-          secret: shared.lib.otp.generate(),
+          secret: otplib.generate(),
         },
       });
     }
@@ -79,10 +80,9 @@ class HttpClient {
 
   async setSession(session) {
     this.session = session;
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    this.token = await shared.lib.auth.tokenFromSession(session);
+    this.token = await auth.tokenFromSession(session);
     return { session: this.session, token: this.token };
   }
 }
 
-module.exports = HttpClient;
+export default HttpClient;

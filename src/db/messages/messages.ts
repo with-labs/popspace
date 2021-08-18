@@ -1,12 +1,11 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
+import prisma from '../prisma';
 
 const MESSAGE_LIMIT = 30;
 
-class Messages {
+export class Messages {
   constructor() {}
 
-  async getWholeChat(chatId) {
+  async getWholeChat(chatId: bigint) {
     const results = await prisma.message.findMany({
       where: {
         chatId,
@@ -29,13 +28,15 @@ class Messages {
       },
     });
     // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
-    return results.map((result) => {
-      result.senderDisplayName = result.sender.displayName;
-      return result;
+    return results.map((message) => {
+      (
+        message as typeof message & { senderDisplayName: string }
+      ).senderDisplayName = message.sender.displayName;
+      return message as typeof message & { senderDisplayName: string };
     });
   }
 
-  async getNextPageMessages(chatId, lastChatMessageId) {
+  async getNextPageMessages(chatId: bigint, lastChatMessageId: bigint) {
     const filter = { chatId };
     // for pages starting at a cursor, get ids less than the cursor id
     if (lastChatMessageId) {
@@ -70,11 +71,13 @@ class Messages {
       // reverse the order of the messages so that the most recent messages are first
       messageList: messages.reverse().map((message) => {
         // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
-        message.senderDisplayName = message.sender.displayName;
-        return message;
+        (
+          message as typeof message & { senderDisplayName: string }
+        ).senderDisplayName = message.sender.displayName;
+        return message as typeof message & { senderDisplayName: string };
       }),
     };
   }
 }
 
-module.exports = new Messages();
+export default new Messages();

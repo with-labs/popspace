@@ -1,11 +1,13 @@
-module.exports = {
+import { MagicCode } from '@prisma/client';
+
+export default {
   dashboard: () => {
-    return "/"
+    return '/';
   },
-  getVerifyUrl(magic) {
-    return `/verify_account?code=${encodeURIComponent(magic.code)}`
+  getVerifyUrl(magic: MagicCode) {
+    return `/verify_account?code=${encodeURIComponent(magic.code)}`;
   },
-  getLoginUrl(magic) {
-    return `/login?code=${encodeURIComponent(magic.code)}`
-  }
-}
+  getLoginUrl(magic: MagicCode) {
+    return `/login?code=${encodeURIComponent(magic.code)}`;
+  },
+};

@@ -1,24 +1,78 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../db/prisma');
+import { Actor, Widget, WidgetState, WidgetTransform } from '@prisma/client';
+
+import accounts from '../db/accounts';
+import messages from '../db/messages/messages';
+import prisma from '../db/prisma';
 
 class RoomWidget {
-  static fromWidgetId: any;
+  static fromWidgetId = async (widgetId: bigint, roomId: bigint) => {
+    const pgWidget = await prisma.widget.findUnique({
+      where: { id: widgetId },
+      include: { creator: { select: { displayName: true } } },
+    });
+    const widgetState = await prisma.widgetState.findUnique({
+      where: { widgetId },
+    });
+    const roomWidgetState = await prisma.widgetTransform.findUnique({
+      where: { roomId_widgetId: { widgetId, roomId } },
+    });
 
-  static allInRoom: any;
+    return new RoomWidget(
+      roomId,
+      pgWidget,
+      widgetState,
+      roomWidgetState,
+      pgWidget.creator.displayName,
+    );
+  };
 
-  _creator: any;
-  _creatorDisplayName: any;
-  _pgWidget: any;
-  _roomId: any;
-  _roomWidgetState: any;
-  _widgetState: any;
+  static allInRoom = async (roomId: bigint) => {
+    const widgets = await prisma.widget.findMany({
+      where: {
+        roomWidget: {
+          roomId,
+        },
+        deletedAt: null,
+        archivedAt: null,
+      },
+      include: {
+        creator: true,
+        widgetState: true,
+        transform: true,
+      },
+    });
+
+    const result = [];
+    for (const widget of widgets) {
+      // FIXME: this seems gross
+      const widgetState = widget.widgetState || ({} as any);
+      const roomWidgetState = widget.transform || ({} as any);
+      const roomWidget = new RoomWidget(
+        roomId,
+        widget,
+        widgetState,
+        roomWidgetState,
+        widget.creator.displayName,
+      );
+      result.push(roomWidget);
+    }
+
+    return result;
+  };
+
+  _creator: Actor;
+  _creatorDisplayName: string;
+  _pgWidget: Widget;
+  _roomId: bigint;
+  _roomWidgetState: WidgetTransform;
+  _widgetState: WidgetState;
 
   constructor(
-    roomId,
-    pgWidget,
-    widgetState,
-    roomWidgetState,
-    creatorDisplayName,
+    roomId: bigint,
+    pgWidget: Widget,
+    widgetState: WidgetState,
+    roomWidgetState: WidgetTransform,
+    creatorDisplayName: string,
   ) {
     this._roomId = roomId;
     this._pgWidget = pgWidget;
@@ -47,7 +101,7 @@ class RoomWidget {
     return this._pgWidget.creatorId;
   }
 
-  setCreator(creator) {
+  setCreator(creator: Actor) {
     if (!creator) {
       if (this.creatorId()) {
         return;
@@ -63,12 +117,12 @@ class RoomWidget {
     this._creator = creator;
   }
 
+  // FIXME: this seems gross
   async creator() {
     return (this._creator =
       this._creator ||
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      (await shared.db.accounts.actorById(this.creatorId())) ||
-      {});
+      (await accounts.actorById(this.creatorId())) ||
+      ({} as any));
   }
 
   async creatorDisplayName() {
@@ -88,65 +142,15 @@ class RoomWidget {
 
     if (this._pgWidget.type === 'CHAT') {
       // if we are chat widget, get the messsages and them to the baseWidgetData
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      const messages = await shared.db.messages.getNextPageMessages(
+      const associatedMessages = await messages.getNextPageMessages(
         this._pgWidget.id,
         null,
       );
-      // @ts-expect-error ts-migrate(2322) FIXME: Type '{ messages: any; widget_id: any; creator_id:... Remove this comment to see the full error message
-      baseWidgetData = { ...baseWidgetData, messages };
+      return { ...baseWidgetData, messages: associatedMessages };
     }
 
     return baseWidgetData;
   }
 }
 
-RoomWidget.fromWidgetId = async (widgetId, roomId) => {
-  const pgWidget = await prisma.widget.findUnique({ where: { id: widgetId } });
-  const widgetState = await prisma.widgetState.findUnique({
-    where: { widgetId },
-  });
-  const roomWidgetState = await prisma.widgetTransform.findUnique({
-    where: { roomId_widgetId: { widgetId, roomId } },
-  });
-
-  // @ts-expect-error ts-migrate(2554) FIXME: Expected 5 arguments, but got 4.
-  return new RoomWidget(roomId, pgWidget, widgetState, roomWidgetState);
-};
-
-RoomWidget.allInRoom = async (roomId) => {
-  roomId = parseInt(roomId);
-  const widgets = await prisma.widget.findMany({
-    where: {
-      roomWidget: {
-        roomId,
-      },
-      deletedAt: null,
-      archivedAt: null,
-    },
-    include: {
-      creator: true,
-      widgetState: true,
-      transform: true,
-    },
-  });
-
-  const result = [];
-  for (const widget of widgets) {
-    const widgetState = widget.widgetState || {};
-    const roomWidgetState = widget.transform || {};
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const roomWidget = new shared.models.RoomWidget(
-      roomId,
-      widget,
-      widgetState,
-      roomWidgetState,
-      widget.creator.displayName,
-    );
-    result.push(roomWidget);
-  }
-
-  return result;
-};
-
-module.exports = RoomWidget;
+export default RoomWidget;

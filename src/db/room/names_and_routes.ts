@@ -1,7 +1,7 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'cryptoRand... Remove this comment to see the full error message
-const cryptoRandomString = require('crypto-random-string');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
+import cryptoRandomString from 'crypto-random-string';
+
+import args from '../../lib/args';
+import prisma from '../prisma';
 
 const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
 const NUMBERS = '0123456789';
@@ -27,7 +27,7 @@ It's distinct from the indexing identifier which is used to query rooms.
 URL IDs don't reveal information about how many rooms we have,
 are harder to brute force, and re-oxygenate the internet at night.
 */
-class NamesAndRoutes {
+export class NamesAndRoutes {
   constructor() {}
 
   roomToRoute(room) {
@@ -40,7 +40,7 @@ class NamesAndRoutes {
     The room-url-name is derived from displayName
     urlRoomId is a unique user-facing static identifier of the room,
   */
-  route(displayName, urlRoomId) {
+  route(displayName: string, urlRoomId: string) {
     /*
       For am empty urlName, stil add a prefix. Currently
       more an artifact of the data model, we can't have
@@ -57,7 +57,7 @@ class NamesAndRoutes {
     }
   }
 
-  urlIdFromRoute(route) {
+  urlIdFromRoute(route: string) {
     /*
       If a route is like display-name-hey-id12345,
       we can get the last element after a dash.
@@ -81,6 +81,7 @@ class NamesAndRoutes {
       isUnique = await this.isUniqueIdString(idString);
       iterations++;
       if (iterations == 101) {
+        // FIXME: don't rely on some global 'log' variable which may not exist
         // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
         log.error.warn('Over 100 iterations genereating unique room ID...');
       }
@@ -92,9 +93,8 @@ class NamesAndRoutes {
     return idString;
   }
 
-  getNormalizedDisplayName(displayName) {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.lib.args.multiSpaceToSingleSpace(displayName.trim());
+  getNormalizedDisplayName(displayName: string) {
+    return args.multiSpaceToSingleSpace(displayName.trim());
   }
 
   /*
@@ -102,7 +102,7 @@ class NamesAndRoutes {
     lowercased, trimmed, has spaced converted to dashes
     and special characters removed
   */
-  getUrlName(displayName) {
+  getUrlName(displayName: string) {
     const normalized = this.getNormalizedDisplayName(displayName).toLowerCase();
     // Don't need to replace the A-Z range since we're already normalized.
     // Also we're allowing dashes so that names that look like our routes
@@ -110,9 +110,7 @@ class NamesAndRoutes {
     const noSpecialCharacters = normalized.replace(/[^a-z0-9 -]/g, '');
     const spacesAsDashes = noSpecialCharacters.trim().replace(/ /g, '-');
     // Clean up double-dashes AFTER spaces have been replaced with dashes
-    const noDoubleDashes =
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      shared.lib.args.multiDashToSingleDash(spacesAsDashes);
+    const noDoubleDashes = args.multiDashToSingleDash(spacesAsDashes);
     return noDoubleDashes;
   }
 
@@ -158,7 +156,7 @@ class NamesAndRoutes {
     return this.roomIdFromSchema(schema);
   }
 
-  roomIdFromSchema(schema) {
+  roomIdFromSchema(schema: string) {
     let result = '';
     for (const char of schema) {
       switch (char) {
@@ -179,7 +177,7 @@ class NamesAndRoutes {
     return result;
   }
 
-  async isUniqueIdString(idString) {
+  async isUniqueIdString(idString: string) {
     const existingEntry = await prisma.room.findUnique({
       where: { urlId: idString },
     });
@@ -187,4 +185,4 @@ class NamesAndRoutes {
   }
 }
 
-module.exports = new NamesAndRoutes();
+export default new NamesAndRoutes();

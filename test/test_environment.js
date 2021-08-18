@@ -1,4 +1,4 @@
-module.exports = class {
+export defaultclass {
   constructor() {
     this.loggedInActors = [];
   }

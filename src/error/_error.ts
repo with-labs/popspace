@@ -1,5 +1,4 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../db/prisma');
+import prisma from '../db/prisma';
 
 const ERROR_CODES = {
   // General
@@ -39,9 +38,15 @@ const ERROR_CODES = {
   OPENGRAPH_NO_DATA: 'NO_OPENGRAPH_DATA',
 };
 
-module.exports = {
+export default {
   code: ERROR_CODES,
-  report: (error, tag, actorId, httpCode, noodleCode) => {
+  report: (
+    error: Error,
+    tag: string,
+    actorId: bigint,
+    httpCode: number,
+    noodleCode: string,
+  ) => {
     // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
     if (log && log.error) {
       // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.

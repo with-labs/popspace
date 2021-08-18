@@ -1,3 +1,3 @@
-module.exports = {
-  HttpClient: require("./http_client"),
-}
+export default {
+  HttpClient: require('./http_client'),
+};

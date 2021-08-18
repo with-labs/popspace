@@ -1,23 +1,27 @@
-module.exports = class {
-  actor: any;
-  constructor(actor) {
+import { Actor } from '@prisma/client';
+
+import _room from '../db/room/_room';
+import _models from './_models';
+
+export default class Profile {
+  actor: Actor;
+  constructor(actor: Actor) {
     this.actor = actor;
   }
 
   async serialize() {
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const participantState = await shared.db.room.data.getParticipantState(
+    const participantState = await _room.data.getParticipantState(
       this.actor.id,
     );
-    const visitableRooms =
-      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-      await shared.models.RoomWithState.allVisitableForUserId(this.actor.id);
+    const visitableRooms = await _models.RoomWithState.allVisitableForActorId(
+      this.actor.id,
+    );
     return {
       actor: this.actor,
       participantState,
       rooms: {
         owned: Promise.all(
-          visitableRooms.owned.map(async (r) => await r.serialize()),
+          visitableRooms.created.map(async (r) => await r.serialize()),
         ),
         member: Promise.all(
           visitableRooms.member.map(async (r) => await r.serialize()),
@@ -25,4 +29,4 @@ module.exports = class {
       },
     };
   }
-};
+}

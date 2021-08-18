@@ -1,9 +1,17 @@
-const userAgentParser = require('ua-parser-js');
-const url = require('url');
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('./prisma');
+import { Request } from 'express';
+import userAgentParser from 'ua-parser-js';
+import url from 'url';
 
-const reqToUrl = (expressRequest) => {
+import prisma from './prisma';
+
+// add socket to Request
+declare module 'express' {
+  interface Request {
+    socket: any;
+  }
+}
+
+const reqToUrl = (expressRequest: Request) => {
   if (!expressRequest.get) {
     return;
   }
@@ -16,12 +24,16 @@ const reqToUrl = (expressRequest) => {
   return url.format({ protocol, host, pathname });
 };
 
-class Events {
-  async actorCreateEvent(actorId, sessionId, source, expressRequest) {
+export class Events {
+  actorCreateEvent = (
+    actorId: bigint,
+    sessionId: bigint,
+    source: string,
+    expressRequest: Request,
+  ) => {
     const meta = null;
     const key = 'sourced';
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.db.events.recordEvent(
+    return this.recordEvent(
       actorId,
       sessionId,
       key,
@@ -29,13 +41,17 @@ class Events {
       expressRequest,
       meta,
     );
-  }
+  };
 
-  async roomCreateEvent(actorId, sessionId, templateName, expressRequest) {
+  roomCreateEvent = (
+    actorId: bigint,
+    sessionId: bigint,
+    templateName: string,
+    expressRequest: Request,
+  ) => {
     const meta = null;
     const key = 'room_create';
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    return shared.db.events.recordEvent(
+    return this.recordEvent(
       actorId,
       sessionId,
       key,
@@ -43,16 +59,16 @@ class Events {
       expressRequest,
       meta,
     );
-  }
+  };
 
-  async recordEvent(
-    actorId,
-    sessionId,
-    key,
-    value,
-    expressRequest = null,
-    meta = null,
-  ) {
+  recordEvent = (
+    actorId: bigint,
+    sessionId: bigint,
+    key: string,
+    value: string | null,
+    expressRequest: Request = null,
+    meta: any = null,
+  ) => {
     return prisma.actorEvent.create({
       data: this.eventFromRequest(
         actorId,
@@ -63,18 +79,18 @@ class Events {
         meta,
       ),
     });
-  }
+  };
 
   eventFromRequest(
-    actorId,
-    sessionId,
-    key,
-    value,
-    expressRequest,
-    meta = null,
+    actorId: bigint,
+    sessionId: bigint,
+    key: string,
+    value: string | null,
+    expressRequest: Request = null,
+    meta: any = null,
   ) {
     if (!expressRequest) {
-      expressRequest = { headers: {}, socket: {} };
+      expressRequest = { headers: {}, socket: {} } as any;
     }
     const ua = userAgentParser(
       expressRequest.headers ? expressRequest.headers['user-agent'] : '',
@@ -102,4 +118,4 @@ class Events {
   }
 }
 
-module.exports = new Events();
+export default new Events();

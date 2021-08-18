@@ -1,10 +1,11 @@
-// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
-const prisma = require('../prisma');
+import _models from '../../models/_models';
+import prisma from '../prisma';
+import time from '../time';
 
 const getNewState = async (
-  modelName,
-  criteria,
-  stateUpdate,
+  modelName: string,
+  criteria: any,
+  stateUpdate: any,
   curState = null,
 ) => {
   /*
@@ -38,11 +39,12 @@ const getNewState = async (
   return Object.assign(curState || {}, stateUpdate);
 };
 
-class Data {
+export class Data {
   /************************************************/
   /****************** ROOM      *******************/
   /************************************************/
-  setRoomState(roomId, newState) {
+  // TODO: RoomState typing
+  setRoomState(roomId: bigint, newState: any) {
     return prisma.roomState.upsert({
       where: { roomId },
       create: { state: newState, roomId },
@@ -50,18 +52,22 @@ class Data {
     });
   }
 
-  async updateRoomState(roomId, stateUpdate, curState = null) {
+  async updateRoomState(
+    roomId: bigint,
+    stateUpdate: any,
+    curState: any = null,
+  ) {
     return this.setRoomState(
       roomId,
       await getNewState('roomState', { roomId }, stateUpdate, curState),
     );
   }
 
-  async getRoomState(roomId) {
+  async getRoomState(roomId: bigint) {
     return await prisma.roomState.findUnique({ where: { roomId } });
   }
 
-  async getRoomWallpaperData(roomId) {
+  async getRoomWallpaperData(roomId: bigint) {
     const state = await this.getRoomState(roomId);
     if (!state.wallpaperId) return null;
     return prisma.wallpaper.findUnique({
@@ -73,7 +79,7 @@ class Data {
   /****************** PARTICIPANTS   **************/
   /************************************************/
 
-  async getParticipantState(actorId) {
+  async getParticipantState(actorId: bigint) {
     const entry = await prisma.participantState.findUnique({
       where: {
         actorId,
@@ -81,7 +87,12 @@ class Data {
     });
     return entry ? entry.state : null;
   }
-  async updateParticipantState(actorId, participantState, curState = null) {
+  // TODO: ParticipantState typing
+  async updateParticipantState(
+    actorId: bigint,
+    participantState: any,
+    curState: any = null,
+  ) {
     return this.setParticipantState(
       actorId,
       await getNewState(
@@ -92,7 +103,7 @@ class Data {
       ),
     );
   }
-  async setParticipantState(actorId, newState) {
+  async setParticipantState(actorId: bigint, newState: any) {
     const result = await prisma.participantState.upsert({
       where: { actorId },
       create: newState,
@@ -101,7 +112,7 @@ class Data {
     return result.state;
   }
 
-  async getRoomParticipantState(roomId, actorId) {
+  async getRoomParticipantState(roomId: bigint, actorId: bigint) {
     const entry = await prisma.participantTransform.findUnique({
       where: {
         roomId_actorId: {
@@ -114,10 +125,10 @@ class Data {
   }
 
   async updateRoomParticipantState(
-    roomId,
-    actorId,
-    stateUpdate,
-    curState = null,
+    roomId: bigint,
+    actorId: bigint,
+    stateUpdate: any,
+    curState: any = null,
   ) {
     return this.setRoomParticipantState(
       roomId,
@@ -135,7 +146,11 @@ class Data {
       ),
     );
   }
-  async setRoomParticipantState(roomId, actorId, newState) {
+  async setRoomParticipantState(
+    roomId: bigint,
+    actorId: bigint,
+    newState: any,
+  ) {
     const entry = await prisma.participantTransform.upsert({
       where: {
         roomId_actorId: { roomId, actorId },
@@ -149,13 +164,16 @@ class Data {
   /************************************************/
   /****************** WIDGETS   *******************/
   /************************************************/
+  // TODO: WidgetState typing
+  // TODO: WidgetTransform typing
+  // TODO: creator typing
   async addWidgetInRoom(
-    creatorId,
-    roomId,
-    type,
-    desiredWidgetState,
-    desiredRoomWidgetState,
-    creator = null,
+    creatorId: bigint,
+    roomId: bigint,
+    type: string,
+    desiredWidgetState: any,
+    desiredRoomWidgetState: any,
+    creator: any = null,
   ) {
     const widget = await prisma.widget.create({
       data: {
@@ -181,15 +199,20 @@ class Data {
       include: {
         widgetState: true,
         transform: true,
+        creator: {
+          select: {
+            displayName: true,
+          },
+        },
       },
     });
 
-    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-    const model = new shared.models.RoomWidget(
+    const model = new _models.RoomWidget(
       roomId,
       widget,
       widget.widgetState,
       widget.transform,
+      widget.creator.displayName,
     );
     if (creator) {
       model.setCreator(creator);
@@ -197,27 +220,26 @@ class Data {
     return model;
   }
 
-  softDeleteWidget(widgetId, deletingActorId = null) {
+  softDeleteWidget(widgetId: bigint, deletingActorId: bigint | null = null) {
     return prisma.widget.update({
       where: { id: widgetId },
       data: {
-        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
-        deletedAt: shared.db.time.now(),
+        deletedAt: time.now(),
         deletedBy: deletingActorId,
       },
     });
   }
 
-  eraseWidget(widgetId) {
+  eraseWidget(widgetId: bigint) {
     return prisma.$transaction([
       prisma.widget.delete({ where: { id: widgetId } }),
-      prisma.roomWidget.delete({ where: { widgetId } }),
+      prisma.roomWidget.deleteMany({ where: { widgetId } }),
       prisma.widgetState.delete({ where: { widgetId } }),
-      prisma.widgetTransform.delete({ where: { widgetId } }),
+      prisma.widgetTransform.deleteMany({ where: { widgetId } }),
     ]);
   }
 
-  async getRoomWidgetState(roomId, widgetId) {
+  async getRoomWidgetState(roomId: bigint, widgetId: bigint) {
     const entry = await prisma.widgetTransform.findUnique({
       where: {
         roomId_widgetId: {
@@ -230,10 +252,10 @@ class Data {
   }
 
   async updateRoomWidgetState(
-    roomId,
-    widgetId,
-    stateUpdate,
-    roomWidgetState = null,
+    roomId: bigint,
+    widgetId: bigint,
+    stateUpdate: any,
+    roomWidgetState: any = null,
   ) {
     return this.setRoomWidgetState(
       roomId,
@@ -251,7 +273,7 @@ class Data {
       ),
     );
   }
-  setRoomWidgetState(roomId, widgetId, newState) {
+  setRoomWidgetState(roomId: bigint, widgetId: bigint, newState: any) {
     return prisma.widgetTransform.upsert({
       where: {
         roomId_widgetId: { roomId, widgetId },
@@ -261,19 +283,23 @@ class Data {
     });
   }
 
-  async getWidgetState(widgetId) {
+  async getWidgetState(widgetId: bigint) {
     const entry = await prisma.widgetState.findUnique({
       where: { widgetId },
     });
     return entry.state;
   }
-  async updateWidgetState(widgetId, stateUpdate, widgetState = null) {
+  async updateWidgetState(
+    widgetId: bigint,
+    stateUpdate: any,
+    widgetState: any = null,
+  ) {
     return this.setWidgetState(
       widgetId,
       await getNewState('widgetState', { widgetId }, stateUpdate, widgetState),
     );
   }
-  setWidgetState(widgetId, newState) {
+  setWidgetState(widgetId: bigint, newState: any) {
     return prisma.widgetState.upsert({
       where: { widgetId },
       create: { widgetId, state: newState },
@@ -282,4 +308,4 @@ class Data {
   }
 }
 
-module.exports = new Data();
+export default new Data();

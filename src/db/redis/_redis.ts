@@ -1,3 +1,3 @@
-module.exports = {
-  RedisBase: require("./redis_base"),
-}
+import RedisBase from './redis_base';
+
+export default { RedisBase };

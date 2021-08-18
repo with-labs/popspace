@@ -24,4 +24,4 @@ HttpClient.forActor = async (actor, host, certificate, port) => {
   return client;
 };
 
-module.exports = HttpClient;
+export defaultHttpClient;

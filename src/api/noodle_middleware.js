@@ -19,7 +19,7 @@ class NoodleMiddleware {
     this.express.use(express.urlencoded({ extended: false }));
     this.express.use(shared.api.middleware.getIp)
     this.express.use((req, res, next) => {
-      log.request.info(req.path, req.ip, req.body)
+      log.request.info(req.path, req.realIp, req.body)
       next()
     })
 

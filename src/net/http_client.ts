@@ -1,8 +1,16 @@
 const https = require('https');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'btoa'.
 const btoa = require('btoa');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../db/prisma');
 
 class HttpClient {
+  actor: any;
+  certificate: any;
+  host: any;
+  port: any;
+  session: any;
+  token: any;
   constructor(host, certificate, port) {
     this.host = host;
     this.certificate = certificate;
@@ -36,6 +44,7 @@ class HttpClient {
           responseChunks.push(d);
         });
         res.on('end', () => {
+          // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'Buffer' is not assignable to par... Remove this comment to see the full error message
           resolve(JSON.parse(Buffer.concat(responseChunks)));
         });
         res.on('error', (e) => {
@@ -60,6 +69,7 @@ class HttpClient {
       session = await prisma.session.create({
         data: {
           actorId: actor.id,
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
           secret: shared.lib.otp.generate(),
         },
       });
@@ -69,6 +79,7 @@ class HttpClient {
 
   async setSession(session) {
     this.session = session;
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     this.token = await shared.lib.auth.tokenFromSession(session);
     return { session: this.session, token: this.token };
   }

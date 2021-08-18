@@ -1,4 +1,7 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'EmailDynam... Remove this comment to see the full error message
 class EmailDynamo {
+  documentClient: any;
+  dynamo: any;
   constructor(dynamo, documentClient) {
     this.dynamo = dynamo
     this.documentClient = documentClient
@@ -68,6 +71,7 @@ class EmailDynamo {
 
   async deleteEmailEntirely(name) {
     const emailHistory = await this.getEmailVersionHistory(name)
+    // @ts-expect-error ts-migrate(2495) FIXME: Type 'unknown' is not an array type or a string ty... Remove this comment to see the full error message
     for(const emailEntry of emailHistory) {
       await this.deleteEmail(name, emailEntry.version)
     }
@@ -126,6 +130,7 @@ class EmailDynamo {
          else {
           const names = new Set()
           data.Items.map((item) => (names.add(item.name)))
+          // @ts-expect-error ts-migrate(2569) FIXME: Type 'Set<unknown>' is not an array type or a stri... Remove this comment to see the full error message
           resolve([...names])
         }
       });
@@ -155,7 +160,6 @@ class EmailDynamo {
       })
     })
   }
-
 }
 
 module.exports = EmailDynamo

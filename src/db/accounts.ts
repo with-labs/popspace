@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('./prisma');
 
 const LOGIN_REQUEST_EXPIRY_DAYS = 30;
@@ -9,6 +10,7 @@ class Accounts {
   async delete(actorId) {
     return await prisma.actor.update({
       where: { id: actorId },
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       data: { deletedAt: shared.db.time.now() },
     });
   }
@@ -20,6 +22,7 @@ class Accounts {
     if (!actor || !actor.deletedAt) {
       throw 'No such actor - can only hard delete soft deleted actors.';
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const createdRooms = await shared.db.room.core.getCreatedRooms(actorId);
     const roomIds = createdRooms.map((r) => r.id);
     const membershipsToOwnedRooms = await prisma.roomMembership.findMany({
@@ -60,6 +63,7 @@ class Accounts {
   async actorByEmail(email) {
     const actor = await prisma.actor.findUnique({
       where: {
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         email: shared.lib.args.consolidateEmailString(email),
       },
     });
@@ -69,6 +73,7 @@ class Accounts {
 
   actorsByEmails(emails) {
     const consolidatedEmails = emails.map((e) =>
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       shared.lib.args.consolidateEmailString(e),
     );
     return prisma.actor.findMany({
@@ -90,6 +95,7 @@ class Accounts {
       data: {
         kind,
         events: {
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
           create: shared.db.events.eventFromRequest(
             undefined,
             null,
@@ -104,8 +110,11 @@ class Accounts {
 
   async createLoginRequest(actor) {
     const loginRequest = {
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       code: shared.lib.otp.generate(),
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       issuedAt: shared.db.time.now(),
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       expiresAt: shared.lib.otp.expirationInNDays(LOGIN_REQUEST_EXPIRY_DAYS),
       actorId: actor.id,
       action: 'login',
@@ -117,6 +126,7 @@ class Accounts {
     const session = await prisma.session.create({
       data: {
         actorId,
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         secret: shared.lib.otp.generate(),
         expiresAt: null,
       },
@@ -129,6 +139,7 @@ class Accounts {
       there doesn't seem to be any extra info here.
     */
     const eventValue = null;
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     await shared.db.events.recordEvent(
       actorId,
       session.id,

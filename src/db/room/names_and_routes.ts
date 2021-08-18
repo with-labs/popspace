@@ -1,4 +1,6 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'cryptoRand... Remove this comment to see the full error message
 const cryptoRandomString = require('crypto-random-string');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
 
 const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
@@ -79,9 +81,11 @@ class NamesAndRoutes {
       isUnique = await this.isUniqueIdString(idString);
       iterations++;
       if (iterations == 101) {
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
         log.error.warn('Over 100 iterations genereating unique room ID...');
       }
       if (iterations == 1001) {
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
         log.error.error('Over 1000 iterations genereating unique room ID...');
       }
     }
@@ -89,6 +93,7 @@ class NamesAndRoutes {
   }
 
   getNormalizedDisplayName(displayName) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.lib.args.multiSpaceToSingleSpace(displayName.trim());
   }
 
@@ -106,6 +111,7 @@ class NamesAndRoutes {
     const spacesAsDashes = noSpecialCharacters.trim().replace(/ /g, '-');
     // Clean up double-dashes AFTER spaces have been replaced with dashes
     const noDoubleDashes =
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       shared.lib.args.multiDashToSingleDash(spacesAsDashes);
     return noDoubleDashes;
   }

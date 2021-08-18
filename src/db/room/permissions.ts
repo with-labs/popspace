@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2300) FIXME: Duplicate identifier 'Permissions'.
 class Permissions {
   async canEnter(actor, room) {
     if (!room || !actor) {
@@ -16,10 +17,12 @@ class Permissions {
     if (room.creatorId == actor.id) {
       return true;
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return await shared.db.room.memberships.isMember(actor.id, room.id);
   }
 
   async isMember(actor, room) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return await shared.db.room.memberships.isMember(actor.id, room.id);
   }
 

@@ -1,7 +1,11 @@
 const Aws = require("aws-sdk");
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'EmailDynam... Remove this comment to see the full error message
 const EmailDynamo = require("./email_dynamo")
 
 class Dynamo {
+  documentClient: any;
+  dynamo: any;
+  email: any;
   constructor() {
   }
 
@@ -17,7 +21,6 @@ class Dynamo {
     this.documentClient = new Aws.DynamoDB.DocumentClient({service: this.dynamo})
     this.email = new EmailDynamo(this.dynamo, this.documentClient)
   }
-
 }
 
 module.exports = new Dynamo()

@@ -1,6 +1,18 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../db/prisma');
 
 class RoomWidget {
+  static fromWidgetId: any;
+
+  static allInRoom: any;
+
+  _creator: any;
+  _creatorDisplayName: any;
+  _pgWidget: any;
+  _roomId: any;
+  _roomWidgetState: any;
+  _widgetState: any;
+
   constructor(
     roomId,
     pgWidget,
@@ -54,6 +66,7 @@ class RoomWidget {
   async creator() {
     return (this._creator =
       this._creator ||
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       (await shared.db.accounts.actorById(this.creatorId())) ||
       {});
   }
@@ -75,10 +88,12 @@ class RoomWidget {
 
     if (this._pgWidget.type === 'CHAT') {
       // if we are chat widget, get the messsages and them to the baseWidgetData
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       const messages = await shared.db.messages.getNextPageMessages(
         this._pgWidget.id,
         null,
       );
+      // @ts-expect-error ts-migrate(2322) FIXME: Type '{ messages: any; widget_id: any; creator_id:... Remove this comment to see the full error message
       baseWidgetData = { ...baseWidgetData, messages };
     }
 
@@ -95,6 +110,7 @@ RoomWidget.fromWidgetId = async (widgetId, roomId) => {
     where: { roomId_widgetId: { widgetId, roomId } },
   });
 
+  // @ts-expect-error ts-migrate(2554) FIXME: Expected 5 arguments, but got 4.
   return new RoomWidget(roomId, pgWidget, widgetState, roomWidgetState);
 };
 
@@ -119,6 +135,7 @@ RoomWidget.allInRoom = async (roomId) => {
   for (const widget of widgets) {
     const widgetState = widget.widgetState || {};
     const roomWidgetState = widget.transform || {};
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const roomWidget = new shared.models.RoomWidget(
       roomId,
       widget,

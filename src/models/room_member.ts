@@ -1,6 +1,13 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../db/prisma');
 
 class RoomMember {
+  static allInRoom: any;
+
+  actor: any;
+  participantState: any;
+  room: any;
+
   constructor(room, actor, participantState) {
     this.room = room;
     this.actor = actor;
@@ -52,6 +59,7 @@ RoomMember.allInRoom = async (roomId) => {
     participantStatesByActorId[ps.actorId] = ps;
   }
 
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const room = await shared.db.room.core.roomById(roomId);
 
   const result = [];

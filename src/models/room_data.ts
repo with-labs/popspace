@@ -2,6 +2,7 @@
   All the data stored in a room (widgets, participants, wallpaper...)
 */
 class RoomData {
+  room: any;
   constructor(room) {
     this.room = room;
   }
@@ -15,7 +16,8 @@ class RoomData {
   }
 
   get route() {
-    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId);
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
+    return shared.db.room.namesAndRoutes.route(this.displayName, this.urlId());
   }
 
   get displayName() {
@@ -23,15 +25,18 @@ class RoomData {
   }
 
   async widgets() {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.models.RoomWidget.allInRoom(this.roomId);
   }
 
   async state() {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const entry = await shared.db.room.data.getRoomState(this.roomId);
     return entry.state;
   }
 
   async wallpaper() {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const entry = await shared.db.room.data.getRoomWallpaperData(this.roomId);
     return entry;
   }
@@ -44,12 +49,12 @@ class RoomData {
       urlId: this.urlId,
     };
     const widgetsInRoom = await this.widgets();
-    room.widgets = await Promise.all(
+    (room as any).widgets = await Promise.all(
       widgetsInRoom.map(async (w) => w.serialize()),
     );
-    room.state = (await this.state()) || {};
-    room.widgets = room.widgets || [];
-    room.wallpaper = await this.wallpaper();
+    (room as any).state = (await this.state()) || {};
+    (room as any).widgets = (room as any).widgets || [];
+    (room as any).wallpaper = await this.wallpaper();
     return room;
   }
 }

@@ -1,5 +1,6 @@
 const userAgentParser = require('ua-parser-js');
 const url = require('url');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('./prisma');
 
 const reqToUrl = (expressRequest) => {
@@ -19,6 +20,7 @@ class Events {
   async actorCreateEvent(actorId, sessionId, source, expressRequest) {
     const meta = null;
     const key = 'sourced';
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.db.events.recordEvent(
       actorId,
       sessionId,
@@ -32,6 +34,7 @@ class Events {
   async roomCreateEvent(actorId, sessionId, templateName, expressRequest) {
     const meta = null;
     const key = 'room_create';
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.db.events.recordEvent(
       actorId,
       sessionId,

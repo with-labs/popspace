@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
 
 class Core {
@@ -17,6 +18,7 @@ class Core {
   }
 
   async roomByRoute(route) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const urlId = shared.db.room.namesAndRoutes.urlIdFromRoute(route);
     return await this.roomByUrlId(urlId);
   }
@@ -110,6 +112,7 @@ class Core {
       templateName,
       isPublic,
     );
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const roomData = await shared.db.room.templates.setUpRoomFromTemplate(
       room.id,
       templateData,
@@ -118,6 +121,7 @@ class Core {
   }
 
   async createRoom(creatorId, displayName, templateName, isPublic = true) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const urlId = await shared.db.room.namesAndRoutes.generateUniqueRoomUrlId();
     const room = await prisma.room.create({
       data: {
@@ -134,6 +138,7 @@ class Core {
   async createEmptyRoom(creatorId, isPublic, displayName) {
     return this.createRoomFromTemplate(
       'empty',
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       shared.db.room.templates.empty(),
       creatorId,
       isPublic,
@@ -152,6 +157,7 @@ class Core {
   async deleteRoom(roomId) {
     await prisma.room.update({
       where: { id: roomId },
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       data: { deletedAt: shared.db.time.now() },
     });
   }

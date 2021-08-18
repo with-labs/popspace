@@ -5,6 +5,7 @@ const configToDbUrl = (config) => {
   return `postgresql://${config.user}:${config.password}@${config.host}:${config.port}/${config.database}`;
 };
 
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = new PrismaClient({
   // @see https://github.com/prisma/prisma/issues/5533
   __internal: {

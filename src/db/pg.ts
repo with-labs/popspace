@@ -5,6 +5,7 @@
 */
 const massive = require('massive');
 const monitor = require('pg-monitor');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'moment'.
 const moment = require("moment")
 const AsyncLock = require('async-lock')
 const lock = new AsyncLock();
@@ -25,21 +26,22 @@ const lock = new AsyncLock();
   But seems like there should be a better solution if it works
   in noodle-api - and used to work previously in mercury and others.
 */
+// @ts-expect-error ts-migrate(2322) FIXME: Type '(((callback: (...args: any[]) => void, ...ar... Remove this comment to see the full error message
 global.setImmediate = global.setImmediate || ((x) => {
   // https://stackoverflow.com/questions/15349733/setimmediate-vs-nexttick/15349865#15349865
   return process.nextTick(x)
 })
 
-if(!global.log) {
+if(!(global as any).log) {
   // Perhaps the shared repo can have a standard log defined at the top level
-  global.log = {
+(global as any).log = {
     app: {
-      debug: (message) => (console.log(message)),
-      info: (message) => (console.log(message)),
-      warn: (message) => (console.log(message)),
-      error: (message) => (console.log(message))
+        debug: (message) => (console.log(message)),
+        info: (message) => (console.log(message)),
+        warn: (message) => (console.log(message)),
+        error: (message) => (console.log(message))
     }
-  }
+};
 }
 
 const overridePgTimestampConversion = () => {
@@ -57,6 +59,7 @@ const overridePgTimestampConversion = () => {
 let __db = null
 
 class Pg {
+  massive: any;
   async init() {
     await lock.acquire('with_init_pg', async () => {
       if(__db) {
@@ -78,16 +81,20 @@ class Pg {
       } catch(e) {
         // With lambdas it seems sometimes the monitor fails to detach between runs
         // keep logs to understand frequency
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
         log.app.warn("monitor.attach failed, rertying", e)
         try {
           monitor.detach()
           monitor.attach(__db.driverConfig)
           monitor.setTheme('matrix')
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
           log.app.warn("Having to detach and re-attach monitor")
         } catch (weirdException) {
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
           log.app.warn("Failed to attach monitor", weirdException)
         }
       }
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
       log.app.debug("Initialized postgres")
       return __db
     })
@@ -97,16 +104,19 @@ class Pg {
   async tearDown() {
     await lock.acquire('with_teardown_pg', async () => {
       if(__db) {
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
         log.app.info("Acquired tear down lock")
         try {
           monitor.detach()
         } catch(e) {
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
           log.app.warn("Detaching unattached monitor")
           // Nothing to do...
         }
         try {
           await __db.instance.$pool.end()
         } catch(e) {
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
           log.app.warn("Ending pool multiple times")
         }
         __db = null

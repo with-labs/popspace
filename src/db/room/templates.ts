@@ -1,4 +1,6 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'SYSTEM_USE... Remove this comment to see the full error message
 const { SYSTEM_USER_ID } = require('../constants.js');
 let mockCreator;
 
@@ -6,8 +8,10 @@ const getMockCreator = async () => {
   if (mockCreator) {
     return mockCreator;
   }
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   mockCreator = await shared.db.accounts.actorById(SYSTEM_USER_ID);
   if (!mockCreator) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
     log.app.info(
       `Creating mock actor with id ${SYSTEM_USER_ID} for creating widgets in room templates.`,
     );
@@ -19,6 +23,7 @@ const getMockCreator = async () => {
         admin: true,
       },
     });
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
     log.app.info('Successfully created mock widget creator!', mockCreator);
   }
   return mockCreator;
@@ -63,11 +68,13 @@ module.exports = {
       ...templateData.state,
       zOrder: [],
     };
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     await shared.db.room.data.setRoomState(roomId, state);
 
     // add widgets
     const widgets = [];
     for (const [type, widgetState, transform] of templateData.widgets) {
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       const roomWidget = await shared.db.room.data.addWidgetInRoom(
         creator.id,
         roomId,

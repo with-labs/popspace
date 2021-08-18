@@ -2,6 +2,8 @@
   A RoomActor is an actor connected to a room
 */
 class RoomActor {
+  actor: any;
+  room: any;
   constructor(room, actor) {
     this.room = room
     this.actor = actor

@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
 
 class Memberships {
@@ -6,6 +7,7 @@ class Memberships {
     if (!membership) {
       return false;
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const current = shared.db.time.timestamptzStillCurrent(
       membership.expires_at,
     );
@@ -41,6 +43,7 @@ class Memberships {
   }
 
   getRoomMembers(roomId) {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.models.RoomMember.allInRoom(roomId);
   }
 
@@ -51,6 +54,7 @@ class Memberships {
         roomId: roomId,
         revokedAt: null,
       },
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       data: { revokedAt: shared.db.time.now() },
     });
   }
@@ -67,6 +71,7 @@ class Memberships {
       where creators should be treated differently, they can explicitly be
       treated differently.
     */
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const existingMembership = await shared.db.room.memberships.getMembership(
       actor.id,
       room.id,
@@ -80,6 +85,7 @@ class Memberships {
         data: {
           roomId: room.id,
           actorId: actor.id,
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
           beganAt: shared.db.time.now(),
           expiresAt,
         },
@@ -87,6 +93,7 @@ class Memberships {
       return { membership };
     } catch (e) {
       // TODO: ERROR_LOGGING
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       return { error: shared.error.code.UNEXPECTED_ERROR };
     }
   }

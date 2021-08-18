@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
 
 const MESSAGE_LIMIT = 30;
@@ -38,7 +39,7 @@ class Messages {
     const filter = { chatId };
     // for pages starting at a cursor, get ids less than the cursor id
     if (lastChatMessageId) {
-      filter.id = { $lt: lastChatMessageId };
+      (filter as any).id = { $lt: lastChatMessageId };
     }
     const messages = await prisma.message.findMany({
       where: filter,

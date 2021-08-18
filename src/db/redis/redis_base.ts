@@ -1,7 +1,9 @@
 const redis = require('redis')
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'moment'.
 const moment = require("moment")
 
 module.exports = class {
+  client: any;
   constructor(credentials) {
     this.client = redis.createClient(credentials);
     this.client.on("ready", () => {
@@ -25,9 +27,11 @@ module.exports = class {
           - but shared shouldn't reference globals other than shared
           - we could do shared.log, and declare log as a synonym downstream
       */
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
       log.app.info("Redis is ready")
     })
     this.client.on("error", (error) => {
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'log'.
       log.error.error("Error initializing redis", error)
     })
   }

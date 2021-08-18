@@ -1,4 +1,8 @@
 class Actor {
+  static fromActorId: any;
+
+  _pgActor: any;
+
   constructor(pgActor) {
     this._pgActor = pgActor;
   }
@@ -25,6 +29,7 @@ class Actor {
 }
 
 Actor.fromActorId = async (actorId) => {
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const pgActor = await shared.db.accounts.actorById(actorId);
   if (!pgActor) {
     return null;

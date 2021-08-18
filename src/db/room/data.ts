@@ -1,3 +1,4 @@
+// @ts-expect-error ts-migrate(2451) FIXME: Cannot redeclare block-scoped variable 'prisma'.
 const prisma = require('../prisma');
 
 const getNewState = async (
@@ -183,6 +184,7 @@ class Data {
       },
     });
 
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const model = new shared.models.RoomWidget(
       roomId,
       widget,
@@ -199,6 +201,7 @@ class Data {
     return prisma.widget.update({
       where: { id: widgetId },
       data: {
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         deletedAt: shared.db.time.now(),
         deletedBy: deletingActorId,
       },

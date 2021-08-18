@@ -52,6 +52,6 @@ const serialization = {
 module.exports = serialization;
 
 // also setup bigint default serialization...
-BigInt.prototype.toJSON = function () {
-  return serialization.formatBigInt(this);
+(BigInt.prototype as any).toJSON = function () {
+    return serialization.formatBigInt(this);
 };

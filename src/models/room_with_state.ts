@@ -14,6 +14,15 @@ const getDefaultRoomState = (room) => {
 };
 
 class RoomWithState {
+  static fromRoomId: any;
+
+  static allVisitableForActorId: any;
+
+  static fromRooms: any;
+
+  _pgRoom: any;
+  _roomState: any;
+
   constructor(pgRoom, roomState) {
     this._pgRoom = pgRoom;
     this._roomState = roomState;
@@ -36,6 +45,7 @@ class RoomWithState {
   }
 
   route() {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     return shared.db.room.namesAndRoutes.route(
       this.displayName(),
       this.urlId(),
@@ -74,21 +84,28 @@ class RoomWithState {
 }
 
 RoomWithState.fromRoomId = async (roomId) => {
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const pgRoom = await shared.db.room.core.roomById(roomId);
   if (!pgRoom) {
     return null;
   }
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const routeEntry = await shared.db.room.core.latestMostPreferredRouteEntry(
     roomId,
   );
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const roomState = await shared.db.room.core.getRoomState(roomId);
   const idRouteEntry =
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     await shared.db.room.namesAndRoutes.getOrCreateUrlIdEntry(roomId);
+  // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 4.
   return new RoomWithState(pgRoom, routeEntry, roomState, idRouteEntry);
 };
 
 RoomWithState.allVisitableForActorId = async (actorId) => {
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const created = await shared.db.room.core.getCreatedRoutableRooms(actorId);
+  // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
   const member = await shared.db.room.core.getMemberRoutableRooms(actorId);
   return {
     created,
@@ -100,6 +117,7 @@ RoomWithState.fromRooms = async (rooms) => {
   const statesById = {};
   const result = [];
   const promises = rooms.map(async (room, index) => {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     let state = await shared.db.room.core.getRoomState(room.id);
     state = state || getDefaultRoomState(room);
     result[index] = new RoomWithState(room, state);

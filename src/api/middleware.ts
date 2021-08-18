@@ -12,11 +12,13 @@ const middleware = {
     if (!token) {
       return next();
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const session = await shared.lib.auth.sessionFromToken(token);
     if (!session) {
       return next();
     }
     const actorId = parseInt(session.actorId);
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const actor = await shared.db.accounts.actorById(actorId);
     if (!actor) {
       return next();
@@ -39,8 +41,10 @@ const middleware = {
   requireActor: async (req, res, next) => {
     if (!req.actor) {
       return next({
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         errorCode: shared.error.code.SESSION_REQUIRED,
         message: 'Must have a valid session',
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         httpCode: shared.api.http.code.UNAUTHORIZED,
       });
     }
@@ -52,12 +56,15 @@ const middleware = {
     if (!roomRoute) {
       return next(
         {
+          // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
           errorCode: shared.error.code.INVALID_API_PARAMS,
           message: 'Must provide room_route',
         },
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         shared.api.http.code.BAD_REQUEST,
       );
     }
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     req.room = await shared.db.room.core.roomByRoute(roomRoute);
     next();
   },
@@ -65,7 +72,9 @@ const middleware = {
   requireRoom: async (req, res, next) => {
     if (!req.room) {
       return next(
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         { errorCode: shared.error.code.UNKNOWN_ROOM, message: 'Unknown room' },
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         shared.api.http.code.BAD_REQUEST,
       );
     }
@@ -75,8 +84,10 @@ const middleware = {
   requireRoomCreator: async (req, res, next) => {
     if (req.actor.id != req.room.creatorId) {
       return next({
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         errorCode: shared.error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         httpCode: shared.api.http.code.UNAUTHORIZED,
       });
     }
@@ -84,14 +95,17 @@ const middleware = {
   },
 
   requireRoomMember: async (req, res, next) => {
+    // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
     const isMember = await shared.db.room.permissions.isMember(
       req.user,
       req.room,
     );
     if (!isMember) {
       return next({
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         errorCode: shared.error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         httpCode: shared.api.http.code.UNAUTHORIZED,
       });
     }
@@ -100,11 +114,14 @@ const middleware = {
 
   requireRoomMemberOrCreator: async (req, res, next) => {
     const isMemberOrCreator =
+      // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
       await shared.db.room.permissions.isMemberOrCreator(req.actor, req.room);
     if (!isMemberOrCreator) {
       return next({
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         errorCode: shared.error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         httpCode: shared.api.http.code.UNAUTHORIZED,
       });
     }
@@ -114,8 +131,10 @@ const middleware = {
   requireAdmin: async (req, res, next) => {
     if (!req.actor || !req.actor.admin) {
       return next({
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         errorCode: shared.error.code.PERMISSION_DENIED,
         message: 'Insufficient permission',
+        // @ts-expect-error ts-migrate(2304) FIXME: Cannot find name 'shared'.
         httpCode: shared.api.http.code.UNAUTHORIZED,
       });
     }

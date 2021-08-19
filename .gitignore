@@ -4,3 +4,5 @@ yarn-error.log
 node_modules
 local
 logs
+
+dist

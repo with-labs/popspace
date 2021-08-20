@@ -825,10 +825,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/noodle-shared@2.0.0-beta.2":
-  version "2.0.0-beta.2"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0-beta.2.tgz#95192a4dfd2cfc21660709406383ef5fdfe6f1b7"
-  integrity sha512-TOJgOziijAG7bCi3KCZ5gzdO/FMkQiWDaLxZUyFo9wD1b9zmjzRP7sgGktRVx6Dk8w1/LlRF2+M/6679EcDK6w==
+"@withso/noodle-shared@2.0.0-beta.3":
+  version "2.0.0-beta.3"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0-beta.3.tgz#ab8fe575bd6fba92a50f47431f267d018568a0ea"
+  integrity sha512-5IFHooPc7AIBTw/k3j7dW8JmKm2Ela5Udol09OXOWk9A9v0AmBokwgL/sq23p+yIi5mUXqweUxB7HNZp5+Wd/w==
   dependencies:
     "@prisma/client" "^2.28.0"
     async-lock "^1.2.4"

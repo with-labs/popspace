@@ -499,6 +499,11 @@
   resolved "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a.tgz#96db92f09714d4dd2a5e21054c28bd1c0820fa77"
   integrity sha512-BU1DNNDhdzqjHtycpUzDrU8+jf6ZY+fbXvCV/rbqG+0JifljlIo4vbkHDMg97gBi1Do8pTLZGlTH16FlniKgAg==
 
+"@prisma/engines@2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a":
+  version "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+  resolved "https://registry.npmjs.org/@prisma/engines/-/engines-2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a.tgz#0a44a6dcbee7e0a2850ea086675a8a4f4d627f9d"
+  integrity sha512-cgEoGK3dmKZkMp/sRbL8TsuVS50rHXYBHk2NY18DPUGr5//4ICno46EjzlayqAFVak8J6RtWZEs+8tE8j8frAQ==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -613,10 +618,10 @@
     sharp "^0.28.2"
     uuid "^8.3.2"
 
-"@withso/noodle-shared@2.0.0-beta.3":
-  version "2.0.0-beta.3"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0-beta.3.tgz#ab8fe575bd6fba92a50f47431f267d018568a0ea"
-  integrity sha512-5IFHooPc7AIBTw/k3j7dW8JmKm2Ela5Udol09OXOWk9A9v0AmBokwgL/sq23p+yIi5mUXqweUxB7HNZp5+Wd/w==
+"@withso/noodle-shared@2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0-beta.4.tgz#80f2a80353f898673e2775f2474637a3fe2f35ed"
+  integrity sha512-Nw9EDrx3zvlei1SXeZcDin24OnNgqRnsyZ1fIIUznsUEttXt2EgaXuBbbRR0MwB79cqAQorg2lqorfat0VRL3g==
   dependencies:
     "@prisma/client" "^2.28.0"
     async-lock "^1.2.4"
@@ -634,6 +639,7 @@
     moment "^2.29.1"
     pg "^8.5.1"
     pg-monitor "^1.4.1"
+    prisma "^2.28.0"
     redis "^3.0.2"
     ua-parser-js "^0.7.28"
 
@@ -3739,6 +3745,13 @@ pretty-format@^27.0.2:
     ansi-regex "^5.0.0"
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
+
+prisma@^2.28.0:
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/prisma/-/prisma-2.29.1.tgz#7845f55c7f09955b01f973c6a4b1f330cb212e7d"
+  integrity sha512-fRGh90+z0m3Jw3D6KBE6wyVCRR0w6M6QD93jh+em8IOQycmC48zB8hho8zeri3J9//C0k8fkDeQrRLJUosXROw==
+  dependencies:
+    "@prisma/engines" "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

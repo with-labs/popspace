@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "prisma"
   ],
   "scripts": {
     "console": "node --experimental-repl-await ./scripts/console.js",
@@ -16,7 +17,7 @@
     "prisma:generate": "prisma generate",
     "build": "tsc",
     "prepare": "yarn build",
-    "postinstall": "prisma generate --schema ./prisma/prisma.schema"
+    "postinstall": "prisma generate"
   },
   "repository": {
     "type": "git",

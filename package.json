@@ -15,7 +15,8 @@
     "db:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "build": "tsc",
-    "prepare": "yarn build"
+    "prepare": "yarn build",
+    "postinstall": "prisma generate"
   },
   "repository": {
     "type": "git",

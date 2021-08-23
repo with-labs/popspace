@@ -4,10 +4,6 @@
   "description": "Shared code for Noodle micro services",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "prisma"
-  ],
   "scripts": {
     "console": "node --experimental-repl-await ./scripts/console.js",
     "test:all": "NODE_ENV=test jest --runInBand",

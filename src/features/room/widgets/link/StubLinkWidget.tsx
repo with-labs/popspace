@@ -1,10 +1,9 @@
-import { WidgetType } from '@api/roomState/types/widgets';
 import { Link } from '@components/Link/Link';
 import { Box, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import * as React from 'react';
+
 import { FileIcon } from '../file/FileIcon';
-import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { SIZE_STUB } from './constants';
@@ -36,11 +35,12 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Rendering mode for links with no additional preview or embed
  */
-export const StubLinkWidget: React.FC = () => {
+export const StubLinkWidget: React.FC<{ title?: string; iconUrl?: string | null; url: string }> = ({
+  url,
+  title,
+  iconUrl,
+}) => {
   const classes = useStyles();
-  const {
-    widget: { widgetState },
-  } = useWidgetContext<WidgetType.Link>();
 
   return (
     <WidgetFrame
@@ -53,7 +53,7 @@ export const StubLinkWidget: React.FC = () => {
       <CanvasObjectDragHandle>
         <WidgetContent disablePadding>
           <div className={classes.linkWrapper}>
-            <Tooltip title={widgetState.url} placement="bottom">
+            <Tooltip title={url} placement="bottom">
               <Box
                 display="flex"
                 flexDirection="row"
@@ -61,15 +61,15 @@ export const StubLinkWidget: React.FC = () => {
                 flex={1}
                 component={Link}
                 overflow="hidden"
-                {...({ to: widgetState.url, newTab: true } as any)}
+                {...({ to: url, newTab: true } as any)}
               >
-                <FileIcon iconUrl={widgetState.iconUrl} className={classes.icon} />
+                <FileIcon iconUrl={iconUrl} className={classes.icon} />
                 <Box ml={2} flex={1} display="flex" flexDirection="column" overflow="hidden">
                   <Typography variant="h3" component="span" className={classes.label}>
-                    {widgetState.title}
+                    {title}
                   </Typography>
                   <Typography variant="caption" className={classes.label}>
-                    {widgetState.url}
+                    {url}
                   </Typography>
                 </Box>
               </Box>

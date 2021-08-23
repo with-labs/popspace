@@ -8,7 +8,6 @@ import { WidgetFrame } from '../WidgetFrame';
 import { EmbedlyHtmlLinkWidget } from './EmbedlyHtmlLinkWidget';
 import { IFrameLinkWidget } from './IFrameLinkWidget';
 import { StubLinkWidget } from './StubLinkWidget';
-import { SummaryLinkWidget } from './SummaryLinkWidget';
 import { EmbedlyResponse } from './types';
 
 export function DocumentLinkWidget() {
@@ -40,10 +39,6 @@ export function DocumentLinkWidget() {
     return <DocumentWidgetSpinner />;
   }
 
-  if (embedlyResponse && !embedlyResponse.html && !widgetState.showIframe) {
-    return <SummaryLinkWidget embedlyResponse={embedlyResponse} />;
-  }
-
   if (embedlyResponse?.html) {
     return <EmbedlyHtmlLinkWidget embedlyResponse={embedlyResponse} />;
   }
@@ -52,7 +47,13 @@ export function DocumentLinkWidget() {
     return <IFrameLinkWidget />;
   }
 
-  return <StubLinkWidget />;
+  return (
+    <StubLinkWidget
+      url={embedlyResponse?.url ?? widgetState.url}
+      title={embedlyResponse?.title ?? widgetState.title}
+      iconUrl={embedlyResponse?.thumbnail_url ?? widgetState.iconUrl}
+    />
+  );
 }
 
 const DocumentWidgetSpinner = () => (

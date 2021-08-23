@@ -22,6 +22,9 @@ class Hermes {
 
     this.ws = new ws.Server({ noServer: true })
     this.ws.on('connection', async (socket, request) => {
+      socket.on('error', (err) => {
+        log.app.error(`WebSocket connection error: ${err}`)
+      });
       if(this.stopped) {
         return socket.close()
       }

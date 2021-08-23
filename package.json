@@ -16,7 +16,7 @@
     "prisma:generate": "prisma generate",
     "build": "tsc",
     "prepare": "yarn build",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate --schema ./prisma/prisma.schema"
   },
   "repository": {
     "type": "git",

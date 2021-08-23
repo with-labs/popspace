@@ -1,4 +1,4 @@
-const shared = require("@withso/with-shared")
+const shared = require("@withso/noodle-shared").default
 const util = require("util")
 
 

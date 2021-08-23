@@ -1,9 +1,18 @@
 {
   "name": "@withso/noodle-shared",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.7",
   "description": "Shared code for Noodle micro services",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "prisma",
+    "tests",
+    "scripts",
+    "test",
+    "index.js",
+    "test.js"
+  ],
   "scripts": {
     "console": "node --experimental-repl-await ./scripts/console.js",
     "test:all": "NODE_ENV=test jest --runInBand",

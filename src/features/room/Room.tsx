@@ -26,6 +26,7 @@ import { ReconnectingAlert } from './ReconnectingAlert';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Widget } from './widgets/Widget';
 import { WidgetsFallback } from './WidgetsFallback';
+import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 
 interface IRoomProps {}
 
@@ -42,12 +43,40 @@ export const Room = React.memo<IRoomProps>(() => {
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
+  const roomId = useRoomStore((room: RoomStateShape) => room.id);
+
+  const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
+    count: 1,
+    lastRoom: roomId,
+    date: '',
+    completed: [] as string[],
+  });
 
   useBindPaste();
 
   // idk where else to put this right now?
   useHotkeys(KeyShortcut.Undo, () => {
     client.widgets.undoLastDelete();
+  });
+
+  React.useEffect(() => {
+    const currentDate = new Date();
+    if (savedUserStats.lastRoom !== roomId) {
+      // if the user joins a new room, reset date and last room id, increment count
+      setSavedUserStats({
+        ...savedUserStats,
+        date: currentDate.toDateString(),
+        lastRoom: roomId,
+        count: savedUserStats.count++,
+      });
+    } else if (currentDate.toDateString() !== savedUserStats.date) {
+      // user has joined the same room, but on a new day, so increment count
+      setSavedUserStats({
+        ...savedUserStats,
+        date: currentDate.toDateString(),
+        count: savedUserStats.count++,
+      });
+    }
   });
 
   return (

@@ -610,6 +610,9 @@
           "learnMore": "Learn more",
           "later": "Later"
         }
+      },
+      "userQuestionnaire": {
+        "title": "Help us improve!"
       }
     },
     "modals": {

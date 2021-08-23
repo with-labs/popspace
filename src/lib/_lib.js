@@ -9,8 +9,7 @@ const lib = {
   feedback: require("./feedback"),
   wallpapers: require("./wallpapers.js"),
   init: async () => {
-    await shared.default.db.pg.init()
-    await lib.wallpapers.initialize()
+    await shared.db.pg.init()
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")
     }

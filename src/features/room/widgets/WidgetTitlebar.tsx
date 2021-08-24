@@ -12,7 +12,6 @@ export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'ti
   children?: React.ReactNode;
   className?: string;
   disableRemove?: boolean;
-  isTitleEditable?: boolean;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +54,6 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
   children,
   className,
   disableRemove,
-  isTitleEditable = false,
   ...rest
 }) => {
   const classes = useStyles();

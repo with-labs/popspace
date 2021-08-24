@@ -26,6 +26,7 @@ import { ReconnectingAlert } from './ReconnectingAlert';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Widget } from './widgets/Widget';
 import { WidgetsFallback } from './WidgetsFallback';
+import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 
 interface IRoomProps {}
 
@@ -37,11 +38,20 @@ const selectPeopleIds = (room: RoomStateShape) =>
     })
     .map(([id]) => id);
 
+type UserStats = { count: number; lastRoom: string | null; date: string; completed: string[] };
 export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
   const peopleIds = useRoomStore(selectPeopleIds, shallow);
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
+  const roomId = useRoomStore((room: RoomStateShape) => room.id);
+
+  const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
+    count: 0,
+    lastRoom: roomId,
+    date: '',
+    completed: [] as string[],
+  });
 
   useBindPaste();
 
@@ -49,6 +59,31 @@ export const Room = React.memo<IRoomProps>(() => {
   useHotkeys(KeyShortcut.Undo, () => {
     client.widgets.undoLastDelete();
   });
+
+  React.useEffect(() => {
+    setSavedUserStats((current) => {
+      if (current) {
+        const currentDate = new Date();
+        if (current?.lastRoom !== roomId) {
+          // if the user joins a new room, reset date and last room id, increment count
+          return {
+            ...current,
+            date: currentDate.toDateString(),
+            lastRoom: roomId,
+            count: current.count + 1,
+          };
+        } else if (currentDate.toDateString() !== current?.date) {
+          // user has joined the same room, but on a new day, so increment count
+          return {
+            ...current,
+            date: currentDate.toDateString(),
+            count: current.count + 1,
+          };
+        }
+      }
+      return current;
+    });
+  }, [roomId, setSavedUserStats]);
 
   return (
     <RoomViewportProvider>

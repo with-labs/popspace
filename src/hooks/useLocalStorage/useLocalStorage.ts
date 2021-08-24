@@ -30,11 +30,10 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
   const setValue = useMemo(
     () =>
       throttle(
-        (value: T) => {
+        (value: T | ((current: T) => T)) => {
           try {
-            const previousValue = useLocalStorageCache.getState()[key];
             // Allow value to be a function so we have same API as useState
-            const valueToStore = value instanceof Function ? value(previousValue) : value;
+            const valueToStore = value instanceof Function ? value(storedValue) : value;
             // Save to local storage
             window.localStorage.setItem(key, JSON.stringify(valueToStore));
             // sync it to other instances of the hook via the global cache
@@ -47,7 +46,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
         300,
         { trailing: true, leading: true }
       ),
-    [key]
+    [key, storedValue]
   );
 
   return [storedValue, setValue] as const;

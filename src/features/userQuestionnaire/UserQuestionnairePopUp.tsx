@@ -6,8 +6,9 @@ import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { CloseIcon } from '@components/icons/CloseIcon';
 
-//@ts-ignore
 import { Widget } from '@typeform/embed-react';
+
+const ANALYTICS_ID = 'userQuestionnairePopup';
 
 export interface IUserQuestionnairePopupProps {}
 
@@ -32,7 +33,7 @@ export const UserQuestionnairePopup: React.FC<IUserQuestionnairePopupProps> = ()
   const theme = useTheme();
 
   const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
-    count: 1,
+    count: 0,
     lastRoom: roomId,
     date: '',
     completed: [] as string[],
@@ -42,6 +43,7 @@ export const UserQuestionnairePopup: React.FC<IUserQuestionnairePopupProps> = ()
     // TODO: Refine this, was trying to start the process of
     // trying to build this to be expandable easily
     if (savedUserStats?.count >= 5 && !savedUserStats?.completed.includes('aug23Coworker')) {
+      Analytics.trackEvent(`${ANALYTICS_ID}_open`, 'aug23Coworker');
       return {
         name: 'aug23Coworker',
         id: 'uCNjpQsy',
@@ -80,7 +82,7 @@ export const UserQuestionnairePopup: React.FC<IUserQuestionnairePopupProps> = ()
           <IconButton
             onClick={() => {
               markComplete();
-              Analytics.trackEvent(`userQuestionnairePopup_dismiss`);
+              Analytics.trackEvent(`${ANALYTICS_ID}_dismiss`);
             }}
           >
             <CloseIcon />

@@ -28,7 +28,7 @@ type CannyOptions = {
     position: 'top' | 'bottom' | 'left' | 'right';
     align: 'top' | 'bottom' | 'left' | 'right';
   };
-  closeChangelog: {};
+  closeChangelog: Record<string, never>;
 };
 declare const Canny: <Command extends 'identify' | 'initChangelog' | 'closeChangelog'>(
   command: Command,
@@ -78,3 +78,5 @@ declare module 'simple-quadtree' {
   }
   export default QuadTree;
 }
+
+declare module '@typeform/embed-react';

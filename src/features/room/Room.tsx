@@ -38,6 +38,7 @@ const selectPeopleIds = (room: RoomStateShape) =>
     })
     .map(([id]) => id);
 
+type UserStats = { count: number; lastRoom: string | null; date: string; completed: string[] };
 export const Room = React.memo<IRoomProps>(() => {
   // shallow comparator so component won't re-render if keys don't change
   const widgetIds = useRoomStore(selectWidgetIds, shallow);
@@ -46,7 +47,7 @@ export const Room = React.memo<IRoomProps>(() => {
   const roomId = useRoomStore((room: RoomStateShape) => room.id);
 
   const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
-    count: 1,
+    count: 0,
     lastRoom: roomId,
     date: '',
     completed: [] as string[],
@@ -60,24 +61,29 @@ export const Room = React.memo<IRoomProps>(() => {
   });
 
   React.useEffect(() => {
-    const currentDate = new Date();
-    if (savedUserStats.lastRoom !== roomId) {
-      // if the user joins a new room, reset date and last room id, increment count
-      setSavedUserStats({
-        ...savedUserStats,
-        date: currentDate.toDateString(),
-        lastRoom: roomId,
-        count: savedUserStats.count++,
-      });
-    } else if (currentDate.toDateString() !== savedUserStats.date) {
-      // user has joined the same room, but on a new day, so increment count
-      setSavedUserStats({
-        ...savedUserStats,
-        date: currentDate.toDateString(),
-        count: savedUserStats.count++,
-      });
-    }
-  });
+    setSavedUserStats((current) => {
+      if (current) {
+        const currentDate = new Date();
+        if (current?.lastRoom !== roomId) {
+          // if the user joins a new room, reset date and last room id, increment count
+          return {
+            ...current,
+            date: currentDate.toDateString(),
+            lastRoom: roomId,
+            count: current.count + 1,
+          };
+        } else if (currentDate.toDateString() !== current?.date) {
+          // user has joined the same room, but on a new day, so increment count
+          return {
+            ...current,
+            date: currentDate.toDateString(),
+            count: current.count + 1,
+          };
+        }
+      }
+      return current;
+    });
+  }, [roomId, setSavedUserStats]);
 
   return (
     <RoomViewportProvider>

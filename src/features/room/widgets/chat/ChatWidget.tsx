@@ -1,23 +1,23 @@
+import client from '@api/client';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { useRoomStore } from '@api/useRoomStore';
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { Box, Link, makeStyles, Typography } from '@material-ui/core';
+import { Form, Formik, FormikHelpers } from 'formik';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { makeStyles, Box, Typography, Link } from '@material-ui/core';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { FormikTextField } from '@components/fieldBindings/FormikTextField';
-import client from '@api/client';
-import { useRoomStore } from '@api/useRoomStore';
-import { WidgetType } from '@api/roomState/types/widgets';
 import * as Yup from 'yup';
-import { WidgetFrame } from '../WidgetFrame';
-import { WidgetTitlebar } from '../WidgetTitlebar';
-import { WidgetContent } from '../WidgetContent';
-import { WidgetScrollPane } from '../WidgetScrollPane';
-import { ThemeName } from '../../../../theme/theme';
-import { MAX_SIZE, MIN_SIZE } from './constants';
-import { useWidgetContext } from '../useWidgetContext';
-import { Message } from './Message';
-import { ChatMenu } from './menu/ChatMenu';
 
+import { ThemeName } from '../../../../theme/theme';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetFrame } from '../WidgetFrame';
+import { WidgetScrollPane } from '../WidgetScrollPane';
+import { WidgetTitlebar } from '../WidgetTitlebar';
+import { MAX_SIZE, MIN_SIZE } from './constants';
 import ChatBubbleImg from './images/chat_placeholder.png';
+import { ChatMenu } from './menu/ChatMenu';
+import { Message } from './Message';
 
 const MAX_MSG_SIZE = 1000;
 const MIN_SHOW_WARINING = MAX_MSG_SIZE * 0.1;
@@ -150,13 +150,13 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
             let isSameAuthor = false;
 
             if (index > 0) {
-              isSameAuthor = state?.messages.messageList[index - 1].senderId === data.senderId;
+              isSameAuthor = state?.messages.messageList[index - 1].sender.id === data.sender.id;
             }
 
             return (
               <Message
                 key={`${index}_${data.createdAt}`}
-                name={data.senderDisplayName}
+                name={data.sender.displayName}
                 timestamp={data.createdAt}
                 message={data.content}
                 isSameAuthor={isSameAuthor}

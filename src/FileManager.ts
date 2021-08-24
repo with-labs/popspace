@@ -13,6 +13,7 @@ export interface UploadedFile {
   mimetype: string;
   url: string;
   imageData?: FileImageData;
+  sizeInBytes: number;
 }
 
 /**
@@ -66,6 +67,8 @@ export interface FileData {
   originalname: string;
   mimetype: string;
   buffer: Buffer;
+  /** In bytes */
+  size: number;
 }
 
 export class FileManager<Ctx extends any[] = []> {
@@ -106,6 +109,7 @@ export class FileManager<Ctx extends any[] = []> {
       name: file.originalname,
       mimetype: file.mimetype,
       url: uploadUrl,
+      sizeInBytes: file.size,
     };
 
     if (file.mimetype.startsWith('image/')) {

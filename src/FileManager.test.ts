@@ -20,6 +20,7 @@ const mockMetadata = {
     url: 'https://mock-s3.com/mock-uuid/file.png',
     mimetype: 'image/png',
     name: 'file.png',
+    size: 10000,
     imageData: undefined,
   }),
 };
@@ -42,6 +43,7 @@ describe('FileManager', () => {
       originalname: 'file.txt',
       buffer: mockFile,
       mimetype: 'text/plain',
+      size: 10000,
     });
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
@@ -56,6 +58,7 @@ describe('FileManager', () => {
       name: 'file.txt',
       mimetype: 'text/plain',
       url: 'https://mock-s3.com/mock-uuid/file.txt',
+      sizeInBytes: 10000,
     });
 
     expect(result.imageData).toBe(undefined);
@@ -75,6 +78,7 @@ describe('FileManager', () => {
       originalname: 'file test.txt',
       buffer: mockFile,
       mimetype: 'text/plain',
+      size: 10000,
     });
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
@@ -89,6 +93,7 @@ describe('FileManager', () => {
       name: 'file test.txt',
       mimetype: 'text/plain',
       url: 'https://custom-origin/mock-uuid/file%20test.txt',
+      sizeInBytes: 10000,
     });
 
     expect(result.imageData).toBe(undefined);
@@ -102,6 +107,7 @@ describe('FileManager', () => {
       originalname: 'file.png',
       buffer: mockFile,
       mimetype: 'image/png',
+      size: 10000,
     });
 
     expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(2);
@@ -122,6 +128,7 @@ describe('FileManager', () => {
       name: 'file.png',
       mimetype: 'image/png',
       url: 'https://mock-s3.com/mock-uuid/file.png',
+      sizeInBytes: 10000,
       imageData: {
         thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
         dominantColor: 'rgb(0, 0, 0)',
@@ -131,6 +138,7 @@ describe('FileManager', () => {
     expect(result.id).toBe('mock-file-id');
     expect(result.mimetype).toBe('image/png');
     expect(result.url).toBe('https://mock-s3.com/mock-uuid/file.png');
+    expect(result.sizeInBytes).toBe(10000);
     expect(result.imageData).toEqual({
       thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
       dominantColor: 'rgb(0, 0, 0)',
@@ -160,6 +168,7 @@ describe('FileManager', () => {
       mimetype: 'image/png',
       name: 'file.png',
       url: 'https://mock-s3.com/mock-uuid/file.png',
+      size: 10000,
       imageData: {
         thumbnailUrl: 'https://mock-s3.com/mock-uuid/file.thumb.png',
         dominantColor: 'rgba(0, 0, 0)',

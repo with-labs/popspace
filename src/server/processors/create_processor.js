@@ -68,6 +68,10 @@ class CreateProcessor {
         ...messageInfo,
         senderId: result.senderId,
         senderDisplayName: sender.actor.displayName,
+        sender: {
+          id: result.senderId,
+          displayName: sender.actor.displayName,
+        },
         createdAt: result.createdAt
       }
     })

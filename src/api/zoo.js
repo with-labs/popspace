@@ -40,7 +40,7 @@ const safeHandleRequest = (handler) => async (req, res) => {
   try {
     return await handler(req, res)
   } catch (e) {
-    log.error.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`)
+    log.app.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`, e)
     e.message = e.message || "Unexpected error"
     e.errorCode = e.errorCode || shared.error.code.UNEXPECTED_ERROR
     e.params = req.body

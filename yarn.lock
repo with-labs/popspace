@@ -487,6 +487,23 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@prisma/client@^2.28.0":
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/@prisma/client/-/client-2.29.1.tgz#a7b91c9644800de4e00b2f7c3789ff4bae42b3d6"
+  integrity sha512-GhieSvHGPIV5IwRYIkJ4FrGSNfX18lPhFtlyVWxhvX0ocdy8oTnjNZVTFgGxB6qVmJIUpH1HsckAzIoAX689IA==
+  dependencies:
+    "@prisma/engines-version" "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+
+"@prisma/engines-version@2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a":
+  version "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+  resolved "https://registry.npmjs.org/@prisma/engines-version/-/engines-version-2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a.tgz#96db92f09714d4dd2a5e21054c28bd1c0820fa77"
+  integrity sha512-BU1DNNDhdzqjHtycpUzDrU8+jf6ZY+fbXvCV/rbqG+0JifljlIo4vbkHDMg97gBi1Do8pTLZGlTH16FlniKgAg==
+
+"@prisma/engines@2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a":
+  version "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
+  resolved "https://registry.npmjs.org/@prisma/engines/-/engines-2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a.tgz#0a44a6dcbee7e0a2850ea086675a8a4f4d627f9d"
+  integrity sha512-cgEoGK3dmKZkMp/sRbL8TsuVS50rHXYBHk2NY18DPUGr5//4ICno46EjzlayqAFVak8J6RtWZEs+8tE8j8frAQ==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
@@ -601,11 +618,12 @@
     sharp "^0.28.2"
     uuid "^8.3.2"
 
-"@withso/noodle-shared@1.1.22":
-  version "1.1.22"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-1.1.22.tgz#a1e88aa30d1cf0469d78c3e416f9d324b1698059"
-  integrity sha512-pZ/Z0SLp6dKmaMUJpYjj7a67F7nvDwxVz+UIzmHVet3GmYGtMJun0D8+wEno4I8ZYSH1AA8Gx4II3hRoL/wZJg==
+"@withso/noodle-shared@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.0.tgz#6df1dccebf15a044432624d6d59c8e50685f3f41"
+  integrity sha512-UV/X4L4n6GR4ZTqm52bBOeW7Isgl47lCdVC06ahHTCXvMYWJaWVObwNk7i6MuRHMrLO169+Q82hEpw8PI6Zk+w==
   dependencies:
+    "@prisma/client" "^2.28.0"
     async-lock "^1.2.4"
     aws-sdk "^2.834.0"
     btoa "^1.2.1"
@@ -621,6 +639,7 @@
     moment "^2.29.1"
     pg "^8.5.1"
     pg-monitor "^1.4.1"
+    prisma "^2.28.0"
     redis "^3.0.2"
     ua-parser-js "^0.7.28"
 
@@ -3726,6 +3745,13 @@ pretty-format@^27.0.2:
     ansi-regex "^5.0.0"
     ansi-styles "^5.0.0"
     react-is "^17.0.1"
+
+prisma@^2.28.0:
+  version "2.29.1"
+  resolved "https://registry.npmjs.org/prisma/-/prisma-2.29.1.tgz#7845f55c7f09955b01f973c6a4b1f330cb212e7d"
+  integrity sha512-fRGh90+z0m3Jw3D6KBE6wyVCRR0w6M6QD93jh+em8IOQycmC48zB8hho8zeri3J9//C0k8fkDeQrRLJUosXROw==
+  dependencies:
+    "@prisma/engines" "2.29.0-34.1be4cd60b89afa04b192acb1ef47758a39810f3a"
 
 process-nextick-args@~2.0.0:
   version "2.0.1"

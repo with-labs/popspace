@@ -12,7 +12,7 @@ class Feedback {
    * @param {string} data.feedback
    * @param {Object} actor
    * @param {Object} actor.id
-   * @param {string} actor.display_name
+   * @param {string} actor.displayName
    * @param {boolean} updated
    */
   notify = async (data, actor, updated) => {
@@ -36,10 +36,10 @@ class Feedback {
    *
    * @param {Object} actor
    * @param {string} actor.id
-   * @param {string} actor.display_name
+   * @param {string} actor.displayName
    */
   formatUser = (actor) => {
-    return `${actor.display_name || 'Anonymous'} (id: ${actor.id})`
+    return `${actor.displayName || 'Anonymous'} (id: ${actor.id})`
   }
 
   formatStars = (num) => {

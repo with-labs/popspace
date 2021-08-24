@@ -23,7 +23,7 @@ class ExperienceRatings {
     }, ["rating"])
 
     this.zoo.loggedInPostEndpoint("/update_experience_rating", async (req, res, params) => {
-      const rating = await shared.db.experienceRatings.getRating(params.rating_id)
+      const rating = await shared.db.experienceRatings.getRating(params.ratingId)
 
       if (!rating) {
         return api.http.fail(req, res, {
@@ -32,7 +32,7 @@ class ExperienceRatings {
         }, shared.api.http.code.NOT_FOUND)
       }
 
-      if (rating.actor_id !== req.actor.id) {
+      if (rating.actorId !== req.actor.id) {
         return api.http.fail(req, res, {
           message: "You can't update that rating",
           errorCode: shared.error.code.UNAUTHORIZED,
@@ -53,7 +53,7 @@ class ExperienceRatings {
       lib.feedback.notify(updated, req.actor, true)
 
       return api.http.succeed(req, res, { ratingId: updated.id, rating: updated.rating, feedback: updated.feedback })
-    }, ["rating_id"])
+    }, ["ratingId"])
   }
 }
 

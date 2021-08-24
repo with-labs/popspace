@@ -1,7 +1,7 @@
 const shared = require("@withso/noodle-shared")
 
 const lib = {
-  shared: shared,
+  shared: shared.default,
   log: require("./log.js"),
   util: require("./util.js"),
   appInfo: require("./app_info.js"),
@@ -15,7 +15,7 @@ const lib = {
     }
   },
   cleanup: async () => {
-    await shared.db.pg.tearDown()
+    await shared.default.db.pg.tearDown()
   },
   opengraph: require('./opengraph.js'),
   s3: require('./s3.js')

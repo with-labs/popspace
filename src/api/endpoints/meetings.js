@@ -67,7 +67,7 @@ class Meetings {
   initPost() {
     this.zoo.loggedInPostEndpoint("/logged_in_join_room", async (req, res, params) => {
       const actor = req.actor
-      const room = await shared.db.room.core.roomByRoute(params.room_route)
+      const room = await shared.db.room.core.roomByRoute(params.roomRoute)
 
       if (!room) {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
@@ -91,7 +91,7 @@ class Meetings {
       token.addGrant(videoGrant)
 
       return await api.http.succeed(req, res, { token: token.toJwt() })
-    }, ["room_route"])
+    }, ["roomRoute"])
 
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)
@@ -102,21 +102,21 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.template_name, req)
+      const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.templateName, req)
       return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
-    }, ["template_name"])
+    }, ["templateName"])
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res, params) => {
       /*
         Creates a meeting from a template and returns a URL to it
       */
-      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.template_name, req)
+      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.templateName, req)
 
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()
       })
-    }, ["template", "template_name"])
+    }, ["template", "templateName"])
 
     this.zoo.loggedOutPostEndpoint("/anonymous_meeting", async (req, res, params) => {
       /*
@@ -133,13 +133,13 @@ class Meetings {
         However, we may be in a context where all we can do is call a URL and parse the result.
       */
       log.error.warn("/anonymous_meeting called - shouldn't be used yet, we don't have use cases")
-      const namedRoom = await createRoom(params.template, null, null, params.template_name, req)
+      const namedRoom = await createRoom(params.template, null, null, params.templateName, req)
       return api.http.succeed(req, res, {
         warning: "don't use w/o making sure it's impossible otherwise",
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
         urlId: namedRoom.urlId()
       })
-    }, ["template", "template_name"])
+    }, ["template", "templateName"])
   }
 }
 

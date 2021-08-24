@@ -13,12 +13,12 @@ class Files {
       // which is really just a key prefix.
       const folder = v4()
       const uploadUrl = lib.s3.getUploadUrl(
-        params.file_name,
+        params.fileName,
         process.env.NOODLE_USER_FILES_BUCKET,
         folder
       )
       const downloadUrl = lib.s3.getDownloadUrl(
-        params.file_name,
+        params.fileName,
         process.env.NOODLE_USER_FILES_BUCKET,
         folder
       )
@@ -27,17 +27,17 @@ class Files {
         uploadUrl,
         downloadUrl
       })
-    }, ["file_name"])
+    }, ["fileName"])
 
     this.zoo.loggedInPostEndpoint("/delete_file", async(req, res, params) => {
       try {
-        await lib.s3.deleteFile(params.file_url)
+        await lib.s3.deleteFile(params.fileUrl)
       } catch (err) {
         return api.http.fail(req, res, err)
       }
 
       return api.http.succeed(req, res, { });
-    }, ["file_url"])
+    }, ["fileUrl"])
   }
 }
 

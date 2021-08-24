@@ -11,7 +11,7 @@ class Wallpapers {
     zoo.loggedInPostEndpoint("/upload_wallpaper", this.handleCreate, [], [
       uploadMiddleware.single('file')
     ])
-    zoo.loggedInPostEndpoint("/delete_wallpaper", this.handleDelete, ['wallpaper_id'], [])
+    zoo.loggedInPostEndpoint("/delete_wallpaper", this.handleDelete, ['wallpaperId'], [])
     zoo.loggedInGetEndpoint("/list_wallpapers", this.handleList, [], [])
   }
 
@@ -27,7 +27,7 @@ class Wallpapers {
   };
   handleDelete = async (req, res, params) => {
     try {
-      await lib.wallpapers.delete(params.wallpaper_id, req.actor);
+      await lib.wallpapers.delete(params.wallpaperId, req.actor);
       return api.http.succeed(req, res, {});
     } catch (err) {
       return api.http.fail(req, res, { message: err.message }, err.status || shared.api.http.code.INTERNAL_ERROR);

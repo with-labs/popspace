@@ -1,9 +1,9 @@
 module.exports = {
   "meeting_url_create": lib.test.template.serverClient(async (server, client) => {
     const response = await client.post('/meeting_url', {
-      template_name: "slack_room",
+      templateName: "slack_room",
       template: {
-        display_name: "new room",
+        displayName: "new room",
         widgets: []
       }
     });

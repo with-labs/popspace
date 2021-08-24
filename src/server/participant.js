@@ -423,7 +423,7 @@ class Participant {
       actor: {
         id: this.actor.id,
         displayName: this.actor.displayName,
-        avatarname: this.actor.avatarName,
+        avatarName: this.actor.avatarName,
       },
       sessionId: this.id,
       roomId: this.room.id,

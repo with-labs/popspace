@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "@teamwork/websocket-json-stream": "^2.0.0",
-    "@withso/with-shared": "^1.4.25",
+    "@withso/noodle-shared": "^2.0.0",
     "async-lock": "^1.3.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

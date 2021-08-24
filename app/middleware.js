@@ -8,7 +8,15 @@ class Middleware {
   constructor(express) {
     this.express = express
     this.express.use(cors())
-    this.express.use(bodyParser.json());
+    this.express.use(async (req, res, next) => {
+      await next();
+      // stringifies bigints
+      req.body = shared.db.serialization.serialize(req.body)
+    })
+    this.express.use(bodyParser.json({
+      // parses stringified bigints
+      reviver: shared.db.serialization.reviver
+    }))
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(favicon(path.join(__dirname, '..', 'public', 'favicon.png')));
     this.initSessions()
@@ -16,7 +24,7 @@ class Middleware {
   }
 
   initSessions() {
-    this.express.use(shared.api.middleware.getUser)
+    this.express.use(shared.api.middleware.getActor)
   }
 
   initErrors() {

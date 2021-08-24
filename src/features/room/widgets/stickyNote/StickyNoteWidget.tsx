@@ -81,6 +81,12 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     });
   };
 
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+  };
+
   return (
     <WidgetFrame
       color={state.widgetState.color ?? ThemeName.Mandarin}
@@ -89,7 +95,14 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
-      <WidgetTitlebar title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}>
+      <WidgetTitlebar
+        onTitleChanged={onTitleChanged}
+        title={
+          editing
+            ? t('widgets.stickyNote.addWidgetTitle')
+            : state.widgetState.title || t('widgets.stickyNote.publishedTitle')
+        }
+      >
         <ColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} />
         {isOwnedByLocalUser && !editing && (
           <WidgetTitlebarButton onClick={startEditing} aria-label={t('widgets.stickyNote.edit')}>

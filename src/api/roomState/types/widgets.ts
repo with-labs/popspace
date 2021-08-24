@@ -37,6 +37,7 @@ export interface WidgetMediaState {
 }
 
 export interface StickyNoteWidgetState {
+  title: string;
   text: string;
   color?: ThemeName;
 }

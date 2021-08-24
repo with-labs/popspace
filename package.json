@@ -133,6 +133,7 @@
     "twilio": "^3.53.0",
     "twilio-video": "^2.13.1",
     "typescript": "^4.1.3",
+    "use-double-click": "^1.0.5",
     "uuid": "^7.0.2",
     "volume-meter": "^2.0.1",
     "workbox-background-sync": "^6.1.0",

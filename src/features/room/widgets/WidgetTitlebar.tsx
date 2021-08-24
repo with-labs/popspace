@@ -6,12 +6,15 @@ import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from './useWidgetContext';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import useDoubleClick from 'use-double-click';
+import { WidgetEditTitle } from './WidgetEditTitle';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;
   children?: React.ReactNode;
   className?: string;
   disableRemove?: boolean;
+  onTitleChanged?: (newTitle: string) => void;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -54,15 +57,31 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
   children,
   className,
   disableRemove,
+  onTitleChanged,
   ...rest
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { remove } = useWidgetContext();
+  const titleRef = React.useRef(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+
+  useDoubleClick({
+    onSingleClick: (e) => {},
+    onDoubleClick: (e) => {
+      if (onTitleChanged) {
+        setAnchorEl(e.target as HTMLElement);
+      }
+    },
+    ref: titleRef,
+    latency: 250,
+  });
 
   return (
     <CanvasObjectDragHandle className={clsx(classes.root, className)}>
-      <div className={classes.title}>{title}</div>
+      <div className={classes.title} ref={titleRef}>
+        {title}
+      </div>
       <div className={classes.controls}>{children}</div>
       {!disableRemove && (
         <div className={classes.controls}>
@@ -71,6 +90,12 @@ export const WidgetTitlebar: React.FC<WidgetTitlebarProps> = ({
           </WidgetTitlebarButton>
         </div>
       )}
+      <WidgetEditTitle
+        defaultTitle={title as string}
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        onSubmit={onTitleChanged}
+      />
     </CanvasObjectDragHandle>
   );
 };

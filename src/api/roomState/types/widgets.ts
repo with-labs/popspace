@@ -70,8 +70,10 @@ export interface ChatWidgetState {
 export interface ChatMessageShape {
   id: string;
   content: string;
-  senderId: string;
-  senderDisplayName: string;
+  sender: {
+    id: string;
+    displayName: string;
+  };
   createdAt: string;
 }
 

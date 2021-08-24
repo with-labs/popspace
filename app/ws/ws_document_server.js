@@ -30,6 +30,9 @@ class WsDocumentServer {
     this.wss = new WebSocket.Server({ server })
     this.startHeartbeatLoop()
     this.wss.on('connection', (ws) => {
+      ws.on('error', (err) => {
+        log.error.info(err);
+      });
       ws.on('pong', heartbeat);
 
       ws.clientId = this.curClientId++

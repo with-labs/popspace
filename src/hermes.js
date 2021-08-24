@@ -16,7 +16,6 @@ class Hermes {
   constructor(port, heartbeatTimeoutMillis) {
     this.port = port
     this.express = express()
-    this.api = new api.HermesApi(this)
     this.participants = new Participants(heartbeatTimeoutMillis)
     this.eventProcessor =  new EventProcessor(this.participants)
 

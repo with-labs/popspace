@@ -18,23 +18,23 @@ class AuthProcessor {
     const payload = hermesEvent.payload()
     const sender = hermesEvent.senderParticipant()
     // avoid using setter as it broadcasts a message
-    sender.isObserver = payload.is_observer || false
+    sender.isObserver = payload.isObserver || false
 
-    if(!payload.room_route) {
+    if(!payload.roomRoute) {
       return sender.sendError(
         hermesEvent,
         shared.error.code.UNKNOWN_ROOM,
-        `Please provide room_route in the payload`,
+        `Please provide roomRoute in the payload`,
         {provided_payload: payload}
       )
     }
-    const room = await shared.db.room.core.roomByRoute(payload.room_route)
+    const room = await shared.db.room.core.roomByRoute(payload.roomRoute)
     if(!room) {
       return sender.sendError(
         hermesEvent,
         shared.error.code.UNKNOWN_ROOM,
         `No such room`,
-        {room_route: payload.room_route}
+        {roomRoute: payload.roomRoute}
       )
     }
 
@@ -47,7 +47,7 @@ class AuthProcessor {
         {limit: socketGroup.getMaxParticipants()}
       )
     }
-    const success = await sender.authenticate(payload.token, payload.room_route)
+    const success = await sender.authenticate(payload.token, payload.roomRoute)
     if(success) {
       /*
         TODO: it'd be nice to get rid of this participants reference.
@@ -72,7 +72,7 @@ class AuthProcessor {
 
   async setObserver(hermesEvent, participants) {
     const sender = hermesEvent.senderParticipant()
-    sender.setObserver(hermesEvent.payload().is_observer, hermesEvent)
+    sender.setObserver(hermesEvent.payload().isObserver, hermesEvent)
   }
 
   async getAuthData(hermesEvent) {

@@ -3,7 +3,7 @@ class CreateProcessor {
     switch(hermesEvent.kind()) {
       case "createWidget":
         return this.createWidget(hermesEvent)
-      case "createChatMessage": 
+      case "createChatMessage":
         return this.createMessage(hermesEvent)
       default:
         return hermesEvent._sender.sendError(
@@ -39,11 +39,11 @@ class CreateProcessor {
     if(!payload.type) {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widget type in payload.`)
     }
-    if(!payload.widget_state || !payload.transform) {
+    if(!payload.widgetState || !payload.transform) {
       return sender.sendError(event, lib.ErrorCodes.MESSAGE_INVALID_FORMAT, `Must provide widgetState and transform in payload.`)
     }
 
-    const roomWidget = await shared.db.room.data.addWidgetInRoom(widgetCreator.id, room.id, payload.type, payload.widget_state, payload.transform)
+    const roomWidget = await shared.db.room.data.addWidgetInRoom(widgetCreator.id, room.id, payload.type, payload.widgetState, payload.transform)
     const result = await roomWidget.serialize()
     sender.sendResponse(event, result, "widgetCreated")
     sender.broadcastPeerEvent("widgetCreated", result)
@@ -53,20 +53,22 @@ class CreateProcessor {
     const sender = hermesEvent.senderParticipant()
     const payload = hermesEvent.payload()
 
-    const result = await shared.db.pg.massive.messages.insert({
-      chat_id: payload.widget_id,
-      content: payload.content,
-      sender_id: sender.actorId()
+    const result = await shared.db.prisma.message.create({
+      data: {
+        chatId: payload.widgetId,
+        content: payload.content,
+        senderId: sender.actorId()
+      }
     })
-    const {widget_id, ...messageInfo} = payload;
-    
+    const { widgetId, ...messageInfo } = payload;
+
     sender.respondAndBroadcast(hermesEvent, "chatMessageCreated", {
-      widget_id: payload.widget_id,
+      widgetId: payload.widgetId,
       message: {
         ...messageInfo,
-        senderId:result.sender_id,
-        senderDisplayName: sender.actor.display_name,
-        createdAt: result.created_at
+        senderId: result.senderId,
+        senderDisplayName: sender.actor.displayName,
+        createdAt: result.createdAt
       }
     })
   }

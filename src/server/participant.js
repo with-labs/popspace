@@ -91,12 +91,16 @@ class Participant {
   }
 
   async init(roomId, actorId) {
-    if(this.dbParticipant) {
-      if(!this.dbParticipant.room_id && !this.dbParticipant.actor_id) {
-        return this.dbParticipant = (await shared.db.pg.massive.participants.update({id: this.id}, {
-          room_id: this.room.id,
-          actor_id: this.actor.id
-        }))[0]
+    if (this.dbParticipant) {
+      if (!this.dbParticipant.roomId && !this.dbParticipant.actorId) {
+        this.dbParticipant = await shared.db.prisma.participant.update({
+          where: {id: this.id},
+          data: {
+            roomId: this.room.id,
+            actorId: this.actor.id
+          }
+        })
+        return this.dbParticipant
       }
       /*
         These in-memory participants should be 1:1 to DB participants.
@@ -107,19 +111,21 @@ class Participant {
       return this.dbParticipant
     }
     const ua = userAgentParser(this.req.headers['user-agent'] || "")
-    this.dbParticipant = await shared.db.pg.massive.participants.insert({
-      room_id: roomId,
-      actor_id: actorId,
-      ip: this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress,
-      browser: ua.browser.name,
-      device: ua.device.type,
-      vendor: ua.device.vendor,
-      engine: ua.engine.name,
-      os: ua.os.name,
-      os_version: ua.os.version,
-      engine_version: ua.engine.version,
-      browser_version: ua.browser.version,
-      user_agent: this.req.headers['user-agent']
+    this.dbParticipant = await shared.db.prisma.participant.create({
+      data: {
+        roomId,
+        actorId,
+        ip: this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress,
+        browser: ua.browser.name,
+        device: ua.device.type,
+        vendor: ua.device.vendor,
+        engine: ua.engine.name,
+        os: ua.os.name,
+        osVersion: ua.os.version,
+        engineVersion: ua.engine.version,
+        browserVersion: ua.browser.version,
+        userAgent: this.req.headers['user-agent']
+      }
     })
     log.app.info(`New participant ${this.dbParticipant.id}`)
     this.ready = true
@@ -217,10 +223,13 @@ class Participant {
     await this.getState()
 
     await this.awaitInit()
-    this.dbParticipant = (await shared.db.pg.massive.participants.update({id: this.id}, {
-      room_id: this.room.id,
-      actor_id: this.actor.id
-    }))[0]
+    this.dbParticipant = await shared.db.prisma.participant.update({
+      where: {id: this.id},
+      data: {
+        roomId: this.room.id,
+        actorId: this.actor.id
+      }
+    })
 
     this.authenticated = true
     clearTimeout(this.dieUnlessAuthenticateTimeout)
@@ -274,7 +283,7 @@ class Participant {
   }
 
   sendEvent(event) {
-    const message = JSON.stringify(lib.util.snakeToCamelCase(event.serialize()))
+    const message = shared.db.serialization.serialize(lib.util.snakeToCamelCase(event.serialize()))
     log.sent.info(`${this.sessionName()} ${message}`)
     this.socket.send(message)
   }
@@ -374,29 +383,20 @@ class Participant {
   }
 
   async updateDisplayName(newDisplayName, sourceEvent) {
-    this.actor = await shared.db.pg.massive.withTransaction(async (tx) => {
-      /*
-        TODO: we'll want to record these on the backend eventually
-      */
-      // recordEvent(this.actor.id, this.session.id, "changed_display_name", newDisplayName, this.req, {old_display_name: this.actor.display_name, new_display_name: newDisplayName}, tx)
-      return await shared.db.pg.massive.actors.update(this.actorId(), {
-        display_name: newDisplayName
-      });
-    })
-
+    this.actor = await shared.db.prisma.actor.update({
+      where: {id: this.actorId()},
+      data: {displayName: newDisplayName}
+      // TODO: store associated actorEvent?
+    });
     return this.respondAndBroadcast(sourceEvent, "displayNameUpdated")
   }
 
   async updateAvatarName(newAvatarName, sourceEvent) {
-    this.actor = await shared.db.pg.massive.withTransaction(async (tx) => {
-      /*
-        TODO: we'll want to record these on the backend eventually
-      */
-      // recordEvent(this.actor.id, this.session.id, "changed_avatar_name", newDisplayName, this.req, {old_display_name: this.actor.display_name, new_display_name: newDisplayName}, tx)
-      return await shared.db.pg.massive.actors.update(this.actorId(), {
-        avatar_name: newAvatarName
-      });
-    })
+    this.actor = await shared.db.prisma.actor.update({
+      where: {id: this.actorId()},
+      data: {avatarName: newAvatarName}
+      // TODO: store associated actorEvent?
+    });
 
     return this.respondAndBroadcast(sourceEvent, "avatarNameUpdated")
   }
@@ -422,8 +422,8 @@ class Participant {
       authenticated: this.authenticated,
       actor: {
         id: this.actor.id,
-        display_name: this.actor.display_name,
-        avatar_name: this.actor.avatar_name,
+        displayName: this.actor.displayName,
+        avatarname: this.actor.avatarName,
       },
       sessionId: this.id,
       roomId: this.room.id,

@@ -23,9 +23,11 @@ class RoomActorClient {
     if(this.session && this.token) {
       return { session: this.session, token: this.token }
     }
-    let session = await shared.db.pg.massive.sessions.findOne({
-      actor_id: this.actor.id,
-      expires_at: null
+    let session = await shared.db.prisma.session.findFirst({
+      where: {
+        actorId: this.actor.id,
+        expiresAt: null
+      }
     })
     if(!session) {
       session = await shared.db.accounts.createSession(this.actor.id)
@@ -39,7 +41,7 @@ class RoomActorClient {
       return this.atuh
     }
     await this.client.connect()
-    const auth = await this.client.authenticate(this.token, this.room.url_id)
+    const auth = await this.client.authenticate(this.token, this.room.urlId)
     this.auth = auth
     if(this.afterJoin) {
       this.afterJoin(this)
@@ -64,7 +66,7 @@ class RoomActorClient {
 }
 
 RoomActorClient.anyOrCreate = async () => {
-  let actor = await shared.db.pg.massive.actors.findOne({})
+  let actor = await shared.db.prisma.actor.findFirst()
   if(!actor) {
      actor = await shared.db.accounts.createActor("test")
   }
@@ -77,15 +79,15 @@ RoomActorClient.create = async (inRoom) => {
 }
 
 RoomActorClient.forAnyActor = async () => {
-  const actor = await shared.db.pg.massive.actors.findOne({})
+  const actor = await shared.db.prisma.actor.findFirst()
   return RoomActorClient.forActor(actor)
 }
 
 RoomActorClient.forActorId = async (actorId, roomId=null) => {
-  const actor = await shared.db.pg.massive.actors.findOne({id: actorId})
+  const actor = await shared.db.prisma.actor.findUnique({ where: {id: actorId } })
   let room
   if(roomId) {
-    room = await shared.db.pg.massive.rooms.findOne({id: roomId})
+    room = await shared.db.prisma.room.findUnique({ where: {id: roomId } })
   }
   return RoomActorClient.forActor(actor, room)
 }
@@ -95,7 +97,7 @@ RoomActorClient.forActor = async (actor, room=null) => {
      actor = await shared.db.accounts.createActor("test")
   }
   if(!room) {
-    room = await shared.db.pg.massive.rooms.findOne({creator_id: actor.id, deleted_at: null})
+    room = await shared.db.prisma.room.findFirst({ where: {creatorId: actor.id, deletedAt: null } })
     if(!room) {
       const isPublic = true
       const roomWithData = await shared.db.room.core.createEmptyRoom(actor.id, isPublic, shared.test.chance.company())

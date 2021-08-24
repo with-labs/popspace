@@ -1,6 +1,6 @@
 require("dotenv").config()
 require("../src/globals.js")
-shared.test = shared.requireTesting()
+shared.test = require('@withso/noodle-shared/test');
 const test = {
   template: require("./template.js"),
   models: require("./models/_models.js"),
@@ -11,4 +11,3 @@ const test = {
 lib.test = test
 
 module.exports = test
-

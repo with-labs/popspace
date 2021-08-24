@@ -39,7 +39,7 @@ class SystemEvent {
     return {
       kind: this.kind(),
       payload: this.payload(),
-      event_id: this.eventId()
+      eventId: this.eventId()
     }
   }
 }

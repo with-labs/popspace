@@ -39,12 +39,12 @@ class PeerEvent {
   serialize() {
     return {
       sender: {
-        actor_id: this.sender().actorId(),
-        session_id: this.sender().sessionId()
+        actorId: this.sender().actorId(),
+        sessionId: this.sender().sessionId()
       },
       kind: this.kind(),
       payload: this.payload(),
-      request_id: this.requestId()
+      requestId: this.requestId()
     }
   }
 }
@@ -52,13 +52,7 @@ class PeerEvent {
 PeerEvent.fromMessage = function(sender, message) {
   let data = null
   try {
-    // Convert to snake case, because raw data fields are snake case.
-    // We use snake case because some databases (like postgres)
-    // are weird wrt case-insensitivity:
-    // in psql, double quotes turn a column name into case-sensitive,
-    // so a query like "select widget_id from room_widgets;" becomes
-    // 'select "WidgetId" from "RoomWidgets";'.
-    data = lib.util.camelToSnakeCase(JSON.parse(message))
+    data = shared.db.serialization.deserialize(message)
   } catch(e) {
     throw new lib.event.HermesError(lib.ErrorCodes.MESSAGE_INVALID_FORMAT, "events must be JSON")
   }

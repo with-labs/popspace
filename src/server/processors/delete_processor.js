@@ -16,7 +16,7 @@ class DeleteProcessor {
 
   async deleteWidget(event) {
     const sender = event.senderParticipant()
-    await shared.db.room.data.softDeleteWidget(event.payload().widget_id, sender.actorId())
+    await shared.db.room.data.softDeleteWidget(event.payload().widgetId, sender.actorId())
     sender.broadcastPeerEvent("widgetDeleted", event.payload())
     sender.sendResponse(event, event.payload(), "widgetDeleted")
   }

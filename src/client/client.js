@@ -141,7 +141,7 @@ class Client extends EventEmitter {
 
   async getWidgetState(widgetId) {
     this.requireReady()
-    const response = await this.sendEventWithPromise("getWidget", { widget_id: widgetId })
+    const response = await this.sendEventWithPromise("getWidget", { widgetId })
     return response.data()
   }
 

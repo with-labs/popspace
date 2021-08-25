@@ -1,7 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
-import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetScrollPane } from '../WidgetScrollPane';
@@ -68,7 +68,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const actor = useLocalActor();
   const userDisplayName = actor?.displayName;
 
-  const { widget: state } = useWidgetContext<WidgetType.Notepad>();
+  const { widget: state, save } = useWidgetContext<WidgetType.Notepad>();
 
   /*
     quillRef is an instance of MutableObjectRef<Quill>...
@@ -88,6 +88,11 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     if (quillRef.current) return notepadRegistry.register(state.widgetId, quillRef.current);
   }, [state.widgetId]);
 
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+  };
   return (
     <WidgetFrame
       color={ThemeName.Blueberry}
@@ -96,7 +101,12 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
-      <WidgetTitlebar title={t('widgets.notepad.title')}></WidgetTitlebar>
+      <WidgetEditableTitlebar
+        title={state.widgetState.title ?? t('widgets.notepad.title')}
+        onTitleChanged={onTitleChanged}
+      >
+        {/* <WidgetColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} /> */}
+      </WidgetEditableTitlebar>
       <WidgetContent disablePadding className={classes.content}>
         <WidgetScrollPane className={classes.scrollContainer} onClick={focusOnClick} style={{ cursor: 'pointer' }}>
           <div className={clsx('notepad_selector', classes.notepadContainer)}>

@@ -329,7 +329,9 @@
         "close": "Remove accessory",
         "mutedForYou": "Muted for you",
         "deleted": "Accessory removed",
-        "undoDelete": "Restore"
+        "undoDelete": "Restore",
+        "customTitleLabel": "Add a custom title",
+        "customTitleExplainer": "Double click to change the name of the widget"
       },
       "huddle": {
         "quickActionTitle": "Start a private Huddle",

@@ -10,9 +10,9 @@ import { snow } from '@src/theme/theme';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetResizeHandle } from '../WidgetResizeHandle';
-import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { MAX_SIZE, MIN_SIZE } from './constants';
-
+import { WidgetType } from '@api/roomState/types/widgets';
 export interface IHuddleWidgetProps {
   children?: React.ReactNode;
 }
@@ -58,8 +58,10 @@ export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
   const { t } = useTranslation();
 
   const {
-    widget: { widgetId },
-  } = useWidgetContext();
+    widget: { widgetId, widgetState },
+    save,
+  } = useWidgetContext<WidgetType.Huddle>();
+
   const localMediaGroup = useLocalMediaGroup((store) => store.localMediaGroup);
   const isActiveHuddle = localMediaGroup === widgetId;
 
@@ -79,6 +81,12 @@ export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
     }
   }, [isActiveHuddle, frameSpring]);
 
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+  };
+
   // note we don't use WidgetFrame here as it's too opinionated toward a standard
   // widget use-case, we just manually render CanvasObject (an invisible container now)
   // and then put the animated div which is our new 'frame' inside it.
@@ -95,7 +103,11 @@ export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
         maxHeight={MAX_SIZE.height}
       >
         <animated.div className={classes.frame} style={frameStyle}>
-          <WidgetTitlebar title={t('widgets.huddle.name')} className={classes.titlebar} />
+          <WidgetEditableTitlebar
+            title={widgetState.title ? widgetState.title : t('widgets.huddle.name')}
+            className={classes.titlebar}
+            onTitleChanged={onTitleChanged}
+          />
           <WidgetContent className={clsx(classes.region, isActiveHuddle && classes.active)}>
             <Box display="flex" alignItems="center" justifyContent="center" width="100%" height="100%">
               {isActiveHuddle ? (

@@ -37,7 +37,7 @@ export interface WidgetMediaState {
 }
 
 export interface StickyNoteWidgetState {
-  title: string;
+  title?: string;
   text: string;
   color?: ThemeName;
 }
@@ -81,6 +81,8 @@ export interface ChatMessageShape {
 export interface NotepadState {
   docId: string;
   initialData?: null | any;
+  title?: string;
+  color?: ThemeName;
 }
 
 export interface WhiteboardWidgetState {
@@ -104,7 +106,10 @@ export interface MockUserWidgetState {
   video: string;
 }
 
-export interface HuddleWidgetState {}
+export interface HuddleWidgetState {
+  title?: string;
+  color?: ThemeName;
+}
 
 /** Common properties to all widgets */
 export interface BaseWidgetShape {

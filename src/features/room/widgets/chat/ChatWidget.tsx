@@ -13,11 +13,14 @@ import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { MAX_SIZE, MIN_SIZE } from './constants';
 import ChatBubbleImg from './images/chat_placeholder.png';
 import { ChatMenu } from './menu/ChatMenu';
 import { Message } from './Message';
+import { Analytics } from '@analytics/Analytics';
+
+const ANALYTICS_ID = 'chat_widget';
 
 const MAX_MSG_SIZE = 1000;
 const MIN_SHOW_WARINING = MAX_MSG_SIZE * 0.1;
@@ -113,17 +116,48 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
     });
   };
 
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
+  const onColorPicked = (color: ThemeName) => {
+    save({
+      color,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
+      color,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
   return (
     <WidgetFrame
-      color={ThemeName.Blueberry}
+      color={state.widgetState.color ?? ThemeName.Blueberry}
       minWidth={MIN_SIZE.width}
       minHeight={MIN_SIZE.height}
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
-      <WidgetTitlebar title={t('widgets.chat.name')} disableRemove>
+      <WidgetEditableTitlebar
+        title={state.widgetState.title}
+        onTitleChanged={onTitleChanged}
+        defaultTitle={t('widgets.chat.name')}
+        disableRemove
+        setActiveColor={onColorPicked}
+        activeColor={state.widgetState.color ?? ThemeName.Blueberry}
+      >
         <ChatMenu />
-      </WidgetTitlebar>
+      </WidgetEditableTitlebar>
       <WidgetContent enableTextSelection>
         <WidgetScrollPane ref={chatRef} className={classes.chatArea}>
           {state.messages.hasMoreToLoad && (

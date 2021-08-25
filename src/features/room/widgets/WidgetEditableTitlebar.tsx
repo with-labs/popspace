@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { makeStyles, Popover, Box } from '@material-ui/core';
+import { makeStyles, Popover, Box, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
@@ -7,19 +7,35 @@ import { useTranslation } from 'react-i18next';
 import { useWidgetContext } from './useWidgetContext';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 import useDoubleClick from 'use-double-click';
-import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import * as Yup from 'yup';
+import { ThemeName } from '../../../theme/theme';
+import { ColorButton } from '@components/ColorButton/ColorButton';
+import palette from '../../../theme/palette';
+
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
 
 const MAX_TITLE_SIZE = 100;
 
+const COLORS = [
+  { name: ThemeName.Mandarin, value: palette.mandarin.bold },
+  { name: ThemeName.Cherry, value: palette.cherry.bold },
+  { name: ThemeName.Oregano, value: palette.oregano.bold },
+  { name: ThemeName.Lavender, value: palette.lavender.bold },
+  { name: ThemeName.Blueberry, value: palette.blueberry.bold },
+  { name: ThemeName.Slate, value: palette.slate.bold },
+];
+
 export type WidgetEditableTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
-  title: string;
+  title: string | undefined;
+  defaultTitle: string;
   children?: React.ReactNode;
   className?: string;
   disableRemove?: boolean;
   onTitleChanged: (newTitle: string) => void;
+  setActiveColor: (color: ThemeName) => void;
+  activeColor: ThemeName;
 };
 
 export type TitleEditFormData = {
@@ -51,6 +67,20 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     overflow: 'hidden',
+    cursor: 'grab',
+  },
+  titleBarHover: {
+    '&:hover': {
+      '& > $userTitle': {
+        display: 'none',
+      },
+      '& > $editTitle': {
+        display: 'block',
+        fontWeight: theme.typography.fontWeightMedium,
+        color: theme.palette.primary.dark,
+        cursor: 'pointer',
+      },
+    },
   },
   controls: {
     display: 'flex',
@@ -66,60 +96,101 @@ const useStyles = makeStyles((theme) => ({
   titleInput: {
     backgroundColor: theme.palette.background.paper,
   },
+  titleBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  userTitle: {
+    display: 'block',
+    cursor: 'grab',
+  },
+  editTitle: {
+    display: 'none',
+  },
 }));
 
 export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
   title,
+  defaultTitle,
   children,
   className,
   disableRemove,
   onTitleChanged,
+  setActiveColor,
+  activeColor,
   ...rest
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { remove } = useWidgetContext();
   const titleRef = React.useRef(null);
+  const formikRef = React.useRef(null);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const { isGrabbing } = useCanvasObject();
 
   useDoubleClick({
-    onSingleClick: (e) => {},
-    onDoubleClick: (e) => {
-      setAnchorEl(e.target as HTMLElement);
+    onDoubleClick: (e: React.MouseEvent) => {
+      setAnchorEl(titleRef.current);
     },
     ref: titleRef,
     latency: 250,
   });
 
   const handleSubmit = async (values: TitleEditFormData, actions: FormikHelpers<TitleEditFormData>) => {
-    onTitleChanged(values.newTitle);
+    if (values.newTitle !== title) {
+      onTitleChanged(values.newTitle);
+    }
+    setAnchorEl(null);
+  };
+
+  const handleOnClose = () => {
+    const currentValues: any = formikRef.current;
+    if (currentValues?.values?.newTitle !== title) {
+      onTitleChanged(currentValues.values.newTitle);
+    }
     setAnchorEl(null);
   };
 
   return (
     <CanvasObjectDragHandle className={clsx(classes.root, className)}>
-      <ResponsiveTooltip title={t('widgets.common.customTitleExplainer') as string} offset={4}>
-        <div className={classes.title} ref={titleRef}>
-          {title}
+      <div ref={titleRef} className={classes.titleBar}>
+        <div className={clsx(classes.title, { [classes.titleBarHover]: !isGrabbing })}>
+          <div className={classes.userTitle}>{title && title.length > 0 ? title : defaultTitle}</div>
+          <div className={classes.editTitle}>{t('widgets.common.editTitle')}</div>
         </div>
-      </ResponsiveTooltip>
-      <div className={classes.controls}>{children}</div>
-      {!disableRemove && (
-        <div className={classes.controls}>
-          <WidgetTitlebarButton onClick={remove} aria-label={t('widgets.common.close')}>
-            <DeleteIcon fontSize="small" color="inherit" />
-          </WidgetTitlebarButton>
-        </div>
-      )}
+        <div className={classes.controls}>{children}</div>
+        {!disableRemove && (
+          <div className={classes.controls}>
+            <WidgetTitlebarButton onClick={remove} aria-label={t('widgets.common.close')}>
+              <DeleteIcon fontSize="small" color="inherit" />
+            </WidgetTitlebarButton>
+          </div>
+        )}
+      </div>
       <Popover
         id="widgetEditTitle"
         open={!!anchorEl}
         anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        transformOrigin={{ vertical: -10, horizontal: 'center' }}
+        onClose={handleOnClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: -16,
+          horizontal: 'center',
+        }}
       >
         <Box p={2} display="flex" flexDirection="row" alignItems="center" className={classes.titleInput}>
-          <Formik initialValues={{ newTitle: '' }} onSubmit={handleSubmit} validationSchema={validationSchema}>
+          <Formik
+            innerRef={formikRef}
+            initialValues={{ newTitle: title && title.length > 0 ? title : defaultTitle }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
             <Form>
               <FormikTextField
                 autoFocus
@@ -129,6 +200,23 @@ export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
               />
             </Form>
           </Formik>
+        </Box>
+        <Box p={2} display="flex" flexDirection="column">
+          <Box mb={1}>
+            <Typography color="textSecondary" variant="h4">
+              {t('widgets.common.colorPickerLabel')}
+            </Typography>
+          </Box>
+          <Box display="flex" flexDirection="row" alignItems="center" className={classes.controls}>
+            {COLORS.map((color) => (
+              <ColorButton
+                key={color.value}
+                color={color.value}
+                onClick={() => setActiveColor(color.name)}
+                active={activeColor === color.name}
+              />
+            ))}
+          </Box>
         </Box>
       </Popover>
     </CanvasObjectDragHandle>

@@ -15,12 +15,12 @@ import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { EditIcon } from '@components/icons/EditIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import { ThemeName } from '../../../../theme/theme';
-import { WidgetColorPickerMenu } from '../WidgetColorPickerMenu';
 import { Analytics } from '@analytics/Analytics';
-import { EventNames } from '@analytics/constants';
 import { useRoomStore } from '@api/useRoomStore';
 import { MIN_SIZE, MAX_SIZE, INITIAL_SIZE } from './constants';
 import { useIsMe } from '@api/useIsMe';
+
+const ANALYTICS_ID = 'chat_widget';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -73,7 +73,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     save({
       color,
     });
-    Analytics.trackEvent(EventNames.CHANGE_WIDGET_COLOR, color, {
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
       color,
       widgetId: state.widgetId,
       type: state.type,
@@ -84,6 +84,12 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
   const onTitleChanged = (newTitle: string) => {
     save({
       title: newTitle,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
     });
   };
 
@@ -97,16 +103,11 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     >
       <WidgetEditableTitlebar
         onTitleChanged={onTitleChanged}
-        title={
-          editing
-            ? t('widgets.stickyNote.addWidgetTitle')
-            : state.widgetState.title || t('widgets.stickyNote.publishedTitle')
-        }
+        title={editing ? t('widgets.stickyNote.addWidgetTitle') : state.widgetState.title}
+        defaultTitle={t('widgets.stickyNote.publishedTitle')}
+        setActiveColor={onColorPicked}
+        activeColor={state.widgetState.color ?? ThemeName.Mandarin}
       >
-        <WidgetColorPickerMenu
-          setActiveColor={onColorPicked}
-          activeColor={state.widgetState.color ?? ThemeName.Mandarin}
-        />
         {isOwnedByLocalUser && !editing && (
           <WidgetTitlebarButton onClick={startEditing} aria-label={t('widgets.stickyNote.edit')}>
             <EditIcon />

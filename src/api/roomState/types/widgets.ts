@@ -66,7 +66,8 @@ export interface FileWidgetState {
 }
 
 export interface ChatWidgetState {
-  isMoreToLoad: boolean;
+  title?: string;
+  color?: ThemeName;
 }
 export interface ChatMessageShape {
   id: string;
@@ -129,7 +130,7 @@ export type WidgetStateByType = {
   [WidgetType.MockUser]: MockUserWidgetState;
   [WidgetType.Huddle]: HuddleWidgetState;
   [WidgetType.File]: FileWidgetState;
-  [WidgetType.Chat]: ChatWidgetShape;
+  [WidgetType.Chat]: ChatWidgetState;
 };
 export type WidgetShapeByType = {
   [WidgetType.StickyNote]: BaseWidgetShape & {

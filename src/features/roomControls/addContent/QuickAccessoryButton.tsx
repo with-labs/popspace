@@ -53,9 +53,7 @@ const DEFAULT_DATA: Record<SupportedTypes, WidgetState> = {
     },
   },
   [WidgetType.Huddle]: {},
-  [WidgetType.Chat]: {
-    isMoreToLoad: false,
-  },
+  [WidgetType.Chat]: {},
 };
 
 const DEFAULT_SIZE: Record<SupportedTypes, Bounds> = {

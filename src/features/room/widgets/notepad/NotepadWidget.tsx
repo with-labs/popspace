@@ -14,6 +14,10 @@ import { CircularProgress } from '@material-ui/core';
 import { useLocalActor } from '@api/useLocalActor';
 import { notepadRegistry } from './notepadRegistry';
 import clsx from 'clsx';
+import { Analytics } from '@analytics/Analytics';
+import { useRoomStore } from '@api/useRoomStore';
+
+const ANALYTICS_ID = 'notepad_widget';
 
 export interface INotepadWidgetProps {}
 
@@ -67,6 +71,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const { t } = useTranslation();
   const actor = useLocalActor();
   const userDisplayName = actor?.displayName;
+  const roomId = useRoomStore((store) => store.id);
 
   const { widget: state, save } = useWidgetContext<WidgetType.Notepad>();
 
@@ -92,21 +97,41 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     save({
       title: newTitle,
     });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
   };
+
+  const onColorPicked = (color: ThemeName) => {
+    save({
+      color,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
+      color,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
   return (
     <WidgetFrame
-      color={ThemeName.Blueberry}
+      color={state.widgetState.color ?? ThemeName.Blueberry}
       minWidth={MIN_SIZE.width}
       minHeight={MIN_SIZE.height}
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
       <WidgetEditableTitlebar
-        title={state.widgetState.title ?? t('widgets.notepad.title')}
+        title={state.widgetState.title}
         onTitleChanged={onTitleChanged}
-      >
-        {/* <WidgetColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} /> */}
-      </WidgetEditableTitlebar>
+        defaultTitle={t('widgets.notepad.title')}
+        setActiveColor={onColorPicked}
+        activeColor={state.widgetState.color ?? ThemeName.Blueberry}
+      ></WidgetEditableTitlebar>
       <WidgetContent disablePadding className={classes.content}>
         <WidgetScrollPane className={classes.scrollContainer} onClick={focusOnClick} style={{ cursor: 'pointer' }}>
           <div className={clsx('notepad_selector', classes.notepadContainer)}>

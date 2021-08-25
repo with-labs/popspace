@@ -13,6 +13,12 @@ import { WidgetResizeHandle } from '../WidgetResizeHandle';
 import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { MAX_SIZE, MIN_SIZE } from './constants';
 import { WidgetType } from '@api/roomState/types/widgets';
+import { ThemeName, getThemeFromName } from '../../../../theme/theme';
+import { Analytics } from '@analytics/Analytics';
+import { useRoomStore } from '@api/useRoomStore';
+
+const ANALYTICS_ID = 'huddle_widget';
+
 export interface IHuddleWidgetProps {
   children?: React.ReactNode;
 }
@@ -56,9 +62,10 @@ const useStyles = makeStyles((theme) => ({
 export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const roomId = useRoomStore((store) => store.id);
 
   const {
-    widget: { widgetId, widgetState },
+    widget: { widgetId, type, widgetState },
     save,
   } = useWidgetContext<WidgetType.Huddle>();
 
@@ -85,13 +92,31 @@ export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
     save({
       title: newTitle,
     });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
+      widgetId: widgetId,
+      type: type,
+      roomId,
+    });
+  };
+
+  const onColorPicked = (color: ThemeName) => {
+    save({
+      color,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
+      color,
+      widgetId: widgetId,
+      type: type,
+      roomId,
+    });
   };
 
   // note we don't use WidgetFrame here as it's too opinionated toward a standard
   // widget use-case, we just manually render CanvasObject (an invisible container now)
   // and then put the animated div which is our new 'frame' inside it.
   return (
-    <ThemeProvider theme={snow}>
+    <ThemeProvider theme={widgetState.color ? getThemeFromName(widgetState.color) : snow}>
       <CanvasObject
         objectId={widgetId}
         objectKind="widget"
@@ -104,10 +129,13 @@ export const HuddleWidget: React.FC<IHuddleWidgetProps> = () => {
       >
         <animated.div className={classes.frame} style={frameStyle}>
           <WidgetEditableTitlebar
-            title={widgetState.title ? widgetState.title : t('widgets.huddle.name')}
+            title={widgetState.title}
             className={classes.titlebar}
             onTitleChanged={onTitleChanged}
-          />
+            defaultTitle={t('widgets.huddle.name')}
+            setActiveColor={onColorPicked}
+            activeColor={widgetState.color ?? ThemeName.Snow}
+          ></WidgetEditableTitlebar>
           <WidgetContent className={clsx(classes.region, isActiveHuddle && classes.active)}>
             <Box display="flex" alignItems="center" justifyContent="center" width="100%" height="100%">
               {isActiveHuddle ? (

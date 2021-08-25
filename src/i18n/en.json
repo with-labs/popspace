@@ -330,8 +330,9 @@
         "mutedForYou": "Muted for you",
         "deleted": "Accessory removed",
         "undoDelete": "Restore",
-        "customTitleLabel": "Add a custom title",
-        "customTitleExplainer": "Double click to change the name of the widget"
+        "customTitleLabel": "Name",
+        "editTitle": "Double click to edit",
+        "colorPickerLabel": "Color label"
       },
       "huddle": {
         "quickActionTitle": "Start a private Huddle",

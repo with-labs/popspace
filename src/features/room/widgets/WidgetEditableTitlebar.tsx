@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { makeStyles, Popover, Box, Typography } from '@material-ui/core';
+import { DoneIcon } from '@components/icons/DoneIcon';
+import { makeStyles, Popover, Box, Typography, IconButton } from '@material-ui/core';
 import clsx from 'clsx';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
 import { WidgetTitlebarButton } from './WidgetTitlebarButton';
@@ -76,9 +77,6 @@ const useStyles = makeStyles((theme) => ({
       },
       '& > $editTitle': {
         display: 'block',
-        fontWeight: theme.typography.fontWeightMedium,
-        color: theme.palette.primary.dark,
-        cursor: 'pointer',
       },
     },
   },
@@ -109,6 +107,20 @@ const useStyles = makeStyles((theme) => ({
   },
   editTitle: {
     display: 'none',
+  },
+  editControlText: {
+    fontWeight: theme.typography.fontWeightMedium,
+    color: theme.palette.primary.dark,
+    cursor: 'pointer',
+  },
+  iconButton: {
+    color: theme.palette.success.dark,
+  },
+  hideTitle: {
+    display: 'none',
+  },
+  showTitle: {
+    display: 'block',
   },
 }));
 
@@ -155,21 +167,35 @@ export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
   };
 
   return (
-    <CanvasObjectDragHandle className={clsx(classes.root, className)}>
-      <div ref={titleRef} className={classes.titleBar}>
-        <div className={clsx(classes.title, { [classes.titleBarHover]: !isGrabbing })}>
-          <div className={classes.userTitle}>{title && title.length > 0 ? title : defaultTitle}</div>
-          <div className={classes.editTitle}>{t('widgets.common.editTitle')}</div>
-        </div>
-        <div className={classes.controls}>{children}</div>
-        {!disableRemove && (
-          <div className={classes.controls}>
-            <WidgetTitlebarButton onClick={remove} aria-label={t('widgets.common.close')}>
-              <DeleteIcon fontSize="small" color="inherit" />
-            </WidgetTitlebarButton>
+    <>
+      <CanvasObjectDragHandle className={clsx(classes.root, className)}>
+        <div ref={titleRef} className={classes.titleBar}>
+          <div className={clsx(classes.title, { [classes.titleBarHover]: !isGrabbing })}>
+            <div className={clsx(classes.userTitle, { [classes.hideTitle]: !!anchorEl })}>
+              {title && title.length > 0 ? title : defaultTitle}
+            </div>
+            <div className={clsx(classes.editTitle, classes.editControlText, { [classes.hideTitle]: !!anchorEl })}>
+              {t('widgets.common.editTitle')}
+            </div>
+            <div
+              className={clsx(classes.editControlText, {
+                [classes.hideTitle]: !anchorEl,
+                [classes.showTitle]: !!anchorEl,
+              })}
+            >
+              {t('widgets.common.closeEditTitle')}
+            </div>
           </div>
-        )}
-      </div>
+          <div className={classes.controls}>{children}</div>
+          {!disableRemove && (
+            <div className={classes.controls}>
+              <WidgetTitlebarButton onClick={remove} aria-label={t('widgets.common.close')}>
+                <DeleteIcon fontSize="small" color="inherit" />
+              </WidgetTitlebarButton>
+            </div>
+          )}
+        </div>
+      </CanvasObjectDragHandle>
       <Popover
         id="widgetEditTitle"
         open={!!anchorEl}
@@ -187,7 +213,7 @@ export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
         <Box p={2} display="flex" flexDirection="row" alignItems="center" className={classes.titleInput}>
           <Formik
             innerRef={formikRef}
-            initialValues={{ newTitle: title && title.length > 0 ? title : defaultTitle }}
+            initialValues={{ newTitle: title && title.length > 0 ? title : '' }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
@@ -197,6 +223,14 @@ export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
                 autoComplete="off"
                 name="newTitle"
                 label={t('widgets.common.customTitleLabel')}
+                placeholder={t('widgets.common.enterTitle')}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton className={classes.iconButton} color="secondary" onClick={() => handleOnClose()}>
+                      <DoneIcon />
+                    </IconButton>
+                  ),
+                }}
               />
             </Form>
           </Formik>
@@ -219,6 +253,6 @@ export const WidgetEditableTitlebar: React.FC<WidgetEditableTitlebarProps> = ({
           </Box>
         </Box>
       </Popover>
-    </CanvasObjectDragHandle>
+    </>
   );
 };

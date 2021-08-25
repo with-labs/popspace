@@ -332,7 +332,9 @@
         "undoDelete": "Restore",
         "customTitleLabel": "Name",
         "editTitle": "Double click to edit",
-        "colorPickerLabel": "Color label"
+        "closeEditTitle": "Click to close",
+        "colorPickerLabel": "Color label",
+        "enterTitle": "Enter a title"
       },
       "huddle": {
         "quickActionTitle": "Start a private Huddle",

@@ -103,7 +103,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     >
       <WidgetEditableTitlebar
         onTitleChanged={onTitleChanged}
-        title={editing ? t('widgets.stickyNote.addWidgetTitle') : state.widgetState.title}
+        title={state.widgetState.title}
         defaultTitle={t('widgets.stickyNote.publishedTitle')}
         setActiveColor={onColorPicked}
         activeColor={state.widgetState.color ?? ThemeName.Mandarin}

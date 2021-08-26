@@ -47,7 +47,9 @@ const begin = async () => {
     Let pm2 know the app is ready
     https://pm2.keymetrics.io/docs/usage/signals-clean-restart/
   */
-  process.send('ready')
+  if (process.send) {
+    process.send('ready')
+  }
 }
 
 begin()

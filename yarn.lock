@@ -609,10 +609,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@withso/file-upload@^0.5.0":
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.5.1.tgz#7ce7896fd8d8938874bb2af5fbd2c2d9bf07324c"
-  integrity sha512-NDmn1/OeXxvsTQxubDHuI+7C2M0kLlKyxhltepDAjvn0NNH9dGCAjPSl6R2S/VNkrv6yXaBrK3iGTqaOv/TWJw==
+"@withso/file-upload@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/@withso/file-upload/-/file-upload-0.6.0.tgz#fcfcfa56674a502778a633ca250e5a4a9e15f201"
+  integrity sha512-QHtNgnPjY7tev/7jR+Cx3aR8q/ytWtswKXY02Db9Y8homVyEC0Ql3sAwM295ggF/7bUwR9RRSE1yE1Eg1nptJg==
   dependencies:
     aws-sdk "^2.906.0"
     sharp "^0.28.2"

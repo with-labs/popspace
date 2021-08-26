@@ -22,9 +22,14 @@ export function DocumentLinkWidget() {
   }>({ isLoading: true, data: null });
   React.useEffect(() => {
     const controller = new AbortController();
-    fetch('https://api.embedly.com/1/oembed?url=' + widgetState.url + '&key=ba3b50015d8245539b3ca12286d8970a', {
-      signal: controller.signal,
-    })
+    fetch(
+      'https://api.embedly.com/1/oembed?url=' +
+        encodeURIComponent(widgetState.url) +
+        '&key=ba3b50015d8245539b3ca12286d8970a',
+      {
+        signal: controller.signal,
+      }
+    )
       .then((res) => res.json())
       .then((body) => {
         setEmbedlyResponse({ isLoading: false, data: body });
@@ -39,7 +44,7 @@ export function DocumentLinkWidget() {
     return <DocumentWidgetSpinner />;
   }
 
-  if (embedlyResponse?.html) {
+  if (embedlyResponse?.html && widgetState.showIframe) {
     return <EmbedlyHtmlLinkWidget embedlyResponse={embedlyResponse} />;
   }
 
@@ -52,6 +57,7 @@ export function DocumentLinkWidget() {
       url={embedlyResponse?.url ?? widgetState.url}
       title={embedlyResponse?.title ?? widgetState.title}
       iconUrl={embedlyResponse?.thumbnail_url ?? widgetState.iconUrl}
+      enableIframe={!!(widgetState.iframeUrl || embedlyResponse?.html)}
     />
   );
 }

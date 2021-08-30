@@ -37,6 +37,7 @@ export interface WidgetMediaState {
 }
 
 export interface StickyNoteWidgetState {
+  title?: string;
   text: string;
   color?: ThemeName;
 }
@@ -65,7 +66,8 @@ export interface FileWidgetState {
 }
 
 export interface ChatWidgetState {
-  isMoreToLoad: boolean;
+  title?: string;
+  color?: ThemeName;
 }
 export interface ChatMessageShape {
   id: string;
@@ -80,6 +82,8 @@ export interface ChatMessageShape {
 export interface NotepadState {
   docId: string;
   initialData?: null | any;
+  title?: string;
+  color?: ThemeName;
 }
 
 export interface WhiteboardWidgetState {
@@ -103,7 +107,10 @@ export interface MockUserWidgetState {
   video: string;
 }
 
-export interface HuddleWidgetState {}
+export interface HuddleWidgetState {
+  title?: string;
+  color?: ThemeName;
+}
 
 /** Common properties to all widgets */
 export interface BaseWidgetShape {
@@ -123,7 +130,7 @@ export type WidgetStateByType = {
   [WidgetType.MockUser]: MockUserWidgetState;
   [WidgetType.Huddle]: HuddleWidgetState;
   [WidgetType.File]: FileWidgetState;
-  [WidgetType.Chat]: ChatWidgetShape;
+  [WidgetType.Chat]: ChatWidgetState;
 };
 export type WidgetShapeByType = {
   [WidgetType.StickyNote]: BaseWidgetShape & {

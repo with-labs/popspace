@@ -1,7 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
-import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
 import { WidgetScrollPane } from '../WidgetScrollPane';
@@ -14,6 +14,10 @@ import { CircularProgress } from '@material-ui/core';
 import { useLocalActor } from '@api/useLocalActor';
 import { notepadRegistry } from './notepadRegistry';
 import clsx from 'clsx';
+import { Analytics } from '@analytics/Analytics';
+import { useRoomStore } from '@api/useRoomStore';
+
+const ANALYTICS_ID = 'notepad_widget';
 
 export interface INotepadWidgetProps {}
 
@@ -67,8 +71,9 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
   const { t } = useTranslation();
   const actor = useLocalActor();
   const userDisplayName = actor?.displayName;
+  const roomId = useRoomStore((store) => store.id);
 
-  const { widget: state } = useWidgetContext<WidgetType.Notepad>();
+  const { widget: state, save } = useWidgetContext<WidgetType.Notepad>();
 
   /*
     quillRef is an instance of MutableObjectRef<Quill>...
@@ -88,15 +93,45 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     if (quillRef.current) return notepadRegistry.register(state.widgetId, quillRef.current);
   }, [state.widgetId]);
 
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
+  const onColorPicked = (color: ThemeName) => {
+    save({
+      color,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
+      color,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
   return (
     <WidgetFrame
-      color={ThemeName.Blueberry}
+      color={state.widgetState.color ?? ThemeName.Blueberry}
       minWidth={MIN_SIZE.width}
       minHeight={MIN_SIZE.height}
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
-      <WidgetTitlebar title={t('widgets.notepad.title')}></WidgetTitlebar>
+      <WidgetEditableTitlebar
+        title={state.widgetState.title}
+        onTitleChanged={onTitleChanged}
+        defaultTitle={t('widgets.notepad.title')}
+        setActiveColor={onColorPicked}
+        activeColor={state.widgetState.color ?? ThemeName.Blueberry}
+      ></WidgetEditableTitlebar>
       <WidgetContent disablePadding className={classes.content}>
         <WidgetScrollPane className={classes.scrollContainer} onClick={focusOnClick} style={{ cursor: 'pointer' }}>
           <div className={clsx('notepad_selector', classes.notepadContainer)}>

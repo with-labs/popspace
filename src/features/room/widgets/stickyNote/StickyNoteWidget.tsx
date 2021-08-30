@@ -1,7 +1,7 @@
 import { makeStyles, Typography } from '@material-ui/core';
 import * as React from 'react';
 import { WidgetFrame } from '../WidgetFrame';
-import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
 import { EditStickyNoteWidgetForm } from './EditStickyNoteWidgetForm';
 import { WidgetContent } from '../WidgetContent';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +15,12 @@ import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { EditIcon } from '@components/icons/EditIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
 import { ThemeName } from '../../../../theme/theme';
-import { ColorPickerMenu } from './ColorPickerMenu';
 import { Analytics } from '@analytics/Analytics';
-import { EventNames } from '@analytics/constants';
 import { useRoomStore } from '@api/useRoomStore';
 import { MIN_SIZE, MAX_SIZE, INITIAL_SIZE } from './constants';
 import { useIsMe } from '@api/useIsMe';
+
+const ANALYTICS_ID = 'chat_widget';
 
 export interface IStickyNoteWidgetProps {}
 
@@ -73,8 +73,20 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
     save({
       color,
     });
-    Analytics.trackEvent(EventNames.CHANGE_WIDGET_COLOR, color, {
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_color`, color, {
       color,
+      widgetId: state.widgetId,
+      type: state.type,
+      roomId,
+    });
+  };
+
+  const onTitleChanged = (newTitle: string) => {
+    save({
+      title: newTitle,
+    });
+    Analytics.trackEvent(`${ANALYTICS_ID}_change_widget_title`, newTitle, {
+      title: newTitle,
       widgetId: state.widgetId,
       type: state.type,
       roomId,
@@ -89,8 +101,13 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
       maxWidth={MAX_SIZE.width}
       maxHeight={MAX_SIZE.height}
     >
-      <WidgetTitlebar title={editing ? t('widgets.stickyNote.addWidgetTitle') : t('widgets.stickyNote.publishedTitle')}>
-        <ColorPickerMenu setActiveColor={onColorPicked} activeColor={state.widgetState.color ?? ThemeName.Mandarin} />
+      <WidgetEditableTitlebar
+        onTitleChanged={onTitleChanged}
+        title={state.widgetState.title}
+        defaultTitle={t('widgets.stickyNote.publishedTitle')}
+        setActiveColor={onColorPicked}
+        activeColor={state.widgetState.color ?? ThemeName.Mandarin}
+      >
         {isOwnedByLocalUser && !editing && (
           <WidgetTitlebarButton onClick={startEditing} aria-label={t('widgets.stickyNote.edit')}>
             <EditIcon />
@@ -101,7 +118,7 @@ export const StickyNoteWidget: React.FC<IStickyNoteWidgetProps> = () => {
             <DoneIcon />
           </WidgetTitlebarButton>
         )}
-      </WidgetTitlebar>
+      </WidgetEditableTitlebar>
       <StickyNoteContent editing={editing} setEditing={setEditing} isOwnedByLocalUser={isOwnedByLocalUser} />
       <WidgetResizeHandle />
     </WidgetFrame>

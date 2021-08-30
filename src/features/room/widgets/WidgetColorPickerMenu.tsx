@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ColorButton } from '@components/ColorButton/ColorButton';
-import palette from '../../../../theme/palette';
+import palette from '../../../theme/palette';
 import { makeStyles, Box, Popover } from '@material-ui/core';
-import { ThemeName } from '../../../../theme/theme';
+import { ThemeName } from '../../../theme/theme';
 import { DropIcon } from '@components/icons/DropIcon';
-import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
+import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 
 const COLORS = [
   { name: ThemeName.Mandarin, value: palette.mandarin.bold },
@@ -15,7 +15,7 @@ const COLORS = [
   { name: ThemeName.Slate, value: palette.slate.bold },
 ];
 
-export interface ColorPickerMenuProps {
+export interface WidgetColorPickerMenuProps {
   setActiveColor: (color: ThemeName) => void;
   activeColor: ThemeName;
 }
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function ColorPickerMenu(props: ColorPickerMenuProps) {
+export function WidgetColorPickerMenu(props: WidgetColorPickerMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const classes = useStyles();
 

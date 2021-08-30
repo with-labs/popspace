@@ -74,11 +74,11 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
                 })
             }}
         </div>
-        <div class="section_caption">You can also <a href="#">start with a blank room</a> and customize it based on your need!</div>
+        <div class="section_caption">You can also <a href="#">Start with a blank room</a> and customize it based on your need!</div>
     </section>
 
     <section>
-        <h2>Workflow integration</h2>
+        <h2 id="integration">Workflow integration</h2>
         <div class="grid_three">
             {{
                 integrationcard({
@@ -135,11 +135,11 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
                 })
             }}
         </div>
-        <div class="section_caption">Not finding your favorite tool? Please <a href="mailto:hello@tilde.so" class="textLink">let us know</a>!</div>
+        <div class="section_caption">Not finding your favorite tool? <a href="mailto:hello@tilde.so" class="textLink">Let us know!</a></div>
     </section>
 
     <section>
-        <h2>Frequently asked questions</h2>
+        <h2 id="faq">Frequently asked questions</h2>
         <div class="faq">
             <p class="faq_question">Is Tilde really free?</p>
             <p class="margin_bottom">Yes it is! You can launch a meeting right now for free. We will introduce paid premium plans (with additional features) in the future.</p>
@@ -157,7 +157,7 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
             <p class="margin_bottom">Currently, you will need to create a meeting room here, copy the link and paste it in your calendar invite. We are working on Google Calendar and Outlook Calendar plugins to make this experience better.</p>
 
             <p class="faq_question">Does the content stay after the meeting?</p>
-            <p class="margin_bottom">Tilde rooms are persistent. That means any accessory (files, sticky notes, whiteboards, etc.) that you add to the room stays in the room until you manually delete it. It's perfect for recurring meetings, like weekly sync-ups, so all the notes, todos, and resources are always available.</p>
+            <p class="margin_bottom">Tilde rooms are persistent. Any accessory that you add to the room persists until you manually delete it. It's perfect for recurring meetings, so all the resources are always available.</p>
 
             <p class="faq_question">Are the meeting rooms private?</p>
             <p class="margin_bottom">Tilde uses a web technology called WebRTC which uses encryption (SSL) between the clients and Twilio, our service provider.</p>
@@ -174,52 +174,40 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
             <p class="faq_question">What browsers are supported?</p>
             <p class="margin_bottom">We are currently supporting any modern browser with good WebRTC support: Google Chrome, Mozilla Firefox, and Microsoft Edge are recommended.</p>
 
-            <p class="faq_question">Any other question?</p>
-            <p class="margin_bottom">Please <a href="mailto:hello@tilde.so" class="textLink">contact us</a> and we will add the answer!</p>
-        </div>
+      </div>
 </section>
 
 <section>
-    <h2>Support & Feedback</h2>
+    <h2 id="support">Support & Feedback</h2>
         <div class="grid_three">
-            <figure>
-                <img src="images/address.png" alt="A location beacon like the ones on digital maps." width="100%"/>
-                <figcaption>
-                    <strong>Address</strong>
-                    <p class="margin_above_small">With Labs, Inc.</p>
-                    <p>4th Floor</p>
-                    <p>595 Pacific Ave</p>
-                    <p>San Francisco, CA 94133</p>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/feedback.png" alt="A speech bubble with an exclamation mark!" width="100%"/>
-                <figcaption>
-                    <strong>Feedback</strong>
-                    <p class="margin_above_small">Do you need help? Do you have ideas to improve Tilde?</p>
-                    <p class="margin_above_small">
-                        <a class="textLink" target="_blank" href="mailto:support@tilde.so">Contact us</a>
-                    </p>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/social.png" alt="A steaming cup of morning beverage." width="100%"/>
-                <figcaption>
-                    <strong>Social</strong>
-                    <p class="margin_above_small">
-                        <a class="textLink" target="_blank" href="https://twitter.com/@tildeHQ" rel="nofollow">
-                            <img src="images/social_twitter.svg" width="16" height="16" style="margin-right: 8px;" />Twitter</a>
-                    </p>
-                    <p class="margin_above_small">
-                        <a class="textLink" target="_blank" href="https://www.linkedin.com/company/tilde-hq/" rel="nofollow">
-                            <img src="images/social_linkedin.svg" width="16" height="16" style="margin-right: 8px;" />LinkedIn</a>
-                    </p>
-                    <p class="margin_above_small">
-                        <a class="textLink" target="_blank" href="https://www.instagram.com/tilde_hq/" rel="nofollow">
-                            <img src="images/social_instagram.svg" width="16" height="16" style="margin-right: 8px;" />Instagram</a>
-                    </p>
-                </figcaption>
-            </figure>
+            <div class="footer_card">
+                <h3>Address</h3>
+                <p>With Labs, Inc.</p>
+                <p>4th Floor</p>
+                <p>595 Pacific Ave</p>
+                <p>San Francisco</p>
+                <p>California, 94133</p>
+            </div>
+            <div class="footer_card">
+                <h3>Feedback</h3>
+                <p class="margin_bottom_small">Do you need help? Do you have ideas to improve Tilde?</p>
+                <a class="cta" target="_blank" href="mailto:support@tilde.so">Contact us</a>
+            </div>
+            <div class="footer_card">
+                <h3>Social</h3>
+                <p class="margin_bottom_small">
+                    <a class="textLink" target="_blank" href="https://twitter.com/@tildeHQ" rel="nofollow">
+                        <img src="images/social_twitter.svg" width="16" height="16" style="margin-right: 8px;" />Twitter</a>
+                </p>
+                <p class="margin_bottom_small">
+                    <a class="textLink" target="_blank" href="https://www.linkedin.com/company/tilde-hq/" rel="nofollow">
+                        <img src="images/social_linkedin.svg" width="16" height="16" style="margin-right: 8px;" />LinkedIn</a>
+                </p>
+                <p>
+                    <a class="textLink" target="_blank" href="https://www.instagram.com/tilde_hq/" rel="nofollow">
+                        <img src="images/social_instagram.svg" width="16" height="16" style="margin-right: 8px;" />Instagram</a>
+                </p>
+            </div>
         </div>
         <div class="section_caption">&copy;2021 With Labs, Inc. — <a class="textLink" href="{{ '/terms-of-service' | url  }}">Terms of Service</a> — <a class="textLink" href="{{ '/privacy-policy' | url  }}">Privacy Policy</a></div>
     </section>

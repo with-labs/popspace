@@ -169,6 +169,10 @@ p {
     color: var(--color-vintage-ink);
 }
 
+.margin_bottom_small {
+    margin-bottom: 10px;
+}
+
 .margin_bottom {
     margin-bottom: 30px;
 }
@@ -207,7 +211,7 @@ p {
 }
 
 .room_card_details {
-    padding: 32px 32px 0px 32px;
+    padding: 30px 30px 0px 30px;
 }
 
 .integration_card {
@@ -225,8 +229,40 @@ p {
     margin-bottom: 20px;
 }
 
+.footer_card {
+    padding: 30px;
+    border-radius: 10px;
+    background-color: var(--color-lavender-wash);
+    overflow: hidden;
+    position: relative;
+}
+
 video {
     display: block;
+}
+
+a, a:link, a:visited {
+    display: inline-block;
+    padding: 4px 6px;
+    text-decoration: none;
+    background-color: var(--color-lavender-wash);
+    color: var(--color-lavender-ink);
+    /* font-weight: 700; */
+    border-radius: 4px;
+    border: 1px solid var(--color-lavender-regular);
+}
+
+a:hover {
+    /* color: var(--color-snow); */
+    background-color: var(--color-lavender-surface);
+    border: 1px solid var(--color-lavender-bold);
+    /* box-shadow: var(--box-shadow-bold); */
+}
+
+a:active {
+    background-color: var(--color-lavender-regular);
+    border: 1px solid var(--color-lavender-ink);
+    /* box-shadow: inset 0 0 0 2px var(--color-lavender-ink); */
 }
 
 a.cta, a.cta:link, a.cta:visited {
@@ -241,6 +277,7 @@ a.cta, a.cta:link, a.cta:visited {
     text-align: center;
     border-radius: 40px;
     width: calc(100% - 32px);
+    border: none;
     box-shadow: var(--box-shadow-modal);
 }
 

@@ -25,7 +25,9 @@ export function LinkMenu({ enableIframe, ...props }: LinkMenuProps) {
   return (
     <>
       <IconButton
-        onClick={(ev) => setAnchorEl(ev.currentTarget)}
+        onClick={(ev) => {
+          setAnchorEl(ev.currentTarget);
+        }}
         aria-haspopup
         aria-controls={!!anchorEl ? 'linkMenu' : undefined}
         {...props}
@@ -36,8 +38,12 @@ export function LinkMenu({ enableIframe, ...props }: LinkMenuProps) {
         id="linkMenu"
         open={!!anchorEl}
         anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        onClick={() => setAnchorEl(null)}
+        onClose={() => {
+          setAnchorEl(null);
+        }}
+        onClick={() => {
+          setAnchorEl(null);
+        }}
       >
         {enableIframe && <IFrameOption />}
         <OpenInNewTabOption />

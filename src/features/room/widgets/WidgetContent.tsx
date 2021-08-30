@@ -1,7 +1,7 @@
-import * as React from 'react';
 import { makeStyles, Theme } from '@material-ui/core';
-import clsx from 'clsx';
 import { useCanvas } from '@providers/canvas/CanvasProvider';
+import clsx from 'clsx';
+import * as React from 'react';
 
 export interface IWidgetContentProps {
   disablePadding?: boolean;
@@ -38,6 +38,9 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
     // these handlers coordinate disabling pointer events while
     // the user is dragging the canvas or dragging an item
     function disablePointer() {
+      // ignore until a certain distance is dragged
+      if (canvas.gestureDistance < 10) return;
+
       if (ref.current) {
         ref.current.style.pointerEvents = 'none';
       }
@@ -48,11 +51,11 @@ export const WidgetContent: React.FC<IWidgetContentProps> = (props) => {
       }
     }
 
-    canvas.on('gestureStart', disablePointer);
+    canvas.on('gestureMove', disablePointer);
     canvas.on('gestureEnd', enablePointer);
 
     return () => {
-      canvas.off('gestureStart', disablePointer);
+      canvas.off('gestureMove', disablePointer);
       canvas.off('gestureEnd', enablePointer);
     };
   }, [canvas]);

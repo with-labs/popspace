@@ -3,7 +3,7 @@ import { RoomPositionState } from '@api/roomState/types/common';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { SMALL_SIZE } from '@features/room/people/constants';
 import { clampSizeMaintainingRatio } from '@utils/clampSizeMaintainingRatio';
-import { addVectors, clamp, multiplyVector, snap, snapWithoutZero } from '@utils/math';
+import { addVectors, clamp, multiplyVector, snap, snapWithoutZero, vectorDistance } from '@utils/math';
 import { EventEmitter } from 'events';
 import throttle from 'lodash.throttle';
 import shallow from 'zustand/shallow';
@@ -19,6 +19,7 @@ type ActiveGestureState = {
   objectId: string | null;
   objectKind: CanvasObjectKind | null;
   position: Vector2 | null;
+  startPosition: Vector2 | null;
   size: Bounds | null;
   aspectRatio: number | null;
 };
@@ -32,6 +33,7 @@ export interface CanvasOptions {
 export interface CanvasEvents {
   gestureStart: () => void;
   gestureEnd: () => void;
+  gestureMove: () => void;
 }
 
 /**
@@ -98,6 +100,7 @@ export class Canvas extends EventEmitter {
         position: null,
         size: null,
         aspectRatio: null,
+        startPosition: null,
       } as ActiveGestureState)
   );
 
@@ -179,8 +182,20 @@ export class Canvas extends EventEmitter {
     this.emit('gestureEnd');
   }
 
+  onGestureMove() {
+    this.emit('gestureMove');
+  }
+
   get isGestureActive() {
     return this._gestureActive;
+  }
+
+  get gestureDistance() {
+    const { position, startPosition } = this.activeGestureStore.getState();
+    if (!position || !startPosition) {
+      return 0;
+    }
+    return vectorDistance(position, startPosition);
   }
 
   private commitGesture = async (
@@ -236,6 +251,7 @@ export class Canvas extends EventEmitter {
       objectId: null,
       objectKind: null,
       position: null,
+      startPosition: null,
       size: null,
       aspectRatio: null,
     });
@@ -256,6 +272,7 @@ export class Canvas extends EventEmitter {
       objectId,
       objectKind: objectType,
       position: worldPosition,
+      startPosition: worldPosition,
     });
     this.onGestureStart();
   };
@@ -268,6 +285,7 @@ export class Canvas extends EventEmitter {
       position: worldPosition,
     });
     this.throttledCommitActiveGesture();
+    this.onGestureMove();
   };
 
   onObjectDragEnd = async (screenPosition: Vector2, objectId: string, objectType: CanvasObjectKind) => {

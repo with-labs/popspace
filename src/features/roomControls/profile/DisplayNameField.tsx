@@ -73,6 +73,7 @@ export function DisplayNameField({ onChange }: { onChange?: (value: string) => v
             <DoneIcon />
           </IconButton>
         ),
+        autoComplete: 'name',
       }}
     />
   );

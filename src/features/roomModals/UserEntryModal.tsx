@@ -142,6 +142,7 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                 placeholder={t('modals.userEntry.placeholderText')}
                 margin="normal"
                 autoFocus
+                autoComplete="name"
               />
               <FormikSubmitButton>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
               <Box mt={1}>

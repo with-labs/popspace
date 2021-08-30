@@ -1,10 +1,12 @@
-import * as React from 'react';
-import { makeStyles, TextField, Popper } from '@material-ui/core';
+import { makeStyles, Popper, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { QuickAction } from './quickActions/QuickAction';
-import { QuickAction as QuickActionData } from '../../quickActions/types';
+import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { QuickAction as QuickActionData } from '../../quickActions/types';
+import { QuickAction } from './quickActions/QuickAction';
 import { useQuickActionAutocomplete } from './quickActions/useQuickActionAutocomplete';
+
 export interface IOmnibarProps {
   autoFocus?: boolean;
   onChange?: (value: QuickActionData | null) => void;
@@ -46,6 +48,7 @@ export const Omnibar: React.FC<IOmnibarProps> = ({ autoFocus, onChange, ...rest 
           aria-label={t('features.omnibar.label')}
           variant="filled"
           autoFocus={autoFocus}
+          autoComplete="off"
           {...params}
           className={classes.root}
         />

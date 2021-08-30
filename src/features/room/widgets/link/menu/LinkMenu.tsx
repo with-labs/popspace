@@ -13,10 +13,10 @@ import { OpenInNewTabOption } from './OpenInNewTabOption';
 export type LinkMenuProps = {
   className?: string;
   size?: 'small' | 'medium';
-  disableIframe?: boolean;
+  enableIframe: boolean;
 };
 
-export function LinkMenu({ disableIframe, ...props }: LinkMenuProps) {
+export function LinkMenu({ enableIframe, ...props }: LinkMenuProps) {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
@@ -39,7 +39,7 @@ export function LinkMenu({ disableIframe, ...props }: LinkMenuProps) {
         onClose={() => setAnchorEl(null)}
         onClick={() => setAnchorEl(null)}
       >
-        {!disableIframe && widget.widgetState.iframeUrl && <IFrameOption />}
+        {enableIframe && <IFrameOption />}
         <OpenInNewTabOption />
         <Divider />
         <MenuItem button onClick={remove}>

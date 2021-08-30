@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core';
 import { ThemeName } from '@src/theme/theme';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
@@ -48,7 +49,7 @@ export function IFrameLinkWidget() {
       maxHeight={MAX_SIZE_FRAME.height}
     >
       <WidgetTitlebar title={widgetState.title ?? t('widgets.link.embedTitle')} disableRemove>
-        <LinkMenu />
+        <LinkMenu enableIframe />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
         <iframe

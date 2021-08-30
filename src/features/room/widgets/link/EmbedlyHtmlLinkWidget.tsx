@@ -56,7 +56,7 @@ export function EmbedlyHtmlLinkWidget({ embedlyResponse }: { embedlyResponse: Em
       maxHeight={MAX_SIZE_FRAME.height}
     >
       <WidgetTitlebar title={embedlyResponse.title ?? t('widgets.link.embedTitle')} disableRemove>
-        <LinkMenu disableIframe />
+        <LinkMenu enableIframe />
       </WidgetTitlebar>
       <WidgetContent disablePadding>
         <iframe srcDoc={srcDoc} title={embedlyResponse.title} className={classes.root} />

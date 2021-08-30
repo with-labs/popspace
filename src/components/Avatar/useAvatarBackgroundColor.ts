@@ -6,11 +6,15 @@ export function useAvatarBackgroundColor(avatarName: string) {
   const [backgroundColor, setBackgroundColor] = useState('#fff0df');
   useEffect(() => {
     const controller = new AbortController();
-    avatarSpriteSheetCache.get(avatarName, controller.signal).then((data) => {
-      if (data) {
-        setBackgroundColor(data.backgroundColor);
-      }
-    });
+    try {
+      avatarSpriteSheetCache.get(avatarName, controller.signal).then((data) => {
+        if (data) {
+          setBackgroundColor(data.backgroundColor);
+        }
+      });
+    } catch (err) {
+      // nothing to do here, falling back to default is fine.
+    }
     return () => {
       controller.abort();
     };

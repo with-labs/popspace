@@ -1,28 +1,20 @@
-@font-face {
-    font-family: 'Silka';
-    src: url('/css/fonts/silka-bold-webfont.woff2') format('woff2'), url('/css/fonts/silka-bold-webfont.woff') format('woff'), url('/css/fonts/silka-bold-webfont.ttf') format('truetype');
+/* @font-face {
+    font-family: 'Jakarta';
+    src: url('/css/fonts/PlusJakartaSans-Bold.woff2') format('woff2'), url('/css/fonts/PlusJakartaSans-Bold.woff') format('woff'), url('/css/fonts/PlusJakartaSans-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'Silka';
-    src: url('/css/fonts/silka-regular-webfont.woff2') format('woff2'), url('/css/fonts/silka-regular-webfont.woff') format('woff'), url('/css/fonts/silka-regular-webfont.ttf') format('truetype');
+    font-family: 'Jakarta';
+    src: url('/css/fonts/PlusJakartaSans-Regular.woff2') format('woff2'), url('/css/fonts/PlusJakartaSans-Regular.woff') format('woff'), url('/css/fonts/PlusJakartaSans-Regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
-}
+} */
 
-@font-face {
-    font-family: 'Lumios Marker';
-    src: url('/css/fonts/Lumios-Marker.woff2') format('woff2'), url('/css/fonts/Lumios-Marker.woff') format('woff'), url('/css/fonts/Lumios-Marker.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-:root {
+/* :root {
     --color-slate-ink: #949CBA;
     --color-slate-bold: #BEC3D7;
     --color-slate-regular: #E2E5EE;
@@ -55,23 +47,35 @@
     --color-blueberry-surface: #EEF8FF;
     --color-sand: #fff8f0;
     --color-snow: #ffffff;
-    --color-ink: #545351;
-}
+    --color-ink: #333333;
+    --color-vintage-ink: #545351;
+} */
 
-:root {
-    --font-silka: "Silka", "Helvetica", sans-serif;
-    --title-width: 720px;
+/* :root {
+    --font-jakarta: "Jakarta", "Helvetica", sans-serif;
     --narrow-width: 720px;
-    --main-width: 840px;
-    --wide-width: 1280px;
-    --video-width: 1080px;
+    --main-width: 900px;
     --section-spacing: 160px;
     --box-shadow-modal: 0px 15px 80px rgba(0, 0, 0, 0.08), 0px 4.52206px 24.1177px rgba(0, 0, 0, 0.0521271), 0px 1.87823px 10.0172px rgba(0, 0, 0, 0.04), 0px 0.67932px 3.62304px rgba(0, 0, 0, 0.0278729);
     --box-shadow-bold: 0px 45px 89px rgba(0, 0, 0, 0.0185187), 0px 14.27px 26.8309px rgba(0, 0, 0, 0.0225848), 0px 6.11599px 11.1442px rgba(0, 0, 0, 0.0264039), 0px 2.11191px 4.03063px rgba(0, 0, 0, 0.04);
     --box-shadow-mini: 0px 9px 17px rgba(0, 0, 0, 0.02), 0px 3px 5px rgba(0, 0, 0, 0.022), 0px 1px 2px rgba(0, 0, 0, 0.026), 0px 0.5px 1px rgba(0, 0, 0, 0.04);
+} */
+
+/* * {
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: 1px solid rgba(255, 0, 0, 0.2);
 }
 
-.scriptText {
+*:focus {
+    box-shadow: inset 0px 0px 0px 2px rgba(0, 0, 0, 0.15);
+    outline: none;
+} */
+
+
+
+/* .scriptText {
     display: inline-block;
     font-family: "Lumios Marker", "Helvetica", sans-serif;
     color: var(--color-ink);
@@ -255,6 +259,7 @@ a.template_card:active {
     padding: 0;
     margin: 0;
     border: none;
+    outline: 1px solid rgba(255, 0, 0, 0.2);
 }
 
 *:focus {
@@ -288,13 +293,12 @@ h1 {
     line-height: 48px;
     font-size: 42px;
     color: var(--color-ink);
-    font-family: var(--font-silka);
+    font-family: var(--font-jakarta);
     font-weight: 900;
     text-align: left;
     margin: 0px auto;
     max-width: var(--main-width);
     padding: 24px 24px 32px 24px;
-    /* background-color: red; */
 }
 
 .subtitle {
@@ -318,9 +322,7 @@ h2 {
     text-align: left;
     margin: 0px auto;
     max-width: var(--main-width);
-    /* padding-bottom: 16px; */
     padding: 24px 24px 32px 24px;
-    /* background-color: blue; */
 }
 
 h3 {
@@ -540,7 +542,6 @@ a.textLink:active {
 }
 
 .faq {
-    /* background-color: var(--color-blueberry-surface); */
     border-radius: 8px;
     max-width: var(--main-width);
     padding: 24px 24px;
@@ -732,4 +733,4 @@ nav {
     .create_block {
         background-size: 200px 130px, 200px 130px;
     }
-}
+} */

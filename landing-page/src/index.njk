@@ -6,216 +6,182 @@ ogtitle     : "Tilde, make room for your team."
 ogbody      : "Free instant meeting rooms for all your collaborative needs"
 ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-07-22.jpg"
 ---
+{%- from "components/roomcard.njk" import roomcard -%}
+{%- from "components/integrationcard.njk" import integrationcard -%}
+
 <main>
-    <section class="spacing_below_large">
-        <h1>What kind of free, instant meeting room do you need today?</h1>
-        <div class="triptych">
-            <a class="template_card" href="/create/new">
-                <figure>
-                    <img src="images/template_blank.png" alt="A speech bubble with a friendly exclamation" width="100%"/>
-                    <figcaption>
-                        <strong>Blank</strong>
-                        <p class="margin_above_small">A blank room for your custom needs.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/daily">
-                <figure>
-                    <img src="images/template_daily.png" alt="A streaming cup of morning beverage." width="100%"/>
-                    <figcaption>
-                        <strong>Daily Stand-Up</strong>
-                        <p class="margin_above_small">Identify and tackle daily roadblocks.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/weekly">
-                <figure>
-                    <img src="images/template_weekly.png" alt="A calendar with colorful meeting blocks." width="100%"/>
-                    <figcaption>
-                        <strong>Weekly Sync-up</strong>
-                        <p class="margin_above_small">Check in on the team's progress.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/one_on_one">
-                <figure>
-                    <img src="images/template_oneOne.png" alt="Two comfy chairs facing one another." width="100%"/>
-                    <figcaption>
-                        <strong>One-on-One</strong>
-                        <p class="margin_above_small">Build a relationship in a cozy place.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/all_hands">
-                <figure>
-                    <img src="images/template_allHands.png" alt="A stylish microphone." width="100%"/>
-                    <figcaption>
-                        <strong>All-Hands Meetings</strong>
-                        <p class="margin_above_small">Keep everybody aligned with goals.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/retrospective">
-                <figure>
-                    <img src="images/template_retro.png" alt="A collection of floating documents." width="100%"/>
-                    <figcaption>
-                        <strong>Team retrospective</strong>
-                        <p class="margin_above_small">Evaluate goals and reflect on setbacks.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/blank">
-                <figure>
-                    <img src="images/template_interview.png" alt="A silhouette of someone speaking." width="100%"/>
-                    <figcaption>
-                        <strong>Remote Interview</strong>
-                        <p class="margin_above_small">Find great people for your team.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/happy_hour">
-                <figure>
-                    <img src="images/template_happyHour.png" alt="A striped party hat." width="100%"/>
-                    <figcaption>
-                        <strong>Happy Hour</strong>
-                        <p class="margin_above_small">Build trust and bond with the team.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
-            <a class="template_card" href="/create/brainstorm">
-                <figure>
-                    <img src="images/template_brainstorm.png" alt="A classic-looking lightbulb." width="100%"/>
-                    <figcaption>
-                        <strong>Brainstorm</strong>
-                        <p class="margin_above_small">Ideate as a group to solve problems.</p>
-                    </figcaption>
-                </figure>
-            </a>
-
+    <section>
+        <h1>Free, instant, and persistent virtual meeting rooms</h1>
+        <div class="grid_two">
+            {{
+                roomcard({
+                    slug: 'daily',
+                    color: '#FAF0E4',
+                    title: 'Daily Stand-up',
+                    caption: 'Identify and tackle daily roadblocks.',
+                    video: 'images/instant.mp4',
+                    isVideoDone: false
+                })
+            }}
+            {{
+                roomcard({
+                    slug: 'one_on_one',
+                    color: '#E7F6F3',
+                    title: 'One-on-One',
+                    caption: 'Build a relationship in a cozy place.',
+                    video: 'images/ideas.mp4',
+                    isVideoDone: true
+                })
+            }}
+            {{
+                roomcard({
+                    slug: 'weekly',
+                    color: '#FFEEEB',
+                    title: 'Weekly Sync-up',
+                    caption: 'Check in on the team\'s progress.',
+                    video: 'images/ideas.mp4',
+                    isVideoDone: false
+                })
+            }}
+            {{
+                roomcard({
+                    slug: 'brainstorm',
+                    color: '#F8EFE3',
+                    title: 'Brainstorm',
+                    caption: 'Ideate as a group to solve problems.',
+                    video: 'images/ideas.mp4',
+                    isVideoDone: false
+                })
+            }}
+            {{
+                roomcard({
+                    slug: 'office',
+                    color: '#D3E6EC',
+                    title: 'Virtual Office',
+                    caption: 'Feel the presence of your team.',
+                    video: 'images/ideas.mp4',
+                    isVideoDone: false
+                })
+            }}
+            {{
+                roomcard({
+                    slug: 'learning',
+                    color: '#DBEFE9',
+                    title: 'Online Learning',
+                    caption: 'Teach to a small group of students.',
+                    video: 'images/ideas.mp4',
+                    isVideoDone: false
+                })
+            }}
         </div>
-        <p class="smallText alignCenter margin_above_large">Story mapping, Empathy maps, Watch parties, and many more!</p>
+        <div class="section_caption">You can also <a href="#">start with a blank room</a> and customize it based on your need!</div>
     </section>
 
-    <section class="padding-section-leftRight spacing_below_large">
+    <section>
         <h2>Workflow integration</h2>
-        <div class="triptych">
-            <figure>
-                <img src="images/slack.png" alt="Slack application icon" width="100%"/>
-                <figcaption>
-                    <strong>Slack</strong>
-                    <p class="margin_above_small">Create rooms directly by typing <b>/tilde</b></p>
-                    <a class="margin_above_small cta" target="_blank" href="https://slack.com/oauth/v2/authorize?scope=commands&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiY29tbWFuZHMiXX0sIm5vdyI6IjIwMjEtMDYtMzBUMTg6MzA6MjguNjM0WiIsImlhdCI6MTYyNTA3NzgyOH0.4GDs88qN9b4nYHVSJBZfrva43MvrIM8a6mYqhTy13f0&client_id=1244791277063.2151053383028">Add to Slack</a>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/firefox.png" alt="Mozilla Firefox application icon" width="100%"/>
-                <figcaption>
-                    <strong>Mozilla Firefox</strong>
-                    <p class="margin_above_small">Get meeting links instantly from Firefox</p>
-                    <a class="margin_above_small cta" target="_blank"  href="https://addons.mozilla.org/en-US/firefox/addon/tilde-so/">Add to Firefox</a>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/edge.png" alt="Microsoft Edge application icon" width="100%"/>
-                <figcaption>
-                    <strong>Microsoft Edge</strong>
-                    <p class="margin_above_small">Get meeting links instantly from Edge</p>
-                    <a class="margin_above_small cta" target="_blank" href="https://microsoftedge.microsoft.com/addons/detail/tilde/okijggnacjmnekgoicdfaehhaekldhll">Add to Edge</a>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/chrome.png" alt="Google Chrome application icon" width="100%"/>
-                <figcaption>
-                    <strong>Google Chrome</strong>
-                    <p class="margin_above_small">Get meeting links instantly from Chrome</p>
-                    <a class="margin_above_small cta" target="_blank"  href="https://chrome.google.com/webstore/detail/tilde/fdleebpnfhkglofibmclaffikndcmnjd">Add to Chrome</a>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/gcal.png" alt="A steaming cup of morning beverage." width="100%"/>
-                <figcaption>
-                    <strong>Google Calendar</strong>
-                    <p class="margin_above_small">Add links directly to your calendar events</p>
-                    <a class="margin_above_small cta_disabled">Coming Soon</a>
-                </figcaption>
-            </figure>
-            <figure>
-                <img src="images/outlook.png" alt="A steaming cup of morning beverage." width="100%"/>
-                <figcaption>
-                    <strong>Microsoft Outlook</strong>
-                    <p class="margin_above_small">Add links directly to your calendar events</p>
-                    <a class="margin_above_small cta_disabled">Coming Soon</a>
-                </figcaption>
-            </figure>
+        <div class="grid_three">
+            {{
+                integrationcard({
+                    title: 'Slack',
+                    icon: 'images/slack.png',
+                    caption: 'Create rooms directly by typing <b>/tilde</b>',
+                    linkLabel: 'Add to Slack',
+                    linkURL: 'https://slack.com/oauth/v2/authorize?scope=commands&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiY29tbWFuZHMiXX0sIm5vdyI6IjIwMjEtMDYtMzBUMTg6MzA6MjguNjM0WiIsImlhdCI6MTYyNTA3NzgyOH0.4GDs88qN9b4nYHVSJBZfrva43MvrIM8a6mYqhTy13f0&client_id=1244791277063.2151053383028'
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Firefox',
+                    icon: 'images/firefox.png',
+                    caption: 'Get meeting links instantly from Firefox',
+                    linkLabel: 'Add to Firefox',
+                    linkURL: 'https://addons.mozilla.org/en-US/firefox/addon/tilde-so/'
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Edge',
+                    icon: 'images/edge.png',
+                    caption: 'Get meeting links instantly from Edge',
+                    linkLabel: 'Add to Firefox',
+                    linkURL: 'https://microsoftedge.microsoft.com/addons/detail/tilde/okijggnacjmnekgoicdfaehhaekldhll'
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Chrome',
+                    icon: 'images/chrome.png',
+                    caption: 'Get meeting links instantly from Chrome',
+                    linkLabel: 'Add to Chrome',
+                    linkURL: 'https://chrome.google.com/webstore/detail/tilde/fdleebpnfhkglofibmclaffikndcmnjd'
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Google Calendar',
+                    icon: 'images/gcal.png',
+                    caption: 'Add links directly to your calendar events',
+                    linkLabel: 'Coming Soon',
+                    linkURL: '#'
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Outlook',
+                    icon: 'images/outlook.png',
+                    caption: 'Add links directly to your calendar events',
+                    linkLabel: 'Coming Soon',
+                    linkURL: '#'
+                })
+            }}
         </div>
-        <p class="alignCenter smallText margin_above_large">Not finding your favorite tool? Please <a href="mailto:hello@tilde.so" class="textLink">let us know</a>!</p>
+        <div class="section_caption">Not finding your favorite tool? Please <a href="mailto:hello@tilde.so" class="textLink">let us know</a>!</div>
     </section>
 
-    <section class="padding-section-leftRight spacing_below_large">
+    <section>
         <h2>Frequently asked questions</h2>
         <div class="faq">
-        <details open>
-            <summary>Is Tilde really free?</summary>
-            <p>Yes it is! You can launch a meeting right now for free. We will introduce paid premium plans (with additional features) in the future.</p>
-        </details>
-        <details>
-            <summary>Do you need an account?</summary>
-            <p>Neither you nor your guests need an account. All you need is a modern web browser and an internet connection.</p>
-        </details>
-        <details>
-            <summary>How do I invite people to the meeting?</summary>
-            <p>Just share the provided meeting link and share that link with whomever you want. They will be able to join in one click.</p>
-        </details>
-        <details>
-            <summary>How do I join the meeting?</summary>
-            <p>If someone shared a meeting link with you, just click on the link and it will open the meeting in your browser. That's it!</p>
-        </details>
-        <details>
-            <summary>How do I schedule a meeting?</summary>
-            <p>Currently, you will need to create a meeting room here, copy the link and paste it in your calendar invite. We are working on Google Calendar and Outlook Calendar plugins to make this experience better.</p>
-        </details>
-        <details>
-            <summary>What happens to all the content after the meeting?</summary>
-            <p>Tilde rooms are persistent. That means any accessory (files, sticky notes, whiteboards, etc.) that you add to the room stays in the room until you manually delete it. It's perfect for recurring meetings, like weekly sync-ups, so all the notes, todos, and resources are always available.</p>
-        </details>
-        <details>
-            <summary>Are the meeting rooms private?</summary>
-            <p>Tilde uses a web technology called WebRTC which uses encryption (SSL) between the clients and Twilio, our service provider.</p>
-        </details>
-        <details>
-            <summary>Is our content stored securely?</summary>
-            <p>Tilde rooms use links that are virtually impossible to guess. Anybody who has access to the meeting link can access the room content at anytime. All your content is securely stored in Amazon servers and is handled with the utmost care.</p>
-        </details>
-        <details>
-            <summary>Do you have an app I can download?</summary>
-            <p>We currently do not offer a downloadable app. This is on our roadmap. Thanks for your patience!</p>
-        </details>
-        <details>
-            <summary>How many people can a meeting room hold?</summary>
-            <p>The limit is currently 20 people at the same time in a room. Depending on your computer's power, the performance might degrade based on the number of participants, especially if everybody has their video turned on.</p>
-        </details>
-        <details>
-            <summary>What browsers are supported?</summary>
-            <p>We are currently supporting any modern browser with good WebRTC support: Google Chrome, Mozilla Firefox, and Microsoft Edge are recommended.</p>
-        </details>
-        <details>
-            <summary>Any other question?</summary>
-            <p>Please <a href="mailto:hello@tilde.so" class="textLink">contact us</a> and we will add the answer!</p>
-        </details>
+            <p class="faq_question">Is Tilde really free?</p>
+            <p class="margin_bottom">Yes it is! You can launch a meeting right now for free. We will introduce paid premium plans (with additional features) in the future.</p>
+
+            <p class="faq_question">Do you need an account?</p>
+            <p class="margin_bottom">Neither you nor your guests need an account. All you need is a modern web browser and an internet connection.</p>
+
+            <p class="faq_question">How do I invite people to the meeting?</p>
+            <p class="margin_bottom">Just share the provided meeting link and share that link with whomever you want. They will be able to join in one click.</p>
+
+            <p class="faq_question">How do I join the meeting?</p>
+            <p class="margin_bottom">If someone shared a meeting link with you, just click on the link and it will open the meeting in your browser. That's it!</p>
+
+            <p class="faq_question">How do I schedule a meeting?</p>
+            <p class="margin_bottom">Currently, you will need to create a meeting room here, copy the link and paste it in your calendar invite. We are working on Google Calendar and Outlook Calendar plugins to make this experience better.</p>
+
+            <p class="faq_question">Does the content stay after the meeting?</p>
+            <p class="margin_bottom">Tilde rooms are persistent. That means any accessory (files, sticky notes, whiteboards, etc.) that you add to the room stays in the room until you manually delete it. It's perfect for recurring meetings, like weekly sync-ups, so all the notes, todos, and resources are always available.</p>
+
+            <p class="faq_question">Are the meeting rooms private?</p>
+            <p class="margin_bottom">Tilde uses a web technology called WebRTC which uses encryption (SSL) between the clients and Twilio, our service provider.</p>
+
+            <p class="faq_question">Is our content stored securely?</p>
+            <p class="margin_bottom">Tilde rooms use links that are virtually impossible to guess. Anybody who has access to the meeting link can access the room content at anytime. All your content is securely stored in Amazon servers and is handled with the utmost care.</p>
+
+            <p class="faq_question">Do you have an app I can download?</p>
+            <p class="margin_bottom">We currently do not offer a downloadable app. This is on our roadmap. Thanks for your patience!</p>
+
+            <p class="faq_question">How many people can a meeting room hold?</p>
+            <p class="margin_bottom">The limit is currently 20 people at the same time in a room. Depending on your computer's power, the performance might degrade based on the number of participants, especially if everybody has their video turned on.</p>
+
+            <p class="faq_question">What browsers are supported?</p>
+            <p class="margin_bottom">We are currently supporting any modern browser with good WebRTC support: Google Chrome, Mozilla Firefox, and Microsoft Edge are recommended.</p>
+
+            <p class="faq_question">Any other question?</p>
+            <p class="margin_bottom">Please <a href="mailto:hello@tilde.so" class="textLink">contact us</a> and we will add the answer!</p>
         </div>
 </section>
 
-<section class="padding-section-leftRight spacing_below_large">
+<section>
     <h2>Support & Feedback</h2>
-        <div class="triptych">
+        <div class="grid_three">
             <figure>
                 <img src="images/address.png" alt="A location beacon like the ones on digital maps." width="100%"/>
                 <figcaption>
@@ -255,6 +221,6 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/tilde_opengraph_2021-0
                 </figcaption>
             </figure>
         </div>
-        <p class="alignCenter smallText margin_above_large">&copy;2021 With Labs, Inc. — <a class="textLink" href="{{ '/terms-of-service' | url  }}">Terms of Service</a> — <a class="textLink" href="{{ '/privacy-policy' | url  }}">Privacy Policy</a></p>
+        <div class="section_caption">&copy;2021 With Labs, Inc. — <a class="textLink" href="{{ '/terms-of-service' | url  }}">Terms of Service</a> — <a class="textLink" href="{{ '/privacy-policy' | url  }}">Privacy Policy</a></div>
     </section>
 </main>

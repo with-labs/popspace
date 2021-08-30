@@ -86,7 +86,7 @@ export const Avatar: React.FC<IAvatarProps> = ({ name, className, size, animatio
       <div className={classes.canvasAspectContainer} style={{ paddingBottom: canvasAspectPadding }}>
         <canvas ref={ref} className={classes.canvas} />
       </div>
-      {!spritesheet && !error && <CircularProgress />}
+      {!spritesheet && !error && <CircularProgress style={{ margin: 'auto', marginBottom: 8, marginTop: 8 }} />}
       {/* TODO: fallback when sprite fails to load */}
     </div>
   );

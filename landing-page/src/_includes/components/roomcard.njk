@@ -1,8 +1,8 @@
 {% macro roomcard(params) %}
   <div class="room_card" style='background-color: {{ params.color }}'>
       <div class="room_card_details">
-        <h3>{{ params.title }}</h3>
-        <p>{{ params.caption }}</p>
+        <h3 class="truncate">{{ params.title }}</h3>
+        <p class="truncate">{{ params.caption }}</p>
       </div>
       <a class="cta" style="width: 120px; position: relative; left: 32px; bottom: -22px;" href="/create/{{ params.slug }}">Create room</a>
       {% if params.isVideoDone %}

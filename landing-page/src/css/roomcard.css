@@ -94,7 +94,7 @@ nav {
     margin: 0 auto;
     max-width: var(--narrow-width);
     text-align: center;
-    padding: 80px 0px 40px 0px;
+    padding: 80px 0px 0px 0px;
 }
 
 main {
@@ -128,7 +128,7 @@ h1 {
     color: var(--color-vintage-ink);
     font-feature-settings: 'ss02';
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 60px;
 }
 
 h2 {
@@ -150,7 +150,7 @@ h3 {
     font-size: 26px;
     line-height: 30px;
     color: var(--color-vintage-ink);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 p {
@@ -209,15 +209,49 @@ p {
     max-width: var(--main-width);
 }
 
-.room_card {
+a.room_card, a.room_card:link, a.room_card:visited {
+    display: inline-block;
     padding: 0px;
     border-radius: 10px;
     overflow: hidden;
-    position: relative;
+    text-decoration: none;
+    box-shadow:
+        0px 0px 0px 0px transparent,
+        0px 0px 0px 0px rgba(0, 0, 0, 0);
+    transition: all 200ms ease-in-out;
+    transform: scale(1);
 }
 
+a.room_card:hover {
+    box-shadow:
+        0px 0px 0px 4px var(--color-lavender-bold),
+        0px 2px 20px 0px rgba(0, 0, 0, 0.15);
+    transform: scale(1.015);
+}
+
+a.room_card:active {
+    box-shadow: 0px 0px 0px 4px var(--color-lavender-ink);
+    transform: scale(1);
+}
+
+/* a.template_card, a.template_card:link, a.template_card:visited {
+    display: inline-block;
+    box-shadow: 0px 0px 0px 0px transparent;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: box-shadow 300ms ease-out;
+} */
+
+/* a.template_card:hover {
+    box-shadow: 0px 0px 0px 4px var(--color-lavender-bold);
+}
+
+a.template_card:active {
+    box-shadow: 0px 0px 0px 4px var(--color-lavender-ink);
+} */
+
 .room_card_details {
-    padding: 30px 30px 0px 30px;
+    padding: 30px 30px 20px 30px;
 }
 
 .integration_card {
@@ -247,7 +281,7 @@ video {
     display: block;
 }
 
-a, a:link, a:visited {
+a.textLink, a.textLink:link, a.textLink:visited {
     display: inline-block;
     padding: 4px 6px;
     text-decoration: none;
@@ -258,14 +292,14 @@ a, a:link, a:visited {
     border: 1px solid var(--color-lavender-regular);
 }
 
-a:hover {
+a.textLink:hover {
     /* color: var(--color-snow); */
     background-color: var(--color-lavender-surface);
     border: 1px solid var(--color-lavender-bold);
     /* box-shadow: var(--box-shadow-bold); */
 }
 
-a:active {
+a.textLink:active {
     background-color: var(--color-lavender-regular);
     border: 1px solid var(--color-lavender-ink);
     /* box-shadow: inset 0 0 0 2px var(--color-lavender-ink); */

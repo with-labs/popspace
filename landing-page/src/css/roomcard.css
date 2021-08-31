@@ -215,51 +215,23 @@ a.room_card, a.room_card:link, a.room_card:visited {
     border-radius: 10px;
     overflow: hidden;
     text-decoration: none;
-    /* box-shadow:
-        0px 0px 0px 0px transparent,
-        0px 0px 0px 0px rgba(0, 0, 0, 0); */
-    /* transition: all 200ms ease-in-out; */
-    /* box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0); */
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.05);
-    transition:
-        /* box-shadow 200ms ease-in-out, */
-        all 600ms cubic-bezier(0.350, 2, 0.000, 1.000);
-    /* transition-timing-function: cubic-bezier(0.455, 0.665, 0.170, 1.125); */
+    transition: all 600ms cubic-bezier(0.350, 2, 0.000, 1.000);
     transform: scale(1);
 }
 
 a.room_card:hover {
-    /* box-shadow:
-        0px 0px 0px 2px var(--color-lavender-bold),
-        0px 2px 20px 0px rgba(0, 0, 0, 0.15); */
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
     transform: scale(1.025);
 }
 
 a.room_card:active {
-    /* box-shadow: 0px 0px 0px 2px var(--color-lavender-ink); */
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
     transform: scale(1);
 }
 
-/* a.template_card, a.template_card:link, a.template_card:visited {
-    display: inline-block;
-    box-shadow: 0px 0px 0px 0px transparent;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: box-shadow 300ms ease-out;
-} */
-
-/* a.template_card:hover {
-    box-shadow: 0px 0px 0px 4px var(--color-lavender-bold);
-}
-
-a.template_card:active {
-    box-shadow: 0px 0px 0px 4px var(--color-lavender-ink);
-} */
-
 .room_card_details {
-    padding: 30px 30px 20px 30px;
+    padding: 22px 30px 22px 30px;
 }
 
 .integration_card {

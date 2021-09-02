@@ -167,8 +167,8 @@ h2 {
     margin: 0 auto;
     max-width: var(--narrow-width);
     font-weight: 700;
-    font-size: 36px;
-    line-height: 36px;
+    font-size: 30px;
+    line-height: 30px;
     color: var(--color-vintage-ink);
     font-feature-settings: 'ss02';
     text-align: center;
@@ -179,8 +179,8 @@ h2 {
 h3 {
     font-family: var(--font-stack);
     font-weight: 700;
-    font-size: 26px;
-    line-height: 30px;
+    font-size: 20px;
+    line-height: 26px;
     color: var(--color-vintage-ink);
     /* margin-bottom: 6px; */
 }
@@ -261,8 +261,13 @@ li {
     max-width: var(--main-width);
 }
 
+.text_two_columns > p {
+    line-height: 30px;
+}
+
 .text_two_columns > h2 {
     text-align: left;
+    line-height: 30px;
 }
 
 a.room_card, a.room_card:link, a.room_card:visited {
@@ -342,18 +347,19 @@ video {
 
 a.textLink, a.textLink:link, a.textLink:visited {
     display: inline;
-    padding: 2px 10px 4px 10px;
-    margin: 0px 4px;
+    position: relative;
+    padding: 2px 4px;
+    /* margin: 0px 4px; */
     text-decoration: none;
-    background-color: var(--color-lavender-wash);
+    /* background-color: var(--color-lavender-wash); */
     color: var(--color-lavender-ink);
     font-weight: 700;
-    border-radius: 20px;
-    border: 1px solid var(--color-lavender-regular);
+    /* border-radius: 20px; */
+    /* border: 1px solid var(--color-lavender-regular); */
     white-space: nowrap;
 }
 
-a.textLink:hover {
+/* a.textLink:hover {
     background-color: var(--color-lavender-surface);
     border: 1px solid var(--color-lavender-bold);
 }
@@ -361,10 +367,32 @@ a.textLink:hover {
 a.textLink:active {
     background-color: var(--color-lavender-regular);
     border: 1px solid var(--color-lavender-ink);
-}
+} */
 
 a.textLink:focus {
-    border: 1px solid var(--color-lavender-bold);
+    outline: 1px solid var(--color-lavender-bold);
+}
+
+a.textLink::before {  
+    transform: scaleY(0.1);
+    transform-origin: bottom right;
+}
+
+a.textLink:hover::before {
+    transform: scaleY(1);
+    transform-origin: bottom left;
+    background: var(--color-lavender-surface);
+}
+
+a.textLink::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    inset: 0 0 0 0;
+    background: var(--color-lavender-regular);
+    z-index: -1;
+    transition: all .3s ease;
 }
 
 a.socialLink, a.socialLink:link, a.socialLink:visited {
@@ -376,6 +404,7 @@ a.socialLink, a.socialLink:link, a.socialLink:visited {
     font-weight: 700;
     border-radius: 20px;
     border: 1px solid var(--color-lavender-regular);
+    transition: all .3s ease;
 }
 
 a.socialLink:hover {
@@ -428,6 +457,7 @@ a.cta, a.cta:link, a.cta:visited {
     /* width: calc(100% - 32px); */
     border: none;
     box-shadow: var(--box-shadow-modal);
+    transition: all .3s ease;
 }
 
 a.cta:hover {
@@ -467,10 +497,10 @@ a.cta:focus {
         line-height: 34px;
     }
 
-    h2 {
+    /* h2 {
         font-size: 32px;
         line-height: 32px;
-    }
+    } */
 
     .grid_two {
         grid-template-columns: 1fr;
@@ -497,8 +527,8 @@ a.cta:focus {
     }
 
     h2 {
-        font-size: 28px;
-        line-height: 28px;
+        font-size: 24px;
+        line-height: 24px;
         text-align: left;
     }
     

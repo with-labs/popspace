@@ -235,6 +235,11 @@ li {
     max-width: var(--narrow-width);
 }
 
+.grid_one {
+    margin: 0 auto;
+    max-width: var(--main-width);
+}
+
 .grid_two {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -345,36 +350,28 @@ video {
     display: block;
 }
 
+.video_feature {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow-bold);
+}
+
 a.textLink, a.textLink:link, a.textLink:visited {
     display: inline;
     position: relative;
-    padding: 2px 4px;
-    /* margin: 0px 4px; */
+    padding: 2px 2px;
     text-decoration: none;
-    /* background-color: var(--color-lavender-wash); */
     color: var(--color-lavender-ink);
     font-weight: 700;
-    /* border-radius: 20px; */
-    /* border: 1px solid var(--color-lavender-regular); */
     white-space: nowrap;
 }
-
-/* a.textLink:hover {
-    background-color: var(--color-lavender-surface);
-    border: 1px solid var(--color-lavender-bold);
-}
-
-a.textLink:active {
-    background-color: var(--color-lavender-regular);
-    border: 1px solid var(--color-lavender-ink);
-} */
 
 a.textLink:focus {
     outline: 1px solid var(--color-lavender-bold);
 }
 
 a.textLink::before {  
-    transform: scaleY(0.1);
+    transform: scaleY(0.07);
     transform-origin: bottom right;
 }
 
@@ -392,7 +389,7 @@ a.textLink::before {
     inset: 0 0 0 0;
     background: var(--color-lavender-regular);
     z-index: -1;
-    transition: all .3s ease;
+    transition: all .25s ease;
 }
 
 a.socialLink, a.socialLink:link, a.socialLink:visited {
@@ -523,13 +520,13 @@ a.cta:focus {
     h1 {
         font-size: 32px;
         line-height: 32px;
-        text-align: left;
+        /* text-align: left; */
     }
 
     h2 {
         font-size: 24px;
         line-height: 24px;
-        text-align: left;
+        /* text-align: left; */
     }
     
     .grid_three {
@@ -601,19 +598,23 @@ a.cta:focus {
     }
 
     a.textLink, a.textLink:link, a.textLink:visited {
-        background-color: transparent;
         color: var(--color-lavender-regular);
-        border: 1px solid #555;
     }
 
     a.textLink:hover {
         color: #ffffff;
-        border: 1px solid #888;
     }
 
     a.textLink:active {
         color: #ffffff;
-        border: 1px solid #ffffff;
+    }
+
+    a.textLink::before {
+        background: var(--color-lavender-bold);
+    }
+
+    a.textLink:hover::before {
+        background: var(--color-lavender-ink);
     }
 
     a.socialLink, a.socialLink:link, a.socialLink:visited {

@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
     font-family: 'Jakarta';
     src: url('/css/fonts/PlusJakartaSans-Bold.woff2') format('woff2'), url('/css/fonts/PlusJakartaSans-Bold.woff') format('woff'), url('/css/fonts/PlusJakartaSans-Bold.ttf') format('truetype');
     font-weight: 700;
@@ -28,7 +28,7 @@
     font-weight: 400;
     font-style: normal;
     font-display: swap;
-}
+} */
 
 @font-face {
     font-family: 'Manrope';
@@ -277,6 +277,11 @@ a.room_card:focus {
 }
 
 .integration_card {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+
     padding: 0px;
     border-radius: 10px;
     overflow: hidden;
@@ -287,8 +292,9 @@ a.room_card:focus {
 }
 
 .integration_card > img {
+    display: block;
     max-width: 110px;
-    margin-bottom: 20px;
+    margin: 0 auto;
 }
 
 .footer_card {
@@ -317,6 +323,7 @@ a.textLink, a.textLink:link, a.textLink:visited {
     font-weight: 700;
     border-radius: 20px;
     border: 1px solid var(--color-lavender-regular);
+    white-space: nowrap;
 }
 
 a.textLink:hover {
@@ -382,7 +389,7 @@ a.socialLink:focus {
 
 a.cta, a.cta:link, a.cta:visited {
     display: inline-block;
-    padding: 11px 16px 13px 16px;
+    padding: 11px 22px 13px 22px;
     background-color: var(--color-lavender-ink);
     color: var(--color-snow);
     font-family: var(--font-stack);
@@ -391,7 +398,7 @@ a.cta, a.cta:link, a.cta:visited {
     text-decoration: none;
     text-align: center;
     border-radius: 40px;
-    width: calc(100% - 32px);
+    /* width: calc(100% - 32px); */
     border: none;
     box-shadow: var(--box-shadow-modal);
 }
@@ -425,14 +432,18 @@ a.cta:focus {
         --section-spacing: 100px;
     }
 
+    nav {
+        padding: 60px 0px 0px 0px;
+    }
+
     h1 {
-        font-size: 38px;
-        line-height: 38px;
+        font-size: 34px;
+        line-height: 34px;
     }
 
     h2 {
-        font-size: 36px;
-        line-height: 36px;
+        font-size: 32px;
+        line-height: 32px;
     }
 
     .grid_two {
@@ -452,9 +463,39 @@ a.cta:focus {
     :root {
         --section-spacing: 100px;
     }
+
+    nav {
+        padding: 40px 0px 0px 0px;
+    }
+
+    h1 {
+        font-size: 32px;
+        line-height: 32px;
+        text-align: left;
+    }
+
+    h2 {
+        font-size: 28px;
+        line-height: 28px;
+        text-align: left;
+    }
     
     .grid_three {
         grid-template-columns: 1fr;
+    }
+
+    .integration_card {
+        display: grid;
+        grid-template-columns: 46px 1fr;
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+        padding: 20px;
+    }
+    
+    .integration_card > img {
+        display: block;
+        max-width: 46px;
+        margin: 0 auto;
     }
 }
 

@@ -5,9 +5,9 @@
       {# <p class="margin_above_small">{{ params.caption }}</p> #}
       
       {% if params.isAvailable %}
-        <a class="cta" target="_blank" href="{{ params.linkURL }}">{{ params.linkLabel }}</a>
+        <a class="cta truncate" target="_blank" href="{{ params.linkURL }}">{{ params.linkLabel }}</a>
       {% else %}
-        <div class="ctaDisabled">Coming Soon</div>
+        <div class="ctaDisabled truncate">Coming Soon</div>
       {% endif %}
   </div>
 {% endmacro %}

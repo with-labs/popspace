@@ -126,7 +126,7 @@ nav {
     outline: 3px solid var(--color-lavender-bold);
 }
 
-main {
+main, header, footer {
     padding: 20px;
 }
 

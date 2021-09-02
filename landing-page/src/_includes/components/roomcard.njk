@@ -5,12 +5,8 @@
         <p class="truncate">{{ params.caption }}</p>
       </div>
       {# <a class="cta" style="width: 120px; position: relative; left: 32px; bottom: -22px;" href="/create/{{ params.slug }}">Create room</a> #}
-      {% if params.isVideoDone %}
-        <video playsinline autoplay muted loop width="100%">
-          <source src="images/template_{{ params.slug }}.mp4" type="video/mp4" />
-        </video>
-      {% else %}
-        <img style="display: block;" src="images/template_{{ params.slug }}.jpg" width="100%" />  
-      {% endif %}
+      <video tabindex="-1" playsinline autoplay muted loop width="100%" poster="images/template_{{ params.slug }}.jpg">
+        <source src="images/template_{{ params.slug }}.mp4" type="video/mp4" />
+      </video>
   </a>
 {% endmacro %}

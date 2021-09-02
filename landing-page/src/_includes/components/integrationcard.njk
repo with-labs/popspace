@@ -3,6 +3,11 @@
       <img src="{{ params.icon }}" alt="{{ params.title }} application icon" />
       {# <h3>{{ params.title }}</h3> #}
       {# <p class="margin_above_small">{{ params.caption }}</p> #}
-      <a class="cta" target="_blank" href="{{ params.linkURL }}">{{ params.linkLabel }}</a>
+      
+      {% if params.isAvailable %}
+        <a class="cta" target="_blank" href="{{ params.linkURL }}">{{ params.linkLabel }}</a>
+      {% else %}
+        <div class="ctaDisabled">Coming Soon</div>
+      {% endif %}
   </div>
 {% endmacro %}

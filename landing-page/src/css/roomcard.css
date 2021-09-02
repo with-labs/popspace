@@ -130,9 +130,10 @@ main {
     padding: 20px;
 }
 
-section {
-    margin-bottom: var(--section-spacing);
+header, section, footer {
+    margin: 0 auto var(--section-spacing) auto;
 }
+
 
 .section_caption {
     margin: 0 auto;
@@ -158,6 +159,7 @@ h1 {
     font-feature-settings: 'ss02';
     text-align: center;
     margin-bottom: 60px;
+    letter-spacing: -0.5px;
 }
 
 h2 {
@@ -171,6 +173,7 @@ h2 {
     font-feature-settings: 'ss02';
     text-align: center;
     margin-bottom: 30px;
+    letter-spacing: -0.5px;
 }
 
 h3 {
@@ -188,6 +191,22 @@ p {
     font-size: 18px;
     line-height: 26px;
     color: var(--color-vintage-ink);
+}
+
+ul {
+    margin: 0 auto;
+    max-width: var(--main-width);
+}
+
+li {
+    font-family: var(--font-stack);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 26px;
+    color: var(--color-vintage-ink);
+
+    margin-top: 4px;
+    margin-left: 20px;
 }
 
 .faq_question {
@@ -212,6 +231,10 @@ p {
     margin-bottom: 30px;
 }
 
+.column {
+    max-width: var(--narrow-width);
+}
+
 .grid_two {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -230,12 +253,16 @@ p {
     max-width: var(--narrow-width);
 }
 
-.faq {
+.text_two_columns {
     columns: auto 2;
     column-gap: 40px;
     column-rule: 1px solid var(--color-slate-regular);
     margin: 0 auto;
     max-width: var(--main-width);
+}
+
+.text_two_columns > h2 {
+    text-align: left;
 }
 
 a.room_card, a.room_card:link, a.room_card:visited {
@@ -429,7 +456,6 @@ a.cta:focus {
     :root {
         --narrow-width: 480px;
         --main-width: 480px;
-        --section-spacing: 100px;
     }
 
     nav {
@@ -454,16 +480,12 @@ a.cta:focus {
         grid-template-columns: 1fr 1fr;
     }
     
-    .faq {
+    .text_two_columns {
         columns: auto 1;
     }
 }
 
 @media only screen and (max-width: 480px) {
-    :root {
-        --section-spacing: 100px;
-    }
-
     nav {
         padding: 40px 0px 0px 0px;
     }
@@ -516,15 +538,23 @@ a.cta:focus {
         color: #dfdfdf;
     }
 
-    .faq {
+    header > p {
+        color: #aaaaaa;
+    }
+
+    li {
+        color: #aaaaaa;
+    }
+
+    .text_two_columns {
         column-rule: 1px solid #555;
     }
 
-    .faq > p {
-        color: #8a8f98;
+    .text_two_columns > p {
+        color: #aaaaaa;
     }
 
-    .faq > p.faq_question {
+    .text_two_columns > p.faq_question {
         color: #cccccc;
     }
 

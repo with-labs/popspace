@@ -6,7 +6,7 @@
 		<title>{{ site.name }} • {{ title }}</title>
 
 		<!-- Stylesheet -->
-		<link type="text/css" rel="stylesheet" href="{{ '/css/style.css' | url  }}">
+		{# <link type="text/css" rel="stylesheet" href="{{ '/css/style.css' | url  }}"> #}
 		<link type="text/css" rel="stylesheet" href="{{ '/css/roomcard.css' | url  }}">
 		{# <link type="text/css" rel="stylesheet" href="{{ '/css/carousel.css' | url  }}" media="screen"> #}
 		{# <link rel="stylesheet" href="{{ '/css/keen-slider.min.css' | url  }}"/> #}
@@ -106,6 +106,6 @@
 		{% include 'components/menu.njk' %}
 		{{ content | safe }}
 		{# {% include 'components/producthunt.njk' %} #}
-		{# {% include 'components/footer.njk' %} #}
+		{% include 'components/footer.njk' %}
 	</body>
 </html>

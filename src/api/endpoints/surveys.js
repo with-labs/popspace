@@ -15,16 +15,25 @@ class Surveys {
         surveyName,
       }
     })
+    let newResponse;
     if (existingResponse) {
-      return api.http.fail(req, res, { message: 'You have already responded to this survey' }, 400);
+      newResponse = await shared.db.prisma.surveyResponse.update({
+        where: {
+          id: existingResponse.id,
+        },
+        data: {
+          response
+        }
+      })
+    } else {
+      newResponse = await shared.db.prisma.surveyResponse.create({
+        data: {
+          actorId: req.actor.id,
+          surveyName,
+          response,
+        }
+      });
     }
-    const newResponse = await shared.db.prisma.surveyResponse.create({
-      data: {
-        actorId: req.actor.id,
-        surveyName,
-        response,
-      }
-    });
     lib.feedback.notifySurveyResponse(newResponse, req.actor)
     return api.http.succeed(req, res, { response: newResponse });
   }
@@ -49,3 +58,5 @@ class Surveys {
     return api.http.succeed(req, res, { response });
   }
 }
+
+module.exports = Surveys;

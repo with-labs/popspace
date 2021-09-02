@@ -1,12 +1,11 @@
-import * as React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, makeStyles, Paper, Grow, useTheme, Typography, IconButton } from '@material-ui/core';
 import { Analytics } from '@analytics/Analytics';
-import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { CloseIcon } from '@components/icons/CloseIcon';
-
+import { useUserStats } from '@features/surveys/useUserStats';
+import { Box, Grow, IconButton, makeStyles, Paper, Typography, useTheme } from '@material-ui/core';
 import { Widget } from '@typeform/embed-react';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ANALYTICS_ID = 'userQuestionnairePopup';
 
@@ -32,12 +31,7 @@ export const UserQuestionnairePopup: React.FC<IUserQuestionnairePopupProps> = ()
   const roomId = useRoomStore((room: RoomStateShape) => room.id);
   const theme = useTheme();
 
-  const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
-    count: 0,
-    lastRoom: roomId,
-    date: '',
-    completed: [] as string[],
-  });
+  const [savedUserStats, setSavedUserStats] = useUserStats();
 
   const getQuestionnaire = () => {
     // TODO: Refine this, was trying to start the process of

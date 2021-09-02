@@ -7,6 +7,7 @@ import { KeyShortcut } from '@constants/keyShortcuts';
 import { MobileBetaBanner } from '@features/roomControls/compatibility/MobileBetaBanner';
 import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
 import { SupportedBrowsersModal } from '@features/roomModals/SupportedBrowsersModal';
+import { useUserStats } from '@features/surveys/useUserStats';
 import { Box } from '@material-ui/core';
 import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -26,7 +27,6 @@ import { ReconnectingAlert } from './ReconnectingAlert';
 import { RoomViewportProvider } from './RoomViewportProvider';
 import { Widget } from './widgets/Widget';
 import { WidgetsFallback } from './WidgetsFallback';
-import { useLocalStorage } from '@hooks/useLocalStorage/useLocalStorage';
 
 interface IRoomProps {}
 
@@ -46,12 +46,7 @@ export const Room = React.memo<IRoomProps>(() => {
   const roomName = useRoomStore((room: RoomStateShape) => room.displayName);
   const roomId = useRoomStore((room: RoomStateShape) => room.id);
 
-  const [savedUserStats, setSavedUserStats] = useLocalStorage('tilde_user_stats', {
-    count: 0,
-    lastRoom: roomId,
-    date: '',
-    completed: [] as string[],
-  });
+  const [_, setSavedUserStats] = useUserStats();
 
   useBindPaste();
 

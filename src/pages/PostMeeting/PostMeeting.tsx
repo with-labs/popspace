@@ -6,7 +6,7 @@ import { Link } from '@components/Link/Link';
 import { Logo } from '@components/Logo/Logo';
 import { Spacing } from '@components/Spacing/Spacing';
 import { StarRating } from '@components/StarRating/StarRating';
-import { Links } from '@constants/Links';
+import { SurveyWrapper } from '@features/surveys/SurveyWrapper';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import i18n from '@src/i18n';
 import { logger } from '@utils/logger';
@@ -17,7 +17,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import * as Yup from 'yup';
 
-import { Survey } from './Survey';
+import { NegativeFeedbackForm } from './NegativeFeedbackForm';
+import { UserInterviewInterestSurvey } from './UserInterviewInterestSurvey';
 
 const ANALYTICS_PAGE_ID = 'page_postMeeting';
 
@@ -150,17 +151,11 @@ export function PostMeeting({ match }: PostMeetingProps) {
             <Typography variant="h2" gutterBottom>
               {t('pages.postMeeting.surveyThanks')}
             </Typography>
-            <Link
-              to={Links.CREATE_MEETING}
-              disableStyling
-              onClick={() => {
-                Analytics.trackEvent(`${ANALYTICS_PAGE_ID}_createNewMeeting`, true);
-              }}
-            >
-              <Button color="primary" tabIndex={-1}>
-                {t('pages.postMeeting.createAnother')}
-              </Button>
-            </Link>
+            {wasPositive && (
+              <SurveyWrapper visitCountRequired={3} surveyName="userInterviewInterest" keepOpenOnSubmit>
+                <UserInterviewInterestSurvey style={{ width: '100%' }} />
+              </SurveyWrapper>
+            )}
           </Spacing>
         ) : collectFeedback ? (
           <FeedbackForm onSkip={onDone} onSubmit={submitFeedback} wasPositive={wasPositive} />
@@ -221,7 +216,7 @@ function FeedbackForm({
   const { t } = useTranslation();
 
   if (!wasPositive) {
-    return <Survey onSubmit={onSubmit} onSkip={onSkip} />;
+    return <NegativeFeedbackForm onSubmit={onSubmit} onSkip={onSkip} />;
   } else {
     return (
       <Formik

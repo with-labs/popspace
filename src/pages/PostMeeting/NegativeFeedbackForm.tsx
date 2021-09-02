@@ -7,7 +7,7 @@ import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-export interface SurveyProps {
+export interface NegativeFeedbackFormProps {
   onSubmit: (feedback: string) => any;
   onSkip: () => any;
 }
@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
   other: Yup.string().max(2048, i18n.t('pages.postMeeting.tooLong', { maxChars: 2048 })),
 });
 
-export function Survey({ onSubmit, onSkip }: SurveyProps) {
+export function NegativeFeedbackForm({ onSubmit, onSkip }: NegativeFeedbackFormProps) {
   const { t } = useTranslation();
 
   return (

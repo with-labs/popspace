@@ -765,6 +765,16 @@
         "description": "Find great people for your team.",
         "imgAlt": "A silhouette of someone speaking"
       }
+    },
+    "surveys": {
+      "userInterviewInterest": {
+        "question": "We're glad you like Tilde! We'd love to know more about how we can create your ideal meeting space. Would you like to meet up and chat about it?",
+        "email": "Your email address",
+        "emailPlaceholder": "you@somewhere.com",
+        "submit": "Let's talk!",
+        "cancel": "No thanks",
+        "thanks": "Thanks, we'll be in touch!"
+      }
     }
   }
 }

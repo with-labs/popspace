@@ -56,7 +56,7 @@ class CreateProcessor {
     const result = await shared.db.prisma.message.create({
       data: {
         chatId: payload.widgetId,
-        content: payload.content,
+        content: payload.content.toString(),
         senderId: sender.actorId()
       }
     })

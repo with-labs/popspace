@@ -1,5 +1,5 @@
 {% macro roomcard(params) %}
-  <a class="room_card" href="/create/{{ params.slug }}" style='background-color: {{ params.color }}'>
+  <a class="room_card" onclick="window.fathom.trackGoal('UX3OHYIU', 1); _paq.push(['trackEvent', 'CTA', 'clicked']);" href="/create/{{ params.slug }}" style='background-color: {{ params.color }}'>
       <div class="room_card_details">
         <h3 class="truncate">{{ params.title }}</h3>
         <p class="truncate">{{ params.caption }}</p>

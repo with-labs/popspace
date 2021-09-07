@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: `${theme.zIndex.modal - 2} !important` as any,
   },
   content: {
-    paddingTop: '45px',
+    paddingTop: '64px',
     // make room for the bottom bar
     maxWidth: '95vw',
     maxHeight: '100vh',

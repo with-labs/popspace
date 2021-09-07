@@ -9,11 +9,6 @@ import { usePersonStreams } from './usePersonStreams';
 import { useIsMe } from '@api/useIsMe';
 import { SIZE_AVATAR } from './constants';
 
-import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
-import { getTrackName } from '@utils/trackNames';
-import { WidgetType } from '@api/roomState/types/widgets';
-import { INITIAL_SIZE } from '../widgets/sidecarStream/constants';
-
 const MAX_Z_INDEX = 2147483647;
 export interface IPersonProps {
   personId: string;
@@ -34,8 +29,6 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
 
   const { mainStream, secondaryStreams: sidecarStreams } = usePersonStreams(personId);
 
-  const addWidget = useAddAccessory();
-
   // play a sound when any other person first enters the room
   const { playSound } = useSoundEffects();
   React.useEffect(() => {
@@ -43,20 +36,6 @@ export const Person = React.memo<IPersonProps>(({ personId }) => {
       playSound('join');
     }
   }, [person, isMe, playSound]);
-
-  React.useEffect(() => {
-    sidecarStreams.forEach((stream) => {
-      addWidget({
-        type: WidgetType.SidecarStream,
-        initialData: {
-          twilioParticipantIdentity: stream.participantIdentity,
-          videoTrackName: getTrackName(stream.videoPublication) ?? undefined,
-          audioTrackName: getTrackName(stream.audioPublication) ?? undefined,
-        },
-        size: INITIAL_SIZE,
-      });
-    });
-  }, [sidecarStreams, addWidget]);
 
   if (!person) {
     return null;

@@ -88,7 +88,9 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
       stopVideo();
       stopAudio();
     }
-  }, [streamType, stopVideo, stopAudio, stopScreenShare, isLocalDeviceStream]);
+
+    onClose();
+  }, [streamType, stopVideo, stopAudio, stopScreenShare, isLocalDeviceStream, onClose]);
 
   const hasAnyMedia = !!videoPublication || !!audioPublication;
 

@@ -1,0 +1,11 @@
+{% macro roomcard(params) %}
+  <a class="room_card" onclick="fathom.trackGoal('443VBDFM', 0);" href="/create/{{ params.slug }}" style='background-color: {{ params.color }}'>
+      <div class="room_card_details">
+        <h3 class="truncate">{{ params.title }}</h3>
+        <p class="truncate">{{ params.caption }}</p>
+      </div>
+      <video tabindex="-1" playsinline="" autoplay="" muted="" loop="" width="100%" poster="images/template_{{ params.slug }}.jpg">
+        <source src="images/template_{{ params.slug }}.mp4" type="video/mp4">
+      </video>
+  </a>
+{% endmacro %}

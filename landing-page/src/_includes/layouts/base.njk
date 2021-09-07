@@ -7,11 +7,8 @@
 
 		<!-- Stylesheet -->
 		<link type="text/css" rel="stylesheet" href="{{ '/css/style.css' | url  }}">
-		<link type="text/css" rel="stylesheet" href="{{ '/css/carousel.css' | url  }}" media="screen">
-		<link rel="stylesheet" href="{{ '/css/keen-slider.min.css' | url  }}"/>
 
 		<!-- Scripts -->
-		<script type="text/javascript" src="{{ '/script/keen-slider.min.js' | url  }}"></script>
 		<script type="text/javascript" src="{{ '/script/script.js' | url  }}"></script>
 
 		<!-- Scripts -->
@@ -93,11 +90,6 @@
 					.parentNode
 					.insertBefore(g, s);
 			})();
-
-			// Leadfeeder
-			(function(ss,ex){ window.ldfdr=window.ldfdr||function(){(ldfdr._q=ldfdr._q||[]).push([].slice.call(arguments));};
-			(function(d,s){ fs=d.getElementsByTagName(s)[0]; function ce(src){ var cs=d.createElement(s); cs.src=src; cs.async=1; fs.parentNode.insertBefore(cs,fs); };
-			ce('https://sc.lfeeder.com/lftracker_v1_'+ss+(ex?'_'+ex:'')+'.js'); })(document,'script'); })('DzLR5a5EeGDaBoQ2');
 		</script>
 
 	</head>
@@ -105,6 +97,6 @@
 		{% include 'components/menu.njk' %}
 		{{ content | safe }}
 		{# {% include 'components/producthunt.njk' %} #}
-		{# {% include 'components/footer.njk' %} #}
+		{% include 'components/footer.njk' %}
 	</body>
 </html>

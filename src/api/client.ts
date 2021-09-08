@@ -2,16 +2,17 @@ import { ApiCoreClient } from '@api/ApiCoreClient';
 import { ApiSubClient } from '@api/subClients/ApiSubClient';
 import { FileClient } from '@api/subClients/FileClient';
 import { MagicLinkClient } from '@api/subClients/MagicLinkClient';
+import { MessagingClient } from '@api/subClients/MessagingClient';
 import { OpenGraphClient } from '@api/subClients/OpenGraphClient';
 import { ParticipantClient } from '@api/subClients/ParticipantClient';
 import { PassthroughClient } from '@api/subClients/PassthroughClient';
 import { RoomStateClient } from '@api/subClients/RoomStateClient';
 import { TransformClient } from '@api/subClients/TransformClient';
 import { WidgetClient } from '@api/subClients/WidgetClient';
-import { MessagingClient } from '@api/subClients/MessagingClient';
 
 import { EventsClient } from './subClients/EventsClient';
 import { ExperienceRatingClient } from './subClients/ExperienceRatingClient';
+import { SurveyClient } from './subClients/SurveyClient';
 import { TemplateClient } from './subClients/TemplateClient';
 import { WallpaperClient } from './subClients/WallpaperClient';
 
@@ -61,6 +62,7 @@ const client = createApiClient({
   templates: TemplateClient,
   wallpapers: WallpaperClient,
   messages: MessagingClient,
+  surveys: SurveyClient,
 });
 
 export default client;

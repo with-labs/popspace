@@ -86,6 +86,14 @@ const TEMPLATE_WALLPAPERS = [
     artistName: 'Farrah Yoo',
     dominantColor: '#eef8ff',
   },
+  {
+    name: 'Greenhouse',
+    url: 'https://withhq.sirv.com/external/wallpaper/tilde/one_on_one_greenhouse_1800.png',
+    mimetype: 'image/png',
+    category: 'spaces',
+    artistName: 'Alexis Taylor',
+    dominantColor: '#a8d9ca',
+  },
 ];
 
 const SYSTEM_USER_ID = BigInt(-5000);

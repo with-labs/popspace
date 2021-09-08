@@ -1,10 +1,10 @@
 {
   "displayName": "One on One",
   "state": {
-    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_one_on_one.png",
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/one_on_one_greenhouse_1800.png",
     "isCustomWallpaper": true,
-    "wallpaperRepeats": true,
-    "backgroundColor": "#ffe9b3"
+    "wallpaperRepeats": false,
+    "backgroundColor": "#a8d9ca"
   },
   "widgets": [
     [
@@ -24,7 +24,10 @@
           { "insert": "\n" }
         ]
       },
-      { "size": { "width": 627, "height": 456 }, "position": { "x": -730, "y": -490 } }
+      {
+        "size": { "width": 627, "height": 456 },
+        "position": { "x": -730, "y": -490 }
+      }
     ]
   ]
 }

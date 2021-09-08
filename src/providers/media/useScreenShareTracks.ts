@@ -82,6 +82,13 @@ export function useScreenShareTracks({
         screenShareVideoTrack: twilioVideoTrack,
         screenShareAudioTrack: twilioAudioTrack,
       });
+
+      return {
+        screenShareVideoTrack: twilioVideoTrack,
+        videoName,
+        screenShareAudioTrack: twilioAudioTrack,
+        audioName,
+      };
     } catch (err) {
       onError?.(
         convertMediaError(

@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     left: `50%`,
     transform: `translate(-50%, 0)`,
-    zIndex: theme.zIndex.modal - 1,
+    zIndex: theme.zIndex.modal - 3,
     height: 72,
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),

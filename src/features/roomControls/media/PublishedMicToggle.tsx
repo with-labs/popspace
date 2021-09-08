@@ -8,7 +8,19 @@ import usePublishedAudioToggle from '@providers/media/hooks/usePublishedAudioTog
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 
-export const PublishedMicToggle = () => {
+export interface IPublishedMicToggleProps {
+  showMicsList?: boolean;
+  className?: string;
+  useSmall?: boolean;
+  displayToolTip?: boolean;
+}
+
+export const PublishedMicToggle: React.FC<IPublishedMicToggleProps> = ({
+  showMicsList = true,
+  className,
+  useSmall = false,
+  displayToolTip,
+}) => {
   const [isMicOn, doMicToggle, isAudioBusy] = usePublishedAudioToggle();
   const roomStatus = useRoomStatus();
   const { muteSession } = useRemoteControl();
@@ -34,6 +46,10 @@ export const PublishedMicToggle = () => {
       doMicToggle={doMicToggle}
       busy={isAudioBusy || roomStatus !== TwilioStatus.Connected}
       handleMicOn={handleMicOn}
+      showMicsList={showMicsList}
+      className={className}
+      useSmall={useSmall}
+      displayToolTip={displayToolTip}
     />
   );
 };

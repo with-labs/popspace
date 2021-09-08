@@ -37,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     objectFit: 'contain',
   },
+  background: {
+    backgroundColor: theme.palette.brandColors.ink.regular,
+  },
 }));
 
 function inferStreamType(widgetState: SidecarStreamWidgetState): 'screen' | 'av' {
@@ -88,7 +91,9 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
       stopVideo();
       stopAudio();
     }
-  }, [streamType, stopVideo, stopAudio, stopScreenShare, isLocalDeviceStream]);
+
+    onClose();
+  }, [streamType, stopVideo, stopAudio, stopScreenShare, isLocalDeviceStream, onClose]);
 
   const hasAnyMedia = !!videoPublication || !!audioPublication;
 
@@ -141,7 +146,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
           </WidgetTitlebarButton>
         )}
       </WidgetTitlebar>
-      <WidgetContent disablePadding>
+      <WidgetContent disablePadding className={classes.background}>
         <FullscreenableMedia
           className={classes.screenShare}
           isFullscreen={isFullscreen}

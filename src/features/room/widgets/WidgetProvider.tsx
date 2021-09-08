@@ -19,7 +19,7 @@ export interface IWidgetProviderProps {
 
 export const WidgetProvider: React.FC<IWidgetProviderProps> = ({ widgetId, ...props }) => {
   const widget = useRoomStore(React.useCallback((room) => room.widgets[widgetId], [widgetId]));
-  const handleRemove = useDeleteWidget(widgetId);
+  const handleRemove = useDeleteWidget(widgetId, widget?.type);
   const handleSave = useSaveWidget(widgetId);
 
   const ctx = React.useMemo(

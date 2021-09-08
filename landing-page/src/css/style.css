@@ -222,6 +222,11 @@ li {
     max-width: var(--narrow-width);
 }
 
+.text_one_column {
+    margin: 0 auto;
+    max-width: var(--narrow-width);
+}
+
 .text_two_columns {
     columns: auto 2;
     column-gap: 40px;

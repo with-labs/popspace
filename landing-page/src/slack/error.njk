@@ -1,0 +1,51 @@
+---
+layout      : layouts/base.njk
+title       : Installation successful!
+description : "Tilde offers free instant meeting rooms for all your collaborative needs."
+ogtitle     : "Tilde, instant and persistent meeting rooms"
+ogbody      : "What kind of free, instant meeting do you need today?"
+ogpreview   : "https://withhq.sirv.com/external/opengraph/2021-09_opengraph.gif"
+---
+
+{# const ErrorCodes = {
+  'FAIL_CREATE_ACTOR': 'Failed to create a new actor during installation',
+  'FAIL_CREATE_SESSION': 'Failed to create a session during installation',
+  'FAIL_SAVE_INSTALL_DATA': 'Failed saving installation data to installationStore',
+  'FAIL_FETCH_INSTALL_QUERY': 'Failed to get installQuery while getting fetching installation',
+  'FAIL_ENTERPRISE_FETCH_ACTOR': 'Failed to find current actor install data for enterprise installation',
+  'FAIL_FIND_ACTOR_INSTALL': 'Failed to find current actor install data',
+  'FAIL_FETCHING_INSTALL': 'Failed fetching installation'
+}; #}
+
+<!-- Error handling -->
+<script type="text/javascript">
+    window.addEventListener('load', function () {
+        var ref = /[?&]e=(\w+)&?/gm.exec(window.location.href);
+        var errorEl = document.getElementById("errorMessage");
+        var errorCta = document.getElementById("errorCta");
+        if (ref !== null) {
+            errorEl.innerText = ref[1];
+        } else {
+            errorEl.innerText = "UNKNOWN_ERROR";
+        }
+        errorCta.href = errorCta.href + " " + ref[1];
+    }, false);
+</script>
+
+<header class="margin_bottom">
+    <h1  class="margin_bottom_small">Oops, something's wrong</h1>
+    <p class="margin_bottom" style="text-align: center;">The installation didn't work.</p>
+</header>
+
+<main>
+    <section>
+        <div class="text_one_column" >
+        <div class="footer_card">
+                <h3 class="margin_bottom_small">Please try again later</h3>
+                <p>If this keeps happening, please let us know that you encounter this error: </p>
+                <p id="errorMessage" class="margin_bottom"></p>
+                <a id="errorCta" class="cta" target="_blank" href="mailto:support@tilde.so?subject=Slack installation error:">Contact Support</a>
+            </div>
+        </div>
+    </section>
+</main>

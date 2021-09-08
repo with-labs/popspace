@@ -34,8 +34,11 @@ export interface IScreenShareWidgetProps {}
 const useStyles = makeStyles((theme) => ({
   screenShare: {
     width: '100%',
-    height: 'auto',
+    height: '100%',
     objectFit: 'contain',
+  },
+  background: {
+    backgroundColor: theme.palette.brandColors.ink.regular,
   },
 }));
 
@@ -143,7 +146,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
           </WidgetTitlebarButton>
         )}
       </WidgetTitlebar>
-      <WidgetContent disablePadding>
+      <WidgetContent disablePadding className={classes.background}>
         <FullscreenableMedia
           className={classes.screenShare}
           isFullscreen={isFullscreen}

@@ -618,10 +618,10 @@
     sharp "^0.28.2"
     uuid "^8.3.2"
 
-"@withso/noodle-shared@^2.0.1-beta.2":
-  version "2.0.1-beta.2"
-  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.1-beta.2.tgz#d85cbc9adaa18de9af1d1163553b8c747be512d2"
-  integrity sha512-2hFYnyYmRO30N5lFmOd9U40G3b4x8qu1dHMuSIvwOcn90XGooMU1aZDijsDqs+IpWNBx+fVvu7aTg7GjE2jSNQ==
+"@withso/noodle-shared@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@withso/noodle-shared/-/noodle-shared-2.0.1.tgz#6b0cc12767c300853f12d73165b1967df0d6efb6"
+  integrity sha512-Z2tILgWsRsC8M0BKpzWUyXO+Om+RnBWqwnC/9a/fkI9s6iQ49DyBkNidTP9P/0oTAZi9ozbwcrkiWViTApWzdA==
   dependencies:
     "@prisma/client" "^2.28.0"
     async-lock "^1.2.4"

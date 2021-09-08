@@ -6,7 +6,8 @@ import { Lightbox } from '../Lightbox/Lightbox';
 import { Box, IconButton, makeStyles, useTheme, Paper } from '@material-ui/core';
 import { Speaker } from '@material-ui/icons';
 import { PublishedMicToggle } from '@features/roomControls/media/PublishedMicToggle';
-import { Fullscreen } from '@material-ui/icons';
+import { FullscreenExit } from '@material-ui/icons';
+
 import { Spacing } from '@components/Spacing/Spacing';
 
 export interface IFullscreenableMediaProps {
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     // make room for the bottom bar
     maxWidth: '95vw',
     maxHeight: '100vh',
+    height: '100%',
   },
   controls: {
     right: theme.spacing(3),
@@ -39,13 +41,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
   },
   iconButton: {
-    borderRadius: theme.shape.contentBorderRadius,
-    height: 48,
+    borderRadius: theme.shape.borderRadius,
+    height: 40,
   },
   hideControls: {
     display: 'none',
     transition: 'opacity 2s ease-out',
     opacity: '0',
+  },
+  button: {
+    height: 40,
   },
 }));
 
@@ -140,11 +145,11 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
             onClick={(event) => event.stopPropagation()}
           >
             <Box component={Paper}>
-              <PublishedMicToggle showMicsList={false} useSmall className={classes.iconButton} displayToolTip={false} />
+              <PublishedMicToggle showMicsList={false} className={classes.button} useSmall displayToolTip={false} />
             </Box>
             <Spacing component={Paper} gap={0.25}>
               <IconButton onClick={onFullscreenExit} classes={{ root: classes.iconButton }}>
-                <Fullscreen htmlColor={theme.palette.brandColors.slate.ink} />
+                <FullscreenExit htmlColor={theme.palette.brandColors.slate.ink} />
               </IconButton>
             </Spacing>
           </Spacing>

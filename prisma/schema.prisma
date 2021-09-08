@@ -538,7 +538,7 @@ model Widget {
 }
 
 model SurveyResponse {
-  id         BigInt   @id @default(autoincrement())
+  id         String   @id @default(cuid())
   actorId    BigInt?  @map("actor_id")
   surveyName String?  @map("survey_name")
   response   Json?

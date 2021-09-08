@@ -33,3 +33,6 @@ const shared = {
 };
 
 export default shared;
+
+export { default as prisma } from './db/prisma';
+export * from '@prisma/client';

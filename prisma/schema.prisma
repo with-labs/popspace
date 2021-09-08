@@ -73,6 +73,7 @@ model Actor {
   slackInstalls         SlackInstall[]
   wallpapers            Wallpaper[]
   participantState      ParticipantState?
+  surveyResponses       SurveyResponse[]
 
   @@index([deletedAt], name: "actors_deleted_at_index")
   @@index([kind], name: "actors_kind_index")
@@ -534,4 +535,17 @@ model Widget {
   @@index([creatorId], name: "widgets_creator_id_index")
   @@index([deletedAt], name: "widgets_deleted_at_index")
   @@map("widgets")
+}
+
+model SurveyResponse {
+  id         String   @id @default(cuid())
+  actorId    BigInt?  @map("actor_id")
+  surveyName String?  @map("survey_name")
+  response   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  actor Actor? @relation(fields: [actorId], references: [id])
+
+  @@map("survey_responses")
 }

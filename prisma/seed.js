@@ -131,4 +131,4 @@ async function seed() {
   process.exit(0);
 }
 
-export default { seed };
+module.exports = seed;

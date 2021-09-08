@@ -21,4 +21,6 @@ const prisma = new PrismaClient({
   },
 });
 
+console.log('Connected to database', config.host, config.database);
+
 export default prisma;

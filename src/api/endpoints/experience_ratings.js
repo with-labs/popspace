@@ -17,7 +17,7 @@ class ExperienceRatings {
         feedback
       )
 
-      lib.feedback.notify(rating, req.actor, false)
+      lib.feedback.notifyExperienceRating(rating, req.actor, false)
 
       return api.http.succeed(req, res, { ratingId: rating.id, rating: rating.rating, feedback: rating.feedback })
     }, ["rating"])

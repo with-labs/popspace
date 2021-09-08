@@ -8,4 +8,5 @@ module.exports = {
   Templates: require("./templates.js"),
   Internal: require("./internal.js"),
   Wallpapers: require("./wallpapers.js"),
+  Surveys: require("./surveys.js"),
 }

@@ -6,7 +6,6 @@ import { Link } from '@components/Link/Link';
 import { Logo } from '@components/Logo/Logo';
 import { Spacing } from '@components/Spacing/Spacing';
 import { StarRating } from '@components/StarRating/StarRating';
-import { SurveyWrapper } from '@features/surveys/SurveyWrapper';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import i18n from '@src/i18n';
 import { logger } from '@utils/logger';
@@ -151,11 +150,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
             <Typography variant="h2" gutterBottom>
               {t('pages.postMeeting.surveyThanks')}
             </Typography>
-            {wasPositive && (
-              <SurveyWrapper visitCountRequired={3} surveyName="userInterviewInterest" keepOpenOnSubmit>
-                <UserInterviewInterestSurvey style={{ width: '100%' }} />
-              </SurveyWrapper>
-            )}
+            {wasPositive && <UserInterviewInterestSurvey style={{ width: '100%' }} />}
           </Spacing>
         ) : collectFeedback ? (
           <FeedbackForm onSkip={onDone} onSubmit={submitFeedback} wasPositive={wasPositive} />

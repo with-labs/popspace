@@ -14,6 +14,7 @@ import { EventNames } from '@analytics/constants';
 import client from '@api/client';
 import { useAVSources } from '@hooks/useAVSources/useAVSources';
 import { Analytics } from '@analytics/Analytics';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -22,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
+  },
+  smallButtonText: {
+    display: 'none',
   },
 }));
 
@@ -32,10 +36,24 @@ export interface IMicToggleProps {
   doMicToggle: () => Promise<void>;
   busy: boolean;
   handleMicOn?: () => void;
+  showMicsList?: boolean;
+  useSmall?: boolean;
+  displayToolTip?: boolean;
 }
 
 export const MicToggle = (props: IMicToggleProps) => {
-  const { isLocal, className, isMicOn, doMicToggle, handleMicOn, busy, ...otherProps } = props;
+  const {
+    isLocal,
+    className,
+    isMicOn,
+    doMicToggle,
+    handleMicOn,
+    busy,
+    showMicsList = true,
+    useSmall = false,
+    displayToolTip = true,
+    ...otherProps
+  } = props;
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -78,7 +96,7 @@ export const MicToggle = (props: IMicToggleProps) => {
 
   // only show the list if we have access to devices (and their IDs)
   const { mics } = useAVSources();
-  const showMicsList = mics?.every((device) => device.deviceId && device.label);
+  const hasMicsList = mics?.every((device) => device.deviceId && device.label);
 
   return (
     <>
@@ -88,6 +106,7 @@ export const MicToggle = (props: IMicToggleProps) => {
             {t('features.mediaControls.micToggle')} <KeyShortcutText>{KeyShortcut.ToggleMute}</KeyShortcutText>
           </span>
         }
+        disableHoverListener={!displayToolTip}
       >
         <div>
           <ToggleButton
@@ -101,11 +120,13 @@ export const MicToggle = (props: IMicToggleProps) => {
             className={className}
           >
             {isMicOn ? <MicOnIcon fontSize="default" /> : <MicOffIcon fontSize="default" color="error" />}
-            <span className={classes.text}>{t('features.mediaControls.audioTitle')}</span>
+            <span className={clsx(classes.text, { [classes.smallButtonText]: useSmall })}>
+              {t('features.mediaControls.audioTitle')}
+            </span>
           </ToggleButton>
         </div>
       </ResponsiveTooltip>
-      {showMicsList && (
+      {showMicsList && hasMicsList && (
         <>
           <SmallMenuButton onClick={(ev) => setMenuAnchor(ev.currentTarget)} />
           <MicDeviceMenu open={!!menuAnchor} anchorEl={menuAnchor} onClose={() => setMenuAnchor(null)} />

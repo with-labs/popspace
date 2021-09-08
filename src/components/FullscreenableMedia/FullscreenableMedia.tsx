@@ -1,9 +1,13 @@
 import * as React from 'react';
+import clsx from 'clsx';
 import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import Publication from '../Publication/Publication';
 import { Lightbox } from '../Lightbox/Lightbox';
-import { Box, makeStyles } from '@material-ui/core';
+import { Box, IconButton, makeStyles, useTheme, Paper } from '@material-ui/core';
 import { Speaker } from '@material-ui/icons';
+import { PublishedMicToggle } from '@features/roomControls/media/PublishedMicToggle';
+import { Fullscreen } from '@material-ui/icons';
+import { Spacing } from '@components/Spacing/Spacing';
 
 export interface IFullscreenableMediaProps {
   className?: string;
@@ -20,13 +24,28 @@ export interface IFullscreenableMediaProps {
 const useStyles = makeStyles((theme) => ({
   lightbox: {
     // unfortunately MUI manages z-index in style directly :(
-    zIndex: `${theme.zIndex.modal - 2} !important` as any,
+    zIndex: `${theme.zIndex.modal} !important` as any,
   },
   content: {
-    paddingTop: '64px',
     // make room for the bottom bar
     maxWidth: '95vw',
     maxHeight: '100vh',
+  },
+  controls: {
+    right: theme.spacing(3),
+    bottom: theme.spacing(3),
+    position: 'fixed',
+    opacity: 1,
+    display: 'block',
+  },
+  iconButton: {
+    borderRadius: theme.shape.contentBorderRadius,
+    height: 48,
+  },
+  hideControls: {
+    display: 'none',
+    transition: 'opacity 2s ease-out',
+    opacity: '0',
   },
 }));
 
@@ -40,6 +59,35 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   audioPublication,
 }) => {
   const classes = useStyles();
+  const theme = useTheme();
+  const [showControls, setShowControls] = React.useState(true);
+
+  React.useEffect(() => {
+    let timeout: any;
+
+    const handleMouseMove = () => {
+      if (showControls) {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => setShowControls(false), 3000);
+      } else {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        setShowControls(true);
+        timeout = setTimeout(() => setShowControls(false), 3000);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [showControls]);
 
   const media = (
     <>
@@ -83,7 +131,24 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
         contentClassName={classes.content}
         className={classes.lightbox}
       >
-        {media}
+        <>
+          {media}
+          <Spacing
+            gap={1}
+            flexDirection="column"
+            className={clsx(classes.controls, { [classes.hideControls]: !showControls })}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Box component={Paper}>
+              <PublishedMicToggle showMicsList={false} useSmall className={classes.iconButton} displayToolTip={false} />
+            </Box>
+            <Spacing component={Paper} gap={0.25}>
+              <IconButton onClick={onFullscreenExit} classes={{ root: classes.iconButton }}>
+                <Fullscreen htmlColor={theme.palette.brandColors.slate.ink} />
+              </IconButton>
+            </Spacing>
+          </Spacing>
+        </>
       </Lightbox>
     );
   }

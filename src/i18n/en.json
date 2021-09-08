@@ -319,8 +319,8 @@
       },
       "sidecarStream": {
         "name": "Stream",
-        "titleEnding": "'s stream",
-        "titleLocalUser": "Your stream"
+        "titleEnding": "'s screen",
+        "titleLocalUser": "Your screen"
       },
       "unknown": {
         "name": "Accessory"

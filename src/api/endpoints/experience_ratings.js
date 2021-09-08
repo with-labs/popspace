@@ -50,7 +50,7 @@ class ExperienceRatings {
 
       const updated = await shared.db.experienceRatings.updateRating(rating.id, updates)
 
-      lib.feedback.notify(updated, req.actor, true)
+      lib.feedback.notifyExperienceRating(updated, req.actor, true)
 
       return api.http.succeed(req, res, { ratingId: updated.id, rating: updated.rating, feedback: updated.feedback })
     }, ["ratingId"])

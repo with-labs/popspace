@@ -23,6 +23,7 @@ describe('the LocalVideoPreview component', () => {
       attach: jest.fn(),
       detach: jest.fn(),
       on: jest.fn(),
+      off: jest.fn(),
     });
     const { container } = render(<LocalVideoPreview />);
     expect(container.firstChild).toEqual(expect.any(window.HTMLVideoElement));

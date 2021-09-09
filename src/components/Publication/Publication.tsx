@@ -56,11 +56,20 @@ export default function Publication({
   const [isSwitchedOff, setIsSwitchedOff] = React.useState(false);
 
   React.useEffect(() => {
-    track?.on('switchedOff', () => {
+    const handleSwitchedOff = () => {
       setIsSwitchedOff(true);
       Analytics.trackEvent('Alert_lowbandwith', new Date().toUTCString());
-    });
-    track?.on('switchedOn', () => setIsSwitchedOff(false));
+    };
+
+    const handleSwitchedOn = () => setIsSwitchedOff(false);
+
+    track?.on('switchedOff', handleSwitchedOff);
+    track?.on('switchedOn', handleSwitchedOn);
+
+    return () => {
+      track?.off('switchedOff', handleSwitchedOff);
+      track?.off('switchedOn', handleSwitchedOn);
+    };
   }, [track, setIsSwitchedOff]);
 
   if (!track) {

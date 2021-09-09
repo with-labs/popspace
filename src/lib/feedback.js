@@ -33,13 +33,13 @@ class Feedback {
   }
 
   notifySurveyResponse = async (data, actor) => {
-    if (!process.env.SLACK_FEEDBACK_WEBHOOK_URL) {
-      lib.log.error.warn("No Slack feedback webhook URL provided, cannot notify!")
+    if (!process.env.SLACK_SURVEY_WEBHOOK_URL) {
+      lib.log.error.warn("No Slack survey webhook URL provided, cannot notify!")
       return
     }
 
     try {
-      await axios.post(process.env.SLACK_FEEDBACK_WEBHOOK_URL, {
+      await axios.post(process.env.SLACK_SURVEY_WEBHOOK_URL, {
         text: `actor *${this.formatUser(actor)}* submitted a new survey response to survey _${data.surveyName}_:\n${data.response}`,
       })
     } catch (err) {

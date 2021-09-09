@@ -31,6 +31,7 @@ describe('the Publication component', () => {
         attach: jest.fn(),
         detach: jest.fn(),
         setPriority: jest.fn(),
+        on: jest.fn(),
       }));
       const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
@@ -44,6 +45,7 @@ describe('the Publication component', () => {
         attach: jest.fn(),
         detach: jest.fn(),
         setPriority: jest.fn(),
+        on: jest.fn(),
       }));
       const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
@@ -57,6 +59,7 @@ describe('the Publication component', () => {
         attach: jest.fn(),
         detach: jest.fn(),
         setPriority: jest.fn(),
+        on: jest.fn(),
       }));
       const wrapper = render(<Publication isLocal publication={{ trackName: `${CAMERA_TRACK_NAME}#foo` } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: `${CAMERA_TRACK_NAME}#foo` });
@@ -71,6 +74,7 @@ describe('the Publication component', () => {
         attach: jest.fn(),
         detach: jest.fn(),
         setPriority: jest.fn(),
+        on: jest.fn(),
       }));
       const wrapper = render(<Publication isLocal publication={{ trackName: 'trackName' } as any} />);
       expect(useTrack).toHaveBeenCalledWith({ trackName: 'trackName' });
@@ -84,6 +88,7 @@ describe('the Publication component', () => {
         attach: jest.fn(),
         detach: jest.fn(),
         setPriority: jest.fn(),
+        on: jest.fn(),
       }));
       const wrapper = render(
         <Publication isLocal publication={{ trackName: 'trackName' } as any} disableAudio={true} />

@@ -17,7 +17,13 @@ const mockUseTrack = useTrack as jest.Mock<any>;
 describe('the LocalVideoPreview component', () => {
   it('it should render a VideoTrack component when there is a "camera" track', () => {
     mockUseNamedTrack.mockReturnValue({ trackName: `${CAMERA_TRACK_NAME}#foo` } as LocalTrackPublication);
-    mockUseTrack.mockReturnValue({ name: 'camera', kind: 'video', attach: jest.fn(), detach: jest.fn() });
+    mockUseTrack.mockReturnValue({
+      name: 'camera',
+      kind: 'video',
+      attach: jest.fn(),
+      detach: jest.fn(),
+      on: jest.fn(),
+    });
     const { container } = render(<LocalVideoPreview />);
     expect(container.firstChild).toEqual(expect.any(window.HTMLVideoElement));
   });

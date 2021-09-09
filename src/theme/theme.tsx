@@ -1282,6 +1282,7 @@ export enum ThemeName {
   Snow = 'snow',
   Blueberry = 'blueberry',
   Slate = 'slate',
+  VintageInk = 'vintageInk',
 }
 
 // kind of arbitrary color combos below...
@@ -1313,6 +1314,10 @@ export const blueberry = createPaletteTheme({
   primary: brandPalette.blueberry,
 });
 
+export const vintageInk = createPaletteTheme({
+  primary: brandPalette.vintageInk,
+});
+
 export const getThemeFromName = (themeName: ThemeName | undefined) => {
   switch (themeName) {
     case ThemeName.Mandarin:
@@ -1327,6 +1332,8 @@ export const getThemeFromName = (themeName: ThemeName | undefined) => {
       return snow;
     case ThemeName.Blueberry:
       return blueberry;
+    case ThemeName.VintageInk:
+      return vintageInk;
     default:
       return mandarin;
   }

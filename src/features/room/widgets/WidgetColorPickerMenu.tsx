@@ -13,6 +13,7 @@ const COLORS = [
   { name: ThemeName.Lavender, value: palette.lavender.bold },
   { name: ThemeName.Blueberry, value: palette.blueberry.bold },
   { name: ThemeName.Slate, value: palette.slate.bold },
+  { name: ThemeName.VintageInk, value: palette.vintageInk.regular },
 ];
 
 export interface WidgetColorPickerMenuProps {

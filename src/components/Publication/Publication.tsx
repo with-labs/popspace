@@ -1,3 +1,4 @@
+import React from 'react';
 import AudioTrack from '../AudioTrack/AudioTrack';
 import VideoTrack from '../VideoTrack/VideoTrack';
 
@@ -8,8 +9,12 @@ import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublicatio
 import { hasTrackName } from '@utils/trackNames';
 import { CAMERA_TRACK_NAME } from '@constants/User';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
-import { Box } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { VisibilityOff } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
+import { BandwidthIcon } from '@components/icons/BandwidthIcon';
+import clsx from 'clsx';
+import { Analytics } from '@analytics/Analytics';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -20,6 +25,17 @@ interface PublicationProps {
   id?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  lowBandwidth: {
+    height: '100%',
+    textAlign: 'center',
+  },
+  icon: {
+    height: 48,
+    width: 48,
+  },
+}));
+
 export default function Publication({
   publication,
   isLocal,
@@ -28,12 +44,33 @@ export default function Publication({
   id,
   disableSpatialAudio,
 }: PublicationProps) {
+  const { t } = useTranslation();
+  const classes = useStyles();
+
   const track = useTrack(publication);
 
   // only publications which are from the same media group as the active user can be seen or heard
   const localMediaGroup = useLocalMediaGroup((store) => store.localMediaGroup);
   const { mediaGroup, objectId, objectKind } = useCanvasObject();
   const isAllowedToPlay = localMediaGroup === mediaGroup;
+  const [isSwitchedOff, setIsSwitchedOff] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleSwitchedOff = () => {
+      setIsSwitchedOff(true);
+      Analytics.trackEvent('Alert_lowbandwidth', new Date().toUTCString());
+    };
+
+    const handleSwitchedOn = () => setIsSwitchedOff(false);
+
+    track?.on('switchedOff', handleSwitchedOff);
+    track?.on('switchedOn', handleSwitchedOn);
+
+    return () => {
+      track?.off('switchedOff', handleSwitchedOff);
+      track?.off('switchedOn', handleSwitchedOn);
+    };
+  }, [track, setIsSwitchedOff]);
 
   if (!track) {
     return null;
@@ -61,7 +98,18 @@ export default function Publication({
 
   switch (track.kind) {
     case 'video':
-      return (
+      return isSwitchedOff ? (
+        <Box
+          className={clsx(classes.lowBandwidth, classNames)}
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <BandwidthIcon className={classes.icon} />
+          {t('error.twilioFailure.lowBandwidth')}
+        </Box>
+      ) : (
         <VideoTrack
           track={track as IVideoTrack}
           isLocal={hasTrackName(publication, CAMERA_TRACK_NAME) && isLocal}

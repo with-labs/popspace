@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     height: 40,
   },
+  test: {
+    color: theme.palette.brandColors.snow.regular,
+  },
 }));
 
 export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
@@ -97,7 +100,12 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   const media = (
     <>
       {videoPublication ? (
-        <Publication publication={videoPublication} isLocal={false} classNames={className} id={id} />
+        <Publication
+          publication={videoPublication}
+          isLocal={false}
+          classNames={clsx(classes.test, className)}
+          id={id}
+        />
       ) : (
         <Box
           className={className}
@@ -108,7 +116,7 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
           alignItems="center"
           justifyContent="center"
         >
-          <Speaker fontSize="large" />
+          <Speaker fontSize="large" htmlColor={theme.palette.brandColors.snow.regular} />
         </Box>
       )}
       {audioPublication && (

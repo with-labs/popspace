@@ -119,7 +119,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
 
   return (
     <WidgetFrame
-      color={ThemeName.Slate}
+      color={ThemeName.VintageInk}
       minWidth={MIN_SIZE.width}
       minHeight={MIN_SIZE.height}
       maxWidth={MAX_SIZE.width}

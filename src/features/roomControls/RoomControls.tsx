@@ -3,7 +3,6 @@ import { RoomTaskbar } from './taskbar/RoomTaskbar';
 import { ActionBar } from './addContent/ActionBar';
 import { WidgetMenu } from './widgetMenu/WidgetMenu';
 import { OnboardingPopup } from '@features/onboarding/OnboardingPopup';
-import { UserQuestionnairePopup } from '@features/userQuestionnaire/UserQuestionnairePopUp';
 
 import { Spacing } from '@components/Spacing/Spacing';
 import { Box, makeStyles, Paper } from '@material-ui/core';
@@ -65,7 +64,6 @@ export const RoomControls = React.memo<IRoomControlsProps>(() => {
       <ActionBar />
       <WidgetMenu />
       <OnboardingPopup />
-      <UserQuestionnairePopup />
     </>
   );
 });

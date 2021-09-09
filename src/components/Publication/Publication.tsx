@@ -58,7 +58,7 @@ export default function Publication({
   React.useEffect(() => {
     const handleSwitchedOff = () => {
       setIsSwitchedOff(true);
-      Analytics.trackEvent('Alert_lowbandwith', new Date().toUTCString());
+      Analytics.trackEvent('Alert_lowbandwidth', new Date().toUTCString());
     };
 
     const handleSwitchedOn = () => setIsSwitchedOff(false);

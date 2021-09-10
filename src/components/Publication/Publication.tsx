@@ -133,8 +133,9 @@ export default function Publication({
 const useUnstableOverlayStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
-    bottom: theme.spacing(0.5),
-    right: theme.spacing(0.5),
+    bottom: theme.spacing(1),
+    right: '50%',
+    transform: 'translateX(50%)',
     zIndex: 1,
     borderRadius: 32,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -144,6 +145,7 @@ const useUnstableOverlayStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     maxWidth: '90%',
     overflow: 'hidden',
+    padding: '4px 12px 4px 6px',
   },
 }));
 const UnstableOverlay = ({ small }: { small?: boolean }) => {
@@ -151,11 +153,11 @@ const UnstableOverlay = ({ small }: { small?: boolean }) => {
 
   const classes = useUnstableOverlayStyles();
   return (
-    <Spacing className={classes.root} flexDirection="row" alignItems="center" p={0.5}>
-      <BandwidthIcon fontSize="inherit" />
+    <Spacing className={classes.root} flexDirection="row" alignItems="center">
+      <BandwidthIcon style={{ width: 24, height: 24 }} />
       {!small && (
         <span
-          style={{ marginLeft: 4, overflow: 'hidden', textOverflow: 'inherit' }}
+          style={{ marginLeft: 6, overflow: 'hidden', textOverflow: 'inherit' }}
           title={t('error.twilioFailure.lowBandwidth')}
         >
           {t('error.twilioFailure.lowBandwidth')}

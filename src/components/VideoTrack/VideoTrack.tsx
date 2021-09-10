@@ -3,16 +3,15 @@
  *
  * Adding in classNames param
  */
-
-import React, { useRef, useEffect } from 'react';
-import { IVideoTrack } from '../../types/twilio';
 import { styled } from '@material-ui/core/styles';
+import React, { useEffect, useRef } from 'react';
 import { Track } from 'twilio-video';
+
+import { IVideoTrack } from '../../types/twilio';
 
 const Video = styled('video')({
   width: '100%',
   maxHeight: '100%',
-  objectFit: 'contain',
 });
 
 interface VideoTrackProps {

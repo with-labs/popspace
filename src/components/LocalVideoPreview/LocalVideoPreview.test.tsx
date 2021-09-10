@@ -1,10 +1,11 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import LocalVideoPreview from './LocalVideoPreview';
+import { CAMERA_TRACK_NAME } from '@constants/User';
 import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
 import useTrack from '@providers/twilio/hooks/useTrack';
+import { render } from '@testing-library/react';
+import React from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import { CAMERA_TRACK_NAME } from '@constants/User';
+
+import LocalVideoPreview from './LocalVideoPreview';
 
 jest.mock('@providers/twilio/hooks/useNamedPublication');
 jest.mock('@providers/twilio/hooks/useTrack');
@@ -26,12 +27,12 @@ describe('the LocalVideoPreview component', () => {
       off: jest.fn(),
     });
     const { container } = render(<LocalVideoPreview />);
-    expect(container.firstChild).toEqual(expect.any(window.HTMLVideoElement));
+    expect(container.querySelector('video')).not.toBe(null);
   });
 
   it('should render null when there are no "camera" tracks', () => {
     mockUseNamedTrack.mockReturnValue(null);
     const { container } = render(<LocalVideoPreview />);
-    expect(container.firstChild).toEqual(null);
+    expect(container.querySelector('video')).toEqual(null);
   });
 });

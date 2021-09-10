@@ -116,7 +116,7 @@
     "react-text-mask": "^5.4.3",
     "react-timeago": "^6.2.1",
     "react-use-gesture": "^9.0.4",
-    "react-use-measure": "^2.0.2",
+    "react-use-measure": "^2.0.4",
     "react-youtube": "^7.11.3",
     "reconnecting-websocket": "^4.4.0",
     "redux": "^4.0.5",

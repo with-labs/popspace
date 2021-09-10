@@ -1,20 +1,22 @@
-import React from 'react';
-import AudioTrack from '../AudioTrack/AudioTrack';
-import VideoTrack from '../VideoTrack/VideoTrack';
-
-import useTrack from '@providers/twilio/hooks/useTrack';
-import { useLocalMediaGroup } from '@providers/media/useLocalMediaGroup';
-import { IVideoTrack } from '../../types/twilio';
-import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
-import { hasTrackName } from '@utils/trackNames';
+import { Analytics } from '@analytics/Analytics';
+import { BandwidthIcon } from '@components/icons/BandwidthIcon';
+import { Spacing } from '@components/Spacing/Spacing';
 import { CAMERA_TRACK_NAME } from '@constants/User';
-import { useCanvasObject } from '@providers/canvas/CanvasObject';
 import { Box, makeStyles } from '@material-ui/core';
 import { VisibilityOff } from '@material-ui/icons';
-import { useTranslation } from 'react-i18next';
-import { BandwidthIcon } from '@components/icons/BandwidthIcon';
+import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import { useLocalMediaGroup } from '@providers/media/useLocalMediaGroup';
+import useTrack from '@providers/twilio/hooks/useTrack';
+import { hasTrackName } from '@utils/trackNames';
 import clsx from 'clsx';
-import { Analytics } from '@analytics/Analytics';
+import { throttle } from 'lodash';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
+
+import { IVideoTrack } from '../../types/twilio';
+import AudioTrack from '../AudioTrack/AudioTrack';
+import VideoTrack from '../VideoTrack/VideoTrack';
 
 interface PublicationProps {
   publication: LocalTrackPublication | RemoteTrackPublication;
@@ -25,16 +27,22 @@ interface PublicationProps {
   id?: string;
 }
 
-const useStyles = makeStyles((theme) => ({
-  lowBandwidth: {
+// only track this event 1 time per 10 seconds
+const trackBandwidthAnalytics = throttle(
+  () => Analytics.trackEvent('Alert_lowbandwidth', new Date().toUTCString()),
+  10 * 1000
+);
+
+const useStyles = makeStyles({
+  videoContainer: {
+    position: 'relative',
+  },
+  video: {
+    width: '100%',
     height: '100%',
-    textAlign: 'center',
+    objectFit: 'cover',
   },
-  icon: {
-    height: 48,
-    width: 48,
-  },
-}));
+});
 
 export default function Publication({
   publication,
@@ -44,9 +52,7 @@ export default function Publication({
   id,
   disableSpatialAudio,
 }: PublicationProps) {
-  const { t } = useTranslation();
   const classes = useStyles();
-
   const track = useTrack(publication);
 
   // only publications which are from the same media group as the active user can be seen or heard
@@ -58,7 +64,7 @@ export default function Publication({
   React.useEffect(() => {
     const handleSwitchedOff = () => {
       setIsSwitchedOff(true);
-      Analytics.trackEvent('Alert_lowbandwidth', new Date().toUTCString());
+      trackBandwidthAnalytics();
     };
 
     const handleSwitchedOn = () => setIsSwitchedOff(false);
@@ -98,24 +104,16 @@ export default function Publication({
 
   switch (track.kind) {
     case 'video':
-      return isSwitchedOff ? (
-        <Box
-          className={clsx(classes.lowBandwidth, classNames)}
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <BandwidthIcon className={classes.icon} />
-          {t('error.twilioFailure.lowBandwidth')}
-        </Box>
-      ) : (
-        <VideoTrack
-          track={track as IVideoTrack}
-          isLocal={hasTrackName(publication, CAMERA_TRACK_NAME) && isLocal}
-          classNames={classNames}
-          id={id}
-        />
+      return (
+        <div className={clsx(classes.videoContainer, classNames)}>
+          <VideoTrack
+            track={track as IVideoTrack}
+            isLocal={hasTrackName(publication, CAMERA_TRACK_NAME) && isLocal}
+            id={id}
+            classNames={classes.video}
+          />
+          {isSwitchedOff && <UnstableOverlay />}
+        </div>
       );
     case 'audio':
       return disableAudio ? null : (
@@ -131,3 +129,38 @@ export default function Publication({
       return null;
   }
 }
+
+const useUnstableOverlayStyles = makeStyles((theme) => ({
+  root: {
+    position: 'absolute',
+    bottom: theme.spacing(0.5),
+    right: theme.spacing(0.5),
+    zIndex: 1,
+    borderRadius: 32,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: 'white',
+    fontSize: theme.typography.pxToRem(14),
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '90%',
+    overflow: 'hidden',
+  },
+}));
+const UnstableOverlay = ({ small }: { small?: boolean }) => {
+  const { t } = useTranslation();
+
+  const classes = useUnstableOverlayStyles();
+  return (
+    <Spacing className={classes.root} flexDirection="row" alignItems="center" p={0.5}>
+      <BandwidthIcon fontSize="inherit" />
+      {!small && (
+        <span
+          style={{ marginLeft: 4, overflow: 'hidden', textOverflow: 'inherit' }}
+          title={t('error.twilioFailure.lowBandwidth')}
+        >
+          {t('error.twilioFailure.lowBandwidth')}
+        </span>
+      )}
+    </Spacing>
+  );
+};

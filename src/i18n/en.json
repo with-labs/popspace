@@ -482,7 +482,7 @@
         "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing, and <1>contact us</1> if this persists.",
         "continue": "Continue without media",
         "refresh": "Refresh",
-        "lowBandwidth": "The connection is unstable."
+        "lowBandwidth": "Unstable connection"
       }
     },
     "features": {

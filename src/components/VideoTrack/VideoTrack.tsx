@@ -3,11 +3,11 @@
  *
  * Adding in classNames param
  */
-
-import React, { useRef, useEffect } from 'react';
-import { IVideoTrack } from '../../types/twilio';
 import { styled } from '@material-ui/core/styles';
+import React, { useEffect, useRef } from 'react';
 import { Track } from 'twilio-video';
+
+import { IVideoTrack } from '../../types/twilio';
 
 const Video = styled('video')({
   width: '100%',
@@ -21,9 +21,17 @@ interface VideoTrackProps {
   priority?: Track.Priority;
   classNames?: string;
   id?: string;
+  style?: React.CSSProperties;
 }
 
-export default function VideoTrack({ track, isLocal, priority, classNames, id }: VideoTrackProps) {
+export default function VideoTrack({
+  track,
+  isLocal,
+  priority,
+  classNames,
+  id,
+  style: providedStyle = {},
+}: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -45,7 +53,7 @@ export default function VideoTrack({ track, isLocal, priority, classNames, id }:
   }, [track, priority]);
 
   // The local video track is mirrored.
-  const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
+  const style = isLocal ? { transform: 'rotateY(180deg)', ...providedStyle } : providedStyle;
 
   return <Video ref={ref} style={style} className={classNames} id={id} />;
 }

@@ -12,7 +12,6 @@ import { IVideoTrack } from '../../types/twilio';
 const Video = styled('video')({
   width: '100%',
   maxHeight: '100%',
-  objectFit: 'contain',
 });
 
 interface VideoTrackProps {
@@ -21,17 +20,9 @@ interface VideoTrackProps {
   priority?: Track.Priority;
   classNames?: string;
   id?: string;
-  style?: React.CSSProperties;
 }
 
-export default function VideoTrack({
-  track,
-  isLocal,
-  priority,
-  classNames,
-  id,
-  style: providedStyle = {},
-}: VideoTrackProps) {
+export default function VideoTrack({ track, isLocal, priority, classNames, id }: VideoTrackProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -53,7 +44,7 @@ export default function VideoTrack({
   }, [track, priority]);
 
   // The local video track is mirrored.
-  const style = isLocal ? { transform: 'rotateY(180deg)', ...providedStyle } : providedStyle;
+  const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
 
   return <Video ref={ref} style={style} className={classNames} id={id} />;
 }

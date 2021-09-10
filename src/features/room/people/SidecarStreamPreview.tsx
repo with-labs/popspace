@@ -1,21 +1,22 @@
-import * as React from 'react';
-import { useSpring, animated } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
-import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
-import { FullscreenableMedia } from '@components/FullscreenableMedia/FullscreenableMedia';
-import { SPRINGS } from '@constants/springs';
-import { makeStyles, Box, useTheme } from '@material-ui/core';
-import clsx from 'clsx';
-import { GrabbyIcon } from '@components/icons/GrabbyIcon';
 import { WidgetType } from '@api/roomState/types/widgets';
+import { useIsMe } from '@api/useIsMe';
 import { useRoomStore } from '@api/useRoomStore';
-import { Stream } from '../../../types/streams';
-import { getTrackName, hasTrackName } from '@utils/trackNames';
+import { FullscreenableMedia } from '@components/FullscreenableMedia/FullscreenableMedia';
+import { GrabbyIcon } from '@components/icons/GrabbyIcon';
+import { SPRINGS } from '@constants/springs';
+import { Box, makeStyles, useTheme } from '@material-ui/core';
+import { useCanvas } from '@providers/canvas/CanvasProvider';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 import { useViewport } from '@providers/viewport/useViewport';
-import { useCanvas } from '@providers/canvas/CanvasProvider';
+import { animated, useSpring } from '@react-spring/web';
+import { getTrackName, hasTrackName } from '@utils/trackNames';
+import clsx from 'clsx';
+import * as React from 'react';
+import { useGesture } from 'react-use-gesture';
+
+import { Stream } from '../../../types/streams';
+import { useAddAccessory } from '../../roomControls/addContent/quickActions/useAddAccessory';
 import { INITIAL_SIZE } from '../widgets/sidecarStream/constants';
-import { useIsMe } from '@api/useIsMe';
 
 /**
  * number of screen-space pixels you need to drag it away
@@ -51,12 +52,16 @@ const useStyles = makeStyles((theme) => ({
   screenShare: {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    '& video': {
+      objectFit: 'cover',
+    },
   },
   screenShareFullscreen: {
     width: '100%',
     height: 'auto',
-    objectFit: 'contain',
+    '& video': {
+      objectFit: 'contain',
+    },
   },
   grabIcon: {
     width: 16,

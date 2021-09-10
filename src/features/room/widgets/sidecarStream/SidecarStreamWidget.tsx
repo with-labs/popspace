@@ -1,27 +1,28 @@
-import * as React from 'react';
-import { WidgetFrame } from '../WidgetFrame';
-import { WidgetTitlebar } from '../WidgetTitlebar';
-import { useTranslation } from 'react-i18next';
-import { WidgetContent } from '../WidgetContent';
-import { makeStyles } from '@material-ui/core';
-import { WidgetResizeHandle } from '../WidgetResizeHandle';
-import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
-import { Fullscreen } from '@material-ui/icons';
-import { MinimizeIcon } from '@components/icons/MinimizeIcon';
-import { MuteButton } from '../MuteButton';
-import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
 import { SidecarStreamWidgetState, WidgetType } from '@api/roomState/types/widgets';
-import { WidgetAuthor } from '../WidgetAuthor';
+import { useIsMe } from '@api/useIsMe';
 import { FullscreenableMedia } from '@components/FullscreenableMedia/FullscreenableMedia';
-import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
-import { useWidgetContext } from '../useWidgetContext';
-import { ThemeName } from '../../../../theme/theme';
+import { MinimizeIcon } from '@components/icons/MinimizeIcon';
+import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
+import { makeStyles } from '@material-ui/core';
+import { Fullscreen } from '@material-ui/icons';
 import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
+import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
 import { useParticipantByIdentity } from '@providers/twilio/hooks/useParticipantByIdentity';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { ThemeName } from '../../../../theme/theme';
+import { MuteButton } from '../MuteButton';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetAuthor } from '../WidgetAuthor';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetFrame } from '../WidgetFrame';
+import { WidgetResizeHandle } from '../WidgetResizeHandle';
+import { WidgetTitlebar } from '../WidgetTitlebar';
+import { WidgetTitlebarButton } from '../WidgetTitlebarButton';
 import { MAX_SIZE, MIN_SIZE } from './constants';
-import { useIsMe } from '@api/useIsMe';
 
 /**
  * Number of ms to wait for a disconnected user to reconnect and resume stream.
@@ -35,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
   screenShare: {
     width: '100%',
     height: '100%',
-    objectFit: 'contain',
+    '& video': {
+      objectFit: 'contain',
+    },
   },
   background: {
     backgroundColor: theme.palette.brandColors.ink.regular,

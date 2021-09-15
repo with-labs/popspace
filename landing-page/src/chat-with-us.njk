@@ -1,0 +1,18 @@
+---
+layout      : layouts/base.njk
+title       : Chat with the Tilde team
+description : "Schedule a call with the Tilde team, "
+ogtitle     : "Tilde, instant and persistent meeting rooms"
+ogbody      : "What kind of free, instant meeting do you need today?"
+ogpreview   : "https://withhq.sirv.com/external/opengraph/2021-09_opengraph.gif"
+---
+{%- from "components/roomcard.njk" import roomcard -%}
+{%- from "components/integrationcard.njk" import integrationcard -%}
+
+<main>
+    <section>
+        <h1>{{ title }}</h1>
+        <div class="calendly-inline-widget" data-url="https://calendly.com/meet-tilde/chat" style="min-width:320px;height:660px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    </section>
+</main>

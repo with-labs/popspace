@@ -199,6 +199,17 @@ li {
     max-width: var(--narrow-width);
 }
 
+.farewell_card {
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    padding: 30px;
+    background-color: var(--color-lavender-wash);
+    text-align: left;
+    margin: 0 auto;
+    max-width: var(--main-width);
+}
+
 .grid_one {
     margin: 0 auto;
     max-width: var(--main-width);
@@ -274,6 +285,8 @@ a.room_card:focus {
 .room_card_details {
     padding: 22px 30px 22px 30px;
 }
+
+
 
 .integration_card {
     display: grid;

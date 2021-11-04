@@ -1,6 +1,6 @@
 ---
 layout      : layouts/base.njk
-title       : What kind of free, instant meeting do you need today?
+title       : Tilde's service is ending on December 15, 2021.
 description : "Tilde offers free instant meeting rooms for all your collaborative needs."
 ogtitle     : "Tilde, instant and persistent meeting rooms"
 ogbody      : "What kind of free, instant meeting do you need today?"
@@ -12,166 +12,70 @@ ogpreview   : "https://withhq.sirv.com/external/opengraph/2021-09_opengraph.gif"
 <main>
     <section>
         <h1>{{ title }}</h1>
-        {# <h1>Create your free, instant, and persistent meeting room</h1> #}
-        {# <h1>Free, instant, and persistent virtual meeting rooms</h1> #}
-        {# <h1>What kind of free, instant meeting do you need today?</h1> #}
-        {# <h1>Which free, instant and persistent meeting room do you need?</h1> #}
-        <div class="grid_two">
-            {{
-                roomcard({
-                    slug: 'daily',
-                    color: '#FAF0E4',
-                    title: 'Daily Stand-up',
-                    caption: 'Identify and tackle daily roadblocks.'
-                })
-            }}
-            {{
-                roomcard({
-                    slug: 'one_on_one',
-                    color: '#E7F6F3',
-                    title: 'One-on-One',
-                    caption: 'Build a relationship in a cozy place.'
-                })
-            }}
-            {{
-                roomcard({
-                    slug: 'weekly',
-                    color: '#FFEEEB',
-                    title: 'Weekly Sync-up',
-                    caption: 'Check in on the team\'s progress.'
-                })
-            }}
-            {{
-                roomcard({
-                    slug: 'brainstorm',
-                    color: '#F8EFE3',
-                    title: 'Brainstorm',
-                    caption: 'Ideate as a group to solve problems.'
-                })
-            }}
-            {# {{
-                roomcard({
-                    slug: 'office',
-                    color: '#D3E6EC',
-                    title: 'Virtual Office',
-                    caption: 'Feel the presence of your team.'
-                })
-            }}
-            {{
-                roomcard({
-                    slug: 'learning',
-                    color: '#EAEAEA',
-                    title: 'Online Learning',
-                    caption: 'Teach to a small group of students.'
-                })
-            }} #}
-        </div>
-        <div class="section_caption">You can also <a class="textLink" href="/create/new">Start with a blank room</a> and customize it based on your need!</div>
-    </section>
+        <div class="farewell_card">
+			<h3 class="margin_bottom_small">Dear fellow Tilde users,</h3>
+            <div class="text_two_columns">
+                <p class="margin_bottom_small">Thank you so much to everybody who used Tilde, and helped us along the journey.</p>
+                
+                <p class="margin_bottom_small">We learned a lot from you, and we are greateful that you used the product we built with passion.</p>
+                
+                <p class="margin_bottom_small">However, Tilde was a very broad proposition. We set up to build a great virtual space for people to meet, brainstorm, communicate, work, have fun, or just feel the presence of each other during a time where everybody was disconnected from each other. During the time it was needed the most.</p>
+                
+                <p class="margin_bottom_small">Unfortunately, that also means it was hard for us to decide what to build next, and what to focus on.</p>
+                
+                <p class="margin_bottom_small">This is why we decided to refocus our effort on a very specific use-case: making the best workshops plateform possible. For that, we created a new domain, <a href="https://popstage.com" target="_blank">PopStage.com</a>, and we encourage any of your who used Tilde for workshop to contact us and help us build an even better tool for you.</p>
 
-    <section>
-        <h2 id="integration">Integrations & Extensions</h2>
-        <div class="grid_three">
-            {{
-                integrationcard({
-                    title: 'Slack',
-                    icon: 'images/slack.png',
-                    caption: 'Create rooms directly by typing <b>/tilde</b>',
-                    linkLabel: 'Slack',
-                    linkURL: 'https://slack.com/oauth/v2/authorize?scope=commands&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiY29tbWFuZHMiXX0sIm5vdyI6IjIwMjEtMDYtMzBUMTg6MzA6MjguNjM0WiIsImlhdCI6MTYyNTA3NzgyOH0.4GDs88qN9b4nYHVSJBZfrva43MvrIM8a6mYqhTy13f0&client_id=1244791277063.2151053383028',
-                    isAvailable: true
-                })
-            }}
-            {{
-                integrationcard({
-                    title: 'Firefox',
-                    icon: 'images/firefox.png',
-                    caption: 'Get meeting links instantly from Firefox',
-                    linkLabel: 'Firefox',
-                    linkURL: 'https://addons.mozilla.org/en-US/firefox/addon/tilde-so/',
-                    isAvailable: true
-                })
-            }}
-            {{
-                integrationcard({
-                    title: 'Edge',
-                    icon: 'images/edge.png',
-                    caption: 'Get meeting links instantly from Edge',
-                    linkLabel: 'Edge',
-                    linkURL: 'https://microsoftedge.microsoft.com/addons/detail/tilde/okijggnacjmnekgoicdfaehhaekldhll',
-                    isAvailable: true
-                })
-            }}
-            {{
-                integrationcard({
-                    title: 'Chrome',
-                    icon: 'images/chrome.png',
-                    caption: 'Get meeting links instantly from Chrome',
-                    linkLabel: 'Chrome',
-                    linkURL: 'https://chrome.google.com/webstore/detail/tilde/fdleebpnfhkglofibmclaffikndcmnjd',
-                    isAvailable: true
-                })
-            }}
-            {{
-                integrationcard({
-                    title: 'Google Calendar',
-                    icon: 'images/gcal.png',
-                    caption: 'Add links directly to your calendar events',
-                    linkLabel: 'Coming Soon',
-                    linkURL: '#',
-                    isAvailable: false
-                })
-            }}
-            {{
-                integrationcard({
-                    title: 'Outlook',
-                    icon: 'images/outlook.png',
-                    caption: 'Add links directly to your calendar events',
-                    linkLabel: 'Coming Soon',
-                    linkURL: '#',
-                    isAvailable: false
-                })
-            }}
-        </div>
-        <div class="section_caption">Not finding your favorite tool? <a href="mailto:hello@tilde.so" class="textLink">Let us know!</a></div>
+                <p class="margin_bottom_small">I encourage you to read our FAQ below for all the questions you might have.</p>
+
+                <p>Thanks again for everything.</p>
+                <p><a href="mailto:laurent@with.so">Laurent Baumann</a>, Founder & CEO</p>
+            </div>
+		</div>
     </section>
+{# 
+Can I access my room until December 15, 2021?
+Can I still create new rooms?
+When will my room be closed?
+What will happen to my content?
+What about the browser extensions?
+What about the slack extension?
+What are you going to do next?
+How can I help?
+#}
 
     <section>
         <h2 id="faq">Frequently asked questions</h2>
         <div class="text_two_columns">
-            <p class="faq_question">Is Tilde really free?</p>
-            <p class="margin_bottom">Yes it is! You can launch a meeting right now for free. We will introduce paid premium plans (with additional features) in the future.</p>
+            <p class="faq_question">Can I access my rooms until December 15, 2021?</p>
+            <p class="margin_bottom">Yes, if you have a room bookmarked, or a calendar meeting with a Tilde room, you will still be able to access it until December 15th, 2021.</p>
 
-            <p class="faq_question">Do you need an account?</p>
-            <p class="margin_bottom">Neither you nor your guests need an account. All you need is internet and a browser!</p>
+            <p class="faq_question">Can I still create new rooms?</p>
+            <p class="margin_bottom">We disabled the creation of new rooms.</p>
 
-            <p class="faq_question">How do I invite people to the meeting?</p>
-            <p class="margin_bottom">Just share the provided meeting link and share that link with whomever you want. They will be able to join in one click.</p>
+            <p class="faq_question">When will my rooms be closed?</p>
+            <p class="margin_bottom">Your rooms will be closed on December 15th, 2021, along with the rest of the service.</p>
 
-            <p class="faq_question">How do I join the meeting?</p>
-            <p class="margin_bottom">If someone shared a meeting link with you, just click on the link and it will open the meeting in your browser. That's it!</p>
+            <p class="faq_question">What will happen to my content?</p>
+            <p class="margin_bottom">All the content in your rooms (sticky notes, files, whiteboard, notepads, etc.) will be deleted on December 15th, 2021. We recommend you download all the content you want to save.</p>
 
-            <p class="faq_question">How do I schedule a meeting?</p>
-            <p class="margin_bottom">Currently, you will need to create a meeting room here, copy the link and paste it in your calendar invite. We are working on Google Calendar and Outlook plugins to make this experience better.</p>
+            <p class="faq_question">How do I save my content?</p>
+            <p>The simplest way is to join your room, and manually save all the content.</p>
+            <p>For files, click on them to redownload them.</p>
+            <p>For Whiteboards,click on the download button in the top right to download the whiteboard as a PNG.</p>
+            <p>For Sticky notes and Notepads, the only way is to copy paste their content in another software.</p>
+            <p class="margin_bottom">If your rooms contain a lot of content and you would like help getting everything back, <a href="mailto:support@with.so">contact us</a> and we will help you.</p>
+            
+            <p class="faq_question">What about the browser extensions?</p>
+            <p class="margin_bottom">The browser extensions have been decommissioned. If they are not automatically removed from your browser, you can right click on the extension and select "Uninstall Tilde".</p>
 
-            <p class="faq_question">Does the content stay after the meeting?</p>
-            <p class="margin_bottom">Tilde rooms are persistent. Any accessory that you add to the room persists until you manually delete it. It's perfect for recurring meetings, so all the resources are always available.</p>
+            <p class="faq_question">What about the slack extension?</p>
+            <p class="margin_bottom">The slack extensions has been decommissioned. To remove it from Slack, a workspace administrator will have to click on "Manage Apps", select Tilde, click on the Configuration tab, and click the "Remove App" button.</p>
 
-            <p class="faq_question">Are the meeting rooms private?</p>
-            <p class="margin_bottom">Tilde uses a web technology called WebRTC which uses encryption (SSL) between the clients and Twilio, our service provider.</p>
+            <p class="faq_question">What are you going to do next?</p>
+            <p class="margin_bottom">Tilde has been used for bootcamps, workshops, training sessions, etc. While the experience was good, we believe we can really make a difference, by providing an experience dedicated to the task of moderating and facilitating. You can learn more at <a href="https://popstage.com" target="_blank">PopStage.com</a></p>
 
-            <p class="faq_question">Is our content stored securely?</p>
-            <p class="margin_bottom">Tilde rooms use links that are virtually impossible to guess. Anybody who has access to the meeting link can access the room content at anytime. All your content is securely stored in Amazon servers and is handled with the utmost care.</p>
-
-            <p class="faq_question">Do you have an app I can download?</p>
-            <p class="margin_bottom">We currently do not offer a downloadable app. This is on our roadmap. Thanks for your patience!</p>
-
-            <p class="faq_question">How many people can a meeting room hold?</p>
-            <p class="margin_bottom">The limit is currently 20 people at the same time in a room. Depending on your computer's power, the performance might degrade based on the number of participants, especially if everybody has their video turned on.</p>
-
-            <p class="faq_question">What browsers are supported?</p>
-            <p class="margin_bottom">We are currently supporting any modern browser with good WebRTC support. Firefox, Edge and Chrome are recommended.</p>
-
+            <p class="faq_question">Any other question?</p>
+            <p class="margin_bottom">Please contact us at <a href="mailto:support@with.so">support@with.so</a></p>
       </div>
 </section>
 </main>

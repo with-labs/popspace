@@ -1,16 +1,12 @@
 import { Analytics } from '@analytics/Analytics';
-import { ExtensionCard } from '@components/ExtensionCard/ExtensionCard';
 import { CopyIcon } from '@components/icons/CopyIcon';
 import { DoneIcon } from '@components/icons/DoneIcon';
-import { SaveIcon } from '@components/icons/SaveIcon';
 import { Link } from '@components/Link/Link';
 import { Spacing } from '@components/Spacing/Spacing';
-import { Links } from '@constants/Links';
 import { useExpiringToggle } from '@hooks/useExpiringToggle/useExpiringToggle';
 import {
   Box,
   Button,
-  Grid,
   makeStyles,
   TextField,
   Theme,
@@ -26,11 +22,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import { CenterColumnPage } from '../../Layouts/CenterColumnPage/CenterColumnPage';
-import { BrowserExtensionCard } from '@components/BrowserExtensionCard/BrowserExtensionCard';
 
-import gcal from './images/calendar.png';
-import outlook from './images/outlook.png';
-import slack from './images/slack.png';
 
 const ANALYTICS_PAGE_ID = 'page_meetingLink';
 
@@ -199,7 +191,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
           {t('pages.meetingLink.explanationText')}
         </Typography>
       </Box>
-      <Grid container spacing={2} style={{ width: '100%' }}>
+      {/* <Grid container spacing={2} style={{ width: '100%' }}>
         <Grid item xs={12} sm={12} md={3} lg={3}>
           <ExtensionCard
             iconSrc={slack}
@@ -256,7 +248,7 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
             disabled
           />
         </Grid>
-      </Grid>
+      </Grid> */}
     </CenterColumnPage>
   );
 };

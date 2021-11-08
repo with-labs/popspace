@@ -532,6 +532,10 @@ a.cta:focus {
         color: #dfdfdf;
     }
 
+    h3 {
+        color: #ffffff;
+    }
+
     header > p {
         color: #aaaaaa;
     }
@@ -557,6 +561,10 @@ a.cta:focus {
     }
 
     .footer_card {
+        background-color: #302e4d;
+    }
+
+    .farewell_card {
         background-color: #302e4d;
     }
 

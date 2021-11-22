@@ -1,0 +1,64 @@
+{
+  "name": "noodle-api",
+  "version": "1.0.1",
+  "description": "API for noodle.so",
+  "main": "index.js",
+  "scripts": {
+    "//": [
+      "this style of comments:",
+      "https://stackoverflow.com/questions/14221579/how-do-i-add-comments-to-package-json-for-npm-install",
+      "the wait-ready flag for pm2 assumes some matching application code (expects process.send('ready'))",
+      "https://pm2.keymetrics.io/docs/usage/signals-clean-restart/"
+    ],
+    "postinstall": "pm2 install pm2-graceful-intercom",
+    "start": "pm2 start index.js --name noodle_api -i 4 --wait-ready --kill-timeout 3000",
+    "stop": "pm2 stop noodle_api",
+    "reload": "pm2 reload noodle_api",
+    "logs": "pm2 logs noodle_api",
+    "dev": "NODE_ENV=development pm2 start index.js --name noodle_api -i 2 --wait-ready --watch",
+    "console": "node --experimental-repl-await ./scripts/console.js",
+    "test:all": "NODE_ENV=test jest --runInBand",
+    "test:one": "NODE_ENV=test node scripts/run_scenario.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/with-labs/with-api.git"
+  },
+  "author": "Aleksei Chernikov",
+  "contributors": [
+    "Aleksei Chernikov",
+    "Jerry Zhu"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/with-labs/with-api/issues"
+  },
+  "homepage": "https://github.com/with-labs/with-api#readme",
+  "dependencies": {
+    "@withso/file-upload": "^0.6.0",
+    "@withso/noodle-shared": "^2.0.1",
+    "aws-sdk": "^2.928.0",
+    "axios": "^0.21.1",
+    "camelcase-keys": "^6.2.2",
+    "cheerio": "^1.0.0-rc.10",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.6.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "log4js": "^6.3.0",
+    "mixpanel": "^0.13.0",
+    "multer": "^1.4.2",
+    "node-get-favicons": "^1.2.0",
+    "passport": "^0.4.1",
+    "session": "^0.1.0",
+    "snakecase-keys": "^4.0.2",
+    "twilio": "^3.63.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "factory-girl": "^5.0.4",
+    "jest": "^27.0.4",
+    "jest-cli": "^27.0.4"
+  }
+}

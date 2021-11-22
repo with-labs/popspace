@@ -1,0 +1,54 @@
+{
+  "displayName": "Retrospective",
+  "state": {
+    "wallpaperUrl": "https://withhq.sirv.com/external/wallpaper/tilde/tile_retro.png",
+    "isCustomWallpaper": true,
+    "wallpaperRepeats": true,
+    "backgroundColor": "#787aad"
+  },
+  "widgets": [
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Keep doing" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "List all the things that went well during this project\n\n " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 580, "height": 470 }, "position": { "x": -835, "y": -477 } }
+    ],
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Start doing" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "List all the things that we should start doing during the next project\n\n " },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 580, "height": 471 }, "position": { "x": -221, "y": -477 } }
+    ],
+    [
+      "NOTEPAD",
+      {
+        "initialData": [
+          { "insert": "Stop doing" },
+          { "attributes": { "header": 1 }, "insert": "\n" },
+          { "insert": "List all the things we should stop doing during the next project\n\n" },
+          { "attributes": { "list": "bullet" }, "insert": "\n" }
+        ]
+      },
+      { "size": { "width": 580, "height": 469 }, "position": { "x": 388, "y": -477 } }
+    ],
+    [
+      "STICKY_NOTE",
+      {
+        "text": "### Reminder!\n\nThis is a team exercise. The goal is not to argue each point, but to list what everyone has to say, then vote on the top 3 in each category."
+      },
+      { "size": { "width": 339, "height": 248 }, "position": { "x": 625, "y": 130 } }
+    ]
+  ]
+}

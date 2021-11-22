@@ -6,7 +6,7 @@ const Server = require("./app/server")
 
 const begin = async () => {
   await blib.init()
-  new Server(process.env.EXPRESS_PORT).start()
+  new Server(process.env.UNICORN_PORT).start()
   console.log(`(${process.env.NODE_ENV}) Server running on port ${process.env.EXPRESS_PORT}`)
 }
 

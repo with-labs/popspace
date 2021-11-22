@@ -5,6 +5,8 @@ const Middleware = require("./middleware.js")
 
 const WsDocumentServer = require("./ws/ws_document_server.js")
 
+const useSsl = !!process.env.SSL_PRIVATE_KEY_PATH
+
 const httpServer = (express) => {
   return require('http').createServer(express)
 }
@@ -28,7 +30,7 @@ class Server {
   }
 
   async start() {
-    this.server = httpsServer(this.express)
+    this.server = useSsl ? httpServer(this.express) : httpsServer(this.express)
     await this.next.prepare()
     await this.router.init()
     await this.initDocumentSync(this.server)

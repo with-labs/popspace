@@ -11,15 +11,9 @@ import { Routes } from './Routes';
 import AppStateProvider from './state';
 import { lavender as theme } from './theme/theme';
 
-// import { useCrisp } from './hooks/useCrisp/useCrisp';
 export interface IAppProps {}
 
 export const App: React.FC<IAppProps> = () => {
-  // TODO: set up analytics identity using whatever user information is available to us
-
-  // setup crisp integration
-  // useCrisp();
-
   return (
     <FlaggProvider featureFlags={featureFlags}>
       <StylesProvider injectFirst>

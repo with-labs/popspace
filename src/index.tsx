@@ -1,7 +1,6 @@
 import './i18n';
 import './with.css';
 
-import * as Sentry from '@sentry/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -14,20 +13,6 @@ try {
   version = `with-app@${VERSION}`;
 } catch (err) {
   version = 'unknown';
-}
-
-// @ts-ignore
-window.__with_version__ = version;
-if (process.env.REACT_APP_SENTRY_DSN && process.env.NODE_ENV !== 'development') {
-  Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
-    release: version,
-    normalizeDepth: 10, // Bump this up so we can get the most out of the Redux integration.
-    environment: process.env.NODE_ENV,
-  });
-  Sentry.setContext('app-details', {
-    version,
-  });
 }
 
 // injectFirst on the styles provider tells material ui to inject our styles before the

@@ -1,22 +1,30 @@
-import React, { ReactNode } from 'react';
-import * as Sentry from '@sentry/react';
+import { ErrorCodes } from '@constants/ErrorCodes';
+import { ErrorPage } from '@src/pages/ErrorPage/ErrorPage';
 import { logger } from '@utils/logger';
+import React, { ReactNode } from 'react';
 
 interface IErrorBoundaryProps {
   fallback: () => ReactNode;
 }
 
-// Callback for the Sentry ErrorBoundary component that will log errors to the browser console in development mode.
-const devOnError = (error: Error, componentStack: string) => {
-  logger.error(error, componentStack);
-};
+export class ErrorBoundary extends React.Component<IErrorBoundaryProps, { error: Error | null }> {
+  public static defaultProps = {
+    fallback: () => <ErrorPage type={ErrorCodes.UNEXPECTED} />,
+  };
 
-// Wrap the Sentry ErrorBoundary component and add an onError function to log things to the browser console in
-// development mode.
-export const ErrorBoundary: React.FC<IErrorBoundaryProps> = ({ children, fallback }) => {
-  return (
-    <Sentry.ErrorBoundary fallback={fallback} onError={devOnError}>
-      {children}
-    </Sentry.ErrorBoundary>
-  );
-};
+  state = {
+    error: null,
+  };
+
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    logger.error(error, errorInfo);
+    this.setState({ error });
+  }
+
+  public render() {
+    if (this.state.error) {
+      return this.props.fallback();
+    }
+    return <>{this.props.children}</>;
+  }
+}

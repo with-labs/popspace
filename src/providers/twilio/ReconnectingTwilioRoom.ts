@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
-import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
 import { RoomEvent, RoomState } from '@constants/twilio';
 import { logger } from '@utils/logger';
+import { EventEmitter } from 'events';
+import Video, { ConnectOptions, Room, TwilioError } from 'twilio-video';
 
 const LOG_BREADCRUMB_CATEGORY = 'twilio';
 // if we encounter two errors within this timeframe, we will stop retrying
@@ -82,7 +82,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
   };
 
   private handleDisconnect = async (room: Room, error: TwilioError) => {
-    logger.breadcrumb({
+    logger.debug({
       category: LOG_BREADCRUMB_CATEGORY,
       message: 'Room disconnected',
       data: {
@@ -185,7 +185,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.ParticipantConnected, (participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Participant connected',
         data: {
@@ -197,7 +197,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.ParticipantDisconnected, (participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Participant disconnected',
         data: {
@@ -209,7 +209,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.ParticipantReconnected, (participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Participant reconnected',
         data: {
@@ -221,7 +221,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.ParticipantReconnecting, (participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Participant reconnecting',
         data: {
@@ -233,7 +233,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.Reconnected, () => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Reconnected',
         data: {
@@ -243,7 +243,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.Reconnecting, () => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Reconnecting',
         data: {
@@ -253,7 +253,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.TrackPublished, (pub, participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Track published',
         data: {
@@ -267,7 +267,7 @@ export class ReconnectingTwilioRoom extends EventEmitter {
     });
 
     room.on(RoomEvent.TrackUnpublished, (pub, participant) => {
-      logger.breadcrumb({
+      logger.debug({
         category: LOG_BREADCRUMB_CATEGORY,
         message: 'Track unpublished',
         data: {

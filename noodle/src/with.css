@@ -1,0 +1,62 @@
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+html {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* scrollbar width */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+/* scrollbar Track */
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+  border-radius: 10px;
+}
+/* scrollbar Handle */
+*::-webkit-scrollbar-thumb {
+  background: #f4f5f8;
+  border-radius: 10px;
+}
+*::-webkit-scrollbar-track:hover {
+  background: #f4f5f8;
+}
+/* scrollbar Handle on hover */
+*::-webkit-scrollbar-thumb:hover {
+  background: #e2e5ee;
+}
+*::-webkit-scrollbar-thumb:active {
+  box-shadow: inset 0 0 0 2px #bec3d7;
+}
+
+/** Canny changelog badge customization **/
+.Canny_BadgeContainer .Canny_Badge.Canny_Badge {
+  background-color: #fcaba0;
+  padding: 4px;
+  top: 0;
+  right: 0;
+}

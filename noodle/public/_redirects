@@ -1,0 +1,6 @@
+# This is necessary for react-router
+# https://medium.com/@sschannak/netlify-and-react-router-1537aebe6256
+# We have also customized the output HTML file name for the main app,
+# it's app.html - this is because we host the landing page (separate site)
+# from index.html
+/*    /app.html   200

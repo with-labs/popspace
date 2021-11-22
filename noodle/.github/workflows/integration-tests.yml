@@ -1,0 +1,29 @@
+name: Integration Tests
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+      - master
+jobs:
+  integration-tests:
+    runs-on: ubuntu-16.04
+    env:
+      NODE_ENV: staging
+      NPM_TOKEN: ${{ secrets.WITH_SHARED_NPM_TOKEN }}
+      REACT_APP_SOCKET_HOST: 'wss://test.with.so:4365'
+      REACT_APP_HERMES_API_HOST: 'https://test.with.so:4365'
+      REACT_APP_NOODLE_API_HOST: 'https://test.with.so:3030'
+      REACT_APP_UNICORN_SOCKET_HOST: 'wss://test.with.so:3011'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn run prestart
+      - run: yarn cypress:ci
+        env:
+          CI: true

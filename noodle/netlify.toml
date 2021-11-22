@@ -1,0 +1,71 @@
+[dev]
+targetPort = 3002
+
+[build]
+command = "yarn build"
+publish = "build"
+base = "."
+
+[context.production.environment]
+REACT_APP_ANALYTICS_ENV = "production"
+TWILIO_API_KEYS_ENV = "production"
+NODE_ENV = "production"
+REACT_APP_SOCKET_HOST = "wss://mercury.with.so:5555"
+# This may stay around forever, or for a long time:
+# some HTTP requests may require us to send socket notifications.
+# This _could_ eventually be gone:
+# one scaling strategy for sockets could be establishing a shared queue
+# and intelligent message routing system (a'la RabbitMQ).
+# Then the API service could simply push to the queue,
+# and we wouldn't need to host the API on hermes to have access to participants.
+REACT_APP_HERMES_API_HOST = "https://mercury.with.so:5555"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://mercury.with.so:5557"
+REACT_APP_NOODLE_API_HOST = "https://mercury.with.so:5556"
+REACT_APP_ANALYTICS_ID = "c5dca48b9e8589e669570e0d795eb51a"
+
+[context.deploy-preview.environment]
+REACT_APP_ANALYTICS_ENV = "staging"
+TWILIO_API_KEYS_ENV = "staging"
+NODE_ENV = "staging"
+REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
+REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3010"
+REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
+
+[context.branch-deploy.environment]
+REACT_APP_ANALYTICS_ENV = "staging"
+TWILIO_API_KEYS_ENV = "staging"
+NODE_ENV = "staging"
+REACT_APP_HERMES_API_HOST = "https://test.with.so:4365"
+REACT_APP_NOODLE_API_HOST = "https://test.with.so:3030"
+REACT_APP_UNICORN_SOCKET_HOST = "wss://test.with.so:3010"
+REACT_APP_ANALYTICS_ID = "d44d2fa32ab1fad61038134cdbea9620"
+
+# We are obliged under US law not to serve countries
+# embargoed by the U.S. government.
+# It seems like OFAC is the organization relevant to software
+# https://www.millercanfield.com/resources-343.html
+# The source of truth for embargoes is the U.S. treasury:
+# https://home.treasury.gov/policy-issues/financial-sanctions/sanctions-programs-and-country-information
+# However, it is extremely hard to parse the exact implications of the documents there.
+# There are other sources which make it a bit easier:
+# https://worldpopulationreview.com/country-rankings/ofac-countries
+# https://www.export.pitt.edu/embargoed-and-sanctioned-countries
+# --------------------------------------------------------------
+# This list is (2021/03/02 https://with.height.app/lets-ship-it/T-493):
+# Crimea - region of Ukraine
+# Cuba (cu)
+# Iran (ir)
+# North Korea (kp)
+# Sudan (sd)
+# Syria (sy)
+# ---------------------------------------------------------------
+# Country codes from netlify:
+# https://dev.maxmind.com/geoip/legacy/codes/iso3166/
+# (linked from https://docs.netlify.com/routing/redirects/redirect-options/ )
+[[redirects]]
+from = "/*"
+to = "/embargo.html"
+status = 403
+force = true
+conditions = { Country=["CU", "IR", "KP", "SD", "SY"] }

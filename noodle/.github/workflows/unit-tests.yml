@@ -1,0 +1,23 @@
+name: Unit Tests
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+      - master
+jobs:
+  unit-tests:
+    runs-on: ubuntu-16.04
+    env:
+      NPM_TOKEN: ${{ secrets.WITH_SHARED_NPM_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:ci
+        env:
+          CI: true

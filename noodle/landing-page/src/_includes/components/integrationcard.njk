@@ -1,0 +1,10 @@
+{% macro integrationcard(params) %}
+  <div class="integration_card">
+      <img src="{{ params.icon }}" alt="{{ params.title }} application icon" />      
+      {% if params.isAvailable %}
+        <a class="cta truncate" target="_blank" href="{{ params.linkURL }}">{{ params.linkLabel }}</a>
+      {% else %}
+        <div class="ctaDisabled truncate">Coming Soon</div>
+      {% endif %}
+  </div>
+{% endmacro %}

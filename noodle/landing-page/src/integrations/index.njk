@@ -1,0 +1,79 @@
+---
+layout      : layouts/base.njk
+title       : Workflow Integrations
+description : "Tilde integrates with your existing tools, like Slack, Chrome, Calendar, and more."
+ogtitle     : "Tilde, instant and persistent meeting rooms"
+ogbody      : "Integrate Tilde with the tools you are using today."
+ogpreview   : "https://withhq.sirv.com/external/opengraph/2021-09_opengraph.gif"
+---
+{%- from "components/roomcard.njk" import roomcard -%}
+{%- from "components/integrationcard.njk" import integrationcard -%}
+
+<main>
+    <section>
+        <h2 id="integration">Integrations & Extensions</h2>
+        <div class="grid_three">
+            {{
+                integrationcard({
+                    title: 'Slack',
+                    icon: '/images/slack.png',
+                    caption: 'Create rooms directly by typing <b>/tilde</b>',
+                    linkLabel: 'Slack',
+                    linkURL: 'https://slack.com/oauth/v2/authorize?scope=commands&state=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpbnN0YWxsT3B0aW9ucyI6eyJzY29wZXMiOlsiY29tbWFuZHMiXX0sIm5vdyI6IjIwMjEtMDYtMzBUMTg6MzA6MjguNjM0WiIsImlhdCI6MTYyNTA3NzgyOH0.4GDs88qN9b4nYHVSJBZfrva43MvrIM8a6mYqhTy13f0&client_id=1244791277063.2151053383028',
+                    isAvailable: true
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Firefox',
+                    icon: '/images/firefox.png',
+                    caption: 'Get meeting links instantly from Firefox',
+                    linkLabel: 'Firefox',
+                    linkURL: 'https://addons.mozilla.org/en-US/firefox/addon/tilde-so/',
+                    isAvailable: true
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Edge',
+                    icon: '/images/edge.png',
+                    caption: 'Get meeting links instantly from Edge',
+                    linkLabel: 'Edge',
+                    linkURL: 'https://microsoftedge.microsoft.com/addons/detail/tilde/okijggnacjmnekgoicdfaehhaekldhll',
+                    isAvailable: true
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Chrome',
+                    icon: '/images/chrome.png',
+                    caption: 'Get meeting links instantly from Chrome',
+                    linkLabel: 'Chrome',
+                    linkURL: 'https://chrome.google.com/webstore/detail/tilde/fdleebpnfhkglofibmclaffikndcmnjd',
+                    isAvailable: true
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Google Calendar',
+                    icon: '/images/gcal.png',
+                    caption: 'Add links directly to your calendar events',
+                    linkLabel: 'Coming Soon',
+                    linkURL: '#',
+                    isAvailable: false
+                })
+            }}
+            {{
+                integrationcard({
+                    title: 'Outlook',
+                    icon: '/images/outlook.png',
+                    caption: 'Add links directly to your calendar events',
+                    linkLabel: 'Coming Soon',
+                    linkURL: '#',
+                    isAvailable: false
+                })
+            }}
+        </div>
+        <div class="section_caption">Not finding your favorite tool? <a href="mailto:hello@tilde.so" class="textLink">Let us know!</a></div>
+    </section>
+</main>

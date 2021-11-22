@@ -7,9 +7,9 @@ const getPort = () => {
     Allows running tests while a dev server is running locally
   */
   if(process.env.NODE_ENV == "test") {
-    return process.env.TEST_PORT
+    return process.env.TEST_PORT || 3000
   } else {
-    return process.env.EXPRESS_PORT
+    return process.env.EXPRESS_PORT || 3000
   }
 }
 

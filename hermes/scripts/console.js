@@ -10,7 +10,6 @@ const util = require("util")
 
 const startConsole = async () => {
   await shared.init()
-  await shared.initDynamo()
 
   util.inspect.defaultOptions.depth = 20
   util.inspect.defaultOptions.colors = true

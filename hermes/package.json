@@ -1,0 +1,53 @@
+{
+  "name": "hermes",
+  "version": "1.0.0",
+  "description": "Server for streaming data to Tilde clients",
+  "main": "index.js",
+  "scripts": {
+    "//": [
+      "See noodle-api for explanation on pm2 setup, on why pm2-graceful-intercom is necessary"
+    ],
+    "postinstall": "pm2 install pm2-graceful-intercom",
+    "start": "pm2 start index.js --name hermes --wait-ready --kill-timeout 3000",
+    "stop": "pm2 stop hermes",
+    "reload": "pm2 reload hermes",
+    "dev": "NODE_ENV=development pm2 start index.js --name hermes --wait-ready --watch",
+
+    "debug": "node --experimental-repl-await inspect index.js",
+    "console": "node --experimental-repl-await ./scripts/console.js",
+    "test:all": "NODE_ENV=test jest --runInBand",
+    "test:component": "NODE_ENV=test jest --runInBand",
+    "test:api": "NODE_ENV=test jest --runInBand ./tests/api",
+    "test:ws": "NODE_ENV=test jest --runInBand ./tests/ws",
+    "test:one": "NODE_ENV=test node scripts/run_scenario.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/with-labs/hermes.git"
+  },
+  "author": "Aleksei Chernikov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/with-labs/hermes/issues"
+  },
+  "homepage": "https://github.com/with-labs/hermes#readme",
+  "dependencies": {
+    "@withso/noodle-shared": "^2.0.0",
+    "aws-sdk": "^2.797.0",
+    "btoa": "^1.2.1",
+    "camelcase-keys": "^6.2.2",
+    "chance": "^1.1.7",
+    "commander": "^6.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http-terminator": "^3.0.0",
+    "jest": "^26.6.3",
+    "jest-cli": "^26.6.3",
+    "log4js": "^6.3.0",
+    "shelljs": "^0.8.4",
+    "snakecase-keys": "^3.2.1",
+    "ua-parser-js": "^0.7.28",
+    "ws": "^7.4.0"
+  }
+}

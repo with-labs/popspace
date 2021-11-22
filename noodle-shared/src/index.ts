@@ -18,18 +18,6 @@ const shared = {
   cleanup: async () => {
     await db.pg.tearDown();
   },
-  initDynamo: async () => {
-    /*
-      Avoiding puting this into the general init -
-      at least until I set up readonly credentials,
-      so auxiliary microservices can safely init
-    */
-    await db.dynamo.init();
-    /*
-      No cleanup necessary in general,
-      it's just individual API calls that have credentials
-    */
-  },
 };
 
 export default shared;

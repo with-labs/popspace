@@ -1,7 +1,6 @@
 import accounts from './accounts';
 import config from './config';
 import * as constants from './constants';
-import dynamo from './dynamo/dynamo';
 import events from './events';
 import experienceRatings from './experience_ratings';
 import magic from './magic';
@@ -22,7 +21,6 @@ export default {
   accounts,
   events,
   room,
-  dynamo,
   redis,
   magic,
   experienceRatings,

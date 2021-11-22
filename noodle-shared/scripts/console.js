@@ -1,31 +1,33 @@
-require("dotenv").config()
-console.log(`Starting console - ${process.env.NODE_ENV}`)
-global.shared = require("../index.js")
+require('dotenv').config();
+console.log(`Starting console - ${process.env.NODE_ENV}`);
+global.shared = require('../index.js');
 
-const repl = require("repl")
-const util = require("util")
+const repl = require('repl');
+const util = require('util');
 
 const startConsole = async () => {
-  await shared.init()
-  await shared.initDynamo()
+  await shared.init();
 
-  util.inspect.defaultOptions.depth = 20
-  util.inspect.defaultOptions.colors = true
-  util.inspect.defaultOptions.getters = true
-  util.inspect.defaultOptions.compact = true
+  util.inspect.defaultOptions.depth = 20;
+  util.inspect.defaultOptions.colors = true;
+  util.inspect.defaultOptions.getters = true;
+  util.inspect.defaultOptions.compact = true;
 
   const replServer = repl.start({
     writer: util.inspect,
-    prompt: "=> "
-  })
-  for(key of Object.keys(global)) {
-    replServer.context[key] = global[key]
+    prompt: '=> ',
+  });
+  for (key of Object.keys(global)) {
+    replServer.context[key] = global[key];
   }
-  replServer.setupHistory(`./local/repl_history_${process.env.NODE_ENV}`, () => {})
+  replServer.setupHistory(
+    `./local/repl_history_${process.env.NODE_ENV}`,
+    () => {},
+  );
   replServer.on('exit', () => {
     console.log('Goodbye!');
     process.exit();
   });
-}
+};
 
-startConsole()
+startConsole();

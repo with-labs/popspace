@@ -33,7 +33,7 @@ const begin = async () => {
     }
   }
 
-  const server = new Server(process.env.EXPRESS_PORT)
+  const server = new Server(process.env.EXPRESS_PORT || 3003)
 
   /*
     This is handy if we want to debug a live process

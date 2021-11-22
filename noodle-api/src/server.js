@@ -1,6 +1,9 @@
 const fs = require('fs')
 const express = require('express')
 const https = require('https')
+const http = require('http')
+
+const useSsl = !!process.env.SSL_PRIVATE_KEY_PATH
 
 const loadSsl = () => {
   const privateKey  = fs.readFileSync(process.env.SSL_PRIVATE_KEY_PATH, 'utf8')
@@ -22,7 +25,11 @@ class Server {
 
   async start() {
     return new Promise((resolve, reject) => {
-      this.server = https.createServer(loadSsl(), this.express)
+      if (useSsl) {
+        this.server = https.createServer(loadSsl(), this.express)
+      } else {
+        this.server = http.createServer(this.express)
+      }
       this.listen = this.server.listen(this.port, () => {
         log.app.info(`Server live on port ${this.port}`)
         resolve()

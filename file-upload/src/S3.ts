@@ -40,7 +40,7 @@ export class S3 {
           Bucket: this.bucketName,
         })
         .promise();
-    } catch (error) {
+    } catch (error: any) {
       if (
         error.message === 'The specified bucket does not exist' ||
         error.statusCode === 404

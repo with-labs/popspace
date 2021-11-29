@@ -1,3 +1,11 @@
+# Running in dev mode
+
+```
+yarn dev
+```
+
+This runs 2 processes in pm2 to ensure the code works in a multi-process setup.
+
 # Local HTTPS
 
 (From: https://web.dev/how-to-use-local-https/)
@@ -35,7 +43,7 @@ SSL_CAROOT_PATH= "<path to CA root location>/rootCA.pem"
 
 # Env example
 ```
-NODE_ENV=staging
+NODE_ENV=development
 DATABASE_URL=postgres://<YOUR DB USER>:<YOUR DB PASS>@<YOUR DB HOST>:5432/<YOUR DB NAME>
 
 # you must have access to this bucket using the credentials below

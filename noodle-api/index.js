@@ -33,7 +33,7 @@ const begin = async () => {
     }
   }
 
-  const server = new Server(process.env.API_PORT || 3003)
+  const server = new Server(process.env.API_PORT || 8889)
 
   /*
     This is handy if we want to debug a live process

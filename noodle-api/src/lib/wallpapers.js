@@ -48,14 +48,14 @@ const metadataStorage = {
 
 const wallpaperManager = new FileManager({
   metadataStorage,
-  s3BucketName: process.env.WALLPAPER_FILE_BUCKET_NAME,
-  hostOrigin: 'https://wallpapers.tilde.so',
+  s3BucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
+  hostOrigin: process.env.WALLPAPER_FILES_ORIGIN,
   s3: new S3({
     // using the same env vars as ./s3.js
-    accessKeyId: process.env.AWS_APP_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_APP_SECRET_KEY,
-    region: process.env.AWS_S3_REGION,
-    bucketName: process.env.WALLPAPER_FILE_BUCKET_NAME,
+    accessKeyId: process.env.AWS_SECRET_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_ACCESS_KEY_ID,
+    region: process.env.AWS_REGION,
+    bucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
   }),
 });
 

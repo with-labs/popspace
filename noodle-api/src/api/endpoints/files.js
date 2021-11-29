@@ -14,12 +14,12 @@ class Files {
       const folder = v4()
       const uploadUrl = lib.s3.getUploadUrl(
         params.fileName,
-        process.env.NOODLE_USER_FILES_BUCKET,
+        process.env.USER_FILES_BUCKET_NAME,
         folder
       )
       const downloadUrl = lib.s3.getDownloadUrl(
         params.fileName,
-        process.env.NOODLE_USER_FILES_BUCKET,
+        process.env.USER_FILES_BUCKET_NAME,
         folder
       )
 

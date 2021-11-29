@@ -23,7 +23,7 @@ const begin = async () => {
   })
 
   await lib.init()
-  if(cluster.isMaster) {
+  if (cluster.isMaster) {
     log.app.info(`(master thread) ${process.env.NODE_ENV} Noodle API started`)
   } else {
     if(cluster.isWorker && cluster.worker) {
@@ -33,7 +33,7 @@ const begin = async () => {
     }
   }
 
-  const server = new Server(process.env.EXPRESS_PORT || 3003)
+  const server = new Server(process.env.API_PORT || 3003)
 
   /*
     This is handy if we want to debug a live process

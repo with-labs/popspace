@@ -35,31 +35,23 @@ SSL_CAROOT_PATH= "<path to CA root location>/rootCA.pem"
 
 # Env example
 ```
-NODE_ENV=development
-EXPRESS_PORT=3030
-# We use a separate port name for tests,
-# so dev and test can (more safely) be run side by side
-EXPRESS_PORT_TEST=3031
+NODE_ENV=staging
+DATABASE_URL=postgres://<YOUR DB USER>:<YOUR DB PASS>@<YOUR DB HOST>:5432/<YOUR DB NAME>
 
-DEVELOPMENT_PG_USER=development_noodle
-DEVELOPMENT_PG_PORT=5432
-DEVELOPMENT_PG_PASSWORD=noodleso
-DEVELOPMENT_PG_HOST=localhost
-DEVELOPMENT_PG_DATABASE=development_noodle
+# you must have access to this bucket using the credentials below
+WALLPAPER_FILES_BUCKET_NAME=noodle-wallpapers
+WALLPAPER_FILES_ORIGIN=https://wallpapers.noodle.so
 
-AWS_APP_ACCESS_KEY=<get from aws pannel>
-AWS_APP_SECRET_KEY=<get from aws pannel>
-AWS_S3_REGION=<get from aws pannel>
-NOODLE_USER_FILES_BUCKET=<get from aws pannel>
+TWILIO_ACCOUNT_SID=<PROVIDE THIS>
+TWILIO_API_KEY_SECRET=<PROVIDE THIS>
+TWILIO_API_KEY_SID=<PROVIDE THIS>
 
-TWILIO_ACCOUNT_SID=<ask for them>
-TWILIO_API_KEYS_ENV=<env you want to use>
+USER_FILES_BUCKET_NAME=userfiles.noodle.so
 
-TWILIO_API_KEY_SID_DEV=<ask for them>
-TWILIO_API_KEY_SECRET_DEV=<ask for them>
+AWS_REGION=<PROVIDE THIS>
+AWS_ACCESS_KEY_ID=<PROVIDE THIS>
+AWS_SECRET_ACCESS_KEY=<PROVIDE THIS>
 
-TWILIO_API_KEY_SID_PROD=<ask for them>
-TWILIO_API_KEY_SECRET_PROD=<ask for them>
 ```
 
 

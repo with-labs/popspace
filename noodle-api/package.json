@@ -4,13 +4,6 @@
   "description": "API for noodle.so",
   "main": "index.js",
   "scripts": {
-    "//": [
-      "this style of comments:",
-      "https://stackoverflow.com/questions/14221579/how-do-i-add-comments-to-package-json-for-npm-install",
-      "the wait-ready flag for pm2 assumes some matching application code (expects process.send('ready'))",
-      "https://pm2.keymetrics.io/docs/usage/signals-clean-restart/"
-    ],
-    "postinstall": "pm2 install pm2-graceful-intercom",
     "start": "pm2 start index.js --name noodle_api -i 4 --wait-ready --kill-timeout 3000",
     "stop": "pm2 stop noodle_api",
     "reload": "pm2 reload noodle_api",

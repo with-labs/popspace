@@ -3,9 +3,9 @@ const Aws = require("aws-sdk")
 class S3 {
   constructor() {
     this.s3 = new Aws.S3({
-      accessKeyId: process.env.AWS_APP_ACCESS_KEY,
-      secretAccessKey: process.env.AWS_APP_SECRET_KEY,
-      region: process.env.AWS_S3_REGION
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION
     })
   }
 
@@ -21,7 +21,7 @@ class S3 {
 
   getDownloadUrl = (fileName, bucketName, filePath) => {
     const finalPath = this.getFilePath(fileName, filePath)
-    return `https://s3.${process.env.AWS_S3_REGION}.amazonaws.com/${bucketName}/${finalPath}`
+    return `https://s3.${process.env.AWS_REGION}.amazonaws.com/${bucketName}/${finalPath}`
   }
 
   /**

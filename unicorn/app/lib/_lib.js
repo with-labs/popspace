@@ -11,7 +11,9 @@ const lib = {
 
     await shared.init()
 
-    lib.db.sharedbPostgres = lib.db.SharedbPostgres(shared.db.config);
+    lib.db.sharedbPostgres = lib.db.SharedbPostgres({
+      connectionString: process.env.DATABASE_URL,
+    });
   },
   error: require("./error.js"),
   shared: shared,

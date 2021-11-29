@@ -1,23 +1,25 @@
-import { Box, makeStyles } from '@material-ui/core';
-import * as React from 'react';
-import { WidgetFrame } from '../WidgetFrame';
-import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
-import { WidgetContent } from '../WidgetContent';
-import { useTranslation } from 'react-i18next';
-import { WidgetScrollPane } from '../WidgetScrollPane';
-import { WidgetType } from '@api/roomState/types/widgets';
-import { useWidgetContext } from '../useWidgetContext';
-import { ThemeName } from '../../../../theme/theme';
-import CollaborativeQuill from '@withso/unicorn';
-import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
-import { CircularProgress } from '@material-ui/core';
-import { useLocalActor } from '@api/useLocalActor';
-import { notepadRegistry } from './notepadRegistry';
-import clsx from 'clsx';
 import { Analytics } from '@analytics/Analytics';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { getServices } from '@api/services';
+import { useLocalActor } from '@api/useLocalActor';
 import { useRoomStore } from '@api/useRoomStore';
+import { Box, CircularProgress, makeStyles } from '@material-ui/core';
+import CollaborativeQuill from '@withso/unicorn';
+import clsx from 'clsx';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { ThemeName } from '../../../../theme/theme';
+import { useWidgetContext } from '../useWidgetContext';
+import { WidgetContent } from '../WidgetContent';
+import { WidgetEditableTitlebar } from '../WidgetEditableTitlebar';
+import { WidgetFrame } from '../WidgetFrame';
+import { WidgetScrollPane } from '../WidgetScrollPane';
+import { MAX_SIZE, MIN_SIZE, TITLEBAR_HEIGHT } from './constants';
+import { notepadRegistry } from './notepadRegistry';
 
 const ANALYTICS_ID = 'notepad_widget';
+const UNICORN_URL = getServices().unicorn.ws;
 
 export interface INotepadWidgetProps {}
 
@@ -151,7 +153,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
                 </Box>
               }
               id={`__notepad_${state.widgetId}`}
-              host={process.env.REACT_APP_UNICORN_SOCKET_HOST}
+              host={UNICORN_URL}
               docId={state.widgetId}
               docCollection="documents"
               userDisplayName={userDisplayName}

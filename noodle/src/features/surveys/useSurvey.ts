@@ -19,7 +19,7 @@ export const useSurvey = (surveyName: string) => {
       try {
         const { response: result } = await client.surveys.submitResponse(surveyName, response);
         setPreviousResponse(result);
-      } catch (error) {
+      } catch (error: any) {
         toast.error(error.message);
       }
     },

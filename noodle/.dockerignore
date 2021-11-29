@@ -1,0 +1,4 @@
+.env
+.github/
+.storybook/
+cypress/

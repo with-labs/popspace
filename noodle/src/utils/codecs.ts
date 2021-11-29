@@ -1,8 +1,10 @@
 const PeerConnection: typeof RTCPeerConnection =
   typeof RTCPeerConnection !== 'undefined'
     ? RTCPeerConnection
-    : typeof webkitRTCPeerConnection !== 'undefined'
-    ? webkitRTCPeerConnection
+    : // @ts-ignore
+    typeof webkitRTCPeerConnection !== 'undefined'
+    ? // @ts-ignore
+      webkitRTCPeerConnection
     : // @ts-ignore
     typeof mozRTCPeerConnection !== 'undefined'
     ? // @ts-ignore

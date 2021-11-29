@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect } from 'react';
-import { convertMediaError } from './convertMediaError';
-import { LocalVideoTrack, LocalAudioTrack } from 'twilio-video';
 import { MediaTrackEvent } from '@constants/twilio';
 import { createTrackName } from '@utils/trackNames';
-import { MEDIA_TYPES } from '../../errors/MediaError';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LocalAudioTrack, LocalVideoTrack } from 'twilio-video';
+
+import { MEDIA_TYPES } from '../../errors/MediaError';
+import { convertMediaError } from './convertMediaError';
 
 export function useScreenShareTracks({
   onError,
@@ -89,7 +90,7 @@ export function useScreenShareTracks({
         screenShareAudioTrack: twilioAudioTrack,
         audioName,
       };
-    } catch (err) {
+    } catch (err: any) {
       onError?.(
         convertMediaError(
           err,

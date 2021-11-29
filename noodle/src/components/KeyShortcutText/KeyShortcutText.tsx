@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import * as React from 'react';
 
 export interface IKeyShortcutTextProps {
   /** A shortcut string, i.e. "Cmd+A" */
@@ -12,7 +12,7 @@ export interface IKeyShortcutTextProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: theme.typography.pxToRem(14),
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     display: 'inline-block',
     // roughly square
     minWidth: '2em',

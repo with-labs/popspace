@@ -10,12 +10,14 @@ import { RoomStateCacheApi } from './roomState/RoomStateCacheApi';
 import { RoomStateStore, roomStateStore } from './roomState/roomStateStore';
 import { SocketConnection } from './roomState/SocketConnection';
 import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
+import { getServices } from './services';
 import { Actor, BaseResponse, ErrorResponse } from './types';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
 export type Service = {
-  url: string | null;
+  http: string;
+  ws?: string;
 };
 
 export interface ApiCoreClientEvents {
@@ -29,14 +31,7 @@ export declare interface ApiCoreClient {
 }
 
 export class ApiCoreClient extends EventEmitter {
-  readonly SERVICES = {
-    hermes: {
-      url: process.env.REACT_APP_HERMES_API_HOST || null,
-    },
-    api: {
-      url: process.env.REACT_APP_NOODLE_API_HOST || null,
-    },
-  };
+  readonly SERVICES = getServices();
 
   private _sessionToken: string | null = null;
   private _actor: Actor | null = null;
@@ -77,7 +72,7 @@ export class ApiCoreClient extends EventEmitter {
     }
     this.roomStateStore = roomStateStore;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.socket = new SocketConnection(process.env.REACT_APP_SOCKET_HOST!);
+    this.socket = new SocketConnection(this.SERVICES.hermes.ws);
     this.socketReadyPromise = new Promise((resolve) => {
       this.socket.on('connected', resolve);
     });
@@ -256,7 +251,7 @@ export class ApiCoreClient extends EventEmitter {
 
     try {
       const analyticsRef = getRef();
-      const response = await fetch(`${service.url}${endpoint}`, {
+      const response = await fetch(`${service.http}${endpoint}`, {
         method,
         headers: {
           ...(opts.contentType === 'multipart/form-data'

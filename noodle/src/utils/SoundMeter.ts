@@ -1,8 +1,8 @@
 /**
  * Adapted from WebRTC project example code
- * 
+ *
  * Original comments:
- * 
+ *
  * Copyright (c) 2014, The WebRTC project authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,7 @@ export class SoundMeter {
   private instant = 0.0;
   private slow = 0.0;
   private clip = 0.0;
-  private mic: MediaStreamAudioSourceNode | MediaStreamTrackAudioSourceNode | null = null;
+  private mic: MediaStreamAudioSourceNode | null = null;
 
   constructor() {
     this.context = new AudioContext();
@@ -64,13 +64,13 @@ export class SoundMeter {
   connectToTrack = (track: MediaStreamTrack) => {
     try {
       // this might not be supported in the browser - FF only at time of coding
-      if (this.context.createMediaStreamTrackSource) {
-        this.mic = this.context.createMediaStreamTrackSource(track);
+      if ((this.context as any).createMediaStreamTrackSource) {
+        this.mic = (this.context as any).createMediaStreamTrackSource(track);
       } else {
         const adHocStream = new MediaStream([track]);
         this.mic = this.context.createMediaStreamSource(adHocStream);
       }
-      this.mic.connect(this.script);
+      this.mic?.connect(this.script);
       this.script.connect(this.context.destination);
     } catch (e) {
       logger.error(e);

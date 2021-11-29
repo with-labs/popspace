@@ -1,12 +1,13 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
-import isEmpty from 'lodash/isEmpty';
-import { convertMediaError } from './convertMediaError';
-import { LocalAudioTrack, LocalVideoTrack, createLocalAudioTrack, createLocalVideoTrack } from 'twilio-video';
 import { MediaTrackEvent } from '@constants/twilio';
-import { createTrackName } from '@utils/trackNames';
-import { MEDIA_TYPES } from '../../errors/MediaError';
 import { logger } from '@utils/logger';
+import { createTrackName } from '@utils/trackNames';
+import isEmpty from 'lodash/isEmpty';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createLocalAudioTrack, createLocalVideoTrack, LocalAudioTrack, LocalVideoTrack } from 'twilio-video';
+
+import { MEDIA_TYPES } from '../../errors/MediaError';
+import { convertMediaError } from './convertMediaError';
 
 function getTrackDeviceId(track: LocalAudioTrack | LocalVideoTrack) {
   const constraints = track.mediaStreamTrack.getConstraints();
@@ -75,7 +76,7 @@ export function useLocalMediaTrack(
         const newTrack = await createTrack(finalConstraints);
         setTrack(newTrack);
       }
-    } catch (err) {
+    } catch (err: any) {
       const mediaType = kind === 'audio' ? MEDIA_TYPES.AUDIO : MEDIA_TYPES.VIDEO;
       onError?.(
         convertMediaError(

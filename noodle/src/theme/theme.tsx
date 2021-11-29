@@ -227,27 +227,27 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
       h1: {
         fontSize: typography.pxToRem(42),
         lineHeight: 48 / 42,
-        fontWeight: typography.fontWeightBold,
+        fontWeight: typography.fontWeightBold as any,
         color: brandPalette.vintageInk.regular,
       },
       h2: {
         fontSize: typography.pxToRem(24),
         lineHeight: 30 / 24,
-        fontWeight: typography.fontWeightMedium,
+        fontWeight: typography.fontWeightMedium as any,
       },
       h3: {
         fontSize: typography.pxToRem(16),
         lineHeight: 22 / 16,
-        fontWeight: typography.fontWeightMedium,
+        fontWeight: typography.fontWeightMedium as any,
       },
       h4: {
         fontSize: typography.pxToRem(13),
         lineHeight: 16 / 13,
-        fontWeight: typography.fontWeightMedium,
+        fontWeight: typography.fontWeightMedium as any,
       },
       button: {
         fontSize: typography.pxToRem(16),
-        fontWeight: typography.fontWeightMedium,
+        fontWeight: typography.fontWeightMedium as any,
         lineHeight: 22 / 16,
         textTransform: 'none',
       },
@@ -484,7 +484,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         root: {
           color: palette.grey[900],
           fontSize: typography.caption.fontSize,
-          fontWeight: typography.fontWeightBold,
+          fontWeight: typography.fontWeightBold as any,
           lineHeight: typography.caption.lineHeight,
           '&$focused': {
             color: palette.secondary.contrastText,
@@ -769,7 +769,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         root: {
           fontSize: typography.pxToRem(16),
           lineHeight: 22 / 16,
-          fontWeight: typography.fontWeightMedium,
+          fontWeight: typography.fontWeightMedium as any,
 
           '&:not(:first-child)': {
             marginLeft: spacing(1),
@@ -781,7 +781,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         dense: {
           fontSize: typography.pxToRem(13),
           lineHeight: 16 / 13,
-          fontWeight: typography.fontWeightMedium,
+          fontWeight: typography.fontWeightMedium as any,
         },
       },
       MuiListSubheader: {
@@ -830,7 +830,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
       },
       MuiLink: {
         root: {
-          fontWeight: typography.fontWeightBold,
+          fontWeight: typography.fontWeightBold as any,
           color: palette.text.primary,
 
           '&:focus': {
@@ -858,7 +858,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           padding: `${spacing(2)}px ${spacing(3)}px`,
           fontSize: typography.pxToRem(16),
           lineHeight: 22 / 16,
-          fontWeight: typography.fontWeightMedium,
+          fontWeight: typography.fontWeightMedium as any,
           minWidth: 272,
           backgroundColor: palette.background.paper,
           color: palette.text.primary,
@@ -884,7 +884,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
         },
         message: {
           padding: 0,
-          fontWeight: typography.fontWeightMedium,
+          fontWeight: typography.fontWeightMedium as any,
         },
       },
       MuiSlider: {
@@ -1070,7 +1070,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
           padding: spacing(1.5),
           backgroundColor: palette.background.paper,
           fontSize: typography.pxToRem(16),
-          fontWeight: typography.fontWeightRegular,
+          fontWeight: typography.fontWeightRegular as any,
           color: palette.text.primary,
           borderRadius: 4,
           boxShadow: mainShadows.modal,

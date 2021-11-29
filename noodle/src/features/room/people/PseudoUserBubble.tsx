@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   name: {
     fontSize: theme.typography.pxToRem(13),
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     textOverflow: 'ellipsis',
     margin: '0 auto',
     maxWidth: '70%',

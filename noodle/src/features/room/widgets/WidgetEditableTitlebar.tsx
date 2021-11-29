@@ -1,21 +1,21 @@
-import * as React from 'react';
-import { DoneIcon } from '@components/icons/DoneIcon';
-import { makeStyles, Popover, Box, Typography, IconButton } from '@material-ui/core';
-import clsx from 'clsx';
-import { DeleteIcon } from '@components/icons/DeleteIcon';
-import { WidgetTitlebarButton } from './WidgetTitlebarButton';
-import { useTranslation } from 'react-i18next';
-import { useWidgetContext } from './useWidgetContext';
-import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
-import useDoubleClick from 'use-double-click';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { FormikTextField } from '@components/fieldBindings/FormikTextField';
-import * as Yup from 'yup';
-import { ThemeName } from '../../../theme/theme';
 import { ColorButton } from '@components/ColorButton/ColorButton';
-import palette from '../../../theme/palette';
-
+import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+import { DeleteIcon } from '@components/icons/DeleteIcon';
+import { DoneIcon } from '@components/icons/DoneIcon';
+import { Box, IconButton, makeStyles, Popover, Typography } from '@material-ui/core';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import clsx from 'clsx';
+import { Form, Formik, FormikHelpers } from 'formik';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+import useDoubleClick from 'use-double-click';
+import * as Yup from 'yup';
+
+import palette from '../../../theme/palette';
+import { ThemeName } from '../../../theme/theme';
+import { useWidgetContext } from './useWidgetContext';
+import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 
 const MAX_TITLE_SIZE = 100;
 
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flex: 1,
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     fontSize: theme.typography.pxToRem(16),
     marginRight: theme.spacing(1),
     textOverflow: 'ellipsis',
@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
   },
   editControlText: {
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     color: theme.palette.primary.dark,
     cursor: 'pointer',
   },

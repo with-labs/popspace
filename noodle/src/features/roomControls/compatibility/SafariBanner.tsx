@@ -1,9 +1,9 @@
+import { Banner } from '@components/Banner/Banner';
 import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
-import { isSafari, isMobile } from 'react-device-detect';
+import { isMobile, isSafari } from 'react-device-detect';
 import { Trans } from 'react-i18next';
-import { Banner } from '@components/Banner/Banner';
 
 import { useRoomModalStore } from '../useRoomModalStore';
 
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     appearance: 'none',
     backgroundColor: 'transparent',
     color: 'inherit',
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: theme.typography.fontWeightBold as any,
     fontSize: 'inherit',
     fontFamily: 'inherit',
     cursor: 'pointer',

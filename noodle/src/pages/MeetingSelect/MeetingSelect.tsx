@@ -74,7 +74,7 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
         history.push(RouteNames.MEETING_LINK.replace(':meetingRoute', meeting.route), {
           meetingInfo: meeting,
         });
-      } catch (err) {
+      } catch (err: any) {
         toast.error(err.message);
         setSelected(null);
       }

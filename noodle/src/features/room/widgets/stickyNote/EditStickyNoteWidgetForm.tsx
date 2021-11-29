@@ -1,9 +1,10 @@
-import { makeStyles, Box, TextareaAutosize, ClickAwayListener } from '@material-ui/core';
+import { WidgetType } from '@api/roomState/types/widgets';
+import { Link } from '@components/Link/Link';
+import { Box, ClickAwayListener, makeStyles, TextareaAutosize } from '@material-ui/core';
 import throttle from 'lodash.throttle';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@components/Link/Link';
-import { WidgetType } from '@api/roomState/types/widgets';
+
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetScrollPane } from '../WidgetScrollPane';
 
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   cheatSheet: {
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: theme.typography.fontWeightBold as any,
     color: theme.palette.grey[900],
     textAlign: 'center',
   },

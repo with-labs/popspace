@@ -1,9 +1,9 @@
+import { Banner } from '@components/Banner/Banner';
 import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { isMobile } from 'react-device-detect';
 import { Trans } from 'react-i18next';
-import { Banner } from '@components/Banner/Banner';
 
 const useStyles = makeStyles((theme) => ({
   inlineButton: {
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     appearance: 'none',
     backgroundColor: 'transparent',
     color: 'inherit',
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: theme.typography.fontWeightBold as any,
     fontSize: 'inherit',
     fontFamily: 'inherit',
     cursor: 'pointer',

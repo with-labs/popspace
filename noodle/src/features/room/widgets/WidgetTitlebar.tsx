@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
 import { DeleteIcon } from '@components/icons/DeleteIcon';
-import { WidgetTitlebarButton } from './WidgetTitlebarButton';
-import { useTranslation } from 'react-i18next';
-import { useWidgetContext } from './useWidgetContext';
+import { makeStyles } from '@material-ui/core';
 import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import clsx from 'clsx';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { useWidgetContext } from './useWidgetContext';
+import { WidgetTitlebarButton } from './WidgetTitlebarButton';
 
 export type WidgetTitlebarProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   title: React.ReactNode;
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flex: 1,
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     fontSize: theme.typography.pxToRem(16),
     marginRight: theme.spacing(1),
     textOverflow: 'ellipsis',

@@ -1,20 +1,21 @@
-import { makeStyles, MenuItem, Typography } from '@material-ui/core';
-import { Form, Formik } from 'formik';
-import * as React from 'react';
+import { WidgetType } from '@api/roomState/types/widgets';
 import { AudioIndicator } from '@components/AudioIndicator/AudioIndicator';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import { SpatialVideo } from '@components/SpatialVideo/SpatialVideo';
-import { WidgetType } from '@api/roomState/types/widgets';
+import { makeStyles, MenuItem, Typography } from '@material-ui/core';
+import { CanvasObject } from '@providers/canvas/CanvasObject';
+import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
+import { Form, Formik } from 'formik';
+import * as React from 'react';
+
+import { ThemeName } from '../../../../theme/theme';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';
 import { WidgetFrame } from '../WidgetFrame';
 import { WidgetTitlebar } from '../WidgetTitlebar';
 import videos from './videos';
-import { ThemeName } from '../../../../theme/theme';
-import { CanvasObject } from '@providers/canvas/CanvasObject';
-import { CanvasObjectDragHandle } from '@providers/canvas/CanvasObjectDragHandle';
 
 const useStyles = makeStyles((theme) => ({
   draggable: {
@@ -71,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
   name: {
     fontSize: theme.typography.pxToRem(13),
-    fontWeight: theme.typography.fontWeightMedium,
+    fontWeight: theme.typography.fontWeightMedium as any,
     textOverflow: 'ellipsis',
     margin: '0 auto',
     maxWidth: '70%',

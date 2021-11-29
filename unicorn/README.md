@@ -3,6 +3,12 @@ An OT-based collaborative editor.
 
 Relies on Quill and ShareDb.
 
+# Local development
+
+```
+yarn start
+```
+
 # Next steps
 - [ ] Authenticate to edit - anyone in room
 

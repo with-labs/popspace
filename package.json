@@ -14,5 +14,20 @@
     "babel-loader": "8.1.0",
     "jest": "26.6.0",
     "webpack": "4.44.2"
+  },
+  "scripts": {
+    "precontainerize": "yarn build-lib && yarn build",
+    "build": "concurrently npm:build:*",
+    "build-lib": "concurrently npm:build-lib:*",
+    "build:app": "yarn workspace noodle-app build",
+    "build:api": "yarn workspace noodle-api build",
+    "build:unicorn": "yarn workspace unicorn build",
+    "build:hermes": "yarn workspace hermes build",
+    "build-lib:shared": "yarn workspace @withso/noodle-shared build",
+    "build-lib:files": "yarn workspace @withso/file-upload build",
+    "build-lib:unicorn:component": "yarn workspace unicorn/component build"
+  },
+  "devDependencies": {
+    "concurrently": "^6.4.0"
   }
 }

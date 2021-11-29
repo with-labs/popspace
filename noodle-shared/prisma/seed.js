@@ -16,7 +16,7 @@ const TEMPLATES = {
 const TEMPLATE_WALLPAPERS = [
   {
     name: 'Grid Tile',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_blank.png',
+    url: '/wallpapers/tile_blank.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -24,7 +24,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Corkboard',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_brainstorm.png',
+    url: '/wallpapers/tile_brainstorm.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -32,7 +32,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Hardwood',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_daily.png',
+    url: '/wallpapers/tile_daily.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -40,7 +40,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Grassy Field',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_happyHour.png',
+    url: '/wallpapers/tile_happyHour.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -48,7 +48,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Green Room',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_interview.png',
+    url: '/wallpapers/tile_interview.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -56,7 +56,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Cozy Chairs',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_one_on_one.png',
+    url: '/wallpapers/tile_one_on_one.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -64,7 +64,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Purple Room',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_retro.png',
+    url: '/wallpapers/tile_retro.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -72,7 +72,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Brick Wall',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_weekly.png',
+    url: '/wallpapers/tile_weekly.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -80,7 +80,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Blue Chairs',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/tile_allHands.png',
+    url: '/wallpapers/tile_allHands.png',
     mimetype: 'image/png',
     category: 'patterns',
     artistName: 'Farrah Yoo',
@@ -88,7 +88,7 @@ const TEMPLATE_WALLPAPERS = [
   },
   {
     name: 'Greenhouse',
-    url: 'https://withhq.sirv.com/external/wallpaper/tilde/one_on_one_greenhouse_1800.png',
+    url: '/wallpapers/one_on_one_greenhouse_1800.png',
     mimetype: 'image/png',
     category: 'spaces',
     artistName: 'Alexis Taylor',

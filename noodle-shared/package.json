@@ -19,6 +19,7 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed --preview-feature",
     "prisma:generate": "prisma generate",
     "build": "tsc",
     "prepare": "yarn build",

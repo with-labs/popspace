@@ -168,7 +168,7 @@
     "start:run": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=8888 craco start",
     "start": "yarn run start:run",
     "serve": "node server.js",
-    "prebuild": "yarn run licenses && yarn run build:landing",
+    "prebuild": "yarn run licenses",
     "build": "craco build",
     "dev": "yarn start",
     "test": "jest",

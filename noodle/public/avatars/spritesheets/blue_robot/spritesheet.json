@@ -1,0 +1,115 @@
+{
+  "animations": {
+    "Idle": {
+      "frames": ["bluerobot.png", "bluerobot_blinking.png"],
+      "timings": [[5000, 10000], 100],
+      "type": "sequential"
+    },
+    "Talking": {
+      "frames": [
+        "Blue_robot-talking_0",
+        "Blue_robot-talking_1",
+        "Blue_robot-talking_2",
+        "Blue_robot-talking_3",
+        "Blue_robot-talking_4",
+        "Blue_robot-talking_5",
+        "Blue_robot-talking_6",
+        "Blue_robot-talking_7",
+        "Blue_robot-talking_8"
+      ],
+      "timings": [100, 100, 100, 100, 100, 100, 100, 100, 100],
+      "type": "sequential"
+    }
+  },
+  "spritesheetSrc": "/spritesheet.png",
+  "spritesheetData": {
+    "frames": {
+      "Blue_robot-talking_0": {
+        "frame": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_1": {
+        "frame": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_2": {
+        "frame": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_3": {
+        "frame": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_4": {
+        "frame": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_5": {
+        "frame": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_6": {
+        "frame": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_7": {
+        "frame": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Blue_robot-talking_8": {
+        "frame": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "bluerobot_blinking.png": {
+        "frame": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "bluerobot.png": {
+        "frame": { "x": 1040, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      }
+    },
+    "meta": {
+      "app": "https://w74cw.csb.app/",
+      "version": "1.0",
+      "image": "spritesheet.png",
+      "format": "image/png",
+      "size": { "w": 2080, "h": 1320 },
+      "scale": 1
+    }
+  },
+  "backgroundColor": "#FFD8C1"
+}

@@ -1,0 +1,27 @@
+{
+  "animations": {
+    "Idle": { "frames": ["brand_pattern_01.png"], "timings": [100], "type": "sequential" },
+    "Talking": { "frames": ["brand_pattern_01.png"], "timings": [100], "type": "sequential" }
+  },
+  "spritesheetSrc": "/spritesheet.png",
+  "spritesheetData": {
+    "frames": {
+      "brand_pattern_01.png": {
+        "frame": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      }
+    },
+    "meta": {
+      "app": "https://w74cw.csb.app/",
+      "version": "1.0",
+      "image": "spritesheet.png",
+      "format": "image/png",
+      "size": { "w": 520, "h": 440 },
+      "scale": 1
+    }
+  },
+  "backgroundColor": "#FFF0DF"
+}

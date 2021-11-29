@@ -1,0 +1,118 @@
+{
+  "animations": {
+    "Idle": {
+      "frames": ["Baked_Potato-animation_0", "bakedpotato_blink.png"],
+      "timings": [[5000, 10000], 100],
+      "type": "sequential"
+    },
+    "Talking": {
+      "frames": [
+        "Baked_Potato-animation_0",
+        "Baked_Potato-animation_1",
+        "Baked_Potato-animation_2",
+        "Baked_Potato-animation_3",
+        "Baked_Potato-animation_4",
+        "Baked_Potato-animation_5",
+        "Baked_Potato-animation_6",
+        "Baked_Potato-animation_7",
+        "Baked_Potato-animation_8"
+      ],
+      "timings": [
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100],
+        [80, 100]
+      ],
+      "type": "random"
+    }
+  },
+  "spritesheetSrc": "/spritesheet.png",
+  "spritesheetData": {
+    "frames": {
+      "Baked_Potato-animation_0": {
+        "frame": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_1": {
+        "frame": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_2": {
+        "frame": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_3": {
+        "frame": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_4": {
+        "frame": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_5": {
+        "frame": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_6": {
+        "frame": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_7": {
+        "frame": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "Baked_Potato-animation_8": {
+        "frame": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "bakedpotato_blink.png": {
+        "frame": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      }
+    },
+    "meta": {
+      "app": "https://w74cw.csb.app/",
+      "version": "1.0",
+      "image": "spritesheet.png",
+      "format": "image/png",
+      "size": { "w": 2080, "h": 1320 },
+      "scale": 1
+    }
+  },
+  "backgroundColor": "#FFD7C0"
+}

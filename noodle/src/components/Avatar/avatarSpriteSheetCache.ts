@@ -1,7 +1,6 @@
 import { AvatarSpriteSheetSet } from './AvatarAnimator';
 
-// TODO: get custom domain working
-const SPRITE_SHEET_ORIGIN = 'https://d16rp9v6j7bm9f.cloudfront.net/spritesheets';
+const SPRITE_SHEET_ORIGIN = '/avatars/spritesheets';
 
 export class AvatarSpriteSheetCache {
   private _promises: { [key: string]: Promise<AvatarSpriteSheetSet> } = {};

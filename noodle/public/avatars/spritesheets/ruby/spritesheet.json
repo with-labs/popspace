@@ -1,0 +1,111 @@
+{
+  "animations": {
+    "Idle": { "frames": ["ruby.png", "ruby_blinking.png"], "timings": [[5000, 10000], 100], "type": "sequential" },
+    "Talking": {
+      "frames": [
+        "ruby-animation_0",
+        "ruby-animation_1",
+        "ruby-animation_2",
+        "ruby-animation_3",
+        "ruby-animation_4",
+        "ruby-animation_5",
+        "ruby-animation_6",
+        "ruby-animation_7",
+        "ruby-animation_8"
+      ],
+      "timings": [100, 100, 100, 100, 100, 100, 100, 100, 100],
+      "type": "random"
+    }
+  },
+  "spritesheetSrc": "/spritesheet.png",
+  "spritesheetData": {
+    "frames": {
+      "ruby_blinking.png": {
+        "frame": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_0": {
+        "frame": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_1": {
+        "frame": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_2": {
+        "frame": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 0, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_3": {
+        "frame": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_4": {
+        "frame": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_5": {
+        "frame": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_6": {
+        "frame": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1560, "y": 440, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_7": {
+        "frame": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 0, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby-animation_8": {
+        "frame": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 520, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      },
+      "ruby.png": {
+        "frame": { "x": 1040, "y": 880, "w": 520, "h": 440 },
+        "rotated": false,
+        "trimmed": false,
+        "spriteSourceSize": { "x": 1040, "y": 880, "w": 520, "h": 440 },
+        "sourceSize": { "w": 520, "h": 440 }
+      }
+    },
+    "meta": {
+      "app": "https://w74cw.csb.app/",
+      "version": "1.0",
+      "image": "spritesheet.png",
+      "format": "image/png",
+      "size": { "w": 2080, "h": 1320 },
+      "scale": 1
+    }
+  },
+  "backgroundColor": "#FFD6CD"
+}

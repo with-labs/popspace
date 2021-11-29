@@ -67,6 +67,79 @@ Without seeding, you would need to manually setup the default room templates. Yo
 
 Room templates were originally planned to expand to allow custom user templates, but this work was not completed. The UI does not currently adapt to missing or additional templates in the database, and always displays the default set. Even if you don't seed the database, the UI will display non-functional template options.
 
+## S3 Setup
+
+You'll need 2 S3 buckets to run the app, one for wallpapers and one for user file uploads.
+
+You're gonna groan, but currently the user file upload bucket needs public access. There's currently no configuration to setup a separate host origin for user files, so you can't put them behind a CDN and restrict access. The user file upload system uses older uploading code, whereas the newer wallpapers feature relies on the file upload library that also lives in this repo and supports CloudFront or other custom serving origins.
+
+Bucket setup must allow CORS access from the origin you use to host the app. That will depend on your own hosting! You should also review the policies and configurations below carefully and determine if you can adopt a more strict policy for your usage.
+
+### Wallpaper bucket setup
+
+- We recommend setting up a CloudFront distribution for the bucket and restricting object access to the CloudFront origin access identity.
+- You can use the following policy to setup CORS access for all origins, or be more specific and specify the origins you are using to host the app:
+
+```
+[
+    {
+        "AllowedHeaders": [
+            "Authorization"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": [],
+        "MaxAgeSeconds": 3000
+    }
+]
+```
+
+### User File bucket setup
+
+- Unfortunately this bucket requires public access for all objects
+
+```
+{
+    "Version": "2012-10-17",
+    "Id": "Policy1604614964751",
+    "Statement": [
+        {
+            "Sid": "Stmt1604614962916",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::<YOUR BUCKET NAME>/*"
+        }
+    ]
+}
+```
+
+- CORS access must be configured to allow PUT requests in order to upload files using presigned URLs.
+
+```
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "PUT"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": []
+    }
+]
+```
+
+
 ## Becoming an Admin
 
 The only privilege admins have currently is to create and modify room templates. If that's not necessary (for example, you ran the seed command to setup default templates), you don't need to worry about this.
@@ -116,3 +189,27 @@ In addition to the backend services, there are a few internal libraries in use:
 - `@withso/file-upload`: an abstraction around user file management which includes image processing
 
 In the current repo setup, these libraries are included as Yarn workspaces and are symlinked into the top-level `node_modules` to be referenced by other services.
+
+## Local building
+
+To build the Docker image yourself, you need to first build all the app services and libraries:
+
+```
+yarn precontainerize
+```
+
+Then build the Docker image:
+
+```
+docker build -t tilde .
+```
+
+## Local development
+
+To run services locally, you can use the umbrella script from the root of the repo:
+
+```
+yarn dev
+```
+
+Or you can run each service individually - refer to the README in each service directory.

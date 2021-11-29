@@ -25,7 +25,12 @@
     "build:hermes": "yarn workspace hermes build",
     "build-lib:shared": "yarn workspace @withso/noodle-shared build",
     "build-lib:files": "yarn workspace @withso/file-upload build",
-    "build-lib:unicorn:component": "yarn workspace unicorn/component build"
+    "build-lib:unicorn:component": "yarn workspace unicorn/component build",
+    "dev": "concurrently npm:dev:*",
+    "dev:app": "yarn workspace noodle-app dev",
+    "dev:api": "yarn workspace noodle-api dev",
+    "dev:hermes": "yarn workspace hermes dev",
+    "dev:unicorn": "yarn workspace unicorn dev"
   },
   "devDependencies": {
     "concurrently": "^6.4.0"

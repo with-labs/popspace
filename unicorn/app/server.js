@@ -29,7 +29,7 @@ class Server {
     await this.router.init()
     await this.initDocumentSync(this.server)
     return new Promise((resolve) => {
-      this.server.listen(process.env.UNICORN_PORT, resolve);
+      this.server.listen(this.port, resolve);
     });
   }
 

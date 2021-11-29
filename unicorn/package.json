@@ -26,7 +26,7 @@
   "scripts": {
     "build": "next build",
     "start": "pm2 start index.js --name unicorn --wait-ready --kill-timeout 3000",
-    "dev": "pm2 start index.js --name unicorn --wait-ready --kill-timeout 3000 --no-daemon",
+    "dev": "node-dev index.js -r dotenv/config",
     "stop": "pm2 stop unicorn",
     "reload": "pm2 reload unicorn",
     "logs": "pm2 logs unicorn",
@@ -38,6 +38,7 @@
   "devDependencies": {
     "axios": "^0.21.1",
     "jest": "^27.0.4",
+    "node-dev": "^7.1.0",
     "puppeteer": "^10.0.0"
   }
 }

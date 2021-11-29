@@ -4,10 +4,6 @@
   "description": "Server for streaming data to Tilde clients",
   "main": "index.js",
   "scripts": {
-    "//": [
-      "See noodle-api for explanation on pm2 setup, on why pm2-graceful-intercom is necessary"
-    ],
-    "postinstall": "pm2 install pm2-graceful-intercom",
     "start": "pm2 start index.js --name hermes --wait-ready --kill-timeout 3000",
     "stop": "pm2 stop hermes",
     "reload": "pm2 reload hermes",

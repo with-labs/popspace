@@ -6,10 +6,10 @@ const getPort = () => {
   /*
     Allows running tests while a dev server is running locally
   */
-  if(process.env.NODE_ENV == "test") {
-    return process.env.TEST_PORT || 3000
+  if (process.env.NODE_ENV == "test") {
+    return process.env.TEST_HERMES_PORT || 3000
   } else {
-    return process.env.EXPRESS_PORT || 3000
+    return process.env.HERMES_PORT || 3000
   }
 }
 

@@ -8,7 +8,7 @@ const fs = require('fs')
 
 const ClientReceivedEvent = require("./client_received_event")
 
-const DEV_ROOTCA = fs.readFileSync(process.env.SSL_ROOTCA_PATH, 'utf8')
+const DEV_ROOTCA = process.env.SSL_ROOTCA_PATH ? fs.readFileSync(process.env.SSL_ROOTCA_PATH, 'utf8') : null
 
 class Client extends EventEmitter {
   constructor(serverUrl, heartbeatIntervalMillis=30000, heartbeatTimeoutMillis=60000) {
@@ -61,7 +61,7 @@ class Client extends EventEmitter {
     return this.connectPromise = new Promise((resolve, reject) => {
       this.resolveConnect = resolve
       this.socket = new ws(this.serverUrl, {
-        ca: DEV_ROOTCA
+        ca: DEV_ROOTCA ? DEV_ROOTCA : undefined,
       })
       this.socket.on('open', () => {
         /*
@@ -172,7 +172,7 @@ class Client extends EventEmitter {
       port: lib.appInfo.apiPort(),
       path: endpoint,
       method: 'POST',
-      ca: DEV_ROOTCA,
+      ca: DEV_ROOTCA || undefined,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': authHeader

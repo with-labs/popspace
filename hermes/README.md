@@ -1,23 +1,7 @@
-## Postgres
+## Running in dev mode
 
 ```
-psql -d postgres
-CREATE ROLE withso WITH PASSWORD 'withso';
-ALTER ROLE "withso" WITH LOGIN;
-CREATE DATABASE withso;
-GRANT ALL PRIVILEGES ON DATABASE withso TO withso;
-
-CREATE ROLE test_with WITH PASSWORD 'withsotest';
-ALTER ROLE "test_with" WITH LOGIN;
-CREATE DATABASE test_withso;
-GRANT ALL PRIVILEGES ON DATABASE test_withso TO test_with;
-```
-
-After that, go to `with-database`, and run
-
-```
-NODE_ENV=development npm run db:migrate
-NODE_ENV=test npm run db:migrate
+yarn dev
 ```
 
 ## Local HTTPS
@@ -76,27 +60,10 @@ rootCA-key.pem rootCA.pem
 # Env vars
 ```
 NODE_ENV=development
-
-EXPRESS_PORT=3000
-TEST_PORT=3001
-
-DEVELOPMENT_PG_USER=withso
-DEVELOPMENT_PG_PORT=5432
-DEVELOPMENT_PG_PASSWORD=withso
-DEVELOPMENT_PG_HOST=localhost
-DEVELOPMENT_PG_DATABASE=withso
-
-TEST_PG_USER=test_with
-TEST_PG_PASSWORD=withsotest
-TEST_PG_HOST=localhost
-TEST_PG_DATABASE=test_withso
-TEST_PG_PORT=5432
+DATABASE_URL=postgres://<YOUR DB USER>:<YOUR DB PASS>@<YOUR DB HOST>:5432/<YOUR DB NAME>
 
 # Make sure you've pre-generated these with the instructions above
 SSL_PRIVATE_KEY_PATH = mkcert/localhost-key.pem
 SSL_CERTIFICATE_PATH = mkcert/localhost.pem
 SSL_ROOTCA_PATH = mkcert/rootCA.pem
-
-HEARTBEAT_TIMEOUT_MILLIS=60000
-NPM_WITHSO_TOKEN=token_for_with_shared_can_get_from_eg_netlify
 ```

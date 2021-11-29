@@ -7,7 +7,7 @@
     "start": "pm2 start index.js --name hermes --wait-ready --kill-timeout 3000",
     "stop": "pm2 stop hermes",
     "reload": "pm2 reload hermes",
-    "dev": "NODE_ENV=development pm2 start index.js --name hermes --wait-ready --watch",
+    "dev": "NODE_ENV=development pm2 start index.js --name hermes --wait-ready --watch --no-daemon",
 
     "debug": "node --experimental-repl-await inspect index.js",
     "console": "node --experimental-repl-await ./scripts/console.js",

@@ -8,7 +8,7 @@
     "stop": "pm2 stop noodle_api",
     "reload": "pm2 reload noodle_api",
     "logs": "pm2 logs noodle_api",
-    "dev": "NODE_ENV=development pm2 start index.js --name noodle_api --wait-ready --watch --no-daemon",
+    "dev": "node-dev index.js -r dotenv/config",
     "console": "node --experimental-repl-await ./scripts/console.js",
     "test:all": "NODE_ENV=test jest --runInBand",
     "test:one": "NODE_ENV=test node scripts/run_scenario.js"
@@ -52,6 +52,7 @@
   "devDependencies": {
     "factory-girl": "^5.0.4",
     "jest": "^27.0.4",
-    "jest-cli": "^27.0.4"
+    "jest-cli": "^27.0.4",
+    "node-dev": "^7.1.0"
   }
 }

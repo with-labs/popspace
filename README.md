@@ -1,0 +1,118 @@
+# Tilde
+
+This repo dockerizes the various components of [Tilde](https://tilde.so), a virtual meeting space app, so that you can deploy it yourself somewhere!
+
+Be advised that Tilde is still reliant on Twilio as a media platform to enable audio, video, and screensharing. If you want to deploy Tilde yourself, you'll need a Twilio account with billing and will be responsible for costs of Twilio in addition to hosting.
+
+## Environment Variables
+
+The following environment variables are required to run Tilde in a Docker container:
+
+```
+# a Postgres connection string for an external database
+DATABASE_URL=
+# you need a Twilio developer account to run the app
+TWILIO_ACCOUNT_SID
+TWILIO_API_KEY_SECRET
+TWILIO_API_KEY_SID
+# you need an S3 bucket for storing uploaded wallpapers
+WALLPAPER_FILES_BUCKET_NAME
+# you can set a custom origin for a wallpaper CDN (use this to
+# setup CloudFront for example). If not, set this to
+# `https://${WALLPAPER_FILES_BUCKET_NAME}.s3.amazonaws.com`
+WALLPAPER_FILES_ORIGIN
+# you need an S3 bucket for storing uploaded user files.
+# this one doesn't use custom origin.
+USER_FILES_BUCKET_NAME
+# your AWS config and credentials
+AWS_REGION
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+```
+
+## Ports
+
+The Docker image will need the following ports exposed to run the various services:
+
+  * 8888: the UI server
+  * 8889: the API server
+  * 8890: the socket server
+  * 8891: the collaborative document server
+6
+The UI connects to each of these services on the corresponding port for the host it is being served from. For example, if you're running the container on localhost, the UI will try to connect to `localhost:8889` for the API. If you host the container elsewhere on `https://tilde.myserver.com`, it will try to connect to `https://tilde.myserver.com:8889` for the API.
+
+If you would like to modify how the app tries to connect to services, the relevant file is `noodle/src/api/services.ts`.
+
+## Setting up your database
+
+This app uses Prisma to manage database access. You can find out more about Prisma at [https://prisma.io/](https://prisma.io/).
+
+To migrate your database, run the following command:
+
+```
+yarn workspace @withso/noodle-shared db:deploy
+```
+
+This should apply all migrations in the `noodle-shared/prisma/migrations` directory. You will need to have the environment variable `DATABASE_URL` set to a valid Postgres connection string.
+
+You must also seed the database to setup the default room templates. Run the following command:
+
+```
+yarn workspace @withso/noodle-shared db:seed
+```
+
+Without seeding, you would need to manually setup the default room templates. You can find the default template data in `./noodle-shared/prisma/seed_data/templates`. Only admin users can create templates via the API.
+
+### A note on templates
+
+Room templates were originally planned to expand to allow custom user templates, but this work was not completed. The UI does not currently adapt to missing or additional templates in the database, and always displays the default set. Even if you don't seed the database, the UI will display non-functional template options.
+
+## Becoming an Admin
+
+The only privilege admins have currently is to create and modify room templates. If that's not necessary (for example, you ran the seed command to setup default templates), you don't need to worry about this.
+
+You can set your own actor up as an admin after connecting to the app. After you connect the first time, your actor connection info is cached in your browser, so the actor you use should remain stable until you clear cache or change browsers.
+
+You can determine your actor ID by opening the console while the app is open and printing `client.actor.actorId`. To become an admin, access your database and flip the `admin` column to `true` for your actor. There's no other way to do that currently if you don't have direct database access.
+
+
+## TLS support
+
+It's probably easiest to terminate TLS outside the container, like at a load balancer level or in a Kubernetes service. But if your hosting is easier to manage by specifying a certificate to the app's services directly, you can do that by mounting your TLS files in the container and providing environment variables `SSL_PRIVATE_KEY_PATH` and `SSL_CERTIFICATE_PATH` to the container.
+
+These are used by all the backend servers to set up TLS.
+
+## The services
+
+The app has several backend services.
+
+### The UI
+
+The UI server is a simple SPA Express server which hosts the files generated via Create React App in the `./noodle` source directory.
+
+### The API
+
+Source in `./noodle-api`. This is the HTTP server. HTTP requests are used for a few things like creating rooms, joining media calls, and uploading files.
+
+### The Socket Server
+
+Called 'hermes' internally, its source is in `./hermes`. Clients connect to this server via websocket. Events are passed from the client for all kinds of user actions, and then the server broadcasts response events to all peers to keep them synchronized.
+
+The message protocol is not well-documented, but you can find a full list of incoming and outgoing message types in `./noodle/src/api/roomState/types/socketProtocol`. The backend handlers for these messages are located in `./hermes/src/server/processors`.
+
+Having a separate server for HTTP and Socket connections is probably overkill for a self-hosted app! As Tilde's usage moves in this direction, it might be welcome to combine these two services by moving the HTTP routes into the Hermes Express server.
+
+### The Collaborative Document Server
+
+Called 'unicorn' internally, its source is in `./unicorn/app`. It's essentially a thin wrapper around ShareDB to use a websocket transport, combined with a NextJS server to host an (unused) frontend for direct document editing.
+
+The client utilizes the React component found in `./unicorn/component` to render collaborative document widgets which connect to this server.
+
+### Other libraries
+
+In addition to the backend services, there are a few internal libraries in use:
+
+- `@withso/noodle-shared`: the shared library for managing some common business logic and database connections
+- `@withso/file-upload`: an abstraction around user file management which includes image processing
+
+In the current repo setup, these libraries are included as Yarn workspaces and are symlinked into the top-level `node_modules` to be referenced by other services.

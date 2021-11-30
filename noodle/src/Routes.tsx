@@ -1,12 +1,11 @@
 import { PROMO_SLUGS } from '@constants/promoSlugs';
 import { FlaggAdmin } from 'flagg/dist/react';
 import * as React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { RouteNames } from './constants/RouteNames';
 import { Page } from './Layouts/Page/Page';
-import { LandingPage } from './pages/LandingPage';
 import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { PostMeeting } from './pages/PostMeeting/PostMeeting';
@@ -21,7 +20,7 @@ export const Routes: React.FC<IRoutesProps> = () => {
   return (
     <Switch>
       <Route exact path={RouteNames.ROOT}>
-        <LandingPage />
+        <Redirect to="/create" />
       </Route>
       <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
 

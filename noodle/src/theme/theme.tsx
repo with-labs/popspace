@@ -14,31 +14,31 @@ import type _aug from '@material-ui/lab/themeAugmentation';
 const SEMIBOLD_WEIGHT = 600;
 
 function webfontCollection(weight: string) {
-  return ['eot', 'ttf', 'woff2', 'woff']
-    .map((format) => `url("/fonts/silka-${weight}-webfont.${format}") format("${format}")`)
+  return ['ttf', 'woff2']
+    .map((format) => `url("/fonts/manrope-${weight}.${format}") format("${format}")`)
     .join(',\n');
 }
 
-const silkaFonts = [
+const uiFonts = [
   {
-    fontFamily: 'Silka',
+    fontFamily: 'Manrope',
     fontWeight: 'normal',
     src: webfontCollection('regular'),
   },
   {
-    fontFamily: 'Silka',
+    fontFamily: 'Manrope',
     fontWeight: SEMIBOLD_WEIGHT,
     src: webfontCollection('semibold'),
   },
   {
-    fontFamily: 'Silka',
+    fontFamily: 'Manrope',
     fontWeight: 'bold',
     src: webfontCollection('bold'),
   },
   {
-    fontFamily: 'Silka',
+    fontFamily: 'Manrope',
     fontWeight: 900,
-    src: webfontCollection('black'),
+    src: webfontCollection('extrabold'),
   },
 ];
 
@@ -209,7 +209,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
     },
 
     typography: {
-      fontFamily: 'Silka, Helvetica, sans',
+      fontFamily: 'Manrope, system-ui, Helvetica, sans-serif',
       fontWeightMedium: SEMIBOLD_WEIGHT,
       body1: {
         lineHeight: 22 / 16,
@@ -372,7 +372,7 @@ const createPaletteTheme = (colors: { primary: WithColorPalette; secondary?: Wit
     overrides: {
       MuiCssBaseline: {
         '@global': {
-          '@font-face': silkaFonts,
+          '@font-face': uiFonts,
         },
       },
       MuiFilledInput: {

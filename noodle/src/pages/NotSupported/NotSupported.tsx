@@ -51,7 +51,7 @@ export const NotSupported: React.FC<INotSupportedProps> = ({ isMobile }) => {
             i18nKey="pages.notSupported.body"
             values={{ device: t(`pages.notSupported.${isMobile ? 'mobile' : 'browser'}`) }}
           >
-            We're sorry, Tilde is currently not optimized for{' '}
+            We're sorry, PopSpace is currently not optimized for{' '}
             {t(`pages.notSupported.${isMobile ? 'mobile' : 'browser'}`)}.
             <br />
             Please use one of the recommended browsers on your computer instead.",

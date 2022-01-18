@@ -1,4 +1,4 @@
-# Tilde
+# PopSpace
 
 A spatial workspace for remote teams.
 

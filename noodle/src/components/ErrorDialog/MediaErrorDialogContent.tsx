@@ -71,7 +71,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
         <DialogContent>
           <DialogContentText>
             <Trans i18nKey="error.media.supportText" values={{ device }}>
-              Please allow Tilde to access your {device} and try again.
+              Please allow PopSpace to access your {device} and try again.
             </Trans>
           </DialogContentText>
           {code && (

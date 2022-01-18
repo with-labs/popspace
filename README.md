@@ -206,6 +206,12 @@ docker build -t tilde .
 
 ## Local development
 
+First, build some dependencies by reusing the containerization preparation script:
+
+```
+yarn precontainerize
+```
+
 To run services locally, you can use the umbrella script from the root of the repo:
 
 ```

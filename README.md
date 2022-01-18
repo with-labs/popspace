@@ -6,7 +6,7 @@ Be advised that PopSpace is still reliant on Twilio as a media platform to enabl
 
 ## Environment Variables
 
-The following environment variables are required to run Tilde in a Docker container:
+The following environment variables are required to run PopSpace in a Docker container:
 
 ```
 # a Postgres connection string for an external database
@@ -173,7 +173,7 @@ Called 'hermes' internally, its source is in `./hermes`. Clients connect to this
 
 The message protocol is not well-documented, but you can find a full list of incoming and outgoing message types in `./noodle/src/api/roomState/types/socketProtocol`. The backend handlers for these messages are located in `./hermes/src/server/processors`.
 
-Having a separate server for HTTP and Socket connections is probably overkill for a self-hosted app! As Tilde's usage moves in this direction, it might be welcome to combine these two services by moving the HTTP routes into the Hermes Express server.
+Having a separate server for HTTP and Socket connections is probably overkill for a self-hosted app! As PopSpace's usage moves in this direction, it might be welcome to combine these two services by moving the HTTP routes into the Hermes Express server.
 
 ### The Collaborative Document Server
 

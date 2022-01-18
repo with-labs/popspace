@@ -1,8 +1,8 @@
-# Tilde
+# PopSpace
 
-This repo dockerizes the various components of [Tilde](https://tilde.so), a virtual meeting space app, so that you can deploy it yourself somewhere!
+This repo dockerizes the various components of [PopSpace](https://popspace.io), a virtual meeting space app, so that you can deploy it yourself somewhere!
 
-Be advised that Tilde is still reliant on Twilio as a media platform to enable audio, video, and screensharing. If you want to deploy Tilde yourself, you'll need a Twilio account with billing and will be responsible for costs of Twilio in addition to hosting.
+Be advised that PopSpace is still reliant on Twilio as a media platform to enable audio, video, and screensharing. If you want to deploy PopSpace yourself, you'll need a Twilio account with billing and will be responsible for costs of Twilio in addition to hosting.
 
 ## Environment Variables
 
@@ -39,7 +39,7 @@ The Docker image will need the following ports exposed to run the various servic
   * 8890: the socket server
   * 8891: the collaborative document server
 6
-The UI connects to each of these services on the corresponding port for the host it is being served from. For example, if you're running the container on localhost, the UI will try to connect to `localhost:8889` for the API. If you host the container elsewhere on `https://tilde.myserver.com`, it will try to connect to `https://tilde.myserver.com:8889` for the API.
+The UI connects to each of these services on the corresponding port for the host it is being served from. For example, if you're running the container on localhost, the UI will try to connect to `localhost:8889` for the API. If you host the container elsewhere on `https://popspace.myserver.com`, it will try to connect to `https://popspace.myserver.com:8889` for the API.
 
 If you would like to modify how the app tries to connect to services, the relevant file is `noodle/src/api/services.ts`.
 
@@ -71,7 +71,7 @@ Room templates were originally planned to expand to allow custom user templates,
 
 You'll need 2 S3 buckets to run the app, one for wallpapers and one for user file uploads.
 
-You're gonna groan, but currently the user file upload bucket needs public access. There's currently no configuration to setup a separate host origin for user files, so you can't put them behind a CDN and restrict access. The user file upload system uses older uploading code, whereas the newer wallpapers feature relies on the file upload library that also lives in this repo and supports CloudFront or other custom serving origins.
+Currently the user file upload bucket needs public access. There's currently no configuration to setup a separate host origin for user files, so you can't put them behind a CDN and restrict access. The user file upload system uses older uploading code, whereas the newer wallpapers feature relies on the file upload library that also lives in this repo and supports CloudFront or other custom serving origins.
 
 Bucket setup must allow CORS access from the origin you use to host the app. That will depend on your own hosting! You should also review the policies and configurations below carefully and determine if you can adopt a more strict policy for your usage.
 

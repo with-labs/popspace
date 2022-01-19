@@ -2,11 +2,9 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import { Warning } from '@material-ui/icons';
 import * as React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from '@components/Link/Link';
 import { HelpIcon } from '@components/icons/HelpIcon';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { Spacing } from '@components/Spacing/Spacing';
-import { USER_SUPPORT_EMAIL } from '@constants/User';
 import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
 import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 
@@ -54,7 +52,7 @@ const MediaHelpModal: React.FC<{ open: boolean; onClose: () => void }> = ({ open
         <Typography paragraph>
           <Trans i18nKey="error.twilioFailure.explainer">
             We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try
-            refreshing, and <Link to={`mailto:${USER_SUPPORT_EMAIL}`}>contact us</Link> if this persists.
+            refreshing.
           </Trans>
         </Typography>
       </DialogContent>

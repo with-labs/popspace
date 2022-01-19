@@ -145,14 +145,6 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                 autoComplete="name"
               />
               <FormikSubmitButton>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
-              <Box mt={1}>
-                <Typography variant="body2" style={{ textAlign: 'center' }}>
-                  <Trans i18nKey="modals.userEntry.tosDisclaimer">
-                    By clicking "Enter room", you agree to our <Link to={Links.TOS}>Terms of Service</Link> and that you
-                    have read our <Link to={Links.PRIVACY_POLICY}>Privacy Policy</Link>.
-                  </Trans>
-                </Typography>
-              </Box>
             </Form>
           </Box>
         </Modal>

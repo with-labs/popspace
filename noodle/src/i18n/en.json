@@ -467,7 +467,7 @@
         "videoPermissionDenied": "You've told your browser not to allow camera access for PopSpace. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
         "screenSharePermissionDenied": "You've told your browser not to allow screen share access for PopSpace. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>.",
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your browser settings and try again.<br/><br/>",
         "noSystemPermissionsError": "Please check your privacy and security settings, and try again."
       },
       "roomMangement": {
@@ -479,7 +479,7 @@
       },
       "twilioFailure": {
         "tooltip": "Media disconnected!",
-        "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing, and <1>contact us</1> if this persists.",
+        "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing.",
         "continue": "Continue without media",
         "refresh": "Refresh",
         "lowBandwidth": "Unstable connection"
@@ -659,7 +659,7 @@
         "submitButton": "Send bug report",
         "imgAltText": "Report a bug",
         "confirmationText": "Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!",
-        "errorMessage": "Something unexpected has happened. Please contact us directly at support@tilde.so."
+        "errorMessage": "Something unexpected has happened."
       },
       "devicePermissionsModal": {
         "title": "Audio & video access",

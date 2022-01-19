@@ -10,8 +10,6 @@ import { FormikTextField } from '@components/fieldBindings/FormikTextField';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import i18n from '@src/i18n';
 import { FormikCheckboxField } from '@components/fieldBindings/FormikCheckboxField';
-import { Links } from '@constants/Links';
-import { Link } from '@components/Link/Link';
 import { MAX_EMAIL_LENTH, MAX_NAME_LENGTH } from '@src/constants';
 import { Spacing } from '@components/Spacing/Spacing';
 import { Box } from '@material-ui/core';
@@ -37,7 +35,6 @@ const validationSchema = Yup.object().shape({
     .max(MAX_EMAIL_LENTH, i18n.t('modals.signup.email.maxSize', { maxNameLength: MAX_EMAIL_LENTH }))
     .email(i18n.t('modals.signup.email.invalid'))
     .required(i18n.t('common.required')),
-  tos: Yup.boolean().required(i18n.t('modals.signup.tos.invalid')),
 });
 
 export const SignUpModal: React.FC<ISignUpModalProps> = (props) => {
@@ -97,16 +94,6 @@ export const SignUpModal: React.FC<ISignUpModalProps> = (props) => {
                   placeholder={t(' modals.signUp.email.placeholder')}
                   margin="normal"
                   autoComplete="email"
-                />
-                <FormikCheckboxField
-                  id="tos"
-                  name="tos"
-                  value="tos"
-                  label={
-                    <Trans i18nKey="modals.signUp.tos.label">
-                      I agree to the <Link to={Links.TOS}>{t('header.tos')}</Link>
-                    </Trans>
-                  }
                 />
                 <FormikCheckboxField
                   id="receiveMarketing"

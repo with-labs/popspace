@@ -1,7 +1,7 @@
 {
   "name": "hermes",
   "version": "1.0.0",
-  "description": "Server for streaming data to Tilde clients",
+  "description": "Server for streaming data to PopSpace clients",
   "main": "index.js",
   "scripts": {
     "start": "pm2 start index.js --name hermes --wait-ready --kill-timeout 3000",

@@ -1,9 +1,9 @@
 import React from 'react';
 import { GenericErrorPage } from './GenericErrorPage';
 import UnexpectedImg from '../images/Unexpected.png';
-import { Links } from '@constants/Links';
+import { RouteNames } from '@constants/RouteNames';
 import { useTranslation } from 'react-i18next';
-
+import { useHistory } from 'react-router-dom';
 interface IUnexpectedProps {
   errorMsg?: string;
 }
@@ -11,16 +11,16 @@ interface IUnexpectedProps {
 export const Unexpected: React.FC<IUnexpectedProps> = (props) => {
   const { errorMsg, ...rest } = props;
   const { t } = useTranslation();
+  const history = useHistory();
 
   const onButtonClick = () => {
-    // open a new tab to the feedback page
-    window.open(Links.FEEDBACK, '_blank');
+    history.push(RouteNames.ROOT);
   };
 
   return (
     <GenericErrorPage
       {...rest}
-      buttonText={t('errorPages.contactSupportBtn')}
+      buttonText={t('common.confirm')}
       onClick={onButtonClick}
       quoteText={t('errorPages.unexpected.quoteText')}
       title={t('errorPages.unexpected.title')}

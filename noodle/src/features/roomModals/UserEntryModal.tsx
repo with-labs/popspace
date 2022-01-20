@@ -3,18 +3,16 @@ import client from '@api/client';
 import { useRoomStore } from '@api/useRoomStore';
 import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
 import { FormikTextField } from '@components/fieldBindings/FormikTextField';
-import { Link } from '@components/Link/Link';
 import { Modal } from '@components/Modal/Modal';
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
-import { Links } from '@constants/Links';
 import { PseudoUserBubble } from '@features/room/people/PseudoUserBubble';
-import { Box, makeStyles, Typography } from '@material-ui/core';
+import { Box, makeStyles } from '@material-ui/core';
 import { MAX_NAME_LENGTH } from '@src/constants';
 import i18n from '@src/i18n';
 import patternBg from '@src/images/illustrations/pattern_bg_1.svg';
 import { Form, Formik } from 'formik';
 import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
@@ -145,14 +143,6 @@ export const UserEntryModal: React.FC<IUserEntryModalProps> = (props) => {
                 autoComplete="name"
               />
               <FormikSubmitButton>{t('modals.userEntry.submitButtonText')}</FormikSubmitButton>
-              <Box mt={1}>
-                <Typography variant="body2" style={{ textAlign: 'center' }}>
-                  <Trans i18nKey="modals.userEntry.tosDisclaimer">
-                    By clicking "Enter room", you agree to our <Link to={Links.TOS}>Terms of Service</Link> and that you
-                    have read our <Link to={Links.PRIVACY_POLICY}>Privacy Policy</Link>.
-                  </Trans>
-                </Typography>
-              </Box>
             </Form>
           </Box>
         </Modal>

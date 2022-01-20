@@ -21,7 +21,7 @@ export function Logo({ link, newTab, inRoom, beamerTrigger, ...rest }: LogoProps
         newTab={newTab}
         onClick={() => Analytics.trackEvent(EventNames.BUTTON_CLICKED, 'logo', { inRoom })}
       >
-        <Logomark title="The Tilde logo" {...rest} />
+        <Logomark title="The PopSpace logo" {...rest} />
       </Link>
     );
   }
@@ -29,10 +29,10 @@ export function Logo({ link, newTab, inRoom, beamerTrigger, ...rest }: LogoProps
   if (beamerTrigger) {
     return (
       <Box className="beamerTrigger" width={90}>
-        <Logomark title="The Tilde logo" {...rest} />
+        <Logomark title="The PopSpace logo" {...rest} />
       </Box>
     );
   }
 
-  return <Logomark title="The Tilde logo" {...rest} />;
+  return <Logomark title="The PopSpace logo" {...rest} />;
 }

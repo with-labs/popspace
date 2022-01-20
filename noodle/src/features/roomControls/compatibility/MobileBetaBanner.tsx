@@ -1,5 +1,4 @@
 import { Banner } from '@components/Banner/Banner';
-import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { isMobile } from 'react-device-detect';
@@ -34,8 +33,7 @@ export function MobileBetaBanner() {
   return (
     <Banner>
       <Trans i18nKey="pages.room.mobileBetaBanner">
-        Mobile support is in beta.&nbsp;
-        <FeedbackButton className={classes.inlineButton}>Report a bug</FeedbackButton>
+        Mobile support is in beta.
       </Trans>
     </Banner>
   );

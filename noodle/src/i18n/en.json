@@ -11,7 +11,7 @@
       "licenses": "License Info"
     },
     "common": {
-      "appName": "Tilde",
+      "appName": "PopSpace",
       "emailInput": {
         "placeHolder": "dorothy@emerald.so",
         "label": "Email Address"
@@ -91,7 +91,7 @@
       "404": {
         "title": "Lost in Space?",
         "cta": "Take me home",
-        "logoAlt": "The Tilde logo"
+        "logoAlt": "The PopSpace logo"
       },
       "signin": {
         "title": "Sign In",
@@ -153,17 +153,17 @@
       },
       "room": {
         "joinTitle": "Joining {{roomName}}",
-        "analyticsDisclaimer": "We use analytics software to improve Tilde. Please feel free to come back later, when we've made it optional.",
+        "analyticsDisclaimer": "We use analytics software to improve PopSpace. Please feel free to come back later, when we've made it optional.",
         "screenNameLabel": "Desired screen name",
         "roomPasswordLabel": "Room password",
         "noVideo": "No video",
-        "safariBanner": "Safari support is in preview. Help us improve by <1>reporting bugs</1>, or switch to a <3>supported browser</3>.",
-        "mobileBetaBanner": "Mobile support is in beta. <1>Report a bug</1>"
+        "safariBanner": "Safari support is in preview.",
+        "mobileBetaBanner": "Mobile support is in beta."
       },
       "subscribe": {
         "quoteText": "",
         "title": "You are now subscribed!",
-        "body": "You will now receive tips on how to use Tilde and news about updates.",
+        "body": "You will now receive tips on how to use PopSpace and news about updates.",
         "button": "Take me Home",
         "imgAltText": "Subscribed"
       },
@@ -176,7 +176,7 @@
       },
       "meetingLink": {
         "titleText": "Your meeting room is ready",
-        "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try Tilde.",
+        "explanationText": "Share the meeting link with your guest, or join the room now if you would like to try PopSpace.",
         "copyLinkButton": "Copy link",
         "copied": "Copied",
         "joinRoomButton": "Join room now",
@@ -210,7 +210,7 @@
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",
-        "body": "We're sorry, Tilde is currently not optimized for {{device}}. <br/>Please use one of the recommended browsers on your computer instead.",
+        "body": "We're sorry, PopSpace is currently not optimized for {{device}}. <br/>Please use one of the recommended browsers on your computer instead.",
         "mobile": "mobile devices",
         "browser": "your browser",
         "chrome": {
@@ -235,7 +235,7 @@
         "negativeFeedbackPlaceholder": "Please tell us why!",
         "submitFeedback": "Send feedback",
         "skipSurvey": "Skip survey",
-        "title": "Thank you for<br/>using Tilde!",
+        "title": "Thank you for<br/>using PopSpace!",
         "ratingCaption": "Help us improve your experience",
         "howWasIt": "How was your meeting?",
         "tooLong": "Sorry, this is a bit too long. Max is {{maxChars}} characters.",
@@ -256,7 +256,7 @@
       },
       "licenses": {
         "title": "Open Source Software Licenses",
-        "intro": "Tilde utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
+        "intro": "PopSpace utilizes open source and third party software in various forms throughout the app. The following sets forth attribution notices for third party software that may be contained in portions of the product."
       }
     },
     "widgets": {
@@ -390,7 +390,7 @@
         "provideValidUrl": "Please provide a valid URL.",
         "provideValidYoutubeUrl": "Please provide a valid YouTube URL",
         "malformedUrl": "Please check to make sure URL has been properly copied from the email.",
-        "mobileNotOptimized": "Tilde is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
+        "mobileNotOptimized": "PopSpace is currently not optimized for mobile. We'd rather polish the experience before you can use it. Sorry for the inconvenience.",
         "noRoomPassword": "You need a password to join this room",
         "incorrectRoomPassword": "The password you entered is incorrect",
         "noRoomAccess": "You don't have access to this room. You'll need the password to get in.",
@@ -456,18 +456,18 @@
       },
       "media": {
         "title": "{{device}} access has been denied.",
-        "permissionsTitle": "Oops, it seems Tilde doesn't have permission to do that.",
-        "supportText": "Please allow Tilde to access your {{device}} and try again.",
+        "permissionsTitle": "Oops, it seems PopSpace doesn't have permission to do that.",
+        "supportText": "Please allow PopSpace to access your {{device}} and try again.",
         "video": "camera",
         "audio": "microphone",
         "screenShare": "screen share",
         "audioPermissionDismissed": "If you want to share your voice, we'll need microphone access. Press the button to enable your mic, then choose \"Allow\"",
-        "audioPermissionDenied": "You've told your browser not to allow microphone access for Tilde. Change that setting to start sharing your voice.",
+        "audioPermissionDenied": "You've told your browser not to allow microphone access for PopSpace. Change that setting to start sharing your voice.",
         "videoPermissionDismissed": "If you want to share your video, we'll need camera access. Press the button to enable your camera, then choose \"Allow\"",
-        "videoPermissionDenied": "You've told your browser not to allow camera access for Tilde. Change that setting to start sharing your video.",
+        "videoPermissionDenied": "You've told your browser not to allow camera access for PopSpace. Change that setting to start sharing your video.",
         "screenSharePermissionDismissed": "If you want to share your screen, we'll need access. Press the button to share your screen, then choose \"Allow\"",
-        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for Tilde. Change that setting to start sharing your screen.",
-        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your <1>browser settings</1> and try again.<br/><br/>If this issue persists, please contact us directly at <3>support@tilde.so</3>.",
+        "screenSharePermissionDenied": "You've told your browser not to allow screen share access for PopSpace. Change that setting to start sharing your screen.",
+        "unexpectedMediaRequestFail": "Something unexpected happened when requesting your device permissions.<br/><br/> Please double check your browser settings and try again.<br/><br/>",
         "noSystemPermissionsError": "Please check your privacy and security settings, and try again."
       },
       "roomMangement": {
@@ -479,7 +479,7 @@
       },
       "twilioFailure": {
         "tooltip": "Media disconnected!",
-        "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing, and <1>contact us</1> if this persists.",
+        "explainer": "We lost our media connection (sorry!). Audio and video are unavailable. Check your internet status, try refreshing.",
         "continue": "Continue without media",
         "refresh": "Refresh",
         "lowBandwidth": "Unstable connection"
@@ -591,7 +591,8 @@
             "flat": "Flat",
             "places": "Places",
             "userUploads": "Your Files",
-            "basic": "Basics"
+            "basic": "Basics",
+            "spaces": "Spaces"
           }
         }
       },
@@ -611,7 +612,7 @@
           "later": "Later"
         },
         "makeYourOwn": {
-          "title": "Your own Tilde rooms",
+          "title": "Your own PopSpace rooms",
           "details": "<strong>Free</strong>, <strong>instant</strong> meeting rooms for all your collaborative needs.",
           "learnMore": "Learn more",
           "later": "Later"
@@ -659,7 +660,7 @@
         "submitButton": "Send bug report",
         "imgAltText": "Report a bug",
         "confirmationText": "Report sent successfully<br/><br/>Thanks for helping us\nbuild a better product!",
-        "errorMessage": "Something unexpected has happened. Please contact us directly at support@tilde.so."
+        "errorMessage": "Something unexpected has happened."
       },
       "devicePermissionsModal": {
         "title": "Audio & video access",
@@ -669,7 +670,7 @@
         "enterRoomButton": "Enter Room",
         "continueWithoutPermissionsButton": "Continue without devices",
         "goToSupportButton": "Go to support",
-        "permissionDeniedExplanation": "Oops! Seems like Tilde doesn’t have access to your camera and microphone.",
+        "permissionDeniedExplanation": "Oops! Seems like PopSpace doesn’t have access to your camera and microphone.",
         "cameraPermissionDenied": "Camera permission denied",
         "prepareTitle": "Welcome!",
         "namePlaceholder": "Your name"
@@ -705,8 +706,8 @@
       "unsaved": {
         "title": "Meeting room unsaved",
         "infoText": "This meeting room and all the content you or other people have added will disappear after 48 hours.",
-        "explainationText": "You need a free Tilde account to persist the content of this meeting.",
-        "signUpButton": "Sign up to Tilde",
+        "explainationText": "You need a free PopSpace account to persist the content of this meeting.",
+        "signUpButton": "Sign up to PopSpace",
         "signInButton": "Already have an account?"
       },
       "userEntry": {
@@ -769,7 +770,7 @@
     },
     "surveys": {
       "userInterviewInterest": {
-        "question": "We're glad you like Tilde! We'd love to know more about how we can create your ideal meeting space. Would you like to meet up and chat about it?",
+        "question": "We're glad you like PopsSpace! We'd love to know more about how we can create your ideal meeting space. Would you like to meet up and chat about it?",
         "email": "Your email address",
         "emailPlaceholder": "you@somewhere.com",
         "submit": "Let's talk!",

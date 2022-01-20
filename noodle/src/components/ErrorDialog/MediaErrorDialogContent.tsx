@@ -5,9 +5,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import { useTranslation, Trans } from 'react-i18next';
 import { MediaError, MEDIA_TYPES, MEDIA_STATUS } from '../../errors/MediaError';
 import { makeStyles } from '@material-ui/core';
-import { Links } from '@constants/Links';
-import { Link } from '@components/Link/Link';
-import { USER_SUPPORT_EMAIL } from '@constants/User';
 import { headerCase } from 'change-case';
 
 const useStyles = makeStyles((theme) => ({
@@ -50,9 +47,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
           <DialogContentText>
             <Trans i18nKey="error.media.unexpectedMediaRequestFail">
               Something unexpected happened when requesting your device permissions. Please double check your
-              <Link to={`${Links.HELP_PORTAL}/with-help-center/browser-permission`}>browser settings</Link> and try
-              again. If this issue persists, please contact us directly at
-              <Link to={`mailto:${USER_SUPPORT_EMAIL}`}>support@tilde.so.</Link>.
+              browser setting and try again.
             </Trans>
           </DialogContentText>
           {code && (
@@ -71,7 +66,7 @@ function MediaErrorDialogContent({ error }: PropsWithChildren<MediaErrorDialogCo
         <DialogContent>
           <DialogContentText>
             <Trans i18nKey="error.media.supportText" values={{ device }}>
-              Please allow Tilde to access your {device} and try again.
+              Please allow PopSpace to access your {device} and try again.
             </Trans>
           </DialogContentText>
           {code && (

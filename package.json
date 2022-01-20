@@ -1,5 +1,5 @@
 {
-  "name": "tilde-monorepo",
+  "name": "popspace-monorepo",
   "private": true,
   "workspaces": [
     "file-upload",

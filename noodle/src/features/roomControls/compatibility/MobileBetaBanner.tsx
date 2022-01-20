@@ -34,8 +34,7 @@ export function MobileBetaBanner() {
   return (
     <Banner>
       <Trans i18nKey="pages.room.mobileBetaBanner">
-        Mobile support is in beta.&nbsp;
-        <FeedbackButton className={classes.inlineButton}>Report a bug</FeedbackButton>
+        Mobile support is in beta.
       </Trans>
     </Banner>
   );

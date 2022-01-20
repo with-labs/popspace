@@ -1,23 +1,18 @@
 import { Analytics } from '@analytics/Analytics';
 import api from '@api/client';
-import { FormikSubmitButton } from '@components/fieldBindings/FormikSubmitButton';
-import { FormikTextField } from '@components/fieldBindings/FormikTextField';
+
 import { Link } from '@components/Link/Link';
 import { Logo } from '@components/Logo/Logo';
 import { Spacing } from '@components/Spacing/Spacing';
-import { StarRating } from '@components/StarRating/StarRating';
 import { Links } from '@constants/Links';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
 import i18n from '@src/i18n';
 import { logger } from '@utils/logger';
-import { Form, Formik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
-import * as Yup from 'yup';
 
-import { NegativeFeedbackForm } from './NegativeFeedbackForm';
 
 const ANALYTICS_PAGE_ID = 'page_postMeeting';
 
@@ -37,12 +32,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 8,
   },
 }));
-
-const validationSchema = Yup.object().shape({
-  feedback: Yup.string()
-    .required(i18n.t('common.required'))
-    .max(2048, i18n.t('pages.postMeeting.tooLong', { maxChars: 2048 })),
-});
 
 export function PostMeeting({ match }: PostMeetingProps) {
   const { t } = useTranslation();
@@ -145,11 +134,7 @@ export function PostMeeting({ match }: PostMeetingProps) {
         <Trans i18nKey={titleKey} />
       </Typography>
       <Box width="100%" maxWidth="760px" mx="auto" p={4} mb={3} className={classes.mainBlock}>
-        {state.done ? (
           <Spacing flexDirection="column" alignItems="center" textAlign="center" p={2}>
-            <Typography variant="h2" gutterBottom>
-              {t('pages.postMeeting.surveyThanks')}
-            </Typography>
             <Link
               to={Links.CREATE_MEETING}
               disableStyling
@@ -162,17 +147,6 @@ export function PostMeeting({ match }: PostMeetingProps) {
               </Button>
             </Link>
           </Spacing>
-        ) : collectFeedback ? (
-          <FeedbackForm onSkip={onDone} onSubmit={submitFeedback} wasPositive={wasPositive} />
-        ) : (
-          <Spacing flexDirection="column" gap={2} alignItems="center" textAlign="center">
-            <Typography variant="h2">
-              <Trans i18nKey="pages.postMeeting.ratingCaption" />
-            </Typography>
-            <Typography variant="body1">{t('pages.postMeeting.howWasIt')}</Typography>
-            <StarRating value={state.rating} onChange={submitRating} className={classes.starRating} />
-          </Spacing>
-        )}
       </Box>
       <SaveLinkSection />
     </Box>
@@ -207,52 +181,4 @@ function SaveLinkSection() {
       </Typography>
     </Box>
   );
-}
-
-function FeedbackForm({
-  onSubmit,
-  onSkip,
-  wasPositive,
-}: {
-  onSkip: () => void;
-  onSubmit: (feedback: string) => any;
-  wasPositive: boolean;
-}) {
-  const { t } = useTranslation();
-
-  if (!wasPositive) {
-    return <NegativeFeedbackForm onSubmit={onSubmit} onSkip={onSkip} />;
-  } else {
-    return (
-      <Formik
-        onSubmit={(data) => {
-          onSubmit(data.feedback);
-        }}
-        initialValues={{ feedback: '' }}
-        validateOnBlur
-        validateOnMount
-        validationSchema={validationSchema}
-      >
-        <Spacing component={Form} flexDirection="column" alignItems="center" gap={2} textAlign="center">
-          <FormikTextField
-            multiline
-            rows={4}
-            name="feedback"
-            margin="normal"
-            placeholder={
-              wasPositive
-                ? t('pages.postMeeting.positiveFeedbackPlaceholder')
-                : t('pages.postMeeting.negativeFeedbackPlaceholder')
-            }
-          />
-          <Spacing justifyContent="flex-end" width="100%">
-            <Button onClick={onSkip} color="default" fullWidth={false}>
-              {t('pages.postMeeting.skipSurvey')}
-            </Button>
-            <FormikSubmitButton fullWidth={false}>{t('pages.postMeeting.submitFeedback')}</FormikSubmitButton>
-          </Spacing>
-        </Spacing>
-      </Formik>
-    );
-  }
 }

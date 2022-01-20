@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Modal } from '@components/Modal/Modal';
 import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useRoomModalStore } from '../roomControls/useRoomModalStore';
 import * as Yup from 'yup';
 import { Form, Formik, FormikHelpers } from 'formik';

@@ -591,7 +591,8 @@
             "flat": "Flat",
             "places": "Places",
             "userUploads": "Your Files",
-            "basic": "Basics"
+            "basic": "Basics",
+            "spaces": "Spaces"
           }
         }
       },

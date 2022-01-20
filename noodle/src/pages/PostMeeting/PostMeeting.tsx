@@ -6,7 +6,6 @@ import { Logo } from '@components/Logo/Logo';
 import { Spacing } from '@components/Spacing/Spacing';
 import { Links } from '@constants/Links';
 import { Box, Button, makeStyles, Typography } from '@material-ui/core';
-import i18n from '@src/i18n';
 import { logger } from '@utils/logger';
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';

@@ -1,5 +1,4 @@
 import { Banner } from '@components/Banner/Banner';
-import { FeedbackButton } from '@components/FeedbackButton/FeedbackButton';
 import { makeStyles } from '@material-ui/core';
 import * as React from 'react';
 import { isMobile } from 'react-device-detect';

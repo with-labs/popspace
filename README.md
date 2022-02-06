@@ -1,8 +1,20 @@
-# PopSpace
+# PopSpace, virtual spaces for everybody.
 
-This repo dockerizes the various components of [PopSpace](https://popspace.io), a virtual meeting space app, so that you can deploy it yourself somewhere!
+PopSpace is the open source virtual canvas platform for chatting, collaborating, and playing.
 
-Be advised that PopSpace is still reliant on Twilio as a media platform to enable audio, video, and screensharing. If you want to deploy PopSpace yourself, you'll need a Twilio account with billing and will be responsible for costs of Twilio in addition to hosting.
+Create your own spaces, on your own terms.
+
+Learn more at [PopSpace](https://popspace.io)
+
+![Hero Shot](README_COVER.png)
+
+
+To install PopSpace you will need:
+
+- A Twilio account for audio, video, and screensharing
+- An AWS account for S3 file storage (wallpapers and user uploads)
+
+---
 
 ## Environment Variables
 
@@ -38,7 +50,7 @@ The Docker image will need the following ports exposed to run the various servic
   * 8889: the API server
   * 8890: the socket server
   * 8891: the collaborative document server
-6
+
 The UI connects to each of these services on the corresponding port for the host it is being served from. For example, if you're running the container on localhost, the UI will try to connect to `localhost:8889` for the API. If you host the container elsewhere on `https://popspace.myserver.com`, it will try to connect to `https://popspace.myserver.com:8889` for the API.
 
 If you would like to modify how the app tries to connect to services, the relevant file is `noodle/src/api/services.ts`.

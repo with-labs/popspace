@@ -213,7 +213,7 @@ yarn precontainerize
 Then build the Docker image:
 
 ```
-docker build -t tilde .
+docker build -t popspace .
 ```
 
 ## Local development

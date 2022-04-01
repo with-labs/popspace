@@ -15,6 +15,7 @@ class Files {
       const uploadUrl = lib.s3.getUploadUrl(
         params.fileName,
         process.env.USER_FILES_BUCKET_NAME,
+        params.contentType,
         folder
       )
       const downloadUrl = lib.s3.getDownloadUrl(
@@ -27,7 +28,7 @@ class Files {
         uploadUrl,
         downloadUrl
       })
-    }, ["fileName"])
+    }, ["fileName", "contentType"])
 
     this.zoo.loggedInPostEndpoint("/delete_file", async(req, res, params) => {
       try {

@@ -9,14 +9,14 @@ class S3 {
     })
   }
 
-  getUploadUrl = (fileName, bucketName, filePath) => {
+  getUploadUrl = (fileName, bucketName, contentType, filePath) => {
     const finalPath = filePath ? `${filePath}/${fileName}` : fileName
-    const s3Params = {
-      Bucket: bucketName,
-      Key: finalPath
-    }
 
-    return this.s3.getSignedUrl("putObject", s3Params)
+    return this.s3.getSignedUrl("putObject", {
+      Bucket: bucketName,
+      Key: finalPath,
+      ContentType: contentType,
+    })
   }
 
   getDownloadUrl = (fileName, bucketName, filePath) => {

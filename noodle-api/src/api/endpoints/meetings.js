@@ -1,5 +1,6 @@
-const AccessToken = require("twilio").jwt.AccessToken
-const VideoGrant = AccessToken.VideoGrant
+const TwilioAccessToken = require("twilio").jwt.AccessToken
+const LivekitAccessToken = require('livekit-server-sdk').AccessToken
+const VideoGrant = TwilioAccessToken.VideoGrant
 const uuidv4 = require("uuid").v4
 
 // 240 hours
@@ -9,6 +10,8 @@ const MAX_ALLOWED_SESSION_SECONDS = 14400
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID
 const TWILIO_API_KEY_SID = process.env.TWILIO_API_KEY_SID
 const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET
+const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY
+const LIVEKIT_SECRET_KEY = process.env.LIVEKIT_SECRET_KEY
 
 const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
@@ -36,25 +39,46 @@ class Meetings {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
       }
 
-      const userUuid4 = uuidv4()
-      const token = new AccessToken(
-        TWILIO_ACCOUNT_SID,
-        TWILIO_API_KEY_SID,
-        TWILIO_API_KEY_SECRET,
-        {
-          ttl: MAX_ALLOWED_SESSION_SECONDS
-        }
-      )
+      if (params.provider === 'twilio') {
+        const userUuid4 = uuidv4()
+        const token = new TwilioAccessToken(
+          TWILIO_ACCOUNT_SID,
+          TWILIO_API_KEY_SID,
+          TWILIO_API_KEY_SECRET,
+          {
+            ttl: MAX_ALLOWED_SESSION_SECONDS
+          }
+        )
 
-      // TODO: use User ID from our database
-      token.identity = `${actor.id}#!${userUuid4}`
-      const videoGrant = new VideoGrant({
-        room: `${process.env.NODE_ENV}_${room.id}`
-      })
-      token.addGrant(videoGrant)
+        token.identity = `${actor.id}#!${userUuid4}`
+        const videoGrant = new VideoGrant({
+          room: `${process.env.NODE_ENV}_${room.id}`
+        })
+        token.addGrant(videoGrant)
 
-      return await api.http.succeed(req, res, { token: token.toJwt() })
-    }, ["roomRoute"])
+        return await api.http.succeed(req, res, { token: token.toJwt() })
+      } else if (params.provider === 'livekit') {
+        const userUuid4 = uuidv4()
+        const token = new LivekitAccessToken(
+          LIVEKIT_API_KEY,
+          LIVEKIT_SECRET_KEY,
+          {
+            identity: `${actor.id}#!${userUuid4}`,
+          }
+        )
+        token.addGrant({
+          roomJoin: true,
+          room: `${process.env.NODE_ENV}_${room.id}`,
+          canPublish: true,
+          canSubscribe: true,
+          canPublishData: true,
+        })
+
+        return await api.http.succeed(req, res, { token: token.toJwt() })
+      } else {
+        api.http.fail(req, res, { errorCode: 'UNKNOWN_PROVIDER' })
+      }
+    }, ["roomRoute", "provider"])
 
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)

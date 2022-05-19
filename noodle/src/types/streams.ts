@@ -1,7 +1,5 @@
-import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
-
 /**
- * A higher-level grouping of two Twilio publications -
+ * A higher-level grouping of two media tracks -
  * one for audio, one for video. Either one might be missing.
  */
 export type Stream = {
@@ -10,8 +8,8 @@ export type Stream = {
    * among other Streams - suggestions: video pub sid, audio pub sid, user sid + name, etc.
    */
   id: string;
-  videoPublication: RemoteTrackPublication | LocalTrackPublication | null;
-  audioPublication: RemoteTrackPublication | LocalTrackPublication | null;
-  participantIdentity: string;
+  videoTrack: MediaStreamTrack | null;
+  audioTrack: MediaStreamTrack | null;
+  participantId: string;
   kind: 'av' | 'screen';
 };

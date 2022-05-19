@@ -10,14 +10,11 @@ import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { useAppState } from '../../state';
 import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteControlProvider';
-import { TwilioProvider } from '@providers/twilio/TwilioProvider';
-import { LocalTracksProvider } from '@providers/media/LocalTracksProvider';
-import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
-import client from '@api/client';
 import { ApiError } from '@src/errors/ApiError';
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { NotFoundPage } from '../NotFoundPage';
 import { logger } from '@utils/logger';
+import { media } from '@src/media';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -53,30 +50,30 @@ interface IRoomPageProps {
   roomRoute: string;
 }
 
+const PROVIDER_NAME = process.env.REACT_APP_USE_TWILIO ? 'twilio' : 'livekit';
+
 export default function RoomPage(props: IRoomPageProps) {
   const classes = useStyles();
   const { error, setError } = useAppState();
   const [notFound, setNotFound] = useState(false);
 
-  // connect to meeting on mount and store the twilio token
-  const [token, setToken] = React.useState<string | null>(null);
   React.useEffect(() => {
-    client
-      .connectToMeeting(props.roomRoute)
-      .then((token) => {
-        setToken(token);
-      })
-      .catch((err) => {
-        if (err instanceof ApiError) {
-          if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-            setNotFound(true);
-            return;
-          }
+    media.connect({ roomRoute: props.roomRoute, providerName: PROVIDER_NAME }).catch((err) => {
+      if (err instanceof ApiError) {
+        if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
+          setNotFound(true);
+          return;
         }
-        logger.error(err);
-        setError(err);
-      });
-  }, [props.roomRoute, setNotFound, setError]);
+      }
+      logger.error(err);
+      setError(err);
+    });
+  }, [props.roomRoute, setError]);
+  React.useEffect(() => {
+    return () => {
+      media.disconnect();
+    };
+  }, []);
 
   if (notFound) {
     return <NotFoundPage />;
@@ -85,23 +82,13 @@ export default function RoomPage(props: IRoomPageProps) {
   return (
     <>
       <ErrorDialog dismissError={() => setError(null)} error={error} />
-      <LocalTracksProvider>
-        {token ? (
-          <TwilioProvider token={token}>
-            <RemoteControlProvider>
-              <div className={classes.roomWrapper}>
-                <ErrorBoundary fallback={() => <RoomFallback />}>
-                  <Room />
-                </ErrorBoundary>
-              </div>
-            </RemoteControlProvider>
-          </TwilioProvider>
-        ) : (
-          <>
-            <FullscreenLoading />
-          </>
-        )}
-      </LocalTracksProvider>
+      <RemoteControlProvider>
+        <div className={classes.roomWrapper}>
+          <ErrorBoundary fallback={() => <RoomFallback />}>
+            <Room />
+          </ErrorBoundary>
+        </div>
+      </RemoteControlProvider>
     </>
   );
 }

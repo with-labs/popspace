@@ -1,11 +1,8 @@
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { useTwilio } from '@providers/twilio/TwilioProvider';
 
 export function useExport(exportToImageURL: () => string) {
-  const { room } = useTwilio();
-  const roomName = room?.name;
   const { t } = useTranslation();
 
   const handleExport = useCallback(() => {
@@ -17,7 +14,7 @@ export function useExport(exportToImageURL: () => string) {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = `whiteboard_${roomName}_${new Date().toString()}.png`;
+    a.download = `whiteboard_${new Date().toString()}.png`;
 
     const clickHandler = () => {
       setTimeout(() => {
@@ -30,7 +27,7 @@ export function useExport(exportToImageURL: () => string) {
     a.addEventListener('click', clickHandler, false);
 
     a.click();
-  }, [t, exportToImageURL, roomName]);
+  }, [t, exportToImageURL]);
 
   return handleExport;
 }

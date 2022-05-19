@@ -6,10 +6,9 @@ import { GrabbyIcon } from '@components/icons/GrabbyIcon';
 import { SPRINGS } from '@constants/springs';
 import { Box, makeStyles, useTheme } from '@material-ui/core';
 import { useCanvas } from '@providers/canvas/CanvasProvider';
-import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
 import { useViewport } from '@providers/viewport/useViewport';
 import { animated, useSpring } from '@react-spring/web';
-import { getTrackName, hasTrackName } from '@utils/trackNames';
+import { TrackType } from '@withso/pop-media-sdk';
 import clsx from 'clsx';
 import * as React from 'react';
 import { useGesture } from 'react-use-gesture';
@@ -78,10 +77,8 @@ export const SidecarStreamPreview = React.memo(
     const classes = useStyles();
     const theme = useTheme();
 
-    const { videoPublication, audioPublication } = stream;
+    const { videoTrack, audioTrack } = stream;
 
-    // using Twilio IDs to compare ownership
-    const localParticipant = useLocalParticipant();
     const isLocal = useIsMe(userId);
 
     const addWidget = useAddAccessory();
@@ -96,10 +93,14 @@ export const SidecarStreamPreview = React.memo(
       const userWidgets = Object.values(room.widgets).filter((w) => w.creatorId === userId);
       return userWidgets.some((w) => {
         if (w.type !== WidgetType.SidecarStream) return false;
+        if (w.widgetState.mediaParticipantId !== stream.participantId) return false;
+        if (stream.kind === 'screen') {
+          return (
+            w.widgetState.videoTrackType === TrackType.Screen || w.widgetState.audioTrackType === TrackType.ScreenAudio
+          );
+        }
         return (
-          w.widgetState.twilioParticipantIdentity === stream.participantIdentity &&
-          (!stream.videoPublication || hasTrackName(stream.videoPublication, w.widgetState.videoTrackName)) &&
-          (!stream.audioPublication || hasTrackName(stream.audioPublication, w.widgetState.audioTrackName))
+          w.widgetState.videoTrackType === TrackType.Camera || w.widgetState.audioTrackType === TrackType.Microphone
         );
       });
     });
@@ -171,13 +172,21 @@ export const SidecarStreamPreview = React.memo(
           ev.event?.stopPropagation();
 
           canvas.onGestureEnd();
-          if (isLocal && ev.distance > TEAR_THRESHOLD && localParticipant) {
+          if (isLocal && ev.distance > TEAR_THRESHOLD) {
             addWidget({
               type: WidgetType.SidecarStream,
               initialData: {
-                twilioParticipantIdentity: stream.participantIdentity,
-                videoTrackName: getTrackName(videoPublication) ?? undefined,
-                audioTrackName: getTrackName(audioPublication) ?? undefined,
+                mediaParticipantId: stream.participantId,
+                videoTrackType: videoTrack
+                  ? stream.kind === 'screen'
+                    ? TrackType.Screen
+                    : TrackType.Camera
+                  : undefined,
+                audioTrackType: audioTrack
+                  ? stream.kind === 'screen'
+                    ? TrackType.ScreenAudio
+                    : TrackType.Microphone
+                  : undefined,
               },
               screenCoordinate: {
                 x: ev.xy[0] - 100,
@@ -230,8 +239,8 @@ export const SidecarStreamPreview = React.memo(
             className={clsx(classes.screenShare, isFullscreen && classes.screenShareFullscreen)}
             placeholderClassName={classes.screenSharePlaceholder}
             muted={!isFullscreen}
-            videoPublication={videoPublication ?? null}
-            audioPublication={audioPublication ?? null}
+            videoTrack={videoTrack ?? null}
+            audioTrack={audioTrack ?? null}
           />
         </Box>
       </animated.div>

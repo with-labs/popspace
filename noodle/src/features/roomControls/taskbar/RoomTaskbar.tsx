@@ -2,7 +2,6 @@ import { Logo } from '@components/Logo/Logo';
 import { ResponsivePopoverProvider } from '@components/ResponsivePopover/ResponsivePopover';
 import { Spacing } from '@components/Spacing/Spacing';
 import { Box, Hidden, makeStyles, Paper } from '@material-ui/core';
-import { MediaFailedWrapper } from '@providers/media/MediaFailedWrapper';
 import clsx from 'clsx';
 import { useFeatureFlag } from 'flagg';
 import * as React from 'react';
@@ -54,15 +53,13 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
           <Box style={{ marginLeft: 8 }}>
             <Logo width={90} beamerTrigger />
           </Box>
-          <MediaFailedWrapper>
-            <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">
-              <PublishedCameraToggle />
-              <PublishedMicToggle />
-              <Hidden xsDown>
-                <ScreenShareToggle />
-              </Hidden>
-            </Spacing>
-          </MediaFailedWrapper>
+          <Spacing gap={0.5} alignItems="center" color="grey.900" flexDirection="row" justifyContent="center">
+            <PublishedCameraToggle />
+            <PublishedMicToggle />
+            <Hidden xsDown>
+              <ScreenShareToggle />
+            </Hidden>
+          </Spacing>
           <Spacing gap={0.5} alignItems="center" justifyContent="flex-end" color="grey.900" flexDirection={'row'}>
             <Hidden xsDown>
               <CopyLinkButton />

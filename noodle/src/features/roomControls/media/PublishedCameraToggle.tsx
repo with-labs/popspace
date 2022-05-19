@@ -1,18 +1,9 @@
+import { useCameraControl } from '@src/media/hooks';
 import * as React from 'react';
 import { CameraToggle } from './CameraToggle';
-import usePublishedVideoToggle from '@providers/media/hooks/usePublishedVideoToggle';
-import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
 
 export const PublishedCameraToggle = () => {
-  const [isVideoOn, toggleVideoOn, isVideoBusy] = usePublishedVideoToggle();
-  const roomStatus = useRoomStatus();
+  const { toggle, track, isPublishing } = useCameraControl();
 
-  return (
-    <CameraToggle
-      isVideoOn={isVideoOn}
-      toggleVideoOn={toggleVideoOn}
-      busy={isVideoBusy || roomStatus !== TwilioStatus.Connected}
-    />
-  );
+  return <CameraToggle isVideoOn={!!track} toggleVideoOn={toggle} busy={isPublishing} />;
 };

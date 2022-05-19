@@ -2,7 +2,6 @@ import client from '@api/client';
 import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { ErrorBoundary } from '@components/ErrorBoundary/ErrorBoundary';
 import { PageTitle } from '@components/PageTitle/PageTitle';
-import { SpeakingStateObserver } from '@components/SpeakingStateObserver/SpeakingStateObserver';
 import { KeyShortcut } from '@constants/keyShortcuts';
 import { MobileBetaBanner } from '@features/roomControls/compatibility/MobileBetaBanner';
 import { SafariBanner } from '@features/roomControls/compatibility/SafariBanner';
@@ -101,7 +100,6 @@ export const Room = React.memo<IRoomProps>(() => {
         </RoomCanvasRenderer>
       </Box>
       <RoomSettingsModal />
-      <SpeakingStateObserver />
       <UnsavedModal />
       <SignUpModal />
       <UserEntryModal />

@@ -1,12 +1,9 @@
-import React from 'react';
-import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
-import { CAMERA_TRACK_NAME } from '@constants/User';
 import Publication from '../Publication/Publication';
-import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
+import { useLocalTrack } from '@src/media/hooks';
+import { TrackType } from '@withso/pop-media-sdk';
 
 export default function LocalVideoPreview({ className }: { className?: string }) {
-  const localParticipant = useLocalParticipant();
-  const videoPub = useNamedPublication(localParticipant, CAMERA_TRACK_NAME);
+  const cameraTrack = useLocalTrack(TrackType.Camera);
 
-  return videoPub ? <Publication publication={videoPub} isLocal classNames={className} /> : null;
+  return cameraTrack ? <Publication track={cameraTrack} isLocal classNames={className} /> : null;
 }

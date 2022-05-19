@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SPRINGS } from '@constants/springs';
 import { CanvasObject } from '@providers/canvas/CanvasObject';
-import { useLocalMediaGroup } from '@providers/media/useLocalMediaGroup';
+import { useLocalMediaGroup } from '@src/media/useLocalMediaGroup';
 import { snow } from '@src/theme/theme';
 import { useWidgetContext } from '../useWidgetContext';
 import { WidgetContent } from '../WidgetContent';

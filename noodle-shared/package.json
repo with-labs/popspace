@@ -19,11 +19,13 @@
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset",
     "db:deploy": "prisma migrate deploy",
-    "db:seed": "prisma db seed --preview-feature",
+    "db:seed": "prisma db seed",
     "prisma:generate": "prisma generate",
     "build": "tsc",
-    "prepare": "yarn build",
-    "postinstall": "prisma generate"
+    "prepare": "yarn build"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "repository": {
     "type": "git",
@@ -36,7 +38,7 @@
   },
   "homepage": "https://github.com/with-labs/noodle-shared#readme",
   "dependencies": {
-    "@prisma/client": "^2.28.0",
+    "@prisma/client": "^3.14.0",
     "async-lock": "^1.2.4",
     "aws-sdk": "^2.834.0",
     "btoa": "^1.2.1",
@@ -52,7 +54,7 @@
     "moment": "^2.29.1",
     "pg": "^8.5.1",
     "pg-monitor": "^1.4.1",
-    "prisma": "^2.28.0",
+    "prisma": "^3.14.0",
     "redis": "^3.0.2",
     "ua-parser-js": "^0.7.28"
   },

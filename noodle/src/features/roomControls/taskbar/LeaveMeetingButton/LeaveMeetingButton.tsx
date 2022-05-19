@@ -1,12 +1,10 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { useTwilio } from '@providers/twilio/TwilioProvider';
 import { LeaveIcon } from '@components/icons/LeaveIcon';
 import { makeStyles, Button, Hidden, IconButton } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import client from '@api/client';
 import { useHistory } from 'react-router';
-import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
 import { Analytics } from '@analytics/Analytics';
@@ -33,17 +31,13 @@ const useStyles = makeStyles((theme) => ({
 export const LeaveMeetingButton: React.FC<ILeaveMeetingButtonProps> = (props) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { room } = useTwilio();
-  const { stopAll } = useLocalTracks();
   const history = useHistory();
 
   const leaveRoom = React.useCallback(() => {
     Analytics.trackEvent(EventNames.LEAVE_ROOM_BUTTON_PRESSED);
-    stopAll();
-    room?.disconnect();
     client.leaveMeeting();
     history.push(`${history.location.pathname}/post_meeting`);
-  }, [room, history, stopAll]);
+  }, [history]);
 
   return (
     <>

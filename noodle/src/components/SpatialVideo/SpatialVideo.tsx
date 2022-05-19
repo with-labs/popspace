@@ -1,7 +1,7 @@
 import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
-import { useMediaReadiness } from '@providers/media/useMediaReadiness';
+import { useMediaReadiness } from '@src/media/useMediaReadiness';
 
 export interface SpatialVideoProps
   extends Omit<React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> {

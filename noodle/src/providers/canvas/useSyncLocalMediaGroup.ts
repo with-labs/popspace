@@ -1,7 +1,7 @@
 import { useIsMe } from '@api/useIsMe';
 import { useEffect } from 'react';
 
-import { useLocalMediaGroup } from '../media/useLocalMediaGroup';
+import { useLocalMediaGroup } from '@src/media/useLocalMediaGroup';
 import { CanvasObjectKind } from './Canvas';
 
 export function useSyncLocalMediaGroup(objectId: string, objectKind: CanvasObjectKind, mediaGroup: string | null) {

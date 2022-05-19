@@ -1,5 +1,6 @@
 import { WhiteboardState } from '@components/Whiteboard/types';
 import { ThemeName } from '@src/theme/theme';
+import { TrackType } from '@withso/pop-media-sdk';
 
 // eslint-disable-next-line no-shadow
 export enum WidgetType {
@@ -97,9 +98,9 @@ export interface YoutubeWidgetState {
 
 // nothing yet.
 export interface SidecarStreamWidgetState {
-  twilioParticipantIdentity: string;
-  videoTrackName?: string;
-  audioTrackName?: string;
+  mediaParticipantId: string;
+  videoTrackType?: TrackType;
+  audioTrackType?: TrackType;
 }
 
 export interface MockUserWidgetState {

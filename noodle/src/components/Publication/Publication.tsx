@@ -1,25 +1,20 @@
 import { Analytics } from '@analytics/Analytics';
 import { BandwidthIcon } from '@components/icons/BandwidthIcon';
 import { Spacing } from '@components/Spacing/Spacing';
-import { CAMERA_TRACK_NAME } from '@constants/User';
 import { Box, makeStyles } from '@material-ui/core';
 import { VisibilityOff } from '@material-ui/icons';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
-import { useLocalMediaGroup } from '@providers/media/useLocalMediaGroup';
-import useTrack from '@providers/twilio/hooks/useTrack';
-import { hasTrackName } from '@utils/trackNames';
+import { useLocalMediaGroup } from '@src/media/useLocalMediaGroup';
 import clsx from 'clsx';
 import { throttle } from 'lodash';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AudioTrack as IAudioTrack, LocalTrackPublication, RemoteTrackPublication } from 'twilio-video';
 
-import { IVideoTrack } from '../../types/twilio';
 import AudioTrack from '../AudioTrack/AudioTrack';
 import VideoTrack from '../VideoTrack/VideoTrack';
 
 interface PublicationProps {
-  publication: LocalTrackPublication | RemoteTrackPublication;
+  track: MediaStreamTrack;
   disableSpatialAudio?: boolean;
   isLocal: boolean;
   disableAudio?: boolean;
@@ -45,7 +40,7 @@ const useStyles = makeStyles({
 });
 
 export default function Publication({
-  publication,
+  track,
   isLocal,
   disableAudio,
   classNames,
@@ -53,30 +48,11 @@ export default function Publication({
   disableSpatialAudio,
 }: PublicationProps) {
   const classes = useStyles();
-  const track = useTrack(publication);
 
   // only publications which are from the same media group as the active user can be seen or heard
   const localMediaGroup = useLocalMediaGroup((store) => store.localMediaGroup);
   const { mediaGroup, objectId, objectKind } = useCanvasObject();
   const isAllowedToPlay = localMediaGroup === mediaGroup;
-  const [isSwitchedOff, setIsSwitchedOff] = React.useState(false);
-
-  React.useEffect(() => {
-    const handleSwitchedOff = () => {
-      setIsSwitchedOff(true);
-      trackBandwidthAnalytics();
-    };
-
-    const handleSwitchedOn = () => setIsSwitchedOff(false);
-
-    track?.on('switchedOff', handleSwitchedOff);
-    track?.on('switchedOn', handleSwitchedOn);
-
-    return () => {
-      track?.off('switchedOff', handleSwitchedOff);
-      track?.off('switchedOn', handleSwitchedOn);
-    };
-  }, [track, setIsSwitchedOff]);
 
   if (!track) {
     return null;
@@ -106,19 +82,13 @@ export default function Publication({
     case 'video':
       return (
         <div className={clsx(classes.videoContainer, classNames)}>
-          <VideoTrack
-            track={track as IVideoTrack}
-            isLocal={hasTrackName(publication, CAMERA_TRACK_NAME) && isLocal}
-            id={id}
-            classNames={classes.video}
-          />
-          {isSwitchedOff && <UnstableOverlay />}
+          <VideoTrack track={track} isLocal={isLocal} id={id} classNames={classes.video} />
         </div>
       );
     case 'audio':
       return disableAudio ? null : (
         <AudioTrack
-          track={track as IAudioTrack}
+          track={track}
           objectKind={objectKind}
           objectId={objectId}
           disableSpatialAudio={disableSpatialAudio}
@@ -148,6 +118,7 @@ const useUnstableOverlayStyles = makeStyles((theme) => ({
     padding: '4px 12px 4px 6px',
   },
 }));
+
 const UnstableOverlay = ({ small }: { small?: boolean }) => {
   const { t } = useTranslation();
 

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
 import { ScreenShareIcon } from '@components/icons/ScreenShareIcon';
-import useScreenShareToggle from '@providers/media/hooks/useScreenShareToggle';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
-import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
+import { useLocalTrack } from '@src/media/hooks';
+import { TrackType } from '@withso/pop-media-sdk';
+import { media } from '@src/media';
 import { makeStyles, useTheme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,8 +21,14 @@ const useStyles = makeStyles((theme) => ({
 export const ScreenShareToggle = (props: { className?: string }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const [isSharingOn, toggleSharingOn] = useScreenShareToggle();
-  const roomStatus = useRoomStatus();
+  const isSharingOn = !!useLocalTrack(TrackType.Screen);
+  const toggleSharingOn = () => {
+    if (isSharingOn) {
+      media.stopScreenShare();
+    } else {
+      media.startScreenShare();
+    }
+  };
   const theme = useTheme();
 
   return (
@@ -32,7 +38,6 @@ export const ScreenShareToggle = (props: { className?: string }) => {
           value="video"
           selected={isSharingOn}
           onChange={toggleSharingOn}
-          disabled={roomStatus !== TwilioStatus.Connected}
           data-test-id="toggleScreenShare"
           {...props}
         >

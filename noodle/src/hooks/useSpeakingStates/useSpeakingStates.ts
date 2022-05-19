@@ -4,7 +4,7 @@ import { omit } from 'lodash';
 
 /**
  * Hook into a global Zustand store which tracks speaking state of each user
- * by their Twilio participant SID.
+ * by their media participant id.
  */
 export const useSpeakingStates = create(
   combine(

@@ -1,13 +1,6 @@
-/**
- * #NOODLE_EDIT
- *
- * Adding in classNames param
- */
 import { styled } from '@material-ui/core/styles';
-import React, { useEffect, useRef } from 'react';
-import { Track } from 'twilio-video';
-
-import { IVideoTrack } from '../../types/twilio';
+import { attachTrack } from '@src/media/attachTrack';
+import React, { CSSProperties, useEffect, useRef } from 'react';
 
 const Video = styled('video')({
   width: '100%',
@@ -15,36 +8,28 @@ const Video = styled('video')({
 });
 
 interface VideoTrackProps {
-  track: IVideoTrack;
+  track: MediaStreamTrack | null;
   isLocal?: boolean;
-  priority?: Track.Priority;
   classNames?: string;
   id?: string;
+  style?: CSSProperties;
 }
 
-export default function VideoTrack({ track, isLocal, priority, classNames, id }: VideoTrackProps) {
-  const ref = useRef<HTMLVideoElement>(null);
-
+export default function VideoTrack({ track, isLocal, style: providedStyle, classNames, id }: VideoTrackProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    el.muted = true;
-    if (track.setPriority && priority) {
-      track.setPriority(priority);
+    const el = videoRef.current;
+    if (!el || !track) {
+      return;
     }
-    track.attach(el);
-    return () => {
-      track.detach(el);
-      if (track.setPriority && priority) {
-        // Passing `null` to setPriority will set the track's priority to that which it was published with.
-        track.setPriority(null);
-      }
-    };
-  }, [track, priority]);
+    return attachTrack(el, track);
+  }, [track]);
 
-  // The local video track is mirrored.
-  const style = isLocal ? { transform: 'rotateY(180deg)' } : {};
+  const isFrontFacing = track?.getSettings().facingMode !== 'environment';
+  const style: CSSProperties = {
+    ...providedStyle,
+    transform: isLocal && isFrontFacing ? 'rotateY(180deg)' : '',
+  };
 
-  return <Video ref={ref} style={style} className={classNames} id={id} />;
+  return <Video ref={videoRef} style={style} className={classNames} id={id} />;
 }

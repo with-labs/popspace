@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Howl } from 'howler';
 import soundsMp3 from '../../sounds/sounds.mp3';
 import soundsWebm from '../../sounds/sounds.webm';
-import { useMediaReadiness } from '@providers/media/useMediaReadiness';
+import { useMediaReadiness } from '@src/media/useMediaReadiness';
 
 export type SoundEffectName = 'join';
 

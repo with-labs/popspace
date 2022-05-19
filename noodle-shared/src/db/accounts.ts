@@ -135,7 +135,7 @@ export class Accounts {
       },
     });
 
-    const meta = null;
+    const meta = undefined;
     /*
       Can't think of anything valuable to record for a session.
       We already have its ID tracked as a column in the schema, and

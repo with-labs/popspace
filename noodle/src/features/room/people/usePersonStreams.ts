@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useCollectedStreams } from '@hooks/useCollectedStreams/useCollectedStreams';
-import { useTwilio } from '@providers/twilio/TwilioProvider';
 import { Stream } from '@src/types/streams';
+import { useConnectedParticipantIds } from '@src/media/hooks';
 
 /**
  * Groups all of a user's media streams (audio+video) into
@@ -9,14 +9,11 @@ import { Stream } from '@src/types/streams';
  * which stream should be given priority.
  */
 export function usePersonStreams(personId: string) {
-  const { allParticipants } = useTwilio();
+  const participantIds = useConnectedParticipantIds();
   const allAssociatedParticipants = useMemo(
     // sorting to at least make it stable
-    () =>
-      allParticipants
-        .sort((a, b) => a.identity.localeCompare(b.identity))
-        .filter((p) => p.identity.startsWith(`${personId}#`)),
-    [allParticipants, personId]
+    () => participantIds.sort((a, b) => a.localeCompare(b)).filter((p) => p.startsWith(`${personId}#`)),
+    [participantIds, personId]
   );
 
   const groupedStreams = useCollectedStreams(allAssociatedParticipants);
@@ -34,8 +31,8 @@ export function usePersonStreams(personId: string) {
   // just choose the first one. Only AV streams are considered - we don't want the
   // bubble to be a screenshare!
   const mainStream =
-    allStreams.find((stream) => stream.kind === 'av' && !!stream.audioPublication) ??
-    allStreams.find((stream) => stream.kind === 'av' && !!stream.videoPublication) ??
+    allStreams.find((stream) => stream.kind === 'av' && !!stream.audioTrack) ??
+    allStreams.find((stream) => stream.kind === 'av' && !!stream.videoTrack) ??
     null;
   const secondaryStreams = allStreams.filter((s) => s !== mainStream);
 

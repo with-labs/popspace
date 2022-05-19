@@ -12,9 +12,10 @@ import { SmallMenuButton } from './SmallMenuButton';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { EventNames } from '@analytics/constants';
 import client from '@api/client';
-import { useAVSources } from '@hooks/useAVSources/useAVSources';
 import { Analytics } from '@analytics/Analytics';
 import clsx from 'clsx';
+import { useMediaDevices } from '@src/media/hooks';
+import { TrackType } from '@withso/pop-media-sdk';
 
 const useStyles = makeStyles((theme) => ({
   text: {
@@ -95,8 +96,8 @@ export const MicToggle = (props: IMicToggleProps) => {
   }, []);
 
   // only show the list if we have access to devices (and their IDs)
-  const { mics } = useAVSources();
-  const hasMicsList = mics?.every((device) => device.deviceId && device.label);
+  const { devices: mics, permissionState } = useMediaDevices(TrackType.Microphone);
+  const hasMicsList = permissionState === 'granted';
 
   return (
     <>

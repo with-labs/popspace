@@ -4,7 +4,7 @@ import { RoomStateShape, useRoomStore } from '@api/useRoomStore';
 import { logger } from '@utils/logger';
 import { MAX_AUDIO_RANGE as MAX_RANGE } from '@constants/room';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
-import { useLocalMediaGroup } from '@providers/media/useLocalMediaGroup';
+import { useLocalMediaGroup } from '@src/media/useLocalMediaGroup';
 
 function computeVolumeFalloff(percentOfMaxRange: number) {
   return 1 / (Math.pow(percentOfMaxRange + 0.4, 20) + 1);

@@ -1,12 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({
-  // @see https://github.com/prisma/prisma/issues/5533
-  // @ts-ignore
-  __internal: {
-    useUds: true,
-  },
-});
+const prisma = new PrismaClient({});
 
 console.log('Connected to database');
 

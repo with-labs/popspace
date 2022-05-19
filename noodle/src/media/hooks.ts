@@ -15,7 +15,7 @@ export function useCameraControl() {
     }
   };
 
-  const cameras = useMediaDevices('video');
+  const cameras = useMediaDevices(TrackType.Camera);
 
   return {
     isPublishing,
@@ -39,7 +39,7 @@ export function useMicControl() {
     }
   };
 
-  const mics = useMediaDevices('audio');
+  const mics = useMediaDevices(TrackType.Microphone);
 
   return {
     isPublishing,
@@ -66,6 +66,31 @@ export function useConnectedParticipantIds() {
   }, []);
 
   return participantIds;
+}
+
+export function useIsParticipantConnected(participantId: string) {
+  const [connected, setConnected] = useState(() => media.getParticipantIds().includes(participantId));
+
+  useEffect(() => {
+    function onParticipantConnected(id: string) {
+      if (id === participantId) {
+        setConnected(true);
+      }
+    }
+    function onParticipantDisconnected(id: string) {
+      if (id === participantId) {
+        setConnected(false);
+      }
+    }
+    media.on('participantConnected', onParticipantConnected);
+    media.on('participantDisconnected', onParticipantDisconnected);
+    return () => {
+      media.removeListener('participantConnected', onParticipantConnected);
+      media.removeListener('participantDisconnected', onParticipantDisconnected);
+    };
+  }, [participantId]);
+
+  return connected;
 }
 
 export function useIsLocalTrackStarting(trackType: TrackType) {
@@ -111,30 +136,50 @@ export function useLocalTrack(trackType: TrackType) {
   return track;
 }
 
-export function useMediaDevices(deviceKind: 'audio' | 'video') {
-  const [sources, setSources] = useState<MediaDeviceInfo[]>(media.getMediaDevices(`${deviceKind}input`));
+export function useMediaDevices(trackType: TrackType.Camera | TrackType.Microphone) {
+  const [sources, setSources] = useState<MediaDeviceInfo[]>(media.getMediaDevices(trackType));
+  const [wasPermissionDenied, setWasPermissionDenied] = useState(false);
+
   useEffect(() => {
     const refreshDevices = () => {
-      setSources(media.getMediaDevices(`${deviceKind}input`));
+      setSources(media.getMediaDevices(trackType));
     };
     media.on('mediaDevicesChanged', refreshDevices);
     return () => {
       media.off('mediaDevicesChanged', refreshDevices);
     };
-  }, [deviceKind]);
+  }, [trackType]);
 
-  return sources;
+  useEffect(() => {
+    const onDenied = (t: TrackType) => {
+      if (trackType === t) setWasPermissionDenied(true);
+    };
+    media.on('deviceAccessDenied', onDenied);
+    return () => {
+      media.off('deviceAccessDenied', onDenied);
+    };
+  }, [trackType]);
+
+  return {
+    devices: sources,
+    permissionState: (wasPermissionDenied ? 'denied' : sources.every((s) => !s.label) ? 'pending' : 'granted') as
+      | 'denied'
+      | 'pending'
+      | 'granted',
+  };
 }
 
 export function useParticipantTrack(participantId: string, trackType: TrackType) {
-  const [track, setTrack] = useState<MediaStreamTrack | null>(media.getParticipantTrack(participantId, trackType));
+  const [track, setTrack] = useState<MediaStreamTrack | null>(
+    media.getParticipantTrack(participantId, trackType) || null
+  );
 
   useEffect(() => {
     function refreshTrack(publisherParticipantId: string, incomingTrackType: TrackType) {
       if (participantId !== publisherParticipantId || trackType !== incomingTrackType) {
         return;
       }
-      setTrack(media.getParticipantTrack(participantId, trackType));
+      setTrack(media.getParticipantTrack(participantId, trackType) || null);
     }
     media.on('trackStarted', refreshTrack);
     media.on('trackStopped', refreshTrack);
@@ -171,4 +216,24 @@ export function usePreferredMicrophoneDeviceId() {
   }, []);
 
   return preferredDeviceId;
+}
+
+export function useSpeakingState(participantId: string) {
+  const [isSpeaking, setIsSpeaking] = useState(() => {
+    return media.getParticipantSpeakingState(participantId);
+  });
+
+  useEffect(() => {
+    function onSpeakingChanged(sourceId: string, isSpeaking: boolean) {
+      if (participantId === sourceId) {
+        setIsSpeaking(isSpeaking);
+      }
+    }
+    media.on('participantSpeakingStateChanged', onSpeakingChanged);
+    return () => {
+      media.off('participantSpeakingStateChanged', onSpeakingChanged);
+    };
+  }, [participantId]);
+
+  return isSpeaking;
 }

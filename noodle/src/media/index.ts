@@ -1,11 +1,18 @@
 import { MediaService, MediaProvider, MediaTokenProvider } from '@withso/pop-media-sdk';
 import { TwilioProvider } from '@withso/pop-media-twilio';
+import { LiveKitProvider } from '@withso/pop-media-livekit';
 import client from '@api/client';
 
 const providers: Record<string, MediaProvider> = {};
 
-if (process.env.REACT_PUBLIC_USE_TWILIO) {
+if (process.env.REACT_APP_USE_TWILIO) {
   providers.twilio = new TwilioProvider();
+}
+if (process.env.REACT_APP_USE_LIVEKIT) {
+  if (!process.env.REACT_APP_LIVEKIT_ENDPOINT) {
+    throw new Error('REACT_APP_LIVEKIT_ENDPOINT must be set if REACT_APP_USE_LIVEKIT is true');
+  }
+  providers.livekit = new LiveKitProvider(process.env.REACT_APP_LIVEKIT_ENDPOINT, {});
 }
 
 if (Object.keys(providers).length === 0) {
@@ -14,7 +21,7 @@ if (Object.keys(providers).length === 0) {
 
 class TokenProvider implements MediaTokenProvider<{ providerName: string; roomRoute: string }> {
   getToken = async ({ providerName, roomRoute }: { providerName: string; roomRoute: string }) => {
-    const token = await client.connectToMeeting(roomRoute);
+    const token = await client.connectToMeeting(roomRoute, providerName);
     return token;
   };
 }

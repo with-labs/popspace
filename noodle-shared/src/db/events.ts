@@ -31,7 +31,7 @@ export class Events {
     source: string,
     expressRequest: Request,
   ) => {
-    const meta = null;
+    const meta = undefined;
     const key = 'sourced';
     return this.recordEvent(
       actorId,
@@ -49,7 +49,7 @@ export class Events {
     templateName: string,
     expressRequest: Request,
   ) => {
-    const meta = null;
+    const meta = undefined;
     const key = 'room_create';
     return this.recordEvent(
       actorId,
@@ -67,7 +67,7 @@ export class Events {
     key: string,
     value: string | null,
     expressRequest: Request = null,
-    meta: any = null,
+    meta: any = undefined,
   ) => {
     return prisma.actorEvent.create({
       data: this.eventFromRequest(
@@ -87,7 +87,7 @@ export class Events {
     key: string,
     value: string | null,
     expressRequest: Request = null,
-    meta: any = null,
+    meta: any = undefined,
   ) {
     if (!expressRequest) {
       expressRequest = { headers: {}, socket: {} } as any;

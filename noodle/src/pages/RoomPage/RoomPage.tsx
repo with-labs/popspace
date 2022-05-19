@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ErrorDialog from '@components/ErrorDialog/ErrorDialog';
 import { Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,8 +10,6 @@ import { ModalTitleBar } from '@components/Modal/ModalTitleBar';
 import { ModalContentWrapper } from '@components/Modal/ModalContentWrapper';
 import { useAppState } from '../../state';
 import { RemoteControlProvider } from '@components/RemoteControlProvider/RemoteControlProvider';
-import { FullscreenLoading } from '@components/FullscreenLoading/FullscreenLoading';
-import client from '@api/client';
 import { ApiError } from '@src/errors/ApiError';
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { NotFoundPage } from '../NotFoundPage';
@@ -52,13 +50,15 @@ interface IRoomPageProps {
   roomRoute: string;
 }
 
+const PROVIDER_NAME = process.env.REACT_APP_USE_TWILIO ? 'twilio' : 'livekit';
+
 export default function RoomPage(props: IRoomPageProps) {
   const classes = useStyles();
   const { error, setError } = useAppState();
   const [notFound, setNotFound] = useState(false);
 
   React.useEffect(() => {
-    media.connect({ roomRoute: props.roomRoute, providerName: 'twilio' }).catch((err) => {
+    media.connect({ roomRoute: props.roomRoute, providerName: PROVIDER_NAME }).catch((err) => {
       if (err instanceof ApiError) {
         if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
           setNotFound(true);

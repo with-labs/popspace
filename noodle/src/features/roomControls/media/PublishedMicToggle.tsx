@@ -4,9 +4,7 @@ import { logger } from '@utils/logger';
 import { useRemoteControl } from '@hooks/useRemoteControl/useRemoteControl';
 import { MIC_TRACK_NAME } from '@constants/User';
 import { useRoomStore } from '@api/useRoomStore';
-import usePublishedAudioToggle from '@providers/media/hooks/usePublishedAudioToggle';
-import { useRoomStatus } from '@providers/twilio/hooks/useRoomStatus';
-import { TwilioStatus } from '@providers/twilio/ReconnectingTwilioRoom';
+import { useMicControl } from '@src/media/hooks';
 
 export interface IPublishedMicToggleProps {
   showMicsList?: boolean;
@@ -21,8 +19,7 @@ export const PublishedMicToggle: React.FC<IPublishedMicToggleProps> = ({
   useSmall = false,
   displayToolTip,
 }) => {
-  const [isMicOn, doMicToggle, isAudioBusy] = usePublishedAudioToggle();
-  const roomStatus = useRoomStatus();
+  const { isPublishing, toggle, track } = useMicControl();
   const { muteSession } = useRemoteControl();
 
   const handleMicOn = () => {
@@ -42,9 +39,9 @@ export const PublishedMicToggle: React.FC<IPublishedMicToggleProps> = ({
 
   return (
     <MicToggle
-      isMicOn={isMicOn}
-      doMicToggle={doMicToggle}
-      busy={isAudioBusy || roomStatus !== TwilioStatus.Connected}
+      isMicOn={!!track}
+      doMicToggle={toggle}
+      busy={isPublishing}
       handleMicOn={handleMicOn}
       showMicsList={showMicsList}
       className={className}

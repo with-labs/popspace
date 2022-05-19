@@ -1,6 +1,5 @@
 import * as React from 'react';
 import clsx from 'clsx';
-import { RemoteTrackPublication, LocalTrackPublication } from 'twilio-video';
 import Publication from '../Publication/Publication';
 import { Lightbox } from '../Lightbox/Lightbox';
 import { Box, IconButton, makeStyles, useTheme, Paper } from '@material-ui/core';
@@ -18,8 +17,8 @@ export interface IFullscreenableMediaProps {
   onFullscreenExit?: () => void;
   id?: string;
   muted?: boolean;
-  videoPublication: RemoteTrackPublication | LocalTrackPublication | null;
-  audioPublication: RemoteTrackPublication | LocalTrackPublication | null;
+  videoTrack: MediaStreamTrack | null;
+  audioTrack: MediaStreamTrack | null;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -63,8 +62,8 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
   isFullscreen,
   onFullscreenExit,
   muted,
-  videoPublication,
-  audioPublication,
+  videoTrack,
+  audioTrack,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -99,13 +98,8 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
 
   const media = (
     <>
-      {videoPublication ? (
-        <Publication
-          publication={videoPublication}
-          isLocal={false}
-          classNames={clsx(classes.test, className)}
-          id={id}
-        />
+      {videoTrack ? (
+        <Publication track={videoTrack} isLocal={false} classNames={clsx(classes.test, className)} id={id} />
       ) : (
         <Box
           className={className}
@@ -119,9 +113,9 @@ export const FullscreenableMedia: React.FC<IFullscreenableMediaProps> = ({
           <Speaker fontSize="large" htmlColor={theme.palette.brandColors.snow.regular} />
         </Box>
       )}
-      {audioPublication && (
+      {audioTrack && (
         <Publication
-          publication={audioPublication}
+          track={audioTrack}
           isLocal={false}
           classNames={className}
           disableAudio={muted}

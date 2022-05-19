@@ -6,6 +6,7 @@ import Publication from '@components/Publication/Publication';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
+import { useSpeakingState } from '@src/media/hooks';
 import * as React from 'react';
 
 import { Stream } from '../../../types/streams';
@@ -94,18 +95,13 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const theme = useTheme();
 
     // some basic checks for how we should render media
-    const isVideoOn = !!mainStream?.videoPublication;
-    const isMicOn = !!mainStream?.audioPublication;
+    const isVideoOn = !!mainStream?.videoTrack;
+    const isMicOn = !!mainStream?.audioTrack;
     const hasSidecars = !!sidecarStreams.length;
 
-    // track speaking state for the Twilio participant represented by the main stream
-    const mainStreamParticipantIdentity = mainStream?.participantIdentity;
-    const isSpeaking = useSpeakingStates(
-      React.useCallback(
-        (store) => (mainStreamParticipantIdentity ? !!store.isSpeaking[mainStreamParticipantIdentity] : false),
-        [mainStreamParticipantIdentity]
-      )
-    );
+    // track speaking state for the media participant represented by the main stream
+    const mainStreamParticipantIdentity = mainStream?.participantId;
+    const isSpeaking = useSpeakingState(mainStreamParticipantIdentity || 'nobody');
 
     const { resize } = useCanvasObject();
 
@@ -131,15 +127,15 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
         <PersonBubbleContent isVideoOn={isVideoOn}>
           {/* Still a typing issue with react-spring :( */}
           <PersonBubbleBackground isVideoOn={isVideoOn} backgroundColor={backgroundColor}>
-            {mainStream?.videoPublication && (
-              <Publication classNames={classes.video} publication={mainStream.videoPublication} isLocal={isLocal} />
+            {mainStream?.videoTrack && (
+              <Publication classNames={classes.video} track={mainStream.videoTrack} isLocal={isLocal} />
             )}
           </PersonBubbleBackground>
-          {!mainStream?.videoPublication && <PersonBubbleAvatar isSpeaking={isSpeaking} userId={userId} />}
-          {mainStream?.audioPublication && (
+          {!mainStream?.videoTrack && <PersonBubbleAvatar isSpeaking={isSpeaking} userId={userId} />}
+          {mainStream?.audioTrack && (
             <Publication
               classNames={classes.audio}
-              publication={mainStream?.audioPublication}
+              track={mainStream?.audioTrack}
               isLocal={isLocal}
               disableAudio={isLocal}
             />

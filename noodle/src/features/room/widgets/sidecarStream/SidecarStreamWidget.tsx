@@ -6,10 +6,9 @@ import { MinimizeIcon } from '@components/icons/MinimizeIcon';
 import { SCREEN_SHARE_AUDIO_TRACK_NAME, SCREEN_SHARE_TRACK_NAME } from '@constants/User';
 import { makeStyles } from '@material-ui/core';
 import { Fullscreen } from '@material-ui/icons';
-import { useLocalTracks } from '@providers/media/hooks/useLocalTracks';
-import { useLocalParticipant } from '@providers/twilio/hooks/useLocalParticipant';
-import { useNamedPublication } from '@providers/twilio/hooks/useNamedPublication';
-import { useParticipantByIdentity } from '@providers/twilio/hooks/useParticipantByIdentity';
+import { media } from '@src/media';
+import { useIsParticipantConnected, useParticipantTrack } from '@src/media/hooks';
+import { TrackType } from '@withso/pop-media-sdk';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -46,10 +45,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function inferStreamType(widgetState: SidecarStreamWidgetState): 'screen' | 'av' {
-  if (widgetState.videoTrackName) {
-    return widgetState.videoTrackName.startsWith(SCREEN_SHARE_TRACK_NAME) ? 'screen' : 'av';
+  if (widgetState.videoTrackType) {
+    return widgetState.videoTrackType === TrackType.Screen ? 'screen' : 'av';
   } else {
-    return widgetState.audioTrackName?.startsWith(SCREEN_SHARE_AUDIO_TRACK_NAME) ? 'screen' : 'av';
+    return widgetState.audioTrackType === TrackType.ScreenAudio ? 'screen' : 'av';
   }
 }
 
@@ -59,46 +58,54 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
 
   const { remove: onClose, widget: state } = useWidgetContext<WidgetType.SidecarStream>();
 
-  const participant = useParticipantByIdentity(state.widgetState.twilioParticipantIdentity);
+  const mediaParticipantId = state.widgetState.mediaParticipantId;
+  const isConnected = useIsParticipantConnected(mediaParticipantId);
 
   React.useEffect(() => {
-    if (!participant) {
+    if (!isConnected) {
       const timeout = setTimeout(onClose, WAIT_FOR_RECONNECT_TIME);
       return () => clearTimeout(timeout);
     }
-  }, [onClose, participant]);
+  }, [onClose, isConnected]);
 
   const isOwnStream = useIsMe(state.creatorId);
-  const isLocalDeviceStream = useLocalParticipant()?.identity === state.widgetState.twilioParticipantIdentity;
+  const isLocalDeviceStream = mediaParticipantId === media.localParticipantId;
 
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const onExitFullscreen = React.useCallback(() => setIsFullscreen(false), []);
 
   const [isLocalMuted, setIsLocalMuted] = React.useState(false);
 
-  const videoPublication = useNamedPublication(participant, state.widgetState.videoTrackName ?? null);
-  const audioPublication = useNamedPublication(participant, state.widgetState.audioTrackName ?? null);
-  const isSharingAudio = !!audioPublication;
+  let videoTrack = useParticipantTrack(mediaParticipantId, state.widgetState.videoTrackType ?? TrackType.Camera);
+  let audioTrack = useParticipantTrack(mediaParticipantId, state.widgetState.audioTrackType ?? TrackType.Microphone);
+  // this is just a workaround for rules of hooks and conditionals :(
+  if (!state.widgetState.videoTrackType) {
+    videoTrack = null;
+  }
+  if (!state.widgetState.audioTrackType) {
+    audioTrack = null;
+  }
+
+  const isSharingAudio = !!audioTrack;
 
   const streamType = inferStreamType(state.widgetState);
 
-  const { stopScreenShare, stopAudio, stopVideo } = useLocalTracks();
   const stopStreaming = React.useCallback(() => {
     // can only stop your own device's stream
     if (!isLocalDeviceStream) return;
 
     // figure out which streams to stop
     if (streamType === 'screen') {
-      stopScreenShare();
+      media.stopScreenShare();
     } else {
-      stopVideo();
-      stopAudio();
+      media.stopCamera();
+      media.stopMicrophone();
     }
 
     onClose();
-  }, [streamType, stopVideo, stopAudio, stopScreenShare, isLocalDeviceStream, onClose]);
+  }, [streamType, isLocalDeviceStream, onClose]);
 
-  const hasAnyMedia = !!videoPublication || !!audioPublication;
+  const hasAnyMedia = !!videoTrack || !!audioTrack;
 
   React.useEffect(() => {
     if (!hasAnyMedia) {
@@ -138,7 +145,7 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
             <MinimizeIcon />
           </WidgetTitlebarButton>
         )}
-        {!!participant && (
+        {!!isConnected && (
           <WidgetTitlebarButton onClick={() => setIsFullscreen(true)}>
             <Fullscreen />
           </WidgetTitlebarButton>
@@ -155,8 +162,8 @@ export const ScreenShareWidget: React.FC<IScreenShareWidgetProps> = () => {
           isFullscreen={isFullscreen}
           onFullscreenExit={onExitFullscreen}
           muted={isLocalMuted}
-          videoPublication={videoPublication}
-          audioPublication={audioPublication}
+          videoTrack={videoTrack}
+          audioTrack={audioTrack}
         />
         <WidgetResizeHandle />
       </WidgetContent>

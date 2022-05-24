@@ -15,6 +15,8 @@ try {
   version = 'unknown';
 }
 
+(window as any)[`__${version}__`] = version;
+
 // injectFirst on the styles provider tells material ui to inject our styles before the
 // base classes so we can avoid having to put !important flags on all of our positional css
 // https://material-ui.com/guides/interoperability/#controlling-priority-4

@@ -76,7 +76,7 @@ class Meetings {
 
         return await api.http.succeed(req, res, { token: token.toJwt() })
       } else {
-        api.http.fail(req, res, { errorCode: 'UNKNOWN_PROVIDER' })
+        return await api.http.fail(req, res, { errorCode: 'UNKNOWN_PROVIDER' })
       }
     }, ["roomRoute", "provider"])
 

@@ -50,15 +50,14 @@ interface IRoomPageProps {
   roomRoute: string;
 }
 
-const PROVIDER_NAME = process.env.REACT_APP_USE_TWILIO ? 'twilio' : 'livekit';
-
 export default function RoomPage(props: IRoomPageProps) {
   const classes = useStyles();
   const { error, setError } = useAppState();
   const [notFound, setNotFound] = useState(false);
 
   React.useEffect(() => {
-    media.connect({ roomRoute: props.roomRoute, providerName: PROVIDER_NAME }).catch((err) => {
+    // something's wrong with the typing :(
+    (media.connect as any)({ roomRoute: props.roomRoute }).catch((err: any) => {
       if (err instanceof ApiError) {
         if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
           setNotFound(true);

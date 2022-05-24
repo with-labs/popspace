@@ -13,6 +13,13 @@ const TWILIO_API_KEY_SECRET = process.env.TWILIO_API_KEY_SECRET
 const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY
 const LIVEKIT_SECRET_KEY = process.env.LIVEKIT_SECRET_KEY
 
+// default to LiveKit
+const USE_PROVIDER = process.env.LIVEKIT_API_KEY ? 'livekit' : 'twilio';
+
+if (!TWILIO_ACCOUNT_SID && !LIVEKIT_API_KEY) {
+  throw new Error('No media provider environment variables have been set. You must set either the TWILIO_ or LIVEKIT_ environment variables for audio/video support.')
+}
+
 const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
@@ -39,7 +46,7 @@ class Meetings {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
       }
 
-      if (params.provider === 'twilio') {
+      if (USE_PROVIDER === 'twilio') {
         const userUuid4 = uuidv4()
         const token = new TwilioAccessToken(
           TWILIO_ACCOUNT_SID,
@@ -57,7 +64,7 @@ class Meetings {
         token.addGrant(videoGrant)
 
         return await api.http.succeed(req, res, { token: token.toJwt() })
-      } else if (params.provider === 'livekit') {
+      } else if (USE_PROVIDER === 'livekit') {
         const userUuid4 = uuidv4()
         const token = new LivekitAccessToken(
           LIVEKIT_API_KEY,

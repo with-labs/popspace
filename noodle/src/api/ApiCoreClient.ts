@@ -45,7 +45,6 @@ export class ApiCoreClient extends EventEmitter {
   private socketReadyPromise: Promise<void>;
 
   private connectedRoomRoute: string | null = null;
-  private connectedProviderName: string | null = null;
 
   get actor() {
     return this._actor;
@@ -83,10 +82,10 @@ export class ApiCoreClient extends EventEmitter {
 
   // Internal Socket Management
   private handleSocketReconnect = () => {
-    if (this.connectedRoomRoute && this.connectedProviderName) {
+    if (this.connectedRoomRoute) {
       // we are connected to a room -- reset the room state
       // to get the latest updates and rejoin!
-      this.connectToMeeting(this.connectedRoomRoute, this.connectedProviderName, false);
+      this.connectToMeeting(this.connectedRoomRoute, false);
     }
   };
 
@@ -178,13 +177,9 @@ export class ApiCoreClient extends EventEmitter {
    * 9 yards.
    * @returns the media token to join AV session
    */
-  connectToMeeting = this.requireActor(async (roomRoute: string, providerName: string, isObserver = true) => {
+  connectToMeeting = this.requireActor(async (roomRoute: string, isObserver = true) => {
     // retrieve a media token first - this tells us the room exists
-    const { token } = await this.post<{ token: string }>(
-      '/logged_in_join_room',
-      { roomRoute, provider: providerName },
-      this.SERVICES.api
-    );
+    const { token } = await this.post<{ token: string }>('/logged_in_join_room', { roomRoute }, this.SERVICES.api);
 
     // wait for the socket to be connected ... this could be smoother
     await this.socketReadyPromise;
@@ -209,7 +204,6 @@ export class ApiCoreClient extends EventEmitter {
     this.cacheApi.initialize(authResponse);
 
     this.connectedRoomRoute = roomRoute;
-    this.connectedProviderName = providerName;
 
     return token;
   });

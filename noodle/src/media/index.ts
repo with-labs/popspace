@@ -1,4 +1,4 @@
-import { MediaService, MediaProvider, MediaTokenProvider } from '@withso/pop-media-sdk';
+import { MediaService, MediaProvider, MediaTokenProvider, DefaultConnectionParams } from '@withso/pop-media-sdk';
 import { TwilioProvider } from '@withso/pop-media-twilio';
 import { LiveKitProvider } from '@withso/pop-media-livekit';
 import client from '@api/client';
@@ -19,9 +19,9 @@ if (Object.keys(providers).length === 0) {
   throw new Error('No media providers configured');
 }
 
-class TokenProvider implements MediaTokenProvider<{ providerName: string; roomRoute: string }> {
-  getToken = async ({ providerName, roomRoute }: { providerName: string; roomRoute: string }) => {
-    const token = await client.connectToMeeting(roomRoute, providerName);
+class TokenProvider implements MediaTokenProvider<DefaultConnectionParams & { roomRoute: string }> {
+  getToken = async ({ roomRoute }: { roomRoute: string }) => {
+    const token = await client.connectToMeeting(roomRoute);
     return token;
   };
 }

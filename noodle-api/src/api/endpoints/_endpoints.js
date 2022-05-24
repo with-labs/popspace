@@ -9,4 +9,5 @@ module.exports = {
   Internal: require("./internal.js"),
   Wallpapers: require("./wallpapers.js"),
   Surveys: require("./surveys.js"),
+  MediaProviders: require("./media_providers.js")
 }

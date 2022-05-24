@@ -208,6 +208,15 @@ export class ApiCoreClient extends EventEmitter {
     return token;
   });
 
+  getMediaProviders = async () => {
+    const { mediaProviders } = await this.get<{
+      mediaProviders: {
+        [key: string]: any;
+      };
+    }>('/media_providers', this.SERVICES.api);
+    return mediaProviders;
+  };
+
   leaveMeeting = () => {
     this.cacheApi.reset();
     this.connectedRoomRoute = null;

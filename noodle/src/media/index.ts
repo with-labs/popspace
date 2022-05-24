@@ -1,23 +1,24 @@
-import { MediaService, MediaProvider, MediaTokenProvider, DefaultConnectionParams } from '@withso/pop-media-sdk';
+import { MediaService, MediaTokenProvider, DefaultConnectionParams } from '@withso/pop-media-sdk';
 import { TwilioProvider } from '@withso/pop-media-twilio';
 import { LiveKitProvider } from '@withso/pop-media-livekit';
 import client from '@api/client';
 
-const providers: Record<string, MediaProvider> = {};
-
-if (process.env.REACT_APP_USE_TWILIO) {
-  providers.twilio = new TwilioProvider();
-}
-if (process.env.REACT_APP_USE_LIVEKIT) {
-  if (!process.env.REACT_APP_LIVEKIT_ENDPOINT) {
-    throw new Error('REACT_APP_LIVEKIT_ENDPOINT must be set if REACT_APP_USE_LIVEKIT is true');
+// FIXME: we have to async request providers from the server
+// because the values aren't known at build time... there must
+// be a better way!
+export const readyPromise = client.getMediaProviders().then((providers) => {
+  if (providers.twilio) {
+    // TODO: expose way to out-of-band add provider in media SDK
+    (media as any).providers.twilio = new TwilioProvider();
   }
-  providers.livekit = new LiveKitProvider(process.env.REACT_APP_LIVEKIT_ENDPOINT, {});
-}
-
-if (Object.keys(providers).length === 0) {
-  throw new Error('No media providers configured');
-}
+  if (providers.livekit) {
+    (media as any).providers.livekit = new LiveKitProvider(providers.livekit.endpoint);
+  }
+  if (Object.keys(providers).length === 0) {
+    throw new Error('No media providers configured');
+  }
+  return providers;
+});
 
 class TokenProvider implements MediaTokenProvider<DefaultConnectionParams & { roomRoute: string }> {
   getToken = async ({ roomRoute }: { roomRoute: string }) => {
@@ -27,6 +28,6 @@ class TokenProvider implements MediaTokenProvider<DefaultConnectionParams & { ro
 }
 
 export const media = new MediaService<TokenProvider>({
-  providers,
+  providers: {},
   tokenProvider: new TokenProvider(),
 });

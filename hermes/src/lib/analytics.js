@@ -98,7 +98,7 @@ class Analytics {
   async toggleVideo(event) {
     const toggleEntry = await shared.db.prisma.analyticsCameraUsage.create({
       data:{
-        roomId: event.roomId(),
+        roomid: event.roomId(),
         actorId: event.actorId(),
         participantId: event.sessionId(),
         isToggledOn: event.payload().isOn,

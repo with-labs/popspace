@@ -85,7 +85,7 @@ class Meetings {
       } else {
         return await api.http.fail(req, res, { errorCode: 'UNKNOWN_PROVIDER' })
       }
-    }, ["roomRoute", "provider"])
+    }, ["roomRoute"])
 
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)

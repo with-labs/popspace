@@ -14,7 +14,7 @@ import { ApiError } from '@src/errors/ApiError';
 import { ErrorCodes } from '@constants/ErrorCodes';
 import { NotFoundPage } from '../NotFoundPage';
 import { logger } from '@utils/logger';
-import { media } from '@src/media';
+import { media, readyPromise } from '@src/media';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -56,16 +56,19 @@ export default function RoomPage(props: IRoomPageProps) {
   const [notFound, setNotFound] = useState(false);
 
   React.useEffect(() => {
-    // something's wrong with the typing :(
-    (media.connect as any)({ roomRoute: props.roomRoute }).catch((err: any) => {
-      if (err instanceof ApiError) {
-        if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
-          setNotFound(true);
-          return;
+    readyPromise.then((providers: Record<string, any>) => {
+      const providerName = Object.keys(providers)[0];
+      // something's wrong with the typing :(
+      (media.connect as any)({ roomRoute: props.roomRoute, providerName }).catch((err: any) => {
+        if (err instanceof ApiError) {
+          if (err.errorCode === ErrorCodes.ROOM_NOT_FOUND || err.errorCode === ErrorCodes.UNKNOWN_ROOM) {
+            setNotFound(true);
+            return;
+          }
         }
-      }
-      logger.error(err);
-      setError(err);
+        logger.error(err);
+        setError(err);
+      });
     });
   }, [props.roomRoute, setError]);
   React.useEffect(() => {

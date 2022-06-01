@@ -9,6 +9,8 @@ Learn more at [PopSpace](https://popspace.io)
 ![Hero Shot](README_COVER.png)
 
 
+# Quick Start
+
 To install PopSpace you will need:
 
 - An Audio/Video media provider:
@@ -17,6 +19,14 @@ To install PopSpace you will need:
 - An AWS account for S3 file storage (wallpapers and user uploads)
 
 ---
+
+## Using the Docker Image
+
+To skip building the image yourself, use our published image:
+
+```
+docker pull ghcr.io/with-labs/popspace:latest
+```
 
 ## Environment Variables
 
@@ -49,6 +59,8 @@ AWS_REGION
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 ```
+
+You can put these in a `.env` file and run `docker run -env-file .env ...` to include them.
 
 ## Ports
 

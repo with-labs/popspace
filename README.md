@@ -11,7 +11,9 @@ Learn more at [PopSpace](https://popspace.io)
 
 To install PopSpace you will need:
 
-- A Twilio account for audio, video, and screensharing
+- An Audio/Video media provider:
+  - A deployed [LiveKit server](https://livekit.io/)
+  - Or, a Twilio account
 - An AWS account for S3 file storage (wallpapers and user uploads)
 
 ---
@@ -23,10 +25,16 @@ The following environment variables are required to run PopSpace in a Docker con
 ```
 # a Postgres connection string for an external database
 DATABASE_URL=
-# you need a Twilio developer account to run the app
-TWILIO_ACCOUNT_SID
-TWILIO_API_KEY_SECRET
-TWILIO_API_KEY_SID
+
+# if you use LiveKit, define the following vars
+REACT_APP_LIVEKIT_ENDPOINT=https://your-livekit-instance.com
+LIVEKIT_API_KEY=<your livekit server key>
+LIVEKIT_SECRET_KEY=<your livekit server secret key>
+# if you use Twilio, define these instead.
+# TWILIO_ACCOUNT_SID
+# TWILIO_API_KEY_SECRET
+# TWILIO_API_KEY_SID
+
 # you need an S3 bucket for storing uploaded wallpapers
 WALLPAPER_FILES_BUCKET_NAME
 # you can set a custom origin for a wallpaper CDN (use this to

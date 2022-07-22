@@ -20,7 +20,7 @@ To install PopSpace you will need:
 
 ---
 
-## Using the Docker Image
+## Using the Docker Image (Recommended)
 
 To skip building the image yourself, use our published image:
 
@@ -30,7 +30,7 @@ docker pull ghcr.io/with-labs/popspace:latest
 
 ## Environment Variables
 
-The following environment variables are required to run PopSpace in a Docker container:
+The following environment variables are required to run PopSpace in a Docker container or running locally:
 
 ```
 # a Postgres connection string for an external database
@@ -227,6 +227,9 @@ In the current repo setup, these libraries are included as Yarn workspaces and a
 To build the Docker image yourself, you need to first build all the app services and libraries:
 
 ```
+# install dependencies
+yarn install
+# build source files for all app services
 yarn precontainerize
 ```
 
@@ -241,6 +244,9 @@ docker build -t popspace .
 First, build some dependencies by reusing the containerization preparation script:
 
 ```
+# install dependencies
+yarn install
+# build source files for all app services
 yarn precontainerize
 ```
 

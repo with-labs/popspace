@@ -1,3 +1,3 @@
 module.exports = {
-  SharedbPostgres: require("./sharedb_postgres.js")
+  SharedbSQLite: require("./sharedb_sqlite.js")
 }

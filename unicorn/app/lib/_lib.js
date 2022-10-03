@@ -11,8 +11,8 @@ const lib = {
 
     await shared.init()
 
-    lib.db.sharedbPostgres = lib.db.SharedbPostgres({
-      connectionString: process.env.DATABASE_URL,
+    lib.db.sharedbSQLite = lib.db.SharedbSQLite({
+      filename: process.env.UNICORN_DATABASE_URL,
     });
   },
   error: require("./error.js"),

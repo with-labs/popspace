@@ -85,12 +85,14 @@ class RoomWidget {
     return this._pgWidget.id;
   }
 
-  widgetState() {
-    return this._widgetState.state || {};
+  widgetState(): { [key: string]: any } {
+    return this._widgetState.state ? JSON.parse(this._widgetState.state) : {};
   }
 
-  roomWidgetState() {
-    return this._roomWidgetState.state;
+  roomWidgetState(): { [key: string]: any } {
+    return this._roomWidgetState.state
+      ? JSON.parse(this._roomWidgetState.state)
+      : {};
   }
 
   roomId() {

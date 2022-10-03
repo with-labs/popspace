@@ -32,9 +32,9 @@ class RoomData {
     return _models.RoomWidget.allInRoom(this.roomId);
   }
 
-  async state() {
+  async state(): Promise<{ [key: string]: any }> {
     const entry = await _room.data.getRoomState(this.roomId);
-    return entry.state;
+    return entry.state ? JSON.parse(entry.state) : {};
   }
 
   async wallpaper() {

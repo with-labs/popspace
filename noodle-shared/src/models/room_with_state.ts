@@ -41,7 +41,9 @@ class RoomWithState {
     }
 
     const roomState = await db.room.data.getRoomState(roomId);
-    const state = roomState ? roomState.state : getDefaultRoomState(pgRoom);
+    const state = roomState?.state
+      ? JSON.parse(roomState.state)
+      : getDefaultRoomState(pgRoom);
     return new RoomWithState(pgRoom, state);
   };
 
@@ -49,7 +51,9 @@ class RoomWithState {
     const result = [];
     const promises = rooms.map(async (room, index) => {
       const roomState = await db.room.data.getRoomState(room.id);
-      const state = roomState ? roomState.state : getDefaultRoomState(room);
+      const state = roomState?.state
+        ? JSON.parse(roomState.state)
+        : getDefaultRoomState(room);
       result[index] = new RoomWithState(room, state);
     });
     await Promise.all(promises);
@@ -59,7 +63,7 @@ class RoomWithState {
   _pgRoom: Room;
   _roomState: any;
 
-  constructor(pgRoom: Room, roomState: any) {
+  constructor(pgRoom: Room, roomState: object) {
     this._pgRoom = pgRoom;
     this._roomState = roomState;
   }
@@ -84,7 +88,7 @@ class RoomWithState {
     return _room.namesAndRoutes.route(this.displayName(), this.urlId());
   }
 
-  roomState() {
+  roomState(): { [key: string]: any } {
     return this._roomState;
   }
 

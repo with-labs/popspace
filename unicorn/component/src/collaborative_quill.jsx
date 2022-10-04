@@ -87,10 +87,9 @@ const CollaborativeQuill = (props) => {
   const connection = useMemo(() => new Sharedb.Connection(socket), [socket]);
 
   // fetch the document for the given info
-  const doc = useMemo(
-    () => connection.get(props.docCollection, props.docId),
-    [connection, props.docCollection, props.docId]
-  );
+  const doc = useMemo(() => {
+    return connection.get(props.docCollection, props.docId.toString());
+  }, [connection, props.docCollection, props.docId]);
 
   const [quill, setQuill] = useState(null);
   // needs to be instantiated after the first render
@@ -107,11 +106,13 @@ const CollaborativeQuill = (props) => {
     if (!quill) return;
 
     const handleDocNotExists = () => {
-      if(createAttempts > 5) {
-        const tooManyAttempts = new Error("Too many attempts to subscribe to document")
-        return setError(tooManyAttempts)
+      if (createAttempts > 5) {
+        const tooManyAttempts = new Error(
+          'Too many attempts to subscribe to document'
+        );
+        return setError(tooManyAttempts);
       }
-      if(props.waitForCreate) {
+      if (props.waitForCreate) {
         /*
           Only 1 person should be creating the document so there's no race condition.
           Perhaps a more elegant way - instead of retries - would be to receive
@@ -119,19 +120,23 @@ const CollaborativeQuill = (props) => {
         */
         doc.unsubscribe(onDocUnsubscribe);
         setTimeout((createAttempts + 1) ** 2 * 500, () => {
-          setCreateAttempts(createAttempts + 1)
+          setCreateAttempts(createAttempts + 1);
           doc.subscribe(onDocSubscribe);
-        })
-      } else {
-        doc.create(props.initialData || [{ insert: '' }], 'rich-text', (error) => {
-          if (error) {
-            console.error(error);
-          }
-          quill.setContents(doc.data);
-          quill.history.clear();
         });
+      } else {
+        doc.create(
+          props.initialData || [{ insert: '' }],
+          'rich-text',
+          (error) => {
+            if (error) {
+              console.error(error);
+            }
+            quill.setContents(doc.data);
+            quill.history.clear();
+          }
+        );
       }
-    }
+    };
 
     const onDocSubscribe = (error) => {
       if (error) {
@@ -141,7 +146,7 @@ const CollaborativeQuill = (props) => {
 
       // If doc.type is undefined, the document has not been created yet
       if (!doc.type) {
-        handleDocNotExists()
+        handleDocNotExists();
       } else {
         quill.setContents(doc.data);
         /*
@@ -164,8 +169,8 @@ const CollaborativeQuill = (props) => {
     doc.subscribe(onDocSubscribe);
 
     const onDocUnsubscribe = () => {
-      setSubscribed(false)
-    }
+      setSubscribed(false);
+    };
 
     return () => {
       doc.unsubscribe(onDocUnsubscribe);

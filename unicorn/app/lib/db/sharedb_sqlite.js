@@ -9,20 +9,26 @@ function SQLiteDB(options) {
 
   this.closed = false;
 
-  this.db = sqlite(options.filename);
-  this.db.prepare(`CREATE TABLE IF NOT EXISTS unicorn.snapshots (
-    id TEXT NOT NULL,
+  this.db = sqlite(options.filename, {
+    fileMustExist: false
+  });
+  this.db.prepare(`CREATE TABLE IF NOT EXISTS snapshots (
+    collection TEXT NOT NULL,
+    doc_id TEXT NOT NULL,
+    doc_type TEXT NOT NULL,
     version INTEGER NOT NULL,
-    type TEXT NOT NULL,
     data TEXT NOT NULL,
-    meta TEXT NOT NULL,
-    PRIMARY KEY (id, version)
+    meta TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (collection, doc_id)
   )`).run();
-  this.db.prepare(`CREATE TABLE IF NOT EXISTS unicorn.ops (
-    id TEXT NOT NULL,
+  this.db.prepare(`CREATE TABLE IF NOT EXISTS ops (
+    collection TEXT NOT NULL,
+    doc_id TEXT NOT NULL,
     version INTEGER NOT NULL,
-    op TEXT NOT NULL,
-    PRIMARY KEY (id, version)
+    operation TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (collection, doc_id, version)
   )`).run();
 };
 module.exports = SQLiteDB;
@@ -50,6 +56,7 @@ function rollback(client, done) {
  */
 function idToInt(id) {
   if (typeof id === 'number') return id;
+  if (typeof id === 'string') return parseInt(id);
   if (shared.db.serialization.detectBigInt(id)) {
     return shared.db.serialization.parseBigInt(id);
   }
@@ -82,33 +89,33 @@ SQLiteDB.prototype.commit = function(collection, id, op, snapshot, options, call
    * }
    * snapshot: SqliteSnapshot
    */
-  const rows = db.prepare(`WITH snapshot_id AS (
-    INSERT INTO unicorn.snapshots (collection, doc_id, doc_type, version, data)
-    SELECT $collection::varchar collection, $id doc_id, $doc_type doc_type, $version v, $data d
+  const rows = this.db.prepare(`WITH snapshot_id AS (
+    INSERT INTO snapshots (collection, doc_id, doc_type, version, data)
+    SELECT $collection collection, $id doc_id, $doc_type doc_type, $version v, $data d
     WHERE $version = (
       SELECT version+1 v
-      FROM unicorn.snapshots
+      FROM snapshots
       WHERE collection = $collection AND doc_id = $id
       FOR UPDATE
     ) OR NOT EXISTS (
       SELECT 1
-      FROM unicorn.snapshots
+      FROM snapshots
       WHERE collection = $collection AND doc_id = $id
       FOR UPDATE
     )
     ON CONFLICT (collection, doc_id) DO UPDATE SET version = $version, data = $data, doc_type = $doc_type
-    RETURNING version
-  )
-  INSERT INTO unicorn.ops (collection, doc_id, version, operation)
-  SELECT $collection::varchar collection, $id doc_id, $version v, $op operation
+    RETURNING version;
+  );
+  INSERT INTO ops (collection, doc_id, version, operation)
+  SELECT $collection collection, $id doc_id, $version v, $op operation
   WHERE (
     $3 = (
       SELECT max(version)+1
-      FROM unicorn.ops
+      FROM ops
       WHERE collection = $collection and doc_id = $id
     ) OR NOT EXISTS (
       SELECT 1
-      FROM unicorn.ops
+      FROM ops
       WHERE collection = $collection and doc_id = $id
     )
   ) AND EXISTS (SELECT 1 FROM snapshot_id)
@@ -116,7 +123,7 @@ SQLiteDB.prototype.commit = function(collection, id, op, snapshot, options, call
     collection,
     id: intId,
     version: snapshot.v,
-    data: snapshot.data,
+    data: JSON.stringify(snapshot.data),
     doc_type: snapshot.type,
     op
   })
@@ -128,7 +135,7 @@ SQLiteDB.prototype.commit = function(collection, id, op, snapshot, options, call
 // has never been created in the database.
 SQLiteDB.prototype.getSnapshot = function(collection, id, fields, options, callback) {
   let intId = idToInt(id);
-  const row = this.db.prepare(`SELECT version, doc_type, data, meta FROM unicorn.snapshots WHERE collection = $collection AND doc_id = $id`).get({
+  const row = this.db.prepare(`SELECT version, doc_type, data, meta FROM snapshots WHERE collection = $collection AND doc_id = $id`).get({
     collection,
     id: intId
   });
@@ -162,7 +169,7 @@ SQLiteDB.prototype.getOps = function(collection, id, from, to, options, callback
   let rows = [];
   if (to) {
     rows = this.db.prepare(
-      `SELECT operation FROM unicorn.ops WHERE collection = $collection AND doc_id = $id AND version > $from AND version <= $to ORDER BY version ASC`
+      `SELECT operation FROM ops WHERE collection = $collection AND doc_id = $id AND version > $from AND version <= $to ORDER BY version ASC`
     ).all({
       collection,
       id: intId,
@@ -171,7 +178,7 @@ SQLiteDB.prototype.getOps = function(collection, id, from, to, options, callback
     })
   } else {
     rows = this.db.prepare(
-      `SELECT version, operation FROM unicorn.ops WHERE collection = $collection AND doc_id = $id AND version > $from ORDER BY version ASC`
+      `SELECT version, operation FROM ops WHERE collection = $collection AND doc_id = $id AND version > $from ORDER BY version ASC`
     ).all({
       collection,
       id: intId,
@@ -185,6 +192,6 @@ function SqliteSnapshot(id, version, type, data, meta) {
   this.id = id;
   this.v = parseInt(version);
   this.type = type;
-  this.data = data;
+  this.data = data ? JSON.parse(data) : data;
   this.m = meta;
 }

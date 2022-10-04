@@ -12,12 +12,8 @@ const shared = {
   models,
   api,
   net,
-  init: async () => {
-    await db.pg.init();
-  },
-  cleanup: async () => {
-    await db.pg.tearDown();
-  },
+  init: async () => {},
+  cleanup: async () => {},
 };
 
 export default shared;

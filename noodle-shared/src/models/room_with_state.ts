@@ -20,7 +20,7 @@ const getDefaultRoomState = (room: Room) => {
 
 class RoomWithState {
   // FIXME: this looks horribly inefficient with n+1 queries
-  static allVisitableForActorId = async (actorId: bigint) => {
+  static allVisitableForActorId = async (actorId: number) => {
     const created = await db.room.core.getCreatedRoutableRooms(actorId);
 
     const member = await db.room.core.getMemberRoutableRooms(actorId);
@@ -34,7 +34,7 @@ class RoomWithState {
     };
   };
 
-  static fromRoomId = async (roomId: bigint) => {
+  static fromRoomId = async (roomId: number) => {
     const pgRoom = await db.room.core.roomById(roomId);
     if (!pgRoom) {
       return null;

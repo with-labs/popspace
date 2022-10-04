@@ -7,7 +7,7 @@ export class Core {
   constructor() {}
 
   /********************* GETTERS *******************/
-  async roomById(id: bigint) {
+  async roomById(id: number) {
     const room = await prisma.room.findUnique({ where: { id } });
     if (!room || room.deletedAt) return null;
     return room;
@@ -24,7 +24,7 @@ export class Core {
     return await this.roomByUrlId(urlId);
   }
 
-  async routableRoomById(id: bigint) {
+  async routableRoomById(id: number) {
     /*
       TODO: At this point, this should return a model,
       or be deleted altogether - perhaps a model constructor
@@ -33,7 +33,7 @@ export class Core {
     return this.roomById(id);
   }
 
-  getCreatedRoutableRooms(actorId: bigint) {
+  getCreatedRoutableRooms(actorId: number) {
     return prisma.room.findMany({
       select: {
         id: true,
@@ -51,7 +51,7 @@ export class Core {
     });
   }
 
-  async getMemberRoutableRooms(actorId: bigint) {
+  async getMemberRoutableRooms(actorId: number) {
     const records = await prisma.roomMembership.findMany({
       where: {
         actorId,
@@ -96,7 +96,7 @@ export class Core {
   async createRoomFromTemplate(
     templateName: string,
     template: any,
-    creatorId: bigint,
+    creatorId: number,
     isPublic = true,
   ) {
     let templateData = template;
@@ -107,7 +107,7 @@ export class Core {
       if (!templateRow) {
         throw new Error(`No template found for name ${templateName}`);
       }
-      templateData = templateRow.data;
+      templateData = JSON.parse(templateRow.data);
     }
     const room = await this.createRoom(
       creatorId,
@@ -123,7 +123,7 @@ export class Core {
   }
 
   async createRoom(
-    creatorId: bigint,
+    creatorId: number,
     displayName: string,
     templateName: string,
     isPublic = true,
@@ -142,7 +142,7 @@ export class Core {
   }
 
   async createEmptyRoom(
-    creatorId: bigint,
+    creatorId: number,
     isPublic: boolean,
     displayName: string,
   ) {
@@ -154,7 +154,7 @@ export class Core {
     );
   }
 
-  async setDisplayName(roomId: bigint, newDisplayName: string) {
+  async setDisplayName(roomId: number, newDisplayName: string) {
     return await prisma.room.update({
       where: { id: roomId },
       data: {
@@ -163,14 +163,14 @@ export class Core {
     });
   }
 
-  async deleteRoom(roomId: bigint) {
+  async deleteRoom(roomId: number) {
     await prisma.room.update({
       where: { id: roomId },
       data: { deletedAt: time.now() },
     });
   }
 
-  async restoreRoom(roomId: bigint) {
+  async restoreRoom(roomId: number) {
     await prisma.room.update({
       where: { id: roomId },
       data: { deletedAt: null },

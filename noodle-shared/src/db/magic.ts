@@ -23,7 +23,7 @@ export class Magic {
     return `${appUrl}/unsubscribe?code=${magicLink.code}`;
   }
 
-  async createUnsubscribe(actorId: bigint) {
+  async createUnsubscribe(actorId: number) {
     const existingLink = await prisma.magicCode.findFirst({
       where: {
         actorId,
@@ -56,7 +56,7 @@ export class Magic {
     });
   }
 
-  async createSubscribe(actorId: bigint) {
+  async createSubscribe(actorId: number) {
     const existingLink = await prisma.magicCode.findFirst({
       where: {
         actorId,

@@ -36,7 +36,6 @@ const runScenario = (testPath = '../tests') => {
     const testSuite = require(`${path}/${runOptions.test}/${runOptions.test}_scenarios.js`);
     await shared.test.init();
     await shared.init();
-    await shared.db.pg.silenceLogs();
     const result = await testSuite[runOptions.scenario]();
 
     console.log(chalk.bgBlack.white.bold('\n===== Test result ======\n\n'));

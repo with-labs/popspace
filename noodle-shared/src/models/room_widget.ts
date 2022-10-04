@@ -5,7 +5,7 @@ import messages from '../db/messages/messages';
 import prisma from '../db/prisma';
 
 class RoomWidget {
-  static fromWidgetId = async (widgetId: bigint, roomId: bigint) => {
+  static fromWidgetId = async (widgetId: number, roomId: number) => {
     const pgWidget = await prisma.widget.findUnique({
       where: { id: widgetId },
       include: { creator: { select: { displayName: true } } },
@@ -26,7 +26,7 @@ class RoomWidget {
     );
   };
 
-  static allInRoom = async (roomId: bigint) => {
+  static allInRoom = async (roomId: number) => {
     const widgets = await prisma.widget.findMany({
       where: {
         roomWidget: {
@@ -63,12 +63,12 @@ class RoomWidget {
   _creator: Actor;
   _creatorDisplayName: string;
   _pgWidget: Widget;
-  _roomId: bigint;
+  _roomId: number;
   _roomWidgetState: WidgetTransform;
   _widgetState: WidgetState;
 
   constructor(
-    roomId: bigint,
+    roomId: number,
     pgWidget: Widget,
     widgetState: WidgetState,
     roomWidgetState: WidgetTransform,

@@ -44,7 +44,7 @@ const getMockCreator = async () => {
  */
 
 export default {
-  setUpRoomFromTemplate: async (roomId: bigint, templateData: any) => {
+  setUpRoomFromTemplate: async (roomId: number, templateData: any) => {
     const creator = await getMockCreator();
     /*
       Sample room template as of 2021/07/12
@@ -104,7 +104,7 @@ export default {
     return prisma.roomTemplate.create({
       data: {
         name: templateName,
-        data: data,
+        data: JSON.stringify(data),
         creatorId,
       },
     });

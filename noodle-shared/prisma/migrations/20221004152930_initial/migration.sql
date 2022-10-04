@@ -1,8 +1,8 @@
 -- CreateTable
 CREATE TABLE "actor_events" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
-    "session_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER,
+    "session_id" INTEGER,
     "key" TEXT NOT NULL,
     "value" TEXT,
     "ip" TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE "actor_events" (
 
 -- CreateTable
 CREATE TABLE "actors" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "display_name" TEXT,
     "avatar_name" TEXT,
     "admin" BOOLEAN DEFAULT false,
@@ -37,10 +37,10 @@ CREATE TABLE "actors" (
 
 -- CreateTable
 CREATE TABLE "analytics_camera_usage" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
-    "actor_id" BIGINT,
-    "participant_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
+    "actor_id" INTEGER,
+    "participant_id" INTEGER,
     "is_toggled_on" BOOLEAN NOT NULL,
     "toggled_at" DATETIME NOT NULL,
     "last_heartbeat_at" DATETIME NOT NULL,
@@ -52,10 +52,10 @@ CREATE TABLE "analytics_camera_usage" (
 
 -- CreateTable
 CREATE TABLE "analytics_mic_usage" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
-    "actor_id" BIGINT,
-    "participant_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
+    "actor_id" INTEGER,
+    "participant_id" INTEGER,
     "is_toggled_on" BOOLEAN NOT NULL,
     "toggled_at" DATETIME NOT NULL,
     "last_heartbeat_at" DATETIME NOT NULL,
@@ -67,9 +67,9 @@ CREATE TABLE "analytics_mic_usage" (
 
 -- CreateTable
 CREATE TABLE "analytics_room_participant_count" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
-    "participant_count" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
+    "participant_count" INTEGER NOT NULL,
     "measured_at" DATETIME NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "analytics_room_participant_count_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -77,10 +77,10 @@ CREATE TABLE "analytics_room_participant_count" (
 
 -- CreateTable
 CREATE TABLE "analytics_room_usage" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
-    "actor_id" BIGINT,
-    "participant_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
+    "actor_id" INTEGER,
+    "participant_id" INTEGER,
     "began_at" DATETIME NOT NULL,
     "last_heartbeat_at" DATETIME NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -91,17 +91,17 @@ CREATE TABLE "analytics_room_usage" (
 
 -- CreateTable
 CREATE TABLE "analytics_total_participant_counts" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "count" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "count" INTEGER NOT NULL,
     "measured_at" DATETIME NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
 CREATE TABLE "errors" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
-    "http_code" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER,
+    "http_code" INTEGER,
     "noodle_code" TEXT,
     "stack" TEXT,
     "message" TEXT,
@@ -112,15 +112,15 @@ CREATE TABLE "errors" (
 
 -- CreateTable
 CREATE TABLE "experience_ratings" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "submitted_at" DATETIME NOT NULL,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "rating" INTEGER NOT NULL,
     "feedback" TEXT,
-    "actor_id" BIGINT,
-    "room_id" BIGINT,
-    "session_id" BIGINT,
+    "actor_id" INTEGER,
+    "room_id" INTEGER,
+    "session_id" INTEGER,
     CONSTRAINT "experience_ratings_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "actors" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "experience_ratings_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "experience_ratings_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "sessions" ("id") ON DELETE SET NULL ON UPDATE CASCADE
@@ -128,8 +128,8 @@ CREATE TABLE "experience_ratings" (
 
 -- CreateTable
 CREATE TABLE "magic_codes" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER NOT NULL,
     "code" TEXT NOT NULL,
     "action" TEXT NOT NULL,
     "meta" TEXT,
@@ -144,10 +144,10 @@ CREATE TABLE "magic_codes" (
 
 -- CreateTable
 CREATE TABLE "messages" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "chat_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "chat_id" INTEGER,
     "content" TEXT,
-    "sender_id" BIGINT,
+    "sender_id" INTEGER,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "messages_sender_id_fkey" FOREIGN KEY ("sender_id") REFERENCES "actors" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "messages_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "widgets" ("id") ON DELETE SET NULL ON UPDATE CASCADE
@@ -155,7 +155,7 @@ CREATE TABLE "messages" (
 
 -- CreateTable
 CREATE TABLE "participant_states" (
-    "actor_id" BIGINT NOT NULL PRIMARY KEY,
+    "actor_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "state" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -164,9 +164,9 @@ CREATE TABLE "participant_states" (
 
 -- CreateTable
 CREATE TABLE "participants" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
-    "room_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER,
+    "room_id" INTEGER,
     "ip" TEXT,
     "browser" TEXT,
     "device" TEXT,
@@ -185,9 +185,9 @@ CREATE TABLE "participants" (
 
 -- CreateTable
 CREATE TABLE "room_memberships" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
-    "actor_id" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
+    "actor_id" INTEGER NOT NULL,
     "began_at" DATETIME,
     "expires_at" DATETIME,
     "revoked_at" DATETIME,
@@ -199,8 +199,8 @@ CREATE TABLE "room_memberships" (
 
 -- CreateTable
 CREATE TABLE "room_participant_states" (
-    "room_id" BIGINT NOT NULL,
-    "actor_id" BIGINT NOT NULL,
+    "room_id" INTEGER NOT NULL,
+    "actor_id" INTEGER NOT NULL,
     "state" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -212,8 +212,8 @@ CREATE TABLE "room_participant_states" (
 
 -- CreateTable
 CREATE TABLE "room_routes" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "room_id" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "room_id" INTEGER NOT NULL,
     "route" TEXT NOT NULL,
     "priority_level" INTEGER NOT NULL DEFAULT 0,
     "is_vanity" BOOLEAN,
@@ -224,19 +224,19 @@ CREATE TABLE "room_routes" (
 
 -- CreateTable
 CREATE TABLE "room_states" (
-    "room_id" BIGINT NOT NULL PRIMARY KEY,
+    "room_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "state" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "wallpaper_id" BIGINT,
+    "wallpaper_id" INTEGER,
     CONSTRAINT "room_states_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "room_states_wallpaper_id_fkey" FOREIGN KEY ("wallpaper_id") REFERENCES "wallpapers" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "room_templates" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "creator_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "creator_id" INTEGER,
     "name" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -246,8 +246,8 @@ CREATE TABLE "room_templates" (
 
 -- CreateTable
 CREATE TABLE "room_widget_states" (
-    "room_id" BIGINT NOT NULL,
-    "widget_id" BIGINT NOT NULL,
+    "room_id" INTEGER NOT NULL,
+    "widget_id" INTEGER NOT NULL,
     "state" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -259,8 +259,8 @@ CREATE TABLE "room_widget_states" (
 
 -- CreateTable
 CREATE TABLE "room_widgets" (
-    "widget_id" BIGINT NOT NULL,
-    "room_id" BIGINT NOT NULL,
+    "widget_id" INTEGER NOT NULL,
+    "room_id" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("widget_id", "room_id"),
@@ -270,8 +270,8 @@ CREATE TABLE "room_widgets" (
 
 -- CreateTable
 CREATE TABLE "rooms" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "creator_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "creator_id" INTEGER,
     "url_id" TEXT,
     "is_public" BOOLEAN DEFAULT true,
     "display_name" TEXT,
@@ -284,8 +284,8 @@ CREATE TABLE "rooms" (
 
 -- CreateTable
 CREATE TABLE "sessions" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT NOT NULL,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER NOT NULL,
     "secret" TEXT,
     "expires_at" DATETIME,
     "revoked_at" DATETIME,
@@ -295,8 +295,8 @@ CREATE TABLE "sessions" (
 
 -- CreateTable
 CREATE TABLE "slack_actions" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER,
     "action" TEXT,
     "slack_user_id" TEXT,
     "channel_id" TEXT,
@@ -306,8 +306,8 @@ CREATE TABLE "slack_actions" (
 
 -- CreateTable
 CREATE TABLE "slack_installs" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "actor_id" INTEGER,
     "workspace_id" TEXT,
     "enterprise_id" TEXT,
     "slack_user_id" TEXT,
@@ -319,8 +319,8 @@ CREATE TABLE "slack_installs" (
 
 -- CreateTable
 CREATE TABLE "wallpapers" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "creator_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "creator_id" INTEGER,
     "name" TEXT,
     "url" TEXT NOT NULL,
     "mimetype" TEXT,
@@ -335,7 +335,7 @@ CREATE TABLE "wallpapers" (
 
 -- CreateTable
 CREATE TABLE "widget_states" (
-    "widget_id" BIGINT NOT NULL PRIMARY KEY,
+    "widget_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "state" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -344,11 +344,11 @@ CREATE TABLE "widget_states" (
 
 -- CreateTable
 CREATE TABLE "widgets" (
-    "id" BIGINT NOT NULL PRIMARY KEY,
-    "creator_id" BIGINT,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "creator_id" INTEGER,
     "_type" TEXT,
     "deleted_at" DATETIME,
-    "deleted_by" BIGINT,
+    "deleted_by" INTEGER,
     "archived_at" DATETIME,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -358,7 +358,7 @@ CREATE TABLE "widgets" (
 -- CreateTable
 CREATE TABLE "survey_responses" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "actor_id" BIGINT,
+    "actor_id" INTEGER,
     "survey_name" TEXT,
     "response" TEXT,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

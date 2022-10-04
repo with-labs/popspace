@@ -8,9 +8,9 @@ datasource db {
 }
 
 model ActorEvent {
-  id             BigInt   @id @default(autoincrement())
-  actorId        BigInt?  @map("actor_id")
-  sessionId      BigInt?  @map("session_id")
+  id             Int      @id @default(autoincrement())
+  actorId        Int?     @map("actor_id")
+  sessionId      Int?     @map("session_id")
   key            String
   value          String?
   ip             String?
@@ -44,7 +44,7 @@ model ActorEvent {
 }
 
 model Actor {
-  id          BigInt    @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   displayName String?   @map("display_name")
   avatarName  String?   @map("avatar_name")
   admin       Boolean?  @default(false)
@@ -81,10 +81,10 @@ model Actor {
 }
 
 model AnalyticsCameraUsage {
-  id              BigInt   @id @default(autoincrement())
-  roomid          BigInt   @map("room_id")
-  actorId         BigInt?  @map("actor_id")
-  participantId   BigInt?  @map("participant_id")
+  id              Int      @id @default(autoincrement())
+  roomid          Int      @map("room_id")
+  actorId         Int?     @map("actor_id")
+  participantId   Int?     @map("participant_id")
   isToggledOn     Boolean  @map("is_toggled_on")
   toggledAt       DateTime @map("toggled_at")
   lastHeartbeatAt DateTime @map("last_heartbeat_at")
@@ -102,10 +102,10 @@ model AnalyticsCameraUsage {
 }
 
 model AnalyticsMicUsage {
-  id              BigInt   @id @default(autoincrement())
-  roomId          BigInt   @map("room_id")
-  actorId         BigInt?  @map("actor_id")
-  participantId   BigInt?  @map("participant_id")
+  id              Int      @id @default(autoincrement())
+  roomId          Int      @map("room_id")
+  actorId         Int?     @map("actor_id")
+  participantId   Int?     @map("participant_id")
   isToggledOn     Boolean  @map("is_toggled_on")
   toggledAt       DateTime @map("toggled_at")
   lastHeartbeatAt DateTime @map("last_heartbeat_at")
@@ -123,9 +123,9 @@ model AnalyticsMicUsage {
 }
 
 model AnalyticsRoomParticipantCount {
-  id               BigInt   @id @default(autoincrement())
-  roomId           BigInt   @map("room_id")
-  participantCount BigInt   @map("participant_count")
+  id               Int      @id @default(autoincrement())
+  roomId           Int      @map("room_id")
+  participantCount Int      @map("participant_count")
   measuredAt       DateTime @map("measured_at")
   createdAt        DateTime @default(now()) @map("created_at")
 
@@ -138,10 +138,10 @@ model AnalyticsRoomParticipantCount {
 }
 
 model AnalyticsRoomUsage {
-  id              BigInt   @id @default(autoincrement())
-  roomId          BigInt   @map("room_id")
-  actorId         BigInt?  @map("actor_id")
-  participantId   BigInt?  @map("participant_id")
+  id              Int      @id @default(autoincrement())
+  roomId          Int      @map("room_id")
+  actorId         Int?     @map("actor_id")
+  participantId   Int?     @map("participant_id")
   beganAt         DateTime @map("began_at")
   lastHeartbeatAt DateTime @map("last_heartbeat_at")
   createdAt       DateTime @default(now()) @map("created_at")
@@ -157,8 +157,8 @@ model AnalyticsRoomUsage {
 }
 
 model AnalyticsTotalParticipantCount {
-  id         BigInt   @id @default(autoincrement())
-  count      BigInt
+  id         Int      @id @default(autoincrement())
+  count      Int
   measuredAt DateTime @map("measured_at")
   createdAt  DateTime @default(now()) @map("created_at")
 
@@ -168,9 +168,9 @@ model AnalyticsTotalParticipantCount {
 }
 
 model Error {
-  id         BigInt   @id @default(autoincrement())
-  actorId    BigInt?  @map("actor_id")
-  httpCode   BigInt?  @map("http_code")
+  id         Int      @id @default(autoincrement())
+  actorId    Int?     @map("actor_id")
+  httpCode   Int?     @map("http_code")
   noodleCode String?  @map("noodle_code")
   stack      String?
   message    String?
@@ -187,15 +187,15 @@ model Error {
 }
 
 model ExperienceRating {
-  id          BigInt   @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now()) @map("created_at")
   submittedAt DateTime @map("submitted_at")
   updatedAt   DateTime @default(now()) @map("updated_at")
   rating      Int
   feedback    String?
-  actorId     BigInt?  @map("actor_id")
-  roomId      BigInt?  @map("room_id")
-  sessionId   BigInt?  @map("session_id")
+  actorId     Int?     @map("actor_id")
+  roomId      Int?     @map("room_id")
+  sessionId   Int?     @map("session_id")
 
   actor   Actor?   @relation(fields: [actorId], references: [id])
   room    Room?    @relation(fields: [roomId], references: [id])
@@ -209,8 +209,8 @@ model ExperienceRating {
 }
 
 model MagicCode {
-  id         BigInt    @id @default(autoincrement())
-  actorId    BigInt    @map("actor_id")
+  id         Int       @id @default(autoincrement())
+  actorId    Int       @map("actor_id")
   code       String    @unique
   action     String
   meta       String?
@@ -230,10 +230,10 @@ model MagicCode {
 }
 
 model Message {
-  id        BigInt   @id @default(autoincrement())
-  chatId    BigInt?  @map("chat_id")
+  id        Int      @id @default(autoincrement())
+  chatId    Int?     @map("chat_id")
   content   String?
-  senderId  BigInt?  @map("sender_id")
+  senderId  Int?     @map("sender_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   chat   Widget? @relation(fields: [chatId], references: [id])
@@ -245,7 +245,7 @@ model Message {
 }
 
 model ParticipantState {
-  actorId   BigInt   @id @map("actor_id")
+  actorId   Int      @id @map("actor_id")
   state     String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -256,9 +256,9 @@ model ParticipantState {
 }
 
 model Participant {
-  id             BigInt    @id @default(autoincrement())
-  actorId        BigInt?   @map("actor_id")
-  roomId         BigInt?   @map("room_id")
+  id             Int       @id @default(autoincrement())
+  actorId        Int?      @map("actor_id")
+  roomId         Int?      @map("room_id")
   ip             String?
   browser        String?
   device         String?
@@ -290,9 +290,9 @@ model Participant {
 }
 
 model RoomMembership {
-  id        BigInt    @id @default(autoincrement())
-  roomId    BigInt    @map("room_id")
-  actorId   BigInt    @map("actor_id")
+  id        Int       @id @default(autoincrement())
+  roomId    Int       @map("room_id")
+  actorId   Int       @map("actor_id")
   beganAt   DateTime? @map("began_at")
   expiresAt DateTime? @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
@@ -308,8 +308,8 @@ model RoomMembership {
 }
 
 model ParticipantTransform {
-  roomId    BigInt   @map("room_id")
-  actorId   BigInt   @map("actor_id")
+  roomId    Int      @map("room_id")
+  actorId   Int      @map("actor_id")
   state     String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -322,8 +322,8 @@ model ParticipantTransform {
 }
 
 model RoomRoute {
-  id            BigInt   @id @default(autoincrement())
-  roomId        BigInt   @map("room_id")
+  id            Int      @id @default(autoincrement())
+  roomId        Int      @map("room_id")
   route         String   @unique
   priorityLevel Int      @default(0) @map("priority_level")
   isVanity      Boolean? @map("is_vanity")
@@ -338,11 +338,11 @@ model RoomRoute {
 }
 
 model RoomState {
-  roomId      BigInt   @id @map("room_id")
+  roomId      Int      @id @map("room_id")
   state       String?
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @map("updated_at")
-  wallpaperId BigInt?  @map("wallpaper_id")
+  wallpaperId Int?     @map("wallpaper_id")
 
   room      Room       @relation(fields: [roomId], references: [id])
   wallpaper Wallpaper? @relation(fields: [wallpaperId], references: [id])
@@ -351,8 +351,8 @@ model RoomState {
 }
 
 model RoomTemplate {
-  id        BigInt   @id @default(autoincrement())
-  creatorId BigInt?  @map("creator_id")
+  id        Int      @id @default(autoincrement())
+  creatorId Int?     @map("creator_id")
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -366,8 +366,8 @@ model RoomTemplate {
 }
 
 model WidgetTransform {
-  roomId    BigInt   @map("room_id")
-  widgetId  BigInt   @unique @map("widget_id")
+  roomId    Int      @map("room_id")
+  widgetId  Int      @unique @map("widget_id")
   state     String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -380,8 +380,8 @@ model WidgetTransform {
 }
 
 model RoomWidget {
-  widgetId  BigInt   @unique @map("widget_id")
-  roomId    BigInt   @map("room_id")
+  widgetId  Int      @unique @map("widget_id")
+  roomId    Int      @map("room_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   widget Widget? @relation(fields: [widgetId], references: [id])
@@ -394,8 +394,8 @@ model RoomWidget {
 }
 
 model Room {
-  id           BigInt    @id @default(autoincrement())
-  creatorId    BigInt?   @map("creator_id")
+  id           Int       @id @default(autoincrement())
+  creatorId    Int?      @map("creator_id")
   urlId        String?   @unique @map("url_id")
   isPublic     Boolean?  @default(true) @map("is_public")
   displayName  String?   @map("display_name")
@@ -426,8 +426,8 @@ model Room {
 }
 
 model Session {
-  id        BigInt    @id @default(autoincrement())
-  actorId   BigInt    @map("actor_id")
+  id        Int       @id @default(autoincrement())
+  actorId   Int       @map("actor_id")
   secret    String?
   expiresAt DateTime? @map("expires_at")
   revokedAt DateTime? @map("revoked_at")
@@ -445,8 +445,8 @@ model Session {
 }
 
 model SlackAction {
-  id          BigInt   @id @default(autoincrement())
-  actorId     BigInt?  @map("actor_id")
+  id          Int      @id @default(autoincrement())
+  actorId     Int?     @map("actor_id")
   action      String?
   slackUserId String?  @map("slack_user_id")
   channelId   String?  @map("channel_id")
@@ -459,8 +459,8 @@ model SlackAction {
 }
 
 model SlackInstall {
-  id            BigInt    @id @default(autoincrement())
-  actorId       BigInt?   @map("actor_id")
+  id            Int       @id @default(autoincrement())
+  actorId       Int?      @map("actor_id")
   workspaceId   String?   @map("workspace_id")
   enterpriseId  String?   @map("enterprise_id")
   slackUserId   String?   @map("slack_user_id")
@@ -477,8 +477,8 @@ model SlackInstall {
 }
 
 model Wallpaper {
-  id            BigInt   @id @default(autoincrement())
-  creatorId     BigInt?  @map("creator_id")
+  id            Int      @id @default(autoincrement())
+  creatorId     Int?     @map("creator_id")
   name          String?
   url           String   @unique
   mimetype      String?
@@ -498,7 +498,7 @@ model Wallpaper {
 }
 
 model WidgetState {
-  widgetId  BigInt   @id @map("widget_id")
+  widgetId  Int      @id @map("widget_id")
   state     String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
@@ -509,11 +509,11 @@ model WidgetState {
 }
 
 model Widget {
-  id         BigInt    @id @default(autoincrement())
-  creatorId  BigInt?   @map("creator_id")
+  id         Int       @id @default(autoincrement())
+  creatorId  Int?      @map("creator_id")
   type       String?   @map("_type")
   deletedAt  DateTime? @map("deleted_at")
-  deletedBy  BigInt?   @map("deleted_by")
+  deletedBy  Int?      @map("deleted_by")
   archivedAt DateTime? @map("archived_at")
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime  @default(now()) @map("updated_at")
@@ -533,7 +533,7 @@ model Widget {
 
 model SurveyResponse {
   id         String   @id @default(cuid())
-  actorId    BigInt?  @map("actor_id")
+  actorId    Int?     @map("actor_id")
   surveyName String?  @map("survey_name")
   response   String?
   createdAt  DateTime @default(now()) @map("created_at")

@@ -2,7 +2,7 @@ import { SYSTEM_USER_ID } from './constants';
 import prisma from './prisma';
 
 export class Wallpapers {
-  getWallpapersForActor(actorId: bigint) {
+  getWallpapersForActor(actorId: number) {
     return prisma.wallpaper.findMany({
       where: {
         creatorId: {
@@ -12,7 +12,7 @@ export class Wallpapers {
     });
   }
 
-  async canUserAccessWallpaper(actorId: bigint, wallpaperId: bigint) {
+  async canUserAccessWallpaper(actorId: number, wallpaperId: number) {
     return !!(await prisma.wallpaper.findFirst({
       where: {
         id: wallpaperId,

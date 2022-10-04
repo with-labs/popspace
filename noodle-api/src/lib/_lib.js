@@ -9,13 +9,11 @@ const lib = {
   feedback: require("./feedback"),
   wallpapers: require("./wallpapers.js"),
   init: async () => {
-    await shared.default.db.pg.init()
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")
     }
   },
   cleanup: async () => {
-    await shared.default.db.pg.tearDown()
   },
   opengraph: require('./opengraph.js'),
   s3: require('./s3.js')

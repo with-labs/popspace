@@ -44,7 +44,7 @@ function rollback(client, done) {
 
 /**
  * normalizes an id to an integer, allowing compatibility
- * with our current usage which involves passing bigint widget ids
+ * with our current usage which involves passing int widget ids
  * as primary keys for documents - this unintentionally enforces that
  * ids are always integers
  */

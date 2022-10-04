@@ -29,20 +29,20 @@ const metadataStorage = {
    * @param {string} wallpaperId
    */
   deleteFileMetadata: async (wallpaperId, actor) => {
-    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: BigInt(wallpaperId) } })
+    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: (wallpaperId) } })
     if (file.creatorId !== actor.id) {
       const err = new Error('Only the creator of a wallpaper can delete it');
       err.status = 403;
       throw err;
     }
-    return shared.db.prisma.wallpaper.delete({ where: { id: BigInt(wallpaperId) } })
+    return shared.db.prisma.wallpaper.delete({ where: { id: (wallpaperId) } })
   },
 
   /**
    * @param {string} wallpaperId
    */
   getFileMetadata: (wallpaperId) => {
-    return shared.db.prisma.wallpapers.findUnique({ where: { id: BigInt(wallpaperId) } })
+    return shared.db.prisma.wallpapers.findUnique({ where: { id: (wallpaperId) } })
   }
 }
 

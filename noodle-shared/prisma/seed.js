@@ -96,37 +96,42 @@ const TEMPLATE_WALLPAPERS = [
   },
 ];
 
-const SYSTEM_USER_ID = BigInt(-5000);
+const SYSTEM_USER_ID = -5000;
 
 async function seed() {
+  const systemActor = await prisma.actor.upsert({
+    where: { id: SYSTEM_USER_ID },
+    update: {},
+    create: {
+      id: SYSTEM_USER_ID,
+      displayName: 'System',
+    },
+  });
+
   // create system templates
-  await Promise.all(
-    Object.entries(TEMPLATES).map(async ([key, value]) => {
-      await prisma.roomTemplate.upsert({
-        where: { name: key },
-        update: {},
-        create: {
-          name: key,
-          creatorId: SYSTEM_USER_ID,
-          data: value,
-        },
-      });
-    }),
-  );
+  for (const [key, value] of Object.entries(TEMPLATES)) {
+    await prisma.roomTemplate.upsert({
+      where: { name: key },
+      update: {},
+      create: {
+        name: key,
+        creatorId: systemActor.id,
+        data: JSON.stringify(value),
+      },
+    });
+  }
 
   // create system wallpapers
-  await Promise.all(
-    TEMPLATE_WALLPAPERS.map(async (data) => {
-      await prisma.wallpaper.upsert({
-        where: { url: data.url },
-        update: {},
-        create: {
-          ...data,
-          creatorId: SYSTEM_USER_ID,
-        },
-      });
-    }),
-  );
+  for (const data of TEMPLATE_WALLPAPERS) {
+    await prisma.wallpaper.upsert({
+      where: { url: data.url },
+      update: {},
+      create: {
+        ...data,
+        creatorId: systemActor.id,
+      },
+    });
+  }
 
   process.exit(0);
 }

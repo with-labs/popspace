@@ -1,5 +1,5 @@
 node_modules
 yarn-error.log
 .env
-db.sqlite
-db.sqlite-journal
+*.sqlite
+*.sqlite-journal

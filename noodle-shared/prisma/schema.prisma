@@ -543,3 +543,16 @@ model SurveyResponse {
 
   @@map("survey_responses")
 }
+
+model FileUpload {
+  id            String   @id @default(cuid())
+  creatorId     Int?     @map("actor_id")
+  url           String
+  name          String
+  mimetype      String
+  thumbnailUrl  String?  @map("thumbnail_url")
+  dominantColor String?  @map("dominant_color")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("file_uploads")
+}

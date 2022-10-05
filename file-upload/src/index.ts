@@ -6,7 +6,9 @@ export {
   UploadedFile as WithFile,
   FileImageData as WithImageData,
 } from './FileManager';
-export { S3 } from './S3';
+export { S3Storage } from './S3';
+export { DiskStorage } from './DiskStorage';
+export type { Storage } from './Storage';
 
 // declare global {
 //   const jest: {

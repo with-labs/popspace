@@ -8,6 +8,7 @@ const lib = {
   error: require("./error.js"),
   feedback: require("./feedback"),
   wallpapers: require("./wallpapers.js"),
+  files: require("./files.js"),
   init: async () => {
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")

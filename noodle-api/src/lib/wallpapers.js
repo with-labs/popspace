@@ -1,4 +1,5 @@
-const { FileManager, S3 } = require('@withso/file-upload');
+const { FileManager, DiskStorage } = require('@withso/file-upload');
+const path = require('path');
 
 /**
  * @type {import('@withso/file-upload').MetadataStorage}
@@ -48,15 +49,8 @@ const metadataStorage = {
 
 const wallpaperManager = new FileManager({
   metadataStorage,
-  s3BucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
-  hostOrigin: process.env.WALLPAPER_FILES_ORIGIN,
-  s3: new S3({
-    // using the same env vars as ./s3.js
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    region: process.env.AWS_REGION,
-    bucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
-  }),
+  storage: new DiskStorage(path.join(process.cwd(), 'wallpapers'), process.env.PUBLIC_URL + '/wallpapers'),
 });
+wallpaperManager.initialize()
 
 module.exports = wallpaperManager;

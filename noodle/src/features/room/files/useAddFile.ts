@@ -27,59 +27,54 @@ export function useAddFile(origin?: Origin) {
       }
       window.addEventListener('beforeunload', confirmClose, true);
 
-      // get our signed upload url to send the file directly to S3
-      const { success, uploadUrl, downloadUrl } = await api.files.getRoomFileUploadUrl(file.name, file.type);
+      // immediately add a pending widget, but don't block on it yet
+      const widgetAddedPromise = addWidget(
+        {
+          type: WidgetType.File,
+          initialData: {
+            url: '',
+            fileId: '',
+            fileName: file.name,
+            contentType: file.type,
+            uploadProgress: 0,
+          },
+          screenCoordinate: position,
+          size: SIZE_STUB,
+        },
+        origin
+      );
+
+      const abort = async () => {
+        window.removeEventListener('beforeunload', confirmClose, true);
+        const widget = await widgetAddedPromise;
+        await api.widgets.deleteWidget(widget);
+      };
+
+      // read file as arraybuffer
+      const fileBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.addEventListener('loadend', async () => {
+          const loadedFile: ArrayBuffer = reader.result as ArrayBuffer;
+          if (loadedFile.byteLength > MAX_FILE_BYTE_LENGTH) {
+            toast.error(t('error.messages.fileTooLarge', { maxMegabytes: MAX_MEGABYTES }) as string);
+            await abort();
+            return reject(`File exceeds ${MAX_FILE_BYTE_LENGTH} bytes`);
+          }
+          resolve(loadedFile);
+        });
+
+        reader.addEventListener('error', async () => {
+          await abort();
+          reject(reader.error);
+        });
+        reader.readAsArrayBuffer(file);
+      });
+
+      const { success, file: uploadedFile } = await api.files.uploadFile(file);
 
       if (!success) {
         toast.error(t('error.messages.fileDropUnknownFailure') as string);
       } else {
-        // immediately add a pending widget, but don't block on it yet
-        const widgetAddedPromise = addWidget(
-          {
-            type: WidgetType.File,
-            initialData: {
-              url: downloadUrl,
-              fileName: file.name,
-              contentType: file.type,
-              uploadProgress: 0,
-            },
-            screenCoordinate: position,
-            size: SIZE_STUB,
-          },
-          origin
-        );
-
-        const abort = async () => {
-          window.removeEventListener('beforeunload', confirmClose, true);
-          const widget = await widgetAddedPromise;
-          await api.widgets.deleteWidget(widget);
-        };
-
-        // read file as arraybuffer
-        const fileBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.addEventListener('loadend', async () => {
-            const loadedFile: ArrayBuffer = reader.result as ArrayBuffer;
-            if (loadedFile.byteLength > MAX_FILE_BYTE_LENGTH) {
-              toast.error(t('error.messages.fileTooLarge', { maxMegabytes: MAX_MEGABYTES }) as string);
-              await abort();
-              return reject(`File exceeds ${MAX_FILE_BYTE_LENGTH} bytes`);
-            }
-            resolve(loadedFile);
-          });
-
-          reader.addEventListener('error', async () => {
-            await abort();
-            reject(reader.error);
-          });
-          reader.readAsArrayBuffer(file);
-        });
-        // upload the file to S3
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          body: new Blob([fileBuffer], { type: file.type }),
-        });
-
         // wait for widget creation to complete too
         const widget = await widgetAddedPromise;
 
@@ -88,13 +83,13 @@ export function useAddFile(origin?: Origin) {
           widgetId: widget.widgetId,
           widgetState: {
             ...widget.widgetState,
-            url: downloadUrl,
+            url: uploadedFile.url,
+            fileId: uploadedFile.id,
             uploadProgress: 100,
           },
         });
-
-        window.removeEventListener('beforeunload', confirmClose, true);
       }
+      window.removeEventListener('beforeunload', confirmClose, true);
     },
     [addWidget, t, origin]
   );

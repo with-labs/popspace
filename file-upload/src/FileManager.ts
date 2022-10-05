@@ -143,7 +143,7 @@ export class FileManager<Ctx extends any[] = []> {
     if (file.imageData) {
       await this.storage.deleteFile(file.imageData.thumbnailUrl);
     }
-    await this.storage.deleteFile(file);
+    await this.storage.deleteFile(file.url);
     await this.metadata.deleteFileMetadata(fileId, ...ctx);
   };
 }

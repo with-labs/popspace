@@ -31,8 +31,8 @@ export class DiskStorage implements Storage {
     return `${this.baseUrl}/${key}`;
   };
 
-  deleteFile = async (file: MetadataFile) => {
-    const parsed = new URL(file.url);
+  deleteFile = async (fileUrl: string) => {
+    const parsed = new URL(fileUrl);
     const pathname = parsed.pathname;
     const baseUrlAsUrl = new URL(this.baseUrl);
     const pathWithoutBase =

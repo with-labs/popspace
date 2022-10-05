@@ -88,8 +88,8 @@ export class S3Storage implements Storage {
       .then((r) => r.Location);
   };
 
-  deleteFile = (file: MetadataFile) => {
-    const parsed = new URL(file.url);
+  deleteFile = (fileUrl: string) => {
+    const parsed = new URL(fileUrl);
     // S3 keys don't have starting slash
     const key = parsed.pathname.slice(1);
     const objectParams = {

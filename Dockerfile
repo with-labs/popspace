@@ -23,6 +23,8 @@ RUN yarn workspace @withso/file-upload build
 RUN yarn workspace @withso/noodle-shared build
 RUN yarn workspace @withso/unicorn build
 
+RUN yarn db-init
+
 ENV NODE_ENV production
 ENV NODE_OPTIONS='--max-http-header-size=100000'
 ENV APP_PORT=8888

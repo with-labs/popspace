@@ -89,45 +89,58 @@ SQLiteDB.prototype.commit = function(collection, id, op, snapshot, options, call
    * }
    * snapshot: SqliteSnapshot
    */
-  const rows = this.db.prepare(`WITH snapshot_id AS (
-    INSERT INTO snapshots (collection, doc_id, doc_type, version, data)
-    SELECT $collection collection, $id doc_id, $doc_type doc_type, $version v, $data d
-    WHERE $version = (
-      SELECT version+1 v
-      FROM snapshots
-      WHERE collection = $collection AND doc_id = $id
-      FOR UPDATE
-    ) OR NOT EXISTS (
-      SELECT 1
-      FROM snapshots
-      WHERE collection = $collection AND doc_id = $id
-      FOR UPDATE
-    )
-    ON CONFLICT (collection, doc_id) DO UPDATE SET version = $version, data = $data, doc_type = $doc_type
-    RETURNING version;
-  );
-  INSERT INTO ops (collection, doc_id, version, operation)
-  SELECT $collection collection, $id doc_id, $version v, $op operation
-  WHERE (
-    $3 = (
-      SELECT max(version)+1
-      FROM ops
-      WHERE collection = $collection and doc_id = $id
-    ) OR NOT EXISTS (
-      SELECT 1
-      FROM ops
-      WHERE collection = $collection and doc_id = $id
-    )
-  ) AND EXISTS (SELECT 1 FROM snapshot_id)
-  RETURNING version`).all({
-    collection,
-    id: intId,
-    version: snapshot.v,
-    data: JSON.stringify(snapshot.data),
-    doc_type: snapshot.type,
-    op
-  })
-  callback(null, !!rows?.length);
+  try {
+    const maxVersionResult = this.db.prepare(
+      `SELECT max(version) AS max_version FROM ops where COLLECTIOn = $collection AND doc_id = $id`
+    ).get({
+      collection,
+      id: intId
+    });
+
+    const maxVersion = maxVersionResult.max_version || 0;
+    if (snapshot.v !== maxVersion + 1) {
+      return callback(null, false);
+    }
+
+    const transaction = this.db.transaction(() => {
+      this.db.prepare(
+        `INSERT INTO ops (collection, doc_id, version, operation) VALUES ($collection, $id, $version, $operation)`
+      ).run({
+        collection,
+        id: intId,
+        version: snapshot.v,
+        operation: JSON.stringify(op)
+      });
+      if (snapshot.v === 1) {
+        this.db.prepare(
+          `INSERT INTO snapshots (collection, doc_id, doc_type, version, data) VALUES ($collection, $id, $type, $version, $data)`
+        ).run({
+          collection,
+          id: intId,
+          type: snapshot.type,
+          version: snapshot.v,
+          data: JSON.stringify(snapshot.data)
+        });
+      } else {
+        const updated = this.db.prepare(
+          `UPDATE snapshots SET doc_type = $type, version = $version, data = $data WHERE collection = $collection AND doc_id = $id AND version = ($version - 1)`
+        ).run({
+          collection,
+          id: intId,
+          version: snapshot.v,
+          data: JSON.stringify(snapshot.data),
+          type: snapshot.type
+        });
+        // if (updated.changes !== 1) {
+        //   return callback(null, false);
+        // }
+      }
+    });
+    transaction();
+    callback(null, true);
+  } catch (e) {
+    return callback(e, false);
+  }
 };
 
 // Get the named document from the database. The callback is called with (err,
@@ -185,7 +198,7 @@ SQLiteDB.prototype.getOps = function(collection, id, from, to, options, callback
       from
     });
   }
-  callback(null, rows.map(row => row.operation));
+  callback(null, rows.map(row => row.operation ? JSON.parse(row.operation) : null));
 };
 
 function SqliteSnapshot(id, version, type, data, meta) {

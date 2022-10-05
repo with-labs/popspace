@@ -45,7 +45,7 @@ export class TransformClient extends ApiSubClient {
     if (!this.core.actor) {
       throw new Error('Must authenticate before moving');
     }
-    const userId = this.core.actor.actorId;
+    const userId = this.core.actor.actorId.toString();
     const currentTransform = this.core.roomStateStore.getState().userPositions[userId] || {};
     const updatedTransform = {
       ...currentTransform,

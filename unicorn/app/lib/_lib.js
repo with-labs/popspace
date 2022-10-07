@@ -12,7 +12,7 @@ const lib = {
     await shared.init()
 
     lib.db.sharedbSQLite = lib.db.SharedbSQLite({
-      filename: process.env.UNICORN_DATABASE_URL,
+      filename: process.env.UNICORN_DATABASE_URL.replace('file:', ''),
     });
   },
   error: require("./error.js"),

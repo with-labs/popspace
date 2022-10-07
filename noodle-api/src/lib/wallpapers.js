@@ -49,7 +49,7 @@ const metadataStorage = {
 
 const wallpaperManager = new FileManager({
   metadataStorage,
-  storage: new DiskStorage(path.join(process.cwd(), 'wallpapers'), process.env.PUBLIC_URL + '/wallpapers'),
+  storage: new DiskStorage(process.env.WALLPAPERS_DIRECTORY, process.env.PUBLIC_URL + '/wallpapers'),
 });
 wallpaperManager.initialize()
 

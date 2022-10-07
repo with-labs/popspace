@@ -165,7 +165,7 @@ export class Data {
       create: { roomId, actorId, state: JSON.stringify(newState) },
       update: { state: JSON.stringify(newState) },
     });
-    return entry && entry.state;
+    return entry && entry.state && JSON.parse(entry.state);
   }
 
   /************************************************/

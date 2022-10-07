@@ -54,7 +54,7 @@ const metadataStorage = {
 
 const fileManager = new FileManager({
   metadataStorage,
-  storage: new DiskStorage(path.join(process.cwd(), 'user-files'), process.env.PUBLIC_URL + '/files')
+  storage: new DiskStorage(process.env.USER_FILES_DIRECTORY, process.env.PUBLIC_URL + '/files')
 });
 fileManager.initialize();
 

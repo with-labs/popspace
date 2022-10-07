@@ -29,7 +29,7 @@
     "dev:api": "yarn workspace noodle-api dev",
     "dev:hermes": "yarn workspace hermes dev",
     "dev:unicorn": "yarn workspace unicorn dev",
-    "db-init": "yarn workspace noodle-shared prisma migrate deploy"
+    "db-init": "yarn workspace @withso/noodle-shared db:init"
   },
   "devDependencies": {
     "concurrently": "^6.4.0"

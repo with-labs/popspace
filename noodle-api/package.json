@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "pm2 start index.js --name noodle_api -i 4 --wait-ready --kill-timeout 3000",
+    "prestart": "cd ../noodle-shared && yarn db:deploy",
     "stop": "pm2 stop noodle_api",
     "reload": "pm2 reload noodle_api",
     "logs": "pm2 logs noodle_api",

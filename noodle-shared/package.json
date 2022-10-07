@@ -20,6 +20,7 @@
     "db:reset": "prisma migrate reset",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:init": "prisma migrate deploy && node ./prisma/seed.js",
     "prisma:generate": "prisma generate",
     "build": "tsc",
     "prepare": "yarn build"

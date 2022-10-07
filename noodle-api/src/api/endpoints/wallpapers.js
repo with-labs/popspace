@@ -43,7 +43,7 @@ class Wallpapers {
   handleGet = async (req, res) => {
     const id = req.params.id
     const name = req.params.name
-    const filePath = path.join(process.cwd(), 'wallpapers', id, name)
+    const filePath = path.join(process.env.WALLPAPERS_DIRECTORY, id, name)
     res.sendFile(filePath)
   }
 }

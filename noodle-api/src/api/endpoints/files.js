@@ -37,7 +37,7 @@ class Files {
     this.zoo.loggedOutGetEndpoint("/files/:id/:name", async (req, res) => {
       const id = req.params.id
       const name = req.params.name
-      const filePath = path.join(process.cwd(), 'user-files', id, name)
+      const filePath = path.join(process.env.USER_FILES_DIRECTORY, id, name)
       res.sendFile(filePath)
     })
   }

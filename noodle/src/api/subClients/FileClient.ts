@@ -1,18 +1,27 @@
 import { ApiSubClient } from './ApiSubClient';
 
 export class FileClient extends ApiSubClient {
-  getRoomFileUploadUrl = this.core.requireActor(async (fileName: string, contentType: string) => {
-    return await this.core.post<{ uploadUrl: string; downloadUrl: string }>(
-      '/get_room_file_upload_url',
-      {
-        fileName,
-        contentType,
+  uploadFile = this.core.requireActor(async (file: File) => {
+    return this.core.request<{
+      file: {
+        id: string;
+        name: string;
+        url: string;
+        mimetype: string;
+        thumbnailUrl?: string;
+      };
+    }>({
+      method: 'POST',
+      endpoint: '/upload_file',
+      data: {
+        file,
       },
-      this.core.SERVICES.api
-    );
+      contentType: 'multipart/form-data',
+      service: this.core.SERVICES.api,
+    });
   });
 
-  deleteFile = this.core.requireActor(async (fileUrl: string) => {
-    return await this.core.post('/delete_file', { fileUrl }, this.core.SERVICES.api);
+  deleteFile = this.core.requireActor(async (fileId: string) => {
+    return await this.core.post('/delete_file', { fileId }, this.core.SERVICES.api);
   });
 }

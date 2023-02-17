@@ -69,7 +69,7 @@ export class Auth {
     if (!session) {
       return true;
     }
-    return session.actorId != BigInt(actor.id);
+    return session.actorId != actor.id;
   }
 }
 

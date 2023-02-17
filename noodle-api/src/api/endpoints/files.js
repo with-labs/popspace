@@ -1,4 +1,9 @@
 const { v4 } = require("uuid")
+const multer = require('multer');
+const lib = require('../../lib/_lib');
+const path = require('path');
+
+const uploadMiddleware = multer();
 
 class Files {
   constructor(zoo) {
@@ -7,38 +12,34 @@ class Files {
   }
 
   initPost() {
-    this.zoo.loggedInPostEndpoint("/get_room_file_upload_url", async (req, res, params) => {
-      // to avoid name collisions but keep the original filename,
-      // we put each uploaded file in a randomly generated "folder"
-      // which is really just a key prefix.
-      const folder = v4()
-      const uploadUrl = lib.s3.getUploadUrl(
-        params.fileName,
-        process.env.USER_FILES_BUCKET_NAME,
-        params.contentType,
-        folder
-      )
-      const downloadUrl = lib.s3.getDownloadUrl(
-        params.fileName,
-        process.env.USER_FILES_BUCKET_NAME,
-        folder
-      )
-
-      return await api.http.succeed(req, res, {
-        uploadUrl,
-        downloadUrl
-      })
-    }, ["fileName", "contentType"])
+    this.zoo.loggedInPostEndpoint("/upload_file", async (req, res, params) => {
+      if (!req.file) {
+        return api.http.fail(req, res, {
+          message: "A single file is required",
+          errorCode: shared.error.code.INVALID_REQUEST_PARAMETERS
+        }, shared.api.http.code.BAD_REQUEST);
+      }
+      const file = await lib.files.create(req.file, req.actor);
+      return api.http.succeed(req, res, { file });
+    }, [], [uploadMiddleware.single('file')])
 
     this.zoo.loggedInPostEndpoint("/delete_file", async(req, res, params) => {
       try {
-        await lib.s3.deleteFile(params.fileUrl)
+        await lib.files.delete(params.fileId, req.actor)
       } catch (err) {
+        console.error(err);
         return api.http.fail(req, res, err)
       }
 
       return api.http.succeed(req, res, { });
-    }, ["fileUrl"])
+    }, ["fileId"])
+
+    this.zoo.loggedOutGetEndpoint("/files/:id/:name", async (req, res) => {
+      const id = req.params.id
+      const name = req.params.name
+      const filePath = path.join(process.env.USER_FILES_DIRECTORY, id, name)
+      res.sendFile(filePath)
+    })
   }
 }
 

@@ -1,4 +1,6 @@
 import Aws from 'aws-sdk';
+import { MetadataFile } from './FileManager';
+import { Storage } from './Storage';
 
 const CORS_ORIGINS = (process.env.S3_CORS_ORIGINS || '').split(',');
 
@@ -12,7 +14,7 @@ export interface S3Options {
   secretAccessKey?: string;
 }
 
-export class S3 {
+export class S3Storage implements Storage {
   private bucketName: string;
   private publicBucket: boolean;
   private corsOrigins: string[];
@@ -32,7 +34,7 @@ export class S3 {
       });
   }
 
-  configureBucket = async () => {
+  initialize = async () => {
     // upsert the bucket
     try {
       await this.s3
@@ -73,7 +75,7 @@ export class S3 {
       .promise();
   };
 
-  uploadFileBuffer = (key: string, data: Buffer, mimetype: string) => {
+  storeFileBuffer = (key: string, data: Buffer, mimetype: string) => {
     return this.s3
       .upload({
         Key: key,
@@ -82,7 +84,8 @@ export class S3 {
         ACL: this.publicBucket ? 'public-read' : undefined,
         ContentType: mimetype,
       })
-      .promise();
+      .promise()
+      .then((r) => r.Location);
   };
 
   deleteFile = (fileUrl: string) => {

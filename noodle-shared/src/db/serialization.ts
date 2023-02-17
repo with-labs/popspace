@@ -5,25 +5,19 @@
  */
 const serialization = {
   replacer: (key: string, value: any) => {
-    if (typeof value === 'bigint' || value instanceof BigInt) {
-      return serialization.formatBigInt(value);
-    }
     return value;
   },
 
   serialize: (value: any) => {
-    return JSON.stringify(value, serialization.replacer);
+    return JSON.stringify(value);
   },
 
   reviver: (key: string, value: any) => {
-    if (serialization.detectBigInt(value)) {
-      return serialization.parseBigInt(value);
-    }
     return value;
   },
 
   deserialize: (value: string) => {
-    return JSON.parse(value, serialization.reviver);
+    return JSON.parse(value);
   },
 
   // private

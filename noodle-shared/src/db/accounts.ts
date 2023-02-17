@@ -11,14 +11,14 @@ const SIGNUP_REQUEST_EXPIRY_DAYS = 30;
 export class Accounts {
   constructor() {}
 
-  async delete(actorId: bigint) {
+  async delete(actorId: number) {
     return await prisma.actor.update({
       where: { id: actorId },
       data: { deletedAt: time.now() },
     });
   }
 
-  async hardDelete(actorId: bigint) {
+  async hardDelete(actorId: number) {
     // support hard-deleting soft-deleted actors
     const actor = await prisma.actor.findUnique({ where: { id: actorId } });
     if (!actor || !actor.deletedAt) {
@@ -90,7 +90,7 @@ export class Accounts {
   //   });
   // }
 
-  async actorById(id: bigint) {
+  async actorById(id: number) {
     const actor = await prisma.actor.findUnique({ where: { id } });
     if (actor.deletedAt) return null;
     return actor;
@@ -125,7 +125,7 @@ export class Accounts {
     return await prisma.magicCode.create({ data: loginRequest });
   }
 
-  async createSession(actorId: bigint, tx = null, req: Request | null = null) {
+  async createSession(actorId: number, tx = null, req: Request | null = null) {
     const session = await prisma.session.create({
       data: {
         actorId,
@@ -155,14 +155,14 @@ export class Accounts {
 
   // TODO: email subscriptions, again.
 
-  async newsletterSubscribe(actorId: bigint) {
+  async newsletterSubscribe(actorId: number) {
     // return await prisma.actor.update(
     //   {where: { id: actorId },
     //   data: { newsletterOptIn: true },
     //   });
   }
 
-  async newsletterUnsubscribe(actorId: bigint) {
+  async newsletterUnsubscribe(actorId: number) {
     // return await prisma.actor.update({
     //   where: { id: actorId },
     //   data: { newsletterOptIn: false },

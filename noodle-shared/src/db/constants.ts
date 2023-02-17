@@ -1,1 +1,1 @@
-export const SYSTEM_USER_ID = BigInt(-5000);
+export const SYSTEM_USER_ID = -5000;

@@ -4,7 +4,7 @@ jest.mock('./imageProcessing');
 jest.mock('uuid');
 
 const mockS3 = {
-  uploadFileBuffer: jest.fn((key: string) =>
+  storeFileBuffer: jest.fn((key: string) =>
     Promise.resolve({
       Location: `https://mock-s3.com/${key}`,
     }),
@@ -33,8 +33,7 @@ describe('FileManager', () => {
   beforeEach(() => {
     manager = new FileManager({
       metadataStorage: mockMetadata,
-      s3: mockS3 as any,
-      s3BucketName: 'mock-bucket',
+      storage: mockS3 as any,
     });
   });
 
@@ -46,10 +45,10 @@ describe('FileManager', () => {
       size: 10000,
     });
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledTimes(1);
     expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.txt',
       mockFile,
       'text/plain',
@@ -70,8 +69,7 @@ describe('FileManager', () => {
   it('should handle a file with a space in the name using custom origin', async () => {
     const customManager = new FileManager({
       metadataStorage: mockMetadata,
-      s3: mockS3 as any,
-      s3BucketName: 'mock-bucket',
+      storage: mockS3 as any,
       hostOrigin: 'https://custom-origin',
     });
     const result = await customManager.create({
@@ -81,10 +79,10 @@ describe('FileManager', () => {
       size: 10000,
     });
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(1);
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledTimes(1);
     expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file test.txt',
       mockFile,
       'text/plain',
@@ -110,15 +108,15 @@ describe('FileManager', () => {
       size: 10000,
     });
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledTimes(2);
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledTimes(2);
     expect(mockMetadata.createFileMetadata).toHaveBeenCalledTimes(1);
 
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.png',
       mockFile,
       'image/png',
     );
-    expect(mockS3.uploadFileBuffer).toHaveBeenCalledWith(
+    expect(mockS3.storeFileBuffer).toHaveBeenCalledWith(
       'mock-uuid/file.thumb.png',
       // due to mocking of thumbnail generation, the same buffer is used
       mockFile,

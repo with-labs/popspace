@@ -26,8 +26,8 @@ const reqToUrl = (expressRequest: Request) => {
 
 export class Events {
   actorCreateEvent = (
-    actorId: bigint,
-    sessionId: bigint,
+    actorId: number,
+    sessionId: number,
     source: string,
     expressRequest: Request,
   ) => {
@@ -44,8 +44,8 @@ export class Events {
   };
 
   roomCreateEvent = (
-    actorId: bigint,
-    sessionId: bigint,
+    actorId: number,
+    sessionId: number,
     templateName: string,
     expressRequest: Request,
   ) => {
@@ -62,8 +62,8 @@ export class Events {
   };
 
   recordEvent = (
-    actorId: bigint,
-    sessionId: bigint,
+    actorId: number,
+    sessionId: number,
     key: string,
     value: string | null,
     expressRequest: Request = null,
@@ -82,8 +82,8 @@ export class Events {
   };
 
   eventFromRequest(
-    actorId: bigint,
-    sessionId: bigint,
+    actorId: number,
+    sessionId: number,
     key: string,
     value: string | null,
     expressRequest: Request = null,
@@ -100,7 +100,7 @@ export class Events {
       sessionId,
       key,
       value: value !== undefined && value !== null ? value.toString() : value,
-      meta,
+      meta: JSON.stringify(meta),
       ip:
         expressRequest.headers['x-forwarded-for'] ||
         expressRequest.socket.remoteAddress,

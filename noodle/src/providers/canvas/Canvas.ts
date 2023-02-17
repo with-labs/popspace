@@ -207,7 +207,7 @@ export class Canvas extends EventEmitter {
     if (objectKind === 'person') {
       // local user can only move or resize themselves; ignore gestures for all
       // other users
-      if (objectId !== client.actor?.actorId) return;
+      if (objectId.toString() !== client.actor?.actorId.toString()) return;
 
       await client.transforms.transformSelf({ position: position || undefined, size: size || undefined });
     } else if (objectKind === 'widget') {

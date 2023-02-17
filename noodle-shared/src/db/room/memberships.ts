@@ -6,7 +6,7 @@ import prisma from '../prisma';
 import time from '../time';
 
 export class Memberships {
-  async isMember(actorId: bigint, roomId: bigint) {
+  async isMember(actorId: number, roomId: number) {
     const membership = await this.getMembership(actorId, roomId);
     if (!membership) {
       return false;
@@ -15,7 +15,7 @@ export class Memberships {
     return current;
   }
 
-  getMembership(actorId: bigint, roomId: bigint) {
+  getMembership(actorId: number, roomId: number) {
     return prisma.roomMembership.findFirst({
       where: {
         actorId,
@@ -43,11 +43,11 @@ export class Memberships {
     });
   }
 
-  getRoomMembers(roomId: bigint) {
+  getRoomMembers(roomId: number) {
     return _models.RoomMember.allInRoom(roomId);
   }
 
-  async revokeMembership(roomId: bigint, actorId: bigint) {
+  async revokeMembership(roomId: number, actorId: number) {
     return prisma.roomMembership.updateMany({
       where: {
         actorId,

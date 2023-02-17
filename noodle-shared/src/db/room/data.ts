@@ -2,11 +2,11 @@ import _models from '../../models/_models';
 import prisma from '../prisma';
 import time from '../time';
 
-const getNewState = async (
+const getNewState = async <S extends object>(
   modelName: string,
   criteria: any,
-  stateUpdate: any,
-  curState = null,
+  stateUpdate: Partial<S>,
+  curState: S | null = null,
 ) => {
   /*
     This is quite abstract, but it helps cut down repetition for
@@ -30,11 +30,13 @@ const getNewState = async (
     extracting JSON fields into columns will be the best solution.
   */
   if (!curState) {
-    curState = (
-      await prisma[modelName].findUnique({
-        where: criteria,
-      })
-    ).state;
+    curState = JSON.parse(
+      (
+        await prisma[modelName].findUnique({
+          where: criteria,
+        })
+      ).state,
+    );
   }
   return Object.assign(curState || {}, stateUpdate);
 };
@@ -44,18 +46,18 @@ export class Data {
   /****************** ROOM      *******************/
   /************************************************/
   // TODO: RoomState typing
-  setRoomState(roomId: bigint, newState: any) {
+  setRoomState<S extends object>(roomId: number, newState: S) {
     return prisma.roomState.upsert({
       where: { roomId },
-      create: { state: newState, roomId },
-      update: { state: newState },
+      create: { state: JSON.stringify(newState), roomId },
+      update: { state: JSON.stringify(newState) },
     });
   }
 
-  async updateRoomState(
-    roomId: bigint,
-    stateUpdate: any,
-    curState: any = null,
+  async updateRoomState<S extends object>(
+    roomId: number,
+    stateUpdate: Partial<S>,
+    curState: S | null = null,
   ) {
     return this.setRoomState(
       roomId,
@@ -63,15 +65,15 @@ export class Data {
     );
   }
 
-  async getRoomState(roomId: bigint) {
+  async getRoomState(roomId: number) {
     return await prisma.roomState.findUnique({ where: { roomId } });
   }
 
-  async getRoomWallpaperData(roomId: bigint) {
+  async getRoomWallpaperData(roomId: number) {
     const state = await this.getRoomState(roomId);
     if (!state.wallpaperId) return null;
     return prisma.wallpaper.findUnique({
-      where: { id: BigInt(state.wallpaperId) },
+      where: { id: state.wallpaperId },
     });
   }
 
@@ -79,19 +81,19 @@ export class Data {
   /****************** PARTICIPANTS   **************/
   /************************************************/
 
-  async getParticipantState(actorId: bigint) {
+  async getParticipantState(actorId: number) {
     const entry = await prisma.participantState.findUnique({
       where: {
         actorId,
       },
     });
-    return entry ? entry.state : null;
+    return entry ? JSON.parse(entry.state) : null;
   }
   // TODO: ParticipantState typing
-  async updateParticipantState(
-    actorId: bigint,
-    participantState: any,
-    curState: any = null,
+  async updateParticipantState<S extends object>(
+    actorId: number,
+    participantState: Partial<S>,
+    curState: S = null,
   ) {
     return this.setParticipantState(
       actorId,
@@ -103,16 +105,21 @@ export class Data {
       ),
     );
   }
-  async setParticipantState(actorId: bigint, newState: any) {
+  async setParticipantState<S extends object>(actorId: number, newState: S) {
     const result = await prisma.participantState.upsert({
       where: { actorId },
-      create: newState,
-      update: newState,
+      create: {
+        actorId,
+        state: JSON.stringify(newState),
+      },
+      update: {
+        state: JSON.stringify(newState),
+      },
     });
-    return result.state;
+    return JSON.parse(result.state);
   }
 
-  async getRoomParticipantState(roomId: bigint, actorId: bigint) {
+  async getRoomParticipantState(roomId: number, actorId: number) {
     const entry = await prisma.participantTransform.findUnique({
       where: {
         roomId_actorId: {
@@ -121,14 +128,14 @@ export class Data {
         },
       },
     });
-    return entry ? entry.state : null;
+    return entry ? JSON.parse(entry.state) : null;
   }
 
-  async updateRoomParticipantState(
-    roomId: bigint,
-    actorId: bigint,
-    stateUpdate: any,
-    curState: any = null,
+  async updateRoomParticipantState<S extends object>(
+    roomId: number,
+    actorId: number,
+    stateUpdate: Partial<S>,
+    curState: S | null = null,
   ) {
     return this.setRoomParticipantState(
       roomId,
@@ -146,19 +153,19 @@ export class Data {
       ),
     );
   }
-  async setRoomParticipantState(
-    roomId: bigint,
-    actorId: bigint,
-    newState: any,
+  async setRoomParticipantState<S extends object>(
+    roomId: number,
+    actorId: number,
+    newState: S,
   ) {
     const entry = await prisma.participantTransform.upsert({
       where: {
         roomId_actorId: { roomId, actorId },
       },
-      create: { roomId, actorId, state: newState },
-      update: { state: newState },
+      create: { roomId, actorId, state: JSON.stringify(newState) },
+      update: { state: JSON.stringify(newState) },
     });
-    return entry && entry.state;
+    return entry && entry.state && JSON.parse(entry.state);
   }
 
   /************************************************/
@@ -167,12 +174,12 @@ export class Data {
   // TODO: WidgetState typing
   // TODO: WidgetTransform typing
   // TODO: creator typing
-  async addWidgetInRoom(
-    creatorId: bigint,
-    roomId: bigint,
+  async addWidgetInRoom<WS extends object, RWS extends object>(
+    creatorId: number,
+    roomId: number,
     type: string,
-    desiredWidgetState: any,
-    desiredRoomWidgetState: any,
+    desiredWidgetState: WS,
+    desiredRoomWidgetState: RWS,
     creator: any = null,
   ) {
     const widget = await prisma.widget.create({
@@ -186,12 +193,12 @@ export class Data {
         },
         widgetState: {
           create: {
-            state: desiredWidgetState,
+            state: JSON.stringify(desiredWidgetState),
           },
         },
         transform: {
           create: {
-            state: desiredRoomWidgetState,
+            state: JSON.stringify(desiredRoomWidgetState),
             roomId,
           },
         },
@@ -220,7 +227,7 @@ export class Data {
     return model;
   }
 
-  softDeleteWidget(widgetId: bigint, deletingActorId: bigint | null = null) {
+  softDeleteWidget(widgetId: number, deletingActorId: number | null = null) {
     return prisma.widget.update({
       where: { id: widgetId },
       data: {
@@ -230,7 +237,7 @@ export class Data {
     });
   }
 
-  eraseWidget(widgetId: bigint) {
+  eraseWidget(widgetId: number) {
     return prisma.$transaction([
       prisma.widget.delete({ where: { id: widgetId } }),
       prisma.roomWidget.deleteMany({ where: { widgetId } }),
@@ -239,7 +246,7 @@ export class Data {
     ]);
   }
 
-  async getRoomWidgetState(roomId: bigint, widgetId: bigint) {
+  async getRoomWidgetState(roomId: number, widgetId: number) {
     const entry = await prisma.widgetTransform.findUnique({
       where: {
         roomId_widgetId: {
@@ -248,12 +255,12 @@ export class Data {
         },
       },
     });
-    return entry && entry.state;
+    return entry && JSON.parse(entry.state);
   }
 
   async updateRoomWidgetState(
-    roomId: bigint,
-    widgetId: bigint,
+    roomId: number,
+    widgetId: number,
     stateUpdate: any,
     roomWidgetState: any = null,
   ) {
@@ -273,37 +280,41 @@ export class Data {
       ),
     );
   }
-  setRoomWidgetState(roomId: bigint, widgetId: bigint, newState: any) {
+  setRoomWidgetState<S extends object>(
+    roomId: number,
+    widgetId: number,
+    newState: S,
+  ) {
     return prisma.widgetTransform.upsert({
       where: {
         roomId_widgetId: { roomId, widgetId },
       },
-      create: { roomId, widgetId, state: newState },
-      update: { state: newState },
+      create: { roomId, widgetId, state: JSON.stringify(newState) },
+      update: { state: JSON.stringify(newState) },
     });
   }
 
-  async getWidgetState(widgetId: bigint) {
+  async getWidgetState(widgetId: number): Promise<object> {
     const entry = await prisma.widgetState.findUnique({
       where: { widgetId },
     });
-    return entry.state;
+    return JSON.parse(entry.state);
   }
-  async updateWidgetState(
-    widgetId: bigint,
-    stateUpdate: any,
-    widgetState: any = null,
+  async updateWidgetState<S extends object>(
+    widgetId: number,
+    stateUpdate: Partial<S>,
+    widgetState: S = null,
   ) {
     return this.setWidgetState(
       widgetId,
       await getNewState('widgetState', { widgetId }, stateUpdate, widgetState),
     );
   }
-  setWidgetState(widgetId: bigint, newState: any) {
+  setWidgetState<S extends object>(widgetId: number, newState: S) {
     return prisma.widgetState.upsert({
       where: { widgetId },
-      create: { widgetId, state: newState },
-      update: { state: newState },
+      create: { widgetId, state: JSON.stringify(newState) },
+      update: { state: JSON.stringify(newState) },
     });
   }
 }

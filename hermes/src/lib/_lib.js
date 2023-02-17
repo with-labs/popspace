@@ -13,13 +13,11 @@ const lib = {
   SocketGroup: require("./socket_group"),
   analytics: new Analytics(),
   init: async () => {
-    await shared.default.db.pg.init()
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")
     }
   },
   cleanup: async () => {
-    await shared.default.db.pg.tearDown()
   },
   error: async (code, message, data = {}) => {
     return Object.assign({

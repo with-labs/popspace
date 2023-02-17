@@ -20,12 +20,13 @@
     "db:reset": "prisma migrate reset",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
+    "db:init": "prisma migrate deploy && node ./prisma/seed.js",
     "prisma:generate": "prisma generate",
     "build": "tsc",
     "prepare": "yarn build"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "env-cmd node prisma/seed.js"
   },
   "repository": {
     "type": "git",
@@ -64,6 +65,7 @@
     "@types/massive": "^5.4.4",
     "@types/node": "^16.6.1",
     "@types/pg": "^8.6.1",
+    "env-cmd": "^10.1.0",
     "typescript": "^4.3.5"
   }
 }

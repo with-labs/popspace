@@ -3,7 +3,7 @@ import { Actor as DbActor } from '@prisma/client';
 import accounts from '../db/accounts';
 
 class Actor {
-  static fromActorId = async (actorId: bigint) => {
+  static fromActorId = async (actorId: number) => {
     const pgActor = await accounts.actorById(actorId);
     if (!pgActor) {
       return null;

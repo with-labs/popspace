@@ -2,8 +2,8 @@ import prisma from './prisma';
 
 export class ExperienceRatings {
   createRating(
-    actorId: bigint,
-    roomId: bigint,
+    actorId: number,
+    roomId: number,
     rating: number,
     submittedAt: Date,
     feedback: string | null,
@@ -20,7 +20,7 @@ export class ExperienceRatings {
   }
 
   updateRating(
-    ratingId: bigint,
+    ratingId: number,
     updates: { rating?: number; feedback?: string },
   ) {
     return prisma.experienceRating.update({
@@ -29,7 +29,7 @@ export class ExperienceRatings {
     });
   }
 
-  getRating(ratingId: bigint) {
+  getRating(ratingId: number) {
     return prisma.experienceRating.findUnique({
       where: {
         id: ratingId,

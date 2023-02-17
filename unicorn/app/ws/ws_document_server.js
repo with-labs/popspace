@@ -109,7 +109,7 @@ WsDocumentServer.init = async () => {
     */
     WsDocumentServer.initialized = true
     ShareDB.types.register(require('rich-text').type)
-    WsDocumentServer.shareDBServer = new ShareDB({db: blib.db.sharedbPostgres})
+    WsDocumentServer.shareDBServer = new ShareDB({db: blib.db.sharedbSQLite})
     WsDocumentServer.connection = WsDocumentServer.shareDBServer.connect()
   })
 }

@@ -43,7 +43,7 @@ export default {
   report: (
     error: Error,
     tag: string,
-    actorId: bigint,
+    actorId: number,
     httpCode: number,
     noodleCode: string,
   ) => {

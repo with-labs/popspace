@@ -61,6 +61,7 @@ export interface LinkWidgetState {
 export interface FileWidgetState {
   url: string;
   fileName: string;
+  fileId: string;
   contentType: string;
   uploadProgress: number;
   mediaState?: WidgetMediaState;

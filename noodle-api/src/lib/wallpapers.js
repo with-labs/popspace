@@ -1,4 +1,5 @@
-const { FileManager, S3 } = require('@withso/file-upload');
+const { FileManager, DiskStorage } = require('@withso/file-upload');
+const path = require('path');
 
 /**
  * @type {import('@withso/file-upload').MetadataStorage}
@@ -29,34 +30,27 @@ const metadataStorage = {
    * @param {string} wallpaperId
    */
   deleteFileMetadata: async (wallpaperId, actor) => {
-    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: BigInt(wallpaperId) } })
+    const file = await shared.db.prisma.wallpaper.findUnique({ where: { id: (wallpaperId) } })
     if (file.creatorId !== actor.id) {
       const err = new Error('Only the creator of a wallpaper can delete it');
       err.status = 403;
       throw err;
     }
-    return shared.db.prisma.wallpaper.delete({ where: { id: BigInt(wallpaperId) } })
+    return shared.db.prisma.wallpaper.delete({ where: { id: (wallpaperId) } })
   },
 
   /**
    * @param {string} wallpaperId
    */
   getFileMetadata: (wallpaperId) => {
-    return shared.db.prisma.wallpapers.findUnique({ where: { id: BigInt(wallpaperId) } })
+    return shared.db.prisma.wallpapers.findUnique({ where: { id: (wallpaperId) } })
   }
 }
 
 const wallpaperManager = new FileManager({
   metadataStorage,
-  s3BucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
-  hostOrigin: process.env.WALLPAPER_FILES_ORIGIN,
-  s3: new S3({
-    // using the same env vars as ./s3.js
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    region: process.env.AWS_REGION,
-    bucketName: process.env.WALLPAPER_FILES_BUCKET_NAME,
-  }),
+  storage: new DiskStorage(process.env.WALLPAPERS_DIRECTORY, process.env.PUBLIC_URL + '/wallpapers'),
 });
+wallpaperManager.initialize()
 
 module.exports = wallpaperManager;

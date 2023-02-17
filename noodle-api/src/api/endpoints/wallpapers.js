@@ -1,5 +1,6 @@
 const { createFileHandler, deleteFileHandler } = require('@withso/file-upload');
 const multer = require('multer');
+const path = require('path')
 
 const uploadMiddleware = multer();
 
@@ -13,6 +14,7 @@ class Wallpapers {
     ])
     zoo.loggedInPostEndpoint("/delete_wallpaper", this.handleDelete, ['wallpaperId'], [])
     zoo.loggedInGetEndpoint("/list_wallpapers", this.handleList, [], [])
+    zoo.loggedOutGetEndpoint("/wallpapers/:id/:name", this.handleGet, [], [])
   }
 
   handleCreate = async (req, res) => {
@@ -38,6 +40,12 @@ class Wallpapers {
     // join to the image data to get thumbnails and dominant colors
     const wallpapers = await shared.db.wallpapers.getWallpapersForActor(req.actor.id);
     return api.http.succeed(req, res, { wallpapers });
+  }
+  handleGet = async (req, res) => {
+    const id = req.params.id
+    const name = req.params.name
+    const filePath = path.join(process.env.WALLPAPERS_DIRECTORY, id, name)
+    res.sendFile(filePath)
   }
 }
 

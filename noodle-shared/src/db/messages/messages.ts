@@ -5,7 +5,7 @@ const MESSAGE_LIMIT = 30;
 export class Messages {
   constructor() {}
 
-  async getWholeChat(chatId: bigint) {
+  async getWholeChat(chatId: number) {
     const results = await prisma.message.findMany({
       where: {
         chatId,
@@ -29,14 +29,14 @@ export class Messages {
     });
     // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
     return results.map((message) => {
-      (
-        message as typeof message & { senderDisplayName: string }
-      ).senderDisplayName = message.sender.displayName;
+      (message as typeof message & {
+        senderDisplayName: string;
+      }).senderDisplayName = message.sender.displayName;
       return message as typeof message & { senderDisplayName: string };
     });
   }
 
-  async getNextPageMessages(chatId: bigint, lastChatMessageId: bigint) {
+  async getNextPageMessages(chatId: number, lastChatMessageId: number) {
     const filter = { chatId };
     // for pages starting at a cursor, get ids less than the cursor id
     if (lastChatMessageId) {
@@ -71,9 +71,9 @@ export class Messages {
       // reverse the order of the messages so that the most recent messages are first
       messageList: messages.reverse().map((message) => {
         // TODO: transition to using sender object on messages instead of denormalizing senderDisplayName onto main object
-        (
-          message as typeof message & { senderDisplayName: string }
-        ).senderDisplayName = message.sender.displayName;
+        (message as typeof message & {
+          senderDisplayName: string;
+        }).senderDisplayName = message.sender.displayName;
         return message as typeof message & { senderDisplayName: string };
       }),
     };

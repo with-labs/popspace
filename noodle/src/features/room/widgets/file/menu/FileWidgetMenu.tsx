@@ -22,11 +22,13 @@ export function FileWidgetMenu(props: FileWidgetMenuProps) {
   const { remove, widget } = useWidgetContext<WidgetType.File>();
 
   const deleteWidget = async () => {
-    const fileUrl = widget.widgetState.url;
-    try {
-      await api.files.deleteFile(fileUrl);
-    } catch (err) {
-      logger.error(`Failed to delete file ${fileUrl}`, err);
+    const fileId = widget.widgetState.fileId;
+    if (fileId) {
+      try {
+        await api.files.deleteFile(fileId);
+      } catch (err) {
+        logger.error(`Failed to delete file ${fileId}`, err);
+      }
     }
     remove();
   };

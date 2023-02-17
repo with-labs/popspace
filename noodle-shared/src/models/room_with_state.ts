@@ -20,7 +20,7 @@ const getDefaultRoomState = (room: Room) => {
 
 class RoomWithState {
   // FIXME: this looks horribly inefficient with n+1 queries
-  static allVisitableForActorId = async (actorId: bigint) => {
+  static allVisitableForActorId = async (actorId: number) => {
     const created = await db.room.core.getCreatedRoutableRooms(actorId);
 
     const member = await db.room.core.getMemberRoutableRooms(actorId);
@@ -34,14 +34,16 @@ class RoomWithState {
     };
   };
 
-  static fromRoomId = async (roomId: bigint) => {
+  static fromRoomId = async (roomId: number) => {
     const pgRoom = await db.room.core.roomById(roomId);
     if (!pgRoom) {
       return null;
     }
 
     const roomState = await db.room.data.getRoomState(roomId);
-    const state = roomState ? roomState.state : getDefaultRoomState(pgRoom);
+    const state = roomState?.state
+      ? JSON.parse(roomState.state)
+      : getDefaultRoomState(pgRoom);
     return new RoomWithState(pgRoom, state);
   };
 
@@ -49,7 +51,9 @@ class RoomWithState {
     const result = [];
     const promises = rooms.map(async (room, index) => {
       const roomState = await db.room.data.getRoomState(room.id);
-      const state = roomState ? roomState.state : getDefaultRoomState(room);
+      const state = roomState?.state
+        ? JSON.parse(roomState.state)
+        : getDefaultRoomState(room);
       result[index] = new RoomWithState(room, state);
     });
     await Promise.all(promises);
@@ -59,7 +63,7 @@ class RoomWithState {
   _pgRoom: Room;
   _roomState: any;
 
-  constructor(pgRoom: Room, roomState: any) {
+  constructor(pgRoom: Room, roomState: object) {
     this._pgRoom = pgRoom;
     this._roomState = roomState;
   }
@@ -84,7 +88,7 @@ class RoomWithState {
     return _room.namesAndRoutes.route(this.displayName(), this.urlId());
   }
 
-  roomState() {
+  roomState(): { [key: string]: any } {
     return this._roomState;
   }
 

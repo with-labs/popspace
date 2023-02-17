@@ -34,14 +34,14 @@ class UpdateProcessor {
   async updateWidgetRoomState(event) {
     const widget = event.payload()
     const sender = event.senderParticipant()
-    const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), widget.widgetId, widget.transform)
+    const result = await shared.db.room.data.updateRoomWidgetState(event.roomId(), parseInt(widget.widgetId), widget.transform)
     sender.respondAndBroadcast(event, "widgetTransformed")
   }
 
   async updateWidgetState(event) {
     const widget = event.payload()
     const sender = event.senderParticipant()
-    const result = await shared.db.room.data.updateWidgetState(widget.widgetId, widget.widgetState)
+    const result = await shared.db.room.data.updateWidgetState(parseInt(widget.widgetId), widget.widgetState)
     sender.respondAndBroadcast(event, "widgetUpdated")
   }
 
@@ -110,37 +110,41 @@ class UpdateProcessor {
 
     // update the last deleted widget by this user in this room within the last 8 minutes
     // to set deleted_at to null
-    const updatedIds = await shared.db.prisma.$queryRaw`
-      WITH deleted_widgets AS (
-        SELECT
-          widgets.id as id
-        FROM
-          widgets
-        INNER JOIN room_widgets
-        ON (widgets.id = room_widgets.widget_id)
-        WHERE
-          room_widgets.room_id = ${parseInt(roomId)} AND
-          widgets.deleted_at IS NOT NULL AND
-          widgets.deleted_at > NOW() - '8 minutes'::TEXT::INTERVAL AND
-          widgets.deleted_by = ${parseInt(sender.actorId())}
-        ORDER BY widgets.deleted_at DESC
-        LIMIT 1
-      )
-      UPDATE widgets w
-      SET deleted_at = NULL
-      FROM deleted_widgets
-      WHERE
-        w.id = deleted_widgets.id
-      RETURNING w.id;
-    `;
+    const eightMinutesAgo = new Date(Date.now() - 8 * 60 * 1000)
 
-    if (updatedIds.length) {
-      // assemble the full model
-      const roomWidget = await shared.models.RoomWidget.fromWidgetId(updatedIds[0].id, roomId)
-      const serialized = await roomWidget.serialize()
+    const toUpdate = await shared.db.prisma.widget.findFirst({
+      where: {
+        roomWidget: {
+          roomId: parseInt(roomId),
+        },
+        deletedAt: {
+          gte: eightMinutesAgo
+        },
+        deletedBy: parseInt(sender.actorId())
+      },
+      orderBy: {
+        deletedAt: "desc"
+      },
+      select: {
+        id: true
+      }
+    })
+    if (toUpdate) {
+      const updated = await shared.db.prisma.widget.update({
+        where: { id: toUpdate.id },
+        data: {
+          deletedAt: null
+        },
+      })
 
-      sender.sendResponse(event, serialized, "widgetCreated")
-      sender.broadcastPeerEvent("widgetCreated", serialized)
+      if (updated) {
+        // assemble the full model
+        const roomWidget = await shared.models.RoomWidget.fromWidgetId(updated.id, roomId)
+        const serialized = await roomWidget.serialize()
+
+        sender.sendResponse(event, serialized, "widgetCreated")
+        sender.broadcastPeerEvent("widgetCreated", serialized)
+      }
     }
   }
 }

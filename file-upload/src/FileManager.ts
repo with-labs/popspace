@@ -3,7 +3,8 @@ import { v4 as uuid } from 'uuid';
 
 import { HttpError } from './HttpError';
 import { extractDominantColor, generateThumbnail } from './imageProcessing';
-import { S3 } from './S3';
+import { S3Storage } from './S3';
+import { Storage } from './Storage';
 
 /**
  * Data for a file upload
@@ -51,7 +52,6 @@ export interface MetadataStorage<Ctx extends any[] = []> {
 }
 
 export interface FileManagerOptions<Ctx extends any[]> {
-  s3BucketName: string;
   metadataStorage: MetadataStorage<Ctx>;
   /** Provide an alternate origin for the URLs created for files. Use this for CloudFront.
    * Defaults to `null` which means the URLs will be created using the origin of the bucket.
@@ -59,8 +59,8 @@ export interface FileManagerOptions<Ctx extends any[]> {
    * @example `'https://abcdef123456.cloudfront.net'`
    */
   hostOrigin?: string | null;
-  /** Override the internal S3 client implementation. Useful for unit tests. */
-  s3?: S3;
+  /** Provide a storage implementation */
+  storage: Storage;
 }
 
 export interface FileData {
@@ -72,22 +72,18 @@ export interface FileData {
 }
 
 export class FileManager<Ctx extends any[] = []> {
-  private storage: MetadataStorage<Ctx>;
-  private s3: S3;
+  private metadata: MetadataStorage<Ctx>;
+  private storage: Storage;
   private hostOrigin: string | null;
 
   constructor(options: FileManagerOptions<Ctx>) {
-    this.s3 =
-      options.s3 ||
-      new S3({
-        bucketName: options.s3BucketName,
-      });
-    this.storage = options.metadataStorage;
+    this.storage = options.storage;
+    this.metadata = options.metadataStorage;
     this.hostOrigin = options.hostOrigin || null;
   }
 
   initialize = () => {
-    return this.s3.configureBucket();
+    return this.storage.initialize();
   };
 
   create = async (file: FileData, ...ctx: Ctx) => {
@@ -95,7 +91,7 @@ export class FileManager<Ctx extends any[] = []> {
     const baseFileKey = `${prefix}/${file.originalname}`;
 
     // upload base file to s3
-    const baseUpload = await this.s3.uploadFileBuffer(
+    const baseUpload = await this.storage.storeFileBuffer(
       baseFileKey,
       file.buffer,
       file.mimetype,
@@ -103,7 +99,7 @@ export class FileManager<Ctx extends any[] = []> {
 
     const uploadUrl = this.hostOrigin
       ? new URL(`${this.hostOrigin}/${baseFileKey}`).href
-      : baseUpload.Location;
+      : baseUpload;
 
     const baseFile: UploadedFile = {
       name: file.originalname,
@@ -122,32 +118,32 @@ export class FileManager<Ctx extends any[] = []> {
       const thumbnailKey = `${prefix}/${fileNameWithoutExt}.thumb${extension}`;
       const thumbnail = await generateThumbnail(file.buffer);
       const dominantColor = await extractDominantColor(file.buffer);
-      const thumbnailUpload = await this.s3.uploadFileBuffer(
+      const thumbnailUpload = await this.storage.storeFileBuffer(
         thumbnailKey,
         thumbnail,
         file.mimetype,
       );
       const thumbnailUrl = this.hostOrigin
         ? new URL(`${this.hostOrigin}/${thumbnailKey}`).href
-        : thumbnailUpload.Location;
+        : thumbnailUpload;
       baseFile.imageData = {
         dominantColor,
         thumbnailUrl,
       };
     }
 
-    return this.storage.createFileMetadata(baseFile, ...ctx);
+    return this.metadata.createFileMetadata(baseFile, ...ctx);
   };
 
   delete = async (fileId: string, ...ctx: Ctx) => {
-    const file = await this.storage.getFileMetadata(fileId, ...ctx);
+    const file = await this.metadata.getFileMetadata(fileId, ...ctx);
     if (!file) {
       throw new HttpError('The file does not exist', 404);
     }
     if (file.imageData) {
-      await this.s3.deleteFile(file.imageData.thumbnailUrl);
+      await this.storage.deleteFile(file.imageData.thumbnailUrl);
     }
-    await this.s3.deleteFile(file.url);
-    await this.storage.deleteFileMetadata(fileId, ...ctx);
+    await this.storage.deleteFile(file.url);
+    await this.metadata.deleteFileMetadata(fileId, ...ctx);
   };
 }

@@ -15,9 +15,8 @@ To install PopSpace you will need:
 
 - An Audio/Video media provider:
   - A deployed [LiveKit server](https://livekit.io/)
+  - A LiveKit Cloud account
   - Or, a Twilio account
-- An AWS account for S3 file storage (wallpapers and user uploads)
-
 ---
 
 ## Using the Docker Image (Recommended)
@@ -33,9 +32,6 @@ docker pull ghcr.io/with-labs/popspace:latest
 The following environment variables are required to run PopSpace in a Docker container or running locally:
 
 ```
-# a Postgres connection string for an external database
-DATABASE_URL=
-
 # if you use LiveKit, define the following vars
 REACT_APP_LIVEKIT_ENDPOINT=https://your-livekit-instance.com
 LIVEKIT_API_KEY=<your livekit server key>
@@ -44,20 +40,6 @@ LIVEKIT_SECRET_KEY=<your livekit server secret key>
 # TWILIO_ACCOUNT_SID
 # TWILIO_API_KEY_SECRET
 # TWILIO_API_KEY_SID
-
-# you need an S3 bucket for storing uploaded wallpapers
-WALLPAPER_FILES_BUCKET_NAME
-# you can set a custom origin for a wallpaper CDN (use this to
-# setup CloudFront for example). If not, set this to
-# `https://${WALLPAPER_FILES_BUCKET_NAME}.s3.amazonaws.com`
-WALLPAPER_FILES_ORIGIN
-# you need an S3 bucket for storing uploaded user files.
-# this one doesn't use custom origin.
-USER_FILES_BUCKET_NAME
-# your AWS config and credentials
-AWS_REGION
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
 ```
 
 You can put these in a `.env` file and run `docker run -env-file .env ...` to include them.
@@ -75,31 +57,13 @@ The UI connects to each of these services on the corresponding port for the host
 
 If you would like to modify how the app tries to connect to services, the relevant file is `noodle/src/api/services.ts`.
 
-## Setting up your database
+# Optional configuration
 
-This app uses Prisma to manage database access. You can find out more about Prisma at [https://prisma.io/](https://prisma.io/).
-
-To migrate your database, run the following command:
-
-```
-yarn workspace @withso/noodle-shared db:deploy
-```
-
-This should apply all migrations in the `noodle-shared/prisma/migrations` directory. You will need to have the environment variable `DATABASE_URL` set to a valid Postgres connection string.
-
-You must also seed the database to setup the default room templates. Run the following command:
-
-```
-yarn workspace @withso/noodle-shared db:seed
-```
-
-Without seeding, you would need to manually setup the default room templates. You can find the default template data in `./noodle-shared/prisma/seed_data/templates`. Only admin users can create templates via the API.
-
-### A note on templates
-
-Room templates were originally planned to expand to allow custom user templates, but this work was not completed. The UI does not currently adapt to missing or additional templates in the database, and always displays the default set. Even if you don't seed the database, the UI will display non-functional template options.
+The rest of this configuration is optional. Popspace works without it.
 
 ## S3 Setup
+
+Using S3 for user files is optional. By default, all uploaded files are stored in the filesystem.
 
 You'll need 2 S3 buckets to run the app, one for wallpapers and one for user file uploads.
 
@@ -171,6 +135,25 @@ Bucket setup must allow CORS access from the origin you use to host the app. Tha
 ]
 ```
 
+### Adding environment variables
+
+Finally, you'll need to provide environment variables to start using your S3 buckets for file storage instead of the filesystem:
+
+```
+# you need an S3 bucket for storing uploaded wallpapers
+WALLPAPER_FILES_BUCKET_NAME
+# you can set a custom origin for a wallpaper CDN (use this to
+# setup CloudFront for example). If not, set this to
+# `https://${WALLPAPER_FILES_BUCKET_NAME}.s3.amazonaws.com`
+WALLPAPER_FILES_ORIGIN
+# you need an S3 bucket for storing uploaded user files.
+# this one doesn't use custom origin.
+USER_FILES_BUCKET_NAME
+# your AWS config and credentials
+AWS_REGION
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+```
 
 ## Becoming an Admin
 

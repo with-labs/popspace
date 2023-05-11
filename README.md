@@ -29,7 +29,7 @@ docker pull ghcr.io/with-labs/popspace:latest
 
 ## Environment Variables
 
-The following environment variables are required to run PopSpace in a Docker container or running locally:
+The following environment variables are required to run PopSpace in a Docker container or running locally. This assumes a persistent volume is mounted at `/data`:
 
 ```
 # if you use LiveKit, define the following vars
@@ -40,6 +40,12 @@ LIVEKIT_SECRET_KEY=<your livekit server secret key>
 # TWILIO_ACCOUNT_SID
 # TWILIO_API_KEY_SECRET
 # TWILIO_API_KEY_SID
+
+# yes, these have different formats, sorry...
+DATABASE_URL=file:/data/db.sqlite
+UNICORN_DATABASE_URL=/data/unicorn.sqlite
+USER_FILES_DIRECTORY=/data/user-files
+WALLPAPERS_DIRECTORY=/data/wallpapers
 ```
 
 You can put these in a `.env` file and run `docker run -env-file .env ...` to include them.

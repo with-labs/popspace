@@ -24,6 +24,9 @@ app.use(express.static('build'));
 app.get('/', (req, res) => {
   res.sendFile('index.html', { root: 'build' });
 });
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 app.get('*', (req, res) => {
   res.sendFile('index.html', { root: 'build' });
 });

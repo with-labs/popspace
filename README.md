@@ -42,7 +42,8 @@ LIVEKIT_SECRET_KEY=<your livekit server secret key>
 # TWILIO_API_KEY_SID
 
 # yes, these have different formats, sorry...
-DATABASE_URL=file:/data/db.sqlite
+# NOTE: connection_limit=1 is vital for DATABASE_URL!!
+DATABASE_URL=file:/data/db.sqlite?connection_limit=1
 UNICORN_DATABASE_URL=/data/unicorn.sqlite
 USER_FILES_DIRECTORY=/data/user-files
 WALLPAPERS_DIRECTORY=/data/wallpapers

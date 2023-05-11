@@ -1,3 +1,4 @@
+import { Logo } from '@components/Logo/Logo';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -192,7 +193,7 @@ export function NotFoundPage() {
       <style>{stylesheet}</style>
       <canvas ref={canvasRef} id="background"></canvas>
       <div id="overlay">
-        <img src="/404/images/logo.svg" alt={t('pages.404.logoAlt')} />
+        <Logo />
         <h1>{t('pages.404.title')}</h1>
         <a href="/">{t('pages.404.cta')}</a>
       </div>

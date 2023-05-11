@@ -7,6 +7,8 @@ import { logger } from '@utils/logger';
 
 import { EventNames } from './constants';
 
+const ENABLED = process.env.REACT_APP_ANALYTICS_ENABLED === 'true';
+
 // Helper methods
 // WIP for more complex data calculation, not needed right now
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,6 +58,8 @@ const removeLocalAnalyticsData = (eventName: string) => {
 // trackEvent
 // wrapper around the main track event
 const trackEvent = (eventName: EventNames | string, value?: any, eventProperties?: { [key: string]: any }) => {
+  if (!ENABLED) return Promise.resolve();
+
   const eventMetaData = {
     roomId: client.roomId,
     ref: getRef(),
@@ -67,6 +71,8 @@ const trackEvent = (eventName: EventNames | string, value?: any, eventProperties
 };
 
 const trackWidgetUpdateEvent = (roomId: string | null, eventPayload: Partial<WidgetState>) => {
+  if (!ENABLED) return Promise.resolve();
+
   if (eventPayload.hasOwnProperty('showIframe')) {
     // TODO: Figure out how to properly
     // @ts-ignore

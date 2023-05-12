@@ -24,6 +24,7 @@ const ANALYTICS_ID = 'chat_widget';
 
 const MAX_MSG_SIZE = 1000;
 const MIN_SHOW_WARINING = MAX_MSG_SIZE * 0.1;
+const AUTO_SCROLL_DELTA = 10;
 
 export interface IChatWidgetProps {}
 
@@ -84,7 +85,7 @@ export const ChatWidget: React.FC<IChatWidgetProps> = () => {
       if (currChatRef) {
         // check to see if we have scrolled all the way to the bottom of the chat, enable the auto chat
         // advance
-        if (currChatRef.scrollHeight - currChatRef.scrollTop === currChatRef.clientHeight) {
+        if (currChatRef.scrollHeight - currChatRef.scrollTop >= currChatRef.clientHeight - AUTO_SCROLL_DELTA) {
           setAutoScrollChat(true);
         } else {
           setAutoScrollChat(false);

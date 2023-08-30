@@ -38,8 +38,8 @@ const metadataStorage = {
   /**
    * @param {string} fileId
    */
-  getFileMetadata: (fileId) => {
-    const base = shared.db.prisma.fileUpload.findUnique({ where: { id: (fileId) } })
+  getFileMetadata: async (fileId) => {
+    const base = await shared.db.prisma.fileUpload.findUnique({ where: { id: (fileId) } })
     if (base.thumbnailUrl) {
       return {
         ...base,

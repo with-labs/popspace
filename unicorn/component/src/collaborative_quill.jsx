@@ -119,11 +119,12 @@ const CollaborativeQuill = (props) => {
           an event when the document is ready.
         */
         doc.unsubscribe(onDocUnsubscribe);
-        setTimeout((createAttempts + 1) ** 2 * 500, () => {
+        setTimeout(() => {
           setCreateAttempts(createAttempts + 1);
           doc.subscribe(onDocSubscribe);
-        });
+        }, (createAttempts + 1) ** 2 * 500);
       } else {
+        doc.unsubscribe(onDocUnsubscribe);
         doc.create(
           props.initialData || [{ insert: '' }],
           'rich-text',
@@ -131,10 +132,9 @@ const CollaborativeQuill = (props) => {
             if (error) {
               console.error(error);
             }
-            quill.setContents(doc.data);
-            quill.history.clear();
           }
         );
+        doc.subscribe(onDocSubscribe);
       }
     };
 
@@ -155,16 +155,16 @@ const CollaborativeQuill = (props) => {
         */
         quill.history.clear();
         setSubscribed(true);
-      }
 
-      quill.on('text-change', (delta, oldDelta, source) => {
-        if (source !== 'user') return;
-        doc.submitOp(delta, { source: quill });
-      });
-      doc.on('op', (op, source) => {
-        if (source === quill) return;
-        quill.updateContents(op);
-      });
+        quill.on('text-change', (delta, oldDelta, source) => {
+          if (source !== 'user') return;
+          doc.submitOp(delta, { source: quill });
+        });
+        doc.on('op', (op, source) => {
+          if (source === quill) return;
+          quill.updateContents(op);
+        });
+      }
     };
     doc.subscribe(onDocSubscribe);
 

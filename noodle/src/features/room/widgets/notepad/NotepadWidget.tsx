@@ -3,6 +3,7 @@ import { WidgetType } from '@api/roomState/types/widgets';
 import { getServices } from '@api/services';
 import { useLocalActor } from '@api/useLocalActor';
 import { useRoomStore } from '@api/useRoomStore';
+import { useIsMe } from '@api/useIsMe';
 import { Box, CircularProgress, makeStyles } from '@material-ui/core';
 import CollaborativeQuill from '@withso/unicorn';
 import clsx from 'clsx';
@@ -119,6 +120,8 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
     });
   };
 
+  const isNotOwner = !useIsMe(state.creatorId);
+
   return (
     <WidgetFrame
       color={state.widgetState.color ?? ThemeName.Blueberry}
@@ -160,6 +163,7 @@ export const NotepadWidget: React.FC<INotepadWidgetProps> = () => {
               height="100%"
               width="100%"
               initialData={state.widgetState.initialData}
+              waitForCreate={isNotOwner}
             />
           </div>
         </WidgetScrollPane>

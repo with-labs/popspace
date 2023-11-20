@@ -47,6 +47,7 @@ DATABASE_URL=file:/data/db.sqlite?connection_limit=1
 UNICORN_DATABASE_URL=/data/unicorn.sqlite
 USER_FILES_DIRECTORY=/data/user-files
 WALLPAPERS_DIRECTORY=/data/wallpapers
+PUBLIC_URL=http://localhost:8889
 ```
 
 You can put these in a `.env` file and run `docker run -env-file .env ...` to include them.

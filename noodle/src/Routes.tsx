@@ -3,6 +3,7 @@ import { FlaggAdmin } from 'flagg/dist/react';
 import * as React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
+import { AdminGate } from './components/AdminGate/AdminGate';
 import { AdminRoute } from './components/AdminRoute/AdminRoute';
 import { RouteNames } from './constants/RouteNames';
 import { Page } from './Layouts/Page/Page';
@@ -22,9 +23,25 @@ export const Routes: React.FC<IRoutesProps> = () => {
       <Route exact path={RouteNames.ROOT}>
         <Redirect to="/create" />
       </Route>
-      <Route exact path={RouteNames.CREATE_MEETING} component={MeetingSelect} />
+      <Route
+        exact
+        path={RouteNames.CREATE_MEETING}
+        render={(renderProps) => (
+          <AdminGate>
+            <MeetingSelect {...renderProps} />
+          </AdminGate>
+        )}
+      />
 
-      <Route exact path={RouteNames.MEETING_LINK} component={MeetingLink} />
+      <Route
+        exact
+        path={RouteNames.MEETING_LINK}
+        render={(renderProps) => (
+          <AdminGate>
+            <MeetingLink {...renderProps} />
+          </AdminGate>
+        )}
+      />
 
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}

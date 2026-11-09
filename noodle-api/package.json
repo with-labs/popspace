@@ -56,5 +56,8 @@
     "jest": "^27.0.4",
     "jest-cli": "^27.0.4",
     "node-dev": "^7.1.0"
+  },
+  "volta": {
+    "extends": "../package.json"
   }
 }

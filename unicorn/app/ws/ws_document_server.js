@@ -29,7 +29,7 @@ class WsDocumentServer {
 
     this.wss = new WebSocket.Server({ server })
     this.startHeartbeatLoop()
-    this.wss.on('connection', (ws) => {
+    this.wss.on('connection', (ws, req) => {
       ws.on('error', (err) => {
         log.error.info(err);
       });
@@ -45,10 +45,6 @@ class WsDocumentServer {
       })
 
       const jsonStream = new WebSocketJSONStream(ws)
-      /*
-        TODO: require authorization
-        ws.on('message', () => (...))
-      */
       jsonStream.on('error', (error) => {
         /*
           Error event must be handled, or it will be throw when calling
@@ -70,7 +66,8 @@ class WsDocumentServer {
           log.error.error(destroyError)
         }
       })
-      WsDocumentServer.shareDBServer.listen(jsonStream)
+      // the upgrade request carries the session cookie used for authorization
+      WsDocumentServer.shareDBServer.listen(jsonStream, req)
     })
   }
 
@@ -110,7 +107,95 @@ WsDocumentServer.init = async () => {
     WsDocumentServer.initialized = true
     ShareDB.types.register(require('rich-text').type)
     WsDocumentServer.shareDBServer = new ShareDB({db: blib.db.sharedbSQLite})
+    WsDocumentServer.useAuthorization(WsDocumentServer.shareDBServer)
     WsDocumentServer.connection = WsDocumentServer.shareDBServer.connect()
+  })
+}
+
+/*
+  Documents belong to notepad widgets: the document id is the widget id.
+  Only members of the widget's room (plus its creator and admins) may read
+  or edit it. Access is resolved once per document per connection.
+*/
+const DOCUMENT_COLLECTION = 'documents'
+
+const forbidden = () => {
+  const error = new Error('Forbidden')
+  error.code = 'ERR_FORBIDDEN'
+  return error
+}
+
+const canAccessDocument = async (agent, collection, id) => {
+  // server-side connections created with backend.connect()
+  if (agent.stream && agent.stream.isServer) {
+    return true
+  }
+  const { actor, allowed } = agent.custom
+  if (!actor || collection !== DOCUMENT_COLLECTION) {
+    return false
+  }
+  if (allowed.has(id)) {
+    return allowed.get(id)
+  }
+  let result = false
+  const widgetId = Number(id)
+  if (Number.isSafeInteger(widgetId)) {
+    const roomWidget = await shared.db.prisma.roomWidget.findUnique({ where: { widgetId } })
+    if (roomWidget) {
+      const room = await shared.db.room.core.roomById(roomWidget.roomId)
+      result = await shared.db.room.permissions.canAccessContent(actor, room)
+    }
+  }
+  allowed.set(id, result)
+  return result
+}
+
+WsDocumentServer.useAuthorization = (backend) => {
+  backend.use('connect', async (ctx, next) => {
+    try {
+      const actor = ctx.req ? await shared.lib.sessionCookie.actorFromRequest(ctx.req) : null
+      ctx.agent.custom = { actor, allowed: new Map() }
+      next()
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  backend.use('readSnapshots', async (ctx, next) => {
+    try {
+      for (const snapshot of ctx.snapshots) {
+        if (!(await canAccessDocument(ctx.agent, ctx.collection, snapshot.id))) {
+          ctx.rejectSnapshotRead(snapshot, forbidden())
+        }
+      }
+      next()
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  backend.use('op', async (ctx, next) => {
+    try {
+      next(await canAccessDocument(ctx.agent, ctx.collection, ctx.id) ? undefined : forbidden())
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  backend.use('submit', async (ctx, next) => {
+    try {
+      next(await canAccessDocument(ctx.agent, ctx.collection, ctx.id) ? undefined : forbidden())
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  // the notepad only opens documents by id; queries could list every document
+  backend.use('query', (ctx, next) => {
+    if (ctx.agent.stream && ctx.agent.stream.isServer) {
+      return next()
+    }
+    next(forbidden())
   })
 }
 

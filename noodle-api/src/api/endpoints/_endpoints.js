@@ -1,5 +1,6 @@
 module.exports = {
   Accounts: require("./accounts.js"),
+  Admin: require("./admin.js"),
   Meetings: require("./meetings.js"),
   Files: require("./files.js"),
   Opengraph: require("./opengraph.js"),

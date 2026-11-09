@@ -90,6 +90,10 @@ export class Accounts {
   //   });
   // }
 
+  setAdmin(actorId: number, admin: boolean) {
+    return prisma.actor.update({ where: { id: actorId }, data: { admin } });
+  }
+
   async actorById(id: number) {
     const actor = await prisma.actor.findUnique({ where: { id } });
     if (actor.deletedAt) return null;

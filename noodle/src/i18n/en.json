@@ -181,6 +181,7 @@
         "copied": "Copied",
         "joinRoomButton": "Join room now",
         "copyErrorMsg": "Error copying public invite link",
+        "passwordProtectedText": "This link is password protected. Share the password with your guests separately.",
         "extensions": {
           "slack": {
             "label": "Slack Extension",
@@ -206,7 +207,26 @@
       },
       "meetingSelect": {
         "titleText": "What kind of meeting room do you need?",
-        "creatingTemplate": "Creating your meeting"
+        "creatingTemplate": "Creating your meeting",
+        "accessLabel": "Who can join with the link?",
+        "publicOption": "Anyone with the link",
+        "passwordOption": "Only people with a password",
+        "passwordLabel": "Room password",
+        "passwordTooShort": "The room password must be at least 4 characters",
+        "signOut": "Sign out"
+      },
+      "adminLogin": {
+        "title": "Sign in to create rooms",
+        "usernameLabel": "Username",
+        "passwordLabel": "Password",
+        "submit": "Sign in",
+        "notConfigured": "Admin login is not configured. Set ADMIN_USERNAME and ADMIN_PASSWORD on the server."
+      },
+      "roomPassword": {
+        "title": "This room is password protected",
+        "explanation": "Enter the room password to join.",
+        "passwordLabel": "Room password",
+        "submit": "Join room"
       },
       "notSupported": {
         "title": "Oops, we’re sorry.",

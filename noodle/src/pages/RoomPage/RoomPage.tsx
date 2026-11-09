@@ -15,6 +15,7 @@ import { ErrorCodes } from '@constants/ErrorCodes';
 import { NotFoundPage } from '../NotFoundPage';
 import { logger } from '@utils/logger';
 import { media, readyPromise } from '@src/media';
+import { RoomPasswordPrompt } from './RoomPasswordPrompt';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -54,6 +55,9 @@ export default function RoomPage(props: IRoomPageProps) {
   const classes = useStyles();
   const { error, setError } = useAppState();
   const [notFound, setNotFound] = useState(false);
+  const [passwordRequired, setPasswordRequired] = useState(false);
+  // bumped after unlocking a password-protected room to retry the connection
+  const [connectAttempt, setConnectAttempt] = useState(0);
 
   React.useEffect(() => {
     readyPromise.then((providers: Record<string, any>) => {
@@ -65,12 +69,16 @@ export default function RoomPage(props: IRoomPageProps) {
             setNotFound(true);
             return;
           }
+          if (err.errorCode === ErrorCodes.ROOM_PASSWORD_REQUIRED) {
+            setPasswordRequired(true);
+            return;
+          }
         }
         logger.error(err);
         setError(err);
       });
     });
-  }, [props.roomRoute, setError]);
+  }, [props.roomRoute, setError, connectAttempt]);
   React.useEffect(() => {
     return () => {
       media.disconnect();
@@ -79,6 +87,18 @@ export default function RoomPage(props: IRoomPageProps) {
 
   if (notFound) {
     return <NotFoundPage />;
+  }
+
+  if (passwordRequired) {
+    return (
+      <RoomPasswordPrompt
+        roomRoute={props.roomRoute}
+        onUnlocked={() => {
+          setPasswordRequired(false);
+          setConnectAttempt((attempt) => attempt + 1);
+        }}
+      />
+    );
   }
 
   return (

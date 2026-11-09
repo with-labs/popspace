@@ -398,6 +398,7 @@ model Room {
   creatorId    Int?      @map("creator_id")
   urlId        String?   @unique @map("url_id")
   isPublic     Boolean?  @default(true) @map("is_public")
+  passwordHash String?   @map("password_hash")
   displayName  String?   @map("display_name")
   templateName String?   @map("template_name")
   deletedAt    DateTime? @map("deleted_at")
@@ -547,6 +548,7 @@ model SurveyResponse {
 model FileUpload {
   id            String   @id @default(cuid())
   creatorId     Int?     @map("actor_id")
+  roomId        Int?     @map("room_id")
   url           String
   name          String
   mimetype      String

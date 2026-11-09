@@ -82,5 +82,8 @@
     "reconnecting-websocket": "^4.4.0",
     "rich-text": "^4.1.0",
     "sharedb": "^1.8.1"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }

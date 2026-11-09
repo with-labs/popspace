@@ -24,8 +24,42 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const createRoom = async (template, actorId, sessionId, templateName, req) => {
-  const { room, roomData } = await shared.db.room.core.createRoomFromTemplate(templateName, template, actorId)
+const MIN_ROOM_PASSWORD_LENGTH = 4
+const MAX_ROOM_PASSWORD_LENGTH = 128
+const UNLOCK_RATE_LIMIT_SCOPE = "unlock_room"
+
+// an empty or missing password means a public link
+const parseRoomPassword = (body) => {
+  const password = body.password
+  if (password == null || password === "") {
+    return null
+  }
+  if (typeof password !== "string" ||
+      password.length < MIN_ROOM_PASSWORD_LENGTH ||
+      password.length > MAX_ROOM_PASSWORD_LENGTH) {
+    const error = new Error(`Room password must be ${MIN_ROOM_PASSWORD_LENGTH}-${MAX_ROOM_PASSWORD_LENGTH} characters`)
+    error.errorCode = shared.error.code.INVALID_API_PARAMS
+    throw error
+  }
+  return password
+}
+
+const failUnlessCanCreateRooms = (req, res) => {
+  if (lib.adminAuth.canCreateRooms(req.actor)) {
+    return false
+  }
+  api.http.fail(req, res, {
+    errorCode: shared.error.code.ADMIN_ONLY_RESTRICTED,
+    message: "Only admins can create rooms"
+  }, shared.api.http.code.FORBIDDEN)
+  return true
+}
+
+const createRoom = async (template, actorId, sessionId, templateName, req, password = null) => {
+  let { room, roomData } = await shared.db.room.core.createRoomFromTemplate(templateName, template, actorId)
+  if (password) {
+    room = await shared.db.room.core.setPassword(room.id, password)
+  }
   const namedRoom = new shared.models.RoomWithState(room, roomData.state)
   const event = await shared.db.events.roomCreateEvent(actorId, sessionId, templateName, req)
   return namedRoom
@@ -44,6 +78,17 @@ class Meetings {
 
       if (!room) {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
+      }
+
+      const canEnter = await shared.db.room.permissions.canEnter(actor, room)
+      if (!canEnter) {
+        return api.http.fail(req, res, room.passwordHash ? {
+          errorCode: shared.error.code.ROOM_PASSWORD_REQUIRED,
+          message: "This room requires a password"
+        } : {
+          errorCode: shared.error.code.UNAUTHORIZED_ROOM_ACCESS,
+          message: "You don't have access to this room"
+        }, shared.api.http.code.FORBIDDEN)
       }
 
       if (USE_PROVIDER === 'twilio') {
@@ -87,6 +132,30 @@ class Meetings {
       }
     }, ["roomRoute"])
 
+    this.zoo.loggedInPostEndpoint("/unlock_room", async (req, res, params) => {
+      if (lib.rateLimit.isBlocked(UNLOCK_RATE_LIMIT_SCOPE, req)) {
+        return api.http.fail(req, res, {
+          errorCode: shared.error.code.RATE_LIMIT_EXCEEDED,
+          message: "Too many failed attempts, try again later"
+        }, shared.api.http.code.TOO_MANY_REQUESTS)
+      }
+      const room = await shared.db.room.core.roomByRoute(params.roomRoute)
+      if (!room) {
+        return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
+      }
+      const valid = await shared.lib.password.verify(String(params.password), room.passwordHash)
+      if (!valid) {
+        lib.rateLimit.recordFailure(UNLOCK_RATE_LIMIT_SCOPE, req)
+        return api.http.fail(req, res, {
+          errorCode: shared.error.code.INCORRECT_ROOM_PASSCODE,
+          message: "Incorrect password"
+        }, shared.api.http.code.FORBIDDEN)
+      }
+      lib.rateLimit.reset(UNLOCK_RATE_LIMIT_SCOPE, req)
+      await shared.db.room.memberships.forceMembership(room, req.actor)
+      return api.http.succeed(req, res)
+    }, ["roomRoute", "password"])
+
     this.zoo.memberRoomRouteEndpoint("/remove_self_from_room", async (req, res) => {
       await shared.db.room.memberships.revokeMembership(req.room.id, req.actor.id)
       return api.http.succeed(req, res)
@@ -96,19 +165,30 @@ class Meetings {
       /*
         Creates a meeting from a template and returns a serialized namedRoom
       */
-      const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.templateName, req)
-      return api.http.succeed(req, res, { newMeeting: await namedRoom.serialize() })
+      if (failUnlessCanCreateRooms(req, res)) {
+        return
+      }
+      const password = parseRoomPassword(req.body)
+      const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.templateName, req, password)
+      return api.http.succeed(req, res, {
+        newMeeting: { ...(await namedRoom.serialize()), passwordProtected: !!password }
+      })
     }, ["templateName"])
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res, params) => {
       /*
         Creates a meeting from a template and returns a URL to it
       */
-      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.templateName, req)
+      if (failUnlessCanCreateRooms(req, res)) {
+        return
+      }
+      const password = parseRoomPassword(req.body)
+      const namedRoom = await createRoom(params.template, req.actor.id, req.session.id, params.templateName, req, password)
 
       return api.http.succeed(req, res, {
         url: getRoomUrl(req, namedRoom.displayName(), namedRoom.urlId()),
-        urlId: namedRoom.urlId()
+        urlId: namedRoom.urlId(),
+        passwordProtected: !!password
       })
     }, ["template", "templateName"])
 
@@ -126,6 +206,13 @@ class Meetings {
 
         However, we may be in a context where all we can do is call a URL and parse the result.
       */
+      // rooms can only be created by signed-in admins
+      if (!lib.adminAuth.canCreateRooms(req.actor)) {
+        return api.http.fail(req, res, {
+          errorCode: shared.error.code.ADMIN_ONLY_RESTRICTED,
+          message: "Only admins can create rooms"
+        }, shared.api.http.code.FORBIDDEN)
+      }
       log.error.warn("/anonymous_meeting called - shouldn't be used yet, we don't have use cases")
       const namedRoom = await createRoom(params.template, null, null, params.templateName, req)
       return api.http.succeed(req, res, {

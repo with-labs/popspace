@@ -40,10 +40,10 @@ const safeHandleRequest = (handler) => async (req, res) => {
   try {
     return await handler(req, res)
   } catch (e) {
-    log.app.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(req.body)}`, e)
+    log.app.error(`Unexpected API error ${req.originalUrl}: ${JSON.stringify(lib.util.redact(req.body))}`, e)
     e.message = e.message || "Unexpected error"
     e.errorCode = e.errorCode || shared.error.code.UNEXPECTED_ERROR
-    e.params = req.body
+    e.params = lib.util.redact(req.body)
     return http.fail(req, res, e, shared.api.http.code.INTERNAL_SERVER_ERROR)
   }
 }
@@ -124,6 +124,7 @@ class Zoo {
     const middlewareList = [
       shared.api.middleware.getActor,
       shared.api.middleware.requireActor,
+      lib.sessionCookie.refresh,
       ...additionalMiddleware
     ]
 
@@ -135,6 +136,7 @@ class Zoo {
     const middlewareList = [
       shared.api.middleware.getActor,
       shared.api.middleware.requireActor,
+      lib.sessionCookie.refresh,
       ...additionalMiddleware
     ]
     this.express.get(endpoint, middlewareList, safeGetHandler(endpoint, handler, requiredParams))

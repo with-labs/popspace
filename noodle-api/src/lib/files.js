@@ -17,6 +17,7 @@ const metadataStorage = {
           url: file.url,
           mimetype: file.mimetype,
           creatorId: actor.id,
+          roomId: options.roomId || null,
           thumbnailUrl: file.imageData ? file.imageData.thumbnailUrl : null,
           dominantColor: file.imageData ? file.imageData.dominantColor : null
         }
@@ -46,6 +47,9 @@ const metadataStorage = {
    */
   getFileMetadata: async (fileId) => {
     const base = await shared.db.prisma.fileUpload.findUnique({ where: { id: (fileId) } });
+    if (!base) {
+      return null;
+    }
     if (base.thumbnailUrl) {
       return {
         ...base,

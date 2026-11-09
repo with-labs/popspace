@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16.16.0
 
 WORKDIR /usr/src/app
 
@@ -28,11 +28,13 @@ COPY file-upload ./file-upload
 
 RUN yarn workspace @withso/noodle-shared prisma:generate
 
-RUN yarn workspace @withso/file-upload build
-RUN yarn workspace @withso/noodle-shared build
-RUN yarn workspace @withso/unicorn build
+# build the libraries, the UI and the unicorn app inside the image so a
+# clean checkout is enough to run `docker build` / `docker compose build`
+RUN NODE_OPTIONS=--max-old-space-size=4096 yarn precontainerize
 
 COPY run.sh ./run.sh
+# checkouts made on Windows may have CRLF line endings
+RUN sed -i 's/\r$//' run.sh
 
 # just in case
 RUN rm .env || true

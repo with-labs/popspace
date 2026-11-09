@@ -63,6 +63,11 @@ export class ApiCoreClient extends EventEmitter {
     return this.roomStateStore.getState().id;
   }
 
+  /** Route of the room this client is connected to, if any */
+  get roomRoute() {
+    return this.connectedRoomRoute;
+  }
+
   constructor() {
     super();
     this.setMaxListeners(10000);
@@ -166,10 +171,35 @@ export class ApiCoreClient extends EventEmitter {
     localStorage.removeItem(SESSION_TOKEN_KEY);
   };
 
+  getAuthConfig = () => {
+    return this.get<{ adminAuthEnabled: boolean }>('/auth_config', this.SERVICES.api);
+  };
+
+  adminLogin = this.requireActor(async (username: string, password: string) => {
+    const { actor } = await this.post<{ actor: Actor }>('/admin_login', { username, password }, this.SERVICES.api);
+    this.actor = actor;
+    return actor;
+  });
+
+  adminLogout = this.requireActor(async () => {
+    const { actor } = await this.post<{ actor: Actor }>('/admin_logout', {}, this.SERVICES.api);
+    this.actor = actor;
+    return actor;
+  });
+
   // Core Meeting Functionality
 
-  createMeeting = this.requireActor((templateName: MeetingTemplateName) => {
-    return this.post<{ newMeeting: any }>('/create_meeting', { templateName, source: getRef() }, this.SERVICES.api);
+  /** An empty password creates a public link */
+  createMeeting = this.requireActor((templateName: MeetingTemplateName, password?: string) => {
+    return this.post<{ newMeeting: any }>(
+      '/create_meeting',
+      { templateName, password, source: getRef() },
+      this.SERVICES.api
+    );
+  });
+
+  unlockRoom = this.requireActor((roomRoute: string, password: string) => {
+    return this.post('/unlock_room', { roomRoute, password }, this.SERVICES.api);
   });
 
   /**
@@ -273,6 +303,8 @@ export class ApiCoreClient extends EventEmitter {
         },
         body: this.prepareBody(data, opts.contentType || 'application/json'),
         signal: abortController.signal,
+        // lets the API set the session cookie used to load room files
+        credentials: 'include',
       });
       clearTimeout(timeout);
 

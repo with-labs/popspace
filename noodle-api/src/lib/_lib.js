@@ -9,6 +9,9 @@ const lib = {
   feedback: require("./feedback"),
   wallpapers: require("./wallpapers.js"),
   files: require("./files.js"),
+  adminAuth: require("./admin_auth.js"),
+  rateLimit: require("./rate_limit.js"),
+  sessionCookie: require("./session_cookie.js"),
   init: async () => {
     if(process.env.NODE_ENV == "test") {
       lib.test = require("../../test/_test.js")

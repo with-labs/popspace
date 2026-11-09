@@ -1,3 +1,4 @@
+import password from '../../lib/password';
 import prisma from '../prisma';
 import time from '../time';
 import names_and_routes from './names_and_routes';
@@ -152,6 +153,26 @@ export class Core {
       creatorId,
       isPublic,
     );
+  }
+
+  async setPassword(roomId: number, newPassword: string | null) {
+    const passwordHash = newPassword ? await password.hash(newPassword) : null;
+    const room = await prisma.room.update({
+      where: { id: roomId },
+      data: { passwordHash, isPublic: !passwordHash },
+    });
+    if (passwordHash) {
+      // a new password locks out everyone who joined with the old one
+      await prisma.roomMembership.updateMany({
+        where: {
+          roomId,
+          revokedAt: null,
+          actorId: room.creatorId ? { not: room.creatorId } : undefined,
+        },
+        data: { revokedAt: time.now() },
+      });
+    }
+    return room;
   }
 
   async setDisplayName(roomId: number, newDisplayName: string) {

@@ -19,9 +19,72 @@ To install PopSpace you will need:
   - Or, a Twilio account
 ---
 
-## Using the Docker Image (Recommended)
+## What's new in this fork
 
-To skip building the image yourself, use our published image:
+- **Admin-only room creation.** Only an admin signed in with `ADMIN_USERNAME` / `ADMIN_PASSWORD` (from `.env`) can open `/create` and create room links. `ADMIN_PASSWORD` is required: without it nobody can create rooms. Guests can only join links they are given.
+- **Public or password-protected links.** When creating a room, the admin chooses "Anyone with the link" or "Only people with a password". Guests opening a protected link are asked for the room password once, then they stay members of that room. Passwords are stored as salted scrypt hashes, failed attempts are rate limited (10 per 15 minutes per IP), and passwords are redacted from the API logs.
+- **Room files and notepads are private to the room.** Uploaded files can only be downloaded, and notepads only opened or edited, by members of their room (guests who opened a public link, or entered a password room's password), its creator and admins. A copied file URL doesn't work for anyone else. Uploads require room membership and are limited to 30 MB. The file routes can no longer be used to read files outside the upload folder (this previously exposed the database).
+- **Docker Compose support.** `docker-compose.yml` builds the image from source, keeps data in a named volume and can start a bundled LiveKit dev server, so one command runs everything.
+- **One `.env` for everything.** `yarn dev`, `yarn db-init` and `docker compose` all read the root `.env` (see `.env.example`).
+- **Pinned toolchain.** Every workspace uses Node 16.16.0 / Yarn 1.22.11 through [Volta](https://volta.sh).
+
+## Running with Docker Compose (Recommended)
+
+```
+cp .env.example .env
+# edit .env: at least change ADMIN_PASSWORD
+docker compose up -d --build
+```
+
+Then open http://localhost:8888, sign in with the admin credentials from `.env`, pick a room type and share the link.
+
+- The first build takes several minutes. It installs dependencies and builds every service inside the image.
+- `COMPOSE_PROFILES=livekit` in `.env` also starts a LiveKit server in dev mode (key `devkey`, secret `secret`) on ports 7880, 7881 and 7882/udp. It's fine for local testing. For a real deployment, remove that line and point the `LIVEKIT_` / `REACT_APP_LIVEKIT_ENDPOINT` variables at your own LiveKit server or LiveKit Cloud. When the bundled server is accessed from other machines, set `LIVEKIT_NODE_IP` to the host's IP.
+- Data (SQLite databases and uploaded files) lives in the `popspace-data` volume. `docker compose down` keeps it, and `docker compose down -v` deletes it.
+- Useful commands: `docker compose logs -f popspace`, `docker compose restart popspace`, `docker compose up -d --build` (after pulling changes).
+
+### Building and publishing the image yourself
+
+```
+docker build -t popspace:latest .
+# or tag it for your registry
+docker build -t ghcr.io/<you>/popspace:latest . && docker push ghcr.io/<you>/popspace:latest
+```
+
+To have compose use a pushed image instead of building, set `POPSPACE_IMAGE=ghcr.io/<you>/popspace:latest` in `.env` and run `docker compose pull && docker compose up -d`.
+
+## Testing locally without Docker
+
+Requirements: [Volta](https://volta.sh), which installs the pinned Node/Yarn versions automatically, and Docker if you want the bundled LiveKit server.
+
+```
+yarn install
+cp .env.example .env       # local paths in it point at <repo>/data
+yarn precontainerize       # build the shared libraries (needed once, and after changing them)
+yarn db-init               # create/migrate the SQLite database in ./data
+docker compose up -d livekit
+yarn dev                   # UI :8888, API :8889, hermes :8890, unicorn :8891
+```
+
+A quick checklist for the new features:
+
+1. Open http://localhost:8888. You should see the admin sign-in form. Wrong credentials are rejected.
+2. Sign in, choose "Only people with a password", enter a password and pick a room. The link page notes that the link is password protected.
+3. Open the link in a private window. You're asked for the password, a wrong password is rejected and the right one lets you in.
+4. Create a room with "Anyone with the link" and open it in a private window. You join directly.
+5. In the private window, open http://localhost:8888/create. It asks for admin sign-in.
+
+### How room content is protected
+
+The browser stores an anonymous session for every visitor. The API mirrors it into an HttpOnly `ndl_session` cookie so that images, download links and the notepad websocket can be authorized. Each file is tied to the room it was uploaded in, and each notepad to its widget's room. Access needs room membership, being the room's creator, or being an admin.
+
+- The UI, API (8889) and document server (8891) must be served from the **same hostname** (different ports are fine), so the cookie reaches all of them. If you serve the UI from a different domain, list its origin in `TRUSTED_ORIGINS` (comma separated). Images and notepads still need the services on one site.
+- Files uploaded before this change aren't tied to a room. Only their uploader and admins can open them.
+- Nothing is encrypted by the app at rest. Encrypt the disk or volume that holds `/data`, and serve everything over HTTPS (for example behind Caddy or nginx).
+
+## Using the published Docker Image
+
+To skip building the image yourself, use the upstream published image (it does not include the features above):
 
 ```
 docker pull ghcr.io/with-labs/popspace:latest
@@ -165,7 +228,9 @@ AWS_SECRET_ACCESS_KEY
 
 ## Becoming an Admin
 
-The only privilege admins have currently is to create and modify room templates. If that's not necessary (for example, you ran the seed command to setup default templates), you don't need to worry about this.
+The easiest way is to set `ADMIN_USERNAME` / `ADMIN_PASSWORD` and sign in on the `/create` page. That marks your actor as an admin until you sign out. Admins can create rooms, enter any room, and create and modify room templates.
+
+You can also flip the flag in the database directly: If that's not necessary (for example, you ran the seed command to setup default templates), you don't need to worry about this.
 
 You can set your own actor up as an admin after connecting to the app. After you connect the first time, your actor connection info is cached in your browser, so the actor you use should remain stable until you clear cache or change browsers.
 
@@ -215,16 +280,7 @@ In the current repo setup, these libraries are included as Yarn workspaces and a
 
 ## Local building
 
-To build the Docker image yourself, you need to first build all the app services and libraries:
-
-```
-# install dependencies
-yarn install
-# build source files for all app services
-yarn precontainerize
-```
-
-Then build the Docker image:
+The Dockerfile installs dependencies and runs `yarn precontainerize` inside the image, so a clean checkout is enough:
 
 ```
 docker build -t popspace .

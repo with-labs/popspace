@@ -34,6 +34,7 @@ class Actor {
       actorId: this.actorId(),
       displayName: this.displayName(),
       kind: this.kind(),
+      admin: !!this._pgActor.admin,
     };
   }
 }

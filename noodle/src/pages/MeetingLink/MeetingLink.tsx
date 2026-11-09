@@ -84,7 +84,9 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
   match: {
     params: { meetingRoute },
   },
+  location,
 }) => {
+  const passwordProtected = !!(location.state as any)?.meetingInfo?.passwordProtected;
   const { t } = useTranslation();
   const classes = useStyles();
   const [toggleCopyButton, setToggleCopyButton] = useExpiringToggle(false, 3000);
@@ -190,6 +192,11 @@ export const MeetingLink: React.FC<IMeetingLinkProps> = ({
         <Typography style={{ margin: 'auto', textAlign: 'center' }} variant="body1">
           {t('pages.meetingLink.explanationText')}
         </Typography>
+        {passwordProtected && (
+          <Typography style={{ margin: 'auto', marginTop: 16, textAlign: 'center' }} variant="body1">
+            {t('pages.meetingLink.passwordProtectedText')}
+          </Typography>
+        )}
       </Box>
     </CenterColumnPage>
   );

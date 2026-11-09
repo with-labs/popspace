@@ -1,1 +1,11 @@
 .env
+**/.env
+**/node_modules
+yarn-error.log
+data
+**/*.sqlite
+**/*.sqlite-journal
+# build outputs are produced inside the image
+noodle/build
+unicorn/.next
+**/dist

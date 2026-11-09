@@ -2,7 +2,9 @@ const { createFileHandler, deleteFileHandler } = require('@withso/file-upload');
 const multer = require('multer');
 const path = require('path')
 
-const uploadMiddleware = multer();
+const uploadMiddleware = multer({ limits: { fileSize: 30 * 1024 * 1024, files: 1 } });
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 // TODO: export this from shared lib
 const SYSTEM_USER_ID = -5000;
@@ -44,8 +46,15 @@ class Wallpapers {
   handleGet = async (req, res) => {
     const id = req.params.id
     const name = req.params.name
-    const filePath = path.join(process.env.WALLPAPERS_DIRECTORY, id, name)
-    res.sendFile(filePath)
+    // wallpapers stay public, but never serve anything outside their directory
+    if (!UUID_PATTERN.test(id) || !name || name === '..' || /[\/\\\0]/.test(name)) {
+      return res.status(404).end()
+    }
+    res.sendFile(path.join(id, name), { root: path.resolve(process.env.WALLPAPERS_DIRECTORY) }, (err) => {
+      if (err && !res.headersSent) {
+        res.status(404).end()
+      }
+    })
   }
 }
 

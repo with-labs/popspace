@@ -49,5 +49,8 @@
     "singleQuote": true,
     "trailingComma": "all",
     "semi": true
+  },
+  "volta": {
+    "extends": "../package.json"
   }
 }

@@ -212,7 +212,7 @@
         "publicOption": "Anyone with the link",
         "passwordOption": "Only people with a password",
         "passwordLabel": "Room password",
-        "passwordTooShort": "The room password must be at least 4 characters",
+        "passwordTooShort": "The room password must be at least 12 characters",
         "signOut": "Sign out"
       },
       "adminLogin": {
@@ -224,7 +224,7 @@
       },
       "roomPassword": {
         "title": "This room is password protected",
-        "explanation": "Enter the room password to join.",
+        "explanation": "Enter the room password to join. You have 3 attempts before you are locked out for 30 minutes.",
         "passwordLabel": "Room password",
         "submit": "Join room"
       },

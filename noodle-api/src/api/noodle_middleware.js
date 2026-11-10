@@ -35,6 +35,13 @@ const corsOptions = (req, callback) => {
 class NoodleMiddleware {
   constructor(expressInstance) {
     this.express = expressInstance
+    /*
+      req.ip is the socket address unless TRUST_PROXY says how many reverse
+      proxies sit in front of the API. Never trust X-Forwarded-For blindly:
+      clients can set it to anything and dodge the password rate limits.
+    */
+    const trustProxyHops = parseInt(process.env.TRUST_PROXY, 10)
+    this.express.set('trust proxy', trustProxyHops > 0 ? trustProxyHops : false)
     this.express.use(cors(corsOptions))
 
     this.express.use(async (req, res, next) => {

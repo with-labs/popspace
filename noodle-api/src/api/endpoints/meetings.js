@@ -24,7 +24,7 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const MIN_ROOM_PASSWORD_LENGTH = 4
+const MIN_ROOM_PASSWORD_LENGTH = 12
 const MAX_ROOM_PASSWORD_LENGTH = 128
 const UNLOCK_RATE_LIMIT_SCOPE = "unlock_room"
 
@@ -133,22 +133,24 @@ class Meetings {
     }, ["roomRoute"])
 
     this.zoo.loggedInPostEndpoint("/unlock_room", async (req, res, params) => {
-      if (lib.rateLimit.isBlocked(UNLOCK_RATE_LIMIT_SCOPE, req)) {
-        return api.http.fail(req, res, {
-          errorCode: shared.error.code.RATE_LIMIT_EXCEEDED,
-          message: "Too many failed attempts, try again later"
-        }, shared.api.http.code.TOO_MANY_REQUESTS)
-      }
       const room = await shared.db.room.core.roomByRoute(params.roomRoute)
       if (!room) {
         return api.http.fail(req, res, { errorCode: shared.error.code.UNKNOWN_ROOM })
       }
+      const attempt = lib.rateLimit.consume(UNLOCK_RATE_LIMIT_SCOPE, req)
+      if (!attempt.allowed) {
+        return api.http.fail(req, res, {
+          errorCode: shared.error.code.RATE_LIMIT_EXCEEDED,
+          message: lib.rateLimit.failureMessage("Room locked", attempt),
+          attemptsLeft: 0
+        }, shared.api.http.code.TOO_MANY_REQUESTS)
+      }
       const valid = await shared.lib.password.verify(String(params.password), room.passwordHash)
       if (!valid) {
-        lib.rateLimit.recordFailure(UNLOCK_RATE_LIMIT_SCOPE, req)
         return api.http.fail(req, res, {
           errorCode: shared.error.code.INCORRECT_ROOM_PASSCODE,
-          message: "Incorrect password"
+          message: lib.rateLimit.failureMessage("Incorrect password", attempt),
+          attemptsLeft: attempt.attemptsLeft
         }, shared.api.http.code.FORBIDDEN)
       }
       lib.rateLimit.reset(UNLOCK_RATE_LIMIT_SCOPE, req)

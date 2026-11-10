@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MIN_ROOM_PASSWORD_LENGTH = 4;
+const MIN_ROOM_PASSWORD_LENGTH = 12;
 
 export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
   match: {

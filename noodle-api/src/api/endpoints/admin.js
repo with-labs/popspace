@@ -21,17 +21,19 @@ class Admin {
           message: "Admin login is not configured"
         })
       }
-      if (lib.rateLimit.isBlocked(RATE_LIMIT_SCOPE, req)) {
+      const attempt = lib.rateLimit.consume(RATE_LIMIT_SCOPE, req)
+      if (!attempt.allowed) {
         return api.http.fail(req, res, {
           errorCode: shared.error.code.RATE_LIMIT_EXCEEDED,
-          message: "Too many failed attempts, try again later"
+          message: lib.rateLimit.failureMessage("Admin login locked", attempt),
+          attemptsLeft: 0
         }, shared.api.http.code.TOO_MANY_REQUESTS)
       }
       if (!lib.adminAuth.checkCredentials(params.username, params.password)) {
-        lib.rateLimit.recordFailure(RATE_LIMIT_SCOPE, req)
         return api.http.fail(req, res, {
           errorCode: shared.error.code.INVALID_CREDENTIALS,
-          message: "Invalid username or password"
+          message: lib.rateLimit.failureMessage("Invalid username or password", attempt),
+          attemptsLeft: attempt.attemptsLeft
         }, shared.api.http.code.UNAUTHORIZED)
       }
       lib.rateLimit.reset(RATE_LIMIT_SCOPE, req)

@@ -1,0 +1,9 @@
+# Production override: run LiveKit on the host network so its media ports are
+# governed by the host firewall (ufw) and skip Docker's NAT, as LiveKit
+# recommends. Signaling is bound to localhost for the reverse proxy.
+#   cp deploy/docker-compose.livekit-host.yml docker-compose.override.yml
+services:
+  livekit:
+    network_mode: host
+    command: --bind 127.0.0.1 --node-ip ${LIVEKIT_NODE_IP:-127.0.0.1}
+    ports: !reset []

@@ -10,19 +10,30 @@ const UNICORN_PORT = process.env.REACT_APP_UNICORN_PORT || 8891;
 const USE_HTTPS = window.location.protocol === 'https:';
 const HTTP_PROTOCOL = USE_HTTPS ? 'https' : 'http';
 const WS_PROTOCOL = USE_HTTPS ? 'wss' : 'ws';
+// ...or, behind a reverse proxy, reach every service on the UI's own
+// origin under /api, /hermes and /unicorn
+const USE_SERVICE_PATHS = process.env.REACT_APP_SERVICE_PATHS === 'true';
+
+function serviceUrls(host: string, port: string | number, path: string) {
+  if (USE_SERVICE_PATHS) {
+    return {
+      http: `${HTTP_PROTOCOL}://${window.location.host}${path}`,
+      ws: `${WS_PROTOCOL}://${window.location.host}${path}`,
+    };
+  }
+  return {
+    http: `${HTTP_PROTOCOL}://${host}:${port}`,
+    ws: `${WS_PROTOCOL}://${host}:${port}`,
+  };
+}
 
 export function getServices() {
+  const api = serviceUrls(API_HOST, API_PORT, '/api');
   return {
-    hermes: {
-      http: `${HTTP_PROTOCOL}://${HERMES_HOST}:${HERMES_PORT}`,
-      ws: `${WS_PROTOCOL}://${HERMES_HOST}:${HERMES_PORT}`,
-    },
+    hermes: serviceUrls(HERMES_HOST, HERMES_PORT, '/hermes'),
     api: {
-      http: `${HTTP_PROTOCOL}://${API_HOST}:${API_PORT}`,
+      http: api.http,
     },
-    unicorn: {
-      http: `${HTTP_PROTOCOL}://${UNICORN_HOST}:${UNICORN_PORT}`,
-      ws: `${WS_PROTOCOL}://${UNICORN_HOST}:${UNICORN_PORT}`,
-    },
+    unicorn: serviceUrls(UNICORN_HOST, UNICORN_PORT, '/unicorn'),
   };
 }

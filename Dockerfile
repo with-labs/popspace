@@ -28,6 +28,10 @@ COPY file-upload ./file-upload
 
 RUN yarn workspace @withso/noodle-shared prisma:generate
 
+# "true" makes the UI reach the API, hermes and unicorn under /api, /hermes
+# and /unicorn on its own origin (reverse proxy) instead of ports 8889-8891
+ARG REACT_APP_SERVICE_PATHS
+
 # build the libraries, the UI and the unicorn app inside the image so a
 # clean checkout is enough to run `docker build` / `docker compose build`
 RUN NODE_OPTIONS=--max-old-space-size=4096 yarn precontainerize

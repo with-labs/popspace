@@ -39,7 +39,7 @@ docker compose up -d --build
 Then open http://localhost:8888, sign in with the admin credentials from `.env`, pick a room type and share the link.
 
 - The first build takes several minutes. It installs dependencies and builds every service inside the image.
-- `COMPOSE_PROFILES=livekit` in `.env` also starts a LiveKit server in dev mode (key `devkey`, secret `secret`) on ports 7880, 7881 and 7882/udp. It's fine for local testing. For a real deployment, remove that line and point the `LIVEKIT_` / `REACT_APP_LIVEKIT_ENDPOINT` variables at your own LiveKit server or LiveKit Cloud. When the bundled server is accessed from other machines, set `LIVEKIT_NODE_IP` to the host's IP.
+- `COMPOSE_PROFILES=livekit` in `.env` also starts a LiveKit server on ports 7880 (signaling), 7881 and 7882/udp (media), using `LIVEKIT_API_KEY` / `LIVEKIT_SECRET_KEY` from `.env` as its key pair (the secret needs at least 32 characters). For a real deployment, generate a new key pair, set `LIVEKIT_NODE_IP` to the host's public IP and open 7881/tcp and 7882/udp in the firewall. Or remove that line and point the `LIVEKIT_` / `REACT_APP_LIVEKIT_ENDPOINT` variables at your own LiveKit server or LiveKit Cloud.
 - Data (SQLite databases and uploaded files) lives in the `popspace-data` volume. `docker compose down` keeps it, and `docker compose down -v` deletes it.
 - Useful commands: `docker compose logs -f popspace`, `docker compose restart popspace`, `docker compose up -d --build` (after pulling changes).
 
@@ -125,6 +125,8 @@ The Docker image will need the following ports exposed to run the various servic
   * 8891: the collaborative document server
 
 The UI connects to each of these services on the corresponding port for the host it is being served from. For example, if you're running the container on localhost, the UI will try to connect to `localhost:8889` for the API. If you host the container elsewhere on `https://popspace.myserver.com`, it will try to connect to `https://popspace.myserver.com:8889` for the API.
+
+Behind a reverse proxy you can serve everything from one origin on port 443 instead. Build with `REACT_APP_SERVICE_PATHS=true` in `.env` and the UI connects to `/api`, `/hermes` and `/unicorn` on its own origin. `deploy/Caddyfile.example` shows a matching Caddy setup, including LiveKit under `/livekit`. With ufw, copy `deploy/docker-compose.livekit-host.yml` to `docker-compose.override.yml`: Docker-published ports bypass ufw's allow rules and are dropped by its routed-traffic policy, so LiveKit runs on the host network instead. Also set `PUBLIC_URL=https://<your domain>/api`, `TRUST_PROXY=1` and `BIND_ADDRESS=127.0.0.1`.
 
 If you would like to modify how the app tries to connect to services, the relevant file is `noodle/src/api/services.ts`.
 

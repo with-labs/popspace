@@ -1,0 +1,42 @@
+# Serves PopSpace and the bundled LiveKit server from one origin on 443.
+# Needs REACT_APP_SERVICE_PATHS=true at build time, BIND_ADDRESS=127.0.0.1,
+# PUBLIC_URL=https://popspace.example.com/api, TRUST_PROXY=1 and
+# REACT_APP_LIVEKIT_ENDPOINT=wss://popspace.example.com/livekit in .env.
+# LiveKit media (7881/tcp, 7882/udp) bypasses the proxy and must be open.
+popspace.example.com {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		Permissions-Policy "camera=(self), microphone=(self), display-capture=(self)"
+		-Server
+	}
+
+	@api path /api /api/*
+	handle @api {
+		uri strip_prefix /api
+		reverse_proxy 127.0.0.1:8889
+	}
+
+	@hermes path /hermes /hermes/*
+	handle @hermes {
+		uri strip_prefix /hermes
+		reverse_proxy 127.0.0.1:8890
+	}
+
+	@unicorn path /unicorn /unicorn/*
+	handle @unicorn {
+		uri strip_prefix /unicorn
+		reverse_proxy 127.0.0.1:8891
+	}
+
+	@livekit path /livekit /livekit/*
+	handle @livekit {
+		uri strip_prefix /livekit
+		reverse_proxy 127.0.0.1:7880
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:8888
+	}
+}

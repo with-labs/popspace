@@ -40,7 +40,7 @@ export class Messages {
     const filter = { chatId };
     // for pages starting at a cursor, get ids less than the cursor id
     if (lastChatMessageId) {
-      (filter as any).id = { $lt: lastChatMessageId };
+      (filter as any).id = { lt: lastChatMessageId };
     }
     const messages = await prisma.message.findMany({
       where: filter,

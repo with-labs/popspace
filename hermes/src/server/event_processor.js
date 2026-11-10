@@ -32,6 +32,30 @@ const PUBLIC_EVENT_KINDS = {
   "ping": true
 }
 
+/*
+  Events that act on an existing widget, and the payload field holding its id.
+  Widget ids are global and sequential, so without this check anyone in one
+  room could read or change widgets and chats of any other room.
+*/
+const WIDGET_ID_FIELD_BY_EVENT_KIND = {
+  "getWidget": "widgetId",
+  "transformWidget": "widgetId",
+  "updateWidget": "widgetId",
+  "deleteWidget": "widgetId",
+  "createChatMessage": "widgetId",
+  "getMoreChatMessages": "widgetId"
+}
+
+const isWidgetInSenderRoom = async (hermesEvent, idField) => {
+  const payload = hermesEvent.payload() || {}
+  const widgetId = Number(payload[idField])
+  if (!Number.isSafeInteger(widgetId)) {
+    return false
+  }
+  const roomWidget = await shared.db.prisma.roomWidget.findUnique({ where: { widgetId } })
+  return !!roomWidget && roomWidget.roomId === hermesEvent.roomId()
+}
+
 const processors = {
   connection: new _processors.ConnectionProcessor(),
   create: new _processors.CreateProcessor(),
@@ -60,6 +84,11 @@ class EventProcessor {
         if(!hasAuthorizedRoomAccess) {
           /* This can happen if an actor was kicked */
           return sender.sendError(hermesEvent, shared.error.code.UNAUTHORIZED_USER, "Lost authorization")
+        }
+        const idField = WIDGET_ID_FIELD_BY_EVENT_KIND[eventKind]
+        if(idField && !(await isWidgetInSenderRoom(hermesEvent, idField))) {
+          // same response whether the widget is missing or in another room
+          return sender.sendError(hermesEvent, lib.ErrorCodes.WIDGET_NOT_FOUND, "No such widget in this room")
         }
       }
       try {

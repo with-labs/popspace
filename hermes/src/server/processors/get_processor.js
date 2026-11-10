@@ -34,10 +34,13 @@ class GetProcessor {
     const sender = event.senderParticipant()
     const payload = event.payload()
 
-    const messages = await shared.db.messages.getNextPageMessages(payload.widget_id, payload.last_message_id);
- 
+    // widgetId was checked against the sender's room in the event processor
+    const widgetId = Number(payload.widgetId)
+    const lastMessageId = payload.lastMessageId ? Number(payload.lastMessageId) : null
+    const messages = await shared.db.messages.getNextPageMessages(widgetId, lastMessageId);
+
     return await sender.sendResponse(event, {
-      widget_id: payload.widget_id,
+      widget_id: widgetId,
       messages
     })
   }

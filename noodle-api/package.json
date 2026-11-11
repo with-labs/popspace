@@ -32,7 +32,7 @@
     "@withso/file-upload": "^0.6.0",
     "@withso/noodle-shared": "^2.0.1",
     "aws-sdk": "^2.928.0",
-    "axios": "^0.21.1",
+    "axios": "^0.34.0",
     "camelcase-keys": "^6.2.2",
     "cheerio": "^1.0.0-rc.10",
     "cookie-parser": "^1.4.5",

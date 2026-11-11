@@ -213,7 +213,48 @@
         "passwordOption": "Only people with a password",
         "passwordLabel": "Room password",
         "passwordTooShort": "The room password must be at least 12 characters",
-        "signOut": "Sign out"
+        "signOut": "Sign out",
+        "manageRooms": "Manage rooms"
+      },
+      "roomManagement": {
+        "title": "Room management",
+        "createTitle": "Create a room",
+        "nameLabel": "Room name",
+        "nameHint": "Optional. Leave empty to get a generated link.",
+        "nameChecking": "Checking availability…",
+        "nameAvailable": "Available: {{link}}",
+        "nameUnavailable": {
+          "taken": "Taken: {{link}} is already in use",
+          "reserved": "Reserved: {{link}} can't be used",
+          "invalid": "Use 3-64 letters or numbers"
+        },
+        "templateLabel": "Template",
+        "createButton": "Create room",
+        "created": "Room created at {{link}}",
+        "listTitle": "Rooms ({{count}})",
+        "empty": "No rooms yet.",
+        "untitled": "Untitled room",
+        "public": "Anyone with the link",
+        "passwordProtected": "Password protected",
+        "createdAt": "Created {{date}}",
+        "rename": "Rename",
+        "renameTitle": "Rename room",
+        "renamed": "Room renamed",
+        "save": "Save",
+        "delete": "Delete",
+        "deleteTitle": "Delete room?",
+        "deleteConfirm": "\"{{name}}\" and its links will stop working. Its name becomes free for other rooms.",
+        "deleted": "Room deleted",
+        "templatesLink": "Create from template gallery",
+        "access": {
+          "title": "Change access",
+          "newPasswordLabel": "New room password",
+          "passwordHint": "At least 12 characters. Share it with your guests separately.",
+          "privateNote": "Everyone who joined before, including people in the room right now, will need to enter this password the next time they open or reload the room.",
+          "publicNote": "Anyone with the link can join without a password.",
+          "madePrivate": "Room is now password protected",
+          "madePublic": "Room is now public"
+        }
       },
       "adminLogin": {
         "title": "Sign in to create rooms",

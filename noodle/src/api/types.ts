@@ -17,6 +17,25 @@ export type Actor = {
   admin: boolean;
 };
 
+export type AdminRoom = {
+  roomId: number;
+  urlId: string;
+  displayName: string | null;
+  templateName: string | null;
+  passwordProtected: boolean;
+  createdAt: string;
+  /** custom name route, e.g. "team-standup" */
+  vanityRoute: string | null;
+  /** generated route, e.g. "team-standup-abc123..." */
+  route: string;
+};
+
+export type RoomNameCheck = {
+  route: string;
+  available: boolean;
+  reason?: 'invalid' | 'reserved' | 'taken';
+};
+
 export type ApiOpenGraphResult = {
   title: string | null;
   iframeUrl: string | null;

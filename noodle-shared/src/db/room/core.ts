@@ -1,8 +1,26 @@
+import _error from '../../error/_error';
 import password from '../../lib/password';
 import prisma from '../prisma';
 import time from '../time';
-import names_and_routes from './names_and_routes';
+import names_and_routes, {
+  MAX_VANITY_ROUTE_LENGTH,
+  MIN_VANITY_ROUTE_LENGTH,
+} from './names_and_routes';
 import templates from './templates';
+
+const MAX_ROOM_DISPLAY_NAME_LENGTH = 100;
+
+export type VanityRouteCheck = {
+  route: string;
+  available: boolean;
+  reason?: 'invalid' | 'reserved' | 'taken';
+};
+
+const roomNameError = (message: string, errorCode: string) => {
+  const error: any = new Error(message);
+  error.errorCode = errorCode;
+  return error;
+};
 
 export class Core {
   constructor() {}
@@ -21,8 +39,74 @@ export class Core {
   }
 
   async roomByRoute(route: string) {
+    // custom names an admin picked take priority over generated routes
+    const vanityRoute = await prisma.roomRoute.findUnique({
+      where: { route: route.toLowerCase() },
+    });
+    if (vanityRoute && vanityRoute.isVanity) {
+      return await this.roomById(vanityRoute.roomId);
+    }
     const urlId = names_and_routes.urlIdFromRoute(route);
     return await this.roomByUrlId(urlId);
+  }
+
+  /** Every room that isn't deleted, newest first, for room management */
+  async listRoomsForAdmin() {
+    const rooms = await prisma.room.findMany({
+      where: { deletedAt: null },
+      select: {
+        id: true,
+        urlId: true,
+        displayName: true,
+        templateName: true,
+        passwordHash: true,
+        createdAt: true,
+        routes: { where: { isVanity: true }, select: { route: true } },
+      },
+      orderBy: { id: 'desc' },
+    });
+    return rooms.map((room) => ({
+      roomId: room.id,
+      urlId: room.urlId,
+      displayName: room.displayName,
+      templateName: room.templateName,
+      passwordProtected: !!room.passwordHash,
+      createdAt: room.createdAt,
+      vanityRoute: room.routes[0]?.route || null,
+      route: names_and_routes.route(room.displayName || '', room.urlId),
+    }));
+  }
+
+  /**
+   * Whether a custom name can become a room's route.
+   * @param {number} roomId - the room being renamed, so it can keep its own name
+   */
+  async checkVanityRoute(
+    name: string,
+    roomId: number | null = null,
+  ): Promise<VanityRouteCheck> {
+    const route = names_and_routes.vanityRouteFromName(name);
+    if (
+      route.length < MIN_VANITY_ROUTE_LENGTH ||
+      route.length > MAX_VANITY_ROUTE_LENGTH
+    ) {
+      return { route, available: false, reason: 'invalid' };
+    }
+    if (names_and_routes.isReservedVanityRoute(route)) {
+      return { route, available: false, reason: 'reserved' };
+    }
+    const existing = await prisma.roomRoute.findUnique({ where: { route } });
+    if (existing && existing.roomId !== roomId) {
+      return { route, available: false, reason: 'taken' };
+    }
+    // a vanity route ending in a room's url id would hijack that room's links
+    const shadowedRoom = await prisma.room.findUnique({
+      where: { urlId: names_and_routes.urlIdFromRoute(route) },
+    });
+    if (shadowedRoom) {
+      return { route, available: false, reason: 'taken' };
+    }
+    return { route, available: true };
   }
 
   async routableRoomById(id: number) {
@@ -184,11 +268,61 @@ export class Core {
     });
   }
 
+  /**
+   * Gives a room a custom display name and a matching vanity route,
+   * e.g. "Team Standup" at /team-standup. The room's previous custom
+   * name is released.
+   */
+  async setCustomName(roomId: number, name: string) {
+    const displayName = names_and_routes
+      .getNormalizedDisplayName(String(name))
+      .slice(0, MAX_ROOM_DISPLAY_NAME_LENGTH);
+    const check = await this.checkVanityRoute(displayName, roomId);
+    if (!check.available) {
+      throw roomNameError(
+        check.reason === 'taken'
+          ? `The name "${check.route}" is already taken`
+          : check.reason === 'reserved'
+          ? `The name "${check.route}" is reserved`
+          : `Room names need ${MIN_VANITY_ROUTE_LENGTH}-${MAX_VANITY_ROUTE_LENGTH} letters or numbers`,
+        check.reason === 'taken'
+          ? _error.code.ROOM_NAME_TAKEN
+          : _error.code.INVALID_API_PARAMS,
+      );
+    }
+    try {
+      const [, , room] = await prisma.$transaction([
+        prisma.roomRoute.deleteMany({ where: { roomId, isVanity: true } }),
+        prisma.roomRoute.create({
+          data: { roomId, route: check.route, isVanity: true },
+        }),
+        prisma.room.update({
+          where: { id: roomId },
+          data: { displayName, updatedAt: time.now() },
+        }),
+      ]);
+      return { room, vanityRoute: check.route };
+    } catch (err: any) {
+      // another request claimed the name between the check and the write
+      if (err.code === 'P2002') {
+        throw roomNameError(
+          `The name "${check.route}" is already taken`,
+          _error.code.ROOM_NAME_TAKEN,
+        );
+      }
+      throw err;
+    }
+  }
+
   async deleteRoom(roomId: number) {
-    await prisma.room.update({
-      where: { id: roomId },
-      data: { deletedAt: time.now() },
-    });
+    await prisma.$transaction([
+      // frees the room's custom name for other rooms
+      prisma.roomRoute.deleteMany({ where: { roomId, isVanity: true } }),
+      prisma.room.update({
+        where: { id: roomId },
+        data: { deletedAt: time.now() },
+      }),
+    ]);
   }
 
   async restoreRoom(roomId: number) {

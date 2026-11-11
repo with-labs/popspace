@@ -11,7 +11,7 @@ import { RoomStateStore, roomStateStore } from './roomState/roomStateStore';
 import { SocketConnection } from './roomState/SocketConnection';
 import { IncomingAuthResponseMessage } from './roomState/types/socketProtocol';
 import { getServices } from './services';
-import { Actor, BaseResponse, ErrorResponse } from './types';
+import { Actor, AdminRoom, BaseResponse, ErrorResponse, RoomNameCheck } from './types';
 
 const SESSION_TOKEN_KEY = 'ndl_token';
 
@@ -189,13 +189,49 @@ export class ApiCoreClient extends EventEmitter {
 
   // Core Meeting Functionality
 
-  /** An empty password creates a public link */
-  createMeeting = this.requireActor((templateName: MeetingTemplateName, password?: string) => {
+  /**
+   * An empty password creates a public link. A custom name gives the room
+   * a readable link like /team-standup, if that name is available.
+   */
+  createMeeting = this.requireActor((templateName: MeetingTemplateName, password?: string, name?: string) => {
     return this.post<{ newMeeting: any }>(
       '/create_meeting',
-      { templateName, password, source: getRef() },
+      { templateName, password, name: name || undefined, source: getRef() },
       this.SERVICES.api
     );
+  });
+
+  // Room management (admins only)
+
+  listRooms = this.requireActor(async () => {
+    const { rooms } = await this.get<{ rooms: AdminRoom[] }>('/admin/rooms', this.SERVICES.api);
+    return rooms;
+  });
+
+  /** Pass the room being renamed so it can keep its current name */
+  checkRoomName = this.requireActor((name: string, roomId?: number) => {
+    return this.post<RoomNameCheck>('/admin/check_room_name', { name, roomId }, this.SERVICES.api);
+  });
+
+  renameRoom = this.requireActor((roomId: number, name: string) => {
+    return this.post<{ displayName: string; vanityRoute: string }>(
+      '/admin/rename_room',
+      { roomId, name },
+      this.SERVICES.api
+    );
+  });
+
+  /** A password makes the room private; null makes it public again */
+  setRoomPassword = this.requireActor((roomId: number, password: string | null) => {
+    return this.post<{ passwordProtected: boolean }>(
+      '/admin/set_room_password',
+      { roomId, password },
+      this.SERVICES.api
+    );
+  });
+
+  deleteRoom = this.requireActor((roomId: number) => {
+    return this.post('/admin/delete_room', { roomId }, this.SERVICES.api);
   });
 
   unlockRoom = this.requireActor((roomRoute: string, password: string) => {

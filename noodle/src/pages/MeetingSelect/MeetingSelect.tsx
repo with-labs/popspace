@@ -166,7 +166,10 @@ export const MeetingSelect: React.FC<IMeetingSelectProps> = ({
       </Box>
       <MeetingTemplatePicker onSelect={setSelected} selected={selected} />
       {client.actor?.admin && (
-        <Box mt={4}>
+        <Box mt={4} display="flex" gridGap={8}>
+          <Button variant="text" onClick={() => history.push(RouteNames.ROOM_MANAGEMENT)}>
+            {t('pages.meetingSelect.manageRooms')}
+          </Button>
           <Button variant="text" onClick={() => client.adminLogout()}>
             {t('pages.meetingSelect.signOut')}
           </Button>

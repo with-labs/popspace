@@ -7,6 +7,34 @@ const LOWERCASE = 'abcdefghijklmnopqrstuvwxyz';
 const NUMBERS = '0123456789';
 const LOWERCASE_AND_NUMBERS = LOWERCASE + NUMBERS;
 
+export const MIN_VANITY_ROUTE_LENGTH = 3;
+export const MAX_VANITY_ROUTE_LENGTH = 64;
+// first path segments the web app, reverse proxy or static files already use
+const RESERVED_VANITY_ROUTES = new Set([
+  'admin',
+  'api',
+  'hermes',
+  'unicorn',
+  'livekit',
+  'create',
+  'signup',
+  'signin',
+  'licenses',
+  'internal',
+  'static',
+  'audio',
+  'avatars',
+  'favicons',
+  'fonts',
+  '404',
+  'thegreendeveloper',
+  'holistic',
+  'sara',
+  'vicky',
+  'colorsofchloe',
+  'colors',
+]);
+
 /*
 There are several "names" of a room:
 1.) Its route
@@ -112,6 +140,22 @@ export class NamesAndRoutes {
     // Clean up double-dashes AFTER spaces have been replaced with dashes
     const noDoubleDashes = args.multiDashToSingleDash(spacesAsDashes);
     return noDoubleDashes;
+  }
+
+  /*
+    A vanity route is a custom route an admin picks for a room, e.g.
+    "Team Standup" -> "team-standup". It is stored in room_routes and
+    resolves before the "/room-url-name-url_id" form.
+  */
+  vanityRouteFromName(name: string) {
+    return String(name)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  isReservedVanityRoute(route: string) {
+    return RESERVED_VANITY_ROUTES.has(route);
   }
 
   // Private

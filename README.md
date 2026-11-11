@@ -22,7 +22,8 @@ To install PopSpace you will need:
 ## What's new in this fork
 
 - **Admin-only room creation.** Only an admin signed in with `ADMIN_USERNAME` / `ADMIN_PASSWORD` (from `.env`) can open `/create` and create room links. `ADMIN_PASSWORD` is required: without it nobody can create rooms. Guests can only join links they are given.
-- **Public or password-protected links.** When creating a room, the admin chooses "Anyone with the link" or "Only people with a password". Guests opening a protected link are asked for the room password once, then they stay members of that room. Passwords are stored as salted scrypt hashes, failed attempts are rate limited (10 per 15 minutes per IP), and passwords are redacted from the API logs.
+- **Public or password-protected links.** When creating a room, the admin chooses "Anyone with the link" or "Only people with a password" (at least 12 characters). Guests opening a protected link are asked for the room password once, then they stay members of that room. Passwords are stored as salted scrypt hashes, each IP gets 3 attempts before it is locked out for 30 minutes, and passwords are redacted from the API logs.
+- **Room management.** Signed-in admins can open `/admin/rooms` (or "Manage rooms" on `/create`) to see every room, and to create, rename, change access for and delete rooms. See [Managing rooms](#managing-rooms).
 - **Room files and notepads are private to the room.** Uploaded files can only be downloaded, and notepads only opened or edited, by members of their room (guests who opened a public link, or entered a password room's password), its creator and admins. A copied file URL doesn't work for anyone else. Uploads require room membership and are limited to 30 MB. The file routes can no longer be used to read files outside the upload folder (this previously exposed the database).
 - **Docker Compose support.** `docker-compose.yml` builds the image from source, keeps data in a named volume and can start a bundled LiveKit dev server, so one command runs everything.
 - **One `.env` for everything.** `yarn dev`, `yarn db-init` and `docker compose` all read the root `.env` (see `.env.example`).
@@ -73,6 +74,19 @@ A quick checklist for the new features:
 3. Open the link in a private window. You're asked for the password, a wrong password is rejected and the right one lets you in.
 4. Create a room with "Anyone with the link" and open it in a private window. You join directly.
 5. In the private window, open http://localhost:8888/create. It asks for admin sign-in.
+6. Back as the admin, open http://localhost:8888/admin/rooms. Create a room named "Team Standup" and check that http://localhost:8888/team-standup opens it. Typing the same name again shows it's taken.
+7. Use the lock icon to give the public room from step 4 a password, then reload it in the private window. You're asked for the password. Make it public again and the next reload lets you straight in.
+8. Rename and delete a room from the list. After deleting, its link shows the "room not found" page.
+
+### Managing rooms
+
+Open http://localhost:8888/admin/rooms as an admin. Each room in the list shows its name, link, access and creation date, with these actions:
+
+- **Custom names.** When creating or renaming a room you can give it a name such as "Team Standup", which becomes the link `/team-standup`. The form shows the resulting link and whether it's still free as you type. Leave the name empty to get a generated link. Names need 3-64 letters or numbers, and names the app already uses (`admin`, `api`, `create`, ...) are reserved. Renaming frees the old name, so its link stops working, but every room's generated link (`/<name>-<id>`) keeps working.
+- **Change access (lock icon).** Make a public room private by giving it a password, change the password of a private room, or make a private room public again. Setting or changing a password signs out everyone who joined before: they're asked for the new password the next time they open or reload the room. People already in the room aren't removed until then. The current password can't be shown, because only its hash is stored.
+- **Delete.** The room and its links stop working, and its custom name becomes free for other rooms. Like access changes, this doesn't remove people who are in the room right now until they reload. Rooms are soft-deleted (marked deleted in the database), not wiped.
+
+The admin-only API behind the page: `GET /admin/rooms` and `POST /admin/check_room_name`, `/admin/rename_room`, `/admin/set_room_password` and `/admin/delete_room`. `POST /create_meeting` accepts an optional `name`.
 
 ### How room content is protected
 

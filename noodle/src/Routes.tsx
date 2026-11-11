@@ -11,6 +11,7 @@ import { MeetingLink } from './pages/MeetingLink/MeetingLink';
 import { MeetingSelect } from './pages/MeetingSelect/MeetingSelect';
 import { PostMeeting } from './pages/PostMeeting/PostMeeting';
 import { PromoSlugPage } from './pages/PromoSlugPage';
+import { RoomManagement } from './pages/RoomManagement/RoomManagement';
 import RoomPage from './pages/RoomPage/RoomPage';
 
 const LicensesPage = React.lazy(() => import('./pages/licenses/LicensesPage'));
@@ -42,6 +43,12 @@ export const Routes: React.FC<IRoutesProps> = () => {
           </AdminGate>
         )}
       />
+
+      <Route exact path={RouteNames.ROOM_MANAGEMENT}>
+        <AdminGate>
+          <RoomManagement />
+        </AdminGate>
+      </Route>
 
       <AdminRoute
         path={RouteNames.FEATURE_FLAGS}

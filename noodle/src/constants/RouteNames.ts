@@ -7,4 +7,5 @@ export enum RouteNames {
   LICENSES = '/licenses',
   MEETING_LINK = '/:meetingRoute/meetinglink',
   CREATE_MEETING = '/create/:meetingType?',
+  ROOM_MANAGEMENT = '/admin/rooms',
 }

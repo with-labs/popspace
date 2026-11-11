@@ -11,6 +11,7 @@ const lib = {
   files: require("./files.js"),
   adminAuth: require("./admin_auth.js"),
   rateLimit: require("./rate_limit.js"),
+  roomPassword: require("./room_password.js"),
   sessionCookie: require("./session_cookie.js"),
   init: async () => {
     if(process.env.NODE_ENV == "test") {

@@ -2,6 +2,7 @@ const TwilioAccessToken = require("twilio").jwt.AccessToken
 const LivekitAccessToken = require('livekit-server-sdk').AccessToken
 const VideoGrant = TwilioAccessToken.VideoGrant
 const uuidv4 = require("uuid").v4
+const Admin = require("./admin.js")
 
 // 240 hours
 // https://www.twilio.com/docs/chat/create-tokens
@@ -24,25 +25,9 @@ const getRoomUrl = (req, displayName, urlId) => {
   return `${lib.appInfo.webUrl(req)}/${shared.db.room.namesAndRoutes.getUrlName(displayName)}-${urlId}`
 }
 
-const MIN_ROOM_PASSWORD_LENGTH = 12
-const MAX_ROOM_PASSWORD_LENGTH = 128
 const UNLOCK_RATE_LIMIT_SCOPE = "unlock_room"
 
-// an empty or missing password means a public link
-const parseRoomPassword = (body) => {
-  const password = body.password
-  if (password == null || password === "") {
-    return null
-  }
-  if (typeof password !== "string" ||
-      password.length < MIN_ROOM_PASSWORD_LENGTH ||
-      password.length > MAX_ROOM_PASSWORD_LENGTH) {
-    const error = new Error(`Room password must be ${MIN_ROOM_PASSWORD_LENGTH}-${MAX_ROOM_PASSWORD_LENGTH} characters`)
-    error.errorCode = shared.error.code.INVALID_API_PARAMS
-    throw error
-  }
-  return password
-}
+const parseRoomPassword = (body) => lib.roomPassword.parse(body.password)
 
 const failUnlessCanCreateRooms = (req, res) => {
   if (lib.adminAuth.canCreateRooms(req.actor)) {
@@ -171,10 +156,38 @@ class Meetings {
         return
       }
       const password = parseRoomPassword(req.body)
+      const customName = req.body.name ? String(req.body.name) : null
+      if (customName) {
+        // fail before creating anything if the name can't be used
+        const check = await shared.db.room.core.checkVanityRoute(customName)
+        if (!check.available) {
+          return api.http.fail(req, res, {
+            errorCode: check.reason === "taken" ? shared.error.code.ROOM_NAME_TAKEN : shared.error.code.INVALID_API_PARAMS,
+            message: check.reason === "taken" ? `The name "${check.route}" is already taken` : "That room name can't be used",
+            reason: check.reason
+          })
+        }
+      }
       const namedRoom = await createRoom(req.body.template || null, req.actor.id, req.session.id, params.templateName, req, password)
-      return api.http.succeed(req, res, {
-        newMeeting: { ...(await namedRoom.serialize()), passwordProtected: !!password }
-      })
+      const newMeeting = { ...(await namedRoom.serialize()), passwordProtected: !!password }
+      if (customName) {
+        const result = await Admin.setCustomName(req, res, namedRoom.roomId(), customName)
+          .catch(async (err) => {
+            await shared.db.room.core.deleteRoom(namedRoom.roomId())
+            throw err
+          })
+        if (!result) {
+          // lost a race for the name; don't leave a stray room behind
+          await shared.db.room.core.deleteRoom(namedRoom.roomId())
+          return
+        }
+        Object.assign(newMeeting, {
+          displayName: result.room.displayName,
+          route: result.vanityRoute,
+          vanityRoute: result.vanityRoute
+        })
+      }
+      return api.http.succeed(req, res, { newMeeting })
     }, ["templateName"])
 
     this.zoo.loggedInPostEndpoint("/meeting_url", async (req, res, params) => {

@@ -43,6 +43,7 @@ Then open http://localhost:8888, sign in with the admin credentials from `.env`,
 - `COMPOSE_PROFILES=livekit` in `.env` also starts a LiveKit server on ports 7880 (signaling), 7881 and 7882/udp (media), using `LIVEKIT_API_KEY` / `LIVEKIT_SECRET_KEY` from `.env` as its key pair (the secret needs at least 32 characters). For a real deployment, generate a new key pair, set `LIVEKIT_NODE_IP` to the host's public IP and open 7881/tcp and 7882/udp in the firewall. Or remove that line and point the `LIVEKIT_` / `REACT_APP_LIVEKIT_ENDPOINT` variables at your own LiveKit server or LiveKit Cloud.
 - Data (SQLite databases and uploaded files) lives in the `popspace-data` volume. `docker compose down` keeps it, and `docker compose down -v` deletes it.
 - Useful commands: `docker compose logs -f popspace`, `docker compose restart popspace`, `docker compose up -d --build` (after pulling changes).
+- `yarn smoke-test` checks a running stack end to end. It signs in as the admin from `.env`, creates a room, uploads an image, creates and edits a notepad, and confirms that strangers can't read the notepad or the file. Then it deletes what it created. Each run also leaves a few anonymous guest accounts behind, the same kind every visitor gets. Behind the reverse proxy, run it with `SMOKE_BASE_URL=https://your.domain yarn smoke-test`.
 
 ### Building and publishing the image yourself
 

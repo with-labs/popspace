@@ -65,7 +65,8 @@
     "dev:api": "yarn workspace noodle-api dev",
     "dev:hermes": "yarn workspace hermes dev",
     "dev:unicorn": "yarn workspace unicorn dev",
-    "db-init": "env-cmd -f .env --silent yarn workspace @withso/noodle-shared db:init"
+    "db-init": "env-cmd -f .env --silent yarn workspace @withso/noodle-shared db:init",
+    "smoke-test": "env-cmd -f .env --silent node deploy/smoke-test.js"
   },
   "devDependencies": {
     "concurrently": "^6.4.0",

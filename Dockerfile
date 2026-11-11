@@ -1,4 +1,4 @@
-FROM node:16.16.0
+FROM node:24.22.1
 
 WORKDIR /usr/src/app
 
@@ -16,8 +16,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV CYPRESS_INSTALL_BINARY=0
 RUN yarn install --frozen-lockfile
 # install pm2 to run server processes
-RUN npm install pm2 -g
-RUN pm2 install pm2-graceful-intercom
+RUN npm install -g pm2@6.0.14
+RUN pm2 install pm2-graceful-intercom@1.0.1
 
 COPY noodle ./noodle
 COPY hermes ./hermes

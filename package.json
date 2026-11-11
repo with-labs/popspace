@@ -13,7 +13,6 @@
   "resolutions": {
     "babel-loader": "8.1.0",
     "jest": "26.6.0",
-    "node-releases": "2.0.44",
     "webpack": "4.44.2",
     "**/@babel/generator": "7.29.8",
     "**/@babel/helper-compilation-targets": "7.29.7",
@@ -32,7 +31,6 @@
     "**/mocha/diff": "3.5.1",
     "**/mocha/js-yaml": "3.15.2",
     "**/mocha/minimatch": "3.1.5",
-    "**/next/node-fetch": "2.7.0",
     "**/next/postcss": "8.5.32",
     "**/@firebase/firestore/node-fetch": "2.7.0",
     "**/node-get-favicons/axios": "0.34.0",
@@ -48,7 +46,6 @@
     "**/request/qs": "6.17.0",
     "**/@cypress/request/qs": "6.17.0",
     "**/resolve-url-loader/loader-utils": "1.4.2",
-    "**/styled-jsx/loader-utils": "2.0.4",
     "**/@mdx-js/loader/loader-utils": "2.0.4",
     "**/core-js-compat/semver": "7.8.5",
     "**/react-scripts/semver": "7.8.5",
@@ -75,7 +72,7 @@
     "env-cmd": "10.1.0"
   },
   "volta": {
-    "node": "16.16.0",
-    "yarn": "1.22.11"
+    "node": "24.22.1",
+    "yarn": "1.22.22"
   }
 }

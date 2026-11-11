@@ -21,7 +21,7 @@ jobs:
       - name: Install
         uses: actions/setup-node@v1
         with:
-          node-version: 16.x
+          node-version: 24.x
       - run: yarn install --frozen-lockfile
       - run: yarn run prestart
       - run: yarn cypress:ci

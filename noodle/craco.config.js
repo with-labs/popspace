@@ -26,11 +26,11 @@ module.exports = {
         ]
       );
 
-      // alias React to the local installed dependency so we can yarn link other React-based
-      // modules without problems
-      // config.resolve.alias = config.resolve.alias || {};
-      // config.resolve.alias.react = path.resolve(__dirname, 'node_modules/react');
-      // config.resolve.alias['react-dom'] = path.resolve(__dirname, 'node_modules/react-dom');
+      // alias React to the app's own copy: @withso/unicorn lives under unicorn/, whose
+      // Next.js app installs a newer React that would otherwise get bundled twice
+      config.resolve.alias = config.resolve.alias || {};
+      config.resolve.alias.react = path.dirname(require.resolve('react/package.json'));
+      config.resolve.alias['react-dom'] = path.dirname(require.resolve('react-dom/package.json'));
 
       return config;
     },

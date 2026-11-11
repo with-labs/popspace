@@ -27,7 +27,7 @@ To install PopSpace you will need:
 - **Room files and notepads are private to the room.** Uploaded files can only be downloaded, and notepads only opened or edited, by members of their room (guests who opened a public link, or entered a password room's password), its creator and admins. A copied file URL doesn't work for anyone else. Uploads require room membership and are limited to 30 MB. The file routes can no longer be used to read files outside the upload folder (this previously exposed the database).
 - **Docker Compose support.** `docker-compose.yml` builds the image from source, keeps data in a named volume and can start a bundled LiveKit dev server, so one command runs everything.
 - **One `.env` for everything.** `yarn dev`, `yarn db-init` and `docker compose` all read the root `.env` (see `.env.example`).
-- **Pinned toolchain.** Every workspace uses Node 16.16.0 / Yarn 1.22.11 through [Volta](https://volta.sh).
+- **Pinned toolchain.** Every workspace uses Node 24.22.1 / Yarn 1.22.22 through [Volta](https://volta.sh).
 
 ## Running with Docker Compose (Recommended)
 

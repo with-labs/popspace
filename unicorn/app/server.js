@@ -11,6 +11,7 @@ class Server {
   constructor(port, dev = process.env.NODE_ENV !== 'production', test = process.env.NODE_ENV === 'test') {
     this.port = port
     this.express = express()
+    this.express.disable('x-powered-by')
     this.next = next({ dev: dev && !test })
     this.router = new ExpressNextRouter(this.express, this.next)
     this.middleware = new Middleware(this.express)

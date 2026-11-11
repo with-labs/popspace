@@ -169,11 +169,11 @@
     ]
   },
   "scripts": {
-    "start:run": "cross-env REACT_APP_ANALYTICS_ENV=development PORT=8888 craco start",
+    "start:run": "cross-env NODE_OPTIONS=--openssl-legacy-provider REACT_APP_ANALYTICS_ENV=development PORT=8888 craco start",
     "start": "yarn run start:run",
     "serve": "node server.js",
     "prebuild": "yarn run licenses",
-    "build": "craco build",
+    "build": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider --max-old-space-size=4096\" craco build",
     "dev": "yarn start",
     "test": "jest",
     "test:debug": "node node_modules/.bin/jest --runInBand --watch --bail",
@@ -185,8 +185,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run --browser chrome",
     "cypress:ci": "cross-env CYPRESS_baseUrl=http://localhost:8888 start-server-and-test start:run http://localhost:8888 cypress:run",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public",
+    "storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006 -s public",
+    "build-storybook": "cross-env NODE_OPTIONS=--openssl-legacy-provider build-storybook -s public",
     "licenses": "license-checker --production --direct --json --relativeLicensePath --customPath ./licenseFormat.json --out ./src/pages/licenses/data/licenses.json"
   },
   "eslintConfig": {

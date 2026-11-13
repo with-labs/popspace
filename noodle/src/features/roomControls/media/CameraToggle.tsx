@@ -61,9 +61,11 @@ export const CameraToggle = (props: ICameraToggleProps) => {
     KeyShortcut.ToggleVideo,
     (ev) => {
       ev.preventDefault();
+      // the shortcut does nothing while the button is disabled
+      if (busy) return;
       handleVideoToggle();
     },
-    [toggleVideoOn, handleVideoToggle]
+    [toggleVideoOn, handleVideoToggle, busy]
   );
 
   const [menuAnchor, setMenuAnchor] = React.useState<HTMLElement | null>(null);

@@ -5,6 +5,7 @@ import { useRemoteControl } from '@hooks/useRemoteControl/useRemoteControl';
 import { MIC_TRACK_NAME } from '@constants/User';
 import { useRoomStore } from '@api/useRoomStore';
 import { useMicControl } from '@src/media/hooks';
+import { useIsDoNotDisturb } from '@hooks/useDoNotDisturb/useDoNotDisturb';
 
 export interface IPublishedMicToggleProps {
   showMicsList?: boolean;
@@ -21,6 +22,7 @@ export const PublishedMicToggle: React.FC<IPublishedMicToggleProps> = ({
 }) => {
   const { isPublishing, toggle, track } = useMicControl();
   const { muteSession } = useRemoteControl();
+  const doNotDisturb = useIsDoNotDisturb();
 
   const handleMicOn = () => {
     // the action of turning the microphone on makes this the primary
@@ -41,7 +43,7 @@ export const PublishedMicToggle: React.FC<IPublishedMicToggleProps> = ({
     <MicToggle
       isMicOn={!!track}
       doMicToggle={toggle}
-      busy={isPublishing}
+      busy={isPublishing || doNotDisturb}
       handleMicOn={handleMicOn}
       showMicsList={showMicsList}
       className={className}

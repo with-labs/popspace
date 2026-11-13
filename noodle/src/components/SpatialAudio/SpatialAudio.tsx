@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { CanvasObjectKind } from '@providers/canvas/Canvas';
 import { useMediaReadiness } from '@src/media/useMediaReadiness';
+import { useIsDoNotDisturb } from '@hooks/useDoNotDisturb/useDoNotDisturb';
 
 export interface SpatialAudioProps
   extends Omit<React.DetailedHTMLProps<React.AudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>, 'ref'> {
@@ -55,8 +56,11 @@ export const SpatialAudio = React.forwardRef<HTMLAudioElement, SpatialAudioProps
 
     const finalRef = useMergedRef(internalRef, ref);
 
+    // do not disturb mutes everything in the room for this user
+    const doNotDisturb = useIsDoNotDisturb();
+
     if (rest.autoPlay && !isReady) return null;
 
-    return <audio ref={finalRef} {...rest} />;
+    return <audio ref={finalRef} {...rest} muted={doNotDisturb || rest.muted} />;
   }
 );

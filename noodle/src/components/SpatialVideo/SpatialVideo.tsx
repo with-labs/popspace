@@ -2,6 +2,7 @@ import useMergedRef from '@react-hook/merged-ref';
 import * as React from 'react';
 import { useSpatialAudioVolume } from '@hooks/useSpatialAudioVolume/useSpatialAudioVolume';
 import { useMediaReadiness } from '@src/media/useMediaReadiness';
+import { useIsDoNotDisturb } from '@hooks/useDoNotDisturb/useDoNotDisturb';
 
 export interface SpatialVideoProps
   extends Omit<React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>, 'ref'> {
@@ -49,8 +50,11 @@ export const SpatialVideo = React.forwardRef<HTMLVideoElement, SpatialVideoProps
 
     const finalRef = useMergedRef(internalRef, ref);
 
+    // do not disturb mutes everything in the room for this user
+    const doNotDisturb = useIsDoNotDisturb();
+
     if (rest.autoPlay && !isReady) return null;
 
-    return <video ref={finalRef} {...rest} />;
+    return <video ref={finalRef} {...rest} muted={doNotDisturb || rest.muted} />;
   }
 );

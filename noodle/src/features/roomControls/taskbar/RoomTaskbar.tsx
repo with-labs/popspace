@@ -12,6 +12,7 @@ import { FloatingActionBarButton } from '../addContent/FloatingActionBarButton';
 import { PublishedCameraToggle } from '../media/PublishedCameraToggle';
 import { PublishedMicToggle } from '../media/PublishedMicToggle';
 import { ScreenShareToggle } from '../media/ScreenShareToggle';
+import { DoNotDisturbToggle } from '../media/DoNotDisturbToggle';
 import { CopyLinkButton } from './CopyLinkButton/CopyLinkButton';
 import { LeaveMeetingButton } from './LeaveMeetingButton/LeaveMeetingButton';
 
@@ -59,6 +60,7 @@ export const RoomTaskbar: React.FC<IRoomTaskbarProps> = ({ className, ...rest })
             <Hidden xsDown>
               <ScreenShareToggle />
             </Hidden>
+            <DoNotDisturbToggle />
           </Spacing>
           <Spacing gap={0.5} alignItems="center" justifyContent="flex-end" color="grey.900" flexDirection={'row'}>
             <Hidden xsDown>

@@ -97,6 +97,18 @@ export class ParticipantClient extends ApiSubClient {
     });
   };
 
+  updateDoNotDisturb = (doNotDisturb: boolean) => {
+    if (!this.core.actor) {
+      throw new Error('Must be authenticated to update do not disturb');
+    }
+
+    this.core.cacheApi.updateUser({ participantState: { doNotDisturb }, id: this.core.actor.actorId });
+    this.core.socket.send({
+      kind: 'updateSelf',
+      payload: { participantState: { doNotDisturb } },
+    });
+  };
+
   updateAvatarName = (avatarName: string) => {
     if (!this.core.actor) {
       throw new Error('Must be authenticated to update avatar name');

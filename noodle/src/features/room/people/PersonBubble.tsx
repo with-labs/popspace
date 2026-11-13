@@ -5,6 +5,8 @@ import { MuteIconSmall } from '@components/icons/MuteIconSmall';
 import Publication from '@components/Publication/Publication';
 import { useSpeakingStates } from '@hooks/useSpeakingStates/useSpeakingStates';
 import { makeStyles, Typography, useTheme } from '@material-ui/core';
+import { RemoveCircle } from '@material-ui/icons';
+import { useTranslation } from 'react-i18next';
 import { useCanvasObject } from '@providers/canvas/CanvasObject';
 import { useSpeakingState } from '@src/media/hooks';
 import * as React from 'react';
@@ -68,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: theme.typography.pxToRem(16),
     color: theme.palette.brandColors.cherry.bold,
   },
+  doNotDisturb: {
+    fontSize: theme.typography.pxToRem(11),
+    color: theme.palette.brandColors.cherry.bold,
+    whiteSpace: 'nowrap',
+  },
   voiceWave: {
     width: 24,
     height: 24,
@@ -109,6 +116,8 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
     const userId = person?.id;
     const displayIdentity = person?.actor.displayName;
     const avatarName = person?.actor.avatarName;
+    const doNotDisturb = !!person?.participantState?.doNotDisturb;
+    const { t } = useTranslation();
 
     // determine background color based on avatar
     const backgroundColor = useAvatarBackgroundColor(avatarName);
@@ -142,9 +151,16 @@ export const PersonBubble = React.forwardRef<HTMLDivElement, IPersonBubbleProps>
           )}
           <PersonBubbleLabel isVideoOn={isVideoOn}>
             <Typography className={classes.name}>{displayIdentity}</Typography>
+            {doNotDisturb && (
+              <Typography className={classes.doNotDisturb}>
+                {t('features.mediaControls.doNotDisturbStatus')}
+              </Typography>
+            )}
           </PersonBubbleLabel>
           <PersonBubbleVoiceIndicator isVideoOn={isVideoOn}>
-            {isMicOn ? (
+            {doNotDisturb ? (
+              <RemoveCircle className={classes.mutedIcon} fontSize="inherit" />
+            ) : isMicOn ? (
               <AudioIndicator className={classes.voiceWave} isActive={isSpeaking} variant="sine" />
             ) : (
               <MuteIconSmall className={classes.mutedIcon} fontSize="inherit" />

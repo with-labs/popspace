@@ -30,13 +30,11 @@ const getNewState = async <S extends object>(
     extracting JSON fields into columns will be the best solution.
   */
   if (!curState) {
-    curState = JSON.parse(
-      (
-        await prisma[modelName].findUnique({
-          where: criteria,
-        })
-      ).state,
-    );
+    // there is no row yet the first time a state is set
+    const row = await prisma[modelName].findUnique({
+      where: criteria,
+    });
+    curState = row ? JSON.parse(row.state) : null;
   }
   return Object.assign(curState || {}, stateUpdate);
 };

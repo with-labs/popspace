@@ -72,12 +72,13 @@
     "@babel/eslint-plugin": "^7.13.16",
     "@babel/preset-env": "^7.14.4",
     "@babel/preset-react": "^7.13.13",
-    "@testing-library/react": "^11.2.7",
-    "babel-jest": "^27.0.2",
+    "@testing-library/react": "^12.1.5",
+    "babel-jest": "^30.5.2",
     "eslint": "^7.27.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "jest": "^27.0.4",
+    "jest": "^30.5.2",
+    "jest-environment-jsdom": "^30.5.2",
     "regenerator-runtime": "^0.13.7"
   },
   "dependencies": {

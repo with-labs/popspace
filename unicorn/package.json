@@ -36,9 +36,9 @@
     "rootDir": "./integration_tests"
   },
   "devDependencies": {
-    "axios": "^0.21.1",
-    "jest": "^27.0.4",
-    "puppeteer": "^10.0.0"
+    "axios": "^1.21.0",
+    "jest": "^30.5.2",
+    "puppeteer": "^25.16.0"
   },
   "volta": {
     "extends": "../package.json"

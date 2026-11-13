@@ -44,8 +44,7 @@
     "snakecase-keys": "^4.0.2"
   },
   "devDependencies": {
-    "jest": "^27.0.4",
-    "jest-cli": "^27.0.4",
+    "jest": "^30.5.2",
     "node-dev": "^7.1.0"
   },
   "volta": {

@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es2020",
+    "module": "node16",
+    "moduleResolution": "node16",
     "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "types": ["node"]
   },
   "include": ["./src"]
 }

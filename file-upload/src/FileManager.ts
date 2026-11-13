@@ -1,9 +1,8 @@
 import { extname } from 'path';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'crypto';
 
 import { HttpError } from './HttpError';
 import { extractDominantColor, generateThumbnail } from './imageProcessing';
-import { S3Storage } from './S3';
 import { Storage } from './Storage';
 
 /**
@@ -87,7 +86,7 @@ export class FileManager<Ctx extends any[] = []> {
   };
 
   create = async (file: FileData, ...ctx: Ctx) => {
-    const prefix = uuid();
+    const prefix = randomUUID();
     const baseFileKey = `${prefix}/${file.originalname}`;
 
     // upload base file to s3

@@ -4,7 +4,7 @@
 #
 # The bundled LiveKit server is in the "livekit" profile, enabled by
 # COMPOSE_PROFILES=livekit in .env. Remove that line to use your own
-# LiveKit / Twilio account instead.
+# LiveKit server instead.
 services:
   popspace:
     build:

@@ -6,7 +6,6 @@ export {
   UploadedFile as WithFile,
   FileImageData as WithImageData,
 } from './FileManager';
-export { S3Storage } from './S3';
 export { DiskStorage } from './DiskStorage';
 export type { Storage } from './Storage';
 

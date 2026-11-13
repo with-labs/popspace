@@ -59,6 +59,9 @@ export default defineConfig(({ mode }) => {
       serviceWorker(mode),
     ],
     resolve: {
+      // @withso/unicorn lives under unicorn/, whose Next.js app installs a newer
+      // React; resolve React from here so the bundle has one copy
+      dedupe: ['react', 'react-dom'],
       alias: {
         '@components': src('components'),
         '@features': src('features'),

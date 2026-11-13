@@ -145,7 +145,8 @@ const main = async () => {
     for (const src of state.scripts) {
       const res = await http(new URL(src, urls.ui).href)
       assert(res.status === 200, `${src} returned ${res.status}`)
-      for (const m of res.text().matchAll(/"(1[6-9]\.\d+\.\d+)"/g)) versions.add(m[1])
+      // minifiers quote the version string with ", ' or `
+      for (const m of res.text().matchAll(/["'`](1[6-9]\.\d+\.\d+)["'`]/g)) versions.add(m[1])
     }
     assert(!versions.has('18.3.1'), 'the bundle contains React 18 next to the app\'s React 17')
     return `${state.scripts.length} scripts`

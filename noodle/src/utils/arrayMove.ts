@@ -1,6 +1,6 @@
 export const arrayMove = function <T>(array: T[], pos1: number, pos2: number) {
   // local variables
-  var i, tmp;
+  let i, tmp;
   // if positions are different and inside array
   if (pos1 !== pos2 && 0 <= pos1 && pos1 <= array.length && 0 <= pos2 && pos2 <= array.length) {
     // save element from position 1

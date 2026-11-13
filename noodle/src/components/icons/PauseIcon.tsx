@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as Glyph } from './svg/pause.svg';
+import Glyph from './svg/pause.svg?react';
 
 export interface IPauseIconProps extends SvgIconProps {}
 

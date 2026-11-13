@@ -37,10 +37,10 @@
     "cors": "^2.8.5",
     "dotenv": "^8.6.0",
     "express": "^4.17.1",
-    "livekit-server-sdk": "2.19.2",
+    "livekit-server-sdk": "^2.19.2",
     "log4js": "^6.3.0",
     "mixpanel": "^0.13.0",
-    "multer": "2.5.0",
+    "multer": "^2.5.0",
     "snakecase-keys": "^4.0.2"
   },
   "devDependencies": {

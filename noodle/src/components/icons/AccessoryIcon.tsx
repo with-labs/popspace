@@ -10,7 +10,7 @@ import embedSrc from './png/embed.png';
 import huddleSrc from './png/huddle.png';
 import settingsSrc from './png/settings.png';
 import chatSrc from './png/chat.png';
-import { ReactComponent as ScreenShareIcon } from './svg/screenShare.svg';
+import ScreenShareIcon from './svg/screenShare.svg?react';
 import { WidgetType } from '@api/roomState/types/widgets';
 
 const icons = {

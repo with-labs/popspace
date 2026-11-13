@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react/types-6-0';
+import type { StoryFn as Story } from '@storybook/react-vite';
 import React, { useState } from 'react';
 import { Menu, Button, MenuItem, ListItemIcon, ListItemText, Divider, Box } from '@material-ui/core';
 import { PlaceholderIcon } from '@components/icons/PlaceholderIcon';

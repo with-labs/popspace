@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
 
   livekit:
-    image: livekit/livekit-server:v1.8.0
+    image: livekit/livekit-server:v1.13.11
     profiles: ["livekit"]
     # API key and secret come from LIVEKIT_API_KEY / LIVEKIT_SECRET_KEY in .env
     command: --bind 0.0.0.0 --node-ip ${LIVEKIT_NODE_IP:-127.0.0.1}

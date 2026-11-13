@@ -26,7 +26,7 @@ export async function testH264Support(): Promise<boolean> {
     return isH264Supported;
   }
 
-  let offerOptions: RTCOfferOptions = {};
+  const offerOptions: RTCOfferOptions = {};
   const pc = new PeerConnection();
   try {
     pc.addTransceiver('video');

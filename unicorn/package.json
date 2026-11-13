@@ -16,7 +16,6 @@
     "express": "^4.17.1",
     "log4js": "^6.3.0",
     "next": "15.5.28",
-    "quill": "^1.3.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rich-text": "^4.1.0",
@@ -27,7 +26,7 @@
   "scripts": {
     "build": "next build",
     "start": "pm2 start index.js --name unicorn --wait-ready --kill-timeout 3000",
-    "dev": "node-dev index.js -r dotenv/config",
+    "dev": "node --watch-path=app --watch-path=index.js index.js",
     "stop": "pm2 stop unicorn",
     "reload": "pm2 reload unicorn",
     "logs": "pm2 logs unicorn",
@@ -39,7 +38,6 @@
   "devDependencies": {
     "axios": "^0.21.1",
     "jest": "^27.0.4",
-    "node-dev": "^7.1.0",
     "puppeteer": "^10.0.0"
   },
   "volta": {

@@ -1,7 +1,7 @@
 import { getAvatarFromUserId } from '@constants/AvatarMetadata';
 import { SIZE_AVATAR } from '@features/room/people/constants';
 import { logger } from '@utils/logger';
-import { WritableDraft } from 'immer/dist/internal';
+import { WritableDraft } from 'immer';
 
 import { exportRoomTemplate } from './exportRoomTemplate';
 import { RoomCursorStateShape, RoomStateShape } from './roomStateStore';

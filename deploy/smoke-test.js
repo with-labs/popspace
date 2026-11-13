@@ -136,7 +136,8 @@ const main = async () => {
   await check('serves the app', async () => {
     const res = await http(`${urls.ui}/`)
     assert(res.status === 200 && res.text().includes('<div id="root">'), `got ${res.status}`)
-    state.scripts = [...res.text().matchAll(/src="([^"]+\.js)"/g)].map((m) => m[1])
+    // built: /assets/index-<hash>.js; under the Vite dev server: /src/index.tsx
+    state.scripts = [...res.text().matchAll(/<script[^>]* src="([^"]+\.(?:js|tsx?))"/g)].map((m) => m[1])
   })
   await check('serves its scripts with a single React version', async () => {
     assert(state.scripts && state.scripts.length, 'no scripts in index.html')

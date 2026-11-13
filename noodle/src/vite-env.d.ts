@@ -1,4 +1,5 @@
-/// <reference types="react-scripts" />
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-svgr/client" />
 
 declare const VERSION: string;
 
@@ -44,26 +45,6 @@ declare interface Document {
   fonts: Fonts;
 }
 
-declare module '*.mp4' {
-  const path: string;
-  export default path;
-}
-
-declare module '*.mp3' {
-  const path: string;
-  export default path;
-}
-
-declare module '*.webm' {
-  const path: string;
-  export default path;
-}
-
-declare module '*.html' {
-  const content: string;
-  export default content;
-}
-
 declare interface Window {
   $crisp: any;
   CRISP_WEBSITE_ID: string;
@@ -80,3 +61,10 @@ declare module 'simple-quadtree' {
 }
 
 declare module '@typeform/embed-react';
+
+declare namespace NodeJS {
+  interface ProcessEnv {
+    // set by the `define` in vite.config.mts
+    PUBLIC_URL: string;
+  }
+}

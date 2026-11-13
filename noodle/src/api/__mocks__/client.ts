@@ -3,52 +3,52 @@ const mockClient = {
   sessionToken: null,
   roomId: null,
 
-  requireActor: jest.fn((cb) => cb),
-  login: jest.fn(),
-  logout: jest.fn(),
-  joinMeeting: jest.fn().mockResolvedValue('fake-token'),
-  leaveMeeting: jest.fn(),
+  requireActor: vi.fn((cb) => cb),
+  login: vi.fn(),
+  logout: vi.fn(),
+  joinMeeting: vi.fn().mockResolvedValue('fake-token'),
+  leaveMeeting: vi.fn(),
 
-  post: jest.fn(),
-  get: jest.fn(),
+  post: vi.fn(),
+  get: vi.fn(),
 
   // eventemitter
-  on: jest.fn(),
-  off: jest.fn(),
-  addEventListener: jest.fn(),
-  removeEventListener: jest.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
 
   // sub-clients
 
   files: {
-    getRoomFileUploadUrl: jest.fn(),
-    deleteFile: jest.fn(),
+    getRoomFileUploadUrl: vi.fn(),
+    deleteFile: vi.fn(),
   },
   magicLinks: {
-    magicLinkUnsubscribe: jest.fn(),
-    magicLinkSubscribe: jest.fn(),
+    magicLinkUnsubscribe: vi.fn(),
+    magicLinkSubscribe: vi.fn(),
   },
   openGraph: {
-    getOpenGraph: jest.fn(),
+    getOpenGraph: vi.fn(),
   },
   participants: {
-    updateSelf: jest.fn(),
+    updateSelf: vi.fn(),
   },
   passthrough: {
-    updateCursor: jest.fn(),
+    updateCursor: vi.fn(),
   },
   roomState: {
-    setWallpaperUrl: jest.fn(),
-    bringToFront: jest.fn(),
+    setWallpaperUrl: vi.fn(),
+    bringToFront: vi.fn(),
   },
   transforms: {
-    transformWidget: jest.fn().mockResolvedValue(undefined),
-    transformSelf: jest.fn().mockResolvedValue(undefined),
+    transformWidget: vi.fn().mockResolvedValue(undefined),
+    transformSelf: vi.fn().mockResolvedValue(undefined),
   },
   widgets: {
-    addWidget: jest.fn().mockResolvedValue(undefined),
-    updateWidget: jest.fn(),
-    deleteWidget: jest.fn(),
+    addWidget: vi.fn().mockResolvedValue(undefined),
+    updateWidget: vi.fn(),
+    deleteWidget: vi.fn(),
   },
 };
 

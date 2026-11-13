@@ -1,5 +1,5 @@
 import { SetState, GetState, StoreApi, State } from 'zustand';
-import produce, { Draft, enableMapSet } from 'immer';
+import { produce, Draft, enableMapSet } from 'immer';
 
 enableMapSet();
 

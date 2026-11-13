@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as Glyph } from './svg/plus_large.svg';
+import Glyph from './svg/plus_large.svg?react';
 
 export interface IPlusLargeIconProps extends SvgIconProps {}
 

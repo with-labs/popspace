@@ -39,7 +39,7 @@ This script will build the static assets for the application in the `build/` dir
 
 ### Tests
 
-This application has unit tests (using [Jest](https://jestjs.io/)) and E2E tests (using [Cypress](https://www.cypress.io/)). You can run the tests with the following scripts.
+This application has unit tests (using [Vitest](https://vitest.dev/)) and E2E tests (using [Cypress](https://www.cypress.io/)). You can run the tests with the following scripts.
 
 #### Unit Tests
 
@@ -47,7 +47,7 @@ Run unit tests with
 
     $ yarn test
 
-This will run all unit tests with Jest and output the results to the console.
+This will run all unit tests with Vitest and output the results to the console.
 
 #### E2E Tests
 
@@ -59,7 +59,7 @@ Run end to end tests with
 
 This will open the Cypress test runner. When it's open, select a test file to run.
 
-Note: Be sure to complete the 'Getting Started' section before running these tests. These Cypress tests will connect to real Twilio rooms, so you may be billed for any time that is used.
+Note: Be sure to complete the 'Getting Started' section before running these tests. These Cypress tests join real LiveKit rooms on the configured server.
 
 ## Editor Setup
 

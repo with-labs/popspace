@@ -17,14 +17,14 @@ class MockWebSocket extends MockEventSource {
   }
 
   // you must manually open the socket to better emulate real life behavior
-  readyState = WebSocket.CONNECTING;
+  readyState: number = WebSocket.CONNECTING;
 
-  send = jest.fn();
-  close = jest.fn(() => {
+  send = vi.fn();
+  close = vi.fn(() => {
     this.readyState = WebSocket.CLOSING;
     this.emit('close', new CloseEvent('close', { code: 1000 }));
   });
-  reconnect = jest.fn();
+  reconnect = vi.fn();
 }
 
 export default MockWebSocket;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as Glyph } from './svg/checkmark.svg';
+import Glyph from './svg/checkmark.svg?react';
 
 export interface ICheckmarkIconProps extends SvgIconProps {}
 

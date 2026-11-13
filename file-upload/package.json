@@ -29,7 +29,7 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "sharp": "0.35.5"
+    "sharp": "^0.35.5"
   },
   "prettier": {
     "singleQuote": true,

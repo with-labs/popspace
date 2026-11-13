@@ -1,5 +1,5 @@
 import { Whiteboard } from './Whiteboard';
-import { Story } from '@storybook/react/types-6-0';
+import type { StoryFn as Story } from '@storybook/react-vite';
 import React from 'react';
 import { Box } from '@material-ui/core';
 import { useWhiteboard } from './useWhiteboard';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as Glyph } from './svg/dropdown_filled.svg';
+import Glyph from './svg/dropdown_filled.svg?react';
 
 export interface IDropdownFilledIconProps extends SvgIconProps {}
 

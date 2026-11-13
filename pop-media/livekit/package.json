@@ -1,0 +1,24 @@
+{
+  "name": "@withso/pop-media-livekit",
+  "version": "0.3.0",
+  "description": "Pop Media LiveKit provider",
+  "private": true,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@withso/pop-media-sdk": "0.3.0",
+    "livekit-client": "^2.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^6.0.3"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

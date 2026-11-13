@@ -1,5 +1,5 @@
 import { Button, ButtonProps, ThemeProvider } from '@material-ui/core';
-import { Story } from '@storybook/react/types-6-0';
+import type { StoryFn as Story } from '@storybook/react-vite';
 import React from 'react';
 import { cherry, lavender, oregano } from '../theme/theme';
 

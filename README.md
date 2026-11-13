@@ -16,7 +16,6 @@ To install PopSpace you will need:
 - An Audio/Video media provider:
   - A deployed [LiveKit server](https://livekit.io/)
   - A LiveKit Cloud account
-  - Or, a Twilio account
 ---
 
 ## What's new in this fork
@@ -110,14 +109,9 @@ docker pull ghcr.io/with-labs/popspace:latest
 The following environment variables are required to run PopSpace in a Docker container or running locally. This assumes a persistent volume is mounted at `/data`:
 
 ```
-# if you use LiveKit, define the following vars
 REACT_APP_LIVEKIT_ENDPOINT=https://your-livekit-instance.com
 LIVEKIT_API_KEY=<your livekit server key>
 LIVEKIT_SECRET_KEY=<your livekit server secret key>
-# if you use Twilio, define these instead.
-# TWILIO_ACCOUNT_SID
-# TWILIO_API_KEY_SECRET
-# TWILIO_API_KEY_SID
 
 # yes, these have different formats, sorry...
 # NOTE: connection_limit=1 is vital for DATABASE_URL!!

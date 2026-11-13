@@ -6,8 +6,8 @@
 import { HEARTBEAT_INTERVAL, HEARTBEAT_TIMEOUT, SocketConnection } from './SocketConnection';
 import MockWebSocket from '../../__mocks__/reconnecting-websocket';
 
-jest.mock('reconnecting-websocket');
-jest.mock('@utils/logger');
+vi.mock('reconnecting-websocket', () => import('../../__mocks__/reconnecting-websocket'));
+vi.mock('@utils/logger');
 
 function createConnection() {
   return new SocketConnection('ws://mock.url');
@@ -38,15 +38,15 @@ function createTestHarness(sc: SocketConnection) {
       sc.__socket.dispatchEvent(new CloseEvent('close'));
     },
     /** Mock fn called when SocketConnection encounters an error */
-    onError: jest.fn(),
+    onError: vi.fn(),
     /** Mock fn called when SocketConnection receives a message */
-    onMessage: jest.fn(),
+    onMessage: vi.fn(),
     /** Mock fn called when SocketConnection sends a message */
-    onSent: jest.fn(),
+    onSent: vi.fn(),
     /** Mock fn called when SocketConnection first connects */
-    onConnected: jest.fn(),
+    onConnected: vi.fn(),
     /** Mock fn called when SocketConnection enters closed state */
-    onClosed: jest.fn(),
+    onClosed: vi.fn(),
   };
 
   sc.on('closed', harness.onClosed);
@@ -60,12 +60,13 @@ function createTestHarness(sc: SocketConnection) {
 
 describe('SocketConnection', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    // setImmediate stays real: the tests await it to let the event loop turn
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval'] });
   });
 
   afterEach(() => {
-    jest.useRealTimers();
-    jest.clearAllTimers();
+    vi.useRealTimers();
+    vi.clearAllTimers();
   });
 
   it('connects and begins a heartbeat interval loop', async () => {
@@ -75,7 +76,7 @@ describe('SocketConnection', () => {
     // emulate open event
     harness.open();
     // run timers to heartbeat
-    jest.runOnlyPendingTimers();
+    vi.runOnlyPendingTimers();
 
     // heartbeat was sent
     const pingExpectation = expect.objectContaining({
@@ -100,7 +101,7 @@ describe('SocketConnection', () => {
     // wait for next heartbeat loop - awaiting a promise + immediate
     // is necessary here because of JS event loop quirks
     await new Promise<void>((resolve) => setImmediate(resolve));
-    jest.runAllTimers();
+    vi.runAllTimers();
 
     // still no errors
     expect(harness.onError).not.toHaveBeenCalled();
@@ -142,7 +143,7 @@ describe('SocketConnection', () => {
     // emulate open event
     harness.open();
     // run timers to heartbeat
-    jest.advanceTimersByTime(HEARTBEAT_INTERVAL + 1);
+    vi.advanceTimersByTime(HEARTBEAT_INTERVAL + 1);
     const pingExpectation = expect.objectContaining({
       kind: 'ping',
     });
@@ -150,7 +151,7 @@ describe('SocketConnection', () => {
     // when the heartbeat is issued, it sets a timeout which signifies
     // the response wait time - if the timeout is fired, the connection should
     // enter reconnecting mode. So, run timers!
-    jest.advanceTimersByTime(HEARTBEAT_TIMEOUT);
+    vi.advanceTimersByTime(HEARTBEAT_TIMEOUT);
 
     // once we've triggered the heartbeat timeout, the connection should move
     // to reconnecting state - this is wrapped in a setImmediate because
@@ -170,7 +171,7 @@ describe('SocketConnection', () => {
     // emulate open event
     harness.open();
     // run timers to heartbeat
-    jest.runOnlyPendingTimers();
+    vi.runOnlyPendingTimers();
 
     // heartbeat was sent
     const pingExpectation = expect.objectContaining({
@@ -181,7 +182,7 @@ describe('SocketConnection', () => {
 
     sc.close();
 
-    jest.runAllTimers();
+    vi.runAllTimers();
 
     expect(harness.socket.reconnect).not.toHaveBeenCalled();
     expect(harness.onClosed).toHaveBeenCalled();

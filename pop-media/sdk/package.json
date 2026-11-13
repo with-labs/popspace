@@ -1,0 +1,23 @@
+{
+  "name": "@withso/pop-media-sdk",
+  "version": "0.3.0",
+  "description": "A unified WebRTC video conferencing SDK",
+  "private": true,
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "typescript": "^6.0.3"
+  },
+  "volta": {
+    "extends": "../../package.json"
+  }
+}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIcon, SvgIconProps } from '@material-ui/core';
-import { ReactComponent as Glyph } from './svg/camera_ON.svg';
+import Glyph from './svg/camera_ON.svg?react';
 
 export type CameraOnIconProps = SvgIconProps;
 

@@ -2,12 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-globals */
 
-// This service worker can be customized!
-// See https://developers.google.com/web/tools/workbox/modules
-// for the list of available Workbox modules, or add any other
-// code you'd like.
-// You can also remove this file if you'd prefer not to use a
-// service worker, and the Workbox build step will be skipped.
+// Built separately from the app by the service worker plugin in vite.config.mts.
 
 import { clientsClaim, RouteHandler } from 'workbox-core';
 import * as navigationPreload from 'workbox-navigation-preload';
@@ -17,12 +12,6 @@ import { CacheFirst, NetworkOnly } from 'workbox-strategies';
 declare const self: ServiceWorkerGlobalScope;
 
 clientsClaim();
-
-// Precaching is not enabled, but we still have to reference the __WB_MANIFEST variable
-// in this file to compile correctly.
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ignored = self.__WB_MANIFEST;
 
 // https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
 // Online-first service worker implementation

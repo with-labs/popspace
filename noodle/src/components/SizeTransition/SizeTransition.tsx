@@ -66,7 +66,7 @@ export const SizeTransition: React.FC<IHorizontalCollapseProps> = ({
 
   const transition = useTransition(children, {
     enter: (_, idx) => async (next) => {
-      let ref = refs[idx];
+      const ref = refs[idx];
       const { width, height } = await getElementBounds(ref);
 
       if (width || height) {
@@ -76,7 +76,7 @@ export const SizeTransition: React.FC<IHorizontalCollapseProps> = ({
     leave: () => async (next) => {
       // measure incoming replacement - we will animate to the height
       // of the incoming content to make things a bit more seamless instead of 0
-      let ref = refs[1];
+      const ref = refs[1];
       const { height } = await getElementBounds(ref);
 
       await next({ width: 0, height, overflow: 'hidden', opacity: 0 });

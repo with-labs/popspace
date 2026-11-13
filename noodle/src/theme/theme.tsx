@@ -3,8 +3,8 @@ import { createMuiTheme } from '@material-ui/core';
 import { PaletteOptions as MuiPaletteOptions } from '@material-ui/core/styles/createPalette';
 import React from 'react';
 
-import { ReactComponent as CheckboxChecked } from './images/Checkbox.svg';
-import { ReactComponent as CheckboxUnchecked } from './images/Unchecked.svg';
+import CheckboxChecked from './images/Checkbox.svg?react';
+import CheckboxUnchecked from './images/Unchecked.svg?react';
 import brandPalette, { WithColorPalette } from './palette';
 import { generateShadows } from './shadows';
 

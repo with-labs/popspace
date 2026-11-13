@@ -7,7 +7,7 @@ import { animated, useSpring } from '@react-spring/web';
 import * as React from 'react';
 
 import { Vector2 } from '../../../types/spatials';
-import { ReactComponent as CursorSvg } from './cursor.svg';
+import CursorSvg from './cursor.svg?react';
 
 export interface ICursorProps {
   userId: string;

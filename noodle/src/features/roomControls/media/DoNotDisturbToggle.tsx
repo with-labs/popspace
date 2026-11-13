@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ToggleButton } from '@material-ui/lab';
-import { RemoveCircle } from '@material-ui/icons';
+import { RemoveCircleOutline } from '@material-ui/icons';
 import { useTranslation } from 'react-i18next';
 import { ResponsiveTooltip } from '@components/ResponsiveTooltip/ResponsiveTooltip';
 import { makeStyles, useTheme } from '@material-ui/core';
@@ -47,9 +47,9 @@ export const DoNotDisturbToggle = (props: { className?: string }) => {
           data-test-id="toggleDoNotDisturb"
           {...props}
         >
-          <RemoveCircle
+          <RemoveCircleOutline
             fontSize="default"
-            htmlColor={doNotDisturb ? theme.palette.brandColors.cherry.bold : undefined}
+            htmlColor={doNotDisturb ? theme.palette.brandColors.cherry.bold : theme.palette.brandColors.ink.regular}
           />
           <span className={classes.text}>{t('features.mediaControls.doNotDisturbTitle')}</span>
         </ToggleButton>
